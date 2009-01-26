@@ -1,0 +1,117 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A5D49D94-D936-4123-BA9A-572AA7C7F426}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SoftwareMonkeys.SiteStarter.Web</RootNamespace>
+    <AssemblyName>SoftwareMonkeys.SiteStarter.Web</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Db4objects.Db4o, Version=7.2.44.10827, Culture=neutral, PublicKeyToken=6199cd4f203aa8eb, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\Db4objects.Db4o.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=1.0.0.505, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.XML" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BasePage.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="LogWriter.cs" />
+    <Compile Include="My.cs" />
+    <Compile Include="OperationManager.cs" />
+    <Compile Include="Properties\Language.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Language.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Providers\DataProviderManager.cs" />
+    <Compile Include="QueryStrings.cs" />
+    <Compile Include="Security\Authorisation.cs" />
+    <Compile Include="Security\Member.cs" />
+    <Compile Include="Security\MemberProvider.cs" />
+    <Compile Include="State\StateProviderManager.cs" />
+    <Compile Include="State\WebStateProvider.cs" />
+    <Compile Include="Utilities.cs" />
+    <Compile Include="WebControls\EntityFormPasswordConfirmItem.cs" />
+    <Compile Include="WebControls\EntityFormPasswordItem.cs" />
+    <Compile Include="WebControls\EntityFormEmailItem.cs" />
+    <Compile Include="WebControls\EntityForm.cs" />
+    <Compile Include="WebControls\EntityFormLabelItem.cs" />
+    <Compile Include="WebControls\EntityFormButtonsItem.cs" />
+    <Compile Include="WebControls\EntityFormCheckBoxItem.cs" />
+    <Compile Include="WebControls\EntityFormHelper.cs" />
+    <Compile Include="WebControls\EntityFormItem.cs" />
+    <Compile Include="WebControls\EntityFormItemCollection.cs" />
+    <Compile Include="WebControls\EntityFormItemControlCollection.cs" />
+    <Compile Include="WebControls\EntityFormSpecificItem.cs" />
+    <Compile Include="WebControls\EntityFormTextBoxItem.cs" />
+    <Compile Include="WebControls\EntitySelect.cs" />
+    <Compile Include="WebControls\IndexGrid.cs" />
+    <Compile Include="WebControls\Result.cs" />
+    <Compile Include="WebControls\TestResults.cs" />
+    <Compile Include="WebUtilities.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Language.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Language.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter\SiteStarter.Core.csproj">
+      <Project>{F294B839-0C1E-4187-AA58-6EA1C35E6B66}</Project>
+      <Name>Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Diagnostics\SiteStarter.Diagnostics.csproj">
+      <Project>{C3626F0A-DFD4-4EF2-8755-3532DE3712A4}</Project>
+      <Name>Diagnostics</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Entities\SiteStarter.Entities.csproj">
+      <Project>{3609F512-9E15-41C7-95AF-D1B3E7F93562}</Project>
+      <Name>Entities</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Providers\ConfigurationProviderManager.excludecs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

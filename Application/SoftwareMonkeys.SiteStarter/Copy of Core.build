@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<project name="Script Test" default="build" xmlns="http://nant.sf.net/schemas/nant.xsd">
+<property name="nant.settings.currentframework" value="net-2.0" />
+<property name="Core.AssemblyName" value="SoftwareMonkeys.SiteStarter.dll" />
+  <target name="build" description="compiles the source code">
+  	<mkdir dir="bin/debug"/>
+    <csc output="bin\debug\${Core.AssemblyName}" target="library">
+      <sources>
+        <include name="**\*.cs" />
+      </sources>
+      <resources>
+        <include name="**\*.resx" />
+      </resources>
+      <references>
+        <include name="System.Configuration.dll" />
+        <include name="System.Data.dll" />
+        <include name="System.Xml.dll" />
+      </references>
+    </csc>
+  </target>
+</project>
