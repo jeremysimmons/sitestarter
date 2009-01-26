@@ -1,0 +1,286 @@
+<?xml version="1.0"?>
+<project name="Script Test" default="Build" xmlns="http://nant.sf.net/schemas/nant.xsd">
+	<!-- Settings -->
+	<property name="nant.settings.currentframework" value="net-2.0" />
+	
+	<!-- Global Properties -->
+	<property name="Global.Debug" value="false" />
+  	
+  	<target name="Common.Actions.CleanProject">
+  		<echo message="Deleting *.dll, *.pdb, etc. in ${path::get-full-path(path::combine(Parameters.StartPath, 'bin'))}"/>
+  		<delete>
+    		<fileset basedir="${path::get-full-path(Parameters.StartPath)}">
+        		<include name="bin/**/*.dll" />
+        		<include name="bin/**/*.pdb" />
+        		<include name="obj/**/*.*" />
+    		</fileset>
+		</delete>
+  	</target>
+  	
+  	<!-- Actions.OutputLibraries -->
+  	<target name="Common.Actions.OutputLibraries">  	
+  		<property name="Local.SourceDirectory" value="${path::get-full-path(path::combine(Parameters.SourceDirectory, Global.BuildMode))}" />
+  		<mkdir dir="${path::combine(Global.BinariesDirectory, Global.BuildMode)}"/>
+  		
+  		<echo message="${'Copying file: ' + Local.SourceDirectory}"/>
+  		<echo message="${'...to ' + path::get-full-path(path::combine(Global.BinariesDirectory, Global.BuildMode))}" />
+  		
+    	<copy todir="${path::combine(Global.BinariesDirectory, Global.BuildMode)}">
+    		<fileset basedir="${Local.SourceDirectory}">
+    			<include name="*.dll"/>
+    		</fileset>
+    	</copy>
+  	</target>
+  	
+  	<target name="Common.Tasks.UpdateAssemblyInfoFile" depends="Common.Tasks.CreateUniqueGuid, Common.Tasks.GenerateBuildNumber">
+
+         <asminfo output="${Project.AssemblyInfoFile}" language="CSharp">
+
+             <imports>
+
+                 <import namespace="System.Reflection" />
+
+                 <import namespace="System.Runtime.InteropServices" />
+
+             </imports>
+             <attributes>
+                 <attribute type="AssemblyTitleAttribute" value="${Project.Name}" />
+                 <attribute type="AssemblyDescriptionAttribute" value="" />
+
+                 <attribute type="AssemblyConfigurationAttribute" value="" />
+
+                 <attribute type="AssemblyCompanyAttribute" value="" />
+
+                <attribute type="AssemblyProductAttribute" value="${Project.Name}" />
+
+                 <attribute type="AssemblyCopyrightAttribute" value="Copyright ${Project.CompanyName} (c) 2007" />
+
+                 <attribute type="AssemblyTrademarkAttribute" value="" />
+
+                 <attribute type="AssemblyCultureAttribute" value="" />
+
+ 
+
+                 <attribute type="ComVisibleAttribute" value="false" />
+
+ 
+
+                 <!--attribute type="GuidAttribute" value="${Project.Guid}" /-->
+
+ 
+
+                 <attribute type="AssemblyVersionAttribute" value="${Project.Version}" />
+
+                 <attribute type="AssemblyFileVersionAttribute" value="${Project.Version}" />
+
+             </attributes>
+
+         </asminfo>
+
+     </target>
+
+ 
+
+     <target name="Common.Tasks.CreateUniqueGuid">
+
+         <script language="C#">
+
+             <code>
+
+                 <![CDATA[
+
+                     public static void ScriptMain(Project project) {
+
+                         project.Properties["Project.Guid"] = Guid.NewGuid().ToString();
+
+                     }
+
+                 ]]>
+
+             </code>
+
+         </script>
+
+     </target>
+
+ 
+
+     <target name="Common.Tasks.GenerateBuildNumber">
+
+         <script language="C#">
+
+             <imports>
+
+                 <import namespace="System.Globalization" />
+                 <import namespace="System.Threading" />
+
+             </imports>
+
+             <code>
+
+                 <![CDATA[
+                     public static void ScriptMain(Project project) {
+
+                         Version version = new Version(project.Properties["Project.Version"]);
+
+                         int major = version.Major;
+
+                         int minor = version.Minor;
+
+                         int build = version.Build;
+                         int revision = version.Revision;
+
+                            int startYear = Convert.ToInt32(project.Properties["Project.Year"]);
+                         DateTime start = new DateTime(startYear, 1, 1);
+                         Calendar calendar = Thread.CurrentThread.CurrentCulture.Calendar;
+                         int months = ((calendar.GetYear(DateTime.Today)
+                             - calendar.GetYear(start)) * 12)
+
+                             + calendar.GetMonth(DateTime.Today)
+
+                             - calendar.GetMonth(start);
+
+                         int day = DateTime.Now.Day;
+                        build = (months * 100) + day;
+ 
+                         version = new Version(major, minor, build, revision);
+
+                         project.Properties["Project.Version"] = version.ToString();
+                         
+                     }
+                 ]]>
+
+            </code>
+
+          </script>
+
+        </target>
+  	
+  	
+  	<target name="Common.Jobs.IncrementVersion" description="Increments The Build Number">
+  		
+	<script language="C#">
+		<code><![CDATA[
+			public static void ScriptMain(Project project)
+			{
+				string fileContents = "1.0.0.0";
+				
+				if (!File.Exists(project.Properties["Project.VersionFile"]))
+				{
+				
+					project.Log(Level.Info, "Creating version file: " + project.Properties["Project.VersionFile"]);
+					using (StreamWriter writer = new StreamWriter(File.OpenWrite(project.Properties["Project.VersionFile"])))
+					{
+						writer.Write(fileContents);
+					}
+				}
+				else
+				{
+ 
+					project.Log(Level.Info, "Opening version file: " + project.Properties["Project.VersionFile"]);
+					using (StreamReader reader = File.OpenText(project.Properties["Project.VersionFile"]))
+					{
+						fileContents = reader.ReadToEnd();
+					}
+				}
+ 
+				string version = fileContents;//project.Properties["Project.Version"];
+				
+				project.Log(Level.Info, "Current version: " + version);
+				string[] versions = version.Split('.');
+				int buildNumber = int.Parse(versions[3]);
+				string newVersion = string.Format("{0}.{1}.{2}.{3}", versions[0], versions[1], versions[2], ++buildNumber);
+ 
+				project.Properties["Project.Version"] = newVersion;
+				fileContents = fileContents.Replace(version, newVersion);
+ 
+				using (StreamWriter writer = new StreamWriter(project.Properties["Project.VersionFile"]))
+				{
+					writer.Write(fileContents);
+				}
+				
+				
+                project.Execute("Common.Tasks.UpdateAssemblyInfoFile");
+				
+			}
+		]]></code>
+		</script>
+	</target>
+	
+	 <!--target name="Common.Jobs.IncrementVersion" description="Increment the build number and write to version.txt file">
+  <script language="C#">
+   <code><![CDATA[
+    public static void ScriptMain(Project project)
+    {
+     string fileName = Path.Combine(project.BaseDirectory, project.Properties["Project.VersionFile"]);
+     int major = int.Parse(project.Properties["Project.Version.Major"]);
+     int minor = int.Parse(project.Properties["Project.Version.Minor"]);
+     int build = int.Parse(project.Properties["Project.Version.Build"]);
+     int revision = int.Parse(project.Properties["Project.Version.Revision"]);
+     //build++;
+     //string versionString = string.Format("{0}.{1}.{2}.{3}", major, minor, build, revision);
+     //project.Properties["Project.Version.Build"] = build.ToString();
+     
+     //StreamWriter writer = new StreamWriter(fileName, false);
+    // writer.WriteLine(versionString);
+     //writer.Close();
+    }
+   ]]></code>
+  </script>
+  <call target="setversionstring" />
+ </target-->
+	
+  <!--target
+    name="Common.Tasks.GetVersion"
+    description="Get the version number from the assembly">
+    <script language="C#">
+      <code><![CDATA[
+      public static void ScriptMain(Project project)
+      {
+        System.Reflection.Assembly assembly =
+          System.Reflection.Assembly.LoadFile(
+            project.Properties["Project.AssemblyInfoFile"]);
+        project.Properties.Add("Parameters.AssemblyFile",
+          assembly.GetName().Version.ToString());
+      }
+      ]]></code>
+    </script>
+    <echo message="Version: ${build.version.number}"/>
+  </target-->
+
+ <!--target name="Common.Tasks.SetVersion" description="Stamp the version info onto assemblyinfo.cs files">
+  <foreach item="File" property="filename">
+   <in>
+    <items basedir="application">
+     <include name="**\AssemblyInfo.cs"></include>
+    </items>
+   </in>
+   <do>
+    <script language="C#">
+     <code><![CDATA[
+     public static void ScriptMain(Project project)
+     {
+      //FileStream file = File.Open(project.Properties["Parameters.AssemblyFile"], FileMode.Open, FileAccess.ReadWrite);
+      StreamReader reader = new StreamReader(project.Properties["Parameters.AssemblyFile"]);
+      string contents = reader.ReadToEnd();
+      reader.Close();
+      string replacement = string.Format(
+       "[assembly: AssemblyVersion(\"{0}.{1}.{2}.{3}\")]",
+       project.Properties["Global.Version.Major"],
+       project.Properties["Global.Version.Minor"],
+       project.Properties["Global.Version.Build"],
+       project.Properties["Global.Version.Revision"]
+      );
+      string newText = Regex.Replace(contents, @"\[assembly: AssemblyVersion\("".*""\)\]", replacement);
+      StreamWriter writer = new StreamWriter(project.Properties["Parameters.AssemblyFile"], false);
+      writer.Write(newText);
+      writer.Close();
+     }
+     ]]>
+     </code>
+    </script>
+   </do>
+  </foreach>
+ </target-->
+ 
+ </project>

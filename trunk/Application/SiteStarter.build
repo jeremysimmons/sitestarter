@@ -1,0 +1,136 @@
+<?xml version="1.0"?>
+<project name="SiteStarter" default="Start.FullBuild" xmlns="http://nant.sf.net/schemas/nant.xsd">
+	<!-- Includes -->
+
+	
+	<!-- Settings -->
+	<property name="nant.settings.currentframework" value="net-2.0" />
+	
+	<!-- Global Properties -->
+	<property name="Global.BaseNamespace" value="SoftwareMonkeys.SiteStarter" />
+	<property name="Global.BinariesDirectory" value="${path::get-full-path('..\..\Bin')}" />
+
+	<!-- Start.FullBuild -->
+  	<target name="Start.FullBuild" description="Starts a complete (debug and release) build process.">
+		<call target="Start.DebugBuild" />
+		<call target="Start.ReleaseBuild" />
+  	</target>
+  	
+  	<!-- Start.DebugBuild -->
+  	<target name="Start.DebugBuild" description="Starts a complete debug build process.">
+		<property name="Global.BuildMode" value="Debug" />
+		<call target="Start.Build"/>
+  	</target>
+  	
+  	<!-- Start.ReleaseBuild -->
+  	<target name="Start.ReleaseBuild" description="Starts a complete release build process.">
+		<property name="Global.BuildMode" value="Release" />
+		<call target="Start.Build"/>
+  	</target>
+  	
+  	<!-- Start.Build -->
+	<target name="Start.Build" description="Starts the build process.">
+		<call target="Phases.Clean" />
+		<call target="Phases.Build" />
+		<call target="Phases.Release" />
+		<call target="Phases.Deploy" />
+  	</target>
+  	
+  	<!-- Phases.Clean -->
+  	<target name="Phases.Clean">		
+  		<echo message="**************************************************" />
+  		<echo message="* ===== Begin Phase: Clean =====" />
+  		<echo message="**************************************************" />
+  		<echo message="* Time: ${datetime::now()}" />
+  		<echo message="**************************************************" />
+  		
+	 	<nant buildfile="${Global.BaseNamespace}.Diagnostics/SiteStarter.Diagnostics.build" target="Jobs.Clean"/>
+	 	
+	 	<nant buildfile="${Global.BaseNamespace}.Entities/SiteStarter.Entities.build" target="Jobs.Clean"/>
+	 
+    	<nant buildfile="${Global.BaseNamespace}/SiteStarter.Core.build" target="Jobs.Clean"/>
+    	
+    	<nant buildfile="${Global.BaseNamespace}.Data.Db4o/SiteStarter.Data.Db4o.build" target="Jobs.Clean"/>
+    	
+    	<nant buildfile="${Global.BaseNamespace}.Web/SiteStarter.Web.build" target="Jobs.Clean"/>
+  	
+  		<echo message="**************************************************" />
+  		<echo message="* ===== End Phase: Clean =====" />
+  		<echo message="**************************************************" />
+  		<echo message="* Time: ${datetime::now()}" />
+  		<echo message="**************************************************" />
+  	</target>
+  	
+  	<!-- Phases.Build -->
+  	<target name="Phases.Build">		
+  		<echo message="**************************************************" />
+  		<echo message="* ===== Begin Phase: Build =====" />
+  		<echo message="**************************************************" />
+  		<echo message="* Time: ${datetime::now()}" />
+  		<echo message="**************************************************" />
+  	
+	 	<nant buildfile="${Global.BaseNamespace}.Diagnostics/SiteStarter.Diagnostics.build" target="Jobs.Build"/>
+	 	
+	 	<nant buildfile="${Global.BaseNamespace}.Entities/SiteStarter.Entities.build" target="Jobs.Build"/>
+	 
+    	<nant buildfile="${Global.BaseNamespace}/SiteStarter.Core.build" target="Jobs.Build"/>
+    	
+    	<nant buildfile="${Global.BaseNamespace}.Data.Db4o/SiteStarter.Data.Db4o.build" target="Jobs.Build"/>
+    	
+    	<nant buildfile="${Global.BaseNamespace}.Web/SiteStarter.Web.build" target="Jobs.Build"/>
+  	
+  		<echo message="**************************************************" />
+  		<echo message="* ===== End Phase: Build =====" />
+  		<echo message="**************************************************" />
+  		<echo message="* Time: ${datetime::now()}" />
+  		<echo message="**************************************************" />
+  	</target>
+  	
+  	<!-- Phases.Release -->
+  	<target name="Phases.Release">		
+  		<echo message="**************************************************" />
+  		<echo message="* ===== Begin Phase: Release =====" />
+  		<echo message="**************************************************" />
+  		<echo message="* Time: ${datetime::now()}" />
+  		<echo message="**************************************************" />
+  		
+	 	<!--nant buildfile="Entities/Entities.build" target="Jobs.Release"/-->
+	 	
+    	<!--nant buildfile="Data.Db4o/Data.Db4o.build"/-->
+    	
+    	<!--nant buildfile="Core/Core.build" target="Jobs.Release" /-->
+    	
+    	<!--nant buildfile="Facade/Facade.build"/-->
+  	
+  		<echo message="**************************************************" />
+  		<echo message="* ===== End Phase: Release =====" />
+  		<echo message="**************************************************" />
+  		<echo message="* Time: ${datetime::now()}" />
+  		<echo message="**************************************************" />
+  	</target>
+  	
+  	<!-- Phases.Deploy -->
+  	<target name="Phases.Deploy">		
+  		<echo message="**************************************************" />
+  		<echo message="* ===== Begin Phase: Deploy =====" />
+  		<echo message="**************************************************" />
+  		<echo message="* Time: ${datetime::now()}" />
+  		<echo message="**************************************************" />
+  		
+	 	<!--nant buildfile="Entities/Entities.build" target="Jobs.Deploy"/>
+	 
+    	<nant buildfile="Core/Core.build" target="Jobs.Deploy"/>
+    	
+    	<nant buildfile="Data.Db4o/Data.Db4o.build" target="Jobs.Deploy"/>
+    	
+    	<nant buildfile="Facade/Facade.build" target="Jobs.Deploy"/-->
+    
+    	<nant buildfile="WWW/SiteStarter.WWW.build" target="Jobs.Deploy"/>
+  	
+  		<echo message="**************************************************" />
+  		<echo message="* ===== End Phase: Deploy =====" />
+  		<echo message="**************************************************" />
+  		<echo message="* Time: ${datetime::now()}" />
+  		<echo message="**************************************************" />
+  	</target>
+</project>
