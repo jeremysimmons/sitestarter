@@ -204,6 +204,17 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
                 throw new NotImplementedException("Support for the LogLevel type of " + logLevel + " has not yet been implemented.");
 		}
 
+        public void Error(string message)
+        {
+            MethodBase callingMethod = Reflector.GetCallingMethod();
+            Error(message, callingMethod);
+        }
+
+        public void Error(string message, MethodBase callingMethod)
+        {
+            AppLogger.Error(message, callingMethod);
+        }
+
         public void Debug(string message)
         {
             MethodBase callingMethod = Reflector.GetCallingMethod();
