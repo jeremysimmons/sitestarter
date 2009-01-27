@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<project name="SiteStarter.Web" default="build" xmlns="http://nant.sf.net/schemas/nant.xsd">
+	<!-- Includes -->
+	
+	<!-- Settings -->
+	<property name="nant.settings.currentframework" value="net-2.0" />
+	
+	<!-- Properties -->
+
+	<!-- Jobs.Clean -->
+  	<target name="Jobs.Clean" description="Cleans out the unnecessary files in the project.">
+  		<echo message="* ======================================== " />
+  		<echo message="* ===== Begin Job: Clean Web" />
+  		<echo message="* ======================================== " />
+  	
+		<call target="Actions.Clean" />
+	    
+  		<echo message="* ======================================== " />
+  		<echo message="* ===== Finish Job: Clean Web" />
+  		<echo message="* ======================================== " />
+  	</target>
+  	
+	<!-- Actions.Clean -->
+  	<target name="Actions.Clean"> 		
+  		<nant buildfile="../Build/Common.Build" target="Common.Jobs.CleanProject">
+  			<properties>
+  				<property name="Parameter.StartPath" value="${path::get-directory-name(project::get-buildfile-path())}"/>
+  			</properties>
+  		</nant>
+  	</target>
+	
+	<!-- Jobs.Build -->
+  	<target name="Jobs.Build" description="Compiles the project source code.">  	
+  		<echo message="* ======================================== " />
+  		<echo message="* ===== Begin Job: Build Web" />
+  		<echo message="* ======================================== " />
+  	
+		<call target="Actions.Compile" />
+	    
+  		<echo message="* ======================================== " />
+  		<echo message="* ===== Finish Job: Build Web" />
+  		<echo message="* ======================================== " />
+  	</target>
+  	
+  	  	
+  	<!-- Actions.Compile -->
+  	<target name="Actions.Compile">
+  		<!-- Nothing to compile in this project -->
+  	</target>
+  	
+  	<!-- Jobs.Deploy -->
+  	<target name="Jobs.Deploy">  	
+  		<echo message="* ======================================== " />
+  		<echo message="* ===== Begin Job: Deploy Web" />
+  		<echo message="* ======================================== " />
+  	
+		<call target="Actions.ImportLibraries" />
+	    
+  		<echo message="* ======================================== " />
+  		<echo message="* ===== Finish Job: Deploy Web" />
+  		<echo message="* ======================================== " />
+  	</target>
+
+  	<!-- Actions.ImportLibraries -->
+  	<target name="Actions.ImportLibraries">
+    	<copy todir="bin/">
+    		<fileset basedir="../Lib/">
+        		<include name="NLog.dll" />
+    		</fileset>
+		</copy>
+    	<copy todir="bin/">
+    		<fileset basedir="../${Global.BaseNamespace}.Diagnostics/bin/${Global.BuildMode}/">
+        		<include name="*.dll" />
+    		</fileset>
+		</copy>
+    	<copy todir="bin/">
+    		<fileset basedir="../${Global.BaseNamespace}.Entities/bin/${Global.BuildMode}/">
+        		<include name="*.dll" />
+    		</fileset>
+		</copy>
+		 <copy todir="bin/">
+    		<fileset basedir="../${Global.BaseNamespace}/bin/${Global.BuildMode}/">
+        		<include name="*.dll" />
+    		</fileset>
+		</copy>
+    	<copy todir="bin/">
+    		<fileset basedir="../${Global.BaseNamespace}.Data.Db4o/bin/${Global.BuildMode}/">
+        		<include name="*.dll" />
+    		</fileset>
+		</copy>
+		<copy todir="bin/">
+    		<fileset basedir="../${Global.BaseNamespace}.Web/bin/${Global.BuildMode}/">
+        		<include name="*.dll" />
+    		</fileset>
+		</copy>
+  	</target>
+</project>

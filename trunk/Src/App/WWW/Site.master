@@ -1,0 +1,46 @@
+<%@ Master Language="C#" AutoEventWireup="true" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<script runat="server">
+
+</script>
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head runat="server">
+    <title>Untitled Page</title>
+    <link href="App_Themes/Default/Styles.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <form id="form1" runat="server">
+    <div>
+    <table width="100%">
+    <tr><td colspan="2" style="padding: 0px;" class="PageHeader"><table width="100%"><tr><td></td><td class="PageHeaderText">Web Site Starter Kit</td><td class="PageHeaderIdentity">
+        &nbsp;<asp:LoginView ID="LoginView1" runat="server">
+            <LoggedInTemplate>
+                <%= Resources.Language.YouAreLoggedInAs %>: <%= Request.IsAuthenticated ? My.User.Username : String.Empty %>&nbsp;(<a href='<%= Request.ApplicationPath + "/Members/Logout.aspx" %>'><%= Resources.Language.Logout %></a>)
+            </LoggedInTemplate>
+            <AnonymousTemplate>
+                <a href='<%= Request.ApplicationPath + "/Members/Login.aspx" %>'>Login</a>
+            </AnonymousTemplate>
+        </asp:LoginView></td></tr></table>
+    </td></tr>
+    <tr><td class="Column" nowrap>
+        <ul><li><a href='<%= Request.ApplicationPath + "/Default.aspx" %>'>Home</a></li><li>
+        <a href='<%= Request.ApplicationPath + "/Setup.aspx" %>'>Setup</a></li><li>
+        <a href='<%= Request.ApplicationPath + "/Members/Register.aspx" %>'>Register</a></li><li>
+        <a href='<%= Request.ApplicationPath + "/Members/Login.aspx" %>'>Login</a></li><li>
+        <a href='<%= Request.ApplicationPath + "/Members/Default.aspx" %>'>My Account</a></li><li>
+        <a href='<%= Request.ApplicationPath + "/Members/Logout.aspx" %>'>Logout</a></li><li>
+        <a href='<%= Request.ApplicationPath + "/Admin/Users.aspx" %>'>Manage Users</a></li><li>
+        <a href='<%= Request.ApplicationPath + "/Testing.aspx" %>'>Unit Tests</a></li><li>
+        <a href='<%= Request.ApplicationPath + "/DBContents.aspx" %>'>DB Contents</a></li></ul>
+        </td><td>
+        <asp:contentplaceholder id="Body" runat="server">
+        </asp:contentplaceholder>
+        </td></tr></table>
+    </div>
+    </form>
+</body>
+</html>
