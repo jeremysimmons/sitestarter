@@ -11,7 +11,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
     //[XmlRoot(Namespace = "SoftwareMonkeys.SiteStarter.Configuration")]
 	public class AppConfig : IAppConfig, IConfig
 	{
-        private string name;
+        private string name = "Default";
         /// <summary>
         /// Gets/sets the name of the configuration object/file.
         /// </summary>

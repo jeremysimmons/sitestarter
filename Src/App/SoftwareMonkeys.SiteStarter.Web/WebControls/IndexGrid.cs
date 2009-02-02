@@ -5,6 +5,7 @@ using SoftwareMonkeys.SiteStarter.Entities;
 using System.ComponentModel;
 using System.Collections;
 using SoftwareMonkeys.SiteStarter.Web.Properties;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 
 namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 {
@@ -229,58 +230,55 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
 		protected override void OnInit(EventArgs e)
 		{
-			CssClass = "BodyPanel";
-			AutoGenerateColumns = false;
-			Width = Unit.Percentage(100);
-			CellPadding = 0;
-			GridLines = GridLines.None;
-			ItemStyle.CssClass = "ListItem";
-			AlternatingItemStyle.CssClass = "ListItem";
-			PagerStyle.Visible = true;
-			PagerStyle.HorizontalAlign = HorizontalAlign.Right;
-			PagerStyle.Mode = PagerMode.NumericPages;
-			PagerStyle.Position = PagerPosition.TopAndBottom;
-			ShowFooter = true;
-            AllowCustomPaging = true;
+			using (LogGroup logGroup = AppLogger.StartGroup("Initializing IndexGrid control: " + ID, NLog.LogLevel.Info))
+			{
+				CssClass = "BodyPanel";
+				AutoGenerateColumns = false;
+				Width = Unit.Percentage(100);
+				CellPadding = 0;
+				GridLines = GridLines.None;
+				ItemStyle.CssClass = "ListItem";
+				AlternatingItemStyle.CssClass = "ListItem";
+				PagerStyle.Visible = true;
+				PagerStyle.HorizontalAlign = HorizontalAlign.Right;
+				PagerStyle.Mode = PagerMode.NumericPages;
+				PagerStyle.Position = PagerPosition.TopAndBottom;
+				ShowFooter = true;
+	          	  AllowCustomPaging = true;
+	
+				Sort = new DropDownList();
+				Sort.ID = "Sort";
+				Sort.AutoPostBack = true;
+				Sort.CssClass = "Field";
+	            		Sort.SelectedIndexChanged += new EventHandler(Sort_SelectedIndexChanged);
+	            		if (CurrentSort != String.Empty)
+	                		Sort.SelectedIndex = Sort.Items.IndexOf(Sort.Items.FindByValue(CurrentSort));
+	            		else
+	                		Sort.SelectedIndex = Sort.Items.IndexOf(Sort.Items.FindByValue(DefaultSort));
 
-			Sort = new DropDownList();
-			Sort.ID = "Sort";
-			Sort.AutoPostBack = true;
-			Sort.CssClass = "Field";
-            Sort.SelectedIndexChanged += new EventHandler(Sort_SelectedIndexChanged);
-            if (CurrentSort != String.Empty)
-                Sort.SelectedIndex = Sort.Items.IndexOf(Sort.Items.FindByValue(CurrentSort));
-            else
-                Sort.SelectedIndex = Sort.Items.IndexOf(Sort.Items.FindByValue(DefaultSort));
+				AppLogger.Info("Default sort: " + DefaultSort);
+				AppLogger.Info("Current sort: " + CurrentSort);
+	
+				//Sort.Items.Add(new ListItem("------ " + TextHelper.Get("Sort") + " ------", ""));
+				
+				CustomHolder = new PlaceHolder();
+				CustomHolder.ID = "CustomHolder";
+	
+	            		Page.RegisterStartupScript("IndexUtil", "<script language='javascript' src='/Scripts/IndexUtil.js'></script>");
+	
+				base.OnInit(e);
 
-			//Sort.Items.Add(new ListItem("------ " + TextHelper.Get("Sort") + " ------", ""));
-			
-			CustomHolder = new PlaceHolder();
-			CustomHolder.ID = "CustomHolder";
-
-            Page.RegisterStartupScript("IndexUtil", "<script language='javascript' src='/Scripts/IndexUtil.js'></script>");
-
-			base.OnInit(e);
+			}
 		}
 
         protected override void OnLoad(EventArgs e)
         {
+		using (LogGroup logGroup = AppLogger.StartGroup("Initializing IndexGrid control: " + ID, NLog.LogLevel.Info))
+		{
 
-            if (!Page.IsPostBack && (DataSource == null || DataSource.Length == 0))
-            {
-                TableCell cell = new TableCell();
-                cell.Controls.Add(new LiteralControl("<i>[" + EmptyDataText + "]</i>"));
-
-                DataGridItem row = new DataGridItem(Items.Count, 0, ListItemType.Item);
-                row.Cells.Add(cell);
-
-                row.Visible = DataSource == null || DataSource.Length == 0;
-
-                if (Controls.Count > 0)
-                    ((Table)Controls[0]).Rows.Add(row);
-            }
-
-            base.OnLoad(e);
+		
+		            base.OnLoad(e);
+		}
         }
 
         protected override void DataBind(bool raiseOnDataBinding)
@@ -598,7 +596,28 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
 		public override void DataBind()
 		{
-			SelectSortItem();
+
+			using (LogGroup logGroup = AppLogger.StartGroup("Binding IndexGrid control: " + ID, NLog.LogLevel.Info))
+			{
+
+				SelectSortItem();
+
+			            if (!Page.IsPostBack && (DataSource == null || DataSource.Length == 0))
+			            {
+					AppLogger.Info("DataSource is empty. Adding [EmptyDataText] to control.");
+
+		                	TableCell cell = new TableCell();
+			                cell.Controls.Add(new LiteralControl("<i>[" + EmptyDataText + "]</i>"));
+			
+			                DataGridItem row = new DataGridItem(Items.Count, 0, ListItemType.Item);
+			                row.Cells.Add(cell);
+			
+			                row.Visible = DataSource == null || DataSource.Length == 0;
+			
+			                if (Controls.Count > 0)
+			                    ((Table)Controls[0]).Rows.Add(row);
+				}
+		        }
 
 			base.DataBind ();
 		}

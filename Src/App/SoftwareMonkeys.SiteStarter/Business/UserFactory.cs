@@ -3,8 +3,10 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Query;
 using System.Collections;
 using System.Collections.Specialized;
+using System.Collections.Generic;
 using System.ComponentModel;
 using SoftwareMonkeys.SiteStarter.Entities;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Data;
 
 namespace SoftwareMonkeys.SiteStarter.Business
@@ -113,34 +115,18 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns>The user with the provided credentials.</returns>
         static public Entities.User AuthenticateUser(string username, string password)
 		{
-            // TODO: Check encrypt password code
-			/*// Encrypt the password if necessary.
-			if (encryptPassword)
-				password = Crypter.EncryptPassword(password);*/
+                  // TODO: Check encrypt password code
+			// Encrypt the password if necessary.
+			//if (encryptPassword)
+				password = Crypter.EncryptPassword(password);
 			
-			/*// Create the query
-            IQuery query = DataStore.Query();
-            query.Constrain(typeof(Entities.User));
-            query.Descend("username").Constrain(username);
-            query.Descend("password").Constrain(password);
-
-            var user = from User u in DataStore select u;
+			// Create the query
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("username", username);
+            parameters.Add("password", password);
 
 			// Retrieve and return the user with the username and password.
-            return (Entities.User)Db4oHelper.GetObject(query.Execute());*/
-
-            /*if (DataAccess.Data is SoftwareMonkeys.WorkHub.Data.Db4o.Db4oDataProvider)
-            {
-                NameValueCollection query = new NameValueCollection();
-                query.Add("username", username);
-                query.Add("password", password);
-
-                // Retrieve and return the user with the username and password.
-                return DataStore.Query(query);
-            }
-            else
-                throw new NotImplementedException("This operation was written for a different data access type.");*/
-            throw new NotImplementedException();
+            return (Entities.User)DataStore.GetEntity(typeof(Entities.User), parameters);
 		}
 		#endregion
 
@@ -246,15 +232,31 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns>A boolean value indicating whether the username is taken.</returns>
         static public bool UsernameTaken(Entities.User user)
 		{
-			// If no username was specified just skip this function
-            if (user.Username == null || user.Username == String.Empty)
-				return false;
+            using (LogGroup logGroup = AppLogger.StartGroup("Verifying that the username is unique.", NLog.LogLevel.Info))
+            {
+                AppLogger.Info("User ID: " + user.ID.ToString());
+                AppLogger.Info("Username: " + user.Username);
 
-			// Retrieve any existing user with the username.
-            Entities.User existing = GetUserByUsername(user.Username);
+                // If no username was specified just skip this function
+                if (user.Username == null || user.Username == String.Empty)
+                    return false;
 
-			// If a user was found and the IDs are not the same then it's already taken.
-			return existing != null && existing.ID != user.ID;
+                // Retrieve any existing user with the username.
+                Entities.User existing = GetUserByUsername(user.Username);
+
+                AppLogger.Info("Found match - User ID: " + user.ID.ToString());
+                AppLogger.Info("Found match - Username: " + user.Username);
+
+                bool isTaken = (existing != null && existing.ID != user.ID);
+
+                if (isTaken)
+                    AppLogger.Info("Username has already been taken.");
+                else
+                    AppLogger.Info("Username can be used.");
+
+                // If a user was found and the IDs are not the same then it's already taken.
+                return isTaken;
+            }
 		}
 		#endregion
 	}
