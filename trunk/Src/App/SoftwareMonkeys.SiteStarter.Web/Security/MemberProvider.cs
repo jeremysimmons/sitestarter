@@ -33,7 +33,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
         {
             get
             {
-                return "WorkHub";
+                return "SiteStarter";
             }
             set
             {
@@ -301,7 +301,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 
         public override bool ValidateUser(string username, string password)
         {
-            return UserFactory.AuthenticateUser(username, Crypter.EncryptPassword(password)) != null;
+            // The password doesn't need to be encrypted yet
+            return UserFactory.AuthenticateUser(username, password) != null;
             //return UserFactory.AuthenticateUser(username, password);
         }
 
@@ -321,7 +322,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
         /// <returns>A hashed version of the provided password.</returns>
         protected string EncryptPassword(string password)
         {
-            // Declarations
+            /*// Declarations
             Byte[] originalBytes;
             Byte[] encodedBytes;
             MD5 md5;
@@ -332,7 +333,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
             encodedBytes = md5.ComputeHash(originalBytes);
 
             // Convert encoded bytes back to a 'readable' string
-            return BitConverter.ToString(encodedBytes);
+            return BitConverter.ToString(encodedBytes);*/
+            return Crypter.EncryptPassword(password);
         }
 
         public Member Member

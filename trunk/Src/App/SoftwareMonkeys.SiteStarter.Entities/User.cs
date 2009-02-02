@@ -8,6 +8,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
     /// Represents a user in the application.
     /// </summary>
     [Serializable]
+	[DataStore("Users")]
     public class User : BaseEntity
     {
         private string firstName;

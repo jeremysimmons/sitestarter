@@ -60,8 +60,8 @@
         if (!StateAccess.IsInitialized || !Config.IsInitialized)
         {
             SoftwareMonkeys.SiteStarter.Web.State.StateProviderManager.Initialize();   
-            Config.Initialize(Server.MapPath(HttpContext.Current.Request.ApplicationPath));
-            DataProviderManager.Initialize();
+            //Config.Initialize(Server.MapPath(HttpContext.Current.Request.ApplicationPath));
+            //DataProviderManager.Initialize();
         }
     }
 

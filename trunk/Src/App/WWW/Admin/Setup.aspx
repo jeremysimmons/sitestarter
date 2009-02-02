@@ -3,10 +3,13 @@
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Entities" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Business" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Configuration" %>
+<%@ Import namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
 <%@ Import namespace="System.IO" %>
 <script language="C#" runat="server">
 private void Page_Load(object sender, EventArgs e)
 {
+	using (LogGroup logGroup = AppLogger.StartGroup("Running setup script", NLog.LogLevel.Info))
+	{
  //   File.Delete(Config.Current.DatabasePath);
     
 			User user = new User();
@@ -22,7 +25,7 @@ private void Page_Load(object sender, EventArgs e)
 			SoftwareMonkeys.SiteStarter.Configuration.IAppConfig config = new SoftwareMonkeys.SiteStarter.Configuration.AppConfig();
 			config.ApplicationPath = Request.ApplicationPath;
 			//config.ApplicationUrl = Request.Url.ToString().ToLower().Replace("/setup.aspx", "");
-			//config.PhysicalPath = Request.PhysicalApplicationPath;
+			config.PhysicalPath = Request.PhysicalApplicationPath;
 			//config.BackupDirectory = "Backup";
 			//config.DataDirectory = "Data";
 		//	config.FriendlyDateFormat = "D";
@@ -39,15 +42,19 @@ private void Page_Load(object sender, EventArgs e)
 			//SoftwareMonkeys.SiteStarter.Web.Config.Current = config;
 
 			//config.Save();
-            //SoftwareMonkeys.SiteStarter.Business.UserFactory.SaveUser(user);
 
-            Config.Application = config;
+            //Config.Application = config;
 
             ConfigFactory.SaveConfig(Request.MapPath(Request.ApplicationPath + "/App_Data"), (IConfig)config, WebUtilities.GetLocationVariation(Request.Url));
 
             // Initialize everything now that the default config has been created
             Config.Initialize(Server.MapPath(Request.ApplicationPath));
             SoftwareMonkeys.SiteStarter.Web.Providers.DataProviderManager.Initialize();
+
+
+            SoftwareMonkeys.SiteStarter.Business.UserFactory.SaveUser(user);
+
+	}
 
            // Response.Redirect("SetupDefaultData.aspx");
 }

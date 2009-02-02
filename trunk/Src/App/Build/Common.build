@@ -32,7 +32,8 @@
     	</copy>
   	</target>
   	
-  	<target name="Common.Tasks.UpdateAssemblyInfoFile" depends="Common.Tasks.CreateUniqueGuid, Common.Tasks.GenerateBuildNumber">
+  	<target name="Common.Tasks.UpdateAssemblyInfoFile" depends="Common.Tasks.CreateUniqueGuid">
+		<echo message="Project version: ${Project.Version}"/>
 
          <asminfo output="${Project.AssemblyInfoFile}" language="CSharp">
 
@@ -105,7 +106,7 @@
 
  
 
-     <target name="Common.Tasks.GenerateBuildNumber">
+     <target name="Common.Tasks.GenerateVersion">
 
          <script language="C#">
 
@@ -122,6 +123,8 @@
                      public static void ScriptMain(Project project) {
 
                          Version version = new Version(project.Properties["Project.Version"]);
+                         
+                         project.Log(Level.Info, "Current version: " + version);
 
                          int major = version.Major;
 
@@ -130,20 +133,12 @@
                          int build = version.Build;
                          int revision = version.Revision;
 
-                            int startYear = Convert.ToInt32(project.Properties["Project.Year"]);
-                         DateTime start = new DateTime(startYear, 1, 1);
-                         Calendar calendar = Thread.CurrentThread.CurrentCulture.Calendar;
-                         int months = ((calendar.GetYear(DateTime.Today)
-                             - calendar.GetYear(start)) * 12)
-
-                             + calendar.GetMonth(DateTime.Today)
-
-                             - calendar.GetMonth(start);
-
-                         int day = DateTime.Now.Day;
-                        build = (months * 100) + day;
- 
+                         revision = revision+1;
+                         
                          version = new Version(major, minor, build, revision);
+                         
+                         
+                         project.Log(Level.Info, "New version: " + version);
 
                          project.Properties["Project.Version"] = version.ToString();
                          
@@ -157,7 +152,7 @@
         </target>
   	
   	
-  	<target name="Common.Jobs.IncrementVersion" description="Increments The Build Number">
+  	<target name="Common.Jobs.IncrementVersion" description="Increments The Revision Number">
   		
 	<script language="C#">
 		<code><![CDATA[
@@ -183,24 +178,48 @@
 						fileContents = reader.ReadToEnd();
 					}
 				}
- 
-				string version = fileContents;//project.Properties["Project.Version"];
+				
+				string[] lines = fileContents.Split('\n');
+
+				string version = String.Empty;
+				if (lines.Length > 0)
+					version = lines[lines.Length-1];
+					
+					
+					//project.Properties["Project.Version"];
 				
 				project.Log(Level.Info, "Current version: " + version);
 				string[] versions = version.Split('.');
-				int buildNumber = int.Parse(versions[3]);
-				string newVersion = string.Format("{0}.{1}.{2}.{3}", versions[0], versions[1], versions[2], ++buildNumber);
+				int revisionNumber = 0;
+				string newVersion = String.Empty;
+
+				try
+				{
+					revisionNumber = int.Parse(versions[3]);
+					
+					newVersion = string.Format("{0}.{1}.{2}.{3}", versions[0], versions[1], versions[2], revisionNumber+1);
+					
+					project.Log(Level.Info, "New version: " + newVersion);
+				}
+				catch (Exception ex)
+				{
+					project.Log(Level.Error, "Version file data is invalid: '" + version + "' - " + project.Properties["Project.VersionFile"]);
+					// TODO: Make default version editable via configuration settings
+					newVersion = "1.0.0.0";
+				}
+				
+				project.Log(Level.Info, "Switching from version " + project.Properties["Project.Version"] + " to " + newVersion);
  
 				project.Properties["Project.Version"] = newVersion;
-				fileContents = fileContents.Replace(version, newVersion);
+				
+				project.Execute("Common.Tasks.UpdateAssemblyInfoFile");
+				
+				fileContents = newVersion;
  
 				using (StreamWriter writer = new StreamWriter(project.Properties["Project.VersionFile"]))
 				{
 					writer.Write(fileContents);
 				}
-				
-				
-                project.Execute("Common.Tasks.UpdateAssemblyInfoFile");
 				
 			}
 		]]></code>

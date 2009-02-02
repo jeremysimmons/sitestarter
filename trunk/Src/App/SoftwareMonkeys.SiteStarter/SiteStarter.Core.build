@@ -75,6 +75,7 @@
 	      </resources>
 	      <references>
 	        <include name="../Lib/NUnit.Framework.dll" />
+	        <include name="../Lib/NLog.dll" />
 	        <include name="../Lib/Db4objects.Db4o.dll" />	
 	        <include name="../${Global.BaseNamespace}.Entities/bin/${Global.BuildMode}/${Global.BaseNamespace}.Entities.dll" />
 	        <include name="../${Global.BaseNamespace}.Diagnostics/bin/${Global.BuildMode}/${Global.BaseNamespace}.Diagnostics.dll" />
