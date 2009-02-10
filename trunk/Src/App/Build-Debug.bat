@@ -1,2 +1,2 @@
-nant -buildfile:SiteStarter.build Start.DebugBuild
+Lib\nant\nant -buildfile:SiteStarter.build Start.DebugBuild
 pause

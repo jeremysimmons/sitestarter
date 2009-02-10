@@ -71,6 +71,13 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
                     int indent)
         {
             StringBuilder logEntry = new StringBuilder();
+
+		message = message.Replace("&", "&amp;")
+			.Replace("<", "&lt;")
+			.Replace(">", "&gt;")
+			.Replace("\"", "&quot;")
+			.Replace("'", "&apos;");
+
             logEntry.Append("<Entry>\n");
             logEntry.AppendFormat("<GroupID>{0}</GroupID>\n", CurrentGroup != null ? CurrentGroup.ID : Guid.Empty);
             logEntry.AppendFormat("<LogLevel>{0}</LogLevel>\n", logLevel);
