@@ -24,6 +24,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
             }
             set { entityType = value; }
         }
+
+	public string NavigateUrl
+	{
+		get {
+			if (ViewState["NavigateUrl"] == null)
+				ViewState["NavigateUrl"] = String.Empty;
+			return (string)ViewState["NavigateUrl"];
+		}
+		set { ViewState["NavigateUrl"] = value; }
+	}
     }
 
     /// <summary>
@@ -79,7 +89,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
                 foreach (E subEntity in entities)
                 {
                     if (subEntity != null)
+                    {
                         AddNode(null, subEntity);
+                    }
                 }
             }
         }
@@ -97,6 +109,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
             // TODO: Should the text displayed on the tree be customisable?
             TreeNode node = new TreeNode(entity.ToString(), entity.ID.ToString());
+	    string spaceCharacter = String.Empty;
+	    if (NavigateUrl.IndexOf("?") == -1)
+		spaceCharacter = "?";
+	    else
+	        spaceCharacter = "&";
+	    if (NavigateUrl != String.Empty)
+		node.NavigateUrl = NavigateUrl + spaceCharacter + "a=View" + entity.GetType().Name + "&" + entity.GetType().Name + "ID=" + entity.ID;
             if (parentNode == null)
                 Nodes.Add(node);
             else
