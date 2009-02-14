@@ -17,9 +17,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
         {
             get
             {
-                if (HttpContext.Current.Session["Result_Error"] == null)
-                    return false;
-                return (bool)HttpContext.Current.Session["Result_Error"];
+		if (HttpContext.Current == null || HttpContext.Current.Session == null)
+			return false;
+		else
+		{
+                	if (HttpContext.Current.Session["Result_Error"] == null)
+	                    HttpContext.Current.Session["Result_Error"] = false;
+        	        return (bool)HttpContext.Current.Session["Result_Error"];
+		}
             }
         }
 
@@ -30,11 +35,20 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
         {
             get
             {
-                if (HttpContext.Current.Session["Result_Text"] == null)
-                    HttpContext.Current.Session["Result_Text"] = String.Empty;
-                return (string)HttpContext.Current.Session["Result_Text"];
+		if (HttpContext.Current == null || HttpContext.Current.Session == null)
+			return String.Empty;
+		else
+		{
+                	if (HttpContext.Current.Session["Result_Text"] == null)
+	                    HttpContext.Current.Session["Result_Text"] = String.Empty;
+        	        return (string)HttpContext.Current.Session["Result_Text"];
+		}
             }
-            set { HttpContext.Current.Session["Result_Text"] = value; }
+            set
+		 {
+		if (HttpContext.Current != null && HttpContext.Current.Session != null)
+ 			HttpContext.Current.Session["Result_Text"] = value;
+		}
         }
 
         protected override void Render(HtmlTextWriter writer)
@@ -67,8 +81,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
         /// <param name="text">The text to display on the Result control.</param>
         public static void Display(string text)
         {
-            HttpContext.Current.Session["Result_Text"] = text;
-            HttpContext.Current.Session["Result_Error"] = false;
+		if (HttpContext.Current != null && HttpContext.Current.Session != null)
+		{
+	            HttpContext.Current.Session["Result_Text"] = text;
+        	    HttpContext.Current.Session["Result_Error"] = false;
+		}
         }
 
         /// <summary>
@@ -77,8 +94,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
         /// <param name="error">The error to display on the Result control.</param>
         public static void DisplayError(string error)
         {
-            HttpContext.Current.Session["Result_Text"] = error;
-            HttpContext.Current.Session["Result_Error"] = true;
+
+		if (HttpContext.Current != null && HttpContext.Current.Session != null)
+		{
+	            HttpContext.Current.Session["Result_Text"] = error;
+        	    HttpContext.Current.Session["Result_Error"] = true;
+		}
         }
         #endregion
     }

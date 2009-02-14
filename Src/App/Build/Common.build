@@ -25,7 +25,7 @@
   		<echo message="${'Copying file: ' + Local.SourceDirectory}"/>
   		<echo message="${'...to ' + path::get-full-path(path::combine(Global.BinariesDirectory, Global.BuildMode))}" />
   		
-    	<copy todir="${path::combine(Global.BinariesDirectory, Global.BuildMode)}">
+    	<copy todir="${path::combine(Global.BinariesDirectory, Global.BuildMode)}" overwrite="true">
     		<fileset basedir="${Local.SourceDirectory}">
     			<include name="*.dll"/>
     		</fileset>

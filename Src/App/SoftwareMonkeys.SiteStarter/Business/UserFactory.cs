@@ -78,7 +78,17 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
         static public Entities.User GetUserByUsername(string username)
 		{
-            return (Entities.User)DataStore.GetEntity(typeof(Entities.User), "username", username);
+			Entities.User user = null;
+			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the user with the username: " + username, NLog.LogLevel.Debug))
+			{
+				user = (Entities.User)DataStore.GetEntity(typeof(Entities.User), "username", username);
+
+				if (user != null)
+					AppLogger.Debug("User ID: "+  user.ID);
+				else
+					AppLogger.Debug("User not found.");
+			}
+			return user;
 		}
 
         /// <summary>
@@ -115,18 +125,35 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns>The user with the provided credentials.</returns>
         static public Entities.User AuthenticateUser(string username, string password)
 		{
+			Entities.User user = null;
+
+			using(LogGroup logGroup = AppLogger.StartGroup("Retrieves the user with the specified username and password.", NLog.LogLevel.Debug))
+			{
+				AppLogger.Debug("Username: " + username);
                   // TODO: Check encrypt password code
 			// Encrypt the password if necessary.
 			//if (encryptPassword)
 				password = Crypter.EncryptPassword(password);
 			
 			// Create the query
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("username", username);
-            parameters.Add("password", password);
+		            Dictionary<string, object> parameters = new Dictionary<string, object>();
+		            parameters.Add("username", username);
+		            parameters.Add("password", password);
 
 			// Retrieve and return the user with the username and password.
-            return (Entities.User)DataStore.GetEntity(typeof(Entities.User), parameters);
+            			user = (Entities.User)DataStore.GetEntity(typeof(Entities.User), parameters);
+
+				if (user != null)
+				{
+					AppLogger.Debug("User ID: " + user.ID);
+					AppLogger.Debug("Name: " + user.Name);
+					AppLogger.Debug("Email: " + user.Email);
+				}
+				else
+					AppLogger.Debug("User not found...credentials are invalid.");
+			}
+
+			return user;
 		}
 		#endregion
 
