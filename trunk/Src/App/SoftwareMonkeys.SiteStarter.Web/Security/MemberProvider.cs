@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Business;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Security
 {
@@ -301,9 +302,18 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 
         public override bool ValidateUser(string username, string password)
         {
-            // The password doesn't need to be encrypted yet
-            return UserFactory.AuthenticateUser(username, password) != null;
-            //return UserFactory.AuthenticateUser(username, password);
+		bool valid = false;
+		using(LogGroup logGroup = AppLogger.StartGroup("Validates the provided credentials.", NLog.LogLevel.Debug))
+		{
+			
+	            // The password doesn't need to be encrypted yet
+	            valid = UserFactory.AuthenticateUser(username, password) != null;
+        	    //return UserFactory.AuthenticateUser(username, password);
+
+			AppLogger.Debug("Is Valid: " + valid);
+		}
+
+		return valid;
         }
 
  /*       private MembershipUser CreateMembership(User user)
