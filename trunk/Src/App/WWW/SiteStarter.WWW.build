@@ -6,6 +6,7 @@
 	<property name="nant.settings.currentframework" value="net-2.0" />
 	
 	<!-- Properties -->
+	<property name="Project.VirtualDirectoryName" value="Sitestarter" />
 
 	<!-- Jobs.Clean -->
   	<target name="Jobs.Clean" description="Cleans out the unnecessary files in the project.">
@@ -55,11 +56,33 @@
   		<echo message="* ======================================== " />
   	
 		<call target="Actions.ImportLibraries" />
+		<call target="Actions.ConfigureIIS" />
 	    
   		<echo message="* ======================================== " />
   		<echo message="* ===== Finish Job: Deploy Web" />
   		<echo message="* ======================================== " />
   	</target>
+
+
+  	<!-- Actions.ConfigureIIS -->
+  	<target name="Actions.ConfigureIIS">
+		<exec program="cscript.exe" verbose="true" failonerror="false">
+
+       	     	<arg value="C:\inetpub\AdminScripts\adsutil.vbs" />
+
+            	<arg value="DELETE" />
+
+            	<arg value="W3SVC\1\Root\${Project.VirtualDirectoryName}" />
+
+		</exec>
+
+		<loadtasks>
+			<fileset basedir="../Lib/nant/Bin">
+				<include name="**/*.Tasks.dll"/>
+			</fileset>
+		</loadtasks>
+		<mkiisdir dirpath="${project::get-base-directory()}" vdirname="${Project.VirtualDirectoryName}" appfriendlyname="${Project.VirtualDirectoryName}" verbose="true" />
+	</target>
 
   	<!-- Actions.ImportLibraries -->
   	<target name="Actions.ImportLibraries">

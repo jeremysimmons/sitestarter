@@ -9,6 +9,7 @@ using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
 using System.ComponentModel;
 using System.Reflection;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 
 namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 {
@@ -208,26 +209,40 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
         public override void DataBind()
         {
-            base.DataBind();
+	    using (LogGroup logGroup = AppLogger.StartGroup("Binds the DataSource data to the values of the fields in the EntityForm.", NLog.LogLevel.Debug))
+	    {		
+                base.DataBind();
 
-            foreach (TableRow row in Rows)
-            {
-                if (DataSource != null)
+                foreach (TableRow row in Rows)
                 {
-                    if (row is EntityFormItem)
+                    if (DataSource != null)
                     {
-                        EntityFormItem item = (EntityFormItem)row;
-                        PropertyInfo property = DataSource.GetType().GetProperty(((EntityFormItem)item).PropertyName);
-                        if (property != null)
+                        if (row is EntityFormItem)
                         {
-                            object value = property.GetValue(DataSource, null);
-                            Control field = FindControl(item.FieldControlID);
+                            EntityFormItem item = (EntityFormItem)row;
+			    string propertyName = ((EntityFormItem)item).PropertyName;
+
+			    using (LogGroup logGroup2 = AppLogger.StartGroup("Property: " + propertyName, NLog.LogLevel.Debug))
+	    		    {
+                                PropertyInfo property = DataSource.GetType().GetProperty(propertyName);
+                                if (property != null)
+                                {
+		                    AppLogger.Debug("Property found");
+	
+				    AppLogger.Debug("Property type: " + property.PropertyType);
+                                    object value = property.GetValue(DataSource, null);
+				    AppLogger.Debug("Value: " + value);
+                                    Control field = FindControl(item.FieldControlID);
                         
-                            EntityFormHelper.SetFieldValue(field, Convert.ChangeType(value, property.PropertyType), item.ControlValuePropertyName, property.PropertyType);
+                                    EntityFormHelper.SetFieldValue(field, Convert.ChangeType(value, property.PropertyType), item.ControlValuePropertyName, property.PropertyType);
+				}
+				else
+                                    AppLogger.Debug("The " + propertyName + " property was not found on the " + DataSource.GetType().ToString() + " entity.");
+                            }
                         }
                     }
                 }
-            }
+	    }
         }
 
         public void ReverseBind(object obj)
