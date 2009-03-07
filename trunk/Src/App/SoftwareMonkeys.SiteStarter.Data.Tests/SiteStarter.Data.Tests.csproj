@@ -1,0 +1,92 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0BBD2A6C-9955-4BB6-9DCA-6AA57715C3F2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SoftwareMonkeys.SiteStarter.Configuration.Tests</RootNamespace>
+    <AssemblyName>SoftwareMonkeys.SiteStarter.Configuration.Tests</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Db4objects.Db4o, Version=7.2.44.10827, Culture=neutral, PublicKeyToken=6199cd4f203aa8eb, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\Db4objects.Db4o.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=1.0.0.505, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.2.9.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration\SiteStarter.Configuration.csproj">
+      <Project>{4B83307F-8307-43EF-A176-8AB1CDA78264}</Project>
+      <Name>SiteStarter.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Data\SiteStarter.Data.csproj">
+      <Project>{0D77AB54-E3BE-4B29-8750-91F16BC3DEDB}</Project>
+      <Name>SiteStarter.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Diagnostics\SiteStarter.Diagnostics.csproj">
+      <Project>{C3626F0A-DFD4-4EF2-8755-3532DE3712A4}</Project>
+      <Name>SiteStarter.Diagnostics</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Entities\SiteStarter.Entities.csproj">
+      <Project>{3609F512-9E15-41C7-95AF-D1B3E7F93562}</Project>
+      <Name>SiteStarter.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Business\SiteStarter.Business.csproj">
+      <Project>{F294B839-0C1E-4187-AA58-6EA1C35E6B66}</Project>
+      <Name>SiteStarter.Business</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DataTests.cs" />
+    <Compile Include="Entities\TestEntity.cs" />
+    <Compile Include="Entities\EntityOne.cs" />
+    <Compile Include="Entities\EntityTwo.cs" />
+    <Compile Include="Entities\TestArticle.cs" />
+    <Compile Include="Entities\TestArticlePage.cs" />
+    <Compile Include="Entities\TestCategory.cs" />
+    <Compile Include="Entities\TestSample.cs" />
+    <Compile Include="TestConfig.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
