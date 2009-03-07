@@ -11,7 +11,7 @@ using SoftwareMonkeys.SiteStarter.Data;
 using SoftwareMonkeys.SiteStarter.Data.Tests.Entities;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
-
+ 
 namespace SoftwareMonkeys.SiteStarter.Data.Tests
 {
     [TestFixture]
