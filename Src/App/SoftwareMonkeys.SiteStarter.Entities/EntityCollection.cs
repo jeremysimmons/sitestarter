@@ -154,6 +154,20 @@ namespace SoftwareMonkeys.SiteStarter.Entities
         }
 
         /// <summary>
+        /// Adds the provided entities to the collection.
+        /// </summary>
+        /// <param name="entity">The entity to add to the collection.</param>
+        public void Add(BaseEntity[] entities)
+        {
+            if (entities != null)
+            {
+                foreach (object obj in entities)
+                    if (obj is E)
+                        List.Add((E)obj);
+            }
+        }
+
+        /// <summary>
         /// Removes the provided entity from the collection.
         /// </summary>
         /// <param name="entity">The entity to remove from the collection.</param>
@@ -592,5 +606,13 @@ namespace SoftwareMonkeys.SiteStarter.Entities
             }
             return (E[])list.ToArray();
         }
+
+	static public Array CastArray(BaseEntity[] entities)
+	{
+		Collection<E> list = new Collection<E>();
+		list.Add(entities);
+		return list.ToArray();
+	}
+
 	}
 }

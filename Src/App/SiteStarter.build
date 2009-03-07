@@ -45,14 +45,28 @@
   		<echo message="**************************************************" />
   		
 	 	<nant buildfile="${Global.BaseNamespace}.Diagnostics/SiteStarter.Diagnostics.build" target="Jobs.Clean"/>
+
+	 	<nant buildfile="${Global.BaseNamespace}.State/SiteStarter.State.build" target="Jobs.Clean"/>
+
+	 	<nant buildfile="${Global.BaseNamespace}.Configuration/SiteStarter.Configuration.build" target="Jobs.Clean"/>
+
+	 	<nant buildfile="${Global.BaseNamespace}.Configuration.Tests/SiteStarter.Configuration.Tests.build" target="Jobs.Clean"/>
 	 	
 	 	<nant buildfile="${Global.BaseNamespace}.Entities/SiteStarter.Entities.build" target="Jobs.Clean"/>
+
+	 	<nant buildfile="${Global.BaseNamespace}.Data/SiteStarter.Data.build" target="Jobs.Clean"/>
+
+	 	<nant buildfile="${Global.BaseNamespace}.Data.Tests/SiteStarter.Data.Tests.build" target="Jobs.Clean"/>
 	 
-    	<nant buildfile="${Global.BaseNamespace}/SiteStarter.Core.build" target="Jobs.Clean"/>
+    	<nant buildfile="${Global.BaseNamespace}.Business/SiteStarter.Business.build" target="Jobs.Clean"/>
+
+    	<nant buildfile="${Global.BaseNamespace}.Business.Tests/SiteStarter.Business.Tests.build" target="Jobs.Clean"/>
     	
     	<nant buildfile="${Global.BaseNamespace}.Data.Db4o/SiteStarter.Data.Db4o.build" target="Jobs.Clean"/>
     	
     	<nant buildfile="${Global.BaseNamespace}.Web/SiteStarter.Web.build" target="Jobs.Clean"/>
+
+    	   	<nant buildfile="WWW/SiteStarter.WWW.build" target="Jobs.Clean"/>
   	
   		<echo message="**************************************************" />
   		<echo message="* ===== End Phase: Clean =====" />
@@ -68,12 +82,26 @@
   		<echo message="**************************************************" />
   		<echo message="* Time: ${datetime::now()}" />
   		<echo message="**************************************************" />
-  	
-	 	<nant buildfile="${Global.BaseNamespace}.Diagnostics/SiteStarter.Diagnostics.build" target="Jobs.Build"/>
+
+
 	 	
 	 	<nant buildfile="${Global.BaseNamespace}.Entities/SiteStarter.Entities.build" target="Jobs.Build"/>
-	 
-    	<nant buildfile="${Global.BaseNamespace}/SiteStarter.Core.build" target="Jobs.Build"/>
+
+	 	<nant buildfile="${Global.BaseNamespace}.Diagnostics/SiteStarter.Diagnostics.build" target="Jobs.Build"/>
+
+	 	<nant buildfile="${Global.BaseNamespace}.State/SiteStarter.State.build" target="Jobs.Build"/>
+
+	 	<nant buildfile="${Global.BaseNamespace}.Configuration/SiteStarter.Configuration.build" target="Jobs.Build"/>  
+	
+	 	<nant buildfile="${Global.BaseNamespace}.Configuration.Tests/SiteStarter.Configuration.Tests.build" target="Jobs.Build"/>  	
+
+	 	<nant buildfile="${Global.BaseNamespace}.Data/SiteStarter.Data.build" target="Jobs.Build"/>
+
+	 	<nant buildfile="${Global.BaseNamespace}.Data.Tests/SiteStarter.Data.Tests.build" target="Jobs.Build"/>
+	 	 
+    	<nant buildfile="${Global.BaseNamespace}.Business/SiteStarter.Business.build" target="Jobs.Build"/>
+
+    	<nant buildfile="${Global.BaseNamespace}.Business.Tests/SiteStarter.Business.Tests.build" target="Jobs.Build"/>
     	
     	<nant buildfile="${Global.BaseNamespace}.Data.Db4o/SiteStarter.Data.Db4o.build" target="Jobs.Build"/>
     	

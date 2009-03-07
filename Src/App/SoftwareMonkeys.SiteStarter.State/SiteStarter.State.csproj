@@ -4,11 +4,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{61DF6782-15A0-4056-AA02-7C18F0A19B0F}</ProjectGuid>
+    <ProjectGuid>{34129651-3B9F-4A0D-AEBF-7DE2098DD98F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SoftwareMonkeys.SiteStarter.Data.Db4o</RootNamespace>
-    <AssemblyName>SoftwareMonkeys.SiteStarter.Data.Db4o</AssemblyName>
+    <RootNamespace>SoftwareMonkeys.SiteStarter.State</RootNamespace>
+    <AssemblyName>SoftwareMonkeys.SiteStarter.State</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -28,10 +28,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Db4objects.Db4o, Version=7.2.44.10827, Culture=neutral, PublicKeyToken=6199cd4f203aa8eb, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\Db4objects.Db4o.dll</HintPath>
-    </Reference>
     <Reference Include="NLog, Version=1.0.0.505, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\NLog.dll</HintPath>
@@ -43,24 +39,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="Db4oDataProvider.cs" />
-    <Compile Include="Db4oDataStore.cs" />
-    <Compile Include="Db4oDataStoreFactory.cs" />
-    <Compile Include="Db4oPropertyFilter.cs" />
+    <Compile Include="StateAccess.cs" />
+    <Compile Include="StateProvider.cs" />
+    <Compile Include="StateProviderCollection.cs" />
+    <Compile Include="StateProviderConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration\SiteStarter.Configuration.csproj">
-      <Project>{4B83307F-8307-43EF-A176-8AB1CDA78264}</Project>
-      <Name>SiteStarter.Configuration</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Data\SiteStarter.Data.csproj">
-      <Project>{0D77AB54-E3BE-4B29-8750-91F16BC3DEDB}</Project>
-      <Name>SiteStarter.Data</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Diagnostics\SiteStarter.Diagnostics.csproj">
-      <Project>{C3626F0A-DFD4-4EF2-8755-3532DE3712A4}</Project>
-      <Name>SiteStarter.Diagnostics</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Entities\SiteStarter.Entities.csproj">
       <Project>{3609F512-9E15-41C7-95AF-D1B3E7F93562}</Project>
       <Name>SiteStarter.Entities</Name>

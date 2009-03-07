@@ -7,6 +7,7 @@ using Db4objects.Db4o.Query;
 using Db4objects.Db4o;
 using System.Collections;
 using System.Reflection;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 
 namespace SoftwareMonkeys.SiteStarter.Data
 {

@@ -38,13 +38,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter\SiteStarter.Core.csproj">
-      <Project>{F294B839-0C1E-4187-AA58-6EA1C35E6B66}</Project>
-      <Name>Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Web\SiteStarter.Web.csproj">
       <Project>{A5D49D94-D936-4123-BA9A-572AA7C7F426}</Project>
-      <Name>WebFacade</Name>
+      <Name>SiteStarter.Web</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
