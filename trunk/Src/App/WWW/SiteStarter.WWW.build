@@ -15,6 +15,7 @@
   		<echo message="* ======================================== " />
   	
 		<call target="Actions.Clean" />
+		<call target="Actions.ArchiveLogs" />
 	    
   		<echo message="* ======================================== " />
   		<echo message="* ===== Finish Job: Clean Web" />
@@ -23,11 +24,22 @@
   	
 	<!-- Actions.Clean -->
   	<target name="Actions.Clean"> 		
-  		<nant buildfile="../Build/Common.Build" target="Common.Jobs.CleanProject">
+  		<nant buildfile="../Build/Common.Build" target="Common.Actions.CleanProject">
   			<properties>
-  				<property name="Parameter.StartPath" value="${path::get-directory-name(project::get-buildfile-path())}"/>
+  				<property name="Parameters.StartPath" value="${path::get-directory-name(project::get-buildfile-path())}"/>
   			</properties>
   		</nant>
+  	</target>
+
+
+	<!-- Actions.ArchiveLogs -->
+  	<target name="Actions.ArchiveLogs"> 		
+		<mkdir dir="${project::get-base-directory()}/App_Data/LogsArchive/"/>
+		<move todir="${project::get-base-directory()}/App_Data/LogsArchive/" overwrite="true">
+			<fileset basedir="${project::get-base-directory()}/App_Data/Logs/">
+				<include name="**/*"/>
+			</fileset>
+		</move>
   	</target>
 	
 	<!-- Jobs.Build -->
@@ -48,6 +60,7 @@
   	<target name="Actions.Compile">
   		<!-- Nothing to compile in this project -->
   	</target>
+
   	
   	<!-- Jobs.Deploy -->
   	<target name="Jobs.Deploy">  	
@@ -86,32 +99,64 @@
 
   	<!-- Actions.ImportLibraries -->
   	<target name="Actions.ImportLibraries">
-    	<copy todir="bin/">
+    	<copy todir="bin/" overwrite="true">
     		<fileset basedir="../Lib/">
         		<include name="NLog.dll" />
+        		<include name="Db4objects.Db4o.dll" />
+        		<include name="nunit.framework.dll" />
     		</fileset>
 		</copy>
-    	<copy todir="bin/">
+    	<copy todir="bin/" overwrite="true">
     		<fileset basedir="../${Global.BaseNamespace}.Diagnostics/bin/${Global.BuildMode}/">
         		<include name="*.dll" />
     		</fileset>
 		</copy>
-    	<copy todir="bin/">
+    	<copy todir="bin/" overwrite="true">
+    		<fileset basedir="../${Global.BaseNamespace}.Configuration/bin/${Global.BuildMode}/">
+        		<include name="*.dll" />
+    		</fileset>
+		</copy>
+    	<copy todir="bin/" overwrite="true">
+    		<fileset basedir="../${Global.BaseNamespace}.Configuration.Tests/bin/${Global.BuildMode}/">
+        		<include name="*.dll" />
+    		</fileset>
+		</copy>
+    	<copy todir="bin/" overwrite="true">
+    		<fileset basedir="../${Global.BaseNamespace}.State/bin/${Global.BuildMode}/">
+        		<include name="*.dll" />
+    		</fileset>
+		</copy>
+    	<copy todir="bin/" overwrite="true">
+    		<fileset basedir="../${Global.BaseNamespace}.Data/bin/${Global.BuildMode}/">
+        		<include name="*.dll" />
+    		</fileset>
+		</copy>
+    	<copy todir="bin/" overwrite="true">
+    		<fileset basedir="../${Global.BaseNamespace}.Data.Tests/bin/${Global.BuildMode}/">
+        		<include name="*.dll" />
+    		</fileset>
+		</copy>
+    	<copy todir="bin/" overwrite="true">
     		<fileset basedir="../${Global.BaseNamespace}.Entities/bin/${Global.BuildMode}/">
         		<include name="*.dll" />
     		</fileset>
 		</copy>
-		 <copy todir="bin/">
-    		<fileset basedir="../${Global.BaseNamespace}/bin/${Global.BuildMode}/">
+    	<copy todir="bin/" overwrite="true">
+    		<fileset basedir="../${Global.BaseNamespace}.Business.Tests/bin/${Global.BuildMode}/">
         		<include name="*.dll" />
     		</fileset>
 		</copy>
-    	<copy todir="bin/">
+		 <copy todir="bin/" overwrite="true">
+    		<fileset basedir="../${Global.BaseNamespace}.Business/bin/${Global.BuildMode}/">
+        		<include name="*.dll" />
+    		</fileset>
+		</copy>
+    	<copy todir="bin/" overwrite="true">
     		<fileset basedir="../${Global.BaseNamespace}.Data.Db4o/bin/${Global.BuildMode}/">
         		<include name="*.dll" />
     		</fileset>
 		</copy>
-		<copy todir="bin/">
+		<copy todir="bin/" overwrite="true">
     		<fileset basedir="../${Global.BaseNamespace}.Web/bin/${Global.BuildMode}/">
         		<include name="*.dll" />
     		</fileset>

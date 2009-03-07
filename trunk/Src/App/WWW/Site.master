@@ -28,13 +28,13 @@
     </td></tr>
     <tr><td class="Column" nowrap>
         <ul><li><a href='<%= Request.ApplicationPath + "/Default.aspx" %>'>Home</a></li><li>
-        <a href='<%= Request.ApplicationPath + "/Setup.aspx" %>'>Setup</a></li><li>
+        <a href='<%= Request.ApplicationPath + "/Admin/Setup.aspx" %>'>Setup</a></li><li>
         <a href='<%= Request.ApplicationPath + "/Members/Register.aspx" %>'>Register</a></li><li>
         <a href='<%= Request.ApplicationPath + "/Members/Login.aspx" %>'>Login</a></li><li>
         <a href='<%= Request.ApplicationPath + "/Members/Default.aspx" %>'>My Account</a></li><li>
         <a href='<%= Request.ApplicationPath + "/Members/Logout.aspx" %>'>Logout</a></li><li>
         <a href='<%= Request.ApplicationPath + "/Admin/Users.aspx" %>'>Manage Users</a></li><li>
-        <a href='<%= Request.ApplicationPath + "/Testing.aspx" %>'>Unit Tests</a></li><li>
+        <a href='<%= Request.ApplicationPath + "/Admin/UnitTests.aspx" %>'>Unit Tests</a></li><li>
         <a href='<%= Request.ApplicationPath + "/DBContents.aspx" %>'>DB Contents</a></li></ul>
         </td><td>
         <asp:contentplaceholder id="Body" runat="server">

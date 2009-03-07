@@ -1,0 +1,24 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace SoftwareMonkeys.SiteStarter.State
+{
+    public class StateAccess
+    {
+        private static StateProvider state;
+        /// <summary>
+        /// 
+        /// </summary>
+        public static StateProvider State
+        {
+            get { return state; }
+            set { state = value; }
+        }
+
+        static public bool IsInitialized
+        {
+            get { return state != null; }
+        }
+    }
+}

@@ -118,8 +118,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 	        spaceCharacter = "&";
 
 	    // Set the navigate URL on the tree node
+	    //if (NavigateUrl != String.Empty)
+		//node.NavigateUrl = NavigateUrl + spaceCharacter + "a=View" + entity.GetType().Name + "&" + entity.GetType().Name + "ID=" + entity.ID;
 	    if (NavigateUrl != String.Empty)
-		node.NavigateUrl = NavigateUrl + spaceCharacter + "a=View" + entity.GetType().Name + "&" + entity.GetType().Name + "ID=" + entity.ID;
+		node.NavigateUrl = NavigateUrl.Replace("${Entity.ID}", entity.ID.ToString());
 
 	    // Add the node
             if (parentNode == null)

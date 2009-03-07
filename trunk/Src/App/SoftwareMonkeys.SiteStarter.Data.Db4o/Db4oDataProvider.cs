@@ -6,6 +6,7 @@ using SoftwareMonkeys.SiteStarter.Data;
 using SoftwareMonkeys.SiteStarter.Entities;
 using System.IO;
 using SoftwareMonkeys.SiteStarter.Configuration;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 {
@@ -142,5 +143,170 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 
             return names.ToArray();
         }
+
+	/// <summary>
+	/// Creates a filter for the active data source based on the specified type.
+	/// </summary>
+	public override BaseFilter CreateFilter(Type filterType)
+	{
+		using (LogGroup logGroup = AppLogger.StartGroup("Creating filter", NLog.LogLevel.Debug))
+		{
+			AppLogger.Debug("Type: " + filterType.ToString());
+
+			if (filterType.Equals(typeof(PropertyFilter)))
+			{
+				
+				AppLogger.Debug("Filter type supported.");
+
+				return new Db4oPropertyFilter();
+			}
+			else
+			{
+				AppLogger.Debug("Creation failed. " + filterType.ToString() + " isn't a supported filter.");
+				throw new NotSupportedException(filterType.ToString() + " isn't yet supported.");
+			}
+		}
+	}
+
+#region Data access functions
+        /// <summary>
+        /// Retrieves all the entities of the specified type from the data store.
+        /// </summary>
+	/// <param name="filter">The filter to apply to the query.</param>
+        /// <returns>The entities of the specified type found in the data store.</returns>
+        public override BaseEntity[] GetEntities(BaseFilter filter)
+        {
+            List<BaseEntity> entities = new List<BaseEntity>();
+
+            using (LogGroup logGroup = AppLogger.StartGroup("Retrieving entities by type and filter.", NLog.LogLevel.Debug))
+            {
+                AppLogger.Debug("Filter type: " + filter.GetType().ToString());
+	
+		foreach (Type type in filter.Types)
+		{
+
+                AppLogger.Debug("Includes type: " + type.ToString());
+	          entities.AddRange(((Db4oDataStore)Stores[type]).ObjectContainer.Query<BaseEntity>(delegate(BaseEntity entity)
+	          {
+	              return IsMatch(entity, filter);
+	
+	          }));
+		}
+
+                foreach (BaseEntity entity in entities)
+                {
+                    using (LogGroup logGroup2 = AppLogger.StartGroup("Entity found.", NLog.LogLevel.Debug))
+                    {
+                        //BaseEntity entity = (BaseEntity)os.Next();
+                        AppLogger.Debug("Entity ID: " + entity.ID);
+                        AppLogger.Debug("Entity .ToString(): " + entity.ToString());
+                    }
+                }
+
+                if (entities.Count == 0)
+                    AppLogger.Debug("No entities retrieved.");
+            }
+
+            return (BaseEntity[])entities.ToArray();
+        }
+
+        /// <summary>
+        /// Retrieves all the entities of the specified type from the data store.
+        /// </summary>
+	/// <param name="group">The group of filters to apply to the query.</param>
+        /// <returns>The entities of the specified type found in the data store.</returns>
+        public override BaseEntity[] GetEntities(FilterGroup group)
+        {
+            List<BaseEntity> entities = new List<BaseEntity>();
+
+            using (LogGroup logGroup = AppLogger.StartGroup("Retrieving entities by type and filter.", NLog.LogLevel.Debug))
+            {
+
+                if (group != null && group.Filters != null)
+                {
+
+                    AppLogger.Debug("Group operator: " + group.Operator.ToString());
+
+                    List<Type> allTypes = new List<Type>();
+
+                    foreach (BaseFilter filter in group.Filters)
+                    {
+                        if (filter.Types != null)
+                            allTypes.AddRange(filter.Types);
+                    }
+
+                    foreach (Type type in allTypes)
+                    {
+
+                        AppLogger.Debug("Includes type: " + type.ToString());
+
+                        Db4oDataStore store = (Db4oDataStore)Stores[type];
+
+
+                        entities.AddRange(store.ObjectContainer.Query<BaseEntity>(delegate(BaseEntity entity)
+                        {
+                            return IsMatch(entity, group);
+
+                        }));
+                    }
+
+                    foreach (BaseEntity entity in entities)
+                    {
+                        using (LogGroup logGroup2 = AppLogger.StartGroup("Entity found.", NLog.LogLevel.Debug))
+                        {
+                            //BaseEntity entity = (BaseEntity)os.Next();
+                            AppLogger.Debug("Entity ID: " + entity.ID);
+                            AppLogger.Debug("Entity .ToString(): " + entity.ToString());
+                        }
+                    }
+
+                    if (entities.Count == 0)
+                        AppLogger.Debug("No entities retrieved.");
+                }
+            }
+
+            return (BaseEntity[])entities.ToArray();
+        }
+	#endregion
+
+	#region Filter matching functions
+	static public bool IsMatch(BaseEntity entity, BaseFilter filter)
+	{
+		bool isMatch = false;
+
+		using (LogGroup logGroup2 = AppLogger.StartGroup("Checking whether the provided entity and filter match.", NLog.LogLevel.Debug))
+	        {
+			isMatch = filter.IsMatch(entity);
+
+	                AppLogger.Debug("Is match? " + isMatch.ToString());
+		}
+	
+		return isMatch;
+	}
+
+	static public bool IsMatch(BaseEntity entity, FilterGroup filterGroup)
+	{
+
+		bool allMatch = true;
+		bool anyMatch = false;
+
+		foreach (BaseFilter filter in filterGroup.Filters)
+		{
+			if (filter.IsMatch(entity))
+			{
+				anyMatch = true;
+			}
+			else
+			{
+				allMatch = false;
+			}
+		}
+
+		if (filterGroup.Operator == FilterOperator.Or)
+			return anyMatch;
+		else
+			return allMatch;
+	}
+	#endregion
     }
 }
