@@ -8,7 +8,7 @@ using System.Collections;
 using System.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Configuration;
 using SoftwareMonkeys.SiteStarter.Data;
-using SoftwareMonkeys.SiteStarter.Tests.Entities;
+using SoftwareMonkeys.SiteStarter.Data.Tests.Entities;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 
