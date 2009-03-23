@@ -69,6 +69,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataTests.cs" />
+    <Compile Include="DataUtilitiesTests.cs" />
+    <Compile Include="Entities\EntityFour.cs" />
+    <Compile Include="Entities\EntityThree.cs" />
     <Compile Include="Entities\TestEntity.cs" />
     <Compile Include="Entities\EntityOne.cs" />
     <Compile Include="Entities\EntityTwo.cs" />
@@ -77,6 +80,9 @@
     <Compile Include="Entities\TestCategory.cs" />
     <Compile Include="Entities\TestSample.cs" />
     <Compile Include="TestConfig.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

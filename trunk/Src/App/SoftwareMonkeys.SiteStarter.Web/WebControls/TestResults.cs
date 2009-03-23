@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Collections;
 using SoftwareMonkeys.SiteStarter.Business;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 
 namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 {

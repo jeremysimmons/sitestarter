@@ -8,8 +8,9 @@ using Db4objects.Db4o;
 using System.Collections;
 using System.Reflection;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using SoftwareMonkeys.SiteStarter.Data;
 
-namespace SoftwareMonkeys.SiteStarter.Data
+namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 {
     public class Db4oDataStore : IDataStore
     {
@@ -79,6 +80,8 @@ namespace SoftwareMonkeys.SiteStarter.Data
 
             if (entity != null)
             {
+		DataUtilities.TransferReferenceIDs(entity);
+
                 // Loop through all the properties on the entity class
                 foreach (PropertyInfo property in entity.GetType().GetProperties())
                 {
@@ -119,10 +122,14 @@ namespace SoftwareMonkeys.SiteStarter.Data
                                 {
                                     toSave.AddRange(PreSaveIDReference(entity, property, reference));
                                 }
+				else
+					throw new ArgumentException("entity", "The object types are invalid.");
                             }
                         }
                     }
                 }
+
+		DataUtilities.ApplyExclusions(entity);
 
                 // Save the entity
                 ObjectContainer.Store(entity);
@@ -150,52 +157,61 @@ namespace SoftwareMonkeys.SiteStarter.Data
 
             List<BaseEntity> toUpdate = new List<BaseEntity>();
 
-            // Loop through all the properties on the entity class
-            foreach (PropertyInfo property in entity.GetType().GetProperties())
-            {
-                // Get the custom attributes
-                object[] attributes = (object[])property.GetCustomAttributes(true);
+		if (entity != null)
+		{
 
-                // Loop through all the attributes
-                foreach (object attribute in attributes)
-                {
-                    if (attribute is BaseEntityReferenceAttribute)
-                    {
-                        BaseEntityReferenceAttribute reference = (BaseEntityReferenceAttribute)attribute;
+		DataUtilities.TransferReferenceIDs(entity);
 
-                        // TODO: Check if needed
-                       // if (!reference.ExcludeFromDataStore)
-                      //  {
-                            // Get the referenced entities from the property
-                            object referenceValue = property.GetValue(entity, null);
+	            // Loop through all the properties on the entity class
+	            foreach (PropertyInfo property in entity.GetType().GetProperties())
+	            {
+	                // Get the custom attributes
+	                object[] attributes = (object[])property.GetCustomAttributes(true);
+	
+	                // Loop through all the attributes
+	                foreach (object attribute in attributes)
+	                {
+	                    if (attribute is BaseEntityReferenceAttribute)
+	                    {
+	                        BaseEntityReferenceAttribute reference = (BaseEntityReferenceAttribute)attribute;
+	
+	                        // TODO: Check if needed
+	                       // if (!reference.ExcludeFromDataStore)
+	                      //  {
+	                            // Get the referenced entities from the property
+	                            object referenceValue = property.GetValue(entity, null);
+	
+	                            if (referenceValue != null)
+	                            {
+	                                // If the property type is an entity array
+	                                if (referenceValue is BaseEntity[])
+	                                {
+	                                    toUpdate.AddRange(PreUpdateEntitiesReference(entity, property, reference));
+	                                }
+	                                // Otherwise the type is a Guid array
+	                                else if (referenceValue is Guid[])
+	                                {
+	                                    toUpdate.AddRange(PreUpdateIDsReference(entity, property, reference));
+	                                }
+	                                // If the property type is an entity
+	                                else if (referenceValue is BaseEntity)
+	                                {
+	                                    toUpdate.AddRange(PreUpdateEntityReference(entity, property, reference));
+	                                }
+	                                // If the property type is an entity
+	                                else if (referenceValue is Guid)
+	                                {
+	                                    toUpdate.AddRange(PreUpdateIDReference(entity, property, reference));
+	                                }
+	                            }
+	                       // }
+	                    }
+	                }
+	            }
 
-                            if (referenceValue != null)
-                            {
-                                // If the property type is an entity array
-                                if (referenceValue is BaseEntity[])
-                                {
-                                    toUpdate.AddRange(PreUpdateEntitiesReference(entity, property, reference));
-                                }
-                                // Otherwise the type is a Guid array
-                                else if (referenceValue is Guid[])
-                                {
-                                    toUpdate.AddRange(PreUpdateIDsReference(entity, property, reference));
-                                }
-                                // If the property type is an entity
-                                else if (referenceValue is BaseEntity)
-                                {
-                                    toUpdate.AddRange(PreUpdateEntityReference(entity, property, reference));
-                                }
-                                // If the property type is an entity
-                                else if (referenceValue is Guid)
-                                {
-                                    toUpdate.AddRange(PreUpdateIDReference(entity, property, reference));
-                                }
-                            }
-                       // }
-                    }
-                }
-            }
+
+			DataUtilities.ApplyExclusions(entity);
+		}
 
             return (BaseEntity[])toUpdate.ToArray();
         }
@@ -215,11 +231,16 @@ namespace SoftwareMonkeys.SiteStarter.Data
 
         public BaseEntity[] PreDelete(BaseEntity entity)
         {
-            if (entity != null)
-            {
-                System.Diagnostics.Trace.WriteLine(entity.GetType() + ": " + entity.ToString(), "Db4oHelper.Delete");
 
                 List<BaseEntity> toUpdate = new List<BaseEntity>();
+
+            if (entity != null)
+            {
+
+		DataUtilities.TransferReferenceIDs(entity);
+
+                System.Diagnostics.Trace.WriteLine(entity.GetType() + ": " + entity.ToString(), "Db4oHelper.Delete");
+
 
                 // Loop through all the properties on the entity class
                 foreach (PropertyInfo property in entity.GetType().GetProperties())
@@ -265,13 +286,15 @@ namespace SoftwareMonkeys.SiteStarter.Data
                             }
                         }
                     }
+
+
+			DataUtilities.ApplyExclusions(entity);
                 }
 
-                return (BaseEntity[])toUpdate.ToArray();
 
             }
-            else
-                return new BaseEntity[] {};
+
+                return (BaseEntity[])toUpdate.ToArray();
         }
 
         /// <summary>
@@ -307,15 +330,15 @@ namespace SoftwareMonkeys.SiteStarter.Data
             IQuery query = ObjectContainer.Query();
             query.Constrain(type);
 
-            ArrayList list = new ArrayList();
+            List<BaseEntity> list = new List<BaseEntity>();
 
             IObjectSet os = query.Execute();
             while (os.HasNext())
             {
-                list.Add(os.Next());
+                list.Add((BaseEntity)os.Next());
             }
 
-            return (BaseEntity[])list.ToArray(type);
+            return (BaseEntity[])list.ToArray();
         }
         
         /// <summary>
@@ -603,183 +626,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
             return text;
         }
 
-        public BaseEntity[] AddMirrors(BaseEntity entity, BaseEntity referenceEntity, PropertyInfo property, BaseEntityReferenceAttribute attribute)
-        {
-            if (referenceEntity != null)
-            {
-                List<BaseEntity> toUpdate = new List<BaseEntity>();
 
-                if (attribute.MirrorName != null && attribute.MirrorName != String.Empty)
-                {
-                    PropertyInfo mirrorProperty = referenceEntity.GetType().GetProperty(attribute.MirrorName);
-
-                    object mirrorValue = mirrorProperty.GetValue(referenceEntity, null);
-
-                    object propertyValue = property.GetValue(entity, null);
-                    if (mirrorProperty.PropertyType.Equals(typeof(Guid[])))
-                    {
-                        // If the referenced entity is found in the latest reference
-                        // if (Array.IndexOf((Guid[])propertyValue, referenceEntity.ID) > -1)
-                        // {
-                        ArrayList list = mirrorValue == null ? new ArrayList() : new ArrayList((Guid[])mirrorValue);
-                        if (!list.Contains(entity.ID))
-                        {
-                            list.Add(entity.ID);
-
-                            mirrorProperty.SetValue(referenceEntity, list.ToArray(typeof(Guid)), null);
-
-                            toUpdate.Add(referenceEntity);
-                        }
-                        // }
-                        /* else
-                         {
-                             ArrayList list = mirrorValue == null ? new ArrayList() : new ArrayList((Guid[])mirrorValue);
-                             if (list.Contains(entity.ID))
-                             {
-                                 list.Remove(entity.ID);
-
-                                 mirrorProperty.SetValue(referenceEntity, list.ToArray(typeof(Guid)), null);
-
-                                 toUpdate.Add(referenceEntity);
-                             }
-
-                         }*/
-                    }
-                    else if (mirrorProperty.PropertyType.Equals(typeof(BaseEntity[])))
-                    {
-                        // TODO: Remove if not needed
-                        //if (mirrorValue.GetType().GetElementType() == entity.GetType())
-                        //{
-                        if (mirrorProperty.PropertyType.BaseType == typeof(BaseEntity))
-                        {
-                            mirrorProperty.SetValue(referenceEntity, entity, null);
-
-                            toUpdate.Add(referenceEntity);
-                        }
-                        else
-                        {
-                            ArrayList list = mirrorValue != null ? new ArrayList((BaseEntity[])mirrorValue) : new ArrayList();
-                            if (!list.Contains(entity))
-                            {
-                                list.Add(entity);
-                                mirrorProperty.SetValue(referenceEntity, list.ToArray(entity.GetType()), null);
-
-                                toUpdate.Add(referenceEntity);
-                            }
-                        }
-                        //}
-                        //else
-                        //throw new InvalidOperationException("The values types are incompatible: '" + mirrorValue.GetType().ToString() + "' and '" + entity.GetType().ToString() + "'");
-                    }
-                    else if (mirrorProperty.PropertyType.Equals(typeof(Guid)))
-                    {
-
-                        if (attribute.MirrorName != String.Empty)// && mirrorValue != null)
-                        {
-                            //   if (mirrorValue.GetType().GetElementType() == entity.GetType())
-                            //       {
-                            if (mirrorValue == null || (Guid)mirrorValue != entity.ID)
-                            {
-                                mirrorProperty.SetValue(referenceEntity, entity.ID, null);
-
-                                toUpdate.Add(referenceEntity);
-                            }
-                            //   }
-                            //  else
-                            //      throw new InvalidOperationException("The values types are incompatible: '" + mirrorValue.GetType().ToString() + "' and '" + entity.GetType().ToString() + "'");
-                        }
-                    }
-                }
-
-                return toUpdate.ToArray();
-            }
-            else
-                return new BaseEntity[] { };
-        }
-
-        public BaseEntity[] RemoveMirrors(BaseEntity entity, BaseEntity referenceEntity, PropertyInfo property, BaseEntityReferenceAttribute attrib)
-        {
-            List<BaseEntity> toUpdate = new List<BaseEntity>();
-
-            if (attrib.MirrorName != null && attrib.MirrorName != String.Empty)
-            {
-                PropertyInfo mirrorProperty = referenceEntity.GetType().GetProperty(attrib.MirrorName);
-
-                object mirrorValue = mirrorProperty.GetValue(referenceEntity, null);
-
-                object propertyValue = property.GetValue(entity, null);
-                if (mirrorValue is Guid[])
-                {
-                    ArrayList list = mirrorValue == null ? new ArrayList() : new ArrayList((Guid[])mirrorValue);
-                    if (list.Contains(entity.ID))
-                    {
-                        list.Remove(entity.ID);
-
-                        mirrorProperty.SetValue(referenceEntity, list.ToArray(typeof(Guid)), null);
-
-                        toUpdate.Add(referenceEntity);
-                    }
-                }
-                else if (mirrorValue is Guid)
-                {
-                    if (mirrorValue == null || (Guid)mirrorValue != entity.ID)
-                    {
-                        mirrorProperty.SetValue(referenceEntity, entity.ID, null);
-
-                        toUpdate.Add(referenceEntity);
-                    }
-                }
-                else if (mirrorValue is BaseEntity)
-                {
-
-
-                    if (mirrorValue != null)
-                    {
-                        if (mirrorValue.GetType().GetElementType() == entity.GetType())
-                        {
-                            Collection<BaseEntity> list = new Collection<BaseEntity>((BaseEntity[])mirrorValue);
-                            if (list.Contains(entity.ID))
-                            {
-                                list.Remove(entity);
-                                mirrorProperty.SetValue(referenceEntity, list.ToArray(entity.GetType()), null);
-
-                                toUpdate.Add(referenceEntity);
-                            }
-                        }
-                        else
-                            throw new InvalidOperationException("The values types are incompatible: '" + mirrorValue.GetType().ToString() + "' and '" + entity.GetType().ToString() + "'");
-                    }
-                }
-                else if (mirrorValue is BaseEntity[])
-                {
-
-                    foreach (BaseEntity e in (BaseEntity[])mirrorValue)
-                    {
-                        if (mirrorValue != null)
-                        {
-                            if (mirrorValue.GetType().GetElementType() == entity.GetType())
-                            {
-                                Collection<BaseEntity> list = new Collection<BaseEntity>((BaseEntity[])mirrorValue);
-                                if (list.Contains(entity.ID))
-                                {
-                                    list.Remove(entity);
-                                    mirrorProperty.SetValue(referenceEntity, list.ToArray(entity.GetType()), null);
-
-                                    toUpdate.Add(referenceEntity);
-                                }
-                            }
-                            else
-                                throw new InvalidOperationException("The values types are incompatible: '" + mirrorValue.GetType().ToString() + "' and '" + entity.GetType().ToString() + "'");
-                        }
-                    }
-                }
-                else
-                    throw new InvalidOperationException("The values types are incompatible: '" + mirrorValue.GetType().ToString() + "' and '" + entity.GetType().ToString() + "'");
-            }
-
-
-            return toUpdate.ToArray();
-        }
 
         /// <summary>
         /// Prepares the provided reference for update. Does NOT synchronise mirrors because that's done by the IDs references.
@@ -788,56 +635,117 @@ namespace SoftwareMonkeys.SiteStarter.Data
         /// <param name="property"></param>
         protected BaseEntity[] PreSaveEntitiesReference(BaseEntity entity, PropertyInfo property, BaseEntityReferenceAttribute attribute)
         {
-            Collection<BaseEntity> toUpdate = new Collection<BaseEntity>();
-
-            object referenceValue = property.GetValue(entity, null);
-
-            // Check if the save is to cascade
-            if (attribute.CascadeSave)
+            using (LogGroup logGroup = AppLogger.StartGroup("Preparing entities reference to be saved.", NLog.LogLevel.Debug))
             {
-                // Save the reference entities
-                foreach (BaseEntity referencedEntity in (BaseEntity[])referenceValue)
+		AppLogger.Debug("Entity type: " + entity.GetType().ToString());
+		AppLogger.Debug("Property name: " + property.Name);
+		AppLogger.Debug("Property type: " + property.PropertyType.ToString());
+
+                Collection<BaseEntity> toUpdate = new Collection<BaseEntity>();
+
+                object referenceValue = property.GetValue(entity, null);
+
+                // Check if the save is to cascade
+                if (attribute.CascadeSave)
                 {
-                    // Delete the original referenced entity
-                    Delete(GetEntity(referencedEntity.GetType(), "id", referencedEntity.ID));
-
-                    toUpdate.Add(AddMirrors(entity, referencedEntity, property, attribute));
-
-                    // Save the new referenced entity
-                    Save((BaseEntity)referencedEntity);
-                }
-            }
-            else
-            {
-                BaseEntity[] newReferences = (BaseEntity[])property.GetValue(entity, null);
-
-               // Entity[] references = (Entity[])property.GetValue(originalEntity, null);
-
-                if (newReferences != null)
-                {
-                    for (int i = 0; i < newReferences.Length; i++)
+                    AppLogger.Debug("attribute.CascadeSave == true");
+                    // Save the reference entities
+                    foreach (BaseEntity referencedEntity in (BaseEntity[])referenceValue)
                     {
-                        // If the references are being stored on this property then update mirrors.
-                        // If the references are being stored on an IDs property then this should be skipped
-                        if (attribute.IDsPropertyName == String.Empty)
-                            toUpdate.Add(AddMirrors(entity, newReferences[i], property, attribute));
+                        // Delete the original referenced entity
+                        Delete(GetEntity(referencedEntity.GetType(), "id", referencedEntity.ID));
 
-                        // TODO: Check if needed
-                //        if (Array.IndexOf(Collection<Entity>.GetIDs(newReferences), originalReferences[i].ID) > -1)
-                //        {
-                //            references.Add(newReferences[i]);
-                //        }
+                        toUpdate.Add(DataUtilities.AddReferences(referencedEntity, entity, DataUtilities.GetMirrorProperty(property), DataUtilities.GetReferenceAttribute(DataUtilities.GetIDsProperty(property))));
+
+                        // Save the new referenced entity
+                        Save((BaseEntity)referencedEntity);
                     }
                 }
+                else
+                {
+                    AppLogger.Debug("attribute.CascadeSave == false");
 
-                // Set a bound copy of the referenced object to the property to ensure it won't get duplicated
-               // if (references != null && references.Count > 0)
-               //     property.SetValue(entity, references.ToArray(originalReferences[0].GetType()), null);
-               // else
-               //     property.SetValue(entity, null, null);
+                    BaseEntity[] newReferences = (BaseEntity[])property.GetValue(entity, null);
+
+                    // Entity[] references = (Entity[])property.GetValue(originalEntity, null);
+
+                    if (newReferences != null && newReferences.Length > 0)
+                    {
+                        AppLogger.Debug("References found");
+
+                        for (int i = 0; i < newReferences.Length; i++)
+                        {
+                            using (LogGroup logGroup2 = AppLogger.StartGroup("Checking reference.", NLog.LogLevel.Debug))
+                            {
+
+                                AppLogger.Debug("Referenced entity ID: " + newReferences[i].ID);
+
+                                AppLogger.Debug("Referenced type: " + newReferences[i].GetType().ToString());
+
+                                AppLogger.Debug("attribute.IDsPropertyName: " + attribute.IDsPropertyName);
+
+                                // If the references are being stored on this property then update mirrors.
+                                // If the references are being stored on an IDs property then this should be skipped
+                                if (attribute.IDsPropertyName == String.Empty)
+                                {
+                                    AppLogger.Debug("attribute.IDsPropertyName == String.Empty");
+                                    toUpdate.Add(DataUtilities.AddReferences(newReferences[i], entity, DataUtilities.GetMirrorProperty(property), DataUtilities.GetReferenceAttribute(DataUtilities.GetIDsProperty(property))));
+                                }
+                                else
+                                {
+                                    AppLogger.Debug("attribute.IDsPropertyName != String.Empty");
+
+                                    PropertyInfo idsProperty = entity.GetType().GetProperty(attribute.IDsPropertyName);
+
+                                    if (idsProperty == null)
+                                    {
+                                        AppLogger.Debug("Invalid IDsPropertyName [idsProperty == null]");
+                                        throw new Exception("Invalid IDsPropertyName of '" + attribute.IDsPropertyName + "' on the attribute for the '" + property.Name + "' property of the '" + entity.GetType().ToString() + "' class.");
+                                    }
+                                    else
+                                    {
+                                        AppLogger.Debug("[idsProperty != null]");
+
+
+                                        AppLogger.Debug("Setting the IDs property '" + attribute.IDsPropertyName + "' with an array of '" + newReferences.Length + "' entities.");
+                                        idsProperty.SetValue(entity, Collection<BaseEntity>.GetIDs(newReferences), null);
+
+
+                                        // Loop through all the attributes
+                                        foreach (object idsPropertyAttribute in idsProperty.GetCustomAttributes(true))
+                                        {
+                                            if (idsPropertyAttribute is BaseEntityReferenceAttribute)
+                                            {
+                                                PropertyInfo mirrorProperty = DataUtilities.GetMirrorProperty(idsProperty);
+
+                                                // Todo: remove
+						//toUpdate.Add(DataUtilities.AddReferences(entity, newReferences[i], property, attribute));
+                                                toUpdate.Add(DataUtilities.AddReferences(newReferences[i], entity, mirrorProperty, DataUtilities.GetReferenceAttribute(DataUtilities.GetMirrorProperty(idsProperty))));
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // TODO: Check if needed
+                                //        if (Array.IndexOf(Collection<Entity>.GetIDs(newReferences), originalReferences[i].ID) > -1)
+                                //        {
+                                //            references.Add(newReferences[i]);
+                                //        }
+                            }
+                        }
+                    }
+                    else
+                        AppLogger.Debug("No references found");
+
+                    // Set a bound copy of the referenced object to the property to ensure it won't get duplicated
+                    // if (references != null && references.Count > 0)
+                    //     property.SetValue(entity, references.ToArray(originalReferences[0].GetType()), null);
+                    // else
+                    //     property.SetValue(entity, null, null);
+                }
+
+                return (BaseEntity[])toUpdate.ToArray(typeof(BaseEntity));
             }
-
-            return (BaseEntity[])toUpdate.ToArray(typeof(BaseEntity));
         }
 
         /// <summary>
@@ -858,7 +766,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
                 // Delete the original referenced entity
                 Delete(GetEntity(referencedEntity.GetType(), "id", referencedEntity.ID));
 
-                toUpdate.Add(AddMirrors(entity, referencedEntity, property, reference));
+                toUpdate.Add(DataUtilities.AddReferences(referencedEntity, entity, DataUtilities.GetMirrorProperty(property), DataUtilities.GetReferenceAttribute(DataUtilities.GetIDsProperty(DataUtilities.GetMirrorProperty(property)))));
 
                 // Save the new referenced entity
                 Save((BaseEntity)referenceValue);
@@ -868,7 +776,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
                 // If the reference is not being stored by an IDs property, a mirror is specified, and the property is not to be excluded
                 if (reference.IDsPropertyName == String.Empty && reference.MirrorName != String.Empty)
                 {
-                    toUpdate.Add(AddMirrors(entity, (BaseEntity)referenceValue, property, reference));
+                    toUpdate.Add(DataUtilities.AddReferences((BaseEntity)referenceValue, entity, DataUtilities.GetMirrorProperty(property), DataUtilities.GetReferenceAttribute(DataUtilities.GetIDsProperty(DataUtilities.GetMirrorProperty(property)))));
 
                     // Set a bound copy of the referenced object to the property to ensure it won't get duplicated
                     property.SetValue(entity, GetEntity(property.PropertyType, "id", ((BaseEntity)referenceValue).ID), null);
@@ -888,64 +796,120 @@ namespace SoftwareMonkeys.SiteStarter.Data
         /// <param name="property"></param>
         protected BaseEntity[] PreSaveIDsReference(BaseEntity entity, PropertyInfo property, BaseEntityReferenceAttribute attribute)
         {
+		if (entity == null)
+	 		throw new ArgumentNullException("entity");
+
+		if (property == null)
+			throw new ArgumentNullException("property");
+
+		if (attribute == null)
+			throw new ArgumentNullException("attribute");
+
             Collection<BaseEntity> toUpdate = new Collection<BaseEntity>();
 
-            object referenceValue = property.GetValue(entity, null);
+		using (LogGroup logGroup = AppLogger.StartGroup("Preparing IDs reference for saving.", NLog.LogLevel.Debug))
+		{
+	
+	            object referenceValue = property.GetValue(entity, null);
 
-            // Check if the save is to cascade
-            if (attribute.CascadeSave)
+			AppLogger.Debug("Reference value: " + referenceValue.ToString());
+			AppLogger.Debug("Entity type: " + entity.GetType());
+			AppLogger.Debug("Property name: " + property.Name);
+			AppLogger.Debug("Property type: " + property.PropertyType);
+	
+	            // Check if the save is to cascade
+	            if (attribute.CascadeSave)
+	            {
+			AppLogger.Debug("attribute.CascadeSave == true");
+
+	                // Save the reference entities
+	                foreach (Guid referencedEntityID in (Guid[])referenceValue)
+	                {
+	                    BaseEntity referencedEntity = GetEntity(typeof(BaseEntity), "id", referencedEntityID);
+	
+	                    // Delete the original referenced entity
+	                    Delete(referencedEntity);
+
+                        toUpdate.Add(DataUtilities.AddReferences(referencedEntity, entity, DataUtilities.GetMirrorProperty(property), DataUtilities.GetReferenceAttribute(DataUtilities.GetIDsProperty(DataUtilities.GetMirrorProperty(property)))));
+	
+	                    // Save the new referenced entity
+	                    Save((BaseEntity)referencedEntity);
+	                }
+	            }
+	            else
+	            {
+			AppLogger.Debug("attribute.CascadeSave == false");
+
+                    Type type = entity.GetType();
+
+            PropertyInfo entitiesProperty = type.GetProperty(attribute.EntitiesPropertyName);
+
+            if (entitiesProperty == null)
             {
-                // Save the reference entities
-                foreach (Guid referencedEntityID in (Guid[])referenceValue)
-                {
-                    BaseEntity referencedEntity = GetEntity(typeof(BaseEntity), "id", referencedEntityID);
-
-                    // Delete the original referenced entity
-                    Delete(referencedEntity);
-
-                    toUpdate.Add(AddMirrors(entity, referencedEntity, property, attribute));
-
-                    // Save the new referenced entity
-                    Save((BaseEntity)referencedEntity);
-                }
+                throw new Exception("The entities property '" + attribute.EntitiesPropertyName + "' could not be found on the type '" + type.ToString() + "'.");
             }
-            else
-            {
-                Type referenceEntityType = entity.GetType().GetProperty(attribute.EntitiesPropertyName).PropertyType.GetElementType();
 
-                PropertyInfo mirrorProperty = referenceEntityType.GetProperty(attribute.MirrorName);
+	                Type referenceEntityType = entitiesProperty.PropertyType.GetElementType();
+	
+			if (attribute.MirrorName != String.Empty)
+			{
 
-                Collection<BaseEntity> references = new Collection<BaseEntity>();
+		                PropertyInfo mirrorProperty = referenceEntityType.GetProperty(attribute.MirrorName);
+	
+				if (mirrorProperty == null)
+					throw new Exception("Mirror property '" + attribute.MirrorName + "' not found on the type '" + referenceEntityType.ToString());
 
-                references.Add(GetEntities((Guid[])property.GetValue(entity, null)));
+				AppLogger.Debug("Mirror property: " + mirrorProperty.Name);
+				AppLogger.Debug("Mirror property type: " + mirrorProperty.PropertyType);
+				AppLogger.Debug("Reference entity type: " + referenceEntityType.ToString());
+		
+		                Collection<BaseEntity> references = new Collection<BaseEntity>();
+		
+		                references.Add(GetEntities((Guid[])property.GetValue(entity, null)));
+		
+		                // If references were specified
+		                if (references.Count > 0)
+		                {
+					using (LogGroup logGroup2 = AppLogger.StartGroup("Looping through each of the references.", NLog.LogLevel.Debug));
+					{
+			                    // Loop through all the referenced entities
+			                    foreach (BaseEntity r in references)
+			                    {
+						AppLogger.Debug("Reference ID: " + r.ID.ToString());
+	
+			                        if (mirrorProperty != null)
+			                        {
+			                            object mirrorValue = (Guid[])mirrorProperty.GetValue(r, null);
+		
+							AppLogger.Debug("Mirror value: " + mirrorValue);
+			
+			                            // If the reference is already there then don't bother creating it
+			                            if (mirrorValue == null || Array.IndexOf((Guid[])mirrorValue, entity.ID) == -1)
+			                            {
+							AppLogger.Debug("Adding reference.");
+		
+			                                // Update the mirror references
+	                        toUpdate.Add(DataUtilities.AddReferences(r, entity, DataUtilities.GetMirrorProperty(property), DataUtilities.GetReferenceAttribute(DataUtilities.GetIDsProperty(DataUtilities.GetMirrorProperty(property)))));
+			                            }
+			                        }
+			                    }
+					}
+		                }
+				else
+					AppLogger.Debug("No references found.");
+		
+		                // TODO: Remove if not needed
+		                // Set a bound copy of the referenced object to the property to ensure it won't get duplicated
+		                /*if (references != null && references.Count > 0)
+		                    property.SetValue(entity, references.GetIDs(), null);
+		                else
+		                    property.SetValue(entity, null, null);*/
+			}
+			else
+				AppLogger.Debug("No mirror property name specified.");
+	            }
 
-                // If references were specified
-                if (references.Count > 0)
-                {
-                    // Loop through all the referenced entities
-                    foreach (BaseEntity r in references)
-                    {
-                        if (mirrorProperty != null)
-                        {
-                            object mirrorValue = (Guid[])mirrorProperty.GetValue(r, null);
-
-                            // If the reference is already there then don't bother creating it
-                            if (mirrorValue == null || Array.IndexOf((Guid[])mirrorValue, entity.ID) == -1)
-                            {
-                                // Update the mirror references
-                                toUpdate.Add(AddMirrors(entity, r, property, attribute));
-                            }
-                        }
-                    }
-                }
-
-                // TODO: Remove if not needed
-                // Set a bound copy of the referenced object to the property to ensure it won't get duplicated
-                /*if (references != null && references.Count > 0)
-                    property.SetValue(entity, references.GetIDs(), null);
-                else
-                    property.SetValue(entity, null, null);*/
-            }
+		}
 
             return (BaseEntity[])toUpdate.ToArray(typeof(BaseEntity));
         }
@@ -977,7 +941,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
                     referencedEntity = GetEntity(typeof(BaseEntity), "id", ((BaseEntity)referenceValue).ID);
                 }
 
-                toUpdate.Add(AddMirrors(entity, referencedEntity, property, attribute));
+                toUpdate.Add(DataUtilities.AddReferences(referencedEntity, entity, DataUtilities.GetMirrorProperty(property), DataUtilities.GetReferenceAttribute(DataUtilities.GetIDsProperty(DataUtilities.GetMirrorProperty(property)))));
 
                 // Save the new referenced entity
                 Save(referencedEntity);
@@ -1009,7 +973,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
                                 if (mirrorValue == null || (Guid)mirrorValue != entity.ID)
                                 {
                                     // Update the mirror references
-                                    toUpdate.Add(AddMirrors(entity, reference, property, attribute));
+                                    toUpdate.Add(DataUtilities.AddReferences(reference, entity, DataUtilities.GetMirrorProperty(property), DataUtilities.GetReferenceAttribute(DataUtilities.GetIDsProperty(DataUtilities.GetMirrorProperty(property)))));
 
                                     // Update the referenced entity
                                     // TODO: Shouldn't be needed
@@ -1021,7 +985,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
                                 if (mirrorValue == null || Array.IndexOf((Guid[])mirrorValue, entity.ID) == -1)
                                 {
                                     // Update the mirror references
-                                    toUpdate.Add(AddMirrors(entity, reference, property, attribute));
+                                    toUpdate.Add(DataUtilities.AddReferences(reference, entity, DataUtilities.GetMirrorProperty(property), DataUtilities.GetReferenceAttribute(DataUtilities.GetIDsProperty(DataUtilities.GetMirrorProperty(property)))));
 
                                     // Update the referenced entity
                                     // TODO: Shouldn't be needed
@@ -1058,7 +1022,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
                     // Delete the original referenced entity
                     Delete(GetEntity(referencedEntity.GetType(), "id", referencedEntity.ID));
 
-                    toUpdate.Add(AddMirrors(entity, referencedEntity, property, attribute));
+                    toUpdate.Add(DataUtilities.AddReferences(referencedEntity, entity, DataUtilities.GetMirrorProperty(property), DataUtilities.GetReferenceAttribute(DataUtilities.GetIDsProperty(DataUtilities.GetMirrorProperty(property)))));
 
                     // Save the new referenced entity
                     Save((BaseEntity)referencedEntity);
@@ -1107,7 +1071,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
                             // If the mirror contains a reference but the updated entity then remove the old reference
                             if ((mirrorProperty == null || Array.IndexOf(Collection<BaseEntity>.GetIDs((BaseEntity[])mirrorValue), entity.ID) > -1)
                                 && Array.IndexOf(Collection<BaseEntity>.GetIDs(newReferences), originalReferences[i].ID) == -1)
-                                toUpdate.Add(RemoveMirrors(entity, originalReferences[i], property, attribute));
+                                toUpdate.Add(DataUtilities.RemoveMirrors(entity, originalReferences[i], property, attribute));
                         }
                     }
                 }
@@ -1128,7 +1092,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 
                             // If the mirror value doesn't contain a reference to the current entity then add one
                             if (mirrorProperty == null || Array.IndexOf(Collection<BaseEntity>.GetIDs((BaseEntity[])mirrorValue), entity.ID) == -1)
-                                toUpdate.Add(AddMirrors(entity, newReferences[i], property, attribute));
+                                toUpdate.Add(DataUtilities.AddReferences(newReferences[i], entity, DataUtilities.GetMirrorProperty(property), DataUtilities.GetReferenceAttribute(DataUtilities.GetIDsProperty(DataUtilities.GetMirrorProperty(property)))));
 
                             // TODO: Check if needed
                             //  if (Array.IndexOf(Collection<Entity>.GetIDs(originalReferences), newReferences[i]) > -1)
@@ -1168,14 +1132,14 @@ namespace SoftwareMonkeys.SiteStarter.Data
                 // Delete the original referenced entity
                 Delete(GetEntity(referencedEntity.GetType(), "id", referencedEntity.ID));
 
-                toUpdate.Add(AddMirrors(entity, referencedEntity, property, reference));
+                toUpdate.Add(DataUtilities.AddReferences(referencedEntity, entity, DataUtilities.GetMirrorProperty(property), DataUtilities.GetReferenceAttribute(DataUtilities.GetIDsProperty(DataUtilities.GetMirrorProperty(property)))));
 
                 // Save the new referenced entity
                 Save((BaseEntity)referenceValue);
             }
             else
             {
-                toUpdate.Add(AddMirrors(entity, (BaseEntity)referenceValue, property, reference));
+                toUpdate.Add(DataUtilities.AddReferences((BaseEntity)referenceValue, entity, DataUtilities.GetMirrorProperty(property), DataUtilities.GetReferenceAttribute(DataUtilities.GetIDsProperty(DataUtilities.GetMirrorProperty(property)))));
 
                 // Set a bound copy of the referenced object to the property to ensure it won't get duplicated
                 property.SetValue(entity, GetEntity(property.PropertyType, "id", ((BaseEntity)referenceValue).ID), null);
@@ -1206,7 +1170,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
                     // Delete the original referenced entity
                     Delete(referencedEntity);
 
-                    toUpdate.Add(AddMirrors(entity, referencedEntity, property, attribute));
+                    toUpdate.Add(DataUtilities.AddReferences(referencedEntity, entity, DataUtilities.GetMirrorProperty(property), DataUtilities.GetReferenceAttribute(DataUtilities.GetIDsProperty(DataUtilities.GetMirrorProperty(property)))));
 
                     // Save the new referenced entity
                     Save((BaseEntity)referencedEntity);
@@ -1264,7 +1228,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
                         if (!references.Contains(originalReferences[i]))
                         {
                             // Update the mirror references
-                            toUpdate.Add(RemoveMirrors(entity, originalReferences[i], property, attribute));
+                            toUpdate.Add(DataUtilities.RemoveMirrors(entity, originalReferences[i], property, attribute));
 
                             // Update the referenced entity
                            // toUpdate.Add(originalReferences[i]);
@@ -1288,7 +1252,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
                                 if (mirrorValue == null || Array.IndexOf((Guid[])mirrorValue, entity.ID) == -1)
                                 {
                                     // Update the mirror references
-                                    toUpdate.Add(AddMirrors(entity, r, property, attribute));
+                                    toUpdate.Add(DataUtilities.AddReferences(r, entity, DataUtilities.GetMirrorProperty(property), DataUtilities.GetReferenceAttribute(DataUtilities.GetIDsProperty(DataUtilities.GetMirrorProperty(property)))));
 
                                     // Update the referenced entity
                                     // toUpdate.Add(r);
@@ -1298,7 +1262,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
                             {
                                 if (mirrorValue == null || (Guid)mirrorValue != entity.ID)
                                 {
-                                    toUpdate.Add(AddMirrors(entity, r, property, attribute));
+                                    toUpdate.Add(DataUtilities.AddReferences(entity, r, property, attribute));
                                 }
                             }
                         }
@@ -1334,7 +1298,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
                     // Delete the original referenced entity
                     Delete(referencedEntity);
 
-                    toUpdate.Add(AddMirrors(entity, referencedEntity, property, attribute));
+                    toUpdate.Add(DataUtilities.AddReferences(referencedEntity, entity, DataUtilities.GetMirrorProperty(property), DataUtilities.GetReferenceAttribute(DataUtilities.GetIDsProperty(DataUtilities.GetMirrorProperty(property)))));
 
                     // Save the new referenced entity
                     Save((BaseEntity)referencedEntity);
@@ -1391,7 +1355,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
                             if (!references.Contains(originalReferences[i]))
                             {
                                 // Update the mirror references
-                                toUpdate.Add(RemoveMirrors(entity, originalReferences[i], property, attribute));
+                                toUpdate.Add(DataUtilities.RemoveMirrors(entity, originalReferences[i], property, attribute));
 
                                 // Update the referenced entity
                                 // TODO: Shouldn't be needed
@@ -1412,7 +1376,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
                             if (mirrorValue == null || Array.IndexOf((Guid[])mirrorValue, entity.ID) == -1)
                             {
                                 // Update the mirror references
-                                toUpdate.Add(AddMirrors(entity, r, property, attribute));
+                                toUpdate.Add(DataUtilities.AddReferences(r, entity, DataUtilities.GetMirrorProperty(property), DataUtilities.GetReferenceAttribute(DataUtilities.GetIDsProperty(DataUtilities.GetMirrorProperty(property)))));
 
                                 // Update the referenced entity
                                 // TODO: Shouldn't be needed
@@ -1492,7 +1456,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
                             // If the mirror contains a reference but the deleted entity then remove the old reference
                             if ((mirrorProperty == null || Array.IndexOf(Collection<BaseEntity>.GetIDs((BaseEntity[])mirrorValue), entity.ID) > -1)
                                 && Array.IndexOf(Collection<BaseEntity>.GetIDs(newReferences), originalReferences[i].ID) == -1)
-                                toDelete.Add(RemoveMirrors(entity, originalReferences[i], property, attribute));
+                                toDelete.Add(DataUtilities.RemoveMirrors(entity, originalReferences[i], property, attribute));
                         }
                     }
                 }
@@ -1597,7 +1561,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
                         if (!references.Contains(originalReferences[i]))
                         {
                             // Delete the mirror references
-                            toDelete.Add(RemoveMirrors(entity, originalReferences[i], property, attribute));
+                            toDelete.Add(DataUtilities.RemoveMirrors(entity, originalReferences[i], property, attribute));
                         }
                     }
                 }
@@ -1673,7 +1637,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
                             if (!references.Contains(originalReferences[i]))
                             {
                                 // Delete the mirror references
-                                toDelete.Add(RemoveMirrors(entity, originalReferences[i], property, attribute));
+                                toDelete.Add(DataUtilities.RemoveMirrors(entity, originalReferences[i], property, attribute));
                             }
                         }
                     }

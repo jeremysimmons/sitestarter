@@ -44,7 +44,9 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Db4oDataProvider.cs" />
-    <Compile Include="Db4oDataStore.cs" />
+    <Compile Include="Db4oDataStore.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Db4oDataStoreFactory.cs" />
     <Compile Include="Db4oPropertyFilter.cs" />
   </ItemGroup>

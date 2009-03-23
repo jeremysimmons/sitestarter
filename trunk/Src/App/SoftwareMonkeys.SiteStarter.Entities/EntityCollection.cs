@@ -5,28 +5,29 @@ using System.Reflection;
 
 namespace SoftwareMonkeys.SiteStarter.Entities
 {
-	/// <summary>
-	/// Holds a collection of entities.
-	/// </summary>
-	[Serializable]
-	public class Collection<E> : CollectionBase, IEnumerable
+    /// <summary>
+    /// Holds a collection of entities.
+    /// </summary>
+    [Serializable]
+    public class Collection<E> : CollectionBase, IEnumerable
        where E : SoftwareMonkeys.SiteStarter.Entities.BaseEntity
-	{
-		/// <summary>
-		/// Gets/sets the entity at the specified position in the collection.
-		/// </summary>
-		public E this[int index]
-		{
-			get { return (E)List[index]; }
-			set { List[index] = value; }
-		}
+    {
+        /// <summary>
+        /// Gets/sets the entity at the specified position in the collection.
+        /// </summary>
+        public E this[int index]
+        {
+            get { return (E)List[index]; }
+            set { List[index] = value; }
+        }
 
         /// <summary>
         /// Gets/sets the entity in the collection with the provided ID.
         /// </summary>
         public E this[Guid id]
         {
-            get {
+            get
+            {
                 foreach (E entity in this)
                     if (entity.ID == id)
                         return entity;
@@ -58,23 +59,23 @@ namespace SoftwareMonkeys.SiteStarter.Entities
             }
         }*/
 
-            /// <summary>
-            /// Empty constructor.
-            /// </summary>
-            public Collection()
-		{}
-
-		/// <summary>
-		/// Adds the provided entity to the collection.
-		/// </summary>
-		/// <param name="entity">The entity to add to the collection.</param>
-		public Collection (E entity)
-		{
-            if (entity != null)
-			    Add(entity);
-		}
+        /// <summary>
+        /// Empty constructor.
+        /// </summary>
+        public Collection()
+        { }
 
         /// <summary>
+        /// Adds the provided entity to the collection.
+        /// </summary>
+        /// <param name="entity">The entity to add to the collection.</param>
+        public Collection(BaseEntity entity)
+        {
+            if (entity != null)
+                Add((E)entity);
+        }
+
+        /*/// <summary>
         /// Adds the provided entity to the collection.
         /// </summary>
         /// <param name="entity">The entity to add to the collection.</param>
@@ -82,24 +83,39 @@ namespace SoftwareMonkeys.SiteStarter.Entities
         {
             if (entity != null && entity is E)
                 Add((E)entity);
-        }
+        }*/
 
-		/// <summary>
-		/// Adds the provided entities to the collection.
-		/// </summary>
-		/// <param name="entities">Entities to add to the collection.</param>
-		public Collection(object[] entities)
-		{
-			if (entities != null)
-			{
-				foreach (object entity in entities)
-				{
-					Add((E)entity);
-				}
-			}
-		}
+        /*	/// <summary>
+            /// Adds the provided entities to the collection.
+            /// </summary>
+            /// <param name="entities">Entities to add to the collection.</param>
+            public Collection(object[] entities)
+            {
+                if (entities != null)
+                {
+                    foreach (object entity in entities)
+                    {
+                        Add((E)entity);
+                    }
+                }
+            }*/
 
-        /// <summary>
+        /*/// <summary>
+        /// Adds the provided entities to the collection.
+        /// </summary>
+        /// <param name="entities">The entities to add to the collection.</param>
+        public Collection(BaseEntity[] entities)
+        {
+            if (entities != null)
+            {
+                foreach (BaseEntity entity in entities)
+                {
+                    Add((E)entity);
+                }
+            }
+        }*/
+
+        /*/// <summary>
         /// Adds the provided entities to the collection.
         /// </summary>
         /// <param name="entities">Entities to add to the collection.</param>
@@ -112,7 +128,22 @@ namespace SoftwareMonkeys.SiteStarter.Entities
                     Add((E)entity);
                 }
             }
-        }
+        }*/
+
+       /* /// <summary>
+        /// Adds the provided entities to the collection.
+        /// </summary>
+        /// <param name="entities">Entities to add to the collection.</param>
+        public Collection(IEnumerable<E> list)
+        {
+            if (list != null)
+            {
+                foreach (E entity in list)
+                {
+                    Add((E)entity);
+                }
+            }
+        }*/
 
         /// <summary>
         /// Adds the provided entities to the collection.
@@ -124,26 +155,60 @@ namespace SoftwareMonkeys.SiteStarter.Entities
             {
                 foreach (object entity in list)
                 {
-                    Add((E)entity);
+			if (entity is E)
+	                    Add((E)entity);
+			else
+				throw new NotSupportedException("Invalid type: " + entity.GetType());
                 }
             }
         }
 
-		/// <summary>
-		/// Adds the provided entity to the collection.
-		/// </summary>
-		/// <param name="entity">The entity to add to the collection.</param>
-		public void Add(E entity)
-		{
-			if (entity != null)
-				List.Add(entity);
-		}
+        /// <summary>
+        /// Adds the provided data to the collection.
+        /// </summary>
+        /// <param name="obj">An object containing the data to add.</param>
+        public Collection(object obj)
+        {
+            Add((object)obj);
+        }
+
+       /* /// <summary>
+        /// Adds the provided entity to the collection.
+        /// </summary>
+        /// <param name="entity">The entity to add to the collection.</param>
+        public Collection(E entity)
+        {
+            if (entity != null)
+                Add(entity);
+        }*/
+
+        /*/// <summary>
+        /// Adds the provided entity to the collection.
+        /// </summary>
+        /// <param name="entity">The entity to add to the collection.</param>
+        public void Add(object entity)
+        {
+            if (entity is BaseEntity)
+                Add((BaseEntity)entity);
+            else if (entity is IEnumerable)
+                Add((IEnumerable)entity);
+        }*/
+
+        /// <summary>
+        /// Adds the provided entity to the collection.
+        /// </summary>
+        /// <param name="entity">The entity to add to the collection.</param>
+        public void Add(E entity)
+        {
+            if (entity != null)
+                List.Add(entity);
+        }
 
         /// <summary>
         /// Adds the provided entities to the collection.
         /// </summary>
         /// <param name="entity">The entity to add to the collection.</param>
-        public void Add(IEnumerable entities)
+        public void Add(IEnumerable<BaseEntity> entities)
         {
             if (entities != null)
             {
@@ -153,7 +218,35 @@ namespace SoftwareMonkeys.SiteStarter.Entities
             }
         }
 
-        /// <summary>
+        /*/// <summary>
+        /// Adds the provided entities to the collection.
+        /// </summary>
+        /// <param name="entity">The entity to add to the collection.</param>
+        public void Add(object[] entities)
+        {
+            if (entities != null)
+            {
+                foreach (object obj in entities)
+                    if (obj is E)
+                        List.Add((E)obj);
+            }
+        }*/
+
+        /*/// <summary>
+        /// Adds the provided entities to the collection.
+        /// </summary>
+        /// <param name="entity">The entity to add to the collection.</param>
+        public void Add(E[] entities)
+        {
+            if (entities != null)
+            {
+                foreach (object obj in entities)
+                    if (obj is E)
+                        List.Add((E)obj);
+            }
+        }*/
+
+        /*/// <summary>
         /// Adds the provided entities to the collection.
         /// </summary>
         /// <param name="entity">The entity to add to the collection.</param>
@@ -165,7 +258,49 @@ namespace SoftwareMonkeys.SiteStarter.Entities
                     if (obj is E)
                         List.Add((E)obj);
             }
-        }
+        }*/
+
+        /* /// <summary>
+         /// Adds the provided entities to the collection.
+         /// </summary>
+         /// <param name="entity">The entity to add to the collection.</param>
+         public void Add(Array entities)
+         {
+             if (entities != null)
+             {
+                 foreach (object obj in entities)
+                     if (obj is E)
+                         List.Add((E)obj);
+             }
+         }*/
+
+         /// <summary>
+         /// Adds the provided data to the collection.
+         /// </summary>
+         /// <param name="entity">The data to add to the collection.</param>
+         public void Add(object obj)
+         {
+             if (obj is IEnumerable)
+             {
+                 foreach (object entity in (IEnumerable)obj)
+                     if (entity is E)
+                         Add((E)entity);
+			else
+				throw new NotSupportedException("Invalid type: " + obj.GetType().ToString());
+
+             }
+		else
+		{
+			if (obj is E)
+			{
+				Add((E)obj);
+			}
+			else
+			{
+				throw new NotSupportedException("Invalid type: " + obj.GetType().ToString());
+			}
+		}
+         }
 
         /// <summary>
         /// Removes the provided entity from the collection.
@@ -177,42 +312,42 @@ namespace SoftwareMonkeys.SiteStarter.Entities
                 List.Remove(entity);
         }
 
-		/// <summary>
-		/// Checks whether a entity with the specified ID is in the collection.
-		/// </summary>
-		/// <param name="entityID">The ID of the entity to check for.</param>
-		/// <returns>A boolean value indicating whether the entity is in the collection.</returns>
-		public bool Contains(Guid entityID)
-		{
-			foreach (E entity in this)
-				if (entity.ID == entityID)
-					return true;
-			return false;
-		}
+        /// <summary>
+        /// Checks whether a entity with the specified ID is in the collection.
+        /// </summary>
+        /// <param name="entityID">The ID of the entity to check for.</param>
+        /// <returns>A boolean value indicating whether the entity is in the collection.</returns>
+        public bool Contains(Guid entityID)
+        {
+            foreach (E entity in this)
+                if (entity.ID == entityID)
+                    return true;
+            return false;
+        }
 
-		/// <summary>
-		/// Gets the IDs of all entities in the collection.
-		/// </summary>
-		/// <returns>An array of entity IDs.</returns>
-		public Guid[] GetIDs()
-		{
-			// Create an ID collection
-			ArrayList ids = new ArrayList();
+        /// <summary>
+        /// Gets the IDs of all entities in the collection.
+        /// </summary>
+        /// <returns>An array of entity IDs.</returns>
+        public Guid[] GetIDs()
+        {
+            // Create an ID collection
+            ArrayList ids = new ArrayList();
 
-			// Loop through all the entities in the collection and get their IDs
-			foreach (E entity in this)
-			{
+            // Loop through all the entities in the collection and get their IDs
+            foreach (E entity in this)
+            {
                 PropertyInfo idProperty = entity.GetType().GetProperty("ID");
                 if (idProperty != null)
                 {
                     Guid id = (Guid)idProperty.GetValue(entity, (object[])null);
                     ids.Add(id);
                 }
-			}
+            }
 
-			// Return the IDs
-			return (Guid[])ids.ToArray(typeof(Guid));
-		}
+            // Return the IDs
+            return (Guid[])ids.ToArray(typeof(Guid));
+        }
 
         /// <summary>
         /// Checks whether the provided entity instance is found in the collection.
@@ -331,24 +466,24 @@ namespace SoftwareMonkeys.SiteStarter.Entities
             return entities.ToObjectArray();
         }*/
 
-       /* public static implicit operator Collection<E>(object collection)
-        {
-            if (collection is Collection<E>)
-            {
-                return new Collection<E>((IEnumerable)collection);
-            }
-            throw new Exception("Cannot convert from object to Collection<E>.");
-        }
+        /* public static implicit operator Collection<E>(object collection)
+         {
+             if (collection is Collection<E>)
+             {
+                 return new Collection<E>((IEnumerable)collection);
+             }
+             throw new Exception("Cannot convert from object to Collection<E>.");
+         }
 
-        public static implicit operator object(Collection<E> entities)
-        {
-            return (object)entities;
-        }*/
+         public static implicit operator object(Collection<E> entities)
+         {
+             return (object)entities;
+         }*/
 
-      /*  public static implicit operator Collection<E>(Collection<E> entities)
-        {
-            return new Collection<E>(entities);
-        }*/
+        /*  public static implicit operator Collection<E>(Collection<E> entities)
+          {
+              return new Collection<E>(entities);
+          }*/
         #endregion
 
         /// <summary>
@@ -388,12 +523,12 @@ namespace SoftwareMonkeys.SiteStarter.Entities
         public Collection<E> GetByIDs(Guid[] ids)
         {
             // Get the inner type of the collection
-          /*  Type innerType = null; // TODO: Remove code
-            if (List.Count > 0)
-                innerType = List[0].GetType();
-            else
-                throw new Exception("The type of objects in this collection are not supported. They must be derived from E.");
-            */
+            /*  Type innerType = null; // TODO: Remove code
+              if (List.Count > 0)
+                  innerType = List[0].GetType();
+              else
+                  throw new Exception("The type of objects in this collection are not supported. They must be derived from E.");
+              */
             // Create the specific collection type
             System.Type specificType = typeof(Collection<>).MakeGenericType(new System.Type[] { typeof(E) });
             Collection<E> entities = (Collection<E>)Activator.CreateInstance(specificType);
@@ -499,7 +634,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
         {
             // Create the specific collection type
             System.Type specificType = typeof(Collection<>).MakeGenericType(new System.Type[] { typeof(E) });
-          
+
             foreach (E entity in entities)
             {
                 if (entity != null)
@@ -548,12 +683,12 @@ namespace SoftwareMonkeys.SiteStarter.Entities
             {
                 if (entity != null)
                 {
-                    PropertyInfo idProperty = entity.GetType().GetProperty("ID");
-                    if (idProperty != null)
-                    {
-                        Guid id = (Guid)idProperty.GetValue(entity, (object[])null);
-                        ids.Add(id);
-                    }
+                    //PropertyInfo idProperty = entity.GetType().GetProperty("ID");
+                    //if (idProperty != null)
+                    //{
+                    //                        Guid id = (Guid)idProperty.GetValue(entity, (object[])null);
+                    ids.Add(entity.ID);
+                    //}
                 }
             }
 
@@ -607,12 +742,19 @@ namespace SoftwareMonkeys.SiteStarter.Entities
             return (E[])list.ToArray();
         }
 
-	static public Array CastArray(BaseEntity[] entities)
-	{
-		Collection<E> list = new Collection<E>();
-		list.Add(entities);
-		return list.ToArray();
-	}
+        static public E[] ConvertAll(BaseEntity[] entities)
+        {
+			if (entities == null)
+				return (E[])null;
+		    return (E[])Array.ConvertAll<BaseEntity, E>(entities, new Converter<BaseEntity, E>(BaseEntity_Convert));
+        }
 
-	}
+        static public E BaseEntity_Convert(BaseEntity entity)
+        {
+		if (entity == null)
+			return null;
+		else
+	            return (E)entity;
+        }
+    }
 }

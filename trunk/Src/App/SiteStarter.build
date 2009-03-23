@@ -32,6 +32,7 @@
 	<target name="Start.Build" description="Starts the build process.">
 		<call target="Phases.Clean" />
 		<call target="Phases.Build" />
+		<!--call target="Phases.Document" /-->
 		<call target="Phases.Release" />
 		<call target="Phases.Deploy" />
   	</target>
@@ -113,6 +114,47 @@
   		<echo message="* Time: ${datetime::now()}" />
   		<echo message="**************************************************" />
   	</target>
+
+	<!-- Phases.Document -->
+  	<target name="Phases.Document">		
+  		<echo message="**************************************************" />
+  		<echo message="* ===== Begin Phase: Document =====" />
+  		<echo message="**************************************************" />
+  		<echo message="* Time: ${datetime::now()}" />
+  		<echo message="**************************************************" />
+
+
+	 	
+	 	<!--nant buildfile="${Global.BaseNamespace}.Entities/SiteStarter.Entities.build" target="Jobs.Build"/>
+
+	 	<nant buildfile="${Global.BaseNamespace}.Diagnostics/SiteStarter.Diagnostics.build" target="Jobs.Build"/>
+
+	 	<nant buildfile="${Global.BaseNamespace}.State/SiteStarter.State.build" target="Jobs.Build"/>
+
+	 	<nant buildfile="${Global.BaseNamespace}.Configuration/SiteStarter.Configuration.build" target="Jobs.Build"/>  
+	
+	 	<nant buildfile="${Global.BaseNamespace}.Configuration.Tests/SiteStarter.Configuration.Tests.build" target="Jobs.Build"/>  	
+
+	 	<nant buildfile="${Global.BaseNamespace}.Data/SiteStarter.Data.build" target="Jobs.Build"/>
+
+	 	<nant buildfile="${Global.BaseNamespace}.Data.Tests/SiteStarter.Data.Tests.build" target="Jobs.Build"/>
+	 	 
+    	<nant buildfile="${Global.BaseNamespace}.Business/SiteStarter.Business.build" target="Jobs.Build"/>
+
+    	<nant buildfile="${Global.BaseNamespace}.Business.Tests/SiteStarter.Business.Tests.build" target="Jobs.Build"/>
+    	
+    	<nant buildfile="${Global.BaseNamespace}.Data.Db4o/SiteStarter.Data.Db4o.build" target="Jobs.Build"/>
+    	
+    	<nant buildfile="${Global.BaseNamespace}.Web/SiteStarter.Web.build" target="Jobs.Build"/-->
+
+		<call target="Jobs.CompileDocumentation"/>
+  	
+  		<echo message="**************************************************" />
+  		<echo message="* ===== End Phase: Document =====" />
+  		<echo message="**************************************************" />
+  		<echo message="* Time: ${datetime::now()}" />
+  		<echo message="**************************************************" />
+  	</target>
   	
   	<!-- Phases.Release -->
   	<target name="Phases.Release">		
@@ -161,4 +203,40 @@
   		<echo message="* Time: ${datetime::now()}" />
   		<echo message="**************************************************" />
   	</target>
+
+	<target name="Jobs.CompileDocumentation">
+		<ndoc>
+    <assemblies basedir="${project::get-base-directory()}">
+        <include name="**/SoftwareMonkeys.SiteStarter.Entities.dll" />
+    </assemblies>
+    <summaries basedir="/">
+        <include name="NamespaceSummary.xml" />
+    </summaries>
+    <documenters>
+        <documenter name="NAnt">
+            <property name="OutputDirectory" value="../../Doc" />
+            <property name="HtmlHelpName" value="NAnt" />
+            <property name="HtmlHelpCompilerFilename" value="hhc.exe" />
+            <property name="IncludeFavorites" value="False" />
+            <property name="Title" value="An NDoc Documented Class Library" />
+            <property name="SplitTOCs" value="False" />
+            <property name="DefaulTOC" value="" />
+            <property name="ShowVisualBasic" value="True" />
+            <property name="ShowMissingSummaries" value="True" />
+            <property name="ShowMissingRemarks" value="True" />
+            <property name="ShowMissingParams" value="True" />
+            <property name="ShowMissingReturns" value="True" />
+            <property name="ShowMissingValues" value="True" />
+            <property name="DocumentInternals" value="False" />
+            <property name="DocumentProtected" value="True" />
+            <property name="DocumentPrivates" value="False" />
+            <property name="DocumentEmptyNamespaces" value="False" />
+            <property name="IncludeAssemblyVersion" value="False" />
+            <property name="CopyrightText" value="" />
+            <property name="CopyrightHref" value="" />
+         </documenter>
+    </documenters> 
+</ndoc>
+
+	</target>
 </project>

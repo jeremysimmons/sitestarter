@@ -9,7 +9,7 @@
 	<property name="Project.AssemblyName" value="${Global.BaseNamespace}.Configuration.dll" />
 	<property name="Project.Name" value="SiteStarter Data" />
 	<property name="Project.CompanyName" value="SoftwareMonkeys.net" />
-	<property name="Project.VersionFile" value="${path::get-full-path('VersionNumber.txt')}" />
+	<property name="Project.VersionFile" value="${path::get-full-path('VersionData.txt')}" />
 	<property name="Project.Version" value="1.0.0.1" />
 	<property name="Project.Year" value="2009" />
 	<property name="Project.AssemblyInfoFile" value="${path::get-full-path('AssemblyInfo.cs')}" />

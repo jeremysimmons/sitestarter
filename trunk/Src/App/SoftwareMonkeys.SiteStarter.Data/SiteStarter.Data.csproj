@@ -45,6 +45,7 @@
     <Compile Include="DataProviderCollection.cs" />
     <Compile Include="DataProviderConfiguration.cs" />
     <Compile Include="DataStoreCollection.cs" />
+    <Compile Include="DataUtilities.cs" />
     <Compile Include="FilterGroup.cs" />
     <Compile Include="FilterOperator.cs" />
     <Compile Include="IDataServer.cs" />

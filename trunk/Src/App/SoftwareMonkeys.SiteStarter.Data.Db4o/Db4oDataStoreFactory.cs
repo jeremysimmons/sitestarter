@@ -11,7 +11,7 @@ using SoftwareMonkeys.SiteStarter;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Configuration;
 
-namespace SoftwareMonkeys.SiteStarter.Data
+namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 {
     /// <summary>
     /// Assists in interaction with the db4o database.

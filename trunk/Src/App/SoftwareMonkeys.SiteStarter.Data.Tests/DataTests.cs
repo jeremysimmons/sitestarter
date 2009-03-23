@@ -35,12 +35,150 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
         }
         #endregion
 
+
+        [TearDown]
+        public void Dispose()
+        {
+            ClearTestEntities();
+
+        }
+
+	#region Tests
+	[Test]
+	public void Test_PreSave_IDsReference()
+	{
+		using (LogGroup logGroup = AppLogger.StartGroup("Testing a the preparation for saving entities IDs references.", NLog.LogLevel.Debug))
+		{
+	        	EntityThree e3 = new EntityThree();
+			e3.ID = Guid.NewGuid();
+			e3.Name = "Test E3";
+			
+
+			EntityFour e4 = new EntityFour();
+			e4.ID = Guid.NewGuid();
+			e4.Name = "Test E4";
+
+			e3.ReferencedEntityIDs = new Guid[] {e4.ID};
+			//e3.ReferencedEntities = new EntityFour[] {e4};
+			// Only one of these needs to be set for this test. The auto preparation should take care of the other one.
+            //e4.ReferencedEntities = new EntityThree[] {e3};
+
+
+
+		
+			PropertyFilter filter = (PropertyFilter)DataAccess.Data.CreateFilter(typeof(PropertyFilter));
+			filter.PropertyName = "ID";
+		        filter.PropertyValue = e4.ID;
+		        filter.AddType(typeof(EntityFour));
+
+
+
+			DataAccess.Data.Stores[typeof(TestEntity)].Save(e4);
+		
+			DataAccess.Data.Stores[typeof(TestEntity)].Save(e3);
+		
+
+
+		        BaseEntity[] found = (BaseEntity[])DataAccess.Data.GetEntities(filter);
+		        //Collection<EntityFour> foundList = new Collection<EntityFour>(found);
+	
+			if (found != null)
+			{
+				Assert.Greater(found.Length, 0, "No results found.");
+
+				EntityFour entity = (EntityFour)found[0];
+				Assert.IsNotNull(entity.ReferencedEntityIDs, "The mirror entity ID references property has not beed set. The automatic preparation failed.");
+				if (entity.ReferencedEntityIDs != null)
+				{
+					AppLogger.Debug("entity.ReferencedEntityIDs != null");
+
+					Assert.AreEqual(1, entity.ReferencedEntityIDs.Length, "Incorrect number of reference entity IDs.");
+				}
+				else
+				{
+					AppLogger.Debug("entity.ReferencedEntityIDs == null");
+				}
+			}
+			else
+				Assert.Fail("No entity found. The save must have failed.");
+	
+	       		DataAccess.Data.Stores[typeof(TestEntity)].Delete(e3);
+	       		DataAccess.Data.Stores[typeof(TestEntity)].Delete(e4);
+		}
+	}
+
+        [Test]
+        public void Test_PreSave_EntitiesReference()
+        {
+            using (LogGroup logGroup = AppLogger.StartGroup("Testing a the preparation for saving entities references.", NLog.LogLevel.Debug))
+            {
+                EntityThree e3 = new EntityThree();
+                e3.ID = Guid.NewGuid();
+                e3.Name = "Test E3";
+
+
+                EntityFour e4 = new EntityFour();
+                e4.ID = Guid.NewGuid();
+                e4.Name = "Test E4";
+
+                e3.ReferencedEntities = new EntityFour[] { e4 };
+                //e3.ReferencedEntities = new EntityFour[] {e4};
+                // Only one of these needs to be set for this test. The auto preparation should take care of the other one.
+                //e4.ReferencedEntities = new EntityThree[] {e3};
+
+
+
+
+                PropertyFilter filter = (PropertyFilter)DataAccess.Data.CreateFilter(typeof(PropertyFilter));
+                filter.PropertyName = "ID";
+                filter.PropertyValue = e4.ID;
+                filter.AddType(typeof(EntityFour));
+
+
+
+                DataAccess.Data.Stores[typeof(TestEntity)].Save(e4);
+
+                DataAccess.Data.Stores[typeof(TestEntity)].Save(e3);
+
+
+
+                BaseEntity[] found = (BaseEntity[])DataAccess.Data.GetEntities(filter);
+                Collection<EntityFour> foundList = new Collection<EntityFour>(found);
+
+                if (found != null)
+                {
+                    Assert.Greater(foundList.Count, 0, "No results found.");
+
+                    EntityFour entity = (EntityFour)found[0];
+                    Assert.IsNotNull(entity.ReferencedEntityIDs, "The mirror entity ID references property has not beed set. The automatic preparation failed.");
+                    if (entity.ReferencedEntityIDs != null)
+                    {
+                        AppLogger.Debug("entity.ReferencedEntityIDs != null");
+
+                        Assert.AreEqual(1, entity.ReferencedEntityIDs.Length, "Incorrect number of reference entity IDs.");
+                    }
+                    else
+                    {
+                        AppLogger.Debug("entity.ReferencedEntities == null");
+                    }
+                }
+                else
+                    Assert.Fail("No entity found. The save must have failed.");
+
+                DataAccess.Data.Stores[typeof(TestEntity)].Delete(e3);
+                DataAccess.Data.Stores[typeof(TestEntity)].Delete(e4);
+            }
+        }
+	#endregion
+
 	#region Filter tests
 	[Test]
 	public void Test_PropertyFilter()
 	{
 		using (LogGroup logGroup = AppLogger.StartGroup("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
 		{
+            ClearTestEntities();
+
 	        	TestEntity e1 = new TestEntity();
 			e1.Name = "Test E1";
 		
@@ -52,12 +190,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			DataAccess.Data.Stores[typeof(TestEntity)].Save(e1);
 		
 		        BaseEntity[] found = (BaseEntity[])DataAccess.Data.GetEntities(filter);
-		        Collection<TestEntity> foundList = new Collection<TestEntity>(found);
 	
 			if (found != null)
-				Assert.Greater(foundList.Count, 0, "No results found.");
-	
-	       		DataAccess.Data.Stores[typeof(TestEntity)].Delete(e1);
+                Assert.Greater(found.Length, 0, "No results found.");
+
+            ClearTestEntities();
 		}
 	}
 
@@ -221,6 +358,21 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		}
 	}
 	#endregion
+
+        private void ClearTestEntities()
+        {
+            Type[] types = new Type[] { typeof(TestEntity), typeof(EntityThree), typeof(EntityFour) };
+
+            Collection<BaseEntity> entities = new Collection<BaseEntity>();
+            foreach (Type type in types)
+                entities.Add((BaseEntity[])DataAccess.Data.Stores[type].GetEntities(type));
+
+            foreach (BaseEntity entity in entities)
+            {
+                DataAccess.Data.Stores[entity.GetType()].Delete(entity);
+            }
+        }
+
 
     }
 }
