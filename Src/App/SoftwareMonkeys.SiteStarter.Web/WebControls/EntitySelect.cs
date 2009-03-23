@@ -64,6 +64,19 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
             set { base.DataSource = value; }
         }
 
+       /*/// <summary>
+        /// Gets/sets the Entity data required for this control.
+        /// </summary>
+        [Browsable(false)]
+        public new object DataSource
+        {
+            get
+            {
+                return base.DataSource;
+            }
+            set { base.DataSource = value; }
+        }*/
+
         /// <summary>
         /// Gets/sets the ID of the selected Entity.
         /// </summary>
@@ -96,8 +109,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
             {
                 if (selectedEntities == null)
                 {
-                    if (DataSource != null && DataSource.Length > 0)
-                        selectedEntities = EntityFactory.GetEntities(DataSource[0].GetType(), SelectedEntityIDs);
+                    if (DataSource != null && GetDataSourceLength() > 0)
+                        selectedEntities = EntityFactory.GetEntities(DataSource.GetType().GetElementType(), SelectedEntityIDs);
                 }
                 return selectedEntities;
             }
@@ -182,6 +195,23 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
                 DataLoading(this, EventArgs.Empty);
         }
         #endregion
+
+
+	protected int GetDataSourceLength()
+	{
+		if (DataSource is Array)
+			return ((Array)DataSource).Length;
+		else
+			throw new NotSupportedException("Invalid type: " + DataSource.GetType().ToString());
+	}
+
+	protected override void OnLoad(EventArgs e)
+	{
+		// This is called just-in-time in DataSource_get
+		//RaiseDataLoading();
+
+		base.OnLoad(e);
+	}
     }
 
 	/// <summary>
@@ -201,14 +231,31 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		{
 			get 
 			{
-                if (base.DataSource == null)
-                {
-                    RaiseDataLoading();
-                }
-                return (E[])base.DataSource;
-            }
+		                if (base.DataSource == null)
+		                {
+		                    RaiseDataLoading();
+		                }
+		                return (E[])base.DataSource;
+		            }
 			set { base.DataSource = value; }
 		}
+
+		/*/// <summary>
+		/// Gets/sets the Entity data required for this control.
+		/// </summary>
+		[Browsable(false)]
+		public new object DataSource
+		{
+			get 
+			{
+		                //if (base.DataSource == null)
+		                //{
+		                //    RaiseDataLoading();
+		                //}
+		                return base.DataSource;
+           		}
+			set { base.DataSource = value; }
+		}*/
 
         // TODO: Check if necessary
         /// <summary>
@@ -473,7 +520,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
             // TODO: Check if code is necessary
             // Add the rest of the items
-            foreach (BaseEntity entity in DataSource)
+            foreach (BaseEntity entity in (IEnumerable)DataSource)
             {
                 ArrayList existingIDs = new ArrayList();
                 if (!existingIDs.Contains(entity.ID))

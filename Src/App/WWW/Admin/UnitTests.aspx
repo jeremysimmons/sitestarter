@@ -1,4 +1,4 @@
-<%@ Page Language="C#" MasterPageFile="~/Site.master" Title="Untitled Page" StylesheetTheme="Default" %>
+<%@ Page Language="C#" MasterPageFile="~/Site.master" Title="Unit Tests" StylesheetTheme="Default" %>
 
 <%@ Register Src="~/Controls/Testing.ascx" TagName="Testing" TagPrefix="uc1" %>
 <script runat="server">

@@ -9,6 +9,7 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.IO;
 using System.Text.RegularExpressions;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 
 namespace SoftwareMonkeys.SiteStarter.Business
 {
@@ -105,7 +106,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
                                         {
                                             // Add the test method to the list
                                             ArrayList list = new ArrayList(testMethods);
-                                            list.Add(method);
+                                            if (!list.Contains(method))
+                                                list.Add(method);
                                             testMethods = (MethodInfo[])list.ToArray(typeof(MethodInfo));
                                         }
 
@@ -113,7 +115,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
                                         {
                                             // Add the setup method to the list
                                             ArrayList list = new ArrayList(setUpMethods);
-                                            list.Add(method);
+                                            if (!list.Contains(method))
+                                                list.Add(method);
                                             setUpMethods = (MethodInfo[])list.ToArray(typeof(MethodInfo));
                                         }
 
@@ -121,7 +124,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
                                         {
                                             // Add the teardown method to the list
                                             ArrayList list = new ArrayList(tearDownMethods);
-                                            list.Add(method);
+                                            if (!list.Contains(method))
+                                                list.Add(method);
                                             tearDownMethods = (MethodInfo[])list.ToArray(typeof(MethodInfo));
                                         }
                                     }
@@ -144,60 +148,114 @@ namespace SoftwareMonkeys.SiteStarter.Business
         /// </summary>
         public void RunTests()
         {
-            // Check that some test fixtures have been found
-            if (TestFixtures.Length > 0)
+            using (LogGroup logGroup = AppLogger.StartGroup("Running unit tests.", NLog.LogLevel.Debug))
             {
-                // Create a table to hold instances of all fixtures
-                Hashtable table = new Hashtable();
-                foreach (Type type in testFixtures)
-                {
-                    table.Add(type.ToString(), Activator.CreateInstance(type));
-                }
 
-                // Loop through the setup methods and run them
-                foreach (MethodInfo setupMethod in setUpMethods)
+                // Check that some test fixtures have been found
+                if (TestFixtures.Length > 0)
                 {
-                    setupMethod.Invoke(table[setupMethod.DeclaringType.FullName], null);
-                }
-
-                // Loop through the test methods and run them
-                foreach (MethodInfo testMethod in testMethods)
-                {
-                    try
+                    // Create a table to hold instances of all fixtures
+                    Hashtable table = new Hashtable();
+                    foreach (Type type in testFixtures)
                     {
-                        testMethod.Invoke(table[testMethod.DeclaringType.FullName], null);
+                        AppLogger.Debug("Test fixture found: " + type.ToString());
 
-                        // Add the method to the list of successful
-                        ArrayList list = new ArrayList(results);
-                        list.Add(new SMTestResult(testMethod.Name, testMethod.DeclaringType.Namespace, testMethod.DeclaringType.Name, true, string.Empty));
-                        results = (SMTestResult[])list.ToArray(typeof(SMTestResult));
+                        if (!table.ContainsKey(type.ToString()))
+                            table.Add(type.ToString(), Activator.CreateInstance(type));
                     }
-                    catch (Exception ex)
-                    {
 
-                        string message = ex.InnerException.Message + "\n";
-                        message += Regex.Match(ex.InnerException.StackTrace, "(.?):(.[^:]+)", RegexOptions.Multiline).Value;
-                        message += " - ";
+                    // Loop through the setup methods and run them
+                    foreach (MethodInfo setupMethod in setUpMethods)
+                    {
+                        setupMethod.Invoke(table[setupMethod.DeclaringType.FullName], null);
+                    }
+
+                    // Loop through the test methods and run them
+                    foreach (MethodInfo testMethod in testMethods)
+                    {
                         try
                         {
-                            message += Convert.ToInt32(Regex.Match(ex.InnerException.StackTrace, "line (.+)", RegexOptions.Multiline).Groups[1].Value);
+                            testMethod.Invoke(table[testMethod.DeclaringType.FullName], null);
+
+                            // Add the method to the list of successful
+                            ArrayList list = new ArrayList(results);
+                            list.Add(new SMTestResult(testMethod.Name, testMethod.DeclaringType.Namespace, testMethod.DeclaringType.Name, true, string.Empty));
+                            results = (SMTestResult[])list.ToArray(typeof(SMTestResult));
                         }
-                        catch (Exception ex2)
+                        catch (Exception ex)
                         {
-                            // TODO: fix exception handling
+                            using (LogGroup logGroup2 = AppLogger.StartGroup("Handling unit test error.", NLog.LogLevel.Error))
+                            {
+                                string innerMessage = String.Empty;
+
+                                AppLogger.Error(ex.ToString());
+
+                                // Move to the first inner exception. The outer exception can be skipped.
+                                if (ex.InnerException != null)
+                                    ex = ex.InnerException;
+
+                                // Set the sub exception to the next inner exception
+                                Exception subEx = ex.InnerException;
+
+                                while (subEx != null)
+                                {
+                                    using (LogGroup logGroup3 = AppLogger.StartGroup("Output inner exception.", NLog.LogLevel.Error))
+                                    {
+
+                                        AppLogger.Error(subEx.ToString());
+
+                                        if (innerMessage.Length > 0)
+                                            innerMessage += "========== Inner Exception =========\n";
+                                        innerMessage += subEx.ToString() + "\n";
+                                        //innerMessage += subEx.Message + "\n";
+                                        //innerMessage += Regex.Match(subEx.StackTrace, "(.?):(.[^:]+)", RegexOptions.Multiline).Value;
+                                        //innerMessage += " - ";
+                                        //try
+                                        //{
+                                        //    innerMessage += Convert.ToInt32(Regex.Match(ex.StackTrace, "line (.+)", RegexOptions.Multiline).Groups[1].Value);
+                                        //}
+                                        //catch (Exception ex2)
+                                        //{
+                                        // TODO: fix exception handling
+                                        //}
+                                    }
+
+
+                                    subEx = subEx.InnerException;
+                                }
+
+                                string message = ex.ToString() + "\n";
+                                //string message = ex.Message + "\n";
+                                /*message += Regex.Match(ex.StackTrace, "(.?):(.[^:]+)", RegexOptions.Multiline).Value;
+                                message += " - ";
+                                try
+                                {
+                                    message += Convert.ToInt32(Regex.Match(ex.StackTrace, "line (.+)", RegexOptions.Multiline).Groups[1].Value);
+                                }
+                                catch (Exception ex2)
+                                {
+                                    // TODO: fix exception handling
+                                }*/
+
+                                if (innerMessage != String.Empty)
+                                {
+                                    message += "========== Inner Exception =========\n";
+                                    message += innerMessage;
+                                }
+
+                                // Add the method to the list of failed
+                                ArrayList list = new ArrayList(results);
+                                list.Add(new SMTestResult(testMethod.Name, testMethod.DeclaringType.Namespace, testMethod.DeclaringType.Name, false, message));
+                                results = (SMTestResult[])list.ToArray(typeof(SMTestResult));
+                            }
                         }
-
-                        // Add the method to the list of failed
-                        ArrayList list = new ArrayList(results);
-                        list.Add(new SMTestResult(testMethod.Name, testMethod.DeclaringType.Namespace, testMethod.DeclaringType.Name, false, message));
-                        results = (SMTestResult[])list.ToArray(typeof(SMTestResult));
                     }
-                }
 
-                // Loop through the teardown methods and run them
-                foreach (MethodInfo tearDownMethod in tearDownMethods)
-                {
-                    tearDownMethod.Invoke(table[tearDownMethod.DeclaringType.FullName], null);
+                    // Loop through the teardown methods and run them
+                    foreach (MethodInfo tearDownMethod in tearDownMethods)
+                    {
+                        tearDownMethod.Invoke(table[tearDownMethod.DeclaringType.FullName], null);
+                    }
                 }
             }
         }
