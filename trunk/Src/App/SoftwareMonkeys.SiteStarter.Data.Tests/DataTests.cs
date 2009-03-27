@@ -36,12 +36,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
         #endregion
 
 
-        [TearDown]
-        public void Dispose()
+        /*[TearDown]
+        public void CleanUp()
         {
             ClearTestEntities();
 
-        }
+        }*/
 
 	#region Tests
 	[Test]
@@ -87,7 +87,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				Assert.Greater(found.Length, 0, "No results found.");
 
 				EntityFour entity = (EntityFour)found[0];
-				Assert.IsNotNull(entity.ReferencedEntityIDs, "The mirror entity ID references property has not beed set. The automatic preparation failed.");
+				Assert.IsNotNull(entity.ReferencedEntityIDs, "The mirror entity ID references property has not been set. The automatic preparation failed.");
 				if (entity.ReferencedEntityIDs != null)
 				{
 					AppLogger.Debug("entity.ReferencedEntityIDs != null");
@@ -106,6 +106,257 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 	       		DataAccess.Data.Stores[typeof(TestEntity)].Delete(e4);
 		}
 	}
+
+	[Test]
+	public void Test_PreSave_IDsToIDReference()
+	{
+		using (LogGroup logGroup = AppLogger.StartGroup("Testing a the preparation for saving entities IDs references.", NLog.LogLevel.Debug))
+		{
+	        	TestArticle article = new TestArticle();
+			article.ID = Guid.NewGuid();
+			article.Title = "Test article";
+			
+
+			TestArticlePage page = new TestArticlePage();
+			page.ID = Guid.NewGuid();
+			page.Title = "Test Page";
+
+			article.PageIDs = new Guid[] {page.ID};
+			//e3.ReferencedEntities = new EntityFour[] {e4};
+			// Only one of these needs to be set for this test. The auto preparation should take care of the other one.
+            //e4.ReferencedEntities = new EntityThree[] {e3};
+
+
+
+		
+			PropertyFilter filter = (PropertyFilter)DataAccess.Data.CreateFilter(typeof(PropertyFilter));
+			filter.PropertyName = "ID";
+		        filter.PropertyValue = page.ID;
+		        filter.AddType(typeof(TestArticlePage));
+
+
+
+                DataAccess.Data.Stores[typeof(TestArticle)].Save(page);
+
+                DataAccess.Data.Stores[typeof(TestArticle)].Save(article);
+		
+
+
+		        BaseEntity[] found = (BaseEntity[])DataAccess.Data.GetEntities(filter);
+		        //Collection<EntityFour> foundList = new Collection<EntityFour>(found);
+	
+			if (found != null)
+			{
+				Assert.Greater(found.Length, 0, "No results found.");
+
+                TestArticlePage articlePageFound = (TestArticlePage)found[0];
+                Assert.IsNotNull(articlePageFound.ArticleID, "The mirror article ID reference property has not been set. The automatic preparation failed.");
+                if (articlePageFound.ArticleID != Guid.Empty)
+				{
+                    AppLogger.Debug("articlePageFound.ArticleID != Guid.Empty");
+
+                    Assert.AreEqual(article.ID, articlePageFound.ArticleID, "The article ID wasn't set to the article page.");
+				}
+				else
+				{
+                    AppLogger.Debug("articlePageFound.ArticleID == Guid.Empty");
+				}
+			}
+			else
+				Assert.Fail("No entity found. The save must have failed.");
+
+            DataAccess.Data.Stores[typeof(TestArticle)].Delete(page);
+            DataAccess.Data.Stores[typeof(TestArticle)].Delete(article);
+		}
+	}
+
+[Test]
+	public void Test_PreSave_IDToIDsReference()
+	{
+		using (LogGroup logGroup = AppLogger.StartGroup("Testing a the preparation for saving entities IDs references.", NLog.LogLevel.Debug))
+		{
+	        	TestArticle article = new TestArticle();
+			article.ID = Guid.NewGuid();
+			article.Title = "Test article";
+			
+
+			TestArticlePage page = new TestArticlePage();
+			page.ID = Guid.NewGuid();
+			page.Title = "Test Page";
+
+			page.ArticleID = article.ID;
+			//e3.ReferencedEntities = new EntityFour[] {e4};
+			// Only one of these needs to be set for this test. The auto preparation should take care of the other one.
+            //e4.ReferencedEntities = new EntityThree[] {e3};
+
+
+
+		
+			PropertyFilter filter = (PropertyFilter)DataAccess.Data.CreateFilter(typeof(PropertyFilter));
+			filter.PropertyName = "ID";
+		        filter.PropertyValue = article.ID;
+		        filter.AddType(typeof(TestArticle));
+
+
+
+	                DataAccess.Data.Stores[typeof(TestArticle)].Save(article);
+			
+	
+	                DataAccess.Data.Stores[typeof(TestArticle)].Save(page);
+
+		        BaseEntity[] found = (BaseEntity[])DataAccess.Data.GetEntities(filter);
+		        //Collection<EntityFour> foundList = new Collection<EntityFour>(found);
+	
+			if (found != null)
+			{
+				Assert.Greater(found.Length, 0, "No results found.");
+
+		                TestArticle articleFound = (TestArticle)found[0];
+		                Assert.IsNotNull(articleFound.PageIDs, "The mirror article ID references property has not been set. The automatic preparation failed.");
+		                if (articleFound.PageIDs != null)
+				{
+	                   		 AppLogger.Debug("articleFound.PageIDs != null");
+	
+	                    			Assert.AreEqual(1, article.PageIDs.Length, "Incorrect number of page IDs.");
+				}
+				else
+				{
+                    			AppLogger.Debug("articleFound.PageIDs == null");
+				}
+			}
+			else
+				Assert.Fail("No entity found. The save must have failed.");
+	
+	            //DataAccess.Data.Stores[typeof(TestArticle)].Delete(page);
+	            //DataAccess.Data.Stores[typeof(TestArticle)].Delete(article);
+		}
+	}
+
+      /*  [Test]
+        public void Test_PreSave_EntitiesToEntityReference()
+        {
+            using (LogGroup logGroup = AppLogger.StartGroup("Testing a the preparation for saving entities IDs references.", NLog.LogLevel.Debug))
+            {
+                TestArticle article = new TestArticle();
+                article.ID = Guid.NewGuid();
+                article.Title = "Test article";
+
+
+                TestArticlePage page = new TestArticlePage();
+                page.ID = Guid.NewGuid();
+                page.Title = "Test Page";
+
+                article.Pages = new TestArticlePage[] { page };
+                //e3.ReferencedEntities = new EntityFour[] {e4};
+                // Only one of these needs to be set for this test. The auto preparation should take care of the other one.
+                //e4.ReferencedEntities = new EntityThree[] {e3};
+
+
+
+
+                PropertyFilter filter = (PropertyFilter)DataAccess.Data.CreateFilter(typeof(PropertyFilter));
+                filter.PropertyName = "ID";
+                filter.PropertyValue = page.ID;
+                filter.AddType(typeof(TestArticlePage));
+
+
+
+                DataAccess.Data.Stores[typeof(TestArticle)].Save(page);
+
+                DataAccess.Data.Stores[typeof(TestArticle)].Save(article);
+
+
+
+                BaseEntity[] found = (BaseEntity[])DataAccess.Data.GetEntities(filter);
+                //Collection<EntityFour> foundList = new Collection<EntityFour>(found);
+
+                if (found != null)
+                {
+                    Assert.Greater(found.Length, 0, "No results found.");
+
+                    TestArticlePage articlePageFound = (TestArticlePage)found[0];
+                    Assert.IsNotNull(articlePageFound.ArticleID, "The mirror article ID reference property has not been set. The automatic preparation failed.");
+                    if (articlePageFound.ArticleID != Guid.Empty)
+                    {
+                        AppLogger.Debug("articlePageFound.ArticleID != Guid.Empty");
+
+                        Assert.AreEqual(article.ID, articlePageFound.ArticleID, "The article ID wasn't set to the article page.");
+                    }
+                    else
+                    {
+                        AppLogger.Debug("articlePageFound.ArticleID == Guid.Empty");
+                    }
+                }
+                else
+                    Assert.Fail("No entity found. The save must have failed.");
+
+                DataAccess.Data.Stores[typeof(TestArticle)].Delete(page);
+                DataAccess.Data.Stores[typeof(TestArticle)].Delete(article);
+            }
+        }
+
+[Test]
+        public void Test_PreSave_EntityToEntitiesReference()
+        {
+            using (LogGroup logGroup = AppLogger.StartGroup("Testing a the preparation for saving entities IDs references.", NLog.LogLevel.Debug))
+            {
+                TestArticle article = new TestArticle();
+                article.ID = Guid.NewGuid();
+                article.Title = "Test article";
+
+
+                TestArticlePage page = new TestArticlePage();
+                page.ID = Guid.NewGuid();
+                page.Title = "Test Page";
+
+                article.Pages = new TestArticlePage[] { page };
+                //e3.ReferencedEntities = new EntityFour[] {e4};
+                // Only one of these needs to be set for this test. The auto preparation should take care of the other one.
+                //e4.ReferencedEntities = new EntityThree[] {e3};
+
+
+
+
+                PropertyFilter filter = (PropertyFilter)DataAccess.Data.CreateFilter(typeof(PropertyFilter));
+                filter.PropertyName = "ID";
+                filter.PropertyValue = article.ID;
+                filter.AddType(typeof(TestArticle));
+
+
+
+                DataAccess.Data.Stores[typeof(TestArticle)].Save(page);
+
+                DataAccess.Data.Stores[typeof(TestArticle)].Save(article);
+
+
+
+                BaseEntity[] found = (BaseEntity[])DataAccess.Data.GetEntities(filter);
+                //Collection<EntityFour> foundList = new Collection<EntityFour>(found);
+
+			if (found != null)
+			{
+				Assert.Greater(found.Length, 0, "No results found.");
+
+		                TestArticle articleFound = (TestArticle)found[0];
+		                Assert.IsNotNull(articleFound.PageIDs, "The mirror article ID references property has not been set. The automatic preparation failed.");
+		                if (articleFound.PageIDs != null)
+				{
+	                   		 AppLogger.Debug("articleFound.PageIDs != null");
+	
+	                    			Assert.AreEqual(1, article.PageIDs.Length, "Incorrect number of page IDs.");
+				}
+				else
+				{
+                    			AppLogger.Debug("articleFound.PageIDs == null");
+				}
+			}
+			else
+				Assert.Fail("No entity found. The save must have failed.");
+
+                DataAccess.Data.Stores[typeof(TestArticle)].Delete(page);
+                DataAccess.Data.Stores[typeof(TestArticle)].Delete(article);
+            }
+        }*/
 
         [Test]
         public void Test_PreSave_EntitiesReference()
@@ -169,6 +420,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
                 DataAccess.Data.Stores[typeof(TestEntity)].Delete(e4);
             }
         }
+
+    
 	#endregion
 
 	#region Filter tests

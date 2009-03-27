@@ -9,6 +9,7 @@
 	<!-- Global Properties -->
 	<property name="Global.BaseNamespace" value="SoftwareMonkeys.SiteStarter" />
 	<property name="Global.BinariesDirectory" value="${path::get-full-path('..\..\Bin')}" />
+	<property name="Global.BuildMode" value="Debug" />
 
 	<!-- Start.FullBuild -->
   	<target name="Start.FullBuild" description="Starts a complete (debug and release) build process.">

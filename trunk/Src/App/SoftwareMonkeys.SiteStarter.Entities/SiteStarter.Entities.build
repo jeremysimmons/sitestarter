@@ -65,7 +65,7 @@
   	<target name="Actions.Compile">  	
   		<echo message="Creating directory: bin/${Global.BuildMode}" />
   		<mkdir dir="bin/${Global.BuildMode}"/>
-  		<echo message="Debug: ${Global.BuildMode == 'Debug'}"/>
+  		<echo message="Build mode: ${Global.BuildMode == 'Debug'}"/>
   		<echo message="Compiling to: bin\${Global.BuildMode}\${Project.AssemblyName}" />
     	<csc output="bin\${Global.BuildMode}\${Project.AssemblyName}" debug="${Global.BuildMode == 'Debug'}" target="library">
 	      <sources>

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using SoftwareMonkeys.SiteStarter.Entities;
+using System.Reflection;
 
 namespace SoftwareMonkeys.SiteStarter.Data
 {
@@ -41,6 +42,8 @@ namespace SoftwareMonkeys.SiteStarter.Data
         void Delete(BaseEntity entity);
         bool IsStored(BaseEntity entity);
         void ApplySorting(string sortExpression);
+        BaseEntity[] GetEntitiesContainingReverseReferences(BaseEntity entity, PropertyInfo property);
+
         #endregion
     }
 }
