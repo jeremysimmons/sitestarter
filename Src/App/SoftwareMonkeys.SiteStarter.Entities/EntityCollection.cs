@@ -676,24 +676,25 @@ namespace SoftwareMonkeys.SiteStarter.Entities
                 return new Guid[] { };
 
             // Create an ID collection
-            ArrayList ids = new ArrayList();
+            List<Guid> ids = new List<Guid>();
 
             // Loop through all the entities in the collection and get their IDs
-            foreach (E entity in entities)
+            foreach (object entity in entities)
             {
                 if (entity != null)
                 {
-                    //PropertyInfo idProperty = entity.GetType().GetProperty("ID");
-                    //if (idProperty != null)
-                    //{
-                    //                        Guid id = (Guid)idProperty.GetValue(entity, (object[])null);
-                    ids.Add(entity.ID);
-                    //}
+			if (entity is BaseEntity)
+			{
+                    
+                    		ids.Add(((BaseEntity)entity).ID);
+                    	}
+			else
+				throw new NotSupportedException("Invalid type: "+ entity.GetType());
                 }
             }
 
             // Return the IDs
-            return (Guid[])ids.ToArray(typeof(Guid));
+            return (Guid[])ids.ToArray();
         }
 
         /// <summary>
@@ -744,16 +745,16 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 
         static public E[] ConvertAll(BaseEntity[] entities)
         {
-			if (entities == null)
+			if (entities == null || entities.Length == 0)
 				return (E[])null;
 		    return (E[])Array.ConvertAll<BaseEntity, E>(entities, new Converter<BaseEntity, E>(BaseEntity_Convert));
         }
 
         static public E BaseEntity_Convert(BaseEntity entity)
         {
-		if (entity == null)
-			return null;
-		else
+		//if (entity == null)
+		//	return null;
+		//else
 	            return (E)entity;
         }
     }

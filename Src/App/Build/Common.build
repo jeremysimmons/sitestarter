@@ -4,15 +4,15 @@
 	<property name="nant.settings.currentframework" value="net-2.0" />
 	
 	<!-- Global Properties -->
-	<property name="Global.Debug" value="false" />
   	
   	<target name="Common.Actions.CleanProject">
   		<echo message="Deleting *.dll, *.pdb, etc. in ${path::get-full-path(path::combine(Parameters.StartPath, 'bin'))}"/>
   		<delete>
     		<fileset basedir="${path::get-full-path(Parameters.StartPath)}">
-        		<include name="bin/**/*.dll" />
-        		<include name="bin/**/*.pdb" />
-        		<include name="obj/**/*.*" />
+        		<include name="bin/${Global.BuildMode}/*.dll" />
+        		<include name="bin/${Global.BuildMode}/*.pdb" />
+        		<include name="obj/${Global.BuildMode}/*.*" />
+        		<include name="bin/SoftwareMonkeys.*.dll" />
     		</fileset>
 		</delete>
   	</target>
@@ -22,7 +22,7 @@
   		<property name="Local.SourceDirectory" value="${path::get-full-path(path::combine(Parameters.SourceDirectory, Global.BuildMode))}" />
   		<mkdir dir="${path::combine(Global.BinariesDirectory, Global.BuildMode)}"/>
   		
-  		<echo message="${'Copying file: ' + Local.SourceDirectory}"/>
+  		<echo message="${'Copying folder: ' + Parameters.SourceDirectory}"/>
   		<echo message="${'...to ' + path::get-full-path(path::combine(Global.BinariesDirectory, Global.BuildMode))}" />
   		
     	<copy todir="${path::combine(Global.BinariesDirectory, Global.BuildMode)}" overwrite="true">

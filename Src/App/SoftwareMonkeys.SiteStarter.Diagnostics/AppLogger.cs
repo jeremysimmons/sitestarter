@@ -72,24 +72,27 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
         {
             StringBuilder logEntry = new StringBuilder();
 
-		message = message.Replace("&", "&amp;")
-			.Replace("<", "&lt;")
-			.Replace(">", "&gt;")
-			.Replace("\"", "&quot;")
-			.Replace("'", "&apos;");
-
-            logEntry.Append("<Entry>\n");
+		    logEntry.Append("<Entry>\n");
             logEntry.AppendFormat("<GroupID>{0}</GroupID>\n", CurrentGroup != null ? CurrentGroup.ID : Guid.Empty);
             logEntry.AppendFormat("<LogLevel>{0}</LogLevel>\n", logLevel);
             logEntry.AppendFormat("<Timestamp>{0}</Timestamp>\n", DateTime.Now);
             logEntry.AppendFormat("<Indent>{0}</Indent>\n", indent);
-            logEntry.AppendFormat("<Component>{0}</Component>\n", callingMethod.DeclaringType);
-            logEntry.AppendFormat("<Method>{0}</Method>\n", callingMethod.Name);
-            logEntry.AppendFormat("<Data>{0}</Data>\n", message);
+            logEntry.AppendFormat("<Component>{0}</Component>\n", EscapeLogData(callingMethod.DeclaringType.ToString()));
+            logEntry.AppendFormat("<Method>{0}</Method>\n", EscapeLogData(callingMethod.Name));
+            logEntry.AppendFormat("<Data>{0}</Data>\n", EscapeLogData(message));
             logEntry.Append("</Entry>\n");
             logEntry.AppendLine();
 
             return logEntry.ToString();
+        }
+
+        private static string EscapeLogData(string data)
+        {
+            return data.Replace("&", "&amp;")
+            .Replace("<", "&lt;")
+            .Replace(">", "&gt;")
+            .Replace("\"", "&quot;")
+            .Replace("'", "&apos;");
         }
 
         static private LogGroup currentGroup;
