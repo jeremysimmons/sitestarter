@@ -71,7 +71,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
         {
             PropertyInfo mirrorProperty = null;
 
-            using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the mirror of the property provided.", NLog.LogLevel.Debug))
+            using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the IDs property related to the property provided.", NLog.LogLevel.Debug))
             {
                 BaseEntityReferenceAttribute attribute = GetReferenceAttribute(property);
 
@@ -953,32 +953,41 @@ namespace SoftwareMonkeys.SiteStarter.Data
                                     AppLogger.Debug("Entities reference property found.");
 
                                     object value = property.GetValue(entity, null);
-                                    object idsValue = GetIDsProperty(property).GetValue(entity, null);
+
+					PropertyInfo idsProperty = GetIDsProperty(property);
+				object idsValue = null;
+
+				if (idsProperty != null)
+                                    idsValue = idsProperty.GetValue(entity, null);
 
                                     if (value == null)
                                     {
                                         AppLogger.Debug("The entities reference property value is null. Transfer skipped.");
                                     }
-                                    else if (idsValue.Equals(value))
+                                    else if (idsValue != null && idsValue.Equals(value))
                                     {
                                         AppLogger.Debug("The reference property is equivalent to the IDs property. Transfer skipped.");
                                     }
-                                    else
+                                    else if (idsProperty != null)
                                     {
 					if (property.PropertyType.IsSubclassOf(typeof(Array)))
 					{
 						AppLogger.Debug("attribute is EntityReferencesAttribute");
 	                                        AppLogger.Debug("Transferring IDs from '" + attribute.EntitiesPropertyName + "' property to '" + attribute.IDsPropertyName + "' property.");
-	                                        PropertyInfo idsProperty = DataUtilities.GetIDsProperty(property);
-	                                        idsProperty.SetValue(entity, new Collection<BaseEntity>(value).GetIDs(), null);
+						if (value != null)
+		                                        idsProperty.SetValue(entity, new Collection<BaseEntity>(value).GetIDs(), null);
+						else
+		                                        idsProperty.SetValue(entity, new Collection<BaseEntity>().GetIDs(), null);
 					}
 					else
 					{
 						
 						AppLogger.Debug("attribute is EntityReferenceAttribute");
 	                                        AppLogger.Debug("Transferring ID from '" + attribute.EntitiesPropertyName + "' property to '" + attribute.IDsPropertyName + "' property.");
-	                                        PropertyInfo idsProperty = DataUtilities.GetIDsProperty(property);
-		                                idsProperty.SetValue(entity, ((BaseEntity)value).ID, null);
+						if (value != null)
+			                                idsProperty.SetValue(entity, ((BaseEntity)value).ID, null);
+						else
+			                                idsProperty.SetValue(entity, Guid.Empty, null);
 					}
                                     }
 

@@ -66,6 +66,23 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
             }
         }
 
+        /// <summary>
+        /// Gets/sets the text displayed when there's no data.
+        /// </summary>
+        public string NoDataText
+        {
+            get
+            {
+                if (ViewState["NoDataText"] == null)
+                    ViewState["NoDataText"] = String.Empty;
+                return (string)ViewState["NoDataText"];
+            }
+            set
+            {
+                ViewState["NoDataText"] = value;
+            }
+        }
+
         protected override void PerformDataBinding()
         {
             Refresh();
@@ -83,7 +100,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
             Nodes.Clear();
 
             if (entities == null || entities.Length == 0)
-                Nodes.Add(new TreeNode("[No data found]")); // This should be in the language file
+                Nodes.Add(new TreeNode(NoDataText)); // This should be in the language file
             else
             {
                 foreach (E subEntity in entities)
