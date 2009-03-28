@@ -1034,80 +1034,87 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 
                 BaseEntity[] newReferences = (BaseEntity[])property.GetValue(entity, null);
 
-                PropertyInfo mirrorProperty = referenceEntityType.GetProperty(attribute.MirrorName);
-             
-                IList<BaseEntity> originalEntities = ObjectContainer.Query<BaseEntity>(delegate(BaseEntity e)
-                {
-                    if (mirrorProperty != null && e.GetType() == referenceEntityType)
-                    {
-                        object mirrorValue = mirrorProperty.GetValue(e, null);
-                        if (mirrorValue != null && mirrorValue is BaseEntity[])
-                            return Array.IndexOf(Collection<BaseEntity>.GetIDs((BaseEntity[])mirrorValue), entity.ID) > -1;
-                        else
-                            return false;
-                    }
-                    else
-                        return false;
-                });
+		if (attribute.MirrorName != String.Empty)
+		{
+	                PropertyInfo mirrorProperty = referenceEntityType.GetProperty(attribute.MirrorName);
+	             
+	                IList<BaseEntity> originalEntities = ObjectContainer.Query<BaseEntity>(delegate(BaseEntity e)
+	                {
+	                    if (mirrorProperty != null && e.GetType() == referenceEntityType)
+	                    {
+	                        object mirrorValue = mirrorProperty.GetValue(e, null);
+	                        if (mirrorValue != null && mirrorValue is BaseEntity[])
+	                            return Array.IndexOf(Collection<BaseEntity>.GetIDs((BaseEntity[])mirrorValue), entity.ID) > -1;
+	                        else
+	                            return false;
+	                    }
+	                    else
+	                        return false;
+	                });
+	
+	                BaseEntity[] originalReferences = (BaseEntity[])new List<BaseEntity>(originalEntities).ToArray();
+	
+	                ArrayList references = new ArrayList();
+	
+	                // If a reference exists in both old and new copy then keep it in the new
+	                if (originalReferences != null)
+	                {
+	                    for (int i = 0; i < originalReferences.Length; i++)
+	                    {
+	                        // TODO: See if this check is necessary
+	                        // If the references are being stored on this property then update mirrors.
+	                        // If the references are being stored on an IDs property then this should be skipped
+	                        if (attribute.IDsPropertyName == String.Empty && !attribute.ExcludeFromDataStore)
+	                        {
+	                            object mirrorValue = null;
+	                            if (mirrorProperty != null)
+	                                mirrorValue = mirrorProperty.GetValue(originalReferences[i], null);
+	
+	                            // If the mirror contains a reference but the updated entity then remove the old reference
+	                            if ((mirrorProperty == null || Array.IndexOf(Collection<BaseEntity>.GetIDs((BaseEntity[])mirrorValue), entity.ID) > -1)
+	                                && Array.IndexOf(Collection<BaseEntity>.GetIDs(newReferences), originalReferences[i].ID) == -1)
+	                                toUpdate.Add(DataUtilities.RemoveReferences(originalReferences[i], entity, DataUtilities.GetMirrorProperty(property)));
+	                        }
+	                    }
+	                }
+	
+	                if (newReferences != null)
+	                {
+	                    for (int i = 0; i < newReferences.Length; i++)
+	                    {
+	                          // TODO: See if this check is necessary
+	                        // If the references are being stored on this property then update mirrors.
+	                        // If the references are being stored on an IDs property then this should be skipped
+	                        if (attribute.IDsPropertyName == String.Empty && !attribute.ExcludeFromDataStore)
+	                        {
+	                            // Get the mirror value
+	                            object mirrorValue = null;
+	                            if (mirrorProperty != null)
+	                                mirrorValue = mirrorProperty.GetValue(newReferences[i], null);
+	
+	                            // If the mirror value doesn't contain a reference to the current entity then add one
+	                            if (mirrorProperty == null || Array.IndexOf(Collection<BaseEntity>.GetIDs((BaseEntity[])mirrorValue), entity.ID) == -1)
+	                                toUpdate.Add(DataUtilities.AddReferences(newReferences[i], entity, DataUtilities.GetMirrorProperty(property)));
+	
+	                            // TODO: Check if needed
+	                            //  if (Array.IndexOf(Collection<Entity>.GetIDs(originalReferences), newReferences[i]) > -1)
+	                            //  {
+	                            references.Add(newReferences[i]);
+	                            //  }
+	                        }
+	                    }
+	                }
 
-                BaseEntity[] originalReferences = (BaseEntity[])new List<BaseEntity>(originalEntities).ToArray();
+	                // Set a bound copy of the referenced object to the property to ensure it won't get duplicated
+	                if (references != null && references.Count > 0)
+	                    property.SetValue(entity, references.ToArray(referenceEntityType), null);
+	                else
+	                    property.SetValue(entity, null, null);
 
-                ArrayList references = new ArrayList();
+		}
+		else
+			AppLogger.Debug("Mirror name is blank. Skipping.");
 
-                // If a reference exists in both old and new copy then keep it in the new
-                if (originalReferences != null)
-                {
-                    for (int i = 0; i < originalReferences.Length; i++)
-                    {
-                        // TODO: See if this check is necessary
-                        // If the references are being stored on this property then update mirrors.
-                        // If the references are being stored on an IDs property then this should be skipped
-                        if (attribute.IDsPropertyName == String.Empty && !attribute.ExcludeFromDataStore)
-                        {
-                            object mirrorValue = null;
-                            if (mirrorProperty != null)
-                                mirrorValue = mirrorProperty.GetValue(originalReferences[i], null);
-
-                            // If the mirror contains a reference but the updated entity then remove the old reference
-                            if ((mirrorProperty == null || Array.IndexOf(Collection<BaseEntity>.GetIDs((BaseEntity[])mirrorValue), entity.ID) > -1)
-                                && Array.IndexOf(Collection<BaseEntity>.GetIDs(newReferences), originalReferences[i].ID) == -1)
-                                toUpdate.Add(DataUtilities.RemoveReferences(originalReferences[i], entity, DataUtilities.GetMirrorProperty(property)));
-                        }
-                    }
-                }
-
-                if (newReferences != null)
-                {
-                    for (int i = 0; i < newReferences.Length; i++)
-                    {
-                          // TODO: See if this check is necessary
-                        // If the references are being stored on this property then update mirrors.
-                        // If the references are being stored on an IDs property then this should be skipped
-                        if (attribute.IDsPropertyName == String.Empty && !attribute.ExcludeFromDataStore)
-                        {
-                            // Get the mirror value
-                            object mirrorValue = null;
-                            if (mirrorProperty != null)
-                                mirrorValue = mirrorProperty.GetValue(newReferences[i], null);
-
-                            // If the mirror value doesn't contain a reference to the current entity then add one
-                            if (mirrorProperty == null || Array.IndexOf(Collection<BaseEntity>.GetIDs((BaseEntity[])mirrorValue), entity.ID) == -1)
-                                toUpdate.Add(DataUtilities.AddReferences(newReferences[i], entity, DataUtilities.GetMirrorProperty(property)));
-
-                            // TODO: Check if needed
-                            //  if (Array.IndexOf(Collection<Entity>.GetIDs(originalReferences), newReferences[i]) > -1)
-                            //  {
-                            references.Add(newReferences[i]);
-                            //  }
-                        }
-                    }
-                }
-
-                // Set a bound copy of the referenced object to the property to ensure it won't get duplicated
-                if (references != null && references.Count > 0)
-                    property.SetValue(entity, references.ToArray(referenceEntityType), null);
-                else
-                    property.SetValue(entity, null, null);
             }
 
             return (BaseEntity[])toUpdate.ToArray(typeof(BaseEntity));

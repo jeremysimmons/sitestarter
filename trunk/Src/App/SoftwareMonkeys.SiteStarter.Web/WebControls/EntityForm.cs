@@ -110,72 +110,81 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
         protected override void OnInit(EventArgs e)
         {
-            //Controls.Add(table);
-            //table.Width = Unit.Percentage(100);
-            //if (!Page.IsPostBack)
-            //{
-                HeadingCell.Text = HeadingText;
-                HeadingCell.ColumnSpan = 2;
-                HeadingCell.CssClass = HeadingCssClass;
-                HeadingRow.Cells.Add(HeadingCell);
-                Rows.AddAt(0, HeadingRow);
+		using (LogGroup logGroup = AppLogger.StartGroup("Initializing the EntityForm control.", NLog.LogLevel.Debug))
+		{
+	            //Controls.Add(table);
+	            //table.Width = Unit.Percentage(100);
+	            //if (!Page.IsPostBack)
+	            //{
+	                HeadingCell.Text = HeadingText;
+	                HeadingCell.ColumnSpan = 2;
+	                HeadingCell.CssClass = HeadingCssClass;
+	                HeadingRow.Cells.Add(HeadingCell);
+	                Rows.AddAt(0, HeadingRow);
+	
+	                TableRow newButtonsRow = null;
+	                foreach (TableRow row in Rows)
+	                {
+				AppLogger.Debug("Row type: " + row.GetType().ToString());
 
-                TableRow newButtonsRow = null;
-                foreach (TableRow row in Rows)
-                {
-                    if (row is EntityFormButtonsItem)
-                    {
-                        EntityFormButtonsItem item = (EntityFormButtonsItem)row;
+	                    if (row is EntityFormButtonsItem)
+	                    {
+	                        EntityFormButtonsItem item = (EntityFormButtonsItem)row;
 
-                        newButtonsRow = CopyButtonsRow(item);
+				AppLogger.Debug("Binding item with field control ID: " + item.FieldControlID);
+	
+	                        newButtonsRow = CopyButtonsRow(item);
+	
+	                        foreach (Control control in item.Cells[1].Controls)
+	                        {
+	                            if (control is Button)
+	                            {
+	                                HandleEvents((Button)control);
+	                            }
+	                        }
+	
+	                        if (newButtonsRow != null)
+	                        {
+	                            foreach (Control control in newButtonsRow.Cells[0].Controls)
+	                            {
+	                                if (control is Button)
+	                                {
+	                                    HandleEvents((Button)control);
+	                                }
+	                            }
+	                        }
+	                    }
+	                    else if (row is EntityFormItem || row.GetType().BaseType == typeof(EntityFormItem))
+	                    {
+	                        EntityFormItem item = (EntityFormItem)row;
 
-                        foreach (Control control in item.Cells[1].Controls)
-                        {
-                            if (control is Button)
-                            {
-                                HandleEvents((Button)control);
-                            }
-                        }
-
-                        if (newButtonsRow != null)
-                        {
-                            foreach (Control control in newButtonsRow.Cells[0].Controls)
-                            {
-                                if (control is Button)
-                                {
-                                    HandleEvents((Button)control);
-                                }
-                            }
-                        }
-                    }
-                    else if (row is EntityFormItem || row.GetType().BaseType == typeof(EntityFormItem))
-                    {
-                        EntityFormItem item = (EntityFormItem)row;
-
-                        // If a custom CSS class hasn't been set on the object use the default one
-                        if (item.TextCssClass != String.Empty)
-                            item.TextCssClass = ItemTextCssClass;
-
-                        foreach (Control control in item.Cells[1].Controls)
-                        {
-                            if (control is Button)
-                            {
-                               // HandleEvents((Button)control);
-                            }
-                        }
-
-                        //Rows.Add(item);
-                    }
-                    else if (row is TableRow)
-                    {
-                       // Rows.Add(row);
-                    }
-                }
-                if (newButtonsRow != null)
-                    Rows.AddAt(0, newButtonsRow);
-
-                base.OnInit(e);
-            //}
+				AppLogger.Debug("Binding item with field control ID: " + item.FieldControlID);
+	
+	                        // If a custom CSS class hasn't been set on the object use the default one
+	                        if (item.TextCssClass != String.Empty)
+	                            item.TextCssClass = ItemTextCssClass;
+	
+	                        foreach (Control control in item.Cells[1].Controls)
+	                        {
+	                            if (control is Button)
+	                            {
+	                               // HandleEvents((Button)control);
+	                            }
+	                        }
+	
+	                        //Rows.Add(item);
+	                    }
+	                    else if (row is TableRow)
+	                    {
+	                       // Rows.Add(row);
+	                    }
+	                }
+	                if (newButtonsRow != null)
+	                    Rows.AddAt(0, newButtonsRow);
+	
+	                base.OnInit(e);
+	            //}
+		}
         }
 
         private TableRow CopyButtonsRow(EntityFormButtonsItem item)
@@ -209,7 +218,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
         public override void DataBind()
         {
-	    using (LogGroup logGroup = AppLogger.StartGroup("Binds the DataSource data to the values of the fields in the EntityForm.", NLog.LogLevel.Debug))
+	    using (LogGroup logGroup = AppLogger.StartGroup("Binding the DataSource data to the values of the fields in the EntityForm.", NLog.LogLevel.Debug))
 	    {		
                 base.DataBind();
 
