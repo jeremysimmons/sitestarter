@@ -54,6 +54,8 @@
     <Compile Include="EntityReferencesAttribute.cs" />
     <Compile Include="SortDirection.cs" />
     <Compile Include="User.cs" />
+    <Compile Include="UserPermission.cs" />
+    <Compile Include="UserRole.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

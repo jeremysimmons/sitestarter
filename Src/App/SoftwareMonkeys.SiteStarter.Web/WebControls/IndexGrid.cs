@@ -20,21 +20,31 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
                 SortChanged(this, EventArgs.Empty);
         }
 
-
         /// <summary>
         /// Selects the appropriate sort item.
         /// </summary>
         private void SelectSortItem()
         {
-            if (Sort != null)
-            {
-                if (CurrentSort != null && CurrentSort.Trim().Length > 0)
-                    Sort.SelectedIndex = Sort.Items.IndexOf(Sort.Items.FindByValue(CurrentSort));
-                else
-                {
-                    Sort.SelectedIndex = Sort.Items.IndexOf(Sort.Items.FindByValue(DefaultSort));
-                }
-            }
+		using (LogGroup logGroup = AppLogger.StartGroup("Selecting the current sort item.", NLog.LogLevel.Debug))
+		{
+	            if (Sort != null)
+	            {
+			AppLogger.Debug("Current sort: " + CurrentSort);
+			AppLogger.Debug("Default sort: " + DefaultSort);
+	                if (CurrentSort != null && CurrentSort.Trim().Length > 0)
+			{
+				AppLogger.Debug("Using CurrentSort");
+	                    Sort.SelectedIndex = Sort.Items.IndexOf(Sort.Items.FindByValue(CurrentSort));
+			}
+	                else
+	                {
+				AppLogger.Debug("Using DefaultSort");
+	                    Sort.SelectedIndex = Sort.Items.IndexOf(Sort.Items.FindByValue(DefaultSort));
+	                }
+	            }
+			else
+				AppLogger.Debug("Sort control is null");
+		}
         }
 
         /// <summary>
@@ -603,24 +613,32 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
 				SelectSortItem();
 
-			            if (!Page.IsPostBack && (DataSource == null || DataSource.Length == 0))
+			            if (!Page.IsPostBack)
 			            {
-					AppLogger.Info("DataSource is empty. Adding [EmptyDataText] to control.");
-
-		                	TableCell cell = new TableCell();
-			                cell.Controls.Add(new LiteralControl("<i>[" + EmptyDataText + "]</i>"));
-			
-			                DataGridItem row = new DataGridItem(Items.Count, 0, ListItemType.Item);
-			                row.Cells.Add(cell);
-			
-			                row.Visible = DataSource == null || DataSource.Length == 0;
-			
-			                if (Controls.Count > 0)
-			                    ((Table)Controls[0]).Rows.Add(row);
+					if (DataSource == null || DataSource.Length == 0)
+					{
+						AppLogger.Debug("DataSource is empty. Adding [EmptyDataText] to control.");
+	
+			                	TableCell cell = new TableCell();
+				                cell.Controls.Add(new LiteralControl("<i>[" + EmptyDataText + "]</i>"));
+				
+				                DataGridItem row = new DataGridItem(Items.Count, 0, ListItemType.Item);
+				                row.Cells.Add(cell);
+				
+				                row.Visible = DataSource == null || DataSource.Length == 0;
+				
+				                if (Controls.Count > 0)
+				                    ((Table)Controls[0]).Rows.Add(row);
+					}
+					else
+					{
+						AppLogger.Debug("DataSource is not empty.");
+						AppLogger.Debug("DataSource.Length: " + DataSource.Length);
+					}
 				}
-		        }
 
-			base.DataBind ();
+				base.DataBind ();
+		        }
 		}
 
 

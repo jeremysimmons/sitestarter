@@ -26,6 +26,15 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
             get { return SoftwareMonkeys.SiteStarter.Configuration.Config.Application.PhysicalPath; }
         }
 
+	public DataUtilitiesTests()
+	{
+       // if (!SoftwareMonkeys.SiteStarter.Configuration.Config.IsInitialized == null)
+       // {
+       //     string path = Directory.GetCurrentDirectory().Substring(0, Directory.GetCurrentDirectory().ToCharArray().Length - 3);
+       //     SoftwareMonkeys.SiteStarter.Configuration.Config.Initialize(path);
+       // }
+	}
+
         #region Singleton tests
         [Test]
         public void Test_Data_EnsureInitialized()
@@ -52,10 +61,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 			e3.ReferencedEntityIDs = new Guid[] {e4.ID};
 			
-
-			PropertyInfo property = e4.GetType().GetProperty("ReferencedEntityIDs");
-
-			BaseEntity[] toUpdate = DataUtilities.AddReferences(e4, e3, property);
+			BaseEntity[] toUpdate = DataUtilities.AddReferences(e4, e3, "ReferencedEntityIDs");
 
 			Assert.IsNotNull(toUpdate, "The toUpdate variable was returned null.");
 			if (toUpdate != null)
@@ -105,10 +111,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 			e1.PageIDs = new Guid[] { e2.ID };
 			
-
-			PropertyInfo property = e2.GetType().GetProperty("ArticleID");
-
-			BaseEntity[] toUpdate = DataUtilities.AddReferences(e2, e1, property);
+			BaseEntity[] toUpdate = DataUtilities.AddReferences(e2, e1, "ArticleID");
 
 			Assert.IsNotNull(toUpdate, "The toUpdate variable was returned null.");
 			if (toUpdate != null)
@@ -133,9 +136,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			e2.ArticleID = e1.ID;
 			
 
-			PropertyInfo property = e1.GetType().GetProperty("PageIDs");
 
-			BaseEntity[] toUpdate = DataUtilities.AddReferences(e1, e2, property);
+			BaseEntity[] toUpdate = DataUtilities.AddReferences(e1, e2, "PageIDs");
 
 			Assert.IsNotNull(toUpdate, "The toUpdate variable was returned null.");
 			if (toUpdate != null)
@@ -146,7 +148,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 	[Test]
 	public void Test_RemoveReferences_IDsToIDs()
 	{
-		using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetReferenceType function.", NLog.LogLevel.Debug))
+		using (LogGroup logGroup = AppLogger.StartGroup("Testing the RemoveReferences function with and IDs to IDs reference.", NLog.LogLevel.Debug))
 		{
 	        	EntityThree e3 = new EntityThree();
 			e3.ID = Guid.NewGuid();
@@ -160,18 +162,17 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			e3.ReferencedEntityIDs = new Guid[] {e4.ID};
 			e4.ReferencedEntityIDs = new Guid[] {e3.ID};
 			
-			DataAccess.Data.Stores[typeof(EntityThree)].Save(e4);
-			DataAccess.Data.Stores[typeof(EntityThree)].Save(e3);
+			//DataAccess.Data.Stores[typeof(EntityThree)].Save(e4);
+			//DataAccess.Data.Stores[typeof(EntityThree)].Save(e3);
 
-			PropertyInfo property = e4.GetType().GetProperty("ReferencedEntityIDs");
-
-			BaseEntity[] toUpdate = DataUtilities.RemoveReferences(e4, e3, property);
+			BaseEntity[] toUpdate = DataUtilities.RemoveReferences(e4, e3, "ReferencedEntityIDs");
 
 			Assert.IsNotNull(toUpdate, "The toUpdate variable was returned null.");
 			if (toUpdate != null)
 			{
 				Assert.AreEqual(1, toUpdate.Length, "The modified entity isn't in the 'to update' list.");
 				Assert.AreEqual(e4.ID, toUpdate[0].ID, "The wrong entity was modified.");
+				Assert.AreEqual(0, ((EntityFour)toUpdate[0]).ReferencedEntityIDs.Length, "The original referenced entity's now obsolete references weren't removed properly.");
 			}
 		}
 	}
@@ -179,7 +180,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 	[Test]
 	public void Test_RemoveReferences_IDToIDs()
 	{
-		using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetReferenceType function.", NLog.LogLevel.Debug))
+		using (LogGroup logGroup = AppLogger.StartGroup("Testing the RemoveReferences function with an ID to IDs reference.", NLog.LogLevel.Debug))
 		{
 	        	TestArticle e1 = new TestArticle();
 			e1.ID = Guid.NewGuid();
@@ -195,15 +196,15 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			//DataAccess.Data.Stores[typeof(EntityThree)].Save(e1);
 			//DataAccess.Data.Stores[typeof(EntityThree)].Save(e2);
 
-			PropertyInfo property = e1.GetType().GetProperty("PageIDs");
-
-			BaseEntity[] toUpdate = DataUtilities.RemoveReferences(e1, e2, property);
+			TestArticle[] toUpdate = Collection<TestArticle>.ConvertAll(DataUtilities.RemoveReferences(e1, e2, "PageIDs"));
 
 			Assert.IsNotNull(toUpdate, "The toUpdate variable was returned null.");
 			if (toUpdate != null)
 			{
 				Assert.AreEqual(1, toUpdate.Length, "The modified entity isn't in the 'to update' list.");
 				Assert.AreEqual(e1.ID, toUpdate[0].ID, "The wrong entity was modified.");
+				Assert.IsTrue(Array.IndexOf(toUpdate[0].PageIDs, e2.ID) == -1, "The obsolete reference wasn't cleared properly.");
+				//Assert.IsTrue(toUpdate[0].ArticleID == null || toUpdate[0].ArticleID == Guid.Empty, "The obsolete reference wasn't cleared properly.");
 			}
 		}
 	}
@@ -211,7 +212,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 	[Test]
 	public void Test_RemoveReferences_IDsToID()
 	{
-		using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetReferenceType function.", NLog.LogLevel.Debug))
+		using (LogGroup logGroup = AppLogger.StartGroup("Testing the RemoveReferences function with an IDs to ID reference.", NLog.LogLevel.Debug))
 		{
 	        	TestArticle e1 = new TestArticle();
 			e1.ID = Guid.NewGuid();
@@ -227,15 +228,15 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			//DataAccess.Data.Stores[typeof(EntityThree)].Save(e1);
 			//DataAccess.Data.Stores[typeof(EntityThree)].Save(e2);
 
-			PropertyInfo property = e2.GetType().GetProperty("ArticleID");
-
-			BaseEntity[] toUpdate = DataUtilities.RemoveReferences(e2, e1, property);
+			TestArticlePage[] toUpdate = Collection<TestArticlePage>.ConvertAll(DataUtilities.RemoveReferences(e2, e1, "ArticleID"));
 
 			Assert.IsNotNull(toUpdate, "The toUpdate variable was returned null.");
 			if (toUpdate != null)
 			{
 				Assert.AreEqual(1, toUpdate.Length, "The modified entity isn't in the 'to update' list.");
-				Assert.AreEqual(e2.ID, toUpdate[0].ID, "The wrong entity was modified.");
+				Assert.AreEqual(e2.ID, toUpdate[0].ID, "The wrong entity was modified.");//
+				Assert.IsTrue(toUpdate[0].ArticleID == null || toUpdate[0].ArticleID == Guid.Empty, "The obsolete reference wasn't cleared properly.");
+				//Assert.IsTrue(toUpdate[0].PageIDs == null || toUpdate[0].PageIDs == new Guid[] {}, "The obsolete reference wasn't cleared properly.");
 			}
 		}
 	}
@@ -282,7 +283,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 			PropertyInfo property = e3.GetType().GetProperty("ReferencedEntityIDs");
 
-			PropertyInfo mirrorProperty = DataUtilities.GetMirrorProperty(property, DataUtilities.GetReferenceAttribute(property));
+			PropertyInfo mirrorProperty = e4.GetType().GetProperty(DataUtilities.GetMirrorProperty(property, DataUtilities.GetReferenceAttribute(property)));
 
 			Assert.AreEqual("ReferencedEntityIDs", mirrorProperty.Name, "The names don't match");
 
@@ -308,7 +309,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 			PropertyInfo property = e3.GetType().GetProperty("ReferencedEntities");
 
-			PropertyInfo mirrorProperty = DataUtilities.GetMirrorProperty(property, DataUtilities.GetReferenceAttribute(property));
+			PropertyInfo mirrorProperty = e4.GetType().GetProperty(DataUtilities.GetMirrorProperty(property, DataUtilities.GetReferenceAttribute(property)));
 
 			Assert.AreEqual("ReferencedEntities", mirrorProperty.Name, "The names don't match");
 
@@ -368,7 +369,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 	}
 
         [Test]
-        public void Test_SynchroniseReverseReferences()
+        public void Test_SynchroniseReverseReferences_IDsToIDs()
         {
             using (LogGroup logGroup = AppLogger.StartGroup("Testing a the preparation for saving entities references.", NLog.LogLevel.Debug))
             {
@@ -424,8 +425,477 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
                                 else
                                     Assert.Fail("No entity found. The save must have failed.");
 
-                                //DataAccess.Data.Stores[typeof(TestEntity)].Delete(e3);
+                                DataAccess.Data.Stores[typeof(TestEntity)].Delete(e3);
                                 DataAccess.Data.Stores[typeof(TestEntity)].Delete(e4);
+            }
+        }
+
+       [Test]
+        public void Test_SynchroniseReverseReferences_IDsToID()
+        {
+            using (LogGroup logGroup = AppLogger.StartGroup("Testing a the preparation for saving entities references.", NLog.LogLevel.Debug))
+            {
+                	        	TestArticle e1 = new TestArticle();
+			e1.ID = Guid.NewGuid();
+			e1.Title = "Test 1";
+			
+
+			TestArticlePage e2 = new TestArticlePage();
+			e2.ID = Guid.NewGuid();
+			e2.Title = "Test 2";
+
+			e2.ArticleID = e1.ID;
+
+                                DataAccess.Data.Stores[typeof(TestArticle)].Save(e1);
+
+                                //DataAccess.Data.Stores[typeof(TestEntity)].Save(e2);
+
+                                PropertyInfo property = e2.GetType().GetProperty("ArticleID");
+
+                                BaseEntity[] updated = (BaseEntity[])DataUtilities.SynchroniseReverseReferences(e2, property, DataAccess.Data.Stores[e2.GetType()].GetEntitiesContainingReverseReferences(e2, property));
+
+                                if (updated != null)
+                                {
+                                    Assert.Greater(updated.Length, 0, "No entities were updated.");
+
+                                    TestArticle entity = (TestArticle)updated[0];
+                                    Assert.IsNotNull(entity.PageIDs, "The mirror entity ID references property has not beed set. The automatic preparation failed.");
+                                    if (entity.PageIDs != null)
+                                    {
+                                        AppLogger.Debug("entity.PageIDs != null");
+
+                                        Assert.AreEqual(1, entity.PageIDs.Length, "Incorrect number of reference entity IDs.");
+                                    }
+                                    else
+                                    {
+                                        AppLogger.Debug("entity.PageIDs == null");
+                                    }
+                                }
+                                else
+                                    Assert.Fail("No entity found. The save must have failed.");
+
+                                DataAccess.Data.Stores[typeof(TestEntity)].Delete(e1);
+                                DataAccess.Data.Stores[typeof(TestEntity)].Delete(e2);
+            }
+        }
+
+       [Test]
+        public void Test_SynchroniseReverseReferences_IDToIDs()
+        {
+            using (LogGroup logGroup = AppLogger.StartGroup("Testing a the preparation for saving entities references.", NLog.LogLevel.Debug))
+            {
+                	TestArticle e1 = new TestArticle();
+			e1.ID = Guid.NewGuid();
+			e1.Title = "Test 1";
+			
+
+			TestArticlePage e2 = new TestArticlePage();
+			e2.ID = Guid.NewGuid();
+			e2.Title = "Test 2";
+
+			e1.PageIDs = new Guid[] { e2.ID };
+			e2.ArticleID = e1.ID;
+                
+
+                                DataAccess.Data.Stores[typeof(TestEntity)].Save(e1);
+
+                                //DataAccess.Data.Stores[typeof(TestEntity)].Save(e2);
+
+				BaseEntity[] reverseReferencedEntities = new BaseEntity[] {e2};//DataAccess.Data.Stores[e1.GetType()].GetEntitiesContainingReverseReferences(e1, property);
+
+                                PropertyInfo property = e1.GetType().GetProperty("PageIDs");
+
+                                BaseEntity[] updated = (BaseEntity[])DataUtilities.SynchroniseReverseReferences(e1, property, reverseReferencedEntities);
+
+                                if (updated != null)
+                                {
+                                    Assert.Greater(updated.Length, 0, "No entities were updated.");
+
+                                    TestArticlePage entity = (TestArticlePage)updated[0];
+                                    Assert.IsNotNull(entity);//, "The mirror entity ID references property has not beed set. The automatic preparation failed.");
+					Assert.AreEqual(e2.ID, entity.ID, "The wrong entity was modified or returned.");
+					Assert.IsTrue(entity.ArticleID == null || entity.ArticleID == Guid.Empty, "The obsolete reference wasn't cleared properly.");
+                                    /*if (entity.ReferencedEntityIDs != null)
+                                    {
+                                        AppLogger.Debug("entity.ReferencedEntityIDs != null");
+
+                                        Assert.AreEqual(1, entity.ReferencedEntityIDs.Length, "Incorrect number of reference entity IDs.");
+                                    }
+                                    else
+                                    {
+                                        AppLogger.Debug("entity.ReferencedEntities == null");
+                                    }*/
+                                }
+                                else
+                                    Assert.Fail("No entity found. The save must have failed.");
+
+                                DataAccess.Data.Stores[typeof(TestEntity)].Delete(e2);
+                                DataAccess.Data.Stores[typeof(TestEntity)].Delete(e1);
+            }
+        }
+
+       [Test]
+        public void Test_GetReferenceIDs_Many()
+        {
+            using (LogGroup logGroup = AppLogger.StartGroup("Testing a the retrieval of reference IDs from a property.", NLog.LogLevel.Debug))
+            {
+                	TestArticle e1 = new TestArticle();
+			e1.ID = Guid.NewGuid();
+			e1.Title = "Test 1";
+			
+
+			TestArticlePage e2 = new TestArticlePage();
+			e2.ID = Guid.NewGuid();
+			e2.Title = "Test 2";
+
+			e1.PageIDs = new Guid[] { e2.ID };
+                
+
+                                //DataAccess.Data.Stores[typeof(TestEntity)].Save(e2);
+
+                                //DataAccess.Data.Stores[typeof(TestEntity)].Save(e1);
+
+			PropertyInfo property = e1.GetType().GetProperty("PageIDs");
+
+                         Guid[] found = DataUtilities.GetReferenceIDs(e1, property);
+
+			Assert.AreEqual(1, found.Length, "The reference wasn't retrieved properly.");
+			Assert.AreEqual(e2.ID, found[0], "The wrong ID was retrieved.");
+
+                             //   DataAccess.Data.Stores[typeof(TestEntity)].Delete(e2);
+                             //   DataAccess.Data.Stores[typeof(TestEntity)].Delete(e1);
+            }
+        }
+	
+	[Test]
+        public void Test_GetReferenceIDs_Single()
+        {
+            using (LogGroup logGroup = AppLogger.StartGroup("Testing a the retrieval of reference IDs from a property.", NLog.LogLevel.Debug))
+            {
+                	TestArticle e1 = new TestArticle();
+			e1.ID = Guid.NewGuid();
+			e1.Title = "Test 1";
+			
+
+			TestArticlePage e2 = new TestArticlePage();
+			e2.ID = Guid.NewGuid();
+			e2.Title = "Test 2";
+
+			e2.ArticleID = e1.ID;
+                
+
+                                //DataAccess.Data.Stores[typeof(TestEntity)].Save(e2);
+
+                                //DataAccess.Data.Stores[typeof(TestEntity)].Save(e1);
+
+			PropertyInfo property = e2.GetType().GetProperty("ArticleID");
+
+                         Guid[] found = DataUtilities.GetReferenceIDs(e2, property);
+
+			Assert.AreEqual(1, found.Length, "The reference wasn't retrieved properly.");
+			Assert.AreEqual(e1.ID, found[0], "The wrong ID was retrieved.");
+
+                             //   DataAccess.Data.Stores[typeof(TestEntity)].Delete(e2);
+                             //   DataAccess.Data.Stores[typeof(TestEntity)].Delete(e1);
+            }
+        }
+
+	[Test]
+        public void Test_RemoveObsoleteReverseReferences_IDsToIDs()
+        {
+            using (LogGroup logGroup = AppLogger.StartGroup("Testing a the retrieval of reference IDs from a property.", NLog.LogLevel.Debug))
+            {
+                	EntityThree e3 = new EntityThree();
+	                e3.ID = Guid.NewGuid();
+	                e3.Name = "Test E3";
+	
+	
+	                EntityFour e4 = new EntityFour();
+	                e4.ID = Guid.NewGuid();
+	                e4.Name = "Test E4";
+
+
+                	EntityThree e32 = new EntityThree();
+	                e32.ID = Guid.NewGuid();
+	                e32.Name = "Test E32";
+	
+			// Create the obsolete reference
+	                e3.ReferencedEntityIDs = new Guid[] { e4.ID };
+
+			// Create the new reference
+	                e4.ReferencedEntityIDs = new Guid[] { e32.ID };
+	                e32.ReferencedEntityIDs = new Guid[] { e4.ID };
+
+			//page1.ArticleID = article1.ID;
+			//article1.PageIDs = new Guid[] {page1.ID};
+                
+
+                        //        DataAccess.Data.Stores[typeof(TestEntity)].Save(article1);
+
+
+			//page1.ArticleID = article2.ID;
+			//article2.PageIDs = new Guid[] {page1.ID};
+
+                                //DataAccess.Data.Stores[typeof(TestEntity)].Save(e1);
+
+			PropertyInfo property = e4.GetType().GetProperty("ReferencedEntityIDs");
+
+			BaseEntity[] oldReverseReferences = new BaseEntity[] {e3};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntitiesContainingReverseReferences(article1, property);
+			BaseEntity[] newReferences =  new BaseEntity[] {e32};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntities(article1.PageIDs);
+
+                         EntityThree[] found = Collection<EntityThree>.ConvertAll(DataUtilities.RemoveObsoleteReverseReferences(e4, property, newReferences, oldReverseReferences));
+
+			Assert.AreEqual(1, found.Length, "The wrong number of references were returned.");
+			if (found.Length > 0)
+			{
+				Assert.AreEqual(e3.ID, found[0].ID, "The wrong entity was retrieved.");
+
+				Assert.IsTrue(Array.IndexOf(found[0].ReferencedEntityIDs, e3.ID) == -1, "The obsolete reference wasn't cleared properly.");
+			}
+
+                             //   DataAccess.Data.Stores[typeof(TestEntity)].Delete(e2);
+                             //   DataAccess.Data.Stores[typeof(TestEntity)].Delete(e1);
+            }
+        }
+
+	[Test]
+        public void Test_RemoveObsoleteReverseReferences_IDToIDs()
+        {
+            using (LogGroup logGroup = AppLogger.StartGroup("Testing a the retrieval of reference IDs from a property.", NLog.LogLevel.Debug))
+            {
+                	TestArticle article1 = new TestArticle();
+			article1.ID = Guid.NewGuid();
+			article1.Title = "Article 1";
+
+			TestArticlePage page1 = new TestArticlePage();
+			page1.ID = Guid.NewGuid();
+			page1.Title = "Page 1";
+
+			TestArticlePage page2 = new TestArticlePage();
+			page2.ID = Guid.NewGuid();
+			page2.Title = "Page 2";
+
+			article1.PageIDs = new Guid[] { page1.ID };
+			page1.ArticleID = article1.ID;
+                
+
+                        //        DataAccess.Data.Stores[typeof(TestEntity)].Save(article1);
+
+
+			article1.PageIDs = new Guid[] { page2.ID };
+
+                                //DataAccess.Data.Stores[typeof(TestEntity)].Save(e1);
+
+			PropertyInfo property = article1.GetType().GetProperty("PageIDs");
+
+			BaseEntity[] oldReverseReferences = new BaseEntity[] {page1};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntitiesContainingReverseReferences(article1, property);
+			BaseEntity[] newReferences =  new BaseEntity[] {page2};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntities(article1.PageIDs);
+
+                         TestArticlePage[] found = Collection<TestArticlePage>.ConvertAll(DataUtilities.RemoveObsoleteReverseReferences(article1, property, newReferences, oldReverseReferences));
+
+			Assert.AreEqual(1, found.Length, "The wrong number of references were returned.");
+			if (found.Length > 0)
+			{
+				Assert.AreEqual(page1.ID, found[0].ID, "The wrong ID was retrieved.");
+
+				Assert.IsTrue(found[0].ArticleID == null || found[0].ArticleID == Guid.Empty, "The obsolete reference wasn't cleared properly.");
+			}
+
+                             //   DataAccess.Data.Stores[typeof(TestEntity)].Delete(e2);
+                             //   DataAccess.Data.Stores[typeof(TestEntity)].Delete(e1);
+            }
+        }
+
+	[Test]
+        public void Test_RemoveObsoleteReverseReferences_IDsToID()
+        {
+            using (LogGroup logGroup = AppLogger.StartGroup("Testing a the retrieval of reference IDs from a property.", NLog.LogLevel.Debug))
+            {
+                	TestArticle article1 = new TestArticle();
+			article1.ID = Guid.NewGuid();
+			article1.Title = "Article 1";
+
+                	TestArticle article2 = new TestArticle();
+			article2.ID = Guid.NewGuid();
+			article2.Title = "Article 2";
+
+			TestArticlePage page1 = new TestArticlePage();
+			page1.ID = Guid.NewGuid();
+			page1.Title = "Page 1";
+
+			page1.ArticleID = article1.ID;
+			article1.PageIDs = new Guid[] {page1.ID};
+                
+
+                        //        DataAccess.Data.Stores[typeof(TestEntity)].Save(article1);
+
+
+			page1.ArticleID = article2.ID;
+			article2.PageIDs = new Guid[] {page1.ID};
+
+                                //DataAccess.Data.Stores[typeof(TestEntity)].Save(e1);
+
+			PropertyInfo property = page1.GetType().GetProperty("ArticleID");
+
+			BaseEntity[] oldReverseReferences = new BaseEntity[] {article1};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntitiesContainingReverseReferences(article1, property);
+			BaseEntity[] newReferences =  new BaseEntity[] {article2};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntities(article1.PageIDs);
+
+                         TestArticle[] found = Collection<TestArticle>.ConvertAll(DataUtilities.RemoveObsoleteReverseReferences(page1, property, newReferences, oldReverseReferences));
+
+			Assert.AreEqual(1, found.Length, "The wrong number of references were returned.");
+			if (found.Length > 0)
+			{
+				Assert.AreEqual(article1.ID, found[0].ID, "The wrong ID was retrieved.");
+
+				Assert.IsTrue(Array.IndexOf(found[0].PageIDs, page1.ID) == -1, "The obsolete reference wasn't cleared properly.");
+			}
+
+                             //   DataAccess.Data.Stores[typeof(TestEntity)].Delete(e2);
+                             //   DataAccess.Data.Stores[typeof(TestEntity)].Delete(e1);
+            }
+        }
+
+	[Test]
+        public void Test_AddNewReverseReferences_IDsToIDs()
+        {
+            using (LogGroup logGroup = AppLogger.StartGroup("Testing a AddNewReverseReferences function.", NLog.LogLevel.Debug))
+            {
+                	EntityThree e3 = new EntityThree();
+	                e3.ID = Guid.NewGuid();
+	                e3.Name = "Test E3";
+	
+	
+	                EntityFour e4 = new EntityFour();
+	                e4.ID = Guid.NewGuid();
+	                e4.Name = "Test E4";
+
+
+                    EntityFour e42 = new EntityFour();
+                    e42.ID = Guid.NewGuid();
+                    e42.Name = "Test E42";
+	
+			// Create the obsolete reference
+	                e3.ReferencedEntityIDs = new Guid[] { e4.ID };
+	                //e4.ReferencedEntityIDs = new Guid[] { e3.ID };
+
+			// Create the new reference
+	             //   e3.ReferencedEntityIDs = new Guid[] { e42.ID };
+	                //e32.ReferencedEntityIDs = new Guid[] { e4.ID };
+                
+
+                
+			PropertyInfo property = e3.GetType().GetProperty("ReferencedEntityIDs");
+
+			//BaseEntity[] oldReverseReferences = new BaseEntity[] {e3};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntitiesContainingReverseReferences(article1, property);
+			BaseEntity[] newReferences =  new BaseEntity[] {e4};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntities(article1.PageIDs);
+
+                         EntityFour[] found = Collection<EntityFour>.ConvertAll(DataUtilities.AddNewReverseReferences(e3, property, newReferences));
+
+			Assert.AreEqual(1, found.Length, "The wrong number of references were returned.");
+			if (found.Length > 0)
+			{
+				Assert.AreEqual(e4.ID, found[0].ID, "The wrong entity was retrieved.");
+
+				Assert.IsTrue(Array.IndexOf(found[0].ReferencedEntityIDs, e3.ID) > -1, "The new reference wasn't added properly.");
+			}
+
+                             //   DataAccess.Data.Stores[typeof(TestEntity)].Delete(e2);
+                             //   DataAccess.Data.Stores[typeof(TestEntity)].Delete(e1);
+            }
+        }
+
+	[Test]
+        public void Test_AddNewReverseReferences_IDToIDs()
+        {
+            using (LogGroup logGroup = AppLogger.StartGroup("Testing a the retrieval of reference IDs from a property.", NLog.LogLevel.Debug))
+            {
+                	TestArticle article1 = new TestArticle();
+			article1.ID = Guid.NewGuid();
+			article1.Title = "Article 1";
+
+			TestArticlePage page1 = new TestArticlePage();
+			page1.ID = Guid.NewGuid();
+			page1.Title = "Page 1";
+
+			TestArticlePage page2 = new TestArticlePage();
+			page2.ID = Guid.NewGuid();
+			page2.Title = "Page 2";
+
+			article1.PageIDs = new Guid[] { page1.ID };
+			page1.ArticleID = article1.ID;
+                
+
+                        //        DataAccess.Data.Stores[typeof(TestEntity)].Save(article1);
+
+
+			article1.PageIDs = new Guid[] { page2.ID };
+
+                                //DataAccess.Data.Stores[typeof(TestEntity)].Save(e1);
+
+			PropertyInfo property = article1.GetType().GetProperty("PageIDs");
+
+			BaseEntity[] oldReverseReferences = new BaseEntity[] {page1};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntitiesContainingReverseReferences(article1, property);
+			BaseEntity[] newReferences =  new BaseEntity[] {page2};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntities(article1.PageIDs);
+
+                         TestArticlePage[] found = Collection<TestArticlePage>.ConvertAll(DataUtilities.AddNewReverseReferences(article1, property, newReferences));
+
+			Assert.AreEqual(1, found.Length, "The wrong number of references were returned.");
+			if (found.Length > 0)
+			{
+				Assert.AreEqual(page2.ID, found[0].ID, "The wrong ID was retrieved.");
+
+				Assert.IsTrue(found[0].ArticleID == article1.ID, "The new reference wasn't added properly.");
+			}
+
+                             //   DataAccess.Data.Stores[typeof(TestEntity)].Delete(e2);
+                             //   DataAccess.Data.Stores[typeof(TestEntity)].Delete(e1);
+            }
+        }
+
+	[Test]
+        public void Test_AddNewReverseReferences_IDsToID()
+        {
+            using (LogGroup logGroup = AppLogger.StartGroup("Testing a the retrieval of reference IDs from a property.", NLog.LogLevel.Debug))
+            {
+                	TestArticle article1 = new TestArticle();
+			article1.ID = Guid.NewGuid();
+			article1.Title = "Article 1";
+
+                	TestArticle article2 = new TestArticle();
+			article2.ID = Guid.NewGuid();
+			article2.Title = "Article 2";
+
+			TestArticlePage page1 = new TestArticlePage();
+			page1.ID = Guid.NewGuid();
+			page1.Title = "Page 1";
+
+			page1.ArticleID = article1.ID;
+                
+
+                        //        DataAccess.Data.Stores[typeof(TestEntity)].Save(article1);
+
+
+			page1.ArticleID = article2.ID;
+
+                                //DataAccess.Data.Stores[typeof(TestEntity)].Save(e1);
+
+			PropertyInfo property = page1.GetType().GetProperty("ArticleID");
+
+			BaseEntity[] oldReverseReferences = new BaseEntity[] {article1};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntitiesContainingReverseReferences(article1, property);
+			BaseEntity[] newReferences =  new BaseEntity[] {article2};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntities(article1.PageIDs);
+
+                         TestArticle[] found = Collection<TestArticle>.ConvertAll(DataUtilities.AddNewReverseReferences(page1, property, newReferences));
+
+			Assert.AreEqual(1, found.Length, "The wrong number of references were returned.");
+			if (found.Length > 0)
+			{
+				Assert.AreEqual(article2.ID, found[0].ID, "The wrong entity was retrieved.");
+
+				Assert.AreEqual(new Guid[] {page1.ID}, found[0].PageIDs, "The new reference wasn't added properly.");
+			}
+
+                             //   DataAccess.Data.Stores[typeof(TestEntity)].Delete(e2);
+                             //   DataAccess.Data.Stores[typeof(TestEntity)].Delete(e1);
             }
         }
 	

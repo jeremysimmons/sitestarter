@@ -1,6 +1,7 @@
 using System;
 using System.Data;
 using System.Configuration;
+using System.Xml.Serialization;
 
 namespace SoftwareMonkeys.SiteStarter.Entities
 {
@@ -167,6 +168,46 @@ namespace SoftwareMonkeys.SiteStarter.Entities
         {
             get { return creationDate; }
             set { creationDate = value; }
+        }
+
+        private Guid[] roleIDs = new Guid[] { };
+        /// <summary>
+        /// Gets/sets the IDs of the roles for this issue.
+        /// </summary>
+        [EntityIDReferences(
+            EntitiesPropertyName = "UserRoles",
+            IDsPropertyName = "UserRoleIDs")]
+        public Guid[] UserRoleIDs
+        {
+            get
+            {
+                if (roles != null)
+                    return Collection<UserRole>.GetIDs(roles);
+                return roleIDs;
+            }
+            set
+            {
+                roleIDs = value;
+                if (roleIDs == null || (roles != null && !roleIDs.Equals(Collection<UserRole>.GetIDs(roles))))
+                    roles = null;
+            }
+        }
+
+        private UserRole[] roles = new UserRole[] { };
+        /// <summary>
+        /// Gets/sets the roles to this issue.
+        /// </summary>
+        [EntityReferences(ExcludeFromDataStore=true,
+            EntitiesPropertyName="UserRoles",
+            IDsPropertyName="UserRoleIDs")]
+        [XmlIgnore()]
+        public UserRole[] UserRoles
+        {
+            get { return roles; }
+            set
+            {
+                roles = value;
+            }
         }
 
         /// <summary>

@@ -71,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EntityFactory.cs" />
+    <Compile Include="UserRoleFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

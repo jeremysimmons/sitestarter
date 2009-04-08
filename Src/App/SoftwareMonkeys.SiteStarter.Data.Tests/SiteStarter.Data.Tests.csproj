@@ -7,8 +7,8 @@
     <ProjectGuid>{0BBD2A6C-9955-4BB6-9DCA-6AA57715C3F2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SoftwareMonkeys.SiteStarter.Configuration.Tests</RootNamespace>
-    <AssemblyName>SoftwareMonkeys.SiteStarter.Configuration.Tests</AssemblyName>
+    <RootNamespace>SoftwareMonkeys.SiteStarter.Data.Tests</RootNamespace>
+    <AssemblyName>SoftwareMonkeys.SiteStarter.Data.Tests</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
