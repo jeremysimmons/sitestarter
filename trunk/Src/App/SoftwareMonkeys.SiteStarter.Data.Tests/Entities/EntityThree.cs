@@ -22,8 +22,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests.Entities
         public Guid[] ReferencedEntityIDs
         {
             get {
-		//if (referencedEntities != null)
-		//	return Collection<BaseEntity>.GetIDs(referencedEntities);
+		if (referencedEntities != null)
+			return Collection<BaseEntity>.GetIDs(referencedEntities);
 		return referencedEntityIDs; }
             set {
 		referencedEntityIDs = value;

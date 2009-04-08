@@ -63,6 +63,7 @@
     <Compile Include="State\StateProviderManager.cs" />
     <Compile Include="State\WebStateProvider.cs" />
     <Compile Include="Utilities.cs" />
+    <Compile Include="WebControls\DateSelect.cs" />
     <Compile Include="WebControls\EntityFormPasswordConfirmItem.cs" />
     <Compile Include="WebControls\EntityFormPasswordItem.cs" />
     <Compile Include="WebControls\EntityFormEmailItem.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="WebControls\EntityFormSpecificItem.cs" />
     <Compile Include="WebControls\EntityFormTextBoxItem.cs" />
     <Compile Include="WebControls\EntitySelect.cs" />
+    <Compile Include="WebControls\EntityTree.cs" />
     <Compile Include="WebControls\IndexGrid.cs" />
     <Compile Include="WebControls\Result.cs" />
     <Compile Include="WebControls\TestResults.cs" />

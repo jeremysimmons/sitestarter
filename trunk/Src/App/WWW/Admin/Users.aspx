@@ -196,6 +196,11 @@
             DeleteUser(new Guid(IndexGrid.DataKeys[e.Item.ItemIndex].ToString()));
         }
     }
+    
+        protected void UserRolesSelect_DataLoading(object sender, EventArgs e)
+    {
+        ((EntitySelect)sender).DataSource = UserRoleFactory.GetUserRoles();
+    }
     #endregion
 </script>
 <asp:Content ID="Body" ContentPlaceHolderID="Body" runat="Server">
@@ -269,6 +274,15 @@
                                      <cc:EntityFormPasswordConfirmItem runat="server" PropertyName="PasswordConfirm" TextBox-Width="400" FieldControlID="PasswordConfirm" IsRequired='<%# OperationManager.CurrentOperation == "CreateUser" %>' text='<%# Resources.Language.PasswordConfirm + ":" %>' CompareTo="Password" CompareToErrorMessage='<%# Resources.Language.PasswordsDontMatch %>'></cc:EntityFormPasswordConfirmItem>
                                      <cc:EntityFormCheckBoxItem runat="server" PropertyName="IsApproved" Text='<%# Resources.Language.IsApproved + ":" %>' FieldControlID="IsApproved" TextBox-Text='<%# Resources.Language.IsApprovedNote %>'></cc:EntityFormCheckBoxItem>
                                       <cc:EntityFormCheckBoxItem runat="server" PropertyName="IsLockedOut" Text='<%# Resources.Language.IsLockedOut + ":" %>' FieldControlID="IsLockedOut" TextBox-Text='<%# Resources.Language.IsLockedOutNote %>'></cc:EntityFormCheckBoxItem>
+                                      <cc:EntityFormItem runat="server" PropertyName="UserRoleIDs" FieldControlID="UserRoles" ControlValuePropertyName="SelectedEntityIDs"
+                              text='<%# Resources.Language.UserRoles %>'>
+                              <FieldTemplate>
+                                  <cc:EntitySelect width="400" EntityType="SoftwareMonkeys.SiteStarter.Entities.UserRole, SoftwareMonkeys.SiteStarter.Entities" runat="server"
+                                      ValuePropertyName='Name' id="UserRoles" DisplayMode="Multiple" SelectionMode="Multiple"
+                                      NoDataText='<%# "-- " + Resources.Language.NoUserRoles + " --" %>' OnDataLoading='UserRolesSelect_DataLoading'>
+                                  </cc:EntitySelect>
+                                    </FieldTemplate>
+                                    </cc:EntityFormItem>
                                    <cc:EntityFormButtonsItem ID="EntityFormButtonsItem1" runat="server"><FieldTemplate><asp:Button ID="SaveButton" runat="server" CausesValidation="True" CommandName="Save"
                                                     Text='<%# Resources.Language.Save %>' Visible='<%# OperationManager.CurrentOperation == "CreateUser" %>'></asp:Button>
                                                     <asp:Button ID="UpdateButton" runat="server" CausesValidation="True" CommandName="Update"

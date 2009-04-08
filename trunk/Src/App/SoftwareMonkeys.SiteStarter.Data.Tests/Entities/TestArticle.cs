@@ -36,8 +36,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests.Entities
         /// <summary>
         /// Gets/sets the IDs of the pages for this scenario.
         /// </summary>
-        [EntityIDReferences(CascadeSave=true,
-            CascadeDelete = true,
+        [EntityIDReferences(
             IDsPropertyName = "PageIDs",
             EntitiesPropertyName = "Pages",
             MirrorName = "ArticleID")]
@@ -62,6 +61,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests.Entities
         /// Gets/sets the associated pages.
         /// </summary>
         [EntityReferences(ExcludeFromDataStore=true,
+		CascadeSave=true,
+            CascadeDelete = true,
             MirrorName="Article",
             IDsPropertyName="PageIDs",
             EntitiesPropertyName="Pages")]

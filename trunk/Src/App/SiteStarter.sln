@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\WWW\", "WWW\", "{C435784F-AD1C-4F5A-814C-B22FCB0BA6E7}"
 	ProjectSection(WebsiteProperties) = preProject
-		ProjectReferences = "{A5D49D94-D936-4123-BA9A-572AA7C7F426}|SoftwareMonkeys.SiteStarter.Web.dll;{61DF6782-15A0-4056-AA02-7C18F0A19B0F}|SoftwareMonkeys.SiteStarter.Data.Db4o.dll;{F6AA1DC2-1E10-43FF-97AB-D6679A854D51}|SoftwareMonkeys.SiteStarter.Tests.dll;{FBB72693-0267-4DB0-98D5-9ECBC13E98DD}|SoftwareMonkeys.SiteStarter.Web.Tests.dll;"
+		ProjectReferences = "{A5D49D94-D936-4123-BA9A-572AA7C7F426}|SoftwareMonkeys.SiteStarter.Web.dll;{61DF6782-15A0-4056-AA02-7C18F0A19B0F}|SoftwareMonkeys.SiteStarter.Data.Db4o.dll;{F6AA1DC2-1E10-43FF-97AB-D6679A854D51}|SoftwareMonkeys.SiteStarter.Business.Tests.dll;{FBB72693-0267-4DB0-98D5-9ECBC13E98DD}|SoftwareMonkeys.SiteStarter.Web.Tests.dll;{0BBD2A6C-9955-4BB6-9DCA-6AA57715C3F2}|SoftwareMonkeys.SiteStarter.Data.Tests.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/WWW"
 		Debug.AspNetCompiler.PhysicalPath = "..\WWW\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\WWW\"

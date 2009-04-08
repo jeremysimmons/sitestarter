@@ -476,6 +476,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
 		protected override void AddAttributesToRender(HtmlTextWriter writer)
 		{
+
 			// Name and ID
 			writer.AddAttribute(HtmlTextWriterAttribute.Name, UniqueID);
 			writer.AddAttribute(HtmlTextWriterAttribute.Id, ClientID);
@@ -506,8 +507,17 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				writer.AddAttribute("onchange", "__doPostBack('" + this.ClientID + "','')");
 			}
 
+
 			// Skip base implementation
 			//base.AddAttributesToRender (writer);
+
+
+			foreach (string key in Attributes.Keys)
+			{
+				// Make sure the size element isn't added when it's not wanted
+				if (key.ToLower() != "size" || DisplayMode == ListSelectionMode.Multiple)
+					writer.AddAttribute(key, Attributes[key]);
+			}
 		}
 
         public virtual void Populate()
