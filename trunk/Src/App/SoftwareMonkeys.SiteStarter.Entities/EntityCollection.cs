@@ -746,7 +746,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
         static public E[] ConvertAll(BaseEntity[] entities)
         {
 			if (entities == null || entities.Length == 0)
-				return (E[])null;
+				return new E[] {};
 		    return (E[])Array.ConvertAll<BaseEntity, E>(entities, new Converter<BaseEntity, E>(BaseEntity_Convert));
         }
 
