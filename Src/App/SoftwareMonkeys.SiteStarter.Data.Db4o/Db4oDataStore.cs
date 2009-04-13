@@ -366,12 +366,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
         /// <returns>The entities of the specified type found in the data store.</returns>
         public BaseEntity[] GetEntities(Guid[] entityIDs)
         {
-            ArrayList list = new ArrayList();
-            foreach (Guid id in entityIDs)
-            {
-                list.Add(GetEntity(typeof(BaseEntity), "id", id));
-            }
-            return (BaseEntity[])list.ToArray(typeof(BaseEntity));
+             List<BaseEntity> list = new List<BaseEntity>(ObjectContainer.Query<BaseEntity>(delegate(BaseEntity e)
+	                {
+	                    return Array.IndexOf(entityIDs, e.ID) > -1;
+	                }));
+            return (BaseEntity[])list.ToArray();
         }
 
         /// <summary>
