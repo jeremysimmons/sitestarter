@@ -6,6 +6,12 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 {
     public interface IAppConfig
     {
+
+	/// <summary>
+	/// The universal ID of the current project.
+	/// </summary>
+	Guid UniversalProjectID { get; }
+
         // TODO: Clean up
         int SessionTimeout { get;set; }
 

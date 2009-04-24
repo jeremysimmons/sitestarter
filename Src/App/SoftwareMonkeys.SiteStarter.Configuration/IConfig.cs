@@ -18,5 +18,6 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
         /// </summary>
         string PhysicalPath { get; }
 
+
 	}
 }

@@ -215,12 +215,14 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
             AppLogger.Error(message, callingMethod);
         }
 
+	[ Conditional("DEBUG") ]
         public void Debug(string message)
         {
             MethodBase callingMethod = Reflector.GetCallingMethod();
             Debug(message, callingMethod);
         }
 
+	[ Conditional("DEBUG") ]
         public void Debug(string message, MethodBase callingMethod)
         {
             AppLogger.Debug(message, callingMethod);
