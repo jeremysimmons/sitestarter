@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using NLog;
 using System.Reflection;
+using System.Diagnostics;
 
 namespace SoftwareMonkeys.SiteStarter.Diagnostics
 {
@@ -51,12 +52,14 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
             logger.Info(FormatLogEntry(LogLevel.Info, message, callingMethod, Indent));
         }
 
+	[ Conditional("DEBUG") ]
         public static void Debug(string message)
         {
             MethodBase callingMethod = Reflector.GetCallingMethod();
             Debug(message, callingMethod);
         }
 
+	[ Conditional("DEBUG") ]
         public static void Debug(string message, MethodBase callingMethod)
         {
             logger.Info(FormatLogEntry(LogLevel.Debug, message, callingMethod, Indent));
