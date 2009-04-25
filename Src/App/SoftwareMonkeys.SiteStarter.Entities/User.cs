@@ -2,6 +2,7 @@ using System;
 using System.Data;
 using System.Configuration;
 using System.Xml.Serialization;
+using System.Collections.Generic;
 
 namespace SoftwareMonkeys.SiteStarter.Entities
 {
@@ -175,9 +176,10 @@ namespace SoftwareMonkeys.SiteStarter.Entities
         /// Gets/sets the IDs of the roles for this issue.
         /// </summary>
         [EntityIDReferences(
-            EntitiesPropertyName = "UserRoles",
-            IDsPropertyName = "UserRoleIDs")]
-        public Guid[] UserRoleIDs
+           EntitiesPropertyName = "Roles",
+            MirrorName = "UserIDs",
+            IDsPropertyName = "RoleIDs")]
+        public Guid[] RoleIDs
         {
             get
             {
@@ -198,10 +200,11 @@ namespace SoftwareMonkeys.SiteStarter.Entities
         /// Gets/sets the roles to this issue.
         /// </summary>
         [EntityReferences(ExcludeFromDataStore=true,
-            EntitiesPropertyName="UserRoles",
-            IDsPropertyName="UserRoleIDs")]
+            MirrorName="Users",
+            EntitiesPropertyName="Roles",
+            IDsPropertyName="RoleIDs")]
         [XmlIgnore()]
-        public UserRole[] UserRoles
+        public UserRole[] Roles
         {
             get { return roles; }
             set
@@ -209,6 +212,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
                 roles = value;
             }
         }
+
 
         /// <summary>
         /// Empty constructor.
@@ -235,6 +239,60 @@ namespace SoftwareMonkeys.SiteStarter.Entities
         {
             Username = username;
             Password = password;
+        }
+
+        public void AddRole(UserRole role)
+        {
+            if (roles != null)
+            {
+                Collection<UserRole> list = new Collection<UserRole>();
+
+                list.Add(roles);
+
+                if (!list.Contains(role.ID))
+                    list.Add(role);
+
+                Roles = (UserRole[])list.ToArray();
+            }
+            else
+            {
+                List<Guid> list = new List<Guid>();
+
+                if (roleIDs != null)
+                    list.AddRange(roleIDs);
+
+                if (!list.Contains(role.ID))
+                    list.Add(role.ID);
+
+                RoleIDs = (Guid[])list.ToArray();
+            }
+        }
+
+        public void RemoveRole(UserRole role)
+        {
+            if (roles != null)
+            {
+                Collection<UserRole> list = new Collection<UserRole>();
+
+                list.Add(roles);
+
+                if (list.Contains(role.ID))
+                    list.Remove(role);
+
+                Roles = (UserRole[])list.ToArray();
+            }
+            else
+            {
+                List<Guid> list = new List<Guid>();
+
+                if (roleIDs != null)
+                    list.AddRange(roleIDs);
+
+                if (list.Contains(role.ID))
+                    list.Remove(role.ID);
+
+                RoleIDs = (Guid[])list.ToArray();
+            }
         }
     }
 }

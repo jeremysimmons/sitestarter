@@ -60,6 +60,7 @@
     <Compile Include="Security\Authorisation.cs" />
     <Compile Include="Security\Member.cs" />
     <Compile Include="Security\MemberProvider.cs" />
+    <Compile Include="Security\RoleProvider.cs" />
     <Compile Include="State\StateProviderManager.cs" />
     <Compile Include="State\WebStateProvider.cs" />
     <Compile Include="Utilities.cs" />
