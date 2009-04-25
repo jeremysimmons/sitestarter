@@ -54,6 +54,11 @@ private void Page_Load(object sender, EventArgs e)
 
             SoftwareMonkeys.SiteStarter.Business.UserFactory.SaveUser(user);
 
+
+            Roles.CreateRole("Administrator");
+
+            Roles.AddUserToRole(user.Username, "Administrator");
+
 	}
 
            // Response.Redirect("SetupDefaultData.aspx");

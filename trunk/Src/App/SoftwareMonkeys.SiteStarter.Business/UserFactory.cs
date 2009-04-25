@@ -31,18 +31,18 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <returns>A UserSet containing the retrieved users.</returns>
         [DataObjectMethod(DataObjectMethodType.Select, true)]
-		static public Collection<Entities.User> GetUsers()
+		static public Entities.User[] GetUsers()
 		{
-            return new Collection<Entities.User>(DataStore.GetEntities(typeof(Entities.User)));
+            return Collection<Entities.User>.ConvertAll(DataStore.GetEntities(typeof(Entities.User)));
 		}
 
 		/// <summary>
 		/// Retrieves all the specified users from the DB.
 		/// </summary>
 		/// <param name="userIDs">An array of IDs of users to retrieve.</param>
-		/// <returns>A UserSet containing the retrieved users.</returns>
+		/// <returns>An array of the retrieved users.</returns>
         [DataObjectMethod(DataObjectMethodType.Select, true)]
-        static public Collection<Entities.User> GetUsers(Guid[] userIDs)
+        static public Entities.User[] GetUsers(Guid[] userIDs)
 		{
 			// Create a new user collection
             Collection<Entities.User> users = new Collection<Entities.User>();
@@ -55,7 +55,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			}
 
 			// Return the collection
-			return users;
+            return users.ToArray();
 		}
 
 		/// <summary>
@@ -94,17 +94,17 @@ namespace SoftwareMonkeys.SiteStarter.Business
         /// <summary>
         /// Retrieves the user with the provided email.
         /// </summary>
-        static public Collection<Entities.User> GetUsersByEmail(string email)
+        static public Entities.User[] GetUsersByEmail(string email)
         {
-            return new Collection<Entities.User>(DataStore.GetEntities(typeof(Entities.User), "email", email));
+            return Collection<Entities.User>.ConvertAll(DataStore.GetEntities(typeof(Entities.User), "email", email));
         }
 
         /// <summary>
         /// Retrieves the users with the provided name.
         /// </summary>
-        static public Collection<Entities.User> GetUsersByName(string name)
+        static public Entities.User[] GetUsersByName(string name)
         {
-            return new Collection<Entities.User>(DataStore.GetEntities(typeof(Entities.User), "name", name));
+            return Collection<Entities.User>.ConvertAll(DataStore.GetEntities(typeof(Entities.User), "name", name));
         }
 
         /// <summary>
