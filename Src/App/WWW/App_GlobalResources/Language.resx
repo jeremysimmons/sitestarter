@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -329,5 +329,14 @@
   </data>
   <data name="YouAreLoggedInAs" xml:space="preserve">
     <value>You are logged in as</value>
+  </data>
+  <data name="NoRoles" xml:space="preserve">
+    <value>No Roles</value>
+  </data>
+  <data name="Roles" xml:space="preserve">
+    <value>Roles</value>
+  </data>
+  <data name="NoUsers" xml:space="preserve">
+    <value>No Users</value>
   </data>
 </root>
