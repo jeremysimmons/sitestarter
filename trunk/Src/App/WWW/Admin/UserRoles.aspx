@@ -14,7 +14,8 @@
     {
         OperationManager.StartOperation("ManageUserRoles", IndexView);
 
-        IndexSource.DataBind();
+        
+        IndexGrid.DataSource = UserRoleFactory.GetUserRoles();
 
         IndexView.DataBind();
     }
@@ -196,13 +197,14 @@
             DeleteUserRole(new Guid(IndexGrid.DataKeys[e.Item.ItemIndex].ToString()));
         }
     }
+
+    protected void UsersSelect_DataLoading(object sender, EventArgs e)
+    {
+        ((EntitySelect)sender).DataSource = UserFactory.GetUsers();
+    }
     #endregion
 </script>
 <asp:Content ID="Body" ContentPlaceHolderID="Body" runat="Server">
-    <asp:ObjectDataSource ID="IndexSource" runat="server" DataObjectTypeName="SoftwareMonkeys.SiteStarter.Entities.UserRole"
-        InsertMethod="SaveUserRole" OldValuesParameterFormatString="original_{0}" SelectMethod="GetUserRoles"
-        TypeName="SoftwareMonkeys.SiteStarter.Business.UserRoleFactory" DeleteMethod="DeleteUserRole"
-        UpdateMethod="UpdateUserRole"></asp:ObjectDataSource>
     <asp:MultiView ID="PageView" runat="server">
         <asp:View ID="IndexView" runat="server">
             <table class="OuterPanel">
@@ -221,7 +223,7 @@
                                 CommandName="New" />&nbsp;</p>
                         <p>
                             <cc:IndexGrid ID="IndexGrid" runat="server" AllowPaging="True" HeaderStyle-CssClass="Heading2" AllowSorting="True"
-                                AutoGenerateColumns="False" DataSourceID="IndexSource" EmptyDataText='<%# Resources.Language.NoUserRolesFound %>'
+                                AutoGenerateColumns="False" EmptyDataText='<%# Resources.Language.NoUserRolesFound %>'
                                 Width="100%"
                                 PageSize="2" OnItemCommand="IndexGrid_ItemCommand" DataKeyField="ID">
                                 <Columns>
@@ -259,6 +261,7 @@
                          </p>
                            <cc:EntityForm runat="server" id="DataForm" OnEntityCommand="DataForm_EntityCommand" CssClass="Panel" headingtext='<%# OperationManager.CurrentOperation == "CreateUserRole" ? Resources.Language.NewUserRoleDetails : Resources.Language.UserRoleDetails %>' headingcssclass="Heading2" width="100%">
                              <cc:EntityFormTextBoxItem runat="server" PropertyName="Name" TextBox-Width="400" FieldControlID="Name" IsRequired="true" text='<%# Resources.Language.Name + ":" %>' RequiredErrorMessage='<%# Resources.Language.UserRoleNameRequired %>'></cc:EntityFormTextBoxItem>
+				<cc:EntityFormItem runat="server" PropertyName="UserIDs" FieldControlID="Users" ControlValuePropertyName="SelectedEntityIDs" text='<%# Resources.Language.Users + ":" %>'><FieldTemplate><cc:EntitySelect width="400px" EntityType="SoftwareMonkeys.SiteStarter.Entities.User, SoftwareMonkeys.SiteStarter.Entities" runat="server" ValuePropertyName='Name' id="Users" displaymode="multiple" selectionmode="multiple" NoDataText='<%# "-- " + Resources.Language.NoUsers + " --" %>' OnDataLoading='UsersSelect_DataLoading'></cc:EntitySelect></FieldTemplate></cc:EntityFormItem>
                                   <cc:EntityFormButtonsItem ID="EntityFormButtonsItem1" runat="server"><FieldTemplate><asp:Button ID="SaveButton" runat="server" CausesValidation="True" CommandName="Save"
                                                     Text='<%# Resources.Language.Save %>' Visible='<%# OperationManager.CurrentOperation == "CreateUserRole" %>'></asp:Button>
                                                     <asp:Button ID="UpdateButton" runat="server" CausesValidation="True" CommandName="Update"

@@ -54,10 +54,11 @@ private void Page_Load(object sender, EventArgs e)
 
             SoftwareMonkeys.SiteStarter.Business.UserFactory.SaveUser(user);
 
+            if(!Roles.RoleExists("Administrator"))
+                Roles.CreateRole("Administrator");
 
-            Roles.CreateRole("Administrator");
-
-            Roles.AddUserToRole(user.Username, "Administrator");
+            if (!Roles.IsUserInRole(user.Username, "Administrator"))
+                Roles.AddUserToRole(user.Username, "Administrator");
 
 	}
 
