@@ -63,7 +63,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 
         public void Dispose()
         {
-            ObjectContainer.Dispose();
+		Close();
+            objectContainer = null;
         }
 
         public void Close()
