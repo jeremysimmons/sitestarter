@@ -21,7 +21,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
        // void Dispose();
 
         public abstract IDataStore InitializeDataStore(string dataStoreName);
-        public abstract string GetDataStoreName(Type objectType);
+        //public abstract string GetDataStoreName(Type objectType);
         public abstract string[] GetDataStoreNames();
 
 	public abstract BaseFilter CreateFilter(Type baseType);
@@ -40,6 +40,19 @@ namespace SoftwareMonkeys.SiteStarter.Data
 	/// <param name="group">The group of filters to apply to the query.</param>
         /// <returns>The entities of the specified type found in the data store.</returns>
         public abstract BaseEntity[] GetEntities(FilterGroup group);
+
+
+        /// <summary>
+        /// Retrieves all the entities with references to the one provided.
+        /// </summary>
+	/// <param name="entity">The entity to retrieve the reverse referenced entities for.</param>
+	/// <param name="propertyName">The property which mirrors the reverse references being identified.</param>
+        /// <returns>The entities containing references to the one provided.</returns>
+        public abstract BaseEntity[] GetEntitiesContainingReverseReferences(BaseEntity entity, string propertyName);
+
+	public abstract void Save(BaseEntity entity);
+	public abstract void Update(BaseEntity entity);
+	public abstract void Delete(BaseEntity entity);
 	#endregion
     }
 }

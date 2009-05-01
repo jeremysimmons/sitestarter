@@ -41,7 +41,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
         {
             get
             {
-                string dataStoreName = DataAccess.Data.GetDataStoreName(entityType);
+                string dataStoreName = DataUtilities.GetDataStoreName(entityType);
                 IDataStore store = GetByName(dataStoreName);
                 if (store == null)
                 {

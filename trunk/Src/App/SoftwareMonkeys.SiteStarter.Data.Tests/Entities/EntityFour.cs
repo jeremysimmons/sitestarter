@@ -5,7 +5,7 @@ using SoftwareMonkeys.SiteStarter.Entities;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Tests.Entities
 {
-    [DataStore("Testing")]
+    [DataStore("Testing4")]
     public class EntityFour : BaseEntity
     {
         private string name;

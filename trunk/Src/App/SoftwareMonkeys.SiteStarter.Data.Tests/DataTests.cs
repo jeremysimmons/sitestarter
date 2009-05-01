@@ -44,6 +44,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
         }*/
 
+        public DataTests()
+        {
+            Config.Initialize(ApplicationPath);
+            //DataAccess.Initialize();
+        }
+
 	#region Tests
 	[Test]
 	public void Test_PreSave_IDsToIDsReference()
@@ -74,9 +80,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 
 
-			DataAccess.Data.Stores[typeof(TestEntity)].Save(e4);
+			DataAccess.Data.Save(e4);
 		
-			DataAccess.Data.Stores[typeof(TestEntity)].Save(e3);
+			DataAccess.Data.Save(e3);
 		
 
 
@@ -103,8 +109,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			else
 				Assert.Fail("No entity found. The save must have failed.");
 	
-	       		DataAccess.Data.Stores[typeof(TestEntity)].Delete(e3);
-	       		DataAccess.Data.Stores[typeof(TestEntity)].Delete(e4);
+	       		DataAccess.Data.Delete(e3);
+	       		DataAccess.Data.Delete(e4);
 		}
 	}
 
@@ -252,46 +258,32 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			e42.Name = "Test E42";
 
 			e3.ReferencedEntityIDs = new Guid[] {e4.ID};
-			//e3.ReferencedEntities = new EntityFour[] {e4};
-			// Only one of these needs to be set for this test. The auto preparation should take care of the other one.
-            //e4.ReferencedEntities = new EntityThree[] {e3};
 
 
 
+			DataAccess.Data.Save(e4);
 		
-			PropertyFilter filter = (PropertyFilter)DataAccess.Data.CreateFilter(typeof(PropertyFilter));
-			filter.PropertyName = "ID";
-		        filter.PropertyValue = e3.ID;
-		        filter.AddType(typeof(EntityFour));
+			DataAccess.Data.Save(e3);
 
-
-
-			DataAccess.Data.Stores[typeof(TestEntity)].Save(e4);
-		
-			DataAccess.Data.Stores[typeof(TestEntity)].Save(e3);
-
-			DataAccess.Data.Stores[typeof(TestEntity)].Save(e42);
+			DataAccess.Data.Save(e42);
 		
 			e3.ReferencedEntityIDs = new Guid[] {e42.ID};
 
 
-		        Collection<BaseEntity> toUpdate = new Collection<BaseEntity>((BaseEntity[])DataAccess.Data.Stores[typeof(EntityFour)].PreUpdate(e3));
+		        Collection<BaseEntity> toUpdate = new Collection<BaseEntity>((BaseEntity[])DataAccess.Data.Stores[typeof(EntityThree)].PreUpdate(e3));
 
-
-		        //BaseEntity[] modi = (BaseEntity[])DataAccess.Data.GetEntities(filter);
-		        //Collection<EntityFour> foundList = new Collection<EntityFour>(found);
 	
 			if (toUpdate.Count > 0)
 			{
 				// Ensure that the original referenced entity was modified properly
-				Assert.AreEqual(true, toUpdate.Contains(e4.ID), "The original referenced entity wasn't properly modified.");
+				Assert.AreEqual(true, toUpdate.Contains(e4.ID), "The original referenced entity wasn't found in the modified list.");
 
 				EntityFour foundOriginal = (EntityFour)toUpdate[e4.ID];
 
 				Assert.AreEqual(0, foundOriginal.ReferencedEntityIDs.Length, "The original referenced entity's obsolete references weren't properly cleared.");
 
 				// Ensure that the new referenced entity was modified properly
-				Assert.AreEqual(true, toUpdate.Contains(e42.ID), "The new referenced entity wasn't properly modified.");
+				Assert.AreEqual(true, toUpdate.Contains(e42.ID), "The new referenced entity wasn't found in the modified list.");
 
 				EntityFour foundNew = (EntityFour)toUpdate[e42.ID];
 
@@ -318,11 +310,102 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			else
 				Assert.Fail("No entity found. The save must have failed.");
 	
-	       		DataAccess.Data.Stores[typeof(TestEntity)].Delete(e3);
-	       		DataAccess.Data.Stores[typeof(TestEntity)].Delete(e4);
-	       		DataAccess.Data.Stores[typeof(TestEntity)].Delete(e42);
+	       		DataAccess.Data.Delete(e3);
+	       		DataAccess.Data.Delete(e4);
+	       		DataAccess.Data.Delete(e42);
 		}
 	}
+
+	/*[Test]
+	public void Test_PreUpdate_EntitiesToEntitiesReference()
+	{
+		using (LogGroup logGroup = AppLogger.StartGroup("Testing a the preparation for saving entities IDs references.", NLog.LogLevel.Debug))
+		{
+	        	EntityThree e3 = new EntityThree();
+			e3.ID = Guid.NewGuid();
+			e3.Name = "Test E3";
+			
+
+			EntityFour e4 = new EntityFour();
+			e4.ID = Guid.NewGuid();
+			e4.Name = "Test E4";
+
+			EntityFour e42 = new EntityFour();
+			e42.ID = Guid.NewGuid();
+			e42.Name = "Test E42";
+
+			e3.ReferencedEntities = new EntityFour[] {e4.ID};
+			//e3.ReferencedEntities = new EntityFour[] {e4};
+			// Only one of these needs to be set for this test. The auto preparation should take care of the other one.
+            //e4.ReferencedEntities = new EntityThree[] {e3};
+
+
+
+		
+			PropertyFilter filter = (PropertyFilter)DataAccess.Data.CreateFilter(typeof(PropertyFilter));
+			filter.PropertyName = "ID";
+		        filter.PropertyValue = e3.ID;
+		        filter.AddType(typeof(EntityFour));
+
+
+
+			DataAccess.Data.Save(e4);
+		
+			DataAccess.Data.Save(e3);
+
+			DataAccess.Data.Save(e42);
+		
+			e3.ReferencedEntityIDs = new Guid[] {e42.ID};
+
+
+		        Collection<BaseEntity> toUpdate = new Collection<BaseEntity>((BaseEntity[])DataAccess.Data.Stores[typeof(EntityThree)].PreUpdate(e3));
+
+
+		        //BaseEntity[] modi = (BaseEntity[])DataAccess.Data.GetEntities(filter);
+		        //Collection<EntityFour> foundList = new Collection<EntityFour>(found);
+	
+			if (toUpdate.Count > 0)
+			{
+				// Ensure that the original referenced entity was modified properly
+				Assert.AreEqual(true, toUpdate.Contains(e4.ID), "The original referenced entity wasn't properly modified.");
+
+				EntityFour foundOriginal = (EntityFour)toUpdate[e4.ID];
+
+				Assert.AreEqual(0, foundOriginal.ReferencedEntityIDs.Length, "The original referenced entity's obsolete references weren't properly cleared.");
+
+				// Ensure that the new referenced entity was modified properly
+				Assert.AreEqual(true, toUpdate.Contains(e42.ID), "The new referenced entity wasn't properly modified.");
+
+				EntityFour foundNew = (EntityFour)toUpdate[e42.ID];
+
+				Assert.AreEqual(1, foundNew.ReferencedEntityIDs.Length, "The new referenced entity's references weren't properly added.");
+
+
+	//			Assert.Greater(found.Length, 0, "No results found.");
+///
+	//			EntityFour entity = (EntityFour)found[0];
+	//			Assert.IsNotNull(entity.ReferencedEntityIDs, "The mirror entity ID references property has not been set. The automatic preparation failed.");
+	//			if (entity.ReferencedEntityIDs != null)
+	//			{
+	//				AppLogger.Debug("entity.ReferencedEntityIDs != null");
+//
+	//				Assert.AreEqual(1, entity.ReferencedEntityIDs.Length, "Incorrect number of reference entity IDs.");
+//
+	//				Assert.AreEqual(e42.ID, entity.ReferencedEntityIDs[0], "New reference ID is invalid.");
+	//			}
+	//			else
+	//			{
+	//				AppLogger.Debug("entity.ReferencedEntityIDs == null");
+	//			}
+			}
+			else
+				Assert.Fail("No entity found. The save must have failed.");
+	
+	       		DataAccess.Data.Delete(e3);
+	       		DataAccess.Data.Delete(e4);
+	       		DataAccess.Data.Delete(e42);
+		}
+	}*/
 
 	[Test]
 	public void Test_PreUpdate_IDsToIDReference()
@@ -679,9 +762,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 
 
-                DataAccess.Data.Stores[typeof(TestEntity)].Save(e4);
+                DataAccess.Data.Save(e4);
 
-                DataAccess.Data.Stores[typeof(TestEntity)].Save(e3);
+                DataAccess.Data.Save(e3);
 
 
 
@@ -708,8 +791,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
                 else
                     Assert.Fail("No entity found. The save must have failed.");
 
-                DataAccess.Data.Stores[typeof(TestEntity)].Delete(e3);
-                DataAccess.Data.Stores[typeof(TestEntity)].Delete(e4);
+                DataAccess.Data.Delete(e3);
+                DataAccess.Data.Delete(e4);
             }
         }
 
@@ -903,128 +986,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		}
 	}
 
-	[Test]
-	public void Test_GetEntitiesContainingReverseReferences_IDsToIDs()
-	{
-		using (LogGroup logGroup = AppLogger.StartGroup("Testing exclusion with the GetEntities by property value function.", NLog.LogLevel.Debug))
-		{
-			EntityThree e3 = new EntityThree();
-			e3.ID = Guid.NewGuid();
-			e3.Name = "Test E3";
 
-			EntityFour e4 = new EntityFour();
-			e4.ID = Guid.NewGuid();
-			e4.Name = "Test E4";
-
-			e3.ReferencedEntityIDs = new Guid[] {e4.ID};
-	
-			//FilterGroup filterGroup = new FilterGroup();
-			//filterGroup.Operator
-	
-			PropertyFilter filter = (PropertyFilter)DataAccess.Data.CreateFilter(typeof(PropertyFilter));
-			filter.Operator = FilterOperator.Equal;
-            filter.PropertyName = "name";
-            filter.PropertyValue = "Another Name";
-
-			PropertyInfo property = e4.GetType().GetProperty("ReferencedEntityIDs");
-	
-			DataAccess.Data.Stores[typeof(EntityOne)].Save(e4);
-
-			DataAccess.Data.Stores[typeof(EntityOne)].Save(e3);
-
-			BaseEntity[] found = (BaseEntity[])DataAccess.Data.Stores[typeof(EntityThree)].GetEntitiesContainingReverseReferences(e4, property);
-			Collection<BaseEntity> foundList = found != null ? new Collection<BaseEntity>(found) : new Collection<BaseEntity>();
-	
-			Assert.AreEqual(1, foundList.Count, "Entities weren't retrieved correctly.");
-			Assert.AreEqual(true, foundList.Contains(e3.ID), "The wrong entity was found. IDs don't match.");
-	
-			DataAccess.Data.Stores[typeof(EntityThree)].Delete(e3);
-			DataAccess.Data.Stores[typeof(EntityThree)].Delete(e4);
-		}
-	}
-
-	[Test]
-	public void Test_GetEntitiesContainingReverseReferences_IDsToID()
-	{
-		using (LogGroup logGroup = AppLogger.StartGroup("Testing exclusion with the GetEntities by property value function.", NLog.LogLevel.Debug))
-		{
-			TestArticle article = new TestArticle();
-			article.ID = Guid.NewGuid();
-			article.Title = "Test article";
-			
-
-			TestArticlePage page = new TestArticlePage();
-			page.ID = Guid.NewGuid();
-			page.Title = "Test Page";
-
-			article.PageIDs = new Guid[] {page.ID};
-	
-			//FilterGroup filterGroup = new FilterGroup();
-			//filterGroup.Operator
-	
-	//		PropertyFilter filter = (PropertyFilter)DataAccess.Data.CreateFilter(typeof(PropertyFilter));
-	//		filter.Operator = FilterOperator.Equal;
-        //    filter.PropertyName = "name";
-        //    filter.PropertyValue = "Another Name";
-
-			PropertyInfo property = page.GetType().GetProperty("ArticleID");
-
-			DataAccess.Data.Stores[typeof(EntityOne)].Save(page);
-
-			DataAccess.Data.Stores[typeof(EntityOne)].Save(article);
-
-			BaseEntity[] found = (BaseEntity[])DataAccess.Data.Stores[typeof(EntityThree)].GetEntitiesContainingReverseReferences(page, property);
-			Collection<BaseEntity> foundList = found != null ? new Collection<BaseEntity>(found) : new Collection<BaseEntity>();
-	
-			Assert.AreEqual(1, foundList.Count, "Entities weren't retrieved correctly.");
-			Assert.AreEqual(true, foundList.Contains(article.ID), "The wrong entity was found. IDs don't match.");
-	
-			DataAccess.Data.Stores[typeof(EntityThree)].Delete(page);
-			DataAccess.Data.Stores[typeof(EntityThree)].Delete(article);
-		}
-	}
-
-	[Test]
-	public void Test_GetEntitiesContainingReverseReferences_IDToIDs()
-	{
-		using (LogGroup logGroup = AppLogger.StartGroup("Testing exclusion with the GetEntities by property value function.", NLog.LogLevel.Debug))
-		{
-			TestArticle article = new TestArticle();
-			article.ID = Guid.NewGuid();
-			article.Title = "Test article";
-			
-
-			TestArticlePage page = new TestArticlePage();
-			page.ID = Guid.NewGuid();
-			page.Title = "Test Page";
-
-			page.ArticleID = article.ID;
-	
-			//FilterGroup filterGroup = new FilterGroup();
-			//filterGroup.Operator
-	
-	//		PropertyFilter filter = (PropertyFilter)DataAccess.Data.CreateFilter(typeof(PropertyFilter));
-	//		filter.Operator = FilterOperator.Equal;
-        //    filter.PropertyName = "name";
-         //   filter.PropertyValue = "Another Name";
-
-			PropertyInfo property = article.GetType().GetProperty("PageIDs");
-	
-
-			DataAccess.Data.Stores[typeof(EntityOne)].Save(article);
-
-			DataAccess.Data.Stores[typeof(EntityOne)].Save(page);
-
-			BaseEntity[] found = (BaseEntity[])DataAccess.Data.Stores[typeof(EntityThree)].GetEntitiesContainingReverseReferences(article, property);
-			Collection<BaseEntity> foundList = found != null ? new Collection<BaseEntity>(found) : new Collection<BaseEntity>();
-	
-			Assert.AreEqual(1, foundList.Count, "Entities weren't retrieved correctly.");
-			Assert.AreEqual(true, foundList.Contains(page.ID), "The wrong entity was found. IDs don't match.");
-	
-			DataAccess.Data.Stores[typeof(EntityThree)].Delete(page);
-			DataAccess.Data.Stores[typeof(EntityThree)].Delete(article);
-		}
-	}
 	#endregion
 
         private void ClearTestEntities()

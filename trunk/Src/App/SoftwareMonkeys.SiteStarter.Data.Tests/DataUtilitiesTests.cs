@@ -259,7 +259,55 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 			PropertyInfo property = e3.GetType().GetProperty("ReferencedEntityIDs");
 
+			Type type = DataUtilities.GetReferenceType(e3, property);
+
+            Assert.AreEqual(e4.GetType().ToString(), type.ToString(), "The wrong type was retrieved.");
+		}
+	}
+
+	/*[Test]
+	public void Test_GetReferenceType_EntityID()
+	{
+		using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetReferenceType function.", NLog.LogLevel.Debug))
+		{
+	        	TestArticle article = new TestArticle();
+			article.ID = Guid.NewGuid();
+            article.Name = "Test E3";
+			
+
+			EntityFour e4 = new EntityFour();
+			e4.ID = Guid.NewGuid();
+			e4.Name = "Test E4";
+
+
+
+            PropertyInfo property = article.GetType().GetProperty("ReferencedEntityIDs");
+
 			Type type = DataUtilities.GetReferenceType(property, DataUtilities.GetReferenceAttribute(property));
+
+			Assert.AreEqual(e4.GetType(), type, "The wrong type was retrieved.");
+		}
+	}*/
+
+	[Test]
+	public void Test_GetReferenceType_Entities()
+	{
+		using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetReferenceType function.", NLog.LogLevel.Debug))
+		{
+	        	EntityThree e3 = new EntityThree();
+			e3.ID = Guid.NewGuid();
+			e3.Name = "Test E3";
+			
+
+			EntityFour e4 = new EntityFour();
+			e4.ID = Guid.NewGuid();
+			e4.Name = "Test E4";
+
+			
+
+			PropertyInfo property = e3.GetType().GetProperty("ReferencedEntities");
+
+			Type type = DataUtilities.GetReferenceType(e3, property);
 
 			Assert.AreEqual(e4.GetType(), type, "The wrong type was retrieved.");
 		}
@@ -397,13 +445,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 
 
-                                DataAccess.Data.Stores[typeof(TestEntity)].Save(e4);
+                                //DataAccess.Data.Stores[typeof(TestEntity)].Save(e4);
 
                                 //DataAccess.Data.Stores[typeof(TestEntity)].Save(e3);
 
                                 PropertyInfo property = e3.GetType().GetProperty("ReferencedEntityIDs");
 
-                                BaseEntity[] updated = (BaseEntity[])DataUtilities.SynchroniseReverseReferences(e3, property, DataAccess.Data.Stores[e4.GetType()].GetEntitiesContainingReverseReferences(e3, property));
+                                BaseEntity[] updated = (BaseEntity[])DataUtilities.SynchroniseReverseReferences(e3, property, new BaseEntity[] {e4}, new BaseEntity[] {e4});
 
                                 if (updated != null)
                                 {
@@ -425,8 +473,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
                                 else
                                     Assert.Fail("No entity found. The save must have failed.");
 
-                                DataAccess.Data.Stores[typeof(TestEntity)].Delete(e3);
-                                DataAccess.Data.Stores[typeof(TestEntity)].Delete(e4);
+                                //DataAccess.Data.Stores[typeof(TestEntity)].Delete(e3);
+                                //DataAccess.Data.Stores[typeof(TestEntity)].Delete(e4);
             }
         }
 
@@ -445,14 +493,15 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			e2.Title = "Test 2";
 
 			e2.ArticleID = e1.ID;
+            //e1.PageIDs = new Guid[] { e2.ID };
 
-                                DataAccess.Data.Stores[typeof(TestArticle)].Save(e1);
+                                //DataAccess.Data.Stores[typeof(TestArticle)].Save(e1);
 
                                 //DataAccess.Data.Stores[typeof(TestEntity)].Save(e2);
 
                                 PropertyInfo property = e2.GetType().GetProperty("ArticleID");
 
-                                BaseEntity[] updated = (BaseEntity[])DataUtilities.SynchroniseReverseReferences(e2, property, DataAccess.Data.Stores[e2.GetType()].GetEntitiesContainingReverseReferences(e2, property));
+                                BaseEntity[] updated = (BaseEntity[])DataUtilities.SynchroniseReverseReferences(e2, property, new BaseEntity[] { e1 }, new BaseEntity[] { e1 });
 
                                 if (updated != null)
                                 {
@@ -474,8 +523,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
                                 else
                                     Assert.Fail("No entity found. The save must have failed.");
 
-                                DataAccess.Data.Stores[typeof(TestEntity)].Delete(e1);
-                                DataAccess.Data.Stores[typeof(TestEntity)].Delete(e2);
+                                //DataAccess.Data.Stores[typeof(TestEntity)].Delete(e1);
+                                //DataAccess.Data.Stores[typeof(TestEntity)].Delete(e2);
             }
         }
 
@@ -494,27 +543,23 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			e2.Title = "Test 2";
 
 			e1.PageIDs = new Guid[] { e2.ID };
-			e2.ArticleID = e1.ID;
-                
 
-                                DataAccess.Data.Stores[typeof(TestEntity)].Save(e1);
 
-                                //DataAccess.Data.Stores[typeof(TestEntity)].Save(e2);
-
-				BaseEntity[] reverseReferencedEntities = new BaseEntity[] {e2};//DataAccess.Data.Stores[e1.GetType()].GetEntitiesContainingReverseReferences(e1, property);
 
                                 PropertyInfo property = e1.GetType().GetProperty("PageIDs");
 
-                                BaseEntity[] updated = (BaseEntity[])DataUtilities.SynchroniseReverseReferences(e1, property, reverseReferencedEntities);
+                                BaseEntity[] updated = (BaseEntity[])DataUtilities.SynchroniseReverseReferences(e1, property, new BaseEntity[] { e2 }, new BaseEntity[] { });
 
                                 if (updated != null)
                                 {
                                     Assert.Greater(updated.Length, 0, "No entities were updated.");
 
-                                    TestArticlePage entity = (TestArticlePage)updated[0];
-                                    Assert.IsNotNull(entity);//, "The mirror entity ID references property has not beed set. The automatic preparation failed.");
-					Assert.AreEqual(e2.ID, entity.ID, "The wrong entity was modified or returned.");
-					Assert.IsTrue(entity.ArticleID == null || entity.ArticleID == Guid.Empty, "The obsolete reference wasn't cleared properly.");
+                                    TestArticlePage foundPage = (TestArticlePage)updated[0];
+                                    Assert.IsNotNull(foundPage);//, "The mirror entity ID references property has not beed set. The automatic preparation failed.");
+
+                                    Assert.AreEqual(e2.ID, foundPage.ID, "The wrong entity was modified or returned.");
+                                    Assert.IsTrue(foundPage.ArticleID == e1.ID, "The obsolete reference wasn't cleared properly.");
+					//Assert.IsTrue(entity.ArticleID == null || entity.ArticleID == Guid.Empty, "The obsolete reference wasn't cleared properly.");
                                     /*if (entity.ReferencedEntityIDs != null)
                                     {
                                         AppLogger.Debug("entity.ReferencedEntityIDs != null");
@@ -529,8 +574,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
                                 else
                                     Assert.Fail("No entity found. The save must have failed.");
 
-                                DataAccess.Data.Stores[typeof(TestEntity)].Delete(e2);
-                                DataAccess.Data.Stores[typeof(TestEntity)].Delete(e1);
+                                //DataAccess.Data.Stores[typeof(TestEntity)].Delete(e2);
+                                //DataAccess.Data.Stores[typeof(TestEntity)].Delete(e1);
             }
         }
 
@@ -898,6 +943,30 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
                              //   DataAccess.Data.Stores[typeof(TestEntity)].Delete(e1);
             }
         }
+
+	[Test]
+	public void Test_GetDataStoreNameForReference()
+	{
+		using (LogGroup logGroup = AppLogger.StartGroup("Testing the AddReferences function for an ID to IDs reference.", NLog.LogLevel.Debug))
+		{
+	        	TestArticle e1 = new TestArticle();
+			e1.ID = Guid.NewGuid();
+			e1.Title = "Test 1";
+			
+
+			TestArticlePage e2 = new TestArticlePage();
+			e2.ID = Guid.NewGuid();
+			e2.Title = "Test 2";
+
+			e1.PageIDs = new Guid[] { e2.ID };
+			
+			BaseEntity[] toUpdate = DataUtilities.AddReferences(e2, e1, "ArticleID");
+
+			Assert.IsNotNull(toUpdate, "The toUpdate variable was returned null.");
+			if (toUpdate != null)
+				Assert.AreEqual(1, toUpdate.Length, "The modified entity isn't in the 'to update' list.");
+		}
+	}
 	
     }
 }
