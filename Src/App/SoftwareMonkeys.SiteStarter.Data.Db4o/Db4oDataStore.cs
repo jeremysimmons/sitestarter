@@ -146,7 +146,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
             }
 
             if (entity != null)
+            {
                 ObjectContainer.Store(entity);
+                ObjectContainer.Commit();
+            }
         }
 
         public BaseEntity[] PreUpdate(BaseEntity entity)
@@ -228,7 +231,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 	}
 
             if (entity != null)
+            {
                 ObjectContainer.Store(entity);
+                
+                ObjectContainer.Commit();
+        	}
         }
 
         public BaseEntity[] PreDelete(BaseEntity entity)
@@ -307,14 +314,18 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 
             // Update all modified entities
             foreach (BaseEntity entityToUpdate in toUpdate)
-		{
+			{
 			//ApplyExclusions(entityToUpdate);
 	                DataAccess.Data.Stores[entityToUpdate.GetType()].Update(entityToUpdate);
-		}
+			}
 
             // Delete the entity
             if (entity != null)
+            {
                 ObjectContainer.Delete(entity);
+                
+                ObjectContainer.Commit();
+            }
         }
 
         public bool IsStored(BaseEntity entity)
