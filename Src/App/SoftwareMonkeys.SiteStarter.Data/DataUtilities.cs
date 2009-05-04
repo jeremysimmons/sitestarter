@@ -1329,6 +1329,9 @@ namespace SoftwareMonkeys.SiteStarter.Data
         /// <returns>The data store that the provided entity is stored in.</returns>
         static public string GetDataStoreName(Type type)
         {
+		if (type == null)
+			throw new ArgumentNullException("type");
+
             return GetDataStoreName(type, true);
         }
 
@@ -1340,16 +1343,22 @@ namespace SoftwareMonkeys.SiteStarter.Data
         /// <returns>The data store that the provided entity is stored in.</returns>
         static public string GetDataStoreName(Type type, bool throwErrorIfNotFound)
         {
+		if (type == null)
+			throw new ArgumentNullException("type");
+
             object[] attributes = (object[])type.GetCustomAttributes(true);
-            foreach (object attribute in attributes)
-            {
-                if (attribute is DataStoreAttribute)
-                    return ((DataStoreAttribute)attribute).DataStoreName;
-            }
-            if (throwErrorIfNotFound)
-            {
-                throw new Exception("No data store name was found for the entity '" + type.ToString() + "'");
-            }
+		if (attributes != null)
+		{
+	            foreach (object attribute in attributes)
+	            {
+	                if (attribute is DataStoreAttribute)
+	                    return ((DataStoreAttribute)attribute).DataStoreName;
+	            }
+	            if (throwErrorIfNotFound)
+	            {
+	                throw new Exception("No data store name was found for the entity '" + type.ToString() + "'");
+	            }
+		}
             return String.Empty;
         }
 	}
