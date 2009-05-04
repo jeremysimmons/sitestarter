@@ -984,7 +984,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
             {
                 BaseEntity reference = GetEntity(typeof(BaseEntity), "id", (Guid)property.GetValue(entity, null));
 
-                Type referenceEntityType = reference != null ? reference.GetType() : null;
+                Type referenceEntityType = DataUtilities.GetReferenceType(entity, property);
                 //entity.GetType().GetProperty(attribute.EntitiesPropertyName).PropertyType.GetElementType();
 
                 if (attribute.MirrorName != String.Empty)
