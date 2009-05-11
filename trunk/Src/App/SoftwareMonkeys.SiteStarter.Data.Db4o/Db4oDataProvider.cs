@@ -170,16 +170,16 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
             {
                 AppLogger.Debug("Filter type: " + filter.GetType().ToString());
 	
-		foreach (Type type in filter.Types)
-		{
-
-                AppLogger.Debug("Includes type: " + type.ToString());
-	          entities.AddRange(((Db4oDataStore)Stores[type]).ObjectContainer.Query<BaseEntity>(delegate(BaseEntity entity)
-	          {
-	              return IsMatch(entity, filter);
-	
-	          }));
-		}
+				foreach (Type type in filter.Types)
+				{
+		
+		        	AppLogger.Debug("Includes type: " + type.ToString());
+			          entities.AddRange(((Db4oDataStore)Stores[type]).ObjectContainer.Query<BaseEntity>(delegate(BaseEntity entity)
+			          {
+			              return IsMatch(entity, filter);
+			
+			          }));
+				}
 
                 foreach (BaseEntity entity in entities)
                 {

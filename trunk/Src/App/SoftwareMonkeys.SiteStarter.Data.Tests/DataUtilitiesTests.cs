@@ -945,9 +945,31 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
         }
 
 	[Test]
-	public void Test_GetDataStoreNameForReference()
+	public void Test_GetDataStoreNameForReference_Multiple_Null()
 	{
-		using (LogGroup logGroup = AppLogger.StartGroup("Testing the AddReferences function for an ID to IDs reference.", NLog.LogLevel.Debug))
+		using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetDataStoreNameForReference function for a multiple reference.", NLog.LogLevel.Debug))
+		{
+	        	TestArticle e1 = new TestArticle();
+			e1.ID = Guid.NewGuid();
+			e1.Title = "Test 1";
+			
+
+			TestArticlePage e2 = new TestArticlePage();
+			e2.ID = Guid.NewGuid();
+			e2.Title = "Test 2";
+
+			//e1.PageIDs = new Guid[] { e2.ID };
+			
+			string name = DataUtilities.GetDataStoreNameForReference(e1, e1.GetType().GetProperty("PageIDs"));
+
+				Assert.AreEqual("Testing", name, "The wrong data store name was returned.");
+		}
+	}
+	
+		[Test]
+	public void Test_GetDataStoreNameForReference_Multiple_NotNull()
+	{
+		using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetDataStoreNameForReference function for a multiple reference.", NLog.LogLevel.Debug))
 		{
 	        	TestArticle e1 = new TestArticle();
 			e1.ID = Guid.NewGuid();
@@ -960,11 +982,55 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 			e1.PageIDs = new Guid[] { e2.ID };
 			
-			BaseEntity[] toUpdate = DataUtilities.AddReferences(e2, e1, "ArticleID");
+			string name = DataUtilities.GetDataStoreNameForReference(e1, e1.GetType().GetProperty("PageIDs"));
 
-			Assert.IsNotNull(toUpdate, "The toUpdate variable was returned null.");
-			if (toUpdate != null)
-				Assert.AreEqual(1, toUpdate.Length, "The modified entity isn't in the 'to update' list.");
+				Assert.AreEqual("Testing", name, "The wrong data store name was returned.");
+		}
+	}
+	
+	[Test]
+	public void Test_GetDataStoreNameForReference_Many_Null()
+	{
+		using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetDataStoreNameForReference function for a multiple reference.", NLog.LogLevel.Debug))
+		{
+	        	TestArticle e1 = new TestArticle();
+			e1.ID = Guid.NewGuid();
+			e1.Title = "Test 1";
+			
+
+			TestArticlePage e2 = new TestArticlePage();
+			e2.ID = Guid.NewGuid();
+			e2.Title = "Test 2";
+			
+			//e2.ArticleID = e1.ID;
+			
+			string name = DataUtilities.GetDataStoreNameForReference(e2, e2.GetType().GetProperty("ArticleID"));
+
+			
+			Assert.AreEqual("Testing", name, "The wrong data store name was returned.");
+		}
+	}
+	
+		[Test]
+	public void Test_GetDataStoreNameForReference_Many_NotNull()
+	{
+		using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetDataStoreNameForReference function for a multiple reference.", NLog.LogLevel.Debug))
+		{
+	        	TestArticle e1 = new TestArticle();
+			e1.ID = Guid.NewGuid();
+			e1.Title = "Test 1";
+			
+
+			TestArticlePage e2 = new TestArticlePage();
+			e2.ID = Guid.NewGuid();
+			e2.Title = "Test 2";
+			
+			e2.ArticleID = e1.ID;
+			
+			string name = DataUtilities.GetDataStoreNameForReference(e2, e2.GetType().GetProperty("ArticleID"));
+
+			
+			Assert.AreEqual("Testing", name, "The wrong data store name was returned.");
 		}
 	}
 	

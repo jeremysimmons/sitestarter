@@ -1294,32 +1294,32 @@ namespace SoftwareMonkeys.SiteStarter.Data
         /// <returns>The data store that the provided entity is stored in.</returns>
         static public string GetDataStoreNameForReference(BaseEntity entity, PropertyInfo property)
         {
-		object value = property.GetValue(entity, null);
-		Type referenceType = DataUtilities.GetReferenceType(entity, property);
-		BaseEntityReferenceAttribute attribute = DataUtilities.GetReferenceAttribute(property);
-
-		if (attribute.EntitiesPropertyName.Length == 0)
-			throw new InvalidOperationException("The specified property '" + property.Name + "' doesn't have an entities property specified in the reference attribute. Cannot retrieve the type.");
-
-		if (property.Name != attribute.EntitiesPropertyName)
-		{
-			return GetDataStoreNameForReference(entity, entity.GetType().GetProperty(attribute.EntitiesPropertyName));
-		}
-		else
-		{
-			if (value == null || ((Array)value).Length == 0)
+			object value = property.GetValue(entity, null);
+			Type referenceType = DataUtilities.GetReferenceType(entity, property);
+			BaseEntityReferenceAttribute attribute = DataUtilities.GetReferenceAttribute(property);
+	
+			if (attribute.EntitiesPropertyName.Length == 0)
+				throw new InvalidOperationException("The specified property '" + property.Name + "' doesn't have an entities property specified in the reference attribute. Cannot retrieve the type.");
+	
+			if (property.Name != attribute.EntitiesPropertyName)
 			{
-				return GetDataStoreName(referenceType);
+				return GetDataStoreNameForReference(entity, entity.GetType().GetProperty(attribute.EntitiesPropertyName));
 			}
 			else
 			{
-				Type type = value.GetType();
-				if (type.IsSubclassOf(typeof(Array)))
-					return GetDataStoreName(type.GetElementType(), true);
+				if (value == null || (value is Array && ((Array)value).Length == 0))
+				{
+					return GetDataStoreName(referenceType);
+				}
 				else
-					return GetDataStoreName(value.GetType(), true);
+				{
+					Type type = value.GetType();
+					if (type.IsSubclassOf(typeof(Array)))
+						return GetDataStoreName(type.GetElementType(), true);
+					else
+						return GetDataStoreName(value.GetType(), true);
+				}
 			}
-		}
         }
 
         /// <summary>
