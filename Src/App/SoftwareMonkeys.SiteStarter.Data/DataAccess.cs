@@ -46,8 +46,10 @@ namespace SoftwareMonkeys.SiteStarter.Data
         static public void Dispose()
         {
             //((DataProvider)State.StateAccess.State.GetApplication("DataAccess.Data")).Dispose();
-		foreach (IDataStore store in Data.Stores)
-			store.Close();
+			foreach (IDataStore store in Data.Stores)
+			{
+				store.Close();
+			}
             State.StateAccess.State.SetApplication("DataAccess.Data", null);
         }
 

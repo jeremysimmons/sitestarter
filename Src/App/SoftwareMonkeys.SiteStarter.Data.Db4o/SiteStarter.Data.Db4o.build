@@ -79,6 +79,7 @@
         	<include name="../${Global.BaseNamespace}/bin/${Global.BuildMode}/${Global.BaseNamespace}.dll" />
 	        <include name="../Lib/Db4objects.Db4o.dll" />
 	        <include name="../Lib/NLog.dll" />
+	        <include name="../${Global.BaseNamespace}.State/bin/${Global.BuildMode}/${Global.BaseNamespace}.State.dll" />
 	        <include name="../${Global.BaseNamespace}.Entities/bin/${Global.BuildMode}/${Global.BaseNamespace}.Entities.dll" />
 	        <include name="../${Global.BaseNamespace}.Configuration/bin/${Global.BuildMode}/${Global.BaseNamespace}.Configuration.dll" />
 	        <include name="../${Global.BaseNamespace}.Data/bin/${Global.BuildMode}/${Global.BaseNamespace}.Data.dll" />

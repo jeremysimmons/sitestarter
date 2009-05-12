@@ -29,14 +29,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 
         public void Dispose()
         {
-            foreach (Db4oDataStore store in Stores)
-            {
-                store.Close();
-            }
 
 
             foreach (Db4oDataStore store in Stores)
             {
+            	// Includes commit and close
                 store.Dispose();
             }
         }
