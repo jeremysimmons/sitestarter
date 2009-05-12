@@ -9,6 +9,7 @@ using System.Collections;
 using System.Reflection;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Data;
+using SoftwareMonkeys.SiteStarter.State;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 {
@@ -28,6 +29,19 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
             }
             set { activeQuery = value; }
         }
+        
+        /// <summary>
+        /// Gets/sets the corresponding db4o object container.
+        /// </summary>
+        public IObjectServer ObjectServer
+        {
+            get
+            {
+                return (IObjectServer)StateAccess.State.GetApplication("ObjectServer_" + this.Name);
+            }
+            set {
+            	StateAccess.State.SetApplication("ObjectServer_" + this.Name, value);}
+        }
 
         private IObjectContainer objectContainer;
         /// <summary>
@@ -37,8 +51,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
         {
             get
             {
+            	if (ObjectServer == null)
+            		Open();
                 if (objectContainer == null)
-                    Open();
+                    objectContainer = ObjectServer.OpenClient();
                 return objectContainer;
             }
             //set { objectContainer = value; }
@@ -58,19 +74,25 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 
         public void Open()
         {
-            objectContainer = Db4oFactory.OpenFile(Config.Application.PhysicalPath + @"\App_Data\" + Name + ".yap");
+        	ObjectServer = Db4oFactory.OpenServer(Config.Application.PhysicalPath + @"\App_Data\" + Name + ".yap", 0);
+            //objectContainer = ObjectServer.OpenClient();
         }
 
         public void Dispose()
         {
-		Close();
+			Close();
             objectContainer = null;
+            //objectServer = null;
         }
 
         public void Close()
         {
-            ObjectContainer.Commit();
-            ObjectContainer.Close();
+        	if (ObjectContainer != null && !ObjectContainer.Ext().IsClosed())
+        	{
+	            ObjectContainer.Commit();
+	            ObjectContainer.Close();
+            }
+            //ObjectServer.Close();
         }
 
         #endregion
