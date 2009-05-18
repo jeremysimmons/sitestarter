@@ -41,7 +41,26 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
 
         public override object GetApplication(string key)
         {
-            return HttpContext.Current.Application[key];
+       	if (key != String.Empty && HttpContext.Current != null)
+	            return HttpContext.Current.Application[key];
+	        else
+	        	return null;
+        }
+        
+        public override void SetSession(string key, object value)
+        {
+            if (key != String.Empty && HttpContext.Current != null)
+            {
+                HttpContext.Current.Session[key] = value;
+            }
+        }
+
+        public override object GetSession(string key)
+        {
+        	if (key != String.Empty && HttpContext.Current != null && HttpContext.Current.Session != null)
+	            return HttpContext.Current.Session[key];
+	        else
+	        	return null;
         }
 
         public override void Initialize(string name, System.Collections.Specialized.NameValueCollection config)

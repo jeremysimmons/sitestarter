@@ -7,6 +7,11 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
     public interface IAppConfig
     {
 
+        /// <summary>
+        /// The full physical path to the root of the application.
+        /// </summary>
+        string PhysicalPath { get;set; }
+
 	/// <summary>
 	/// The universal ID of the current project.
 	/// </summary>
@@ -23,7 +28,11 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
         //string DataDirectoryPath { get; }
         //string DatabasePath { get; }
 
-        string PhysicalPath { get;set; }
+        //string PhysicalPath { get;set; }
+        
+        bool EnableVirtualServer {get;set;}
+        bool EnableVirtualServerRegistration {get;set;}
+        bool AutoApproveVirtualServerRegistration {get;set;}
 
       /*  void AddDataServer(string name, IObjectServer server);
         IObjectServer GetDataServer(string name);

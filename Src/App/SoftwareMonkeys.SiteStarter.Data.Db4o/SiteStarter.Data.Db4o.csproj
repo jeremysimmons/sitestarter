@@ -65,6 +65,10 @@
       <Project>{3609F512-9E15-41C7-95AF-D1B3E7F93562}</Project>
       <Name>SiteStarter.Entities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.State\SiteStarter.State.csproj">
+      <Project>{34129651-3B9F-4A0D-AEBF-7DE2098DD98F}</Project>
+      <Name>SiteStarter.State</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

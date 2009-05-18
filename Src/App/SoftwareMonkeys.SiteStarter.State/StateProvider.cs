@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Collections.Specialized;
 using System.Configuration.Provider;
-using SoftwareMonkeys.SiteStarter.Entities;
 
 namespace SoftwareMonkeys.SiteStarter.State
 {
@@ -24,5 +23,8 @@ namespace SoftwareMonkeys.SiteStarter.State
 
         public abstract void SetApplication(string key, object value);
         public abstract object GetApplication(string key);
+        
+        public abstract void SetSession(string key, object value);
+        public abstract object GetSession(string key);
     }
 }

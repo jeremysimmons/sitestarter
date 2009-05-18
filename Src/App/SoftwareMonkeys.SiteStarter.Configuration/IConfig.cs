@@ -13,10 +13,6 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
         /// </summary>
         string Name { get; set; }
 
-        /// <summary>
-        /// The full physical path to the root of the application.
-        /// </summary>
-        string PhysicalPath { get; }
 
 
 	}

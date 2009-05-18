@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<project name="Common.Functions.Solutions" default="Private.DeclareSolutionFunctions" xmlns="http://nant.sf.net/schemas/nant.xsd">
+
+  <target name="Private.DeclareSolutionFunctions">
+    <script language="C#" prefix="Solution">
+    		<references>
+              <include name="System.IO.dll" />
+          </references>
+		<code>
+		<![CDATA[
+		
+			[Function("GetPropertiesPath")]
+			public static string GetPropertiesPath(string startPath)
+			{
+				if (startPath == null)
+					return String.Empty;
+			
+				string propertiesPath = String.Empty;
+				string tmpPath = startPath;
+				
+				string[] pieces = startPath.Split('\\');
+				
+				for (int i = pieces.Length-1; i > 0 && propertiesPath.Length == 0; i--)
+				{
+					tmpPath = tmpPath.Substring(0, tmpPath.LastIndexOf(pieces[i]));
+					
+					//propertiesPath = tmpPath;
+					foreach (string file in Directory.GetFiles(tmpPath, "*.Solution.nant"))
+					{
+						propertiesPath = file;
+						break;
+					}
+				}
+			
+				
+				return propertiesPath;
+			}
+			
+			[Function("GetRootPath")]
+			public static string GetRootPath(string startPath)
+			{
+				return Path.GetDirectoryName(GetPropertiesPath(startPath));
+			}
+		
+		]]>
+		</code>
+	</script>
+  </target>
+</project>
+  	

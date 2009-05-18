@@ -12,7 +12,7 @@ using System.Reflection;
 namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 {
     public class Db4oDataProvider : DataProvider 
-    {
+    {    
         private DataStoreCollection stores;
         public override DataStoreCollection Stores
         {

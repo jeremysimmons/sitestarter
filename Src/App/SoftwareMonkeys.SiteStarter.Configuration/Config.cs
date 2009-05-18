@@ -1,6 +1,7 @@
 using System;
 using System.Xml.Serialization;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using SoftwareMonkeys.SiteStarter.State;
 
 namespace SoftwareMonkeys.SiteStarter.Configuration
 {
@@ -72,8 +73,18 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
             using (LogGroup logGroup = AppLogger.StartGroup("Initializes the application configuration settings."))
             {
                 AppLogger.Info("Looking for configs in: " + physicalApplicationPath);
+                
+                string fullPath = physicalApplicationPath.TrimEnd('\\') + @"\App_Data\";
+                
+                string virtualServerName = String.Empty;
+                
+                if (StateAccess.State != null)
+                	virtualServerName = (string)StateAccess.State.GetSession("VirtualServerName");
+                
+                if (virtualServerName != null && virtualServerName != String.Empty)
+                	fullPath += virtualServerName + @"\";
 
-                All = ConfigFactory.LoadAllConfigs(physicalApplicationPath.TrimEnd('\\') + @"\App_Data\");
+                All = ConfigFactory.LoadAllConfigs(fullPath);
             }
         }
 

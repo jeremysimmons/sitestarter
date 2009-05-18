@@ -27,9 +27,20 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
             {
                 AppLogger.Info("Data directory: " + physicalDataDirectoryPath);
 
+                IConfig config = null;
+
+                if (!Directory.Exists(physicalDataDirectoryPath))
+                {
+                    Directory.CreateDirectory(physicalDataDirectoryPath);
+                   // SoftwareMonkeys.SiteStarter.Configuration.IAppConfig newConfig = new SoftwareMonkeys.SiteStarter.Configuration.AppConfig();
+                   // newConfig.ApplicationPath = Request.ApplicationPath;
+                   // newConfig.PhysicalPath = Request.PhysicalApplicationPath;
+                   // collection.Add(newConfig);
+                }
+
                 foreach (string file in Directory.GetFiles(physicalDataDirectoryPath, "*.config"))
                 {
-                    IConfig config = LoadConfig(file, typeof(AppConfig));
+                    config = LoadConfig(file, typeof(AppConfig));
                     collection.Add(config);
                 }
             }
@@ -87,7 +98,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
         {
             IConfig config = (IConfig)Activator.CreateInstance(configType);
 
-            config.Name = name;
+                config.Name = name;
 
             return config;
         }
@@ -142,6 +153,10 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 
             // Start with the physical data directory path (and trim the slash off the end)
             string path = physicalDataDirectoryPath.TrimEnd('\\');
+
+            //string virtualServerName = (string)State.StateAccess.State.GetSession("VirtualServerID");
+            //if (virtualServerName != null && virtualServerName != String.Empty)
+            //    path += @"\" + virtualServerName;
 
             // Add the config name
             path += @"\" + configName;

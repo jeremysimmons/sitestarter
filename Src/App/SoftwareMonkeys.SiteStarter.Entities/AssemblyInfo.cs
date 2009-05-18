@@ -11,15 +11,15 @@ using System.Runtime.InteropServices;
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: AssemblyTitleAttribute("SiteStarter Entities")]
+[assembly: AssemblyTitleAttribute("SiteStarter.Entities")]
 [assembly: AssemblyDescriptionAttribute("")]
 [assembly: AssemblyConfigurationAttribute("")]
-[assembly: AssemblyCompanyAttribute("")]
-[assembly: AssemblyProductAttribute("SiteStarter Entities")]
-[assembly: AssemblyCopyrightAttribute("Copyright SoftwareMonkeys.net (c) 2007")]
+[assembly: AssemblyCompanyAttribute("SoftwareMonkeys.net")]
+[assembly: AssemblyProductAttribute("SiteStarter.Entities")]
+[assembly: AssemblyCopyrightAttribute("Copyright SoftwareMonkeys.net (c) 2009")]
 [assembly: AssemblyTrademarkAttribute("")]
 [assembly: AssemblyCultureAttribute("")]
 [assembly: ComVisibleAttribute(false)]
-[assembly: AssemblyVersionAttribute("1.0.6.9")]
-[assembly: AssemblyFileVersionAttribute("1.0.6.9")]
+[assembly: AssemblyVersionAttribute("1.0.6.90")]
+[assembly: AssemblyFileVersionAttribute("1.0.6.90")]
 

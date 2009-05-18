@@ -10,6 +10,7 @@ using System.Reflection;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Data;
 using SoftwareMonkeys.SiteStarter.State;
+using System.IO;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 {
@@ -37,13 +38,43 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
         {
             get
             {
-                return (IObjectServer)StateAccess.State.GetApplication("ObjectServer_" + this.Name);
+                IObjectServer server = (IObjectServer)StateAccess.State.GetApplication(ObjectServerKey);
+                if (server == null)
+                	Open();
+                return (IObjectServer)StateAccess.State.GetApplication(ObjectServerKey);
             }
             set {
-            	StateAccess.State.SetApplication("ObjectServer_" + this.Name, value);}
+            	StateAccess.State.SetApplication(ObjectServerKey, value);}
         }
+        
+    	public string ObjectServerKey
+		{
+			get
+			{
+            	string key = "ObjectServer_" + this.Name;
+            	string prefix = (string)StateAccess.State.GetSession("VirtualServerName");
+            	if (prefix != null && prefix != String.Empty)
+            	{
+            		key = prefix + "_" + key;
+            	}
+            	return key;
+			}
+		}
 
-        private IObjectContainer objectContainer;
+		public string ObjectContainerKey
+		{
+			get
+			{
+            	string key = "ObjectContainer_" + this.Name;
+            	string prefix = (string)StateAccess.State.GetSession("VirtualServerName");
+            	if (prefix != null && prefix != String.Empty)
+            	{
+            		key = prefix + "_" + key;
+            	}
+            	return key;
+			}
+		}
+
         /// <summary>
         /// Gets/sets the corresponding db4o object container.
         /// </summary>
@@ -51,11 +82,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
         {
             get
             {
-            	if (ObjectServer == null)
-            		Open();
+            	IObjectContainer objectContainer = (IObjectContainer)StateAccess.State.GetApplication(ObjectContainerKey);
                 if (objectContainer == null)
-                    objectContainer = ObjectServer.OpenClient();
-                return objectContainer;
+                    StateAccess.State.SetApplication(ObjectContainerKey, ObjectServer.OpenClient());
+                return (IObjectContainer)StateAccess.State.GetApplication(ObjectContainerKey);
             }
             //set { objectContainer = value; }
         }
@@ -74,14 +104,25 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 
         public void Open()
         {
-        	ObjectServer = Db4oFactory.OpenServer(Config.Application.PhysicalPath + @"\App_Data\" + Name + ".yap", 0);
+            string fileName = Name;
+
+            string prefix = (string)StateAccess.State.GetSession("VirtualServerID");
+            if (prefix != null && prefix != String.Empty)
+            {
+                fileName = @"\VS\" + prefix + @"\" + fileName;
+            }
+
+            string fullName = Config.Application.PhysicalPath + @"\App_Data\" + fileName + ".yap";
+            if (!Directory.Exists(Path.GetDirectoryName(fullName)))
+                Directory.CreateDirectory(Path.GetDirectoryName(fullName));
+            ObjectServer = Db4oFactory.OpenServer(fullName, 0);
             //objectContainer = ObjectServer.OpenClient();
         }
 
         public void Dispose()
         {
 			Close();
-            objectContainer = null;
+            StateAccess.State.SetApplication(ObjectContainerKey, null);
             //objectServer = null;
         }
 

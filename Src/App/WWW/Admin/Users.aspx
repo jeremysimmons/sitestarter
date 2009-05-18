@@ -38,9 +38,15 @@
     /// </summary>
     private void SaveUser()
     {
+        
         // Save the new user
         DataForm.ReverseBind();
-        if (UserFactory.SaveUser((User)DataForm.DataSource))
+
+        User user = (User)DataForm.DataSource;
+
+        user.Password = Crypter.EncryptPassword(user.Password);
+        
+        if (UserFactory.SaveUser(user))
         {
             // Display the result to the user
             Result.Display(Resources.Language.UserSaved);
@@ -69,8 +75,15 @@
         // Get a fresh copy of the user object
         User user = UserFactory.GetUser(((User)DataForm.DataSource).ID);
 
+        string originalPassword = user.Password;
+
         // Transfer data from the form to the object
         DataForm.ReverseBind(user);
+
+        if (user.Password != null && user.Password != String.Empty)
+            user.Password = Crypter.EncryptPassword(user.Password);
+        else
+            user.Password = originalPassword;
         
         // Update the user
         if (UserFactory.UpdateUser(user))
