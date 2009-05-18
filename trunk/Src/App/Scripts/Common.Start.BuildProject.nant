@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<project name="Common.Start.BuildProject" default="Common.Start.BuildProject" xmlns="http://nant.sf.net/schemas/nant.xsd">
+  		<property name="Argument.ProjectPath" value=""/>
+  		<property name="Argument.BuildMode" value=""/>
+  		
+  		
+  		
+  		<nant buildfile="Common.Functions.Initialize.nant"/>
+  		
+		<property name="Project.PropertiesPath" value="${Project::GetPropertiesPath(Argument.ProjectPath)}"/>
+		<property name="Project.RootPath" value="${Project::GetRootPath(Argument.ProjectPath)}"/>
+		
+		<include buildfile="${Project.PropertiesPath}"/>
+  		
+  		<!--property name="Solution.LibPath" value=""/-->
+  		<property name="Project.RelativePath" value=""/>
+  		<!--property name="Project.VersionFile" value=""/-->
+  		<property name="Project.BuildMode" value="Release"/>
+  		<property name="Solution.RootPath" value=""/>
+  		<property name="Solution.PropertiesPath" value=""/>
+  		
+	<include buildfile="Common.Start.BuildSolution.nant"/>
+
+  		
+  	
+		
+		
+	
+<loadtasks>
+
+            <fileset>
+
+                        <include name="../Lib/nant/bin/tasks/NAnt.Contrib.Tasks.dll" />
+
+            </fileset>
+
+</loadtasks> 
+		
+		
+		<!--include buildfile="Common.Jobs.BuildProject.nant"/-->
+
+  		
+	<target name="Common.Start.BuildProject" description="Builds the current project">
+		<!--property name="Local.ProjectQuery" value="..\${Project.RelativePath}\*.Project.nant"/-->
+		
+		<property name="Project.BuildMode" value="${Argument.BuildMode}"/>
+		<property name="Project.PropertiesPath" value="${Argument.ProjectPath}"/>
+
+		
+		<property name="Project.RootPath" value="${Project::GetRootPath(Argument.ProjectPath)}"/>
+		<echo message="Project.PropertiesPath: ${Project.PropertiesPath}"/>
+		
+		<call target="Common.Jobs.BuildProject"/>
+		
+	</target>
+	
+	
+     
+</project>
+  	

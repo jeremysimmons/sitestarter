@@ -11,15 +11,15 @@ using System.Runtime.InteropServices;
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: AssemblyTitleAttribute("SiteStarter Data.Db4o")]
+[assembly: AssemblyTitleAttribute("SiteStarter.Data.Db4o")]
 [assembly: AssemblyDescriptionAttribute("")]
 [assembly: AssemblyConfigurationAttribute("")]
-[assembly: AssemblyCompanyAttribute("")]
-[assembly: AssemblyProductAttribute("SiteStarter Data.Db4o")]
-[assembly: AssemblyCopyrightAttribute("Copyright SoftwareMonkeys.net (c) 2007")]
+[assembly: AssemblyCompanyAttribute("SoftwareMonkeys.net")]
+[assembly: AssemblyProductAttribute("SiteStarter.Data.Db4o")]
+[assembly: AssemblyCopyrightAttribute("Copyright SoftwareMonkeys.net (c) 2009")]
 [assembly: AssemblyTrademarkAttribute("")]
 [assembly: AssemblyCultureAttribute("")]
 [assembly: ComVisibleAttribute(false)]
-[assembly: AssemblyVersionAttribute("1.0.6.9")]
-[assembly: AssemblyFileVersionAttribute("1.0.6.9")]
+[assembly: AssemblyVersionAttribute("1.0.6.67")]
+[assembly: AssemblyFileVersionAttribute("1.0.6.67")]
 

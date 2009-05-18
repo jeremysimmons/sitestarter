@@ -65,13 +65,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConfigTests.cs" />
-    <Compile Include="Entities\TestEntity.cs" />
-    <Compile Include="Entities\EntityOne.cs" />
-    <Compile Include="Entities\EntityTwo.cs" />
-    <Compile Include="Entities\TestArticle.cs" />
-    <Compile Include="Entities\TestArticlePage.cs" />
-    <Compile Include="Entities\TestCategory.cs" />
-    <Compile Include="Entities\TestSample.cs" />
     <Compile Include="TestConfig.cs" />
   </ItemGroup>
   <ItemGroup>

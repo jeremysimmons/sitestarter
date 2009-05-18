@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<project name="WorkHub2.Business.Project" xmlns="http://nant.sf.net/schemas/nant.xsd">
+  <!-- Global Properties -->
+  		<property name="Project.Name" value="SiteStarter.Data.Tests" />
+  		<property name="Project.CompanyName" value="SoftwareMonkeys.net" />
+	  <property name="Project.LibrariesPath" value="../Lib/" overwrite="true" />
+	    <property name="Project.BaseNamespace" value="SoftwareMonkeys.SiteStarter.Data.Tests" />
+	  <property name="Project.AssemblyName" value="${Project.BaseNamespace}.dll" />
+	  <property name="Project.BinariesDirectory" value="${Project.RootPath + '\Bin'}" />
+	  <property name="Project.Version" value="2-0-5" />
+</project>

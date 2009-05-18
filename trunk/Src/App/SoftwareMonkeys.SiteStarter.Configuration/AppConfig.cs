@@ -62,5 +62,35 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
             set { universalProjectID = value; }
         }
         #endregion
+        
+        private bool enableVirtualServer;
+        /// <summary>
+        /// Gets/sets a flag indicating whether application sharing is enabled.
+        /// </summary>
+        public bool EnableVirtualServer
+        {
+        	get { return enableVirtualServer; }
+        	set { enableVirtualServer = value; }
+        }
+        
+        private bool enableVirtualServerRegistration;
+        /// <summary>
+        /// Gets/sets a flag indicating whether application sharing users can register their own account.
+        /// </summary>
+        public bool EnableVirtualServerRegistration
+        {
+        	get { return enableVirtualServerRegistration; }
+        	set { enableVirtualServerRegistration = value; }
+        }
+        
+        private bool autoApproveVirtualServerRegistration;
+        /// <summary>
+        /// Gets/sets a flag indicating whether application sharing registrations are automatically approved or not.
+        /// </summary>
+        public bool AutoApproveVirtualServerRegistration
+        {
+        	get { return autoApproveVirtualServerRegistration; }
+        	set { autoApproveVirtualServerRegistration = value; }
+        }
     }
 }

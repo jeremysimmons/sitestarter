@@ -75,11 +75,7 @@
 	      <resources>
 	        <include name="**\*.resx" />
 	      </resources>
-	      <references failonempty="True">
-	        <include name="../Lib/NLog.dll" />
-	        <include name="../Lib/NUnit.Framework.dll" />
-	        <include name="../Lib/Db4objects.Db4o.dll" />	
-	        <include name="../${Global.BaseNamespace}.Entities/bin/${Global.BuildMode}/${Global.BaseNamespace}.Entities.dll" />
+	      <references>
 	        <include name="System.Configuration.dll" />
 	        <include name="System.Data.dll" />
 	        <include name="System.Xml.dll" />

@@ -86,12 +86,11 @@
   		<echo message="**************************************************" />
 
 
+	 	<nant buildfile="${Global.BaseNamespace}.State/SiteStarter.State.build" target="Jobs.Build"/>
 	 	
 	 	<nant buildfile="${Global.BaseNamespace}.Entities/SiteStarter.Entities.build" target="Jobs.Build"/>
 
 	 	<nant buildfile="${Global.BaseNamespace}.Diagnostics/SiteStarter.Diagnostics.build" target="Jobs.Build"/>
-
-	 	<nant buildfile="${Global.BaseNamespace}.State/SiteStarter.State.build" target="Jobs.Build"/>
 
 	 	<nant buildfile="${Global.BaseNamespace}.Configuration/SiteStarter.Configuration.build" target="Jobs.Build"/>  
 	

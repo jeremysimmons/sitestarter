@@ -14,7 +14,7 @@
         OperationManager.StartOperation("ViewAccount", DetailsView);
 
         DetailsForm.DataSource = My.User;
-
+        
         DetailsView.DataBind();
     }
 
@@ -47,18 +47,34 @@
         {
             // Get a fresh copy of the user object
             User user = UserFactory.GetUserByUsername(My.Username);
+
+            string originalPassword = user.Password;
          
             // Reverse-bind the data
             DataForm.ReverseBind(user);
 
+            if (user.Password == String.Empty)
+                user.Password = originalPassword;
+            else
+                user.Password = Crypter.EncryptPassword(user.Password);
+
             // Update the user object
-            UserFactory.UpdateUser(user);
+            if (UserFactory.UpdateUser(user))
+            {
+                // Display the result to the user
+                Result.Display(Resources.Language.AccountUpdated);
 
-            // Display the result to the user
-            Result.Display(Resources.Language.AccountUpdated);
+                // Show the index again
+                ViewAccount();
+            }
+            else
+            {
+                // Display the result to the user
+                Result.Display(Resources.Language.UsernameTaken);
 
-            // Show the index again
-            ViewAccount();
+                // Show the index again
+                EditAccount();
+            }
         }
     }
    /* private void DeleteAccount(Guid userID)

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<project name="Common.Jobs.ImportLibraries" default="Common.Jobs.ImportLibraries" xmlns="http://nant.sf.net/schemas/nant.xsd">
+	
+  	<target name="Common.Jobs.ImportLibraries">
+		<property name="SiteStarter.BinPath" value="${path::get-full-path('../../../../SiteStarter/Bin/' + Project.BuildMode + '/')}"/>
+  <!-- Import SiteStarter libraries -->
+		  		
+		<mkdir dir="${Project.LibrariesPath}\${Project.BuildMode}"/>
+  		<if test="${directory::exists(SiteStarter.BinPath)}">
+  		<echo message="Importing libraries from: ${SiteStarter.BinPath}"/>
+  		<echo message="To: ${Project.LibrariesPath}"/>
+   			<copy todir="${Project.LibrariesPath}\${Project.BuildMode}" overwrite="true">
+      			<fileset basedir="${SiteStarter.BinPath}\${Project.BuildMode}">
+        			<include name="SoftwareMonkeys.SiteStarter*dll" />
+      			</fileset>
+    		</copy>
+    	</if>
+  </target>  
+
+</project>
+  	

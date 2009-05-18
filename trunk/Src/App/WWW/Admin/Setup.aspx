@@ -26,6 +26,10 @@ private void Page_Load(object sender, EventArgs e)
 			config.ApplicationPath = Request.ApplicationPath;
 			//config.ApplicationUrl = Request.Url.ToString().ToLower().Replace("/setup.aspx", "");
 			config.PhysicalPath = Request.PhysicalApplicationPath;
+
+            config.EnableVirtualServer = true;
+            config.EnableVirtualServerRegistration = true;
+            config.AutoApproveVirtualServerRegistration = true;
 			//config.BackupDirectory = "Backup";
 			//config.DataDirectory = "Data";
 		//	config.FriendlyDateFormat = "D";

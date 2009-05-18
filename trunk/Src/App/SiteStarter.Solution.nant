@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<project name="WorkHub2.Solution" default="Private.InitSolution" xmlns="http://nant.sf.net/schemas/nant.xsd">
+	  <!-- Includes -->
+	  <!-- Settings -->
+	  <!-- Global Properties -->
+		  
+		  <property name="Solution.BuildMode" value="Release" />
+		  <property name="Solution.Name" value="SiteStarter" />
+		  <property name="Solution.BaseNamespace" value="SoftwareMonkeys.SiteStarter" />
+		  <property name="Solution.BinariesPath" value="${Solution.RootPath}\..\..\Bin" />
+		  <property name="Solution.Version" value="1-0-6" />
+		<property name="Solution.VersionFile" value="${path::get-full-path('VersionNumber.txt')}" />
+		<property name="Solution.VirtualDirectoryName" value="SiteStarter" />
+		<property name="Solution.LibrariesPath" value="${Solution.RootPath}\Lib" />
+		<property name="Solution.SourceReleaseName" value="WorkHub2 Source ${Solution.Version} [${Solution.ReleaseTimestamp}]"/>
+		<property name="Solution.InstallReleaseName" value="WorkHub2 Install ${Solution.Version} [${Solution.ReleaseTimestamp}]"/>
+		<!--property name="Solution.LibPath" value="../Lib/${Project.BuildMode}/"/-->
+		<!--property name="Solution.RootPath" value="${string::substring(string::substring(Project.RootPath, string::last-index-of('\'), string::get-length(Project.RootPath)}"/-->
+		  		<!--property name="Solution.RootPath" value=""/-->
+		  		<!--property name="Solution.LibPath" value="Lib"/-->
+</project>

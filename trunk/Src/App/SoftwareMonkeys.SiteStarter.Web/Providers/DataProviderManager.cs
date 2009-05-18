@@ -22,45 +22,46 @@ namespace SoftwareMonkeys.SiteStarter.Web.Providers
 
         public static void Initialize()
         {
-		using (LogGroup logGroup = AppLogger.StartGroup("Initializing data provider", NLog.LogLevel.Info))
-		{
-	            if (!isInitialized)
-	            {
+			using (LogGroup logGroup = AppLogger.StartGroup("Initializing data provider", NLog.LogLevel.Info))
+			{
+		            if (!isInitialized)
+		            {
+		
+		                try
+		                {
+		                    //Get the feature's configuration info
+		                    DataProviderConfiguration qc =
+		                        (DataProviderConfiguration)ConfigurationManager.GetSection("DataProvider");
+		
+		                    if (qc.DefaultProvider == null || qc.Providers == null || qc.Providers.Count < 1)
+		                        throw new ProviderException("You must specify a valid default provider.");
+		
+		                    //Instantiate the providers
+		                    providerCollection = new DataProviderCollection();
+		                    ProvidersHelper.InstantiateProviders(qc.Providers, providerCollection, typeof(DataProvider));
+		                    providerCollection.SetReadOnly();
+		                    defaultProvider = providerCollection[qc.DefaultProvider];
+		                    
+		                    if (defaultProvider == null)
+		                    {
+		                        throw new ConfigurationErrorsException(
+		                            "You must specify a default provider for the feature.",
+		                            qc.ElementInformation.Properties["defaultProvider"].Source,
+		                            qc.ElementInformation.Properties["defaultProvider"].LineNumber);
+		                    }
+		                }
+		                catch (Exception ex)
+		                {
+							AppLogger.Error(ex.ToString());
 	
-	                try
-	                {
-	                    //Get the feature's configuration info
-	                    DataProviderConfiguration qc =
-	                        (DataProviderConfiguration)ConfigurationManager.GetSection("DataProvider");
-	
-	                    if (qc.DefaultProvider == null || qc.Providers == null || qc.Providers.Count < 1)
-	                        throw new ProviderException("You must specify a valid default provider.");
-	
-	                    //Instantiate the providers
-	                    providerCollection = new DataProviderCollection();
-	                    ProvidersHelper.InstantiateProviders(qc.Providers, providerCollection, typeof(DataProvider));
-	                    providerCollection.SetReadOnly();
-	                    defaultProvider = providerCollection[qc.DefaultProvider];
-	                    if (defaultProvider == null)
-	                    {
-	                        throw new ConfigurationErrorsException(
-	                            "You must specify a default provider for the feature.",
-	                            qc.ElementInformation.Properties["defaultProvider"].Source,
-	                            qc.ElementInformation.Properties["defaultProvider"].LineNumber);
-	                    }
-	                }
-	                catch (Exception ex)
-	                {
-				AppLogger.Error(ex.ToString());
-
-	                    initializationException = ex;
-	                    isInitialized = true;
-	                    throw ex;
-	                }
-	
-	                isInitialized = true; //error-free initialization
-	            }
-		}
+		                    initializationException = ex;
+		                    isInitialized = true;
+		                    throw ex;
+		                }
+		
+		                isInitialized = true; //error-free initialization
+		            }
+			}
         }
 
         //Public feature API

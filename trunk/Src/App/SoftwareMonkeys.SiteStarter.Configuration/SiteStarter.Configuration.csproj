@@ -43,6 +43,8 @@
     <Compile Include="Config.cs" />
     <Compile Include="ConfigCollection.cs" />
     <Compile Include="ConfigFactory.cs" />
+    <Compile Include="VirtualServerConfig.cs" />
+    <Compile Include="IVirtualServerConfig.cs" />
     <Compile Include="IAppConfig.cs" />
     <Compile Include="IConfig.cs" />
   </ItemGroup>
