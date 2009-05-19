@@ -516,4 +516,10 @@
   <data name="TellMeMoreAboutVirtualServers" xml:space="preserve">
     <value>Tell me more about virtual servers</value>
   </data>
+  <data name="VirtualServerCreated" xml:space="preserve">
+    <value>The virtual server has been created successfully.</value>
+  </data>
+  <data name="AdministratorDetails" xml:space="preserve">
+    <value>Administrator Details</value>
+  </data>
 </root>

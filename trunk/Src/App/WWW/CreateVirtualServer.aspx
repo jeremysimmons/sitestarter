@@ -4,6 +4,8 @@
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.State" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Configuration" %>
+<%@ Import Namespace="System.Web.Security" %>
 <script runat="server">
     private void Page_Load(object sender, EventArgs e)
     {
@@ -34,7 +36,13 @@
         server.ID = Guid.NewGuid();
         server.IsApproved = Config.Application.AutoApproveVirtualServerRegistration; // TODO: Check if servers should automatically be approved
         
-        DataForm.DataSource = server;
+        User user = new User();
+        user.ID = Guid.NewGuid();
+//        user.IsAdministrator = true;
+        user.IsApproved = true;
+        
+        VirtualServerDataForm.DataSource = server;
+        AdministratorDataForm.DataSource = user;
 
         DataBind();
     }
@@ -54,21 +62,36 @@
     /// </summary>
     private void SubmitRegister()
     {
-        DataForm.ReverseBind();
+    	VirtualServer server = (VirtualServer)VirtualServerDataForm.DataSource;
+    	User administrator = (User)AdministratorDataForm.DataSource;
+    	
+    	server.PrimaryAdministratorID = administrator.ID;
+        
+        VirtualServerDataForm.ReverseBind(server);
+        AdministratorDataForm.ReverseBind(administrator);
            
-        if (VirtualServerFactory.SaveVirtualServer((VirtualServer)DataForm.DataSource))
+        if (VirtualServerFactory.SaveVirtualServer(server))
         {
-            // Display the result to the server
-            Result.Display(Resources.Language.VirtualServerCreated);
-
-            // Go to the account page
-            VirtualServerState.VirtualServerName = ((VirtualServer)DataForm.DataSource).Name;
-            VirtualServerState.VirtualServerID = ((VirtualServer)DataForm.DataSource).ID.ToString();
-            
-            if (Config.Application.AutoApproveVirtualServerRegistration)
-	            Response.Redirect(Request.ApplicationPath + "/Admin/SetupVS.aspx");
-	        else
-	        	WaitForApproval();
+	            // Go to the account page
+	            VirtualServerState.VirtualServerName = server.Name;
+	            VirtualServerState.VirtualServerID = server.ID.ToString();
+	            
+	            UserFactory.SaveUser(administrator);
+	            
+	            FormsAuthentication.SetAuthCookie(administrator.Username, false);
+	            
+	            if (Config.Application.AutoApproveVirtualServerRegistration)
+	            {
+	            
+	    	        // Display the result to the server
+		            Result.Display(Resources.Language.VirtualServerCreated);
+		            
+		            Response.Redirect("Admin/Users.aspx");
+	
+		            //Response.Redirect(Request.ApplicationPath + "/Admin/SetupVS.aspx");
+		        }
+		        else
+		        	WaitForApproval();
         }
         else
             Result.DisplayError(Resources.Language.VirtualServerNameTaken);
@@ -85,20 +108,38 @@
     }
     #endregion
 </script>
+<asp:Content ID="Body" ContentPlaceHolderID="Body" runat="Server">
 <asp:MultiView runat="server" id="PageViews">
 <asp:View runat="server" id="CreateView">
-<div class="Heading1"><%# Resources.Language.Register %></div>
+<div class="Heading1"><%# Resources.Language.CreateVirtualServer %></div>
 <p>
 <cc:Result runat="Server"></cc:Result>
-<%# Resources.Language.RegisterIntro %></p>
-    <cc:EntityForm runat="server" id="DataForm" OnEntityCommand="DataForm_EntityCommand" CssClass="Panel" headingtext='<%# OperationManager.CurrentOperation == "CreateVirtualServer" ? Resources.Language.NewVirtualServerDetails : Resources.Language.VirtualServerDetails %>' headingcssclass="Heading2" width="100%">
+<%# Resources.Language.CreateVirtualServerIntro %></p>
+    <cc:EntityForm runat="server" id="VirtualServerDataForm" OnEntityCommand="DataForm_EntityCommand" CssClass="Panel" headingtext='<%# OperationManager.CurrentOperation == "CreateVirtualServer" ? Resources.Language.NewVirtualServerDetails : Resources.Language.VirtualServerDetails %>' headingcssclass="Heading2" width="100%">
 <cc:EntityFormTextBoxItem runat="server" PropertyName="Name" TextBox-Width="400" FieldControlID="Name" IsRequired="true" text='<%# Resources.Language.Name + ":" %>' RequiredErrorMessage='<%# Resources.Language.VirtualServerNameRequired %>'></cc:EntityFormTextBoxItem>
-                                      <cc:EntityFormButtonsItem runat="server"><FieldTemplate><asp:Button ID="RegisterButton" runat="server" CausesValidation="True" CommandName="Register"
+                                      
+</cc:EntityForm> 
+
+      <cc:EntityForm runat="server" id="AdministratorDataForm" OnEntityCommand="DataForm_EntityCommand" CssClass="Panel" HeadingText='<%# Resources.Language.AdministratorDetails %>' headingcssclass="Heading2" width="100%">
+			
+                           <cc:EntityFormTextBoxItem runat="server" PropertyName="Username" TextBox-Width="400" FieldControlID="Username" IsRequired="true" text='<%# Resources.Language.Username + ":" %>' RequiredErrorMessage='<%# Resources.Language.UsernameRequired %>'></cc:EntityFormTextBoxItem>
+                        
+                           <cc:EntityFormTextBoxItem runat="server" PropertyName="Password" TextBox-Width="200" FieldControlID="Password" IsRequired='<%# OperationManager.CurrentOperation == "CreateUser" %>' text='<%# Resources.Language.Password + ":" %>' RequiredErrorMessage='<%# Resources.Language.PasswordRequired %>' TextBox-TextMode='Password'></cc:EntityFormTextBoxItem>
+                        
+                           <cc:EntityFormTextBoxItem runat="server" PropertyName="Password" TextBox-Width="200" FieldControlID="PasswordConfirm" IsRequired='<%# OperationManager.CurrentOperation == "CreateUser" %>' text='<%# Resources.Language.PasswordConfirm + ":" %>' RequiredErrorMessage='<%# Resources.Language.PasswordRequired %>' TextBox-TextMode='Password'></cc:EntityFormTextBoxItem>
+                        
+                           <cc:EntityFormTextBoxItem runat="server" PropertyName="FirstName" TextBox-Width="400" FieldControlID="FirstName" IsRequired="true" text='<%# Resources.Language.FirstName + ":" %>' RequiredErrorMessage='<%# Resources.Language.FirstNameRequired %>'></cc:EntityFormTextBoxItem>
+                        
+                           <cc:EntityFormTextBoxItem runat="server" PropertyName="LastName" TextBox-Width="400" FieldControlID="LastName" IsRequired="true" text='<%# Resources.Language.LastName + ":" %>' RequiredErrorMessage='<%# Resources.Language.LastNameRequired %>'></cc:EntityFormTextBoxItem>
+                        
+                           <cc:EntityFormTextBoxItem runat="server" PropertyName="Email" TextBox-Width="400" FieldControlID="Email" IsRequired="true" text='<%# Resources.Language.Email + ":" %>' RequiredErrorMessage='<%# Resources.Language.EmailRequired %>'></cc:EntityFormTextBoxItem>
+                        
+                      <cc:EntityFormButtonsItem runat="server"><FieldTemplate><asp:Button ID="RegisterButton" runat="server" CausesValidation="True" CommandName="Register"
                                                     Text='<%# Resources.Language.Register %>'></asp:Button>
                                                    </FieldTemplate></cc:EntityFormButtonsItem>
 </cc:EntityForm> 
 </asp:View>
-<asp:View runat="Server" id="WaitForApprovalView"><div class="Heading1"><%# Resources.Language.ApprovalRequired %></div>
+<asp:View runat="Server" id="WaitForApprovalView"><div class="Heading1"><%# Resources.Language.ApplicationSubmitted %></div>
 <p>
 <cc:Result runat="Server"></cc:Result>
 <%# Resources.Language.ApprovalRequiredIntro %></p>

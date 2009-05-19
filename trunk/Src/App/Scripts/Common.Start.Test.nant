@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<project name="Common.Start.Test" default="Common.Start.Test" xmlns="http://nant.sf.net/schemas/nant.xsd">
-  		<property name="Project.Path" value=""/>
-	<target name="Common.Start.Test" description="Test script">
-		<echo message="${Project.Path}"/>
-	</target>
-</project>
-  	

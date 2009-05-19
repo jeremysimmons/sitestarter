@@ -61,7 +61,6 @@
 	
 		<!--property name="Local.ProjectQuery" value="..\${Project.RelativePath}\*.Project.nant"/-->
 		
-		<property name="Project.BuildMode" value="${Argument.BuildMode}"/>
 		
 		<property name="SiteStarter.BinPath" value="../../../../SiteStarter/Bin/${Project.BuildMode}"/>
 
