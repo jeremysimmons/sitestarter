@@ -38,6 +38,43 @@ namespace SoftwareMonkeys.SiteStarter.Entities
             get { return isApproved; }
             set { isApproved = value; }
         }
+        
+                private Guid primaryAdministratorID;
+        /// <summary>
+        /// Gets/sets the ID of the primaryAdministrator that the feature is part of.
+        /// </summary>
+        [EntityIDReference(IDsPropertyName = "PrimaryAdministratorID",
+           EntitiesPropertyName="PrimaryAdministrator")]
+        public Guid PrimaryAdministratorID
+        {
+            get {
+                if (primaryAdministrator != null)
+                    return primaryAdministrator.ID;
+                return primaryAdministratorID; }
+            set
+            {
+                primaryAdministratorID = value;
+                if (primaryAdministrator != null && primaryAdministrator.ID != primaryAdministratorID)
+                    primaryAdministrator = null;
+            }
+        }
+
+        private User primaryAdministrator;
+        /// <summary>
+        /// Gets/sets the name of the primaryAdministrator that the feature is part of.
+        /// </summary>
+        [XmlIgnore]
+        [EntityReference(ExcludeFromDataStore = true,
+           IDsPropertyName = "PrimaryAdministratorID",
+           EntitiesPropertyName="PrimaryAdministrator")]
+        public User PrimaryAdministrator
+        {
+            get { return primaryAdministrator; }
+            set
+            {
+                primaryAdministrator = value;
+            }
+        }
 
         private DateTime dateCreated;
         /// <summary>

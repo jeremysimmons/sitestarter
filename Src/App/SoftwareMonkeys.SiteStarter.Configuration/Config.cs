@@ -78,7 +78,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
                 
                 string virtualServerName = String.Empty;
                 
-                if (StateAccess.State != null)
+                if (StateAccess.IsInitialized && StateAccess.State != null)
                 	virtualServerName = (string)StateAccess.State.GetSession("VirtualServerName");
                 
                 if (virtualServerName != null && virtualServerName != String.Empty)
