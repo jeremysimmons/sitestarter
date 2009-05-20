@@ -4,6 +4,8 @@
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Entities" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Configuration" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business.State" %>
 <script runat="server">
     
     private void Page_Load(object sender, EventArgs e)
@@ -16,16 +18,16 @@
         {
             VirtualServer server = null;
             
-            VirtualServerState.VirtualServerName = Request.QueryString["Server"];
-            if (VirtualServerState.VirtualServerName != String.Empty)
-                server = VirtualServerFactory.GetVirtualServerByName(VirtualServerState.VirtualServerName);
+            string name = Request.QueryString["Server"];
+            if (name != String.Empty)
+                server = VirtualServerFactory.GetVirtualServerByName(name);
 
             if (server != null)
-                VirtualServerState.VirtualServerID = VirtualServerState.VirtualServerID;
+                VirtualServerState.Switch(name, server.ID);
 
             FormsAuthentication.SignOut();
 
-            Response.Redirect("Default.aspx");
+            Response.Redirect("Members/Login.aspx");
         }
     }
 

@@ -96,7 +96,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
         /// </summary>
         static public Entities.User[] GetUsersByEmail(string email)
         {
-            return Collection<Entities.User>.ConvertAll(DataStore.GetEntities(typeof(Entities.User), "email", email));
+            return Collection<Entities.User>.ConvertAll(DataAccess.Data.GetEntities(typeof(Entities.User), "Email", email));
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
         /// </summary>
         static public Entities.User[] GetUsersByName(string name)
         {
-            return Collection<Entities.User>.ConvertAll(DataStore.GetEntities(typeof(Entities.User), "name", name));
+            return Collection<Entities.User>.ConvertAll(DataAccess.Data.GetEntities(typeof(Entities.User), "Name", name));
         }
 
         /// <summary>

@@ -1,6 +1,6 @@
 <%@ Control Language="C#" AutoEventWireup="true" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business" %>
-<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.State" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business.State" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Configuration" %>
 <script runat="Server">
     protected string currentServerName = "[" + Resources.Language.Default + "]";

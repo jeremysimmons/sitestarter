@@ -252,6 +252,35 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 
             return (BaseEntity[])entities.ToArray();
         }
+        
+        /// <summary>
+        /// Retrieves all the entities of the specified type from the data store.
+        /// </summary>
+		/// <param name="type">The type of entities to retrieve.</param>
+		/// <param name="propertyName">Name of the property to match.</param>
+        /// <returns>The entities of the specified type found in the data store.</returns>
+        public override BaseEntity[] GetEntities(Type type, string propertyName, object propertyValue)
+        {
+        	List<BaseEntity> entities = new List<BaseEntity>();
+        	
+        			IList<BaseEntity> results = ((Db4oDataStore)Stores[type]).ObjectContainer.Query<BaseEntity>(delegate(BaseEntity e)
+                    {
+                        if (e.GetType() == type)
+                        {
+                            PropertyInfo property = e.GetType().GetProperty(propertyName);
+                            object value = property.GetValue(e, null);
+                            
+                            if (value.Equals(propertyValue))
+                            	return true;
+                        }
+                        
+                        return false;
+                    });
+                    
+                    entities.AddRange(results);
+                    
+                    return (BaseEntity[])entities.ToArray();
+        }
 
         /// <summary>
         /// Retrieves all entities that contain a reverse reference to the specified entity.
@@ -359,10 +388,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		bool isMatch = false;
 
 		using (LogGroup logGroup2 = AppLogger.StartGroup("Checking whether the provided entity and filter match.", NLog.LogLevel.Debug))
-	        {
-			isMatch = filter.IsMatch(entity);
+	    {
+				isMatch = filter.IsMatch(entity);
 
-	                AppLogger.Debug("Is match? " + isMatch.ToString());
+	            AppLogger.Debug("Is match? " + isMatch.ToString());
 		}
 	
 		return isMatch;

@@ -12,10 +12,15 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
         /// </summary>
         string PhysicalPath { get;set; }
 
-	/// <summary>
-	/// The universal ID of the current project.
-	/// </summary>
-	Guid UniversalProjectID { get; }
+		/// <summary>
+		/// The universal ID of the current project.
+		/// </summary>
+		Guid UniversalProjectID { get; }
+		
+		/// <summary>
+		/// The primary administrator ID.
+		/// </summary>
+		Guid PrimaryAdministratorID { get; }
 
         // TODO: Clean up
         int SessionTimeout { get;set; }

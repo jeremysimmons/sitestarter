@@ -801,7 +801,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 	#region Filter tests
 	[Test]
-	public void Test_PropertyFilter()
+	public void Test_GetEntitiesByPropertyFilter()
 	{
 		using (LogGroup logGroup = AppLogger.StartGroup("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
 		{
@@ -815,12 +815,14 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		        filter.PropertyValue = e1.Name;
 		        filter.AddType(typeof(TestEntity));
 		
-			DataAccess.Data.Stores[typeof(TestEntity)].Save(e1);
+			DataAccess.Data.Save(e1);
 		
 		        BaseEntity[] found = (BaseEntity[])DataAccess.Data.GetEntities(filter);
+		        
+		        Assert.IsNotNull(found, "Null value returned");
 	
 			if (found != null)
-                Assert.Greater(found.Length, 0, "No results found.");
+                Assert.IsTrue(found.Length > 0, "No results found.");
 
             ClearTestEntities();
 		}
@@ -852,9 +854,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				DataAccess.Data.Stores[typeof(TestEntity)].Save(e1);
 		
 		        BaseEntity[] found = (BaseEntity[])DataAccess.Data.GetEntities(filterGroup);
+		        
+		        Assert.IsNotNull(found, "Null value returned.");
 	
 			if (found != null)
-				Assert.Greater(found.Length, 0, "No results found.");
+				Assert.IsTrue(found.Length > 0, "No results found.");
 	
 	
 	       		DataAccess.Data.Stores[typeof(TestEntity)].Delete(e1);
@@ -945,7 +949,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 	
 			DataAccess.Data.Stores[typeof(EntityOne)].Save(e1);
 
-			BaseEntity[] found = (BaseEntity[])DataAccess.Data.Stores[typeof(EntityOne)].GetEntities(typeof(EntityOne), "name", e1.Name);
+			BaseEntity[] found = (BaseEntity[])DataAccess.Data.GetEntities(typeof(EntityOne), "name", e1.Name);
 			Collection<EntityOne> foundList = new Collection<EntityOne>(found);
 	
 			if (found != null)
@@ -970,12 +974,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 	
 			PropertyFilter filter = (PropertyFilter)DataAccess.Data.CreateFilter(typeof(PropertyFilter));
 			filter.Operator = FilterOperator.Equal;
-            filter.PropertyName = "name";
+            filter.PropertyName = "Name";
             filter.PropertyValue = "Another Name";
 	
 			DataAccess.Data.Stores[typeof(EntityOne)].Save(e1);
 
-			BaseEntity[] found = (BaseEntity[])DataAccess.Data.Stores[typeof(EntityOne)].GetEntities(typeof(EntityOne), "name", "Another Name");
+			BaseEntity[] found = (BaseEntity[])DataAccess.Data.GetEntities(typeof(EntityOne), "Name", "Another Name");
 			Collection<EntityOne> foundList = new Collection<EntityOne>(found);
 	
 			if (found != null)

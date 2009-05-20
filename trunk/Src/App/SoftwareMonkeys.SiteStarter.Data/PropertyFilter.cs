@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Collections;
+using SoftwareMonkeys.SiteStarter.Entities;
+using System.Reflection;
 
 namespace SoftwareMonkeys.SiteStarter.Data
 {
@@ -41,22 +43,40 @@ namespace SoftwareMonkeys.SiteStarter.Data
             set { propertyValue = value; }
         }
 
-	/// <summary>
-	/// Sets the provided property name and property value to the filter.
-	/// </summary>
-	public PropertyFilter(Type type, string propertyName, object propertyValue)
-	{
-		Types = new Type[] {type};
-		PropertyName = propertyName;
-		PropertyValue= propertyValue;
-	}
-
-	/// <summary>
-	/// Empty constructor.
-	/// </summary>
-	public PropertyFilter()
-	{
-	}
+		/// <summary>
+		/// Sets the provided property name and property value to the filter.
+		/// </summary>
+		public PropertyFilter(Type type, string propertyName, object propertyValue)
+		{
+			Types = new Type[] {type};
+			PropertyName = propertyName;
+			PropertyValue= propertyValue;
+		}
+	
+		/// <summary>
+		/// Empty constructor.
+		/// </summary>
+		public PropertyFilter()
+		{
+		}
+	
+		public override bool IsMatch(BaseEntity entity)
+		{
+			bool typeMatches = false;
+			Type entityType = entity.GetType();
+			foreach (Type type in Types)
+			{
+				if (type.Equals(entityType) || entityType.IsSubclassOf(type))
+					typeMatches = true;
+			}
+			
+			PropertyInfo property = entityType.GetProperty(PropertyName);
+			object value = property.GetValue(entity, null);
+			bool valueMatches = value.Equals(PropertyValue);
+			
+			return true;////typeMatches && valueMatches;
+		}
+	
     }
 
 }
