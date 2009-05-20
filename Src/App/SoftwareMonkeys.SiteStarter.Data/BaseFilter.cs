@@ -42,10 +42,10 @@ namespace SoftwareMonkeys.SiteStarter.Data
             }
         }
 
-	public virtual bool IsMatch(BaseEntity entity)
-	{
-		throw new NotSupportedException("The BaseFilter.IsMatch property cannot be called directly. A derived filter class must override it.");
-	}
+		public virtual bool IsMatch(BaseEntity entity)
+		{
+			throw new NotSupportedException("The BaseFilter.IsMatch property cannot be called directly. A derived filter class must override it.");
+		}
     }
 
 }

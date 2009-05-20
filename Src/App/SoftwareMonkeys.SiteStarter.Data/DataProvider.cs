@@ -40,6 +40,8 @@ namespace SoftwareMonkeys.SiteStarter.Data
 	/// <param name="group">The group of filters to apply to the query.</param>
         /// <returns>The entities of the specified type found in the data store.</returns>
         public abstract BaseEntity[] GetEntities(FilterGroup group);
+        
+        public abstract BaseEntity[] GetEntities(Type type, string propertyName, object propertyValue);
 
 
         /// <summary>

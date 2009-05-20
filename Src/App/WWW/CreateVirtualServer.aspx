@@ -5,6 +5,7 @@
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.State" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Configuration" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business.State" %>
 <%@ Import Namespace="System.Web.Security" %>
 <script runat="server">
     private void Page_Load(object sender, EventArgs e)
@@ -34,6 +35,7 @@
 
         VirtualServer server = new VirtualServer();
         server.ID = Guid.NewGuid();
+        server.DateCreated = DateTime.Now;
         server.IsApproved = Config.Application.AutoApproveVirtualServerRegistration; // TODO: Check if servers should automatically be approved
         
         User user = new User();
@@ -69,20 +71,28 @@
         
         VirtualServerDataForm.ReverseBind(server);
         AdministratorDataForm.ReverseBind(administrator);
-           
+        
+        administrator.Password = Crypter.EncryptPassword(administrator.Password);
+        
+        // Reset the current server state temporarily
         if (VirtualServerFactory.SaveVirtualServer(server))
         {
-	            // Go to the account page
-	            VirtualServerState.VirtualServerName = server.Name;
-	            VirtualServerState.VirtualServerID = server.ID.ToString();
-	            
-	            UserFactory.SaveUser(administrator);
-	            
-	            FormsAuthentication.SetAuthCookie(administrator.Username, false);
-	            
 	            if (Config.Application.AutoApproveVirtualServerRegistration)
-	            {
-	            
+	            {        
+		         	VirtualServerFactory.SaveConfig(Request.MapPath(Request.ApplicationPath + "/App_Data/VS/" + server.ID.ToString()), server);
+		            
+		            VirtualServerState.Switch(server.Name, server.ID);
+		            
+		            UserFactory.SaveUser(administrator);
+			            
+		            if(!Roles.RoleExists("Administrator"))
+		                Roles.CreateRole("Administrator");
+		
+		            if (!Roles.IsUserInRole(administrator.Username, "Administrator"))
+		                Roles.AddUserToRole(administrator.Username, "Administrator");
+		            
+		            FormsAuthentication.SetAuthCookie(administrator.Username, false);
+		            
 	    	        // Display the result to the server
 		            Result.Display(Resources.Language.VirtualServerCreated);
 		            
@@ -124,9 +134,9 @@
 			
                            <cc:EntityFormTextBoxItem runat="server" PropertyName="Username" TextBox-Width="400" FieldControlID="Username" IsRequired="true" text='<%# Resources.Language.Username + ":" %>' RequiredErrorMessage='<%# Resources.Language.UsernameRequired %>'></cc:EntityFormTextBoxItem>
                         
-                           <cc:EntityFormTextBoxItem runat="server" PropertyName="Password" TextBox-Width="200" FieldControlID="Password" IsRequired='<%# OperationManager.CurrentOperation == "CreateUser" %>' text='<%# Resources.Language.Password + ":" %>' RequiredErrorMessage='<%# Resources.Language.PasswordRequired %>' TextBox-TextMode='Password'></cc:EntityFormTextBoxItem>
+                           <cc:EntityFormTextBoxItem runat="server" PropertyName="Password" TextBox-Width="200" FieldControlID="Password" IsRequired='true' text='<%# Resources.Language.Password + ":" %>' RequiredErrorMessage='<%# Resources.Language.PasswordRequired %>' TextBox-TextMode='Password'></cc:EntityFormTextBoxItem>
                         
-                           <cc:EntityFormTextBoxItem runat="server" PropertyName="Password" TextBox-Width="200" FieldControlID="PasswordConfirm" IsRequired='<%# OperationManager.CurrentOperation == "CreateUser" %>' text='<%# Resources.Language.PasswordConfirm + ":" %>' RequiredErrorMessage='<%# Resources.Language.PasswordRequired %>' TextBox-TextMode='Password'></cc:EntityFormTextBoxItem>
+                           <cc:EntityFormTextBoxItem runat="server" PropertyName="Password" TextBox-Width="200" FieldControlID="PasswordConfirm" IsRequired='true' text='<%# Resources.Language.PasswordConfirm + ":" %>' RequiredErrorMessage='<%# Resources.Language.PasswordRequired %>' TextBox-TextMode='Password'></cc:EntityFormTextBoxItem>
                         
                            <cc:EntityFormTextBoxItem runat="server" PropertyName="FirstName" TextBox-Width="400" FieldControlID="FirstName" IsRequired="true" text='<%# Resources.Language.FirstName + ":" %>' RequiredErrorMessage='<%# Resources.Language.FirstNameRequired %>'></cc:EntityFormTextBoxItem>
                         

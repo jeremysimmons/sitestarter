@@ -3,6 +3,7 @@ using System.Data;
 using System.Configuration;
 using System.Xml.Serialization;
 using System.Collections.Generic;
+using SoftwareMonkeys.SiteStarter.Configuration;
 
 namespace SoftwareMonkeys.SiteStarter.Entities
 {
@@ -10,12 +11,14 @@ namespace SoftwareMonkeys.SiteStarter.Entities
     /// Defines a virtual server.
     /// </summary>
     [DataStore("VirtualServers")]
+    [XmlRoot(Namespace="urn:SoftwareMonkeys.SiteStarter.Entities")]
+    [XmlType(Namespace="urn:SoftwareMonkeys.SiteStarter.Entities")]
     [Serializable]
-    public class VirtualServer : BaseEntity
+    public class VirtualServer : BaseEntity, IVirtualServerConfig, IConfig
     {
         private string name;
         /// <summary>
-        /// Gets/sets the name of the role.
+        /// Gets/sets the name of the server.
         /// </summary>
         public string Name
         {

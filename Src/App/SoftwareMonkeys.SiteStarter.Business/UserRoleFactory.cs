@@ -74,19 +74,11 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		}
 
         /// <summary>
-        /// Retrieves the role with the provided email.
-        /// </summary>
-        static public Entities.UserRole[] GetUserRolesByEmail(string email)
-        {
-            return (UserRole[])Collection<Entities.UserRole>.ConvertAll(DataStore.GetEntities(typeof(Entities.UserRole), "email", email));
-        }
-
-        /// <summary>
         /// Retrieves the roles with the provided name.
         /// </summary>
         static public Entities.UserRole[] GetUserRolesByName(string name)
         {
-            return (UserRole[])Collection<Entities.UserRole>.ConvertAll(DataStore.GetEntities(typeof(Entities.UserRole), "name", name));
+            return (UserRole[])Collection<Entities.UserRole>.ConvertAll(DataAccess.Data.GetEntities(typeof(Entities.UserRole), "Name", name));
         }
 
 
@@ -96,14 +88,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
         static public Entities.UserRole GetUserRoleByName(string name)
         {
             return (Entities.UserRole)DataStore.GetEntity(typeof(Entities.UserRole), "name", name);
-        }
-
-        /// <summary>
-        /// Retrieves the role with the provided email.
-        /// </summary>
-        static public Entities.UserRole GetUserRoleByEmail(string email)
-        {
-            return (Entities.UserRole)DataStore.GetEntity(typeof(Entities.UserRole), "email", email);
         }
 		#endregion
 

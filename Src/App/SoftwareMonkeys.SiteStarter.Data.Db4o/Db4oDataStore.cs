@@ -40,7 +40,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
             {
                 IObjectServer server = (IObjectServer)StateAccess.State.GetApplication(ObjectServerKey);
                 if (server == null)
-                	Open();
+                	OpenServer();
                 return (IObjectServer)StateAccess.State.GetApplication(ObjectServerKey);
             }
             set {
@@ -52,7 +52,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			get
 			{
             	string key = "ObjectServer_" + this.Name;
-            	string prefix = (string)StateAccess.State.GetSession("VirtualServerName");
+            	string prefix = (string)StateAccess.State.GetSession("VirtualServerID");
             	if (prefix != null && prefix != String.Empty)
             	{
             		key = prefix + "_" + key;
@@ -66,7 +66,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			get
 			{
             	string key = "ObjectContainer_" + this.Name;
-            	string prefix = (string)StateAccess.State.GetSession("VirtualServerName");
+            	string prefix = (string)StateAccess.State.GetSession("VirtualServerID");
             	if (prefix != null && prefix != String.Empty)
             	{
             		key = prefix + "_" + key;
@@ -84,10 +84,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
             {
             	IObjectContainer objectContainer = (IObjectContainer)StateAccess.State.GetApplication(ObjectContainerKey);
                 if (objectContainer == null)
-                    StateAccess.State.SetApplication(ObjectContainerKey, ObjectServer.OpenClient());
+                    OpenContainer();
+                    
                 return (IObjectContainer)StateAccess.State.GetApplication(ObjectContainerKey);
+                //return (IObjectContainer)StateAccess.State.GetApplication(ObjectContainerKey);
+                //return ObjectServer.OpenClient();
             }
-            //set { objectContainer = value; }
+            set { StateAccess.State.SetApplication(ObjectContainerKey, value); }
         }
 
         #region IDataStore Members
@@ -102,14 +105,14 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
             set { name = value; }
         }
 
-        public void Open()
+        public void OpenServer()
         {
             string fileName = Name;
 
             string prefix = (string)StateAccess.State.GetSession("VirtualServerID");
             if (prefix != null && prefix != String.Empty)
             {
-                fileName = @"\VS\" + prefix + @"\" + fileName;
+                fileName = @"VS\" + prefix + @"\" + fileName;
             }
 
             string fullName = Config.Application.PhysicalPath + @"\App_Data\" + fileName + ".yap";
@@ -117,6 +120,27 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
                 Directory.CreateDirectory(Path.GetDirectoryName(fullName));
             ObjectServer = Db4oFactory.OpenServer(fullName, 0);
             //objectContainer = ObjectServer.OpenClient();
+        }
+        
+        public void Open()
+        {
+        }
+        
+        public void OpenContainer()
+        {
+            string fileName = Name;
+
+            string prefix = (string)StateAccess.State.GetSession("VirtualServerID");
+            if (prefix != null && prefix != String.Empty)
+            {
+                fileName = @"VS\" + prefix + @"\" + fileName;
+            }
+
+            string fullName = Config.Application.PhysicalPath + @"\App_Data\" + fileName + ".yap";
+            if (!Directory.Exists(Path.GetDirectoryName(fullName)))
+                Directory.CreateDirectory(Path.GetDirectoryName(fullName));
+            //ObjectServer = Db4oFactory.OpenServer(fullName, 0);
+            ObjectContainer = ObjectServer.OpenClient();//Db4oFactory.OpenFile(fullName);
         }
 
         public void Dispose()
@@ -469,7 +493,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
                 return null;
         }
 
-        /// <summary>
+        /*/// <summary>
         /// Retrieves all the entities of the specified type matching the specified value.
         /// </summary>
         /// <param name="type">The type of entity to retrieve.</param>
@@ -478,6 +502,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
         /// <returns></returns>
         public BaseEntity[] GetEntities(Type type, string fieldName, object fieldValue)
         {
+        
             IQuery query = ObjectContainer.Query();
             query.Constrain(type);
             query.Descend(fieldName).Constrain(fieldValue);
@@ -491,7 +516,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
             }
 
             return (BaseEntity[])list.ToArray(type);
-        }
+        }*/
 
         /// <summary>
         /// Retrieves all the entities of the specified type matching the specified values.

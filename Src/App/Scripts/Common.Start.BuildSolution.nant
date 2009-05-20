@@ -13,8 +13,6 @@
 		<!--include buildfile="${Project.PropertiesPath}"/-->
   		
   		<!--property name="Solution.LibPath" value=""/-->
-  		<property name="Project.RelativePath" value=""/>
-	  		<property name="Project.BuildMode" value="Release"/>
   		<!--property name="Project.VersionFile" value=""/-->
   		
 		

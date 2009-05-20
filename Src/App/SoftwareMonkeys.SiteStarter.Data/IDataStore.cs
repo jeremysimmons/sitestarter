@@ -31,7 +31,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
         BaseEntity GetEntity(Type entityType, string propertyName, object propertyValue);
         BaseEntity GetEntity(Type entityType, IDictionary<string, object> parameters);
         BaseEntity[] GetEntities(Type entityType, IDictionary<string, object> parameters);
-        BaseEntity[] GetEntities(Type entityType, string propertyName, object propertyValue);
+        //BaseEntity[] GetEntities(Type entityType, string propertyName, object propertyValue);
         BaseEntity[] GetPage(Type type, int pageIndex, int pageSize, string sortExpression, out int totalObjects);
         BaseEntity[] GetPage(Type type, string fieldName, object fieldValue, int pageIndex, int pageSize, string sortExpression, out int totalObjects);
         BaseEntity[] PreSave(BaseEntity entity);

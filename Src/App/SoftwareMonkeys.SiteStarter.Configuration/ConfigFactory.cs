@@ -117,7 +117,13 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
             if (config is IAppConfig)
                 Config.Application = (IAppConfig)config;
 
-            string configPath = CreateConfigPath(physicalDataDirectoryPath, config.Name, variation);
+			string name = config.Name;
+			
+			// All virtual server config files should be named VirtualServer.config because they have separate directories
+			if (config is IVirtualServerConfig)
+				name = "VirtualServer";
+				
+            string configPath = CreateConfigPath(physicalDataDirectoryPath, name, variation);
 
             if (!Directory.Exists(physicalDataDirectoryPath))
                 Directory.CreateDirectory(physicalDataDirectoryPath);

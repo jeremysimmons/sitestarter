@@ -391,6 +391,16 @@ namespace SoftwareMonkeys.SiteStarter.Tests
             get { return universalProjectID; }
             set { universalProjectID = value; }
         }
+        
+        private Guid primaryAdministratorID;
+        /// <summary>
+        /// Gets/sets the universal ID of the project.
+        /// </summary>
+        public Guid PrimaryAdministratorID
+        {
+            get { return primaryAdministratorID; }
+            set { primaryAdministratorID = value; }
+        }
         #endregion
         
     	private bool enableVirtualServer;

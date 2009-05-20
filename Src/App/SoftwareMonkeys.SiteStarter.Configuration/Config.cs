@@ -55,6 +55,46 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
                     All.Add((IConfig)value);
             } 
         }
+        
+        /// <summary>
+        /// Gets/sets the virtual server configuration object.
+        /// </summary>
+        static public IVirtualServerConfig VirtualServer
+        {
+            get {
+            	IVirtualServerConfig server = null;
+            	
+                if (All != null && All.Count > 0)
+                {
+                    for (int i = 0; i < All.Count; i++)
+                    {
+                        if (All[i] is IVirtualServerConfig && ((IVirtualServerConfig)All[i]).ID.ToString() == (string)StateAccess.State.GetSession("VirtualServerID"))
+                        {
+                            server = (IVirtualServerConfig)All[i];
+                        }
+                    }
+                }
+                
+                if (server == null)
+                {
+                	server = LoadVirtualServerConfig();
+                }
+                return server;
+            }
+            set
+            {
+                if (All.Contains((IVirtualServerConfig)value))
+                {
+                    for (int i = 0; i < All.Count; i++)
+                    {
+                        if (All[i] is IVirtualServerConfig && ((IVirtualServerConfig)All[i]).ID.ToString() == (string)StateAccess.State.GetSession("VirtualServerID"))
+                            All[i] = (IVirtualServerConfig)value;
+                    }
+                }
+                else
+                    All.Add((IVirtualServerConfig)value);
+            } 
+        }
 
         /// <summary>
         /// Gets a flag indicating whether the application configuration has been initialized.
@@ -86,6 +126,11 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 
                 All = ConfigFactory.LoadAllConfigs(fullPath);
             }
+        }
+        
+        static protected IVirtualServerConfig LoadVirtualServerConfig()
+        {
+        	return (IVirtualServerConfig)ConfigFactory.LoadConfig(Config.Application.PhysicalPath + @"\App_Data\VS\" + StateAccess.State.GetSession("VirtualServerID"), typeof(IVirtualServerConfig));
         }
 
         /// <summary>

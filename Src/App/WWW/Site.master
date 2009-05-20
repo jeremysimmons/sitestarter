@@ -1,6 +1,6 @@
 <%@ Master Language="C#" AutoEventWireup="true" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web" %>
-<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.State" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business.State" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -34,7 +34,8 @@
         <a href='<%= Request.ApplicationPath + "/Members/Login.aspx" %>'>Login</a></li><li>
         <a href='<%= Request.ApplicationPath + "/Members/Default.aspx" %>'>My Account</a></li><li>
         <a href='<%= Request.ApplicationPath + "/Members/Logout.aspx" %>'>Logout</a></li><li>
-        <a href='<%= Request.ApplicationPath + "/Admin/Users.aspx" %>'>Manage Users</a></li><li>
+        <a href='<%= Request.ApplicationPath + "/Admin/Users.aspx" %>'>Users</a></li><li>
+        <a href='<%= Request.ApplicationPath + "/Admin/UserRoles.aspx" %>'>Roles</a></li><li>
         <a href='<%= Request.ApplicationPath + "/Admin/Settings.aspx" %>'>Settings</a></li><li>
         <a href='<%= Request.ApplicationPath + "/Admin/UnitTests.aspx" %>'>Unit Tests</a></li><li>
         <a href='<%= Request.ApplicationPath + "/Admin/Data.aspx" %>'>Data</a></li></ul>
