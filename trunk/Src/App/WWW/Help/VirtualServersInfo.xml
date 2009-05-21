@@ -1,0 +1,44 @@
+<?xml version='1.0'?>
+<?xml-stylesheet type='text/xsl' href='HelpDocumentTemplate.xsl'?>
+<Document>
+	<Head>
+		<Title>Virtual Servers</Title>
+	</Head>
+	<Body>
+		<h1>Virtual Servers</h1>
+		<p>Create and run your own virtual application server.</p>
+		<h2>What is a virtual server?</h2>
+		<p>With "Virtual Server" mode enable, projects can run multiple instances from a single installation. These "virtual servers" separate data into different directories but all run from a single set of project files.</p>
+		<p>The active virtual server is stored within session variable. This information is used to direct data operations to the appropriate directory.</p>
+		<h2>Why use a virtual server?</h2>
+		<p>You should create a virtual server if:</p>
+		<ul>
+		<li>You want to test out the project</li>
+		<li>You want your project installation to be hosted and managed for you</li>
+		<li>You want to avoid installing, upgrading, and maintenance of projects</li>
+		<li>You want to be able to get started immediately (within minutes)</li>
+		</ul>
+		<p>You should install the project and run it with virtual servers enabled if:</p>
+		<ul>
+		<li>You want to give customers/clients the ability to create and run virtual servers within the project</li>
+		<li>You want to resell hosting related services</li>
+		</ul>
+		<p>You should not create a virtual server if:</p>
+		<ul>
+		<li>You want to customize your copy of the project</li>
+		<li>You want to run the project on your own server</li>
+		</ul>
+		<h2>What projects are capable of running as virtual servers?</h2>
+		<ul>
+		<li><a href="http://www.softwaremonkeys.net/projects/WorkHub2.aspx">WorkHub2</a></li>
+		<li><a href="http://www.softwaremonkeys.net/projects/SiteStarter.aspx">SiteStarter</a></li>
+		</ul>
+		<h2>How do I enable virtual servers?</h2>
+		<ol>
+		<li>Sign in as an administrator</li>
+		<li>Go to settings</li>
+		<li>Enable virtual servers</li>
+		<li>Save</li>
+		</ol>
+	</Body>
+</Document>
