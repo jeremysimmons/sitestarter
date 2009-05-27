@@ -522,4 +522,16 @@
   <data name="AdministratorDetails" xml:space="preserve">
     <value>Administrator Details</value>
   </data>
+  <data name="SelectUser" xml:space="preserve">
+    <value>Select User</value>
+  </data>
+  <data name="PrimaryAdministrator" xml:space="preserve">
+    <value>Primary Administrator</value>
+  </data>
+  <data name="Keywords" xml:space="preserve">
+    <value>Keywords</value>
+  </data>
+  <data name="DefaultVirtualServerKeywords" xml:space="preserve">
+    <value>Default Virtual Server Keywords</value>
+  </data>
 </root>

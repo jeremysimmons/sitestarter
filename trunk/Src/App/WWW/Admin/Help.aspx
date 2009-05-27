@@ -10,7 +10,6 @@
 <%@ Import namespace="System.Xml" %>
 <%@ Import namespace="System.Xml.Serialization" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Data" %>
-<%@ Import namespace="ICSharpCode.SharpZipLib.Zip" %>
 <script runat="server">
 	protected string ExportDirectoryName = "Exports";
 	protected int TotalRecords = 0;

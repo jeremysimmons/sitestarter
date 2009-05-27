@@ -38,6 +38,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
         bool EnableVirtualServer {get;set;}
         bool EnableVirtualServerRegistration {get;set;}
         bool AutoApproveVirtualServerRegistration {get;set;}
+        string[] DefaultVirtualServerKeywords {get;set;}
 
       /*  void AddDataServer(string name, IObjectServer server);
         IObjectServer GetDataServer(string name);

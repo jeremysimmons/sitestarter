@@ -147,6 +147,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			{
 				// Save the object.
 				DataStore.Save(server);
+				
+		        SaveConfig(Config.Application.PhysicalPath.TrimEnd('\\') + @"\App_Data\VS\" + server.ID.ToString(), server);
 
 				// Save successful.
 				success = true;
@@ -203,7 +205,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			else
 			{
 				// Update the object.
-                		DataStore.Update(server);
+           		DataStore.Update(server);
+                		
+		        SaveConfig(Config.Application.PhysicalPath.TrimEnd('\\') + @"\App_Data\VS\" + server.ID.ToString(), server);
 
 				// Update successful.
 				success = true;

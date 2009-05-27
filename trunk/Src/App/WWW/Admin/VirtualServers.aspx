@@ -198,7 +198,7 @@
         }
     }
 
-    protected void UsersSelect_DataLoading(object sender, EventArgs e)
+    protected void PrimaryAdministratorSelect_DataLoading(object sender, EventArgs e)
     {
         ((EntitySelect)sender).DataSource = UserFactory.GetUsers();
     }
@@ -261,8 +261,9 @@
                          </p>
                            <cc:EntityForm runat="server" id="DataForm" OnEntityCommand="DataForm_EntityCommand" CssClass="Panel" headingtext='<%# OperationManager.CurrentOperation == "CreateVirtualServer" ? Resources.Language.NewVirtualServerDetails : Resources.Language.VirtualServerDetails %>' headingcssclass="Heading2" width="100%">
                              <cc:EntityFormTextBoxItem runat="server" PropertyName="Name" TextBox-Width="400" FieldControlID="Name" IsRequired="true" text='<%# Resources.Language.Name + ":" %>' RequiredErrorMessage='<%# Resources.Language.VirtualServerNameRequired %>'></cc:EntityFormTextBoxItem>
-				<cc:EntityFormItem runat="server" PropertyName="UserIDs" FieldControlID="Users" ControlValuePropertyName="SelectedEntityIDs" text='<%# Resources.Language.Users + ":" %>'><FieldTemplate><cc:EntitySelect width="400px" EntityType="SoftwareMonkeys.SiteStarter.Entities.User, SoftwareMonkeys.SiteStarter.Entities" runat="server" ValuePropertyName='Name' id="Users" displaymode="multiple" selectionmode="multiple" NoDataText='<%# "-- " + Resources.Language.NoUsers + " --" %>' OnDataLoading='UsersSelect_DataLoading'></cc:EntitySelect></FieldTemplate></cc:EntityFormItem>
-                                  <cc:EntityFormButtonsItem ID="EntityFormButtonsItem1" runat="server"><FieldTemplate><asp:Button ID="SaveButton" runat="server" CausesValidation="True" CommandName="Save"
+				<cc:EntityFormItem runat="server" PropertyName="PrimaryAdministratorID" FieldControlID="PrimaryAdministrator" ControlValuePropertyName="SelectedEntityID" text='<%# Resources.Language.PrimaryAdministrator + ":" %>'><FieldTemplate><cc:EntitySelect width="400px" EntityType="SoftwareMonkeys.SiteStarter.Entities.User, SoftwareMonkeys.SiteStarter.Entities" runat="server" ValuePropertyName='Name' id="PrimaryAdministrator" NoDataText='<%# "-- " + Resources.Language.SelectUser + " --" %>' OnDataLoading='PrimaryAdministratorSelect_DataLoading'></cc:EntitySelect></FieldTemplate></cc:EntityFormItem>
+                                <cc:EntityFormKeywordsItem runat="server" PropertyName="Keywords" KeywordsControl-CssClass="Field" ControlValuePropertyName="Keywords" Text='<%# Resources.Language.Keywords + ":" %>'/>
+                               <cc:EntityFormButtonsItem ID="EntityFormButtonsItem1" runat="server"><FieldTemplate><asp:Button ID="SaveButton" runat="server" CausesValidation="True" CommandName="Save"
                                                     Text='<%# Resources.Language.Save %>' Visible='<%# OperationManager.CurrentOperation == "CreateVirtualServer" %>'></asp:Button>
                                                     <asp:Button ID="UpdateButton" runat="server" CausesValidation="True" CommandName="Update"
                                                     Text='<%# Resources.Language.Update %>' Visible='<%# OperationManager.CurrentOperation == "EditVirtualServer" %>'></asp:Button>

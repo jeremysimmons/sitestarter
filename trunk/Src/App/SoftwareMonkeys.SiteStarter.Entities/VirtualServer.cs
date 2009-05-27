@@ -78,6 +78,16 @@ namespace SoftwareMonkeys.SiteStarter.Entities
                 primaryAdministrator = value;
             }
         }
+        
+        private string[] keywords;
+        /// <summary>
+        /// Gets/sets the keywords applying to the virtual server.
+        /// </summary>
+        public string[] Keywords
+        {
+        	get { return keywords; }
+        	set { keywords = value; }
+        }
 
         private DateTime dateCreated;
         /// <summary>

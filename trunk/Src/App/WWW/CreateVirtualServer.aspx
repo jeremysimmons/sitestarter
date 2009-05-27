@@ -74,12 +74,13 @@
         
         administrator.Password = Crypter.EncryptPassword(administrator.Password);
         
+        server.Keywords = Config.Application.DefaultVirtualServerKeywords;
+        
         // Reset the current server state temporarily
         if (VirtualServerFactory.SaveVirtualServer(server))
         {
 	            if (Config.Application.AutoApproveVirtualServerRegistration)
 	            {        
-		         	VirtualServerFactory.SaveConfig(Request.MapPath(Request.ApplicationPath + "/App_Data/VS/" + server.ID.ToString()), server);
 		            
 		            VirtualServerState.Switch(server.Name, server.ID);
 		            

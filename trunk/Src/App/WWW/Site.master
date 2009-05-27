@@ -17,7 +17,7 @@
     <form id="form1" runat="server">
     <div>
     <table width="100%">
-    <tr><td colspan="2" style="padding: 0px;" class="PageHeader"><table width="100%"><tr><td></td><td class="PageHeaderText">Web Site Starter Kit</td><td class="PageHeaderIdentity">
+    <tr><td colspan="2" style="padding: 0px;" class="PageHeader"><table width="100%"><tr><td></td><td class="PageHeaderText">SiteStarter</td><td class="PageHeaderIdentity">
         &nbsp;<asp:LoginView ID="LoginView1" runat="server">
             <LoggedInTemplate>
                 <%= Resources.Language.YouAreLoggedInAs %>: <%= Request.IsAuthenticated ? My.User.Username : String.Empty %>&nbsp;(<a href='<%= Request.ApplicationPath + "/Members/Logout.aspx" %>'><%= Resources.Language.Logout %></a>)
