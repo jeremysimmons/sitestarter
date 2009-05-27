@@ -433,6 +433,16 @@ namespace SoftwareMonkeys.SiteStarter.Tests
         {
         	get { return autoApproveVirtualServerRegistration; }
         	set { autoApproveVirtualServerRegistration = value; }
+        }                 
+        
+        private string[] defaultVirtualServerKeywords;
+        /// <summary>
+        /// Gets/sets a list of the default keywords given to new virtual servers.
+        /// </summary>
+        string[] IAppConfig.DefaultVirtualServerKeywords
+        {
+        	get { return defaultVirtualServerKeywords; }
+        	set { defaultVirtualServerKeywords = value; }
         }
     }
 }

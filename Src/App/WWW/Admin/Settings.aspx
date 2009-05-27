@@ -54,6 +54,7 @@
         config.EnableVirtualServer = EnableVirtualServer.Checked;
         config.EnableVirtualServerRegistration = EnableVirtualServerRegistration.Checked;
         config.AutoApproveVirtualServerRegistration = AutoApproveVirtualServerRegistration.Checked;
+        config.DefaultVirtualServerKeywords = DefaultVirtualServerKeywords.Keywords;
 
         // Update the config
         SoftwareMonkeys.SiteStarter.Configuration.ConfigFactory.SaveConfig(Request.MapPath(Request.ApplicationPath + "/App_Data"), config, WebUtilities.GetLocationVariation(Request.Url));
@@ -165,6 +166,10 @@
                                     <td class="FieldLabel">&nbsp;&nbsp;&nbsp;<%# Resources.Language.AutoApproveRegistration + ":"%></td>
                                     <td class="Field" id="AutoApproveVirtualServerRegistrationRow">&nbsp;&nbsp;&nbsp;> <asp:Checkbox runat="server" ID="AutoApproveVirtualServerRegistration" Text='<%# Resources.Language.AutoApproveVirtualServerRegistrationNote %>' Checked='<%# Config.Application.AutoApproveVirtualServerRegistration %>' /></td>
                                 </tr>
+                                 <tr>
+                                    <td class="FieldLabel">&nbsp;&nbsp;&nbsp;<%# Resources.Language.DefaultVirtualServerKeywords + ":"%></td>
+                                    <td class="Field" id="DefaultVirtualServerKeywordsRow">&nbsp;&nbsp;&nbsp;<cc:KeywordsControl runat="server" ID="DefaultVirtualServerKeywords" CssClass="Form" width="400px" Keywords='<%# Config.Application.DefaultVirtualServerKeywords %>' /></td>
+                                </tr>
                                 <tr>
                                     <td></td><td>
                                                     <asp:Button ID="UpdateButton" runat="server" CausesValidation="True" OnClick="UpdateButton_Click" CommandName="Update"
@@ -188,11 +193,13 @@
                             {
                                 document.getElementById('EnableVirtualServerRegistrationRow').setAttribute("disabled", true);
                                 document.getElementById('AutoApproveVirtualServerRegistrationRow').setAttribute("disabled", true);
+                                document.getElementById('DefaultVirtualServerKeywordsRow').setAttribute("disabled", true);
                             }
                             else
                             {
                                 document.getElementById('EnableVirtualServerRegistrationRow').setAttribute("disabled", false);
                                 document.getElementById('AutoApproveVirtualServerRegistrationRow').setAttribute("disabled", false);
+                                document.getElementById('DefaultVirtualServerKeywordsRow').setAttribute("disabled", false);
                             }
                          }
                          

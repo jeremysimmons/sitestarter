@@ -45,12 +45,6 @@
     <Compile Include="StateProviderConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Entities\SiteStarter.Entities.csproj">
-      <Project>{3609F512-9E15-41C7-95AF-D1B3E7F93562}</Project>
-      <Name>SiteStarter.Entities</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

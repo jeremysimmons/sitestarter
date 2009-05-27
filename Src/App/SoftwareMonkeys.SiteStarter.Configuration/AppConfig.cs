@@ -1,6 +1,5 @@
 using System;
 using System.Xml.Serialization;
-using SoftwareMonkeys.SiteStarter.Configuration;
 
 namespace SoftwareMonkeys.SiteStarter.Configuration
 {
@@ -101,6 +100,16 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
         {
         	get { return autoApproveVirtualServerRegistration; }
         	set { autoApproveVirtualServerRegistration = value; }
+        }
+              
+        private string[] defaultVirtualServerKeywords;
+        /// <summary>
+        /// Gets/sets a list of the default keywords given to new virtual servers.
+        /// </summary>
+        public string[] DefaultVirtualServerKeywords
+        {
+        	get { return defaultVirtualServerKeywords; }
+        	set { defaultVirtualServerKeywords = value; }
         }
     }
 }

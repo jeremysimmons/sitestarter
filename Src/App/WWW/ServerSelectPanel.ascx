@@ -35,7 +35,7 @@
 <div><b><%= Resources.Language.CreateServer %></b></div>
 <p>&nbsp;&nbsp;&nbsp;&nbsp;<a href='<%= Request.ApplicationPath + "/VirtualServer.aspx?a=Create" %>'><%= Resources.Language.NewVirtualServer + " &raquo;" %></a></p>
 <div><b><%= Resources.Language.WhatIsAVirtualServer %></b></div>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;<a href='<%= Request.ApplicationPath + "/VirtualServer.aspx?a=MoreInfo" %>'><%= Resources.Language.TellMeMoreAboutVirtualServers + " &raquo;" %></a></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;<a href='<%= Request.ApplicationPath + "/Admin/HelpRaw.aspx?a=VirtualServersInfo" %>'><%= Resources.Language.TellMeMoreAboutVirtualServers + " &raquo;" %></a></p>
 </td>
 </tr>
 </table>

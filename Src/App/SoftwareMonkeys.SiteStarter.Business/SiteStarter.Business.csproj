@@ -52,6 +52,10 @@
     <Compile Include="UserFactory.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration\SiteStarter.Configuration.csproj">
+      <Project>{4B83307F-8307-43EF-A176-8AB1CDA78264}</Project>
+      <Name>SiteStarter.Configuration</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Data\SiteStarter.Data.csproj">
       <Project>{0D77AB54-E3BE-4B29-8750-91F16BC3DEDB}</Project>
       <Name>SiteStarter.Data</Name>
@@ -70,6 +74,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="State\VirtualServerState.cs" />
     <Compile Include="VirtualServerFactory.cs" />
     <Compile Include="EntityFactory.cs" />
     <Compile Include="KeywordFactory.cs" />
