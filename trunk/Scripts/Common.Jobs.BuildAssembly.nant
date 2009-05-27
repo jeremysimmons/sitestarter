@@ -1,0 +1,273 @@
+<?xml version="1.0"?>
+<project name="Common.Start.BuildAssembly" default="Common.Start.BuildAssembly" xmlns="http://nant.sf.net/schemas/nant.xsd">
+  		
+  		
+  		<nant buildfile="Common.Functions.Initialize.nant"/>
+  		
+
+		
+		
+  		
+	<include buildfile="Common.Actions.GenerateAssemblyInfoFile.nant"/>
+	<!--include buildfile="Common.Actions.Compile.nant"/-->
+
+  		
+  		
+  		
+  		<!--property name="Solution.RelativePath" value=""/-->
+  		<!--property name="Solution.RootPath" value="${string::substring(string::trim(Project.RootPath, '\'), string::last-index-of('\'), string::get-length(Project.RootPath)}"/-->
+		
+		
+	
+<loadtasks>
+
+            <fileset>
+
+                        <include name="../Lib/nant/bin/NAnt.Contrib.Tasks.dll" />
+
+            </fileset>
+
+</loadtasks> 
+		
+		
+		<!--include buildfile="Common.Jobs.BuildAssembly.nant"/-->
+
+  		
+	<target name="Common.Jobs.BuildAssembly" description="Builds the current project">
+	
+		<echo message="AssemblyProject.PropertiesPath: ${AssemblyProject.PropertiesPath}"/>
+		<property name="AssemblyProject.RootPath" value="${AssemblyProject::GetRootPath(AssemblyProject.PropertiesPath)}"/>
+	
+		<!--call target="Private.InitializeProject"/-->
+	
+		<!--property name="Local.ProjectQuery" value="..\${AssemblyProject.RelativePath}\*.Project.nant"/-->
+		
+		
+    	
+		            <property name="AssemblyProject.LibrariesPath" value="${Project.RootPath}\Lib"/>
+    	
+    	
+	<xmlpeek
+		    file="${AssemblyProject.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Assembly.Name']/@value"
+		    property="AssemblyProject.Name">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+    	
+    		<xmlpeek
+		    file="${AssemblyProject.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Assembly.AssemblyName']/@value"
+		    property="AssemblyProject.AssemblyName">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+    	
+    	 <xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.BaseNamespace']/@value"
+		    property="Solution.BaseNamespace">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+    	
+    	    	 <xmlpeek
+		    file="${AssemblyProject.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Assembly.BaseNamespace']/@value"
+		    property="AssemblyProject.BaseNamespace">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+    	
+    	
+    	<property name="Project.BinariesPath" value="${Project.RootPath}\Bin"/>
+    	
+    	<property name="AssemblyProject.AssemblyName" value="${string::replace(AssemblyProject.AssemblyName, '${Assembly.BaseNamespace}', AssemblyProject.BaseNamespace)}"/>
+     	
+
+    	
+    	<!--echo message="${Project.LibrariesPath}"/-->
+		
+		
+		<!--property name="Solution.RootPath" value="${Solution::GetRootPath(Argument.ProjectPath)}"/-->
+		<!--property name="Solution.PropertiesPath" value="${Solution::GetPropertiesPath(Argument.ProjectPath)}"/-->
+		<!--echo message="Solution.PropertiesPath: ${Solution.PropertiesPath}"/-->
+		
+
+		<!--echo message="${'Project properties path: ' + AssemblyProject.PropertiesPath}"/-->
+		<!--echo message="Project root path: ${Project.RootPath}"/-->
+		
+		<cd dir="${AssemblyProject.RootPath}"/>
+		            
+		            
+		            
+			<version buildtype="NoIncrement"
+	            revisiontype="Increment"
+	            path="${AssemblyProject.RootPath}\Version.Number"/>
+	            
+	  		<property name="AssemblyProject.Version" value="${buildnumber.version}"/>
+		            
+		
+		
+		<call target="Common.Actions.GenerateAssemblyInfoFile"/>
+		
+		<call target="Common.Actions.Compile"/>
+		
+		<call target="Actions.OutputLibraries"/>
+		
+		
+		<!--echo message="New version saved: ${Project.VersionFile}"/-->
+		
+		<!--echo message="Version file saved: ${Project::SaveVersion(Project.VersionFile, )}"/-->
+		<!--echo message="New version: ${Project::LoadVersion(Project.VersionFile)}"/-->
+		
+		            <!--nant buildfile="${Solution.PropertiesPath}" /-->
+		<!--nant buildfile="Common.Actions.InitSolution.nant"-->
+			<!--properties-->
+				<!--property name="Solution.RootPath" value="${Solution.RootPath}"/-->
+			<!--/properties-->
+		<!--/nant-->
+		
+		<!--echo message="Solution root path: ${Solution.RootPath}"/-->
+		
+		<!--foreach item="File" property="filename"-->
+		    <!--in-->
+		        <!--items-->
+		            <!--include name="${Solution.RootPath}\*.Solution.nant" /-->
+		        <!--/items-->
+		    <!--/in-->
+		    <!--do-->
+				<!--include buildfile="${filename}"-->
+				<!--/include-->
+		    <!--/do-->
+		<!--/foreach-->
+		
+				<!--nant buildfile="Common.Jobs.BuildAssembly.nant"-->
+			<!--properties-->
+				<!--property name="Parameters.ProjectDirectory" value="${Project.RootPath}" /-->
+			<!--/properties-->
+		<!--/nant-->
+	
+		<!--nant buildfile="Common.Jobs.BuildAssembly.nant"-->
+			<!--properties-->
+				<!--property name="Parameters.ProjectDirectory" value="${Project.RootPath}" /-->
+			<!--/properties-->
+		<!--/nant-->
+		
+	</target>
+	
+	<target name="Private.InitializeProject">
+		<xmlpeek
+		    file="${AssemblyProject.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Assembly.BaseNamespace']/@value"
+		    property="AssemblyProject.BaseNamespace">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+	
+	<xmlpeek
+		    file="${AssemblyProject.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Assembly.AssemblyName']/@value"
+		    property="AssemblyProject.AssemblyName">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+    	
+    	
+	<xmlpeek
+		    file="${AssemblyProject.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Assembly.Name']/@value"
+		    property="AssemblyProject.Name">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+    	
+	<xmlpeek
+		    file="${Project.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Project.CompanyName']/@value"
+		    property="Project.CompanyName">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>    	
+    	
+	<!--xmlpeek
+		    file="${AssemblyProject.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Project.VersionFile']/@value"
+		    property="Project.VersionFile">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek-->
+    	
+    	<!--property name="Project.AssemblyPath" value="${string::replace(Project.AssemblyPath, '${Project.BaseNamespace}', Project.BaseNamespace)}"/-->
+    	<!--property name="Project.VersionFile" value="${string::replace(Project.VersionFile, '${Project.RootPath}', Project.RootPath)}"/-->
+    	
+    	<!--property name="Project.VersionFile" value="${Project.RootPath}\Project.Version"/-->
+
+	</target>
+	
+		
+
+     
+  <target name="Common.Actions.Compile">
+      	
+	<property name="Local.AssemblyPath" value="${AssemblyProject.RootPath}\bin\${Build.Mode}\${AssemblyProject.AssemblyName}"/>
+      	
+ 		<echo message="CWD: ${directory::get-current-directory()}"/>
+  		<echo message="Creating directory: ${AssemblyProject.RootPath}\bin\${Build.Mode}" />
+		<property name="resourcesFile" value="${string::replace(AssemblyProject.RootPath + '\Properties\Language.resx', AssemblyProject.RootPath + '\', '')}"/>
+		<!--property name="resourcesFile" value="../../Properties/Language.resx"/-->
+		<echo message="Prefix: ${AssemblyProject.BaseNamespace}.Properties"/>
+  		<mkdir dir="${AssemblyProject.RootPath}\bin\${Build.Mode}"/>
+  		<echo message="Compiling to: ${Local.AssemblyPath}" />
+  		<cd dir="${AssemblyProject.RootPath}"/>
+  		<echo message="Resources path: ${resourcesFile}"/>
+    	<csc output="${Local.AssemblyPath}" debug="${Build.Mode == 'Debug'}" verbose="true" target="library">
+    		<nowarn>
+    			<warning number="0436"/>
+    		</nowarn>
+	      <sources basedir="${AssemblyProject.RootPath}">
+	        <include name="**/*.cs" />
+	      </sources>
+	      <!-- prefix must match the "Default Namespace" of the project...not the namespace of the resource file -->
+	      <resources basedir="${AssemblyProject.RootPath}" prefix="${AssemblyProject.BaseNamespace}" dynamicprefix="true">
+	        <include name="${resourcesFile}" />
+	      </resources>
+	      <references>
+	        <include name="${Project.RootPath}/Lib/NUnit.Framework.dll" />
+	        <include name="${Project.RootPath}/Lib/NLog.dll" />
+	        <include name="${Project.RootPath}/Lib/Db4objects.Db4o.dll" />
+	        <include name="${Project.RootPath}/Lib/${Build.Mode}/SoftwareMonkeys.SiteStarter.*.dll" />
+	        <include name="${Project.RootPath}\Bin\${Build.Mode}\${Solution.BaseNamespace}.*.dll" />
+	        <include name="System.Configuration.dll" />
+	        <include name="System.Data.dll" />
+	        <include name="System.Xml.dll" />
+	      </references>
+	    </csc>
+  	</target>
+  	
+  	  	<target name="Actions.OutputLibraries">  	
+  		<property name="Local.SourceDirectory" value="${path::get-full-path(path::combine(AssemblyProject.RootPath + '\Bin', Build.Mode))}" />
+  		<mkdir dir="${path::combine(Project.BinariesPath, Build.Mode)}"/>
+  		
+  		<echo message="${'Copying file: ' + Local.SourceDirectory}"/>
+  		<echo message="${'...to ' + path::get-full-path(path::combine(Project.BinariesPath, Build.Mode))}" />
+  		<cd dir="${AssemblyProject.RootPath}"/>
+    	<copy todir="${path::combine(Project.BinariesPath, Build.Mode)}" flatten="true" verbose="true">
+    		<fileset>
+    			<include name="${AssemblyProject.RootPath}\bin\${Build.Mode}\*.dll"/>
+    			<include name="${AssemblyProject.RootPath}\Properties\*.resources"/>
+    		</fileset>
+    	</copy>
+  	</target>
+     
+</project>
+  	

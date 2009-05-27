@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<project name="Common.Start.BuildAssembly" default="Common.Start.BuildAssembly" xmlns="http://nant.sf.net/schemas/nant.xsd">
+  		<property name="Argument.ProjectPath" value=""/>
+  		<property name="Argument.BuildMode" value=""/>
+  		<property name="Argument.SolutionPath" value=""/>
+  		<property name="Argument.AssemblyProjectPath" value=""/>
+  		
+  		
+  		
+  		<nant buildfile="Common.Functions.Initialize.nant"/>
+  		
+		<property name="AssemblyProject.PropertiesPath" value="${AssemblyProject::GetPropertiesPath(Argument.AssemblyProjectPath)}"/>
+		<property name="AssemblyProject.RootPath" value="${AssemblyProject::GetRootPath(AssemblyProject.PropertiesPath)}"/>
+		<property name="Solution.PropertiesPath" value="${Argument.SolutionPath}"/>
+		<property name="Solution.RootPath" value="${Argument.SolutionPath}"/>
+		<property name="Project.PropertiesPath" value="${Argument.ProjectPath}"/>
+		<property name="Project.RootPath" value="${path::get-directory-name(Argument.ProjectPath)}"/>
+  		
+  		
+	<include buildfile="Common.Jobs.BuildAssembly.nant"/>
+
+  		
+  	
+		
+		
+	
+<loadtasks>
+
+            <fileset>
+
+                        <include name="../Lib/nant/bin/tasks/NAnt.Contrib.Tasks.dll" />
+
+            </fileset>
+
+</loadtasks> 
+		
+		
+		<!--include buildfile="Common.Jobs.BuildProject.nant"/-->
+
+  		
+	<target name="Common.Start.BuildAssembly" description="Builds a selected assembly">
+		<!--property name="Local.ProjectQuery" value="..\${Project.RelativePath}\*.Project.nant"/-->
+		
+		<property name="Build.Mode" value="${Argument.BuildMode}"/>
+	
+		<call target="Common.Jobs.BuildAssembly"/>
+		
+	</target>
+	
+	
+     
+</project>
+  	
