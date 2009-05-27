@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<project name="Common.Jobs.WWW" default="Common.Jobs.WWW" xmlns="http://nant.sf.net/schemas/nant.xsd">  		
+		
+	
+<loadtasks>
+
+            <fileset>
+
+                        <include name="../Lib/nant/bin/tasks/NAnt.Contrib.Tasks.dll" />
+
+            </fileset>
+
+</loadtasks> 
+		
+		
+		<!--include buildfile="Common.Jobs.BuildProject.nant"/-->
+
+  		
+  	<target name="Common.Jobs.PrepareWWW" description="Prepares the WWW directory to run.">
+  	
+		<property name="WWW.PropertiesPath" value="${Solution.RootPath}\WWW\${Solution.Name}.WWW.nant"/>
+		<property name="WWW.RootPath" value="${Project::GetRootPath(WWW.PropertiesPath)}"/>
+		
+  		<call target="Common.Jobs.ConfigureIIS"/>
+  		<call target="Common.Jobs.ImportLibrariesToWWW"/>
+  		<call target="Common.Jobs.ArchiveLogs"/>
+  		<call target="Common.Jobs.InstallModules"/>
+  		<!--call target="Common.Jobs.ResetSiteMap"/-->
+	</target>
+	
+  	<target name="Common.Jobs.ImportLibrariesToWWW">
+
+    	<copy todir="${Solution.RootPath}\WWW\bin\" overwrite="true">
+    		<fileset>
+        		<include name="${Project.RootPath}/Lib/*.dll" />
+        		<include name="${Project.RootPath}/Lib/${Build.Mode}/*.dll" />
+        		<include name="${Project.RootPath}/Bin/${Build.Mode}/*.dll" />
+    		</fileset>
+		</copy>
+  	</target>
+  	
+  	<target name="Common.Jobs.ResetSiteMap"> 		
+		<if test="${file::exists(Solution.RootPath + '\WWW\Web.default.sitemap')}">
+			<copy file="${Solution.RootPath}\WWW\Web.default.sitemap" tofile="${Solution.RootPath}\WWW\Web.sitemap" overwrite="true"/>
+		</if>
+  	</target>
+  	
+  	  <target name="Common.Jobs.ArchiveLogs"> 		
+		<mkdir dir="${Solution.RootPath}\WWW\App_Data\LogsArchive\"/>
+		<move todir="${Solution.RootPath}\WWW\App_Data\LogsArchive\" overwrite="true">
+			<fileset basedir="${Solution.RootPath}\WWW\App_Data\Logs\">
+				<include name="**/*"/>
+			</fileset>
+		</move>
+  	</target>
+  	
+  	  <target name="Common.Jobs.ConfigureIIS">
+
+    	    	<xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.VirtualDirectoryName']/@value"
+		    property="Solution.VirtualDirectoryName">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    		</xmlpeek>
+
+		<exec program="cscript.exe" verbose="true" failonerror="false">
+
+       	     	<arg value="C:\inetpub\AdminScripts\adsutil.vbs" />
+
+            	<arg value="DELETE" />
+
+            	<arg value="W3SVC\1\Root\${Solution.VirtualDirectoryName}" />
+
+		</exec>
+
+		<mkiisdir dirpath="${Solution.RootPath}\WWW" vdirname="${Solution.VirtualDirectoryName}" appfriendlyname="${Solution.VirtualDirectoryName}" verbose="true" />
+	</target>
+     
+</project>
+  	

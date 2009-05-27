@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<project name="Common.Jobs.ImportScripts" default="Common.Jobs.ImportScripts" xmlns="http://nant.sf.net/schemas/nant.xsd">
+
+		<xmlpeek
+		    file="${Project.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Project.Name']/@value"
+		    property="Project.Name">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+
+	
+	
+  	<target name="Common.Jobs.ImportScripts">
+		
+		<if test="${Project.Name != 'SiteStarter'}">
+		
+			<property name="LocalScriptsPath" value="${path::get-full-path(Project.RootPath + '\..\SiteStarter\Scripts')}"/>
+	  <!-- Import SiteStarter libraries -->
+			  		<echo message="Importing scripts from: ${LocalScriptsPath}"/>
+			  		
+			<if test="${directory::exists(LocalScriptsPath)}">
+			  		<echo message="To: ${Project.RootPath}\Scripts"/>
+		   			<copy todir="${Project.RootPath}\Scripts\" overwrite="true">
+		      			<fileset basedir="${LocalScriptsPath}">
+		        			<include name="Common.*" />
+		      			</fileset>
+		    		</copy>
+		    </if>
+			<if unless="true" test="${directory::exists(LocalScriptsPath)}">
+			  		<call target="Common.Jobs.ImportScriptsFromSVN"/>
+		    </if>
+		</if>
+		<if test="${Project.Name == 'SiteStarter'}">
+			<echo message="Can't import scripts. This project is the source."/>
+		</if>
+  </target>   
+
+</project>
+  	

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<project name="Common.Actions.ImportSiteStarterLibraries" default="Common.Actions.ImportSiteStarterLibraries" xmlns="http://nant.sf.net/schemas/nant.xsd">
+	<!--property name="SiteStarter.BinPath" value="${path::get-full-path('../../../SiteStarter/Bin/' + Project.BuildMode)}"/>
+	<property name="Solution.LibPath" value="../../Lib/${Project.BuildMode}/"/-->
+  <target name="Common.Actions.ImportSiteStarterLibraries">
+  	<!--mkdir dir="${Solution.LibPath}"/>
+  	<echo message="Importing libraries from: ${SiteStarter.BinPath}"/>
+  	<if test="${directory::exists(SiteStarter.BinPath)}">
+    <copy todir="${Solution.LibPath}" overwrite="true">
+      <fileset basedir="${SiteStarter.BinPath}">
+        <include name="SoftwareMonkeys.SiteStarter*dll" />
+      </fileset>
+    </copy>
+    </if-->
+  </target>  
+
+</project>
+  	

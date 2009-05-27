@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<project name="Common.Start.Deploy" default="Common.Start.Deploy" xmlns="http://nant.sf.net/schemas/nant.xsd">
+  		
+  <property name="nant.settings.currentframework" value="net-2.0" />
+  		
+  		
+  		<nant buildfile="Common.Functions.Initialize.nant"/>
+  		
+
+		
+		
+		<!--include buildfile="${Project.PropertiesPath}"/-->
+  		
+  		<!--property name="Solution.LibPath" value=""/-->
+  		<property name="Project.RelativePath" value=""/>
+  		<!--property name="Project.VersionFile" value=""/-->
+  		
+		
+		<property name="SiteStarter.BinPath" value=""/>
+		
+  		<property name="Solution.PropertiesPath" value="${Solution::GetPropertiesPath(project::get-base-directory())}"/>
+  		<property name="Solution.RootPath" value="${path::get-directory-name(Solution.PropertiesPath)}"/>
+  		
+  		<echo message="Solution.PropertiesPath: ${Solution.PropertiesPath}"/>
+  		<echo message="Solution.RootPath: ${Solution.RootPath}"/>
+  		
+  		
+  		
+	<include buildfile="Common.Jobs.Deploy.nant"/>
+	<!--include buildfile="Common.Actions.Compile.nant"/-->
+
+  		
+  		
+  		
+  		<!--property name="Solution.RelativePath" value=""/-->
+  		<!--property name="Solution.RootPath" value="${string::substring(string::trim(Project.RootPath, '\'), string::last-index-of('\'), string::get-length(Project.RootPath)}"/-->
+		
+		
+		
+		
+		<!--include buildfile="Common.Jobs.BuildProject.nant"/-->
+
+  		
+	<target name="Common.Start.Deploy" description="Deploys the project">		
+		<call target="Common.Jobs.Deploy"/>
+	</target>
+</project>
+  	
