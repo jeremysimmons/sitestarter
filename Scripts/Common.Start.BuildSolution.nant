@@ -14,6 +14,8 @@
 		
   		<property name="Solution.PropertiesPath" value="${Argument.SolutionPath}"/>
   		<property name="Solution.RootPath" value="${path::get-directory-name(Solution.PropertiesPath)}"/>
+  		<property name="Project.PropertiesPath" value="${Argument.ProjectPath}"/>
+  		<property name="Project.RootPath" value="${path::get-directory-name(Project.PropertiesPath)}"/>
   		<property name="Build.Mode" value="${Argument.BuildMode}"/>
   		
   		<echo message="Solution.PropertiesPath: ${Solution.PropertiesPath}"/>
@@ -24,15 +26,7 @@
   		<include buildfile="Common.Jobs.BuildSolution.nant"/>
   		
   		
-	<include buildfile="Common.Jobs.BuildProject.nant"/>
-	<!--include buildfile="Common.Actions.Compile.nant"/-->
-
-  		
-  		
-  		
-  		<!--property name="Solution.RelativePath" value=""/-->
-  		<!--property name="Solution.RootPath" value="${string::substring(string::trim(Project.RootPath, '\'), string::last-index-of('\'), string::get-length(Project.RootPath)}"/-->
-		
+	<include buildfile="Common.Jobs.BuildAssembly.nant"/>
 		
 	
 <loadtasks>

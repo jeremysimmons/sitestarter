@@ -4,19 +4,10 @@
   	<target name="Common.Jobs.ImportLibraries">
   	
 
-		<xmlpeek
-		    file="${Solution.PropertiesPath}"
-		    xpath="/x:project/x:property[@name = 'Solution.LibrariesPath']/@value"
-		    property="Solution.LibrariesPath">
-		        <namespaces>
-        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
-    			</namespaces>
-    	</xmlpeek>
-    	
-    	<property name="Solution.LibrariesPath" value="${string::replace(Solution.LibrariesPath, '${Solution.RootPath}', Solution.RootPath)}"/>
+    	<property name="Solution.LibrariesPath" value="${Project.RootPath}\Lib"/>
   	
   	
-		<property name="SiteStarter.BinPath" value="${path::get-full-path('${Project.RootPath}\..\..\SiteStarter\Bin\' + Build.Mode)}"/>
+		<property name="SiteStarter.BinPath" value="${path::get-full-path('${Project.RootPath}\..\SiteStarter\Bin\' + Build.Mode)}"/>
   <!-- Import SiteStarter libraries -->
 		  		
 		<mkdir dir="${Solution.LibrariesPath}\${Solution.BuildMode}"/>

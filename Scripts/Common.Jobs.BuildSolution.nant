@@ -76,8 +76,8 @@
     	
   <!-- Import SiteStarter libraries -->
   		<if test="${Solution.Name != 'SiteStarter'}">
-	  		<echo message="Looking for directory: ${SiteStarter.BinPath}"/>
 			<property name="SiteStarter.BinPath" value="${path::get-full-path(Project.RootPath + '\..\SiteStarter\Bin\')}"/>
+	  		<echo message="Looking for directory: ${SiteStarter.BinPath}"/>
 	  <!-- Import SiteStarter libraries -->
 			  		
 			<mkdir dir="${Project.LibrariesPath}\${Build.Mode}"/>
