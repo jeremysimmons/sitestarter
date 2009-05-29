@@ -2,11 +2,13 @@
 <project name="Common.Start.ResetAll" default="Common.Start.ResetAll" xmlns="http://nant.sf.net/schemas/nant.xsd">
   		
   <property name="nant.settings.currentframework" value="net-2.0" />
-  		
+  		  				
+  		<property name="Argument.SolutionPath" value=""/>
+
   		
   		<nant buildfile="Common.Functions.Initialize.nant"/>
   				
-  		<property name="Solution.PropertiesPath" value="${Solution::GetPropertiesPath(project::get-base-directory())}"/>
+  		<property name="Solution.PropertiesPath" value="${Argument.SolutionPath}"/>
   		<property name="Solution.RootPath" value="${path::get-directory-name(Solution.PropertiesPath)}"/>
   		
   		<echo message="Solution.PropertiesPath: ${Solution.PropertiesPath}"/>
