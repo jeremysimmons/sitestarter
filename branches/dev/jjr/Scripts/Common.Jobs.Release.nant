@@ -1,0 +1,160 @@
+<?xml version="1.0"?>
+<project name="Common.Jobs.CreateReleaseZips" default="Common.Jobs.CreateReleaseZips" xmlns="http://nant.sf.net/schemas/nant.xsd">
+
+	<include buildfile="Common.Jobs.Reset.nant"/>
+	
+<target name="Common.Jobs.CreateReleaseZips">
+		<call target="Common.Jobs.ResetAll"/>
+
+	<xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.SourceReleaseName']/@value"
+		    property="Solution.SourceReleaseName">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+    	
+    		<xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.InstallReleaseName']/@value"
+		    property="Solution.InstallReleaseName">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+    	
+    	<xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.Version']/@value"
+		    property="Solution.Version">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+    	
+    	<property name="Solution.ReleaseTimestamp" value="${datetime::get-year(datetime::now())}-${datetime::get-month(datetime::now())}-${datetime::get-day(datetime::now())}--${datetime::get-hour(datetime::now())}-${datetime::get-minute(datetime::now())}-${datetime::get-second(datetime::now())}"/>
+    	
+    	<property name="Solution.SourceReleaseName" value="${string::replace(Solution.SourceReleaseName, '${Solution.Version}', string::replace(Solution.Version, '.', '-'))}"/>
+    	<property name="Solution.InstallReleaseName" value="${string::replace(Solution.InstallReleaseName, '${Solution.Version}', string::replace(Solution.Version, '.', '-'))}"/>
+
+		<property name="Solution.SourceReleaseName" value="${string::replace(Solution.SourceReleaseName, '${Solution.ReleaseTimestamp}', string::replace(Solution.ReleaseTimestamp, '.', '-'))}"/>
+    	<property name="Solution.InstallReleaseName" value="${string::replace(Solution.InstallReleaseName, '${Solution.ReleaseTimestamp}', string::replace(Solution.ReleaseTimestamp, '.', '-'))}"/>
+
+
+    			<call target="Common.Actions.ZipInstallRelease"/>
+	    		<call target="Common.Actions.ZipSourceRelease"/>
+	</target>
+
+  <!-- Actions.ZipSourceRelease -->
+  <target name="Common.Actions.ZipSourceRelease">
+  	<mkdir dir="${Solution.RootPath}\..\..\Releases\Source\"/>
+  	<zip zipfile="${Solution.RootPath}\..\..\Releases\Source\${Solution.SourceReleaseName}.zip">
+	    <fileset basedir="${Solution.RootPath}">
+	        <exclude name="**/*.yap"/>
+	        <exclude name="**/*.local.config"/>
+	        <exclude name="_svn"/>
+	        <exclude name=".svn"/>
+	        <exclude name="**/obj/**/*.*"/>
+	        <exclude name="**/Logs/**/*.*"/>
+	        <exclude name="**/LogsArchive/**/*"/>
+	        <exclude name="**/*.pdb"/>
+	        <exclude name="**/*._cs"/>
+	        <exclude name="**/*._*"/>
+	        <exclude name="**/*.csexclude"/>
+	        <exclude name="**/*.excludecs"/>
+	        <exclude name="**/*.csproj.user"/>
+	        <exclude name="**/*.exclude"/>
+	        <exclude name="**/SoftwareMonkeys_.*/**/*.*"/>
+	        <exclude name="**/SoftwareMonkeys.*/Bin/**/*.dll"/>
+	        <exclude name="**/*.security"/>
+	        <exclude name="**/*.dll.r*"/>
+	        <exclude name="**/*.exe.r*"/>
+	        <exclude name="**/App_Data/VS/**"/>
+	        <exclude name="**/fckeditor/**"/>
+	        <include name="**/*" />
+	    </fileset>	   
+
+	</zip>
+  </target>
+
+
+  <!-- Actions.ZipInstallRelease -->
+  <target name="Common.Actions.ZipInstallRelease">
+  	<mkdir dir="${Solution.RootPath}\..\..\Releases\Install\"/>
+  	<zip zipfile="${Solution.RootPath}\..\..\Releases\Install\${Solution.InstallReleaseName}.zip">
+	    <fileset basedir="${Solution.RootPath}\WWW" prefix="WWW">
+	        <exclude name="**/*.yap"/>
+	        <exclude name="**/*.local.config"/>
+	        <exclude name="_svn"/>
+	        <exclude name=".svn"/>
+	        <exclude name="**/obj/"/>
+	        <exclude name="**/Logs/**/*"/>
+	        <exclude name="**/LogsArchive/**/*"/>
+	        <exclude name="**/*.pdb"/>
+	        <exclude name="**/*.cs"/>
+	        <exclude name="**/*._cs"/>
+	        <exclude name="**/*._*"/>
+	        <exclude name="**/*.csexclude"/>
+	        <exclude name="**/*.excludecs"/>
+	        <exclude name="**/*.csproj.user"/>
+	        <exclude name="**/*.exclude"/>
+	        <exclude name="**/*.security"/>
+	        <exclude name="**/App_Data/VS/**"/>
+	        <exclude name="**/fckeditor/**"/>
+	        <include name="**/*" />
+	    </fileset>	   
+	</zip>
+  </target>
+  
+  <target name="Common.Jobs.UploadZips">
+  	
+	<xmlpeek
+		    file="${Solution.RootPath}\GoogleCode.security"
+		    xpath="/x:project/x:property[@name = 'GoogleCode.Username']/@value"
+		    property="GoogleCode.Username">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+    	
+    	
+	<xmlpeek
+		    file="${Solution.RootPath}\GoogleCode.security"
+		    xpath="/x:project/x:property[@name = 'GoogleCode.Password']/@value"
+		    property="GoogleCode.Password">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+    	
+	<xmlpeek
+		    file="${Solution.RootPath}\GoogleCode.security"
+		    xpath="/x:project/x:property[@name = 'GoogleCode.ProjectName']/@value"
+		    property="GoogleCode.ProjectName">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+  
+	<gcupload 
+        username="${GoogleCode.Username}" 
+        password="${GoogleCode.Password}" 
+        projectname="${GoogleCode.ProjectName}" 
+        filename="${Solution.RootPath}\..\..\Releases\Install\${Solution.InstallReleaseName}.zip" 
+        targetfilename="${Solution.InstallReleaseName}.zip"
+        summary="${GoogleCode.ProjectName} ${Solution.Version} install files"/>
+<!--        labels="Featured, Type-Package, OpSys-All" /-->
+  
+	<gcupload 
+        username="${GoogleCode.Username}" 
+        password="${GoogleCode.Password}" 
+        projectname="${GoogleCode.ProjectName}" 
+        filename="${Solution.RootPath}\..\..\Releases\Source\${Solution.SourceReleaseName}.zip" 
+        targetfilename="${Solution.SourceReleaseName}.zip"
+        summary="${GoogleCode.ProjectName} ${Solution.Version} source files"/>
+        <!--labels="Featured, Type-Source, OpSys-All" /-->
+  </target>
+
+</project>
+  	

@@ -1,0 +1,449 @@
+using System;
+using System.Xml.Serialization;
+using com.db4o.query;
+using com.db4o;
+using System.Web;
+using System.IO;
+//using System.Web.Mail;
+using System.Xml;
+
+namespace SoftwareMonkeys.SiteStarter.Web
+{
+	/// <summary>
+	/// Holds the configuration settings for the application.
+	/// </summary
+    [XmlType(Namespace = "urn:SoftwareMonkeys.SiteStarter.Web.Config")]
+    [XmlRoot(Namespace = "urn:SoftwareMonkeys.SiteStarter.Web.Config")]
+	public class Config : SoftwareMonkeys.SiteStarter.IConfig
+	{
+		#region Singleton Property
+        static public bool IsSetUp
+        {
+            get { return (current != null); }
+        }
+
+		static private Config current;
+		/// <summary>
+		/// Gets/sets an instance of the Config object containing all the current settings.
+		/// </summary>
+		static public Config Current
+		{
+			get 
+			{
+				if (current == null)
+				{
+					current = Config.Load();
+				}
+				return current;
+			}
+			set
+			{
+				current = value;
+                SoftwareMonkeys.SiteStarter.Config.Current = value;
+			}
+		}
+
+        static public void Initialize()
+        {
+            if ((physicalConfigPath == null || physicalConfigPath == String.Empty) && HttpContext.Current != null)
+            {
+                string fileName;
+                if (HttpContext.Current.Request.Url.Host == "localhost" || HttpContext.Current.Request.Url.Host == "127.0.0.1")
+                    fileName = "WebSiteStarterKit.local.config";
+                else if (HttpContext.Current.Request.Url.Host.ToLower().IndexOf("staging") > -1)
+                    fileName = "WebSiteStarterKit.staging.config";
+                else
+                    fileName = "WebSiteStarterKit.config";
+                physicalConfigPath = HttpContext.Current.Server.MapPath(HttpContext.Current.Request.ApplicationPath + "/Data/" + fileName);
+            }
+
+            if (File.Exists(physicalConfigPath))
+            {
+                Current = Config.Load();
+                SoftwareMonkeys.SiteStarter.Config.Current = Current;
+            }
+        }
+		#endregion
+
+        // todo: remove
+      /*  #region Project settings
+        private string projectsDirectory;
+        public string ProjectsDirectory
+        {
+            get
+            {
+                return FixPath(projectsDirectory);
+            }
+            set { projectsDirectory = value; }
+        }
+
+        public string ProjectsDirectoryPath
+        {
+            get { return FixPath(DataDirectoryPath) + "/" + ProjectsDirectory; }
+        }
+        #endregion
+        */
+		#region Installation settings
+		private bool isDownForMaintenance;
+		/// <summary>
+		/// Gets/sets a value indicating whether the site is down for maintenance.
+		/// </summary>
+		public bool IsDownForMaintenance
+		{
+			get { return isDownForMaintenance; }
+			set { isDownForMaintenance = value; }
+		}
+
+		private DateTime installDate = DateTime.Now;
+		/// <summary>
+		/// Gets/sets the date the application was installed.
+		/// </summary>
+		public DateTime InstallDate
+		{
+			get { return installDate; }
+			set { installDate = value; }
+		}
+
+		private string applicationPath = String.Empty;
+		/// <summary>
+		/// Gets/sets the path the application was installed to.
+		/// </summary>
+		public string ApplicationPath
+		{
+			get { return applicationPath.TrimEnd('/'); }
+			set { applicationPath = value; }
+		}
+
+		private string applicationUrl;
+		/// <summary>
+		/// Gets/sets the URL the application was installed to.
+		/// </summary>
+		public string ApplicationUrl
+		{
+			get { return applicationUrl; }
+			set { applicationUrl = value; }
+		}
+
+		private string physicalPath = String.Empty;
+		/// <summary>
+		/// Gets/sets the physical path of the application.
+		/// </summary>
+		public string PhysicalPath
+		{
+			get { return FixPath(physicalPath); }
+			set { physicalPath = value; }
+		}
+
+		/// <summary>
+		/// Gets a boolean value indicating whether the application is installed locally.
+		/// </summary>
+		public bool IsLocal
+		{
+			get { return HttpContext.Current.Request.Url.Host == "localhost" || HttpContext.Current.Request.Url.Host == "127.0.0.1"; }
+		}
+
+		/// <summary>
+		/// Gets a boolean value indicating whether the application is installed on the local server.
+		/// </summary>
+		public bool IsStaging
+		{
+			get { return HttpContext.Current.Request.Url.Host.IndexOf("staging") > -1; }
+		}
+
+		/// <summary>
+		/// Gets a boolean valude indicating whether the application is installed on the release server.
+		/// </summary>
+		public bool IsRelease
+		{
+			get { return IsLocal == false && IsStaging == false; }
+		}
+		#endregion
+
+		#region Application settings
+		private string webSiteName;
+		/// <summary>
+		/// Gets/sets the name of the web site.
+		/// </summary>
+		public string WebSiteName
+		{
+			get { return webSiteName; }
+			set { webSiteName = value; }
+		}
+		#endregion
+
+        #region Data settings
+        public string DBKey
+        {
+            get
+            {
+                string key = "DBContainer";
+                return key;
+            }
+        }
+
+        /// <summary>
+        /// Gets the DB container.
+        /// </summary>
+        [XmlIgnore]
+        public ObjectContainer DB
+        {
+            get
+            {
+                //	if (HttpContext.Current == null || HttpContext.Current.Application == null)
+                //		return null;
+                return (ObjectContainer)HttpContext.Current.Application[DBKey];
+            }
+            set
+            {
+                //	if (HttpContext.Current.Application != null)
+                HttpContext.Current.Application[DBKey] = value;
+            }
+        }
+
+        private string dataDirectory = "Data";
+        /// <summary>
+        /// Gets/sets the name of the data directory.
+        /// </summary>
+        public string DataDirectory
+        {
+            get { return FixPath(dataDirectory); }
+            set { dataDirectory = value; }
+        }
+
+        /// <summary>
+        /// Gets the path of the data directory.
+        /// </summary>
+        public string DataDirectoryPath
+        {
+            get
+            {
+                return ApplicationPath + "/" + DataDirectory;
+            }
+        }
+
+        /// <summary>
+        /// Gets the path to the DB file.
+        /// </summary>
+        public string DatabasePath
+        {
+            get { return MapPath(DataDirectoryPath + "/DB.yap"); }
+        }
+
+        /// <summary>
+        /// Gets the path to the DB log file.
+        /// </summary>
+        public string DatabaseLogPath
+        {
+            get { return MapPath(DataDirectoryPath + "/DB.log"); }
+        }
+
+        private string backupDirectory;
+        /// <summary>
+        /// Gets/sets the name of the backup directory.
+        /// </summary>
+        public string BackupDirectory
+        {
+            get { return FixPath(backupDirectory); }
+            set { backupDirectory = value; }
+        }
+
+        /// <summary>
+        /// Gets the path of the backup directory.
+        /// </summary>
+        public string BackupDirectoryPath
+        {
+            get { return Path.Combine(DataDirectoryPath, BackupDirectory); }
+        }
+
+        /*[System.NonSerialized]
+        private Guid databaseServerID = new Guid("0C4A59DD-4EB3-49e8-836F-256300DFC208");
+*/
+        /*[System.NonSerialized]
+        private ObjectServer databaseServer;
+        [XmlIgnore]
+        public ObjectServer DatabaseServer
+        {
+            get
+            {
+                if (databaseServer == null)
+                {
+                    // This uses the HttpContext if found (normal), or a private field if not (testing)
+
+                    //HttpContext currentContext = HttpContext.Current;
+ 
+                    /*if (currentContext != null)
+                    {
+                        if(currentContext.Application.Contents[databaseServerID.ToString()] != null)
+                            databaseServer = (ObjectServer)currentContext.Application[databaseServerID.ToString()];
+                        else*/
+        //		System.Diagnostics.Trace.WriteLine("Create database server");
+        //		databaseServer = Db4o.OpenServer(DatabasePath, 0);
+        //}
+        //			}
+        //			return databaseServer;
+        //		}
+        //	}*/
+
+        [XmlIgnore]
+		public ObjectServer DatabaseServer
+		{
+			get
+			{
+				HttpContext currentContext = HttpContext.Current;
+
+				ObjectServer server;
+				//if(currentContext.Application.Contents[databaseServerID.ToString()] != null)
+				//	server = (ObjectServer)currentContext.Application[databaseServerID.ToString()];
+				//else
+					server = Db4o.OpenServer(SoftwareMonkeys.SiteStarter.Config.Current.MapPath(DatabasePath), 0);
+
+				return server;
+			}
+		}
+		#endregion
+
+		#region Folder settings
+		private string adminDirectory = "/admin";
+		/// <summary>
+		/// Gets/sets the directory of the administration files.
+		/// </summary>
+		public string AdminDirectory
+		{
+			get { return adminDirectory.TrimEnd('/'); }
+			set { adminDirectory = value; }
+		}
+
+		/// <summary>
+		/// Gets the path to the administration directory.
+		/// </summary>
+		public string AdminDirectoryPath
+		{
+			get { return ApplicationPath + "/" + AdminDirectory; }
+		}
+		#endregion
+
+		#region Utility functions
+		public string MapPath(string path)
+		{
+			if (path.IndexOf(":") > -1)
+				return path;
+
+			if (PhysicalPath != null && PhysicalPath.Length > 0)
+			{
+				if (ApplicationPath.Trim('/').Length > 0)
+					path = path.Replace(ApplicationPath, "");
+				path = path.Replace("/", @"\");
+				return PhysicalPath + @"\" + path.TrimStart('\\');
+			}
+
+			return HttpContext.Current.Server.MapPath(Path.Combine(ApplicationPath, path));
+		}
+
+        private string FixPath(string path)
+        {
+            if (path == null)
+                return String.Empty;
+            return path.TrimEnd('/').TrimEnd('\\');
+        }
+		#endregion
+
+		#region Load/save functions
+        static private string physicalConfigPath;
+		/// <summary>
+		/// Gets the physical path to the config file.
+		/// </summary>
+		static public string PhysicalConfigPath
+		{
+            get
+            {
+                if (physicalConfigPath == String.Empty && HttpContext.Current != null)
+                    physicalConfigPath = HttpContext.Current.Server.MapPath(HttpContext.Current.Request.ApplicationPath);
+                return physicalConfigPath;
+            }
+            set { physicalConfigPath = value; }
+        }
+
+		/// <summary>
+		/// Loads the configuration settings from the config file.
+		/// </summary>
+		/// <returns>The configuration settings from the config file.</returns>
+		static public Config Load()
+		{
+			if (File.Exists(PhysicalConfigPath))
+            {
+				FileStream stream = File.OpenRead(PhysicalConfigPath);
+				XmlSerializer serializer = new XmlSerializer(typeof(Config));
+				Config config = (Config)serializer.Deserialize(stream);
+				stream.Close();
+				return config;
+			}
+			else
+			{
+
+                // TODO: Check if an empty config object should automatically be created
+               // throw new Exception("Setup has not yet been run. The configuration file cannot be found: " + PhysicalConfigPath);
+				Config config = new Config();
+				config.Save();
+				return config;
+			}
+		}
+
+		/// <summary>
+		/// Saves the current configuration settings to the config file.
+		/// </summary>
+		public void Save()
+		{
+            if (!Directory.Exists(Path.GetDirectoryName(PhysicalConfigPath)))
+                Directory.CreateDirectory(Path.GetDirectoryName(PhysicalConfigPath));
+
+			FileStream stream = File.Create(PhysicalConfigPath);
+			XmlSerializer serializer = new XmlSerializer(typeof(Config));
+			serializer.Serialize(stream, this);
+			stream.Close();
+		}
+		#endregion
+
+        private string[] traceData;
+        public string[] TraceData
+        {
+            get { return traceData; }
+            set { traceData = value; }
+        }
+        
+        private string smtpServer;
+        public string SmtpServer
+        {
+            get { return smtpServer; }
+            set { smtpServer = value; }
+        }
+
+        // todo: check if needed
+        /*private bool notifyUserCreated;
+        public bool NotifyUserCreated
+        {
+            get { return notifyUserCreated; }
+            set { notifyUserCreated = value; }
+        }
+
+        private bool enableEmailNotification;
+        public bool EnableEmailNotification
+        {
+            get { return enableEmailNotification; }
+            set { enableEmailNotification = value; }
+        }
+
+         private bool notifyBugReported;
+        public bool NotifyBugReported
+        {
+            get { return notifyBugReported; }
+            set { notifyBugReported = value; }
+        }
+
+        private bool enableDemo;
+        public bool EnableDemo
+        {
+            get { return enableDemo; }
+            set { enableDemo = value; }
+        }*/
+    }
+}

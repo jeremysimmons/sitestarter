@@ -1,0 +1,114 @@
+<?xml version="1.0"?>
+<project name="Common.Jobs.BuildSolution" default="Common.Jobs.BuildSolution" xmlns="http://nant.sf.net/schemas/nant.xsd">
+	
+	<include buildfile="Common.Jobs.WWW.nant"/>
+	<include buildfile="Common.Jobs.Modules.nant"/>
+	
+		<xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.Name']/@value"
+		    property="Solution.Name">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+
+		<xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.BaseNamespace']/@value"
+		    property="Solution.BaseNamespace">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+
+		<xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.BuildOrder']/@value"
+		    property="Solution.BuildOrder">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+    	
+	
+  <target name="Common.Jobs.BuildSolution">
+		<call target="Common.Actions.CleanSolution"/>
+		<call target="Common.Jobs.ImportLibraries"/>
+		
+		<foreach item="String" in="${Solution.BuildOrder}" delim="," property="count">
+    		<property name="AssemblyProject.PropertiesPath" value="${Solution.RootPath}\${Solution.BaseNamespace}.${count}\${Solution.Name}.${count}.Assembly.nant"/>
+    		<echo message="Building assembly: ${AssemblyProject.PropertiesPath}"/>
+			<if test="${file::exists(AssemblyProject.PropertiesPath)}">
+				<call target="Common.Jobs.BuildAssembly"/>
+			</if>
+		</foreach>
+		
+			
+		<if test="${directory::exists(Solution.RootPath + '\Modules\')}">
+			<foreach item="Folder" in="${Solution.RootPath}\Modules"  property="currentModule">
+	    		<in>
+	        		<items>
+	            		<exclude name="**\.svn\" />
+	            		<exclude name="**\_svn\" />
+	            		<include name="**" />
+	       		 	</items>
+	   		 	</in>
+	    		<do>
+	    			<property name="moduleName" value="${path::get-file-name(currentModule)}"/>
+					<property name="AssemblyProject.PropertiesPath" value="${Solution.RootPath}\Modules\${moduleName}\${Solution.Name}.${moduleName}.Assembly.nant"/>
+					<echo message="Project properties path: ${AssemblyProject.PropertiesPath}"/>
+					<if test="${file::exists(AssemblyProject.PropertiesPath)}">
+						<call target="Common.Jobs.BuildAssembly"/>
+					</if>
+	    		</do>
+			</foreach>
+		</if>
+		
+		<call target="Common.Jobs.PrepareWWW"/>
+	
+	</target>
+	
+  	
+  	<target name="Common.Jobs.ImportLibraries">
+  	  	
+    	<property name="Project.LibrariesPath" value="${Project.RootPath}\Lib"/>
+    	
+  <!-- Import SiteStarter libraries -->
+  		<if test="${Solution.Name != 'SiteStarter'}">
+			<property name="SiteStarter.BinPath" value="${path::get-full-path(Project.RootPath + '\..\SiteStarter\Bin\')}"/>
+	  		<echo message="Looking for directory: ${SiteStarter.BinPath}"/>
+	  <!-- Import SiteStarter libraries -->
+			  		
+			<mkdir dir="${Project.LibrariesPath}\${Build.Mode}"/>
+	  		<if test="${directory::exists(SiteStarter.BinPath)}">
+	  		<echo message="Importing libraries from: ${SiteStarter.BinPath}"/>
+	  		<echo message="To: ${Project.LibrariesPath}\${Build.Mode}"/>
+	   			<copy todir="${Project.LibrariesPath}\${Build.Mode}" overwrite="true">
+	      			<fileset basedir="${SiteStarter.BinPath}\${Build.Mode}">
+	        			<include name="SoftwareMonkeys.SiteStarter*dll" />
+	      			</fileset>
+	    		</copy>
+	    	</if>
+    	</if>
+  </target>  
+  	
+      	<target name="Common.Actions.CleanSolution">
+  		<echo message="Start path: ${Solution.RootPath}"/>
+  		<delete>
+    		<fileset>
+        		<exclude name="${Solution.RootPath}\Lib\*.*" />
+        		<include name="${Solution.RootPath}\Bin\${Build.Mode}\*.*" />
+        		<include name="${Solution.RootPath}\SoftwareMonkeys.*\bin\${Build.Mode}\*.dll" />
+        		<include name="${Solution.RootPath}\SoftwareMonkeys.*\bin\${Build.Mode}\*.pdb" />
+        		<include name="${Solution.RootPath}\Modules\**\bin\${Build.Mode}\*.dll" />
+        		<include name="${Solution.RootPath}\Modules\**\bin\${Build.Mode}\*.pdb" />
+        		<include name="${Solution.RootPath}\WWW\bin\*.dll" />
+        		<include name="${Solution.RootPath}\WWW\bin\*.pdb" />
+    		</fileset>
+		</delete>
+  	</target>
+  	
+     
+</project>
+  	

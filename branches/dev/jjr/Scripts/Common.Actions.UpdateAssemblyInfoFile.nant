@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<project name="Common.Actions.UpdateAssemblyInfoFile" default="Build" xmlns="http://nant.sf.net/schemas/nant.xsd">
+  	<target name="Common.Actions.UpdateAssemblyInfoFile" depends="Common.Actions.CreateUniqueGuid">
+		<echo message="Project version: ${Project.Version}"/>
+
+         <asminfo output="${Project.AssemblyInfoFile}" language="CSharp">
+
+             <imports>
+
+                 <import namespace="System.Reflection" />
+
+                 <import namespace="System.Runtime.InteropServices" />
+
+             </imports>
+             <attributes>
+                 <attribute type="AssemblyTitleAttribute" value="${Project.Name}" />
+                 <attribute type="AssemblyDescriptionAttribute" value="" />
+
+                 <attribute type="AssemblyConfigurationAttribute" value="" />
+
+                 <attribute type="AssemblyCompanyAttribute" value="" />
+
+                <attribute type="AssemblyProductAttribute" value="${Project.Name}" />
+
+                 <attribute type="AssemblyCopyrightAttribute" value="Copyright ${Project.CompanyName} (c) 2007" />
+
+                 <attribute type="AssemblyTrademarkAttribute" value="" />
+
+                 <attribute type="AssemblyCultureAttribute" value="" />
+
+ 
+
+                 <attribute type="ComVisibleAttribute" value="false" />
+
+ 
+
+                 <!--attribute type="GuidAttribute" value="${Project.Guid}" /-->
+
+ 
+
+                 <attribute type="AssemblyVersionAttribute" value="${Project.Version}" />
+
+                 <attribute type="AssemblyFileVersionAttribute" value="${Project.Version}" />
+
+             </attributes>
+
+         </asminfo>
+
+     </target>
+</project>
+  	
