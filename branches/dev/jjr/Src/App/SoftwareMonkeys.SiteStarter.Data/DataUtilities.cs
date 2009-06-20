@@ -8,6 +8,7 @@ using NLog;
 using System.Reflection;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using SoftwareMonkeys.SiteStarter.Configuration;
 
 namespace SoftwareMonkeys.SiteStarter.Data
 {
@@ -1404,7 +1405,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
         /// <returns>The data store that the provided entity is stored in.</returns>
         static public string GetDataStoreName(Type type, bool throwErrorIfNotFound)
         {
-		if (type == null)
+		/*if (type == null)
 			throw new ArgumentNullException("type");
 
             object[] attributes = (object[])type.GetCustomAttributes(true);
@@ -1420,7 +1421,15 @@ namespace SoftwareMonkeys.SiteStarter.Data
 	                throw new Exception("No data store name was found for the entity '" + type.ToString() + "'");
 	            }
 		}
-            return String.Empty;
+            return String.Empty;*/
+		
+			MappingItem item = Config.Mappings.GetItem(type);
+			if (item == null)
+				throw new InvalidOperationException("No mappings found for the type " + type.ToString());
+			
+			if (!item.Settings.ContainsKey("DataStoreName"))
+				throw new InvalidOperationException("No data store name has been declared in the mappings for the '" + type.ToString() + "' type.");
+			return (string)item.Settings["DataStoreName"];
         }
 	}
 

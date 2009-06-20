@@ -103,15 +103,15 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
         	set { pathVariation = value; }
         }
 
-        private SerializableDictionary<string, object> settings = new SerializableDictionary<string,object>();
+        private ConfigurationDictionary settings = new ConfigurationDictionary();
         /// <summary>
         /// Gets/sets the flexible settings collection.
         /// </summary>
-        public SerializableDictionary<string, object> Settings
+        public ConfigurationDictionary Settings
         {
             get {
             	if (settings == null)
-            		settings = new SerializableDictionary<string,object>();
+            		settings = new ConfigurationDictionary();
             	return settings; }
             set { settings = value; }
         }

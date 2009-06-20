@@ -44,15 +44,17 @@ private void Page_Load(object sender, EventArgs e)
             
 
             ConfigFactory.SaveConfig(Request.MapPath(Request.ApplicationPath + "/App_Data"), (IConfig)config, WebUtilities.GetLocationVariation(Request.Url));
+            
+            SetupMappings();
 
             // Initialize everything now that the default config has been created
-            Config.Initialize(Server.MapPath(Request.ApplicationPath));
+            Config.Initialize(Server.MapPath(Request.ApplicationPath), WebUtilities.GetLocationVariation(HttpContext.Current.Request.Url));
             SoftwareMonkeys.SiteStarter.Web.Providers.DataProviderManager.Initialize();
 
 
-            if (!SoftwareMonkeys.SiteStarter.Business.UserFactory.SaveUser(user))
+            if (!SoftwareMonkeys.SiteStarter.Business.UserFactory.Current.SaveUser(user))
             {
-            	user = (User)UserFactory.GetUserByUsername(user.Username);
+            	user = (User)UserFactory.Current.GetUserByUsername(user.Username);
             	
             	config.PrimaryAdministratorID = user.ID;
             	
@@ -69,6 +71,27 @@ private void Page_Load(object sender, EventArgs e)
 	}
 
            // Response.Redirect("SetupDefaultData.aspx");
+}
+
+private void SetupMappings()
+{
+	MappingConfig config = Config.Mappings;
+	if (config == null)
+		config = new MappingConfig();
+		
+	MappingItem userEntityItem = new MappingItem(typeof(IUser));
+	userEntityItem.Settings.Add("DataStoreName", "Users");
+	
+	config.AddItem(userEntityItem);
+	
+	MappingItem userRoleEntityItem = new MappingItem(typeof(IUserRole));
+	userRoleEntityItem.Settings.Add("DataStoreName", "UserRoles");
+	
+	config.AddItem(userRoleEntityItem);
+	
+	string path = Server.MapPath(Request.ApplicationPath + "/App_Data");
+	
+	ConfigFactory.SaveConfig(path, config);
 }
 </script>
 <asp:Content runat="server" ContentPlaceHolderID="Body">

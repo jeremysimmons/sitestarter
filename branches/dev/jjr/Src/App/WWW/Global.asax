@@ -2,6 +2,7 @@
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.State" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Data" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Providers" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Configuration" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business" %>
@@ -71,7 +72,7 @@
         if (!StateAccess.IsInitialized || !Config.IsInitialized)
         {
             SoftwareMonkeys.SiteStarter.Web.State.StateProviderManager.Initialize();   
-            Config.Initialize(Server.MapPath(HttpContext.Current.Request.ApplicationPath));
+            Config.Initialize(Server.MapPath(HttpContext.Current.Request.ApplicationPath), WebUtilities.GetLocationVariation(HttpContext.Current.Request.Url));
             DataProviderManager.Initialize();
         }
     }

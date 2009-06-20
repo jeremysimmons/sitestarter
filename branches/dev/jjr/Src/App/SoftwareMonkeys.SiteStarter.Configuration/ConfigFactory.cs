@@ -18,10 +18,44 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
         /// Loads all of the config files in the application data directory.
         /// </summary>
         /// <param name="physicalDataDirectoryPath">The physical path to the data directory.</param>
+        /// <param name="variation">The variation applied to config paths.</param>
+        /// <returns>A collection of the config files in the application data directory.</returns>
+        static public ConfigCollection LoadAllConfigs(string physicalDataDirectoryPath, string variation)
+        {
+        	ConfigCollection collection = new ConfigCollection();
+        	collection.Add(
+        		LoadConfig(
+        			ConfigFactory.CreateConfigPath(
+        				physicalDataDirectoryPath,
+        				"Default",
+        				variation),
+        			typeof(AppConfig)
+        		)
+        	);
+        	
+        	collection.Add(
+        		LoadConfig(
+        			ConfigFactory.CreateConfigPath(
+        				physicalDataDirectoryPath,
+        				"Mappings",
+        				String.Empty),
+        			typeof(MappingConfig)
+        		)
+        	);
+        	
+        	return collection;
+        }
+        
+        // TODO: Remove; obsolete
+        /*/// <summary>
+        /// Loads all of the config files in the application data directory.
+        /// </summary>
+        /// <param name="physicalDataDirectoryPath">The physical path to the data directory.</param>
         /// <param name="configType">The type of configuration object to load.</param>
         /// <returns>A collection of the config files in the application data directory.</returns>
         static public ConfigCollection LoadAllConfigs(string physicalDataDirectoryPath, Type configType)
         {
+        	//, typeof(AppConfig)
             ConfigCollection collection = new ConfigCollection();
 
             using (LogGroup logGroup = AppLogger.StartGroup(@"Loads all available configuration files."))
@@ -43,7 +77,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
             }
 
             return collection;
-        }
+        }*/
 
         /// <summary>
         /// Loads the config file at the specified path.
@@ -69,11 +103,11 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 	            {
 	                using (FileStream stream = File.Open(configPath, FileMode.Open))
 	                {
-	                    XmlSerializer serializer = new XmlSerializer(type);
-	
-	                    config = (IConfig)serializer.Deserialize(stream);
-	
-	                    stream.Close();
+		                    XmlSerializer serializer = new XmlSerializer(type);
+		
+		                    config = (IConfig)serializer.Deserialize(stream);
+		
+		                    stream.Close();
 	                }
 	            }
 	            catch (Exception ex)
@@ -113,6 +147,16 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
         /// </summary>
         /// <param name="physicalDataDirectoryPath">The physical path to the data directory.</param>
         /// <param name="config">The configuration object to save.</param>
+        static public void SaveConfig(string physicalDataDirectoryPath, IConfig config)
+        {
+        	SaveConfig(physicalDataDirectoryPath, config, String.Empty);
+        }
+        
+        /// <summary>
+        /// Saves the provided configuration object to file.
+        /// </summary>
+        /// <param name="physicalDataDirectoryPath">The physical path to the data directory.</param>
+        /// <param name="config">The configuration object to save.</param>
         /// <param name="variation">The variation to be applied to the configuration file (ie. local, staging, etc.).</param>
         static public void SaveConfig(string physicalDataDirectoryPath, IConfig config, string variation)
         {
@@ -138,6 +182,8 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
                 serializer.Serialize(stream, config);
                 stream.Close();
             }
+            
+            Config.All.Add(config);
         }
         #endregion
 

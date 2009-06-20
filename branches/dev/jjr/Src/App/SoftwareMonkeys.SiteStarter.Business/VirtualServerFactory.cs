@@ -334,7 +334,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
             	throw new InvalidOperationException("The primary administrator ID isn't specified for the virtual server.");
             	
             if (server.PrimaryAdministrator == null)
-            	server.PrimaryAdministrator = UserFactory.GetUser(server.PrimaryAdministratorID);
+            	server.PrimaryAdministrator = UserFactory.Current.GetUser(server.PrimaryAdministratorID);
 
             if (server.PrimaryAdministrator == null)
             	throw new InvalidOperationException("The administrator of the virtual server could not be found.");

@@ -66,7 +66,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		/// <returns>The return value of the generic method.</returns>
 		static public object InvokeGenericMethod(object obj, string methodName, Type[] typeArguments, object[] parameters)
 		{
-			MethodInfo method = obj.GetType().GetMethod(methodName);
+			MethodInfo method = obj.GetType().GetMethod(methodName, parameters.GetType().GetElemType..typeArguments);
 			
 			if (method == null)
 				throw new ArgumentException("The method '" + methodName + "' wasn't found on the type '" + obj.GetType().ToString() + "'.");

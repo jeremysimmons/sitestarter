@@ -27,7 +27,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
             VirtualServer server = VirtualServerFactory.GetVirtualServerByName(SiteStarter.State.VirtualServerState.VirtualServerName);
             IUser user = null;
             if (HttpContext.Current.Request.IsAuthenticated && My.User != null)
-                user = UserFactory.GetUser(My.User.ID);
+                user = UserFactory.Current.GetUser(My.User.ID);
 
             string output = String.Empty;
 
@@ -52,7 +52,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 
             SiteStarter.State.VirtualServerState.SuspendVirtualServerState();
 
-            Entities.IUser systemAdministrator = UserFactory.GetUser(Config.Application.PrimaryAdministratorID);
+            Entities.IUser systemAdministrator = UserFactory.Current.GetUser(Config.Application.PrimaryAdministratorID);
 
             SiteStarter.State.VirtualServerState.RestoreVirtualServerState();
 

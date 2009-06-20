@@ -412,11 +412,11 @@ namespace SoftwareMonkeys.SiteStarter.Tests
         	set { defaultVirtualServerKeywords = value; }
         }
 
-        private SerializableDictionary<string, object> settings;
+        private ConfigurationDictionary settings;
         /// <summary>
         /// Gets/sets the flexible settings collection.
         /// </summary>
-        public SerializableDictionary<string, object> Settings
+        public ConfigurationDictionary Settings
         {
             get { return settings; }
             set { settings = value; }

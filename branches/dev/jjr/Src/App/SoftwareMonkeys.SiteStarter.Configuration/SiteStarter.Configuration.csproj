@@ -42,9 +42,12 @@
     <Compile Include="Config.cs" />
     <Compile Include="ConfigCollection.cs" />
     <Compile Include="ConfigFactory.cs" />
+    <Compile Include="ConfigurationDictionary.cs" />
     <Compile Include="IVirtualServerConfig.cs" />
     <Compile Include="IAppConfig.cs" />
     <Compile Include="IConfig.cs" />
+    <Compile Include="MappingConfig.cs" />
+    <Compile Include="MappingItem.cs" />
     <Compile Include="SerializableDictionary.cs" />
   </ItemGroup>
   <ItemGroup>

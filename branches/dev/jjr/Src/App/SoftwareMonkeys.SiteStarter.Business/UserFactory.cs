@@ -14,24 +14,45 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// <summary>
 	/// Provides an interface for interacting with users.
 	/// </summary>
-    [DataObject(true)]
-	public class UserFactory
-    {
-        /// <summary>
-        /// Gets the data store containing the objects that this factory interact with.
-        /// </summary>
-        static public IDataStore DataStore
-        {
-            get { return DataAccess.Data.Stores[typeof(Entities.IUser)]; }
-        }
+	[DataObject(true)]
+	public class UserFactory : BaseFactory
+	{
+		static private UserFactory current;
+		static public UserFactory Current
+		{
+			get {
+				if (current == null)
+					current = new UserFactory();
+				return current; }
+		}
+		
+		public virtual Dictionary<string, Type> DefaultTypes
+		{
+			get { return base.DefaultTypes; }
+			set { base.DefaultTypes = value; }
+		}
+		
+		/// <summary>
+		/// Gets the data store containing the objects that this factory interact with.
+		/// </summary>
+		public IDataStore DataStore
+		{
+			get { return DataAccess.Data.Stores[FactoryManager.GetDefaultType(this, "IUser")]; }
+		}
+		
+		public UserFactory()
+		{
+			DefaultTypes = new Dictionary<string, Type>();
+			DefaultTypes.Add("IUser", typeof(Entities.User));
+		}
 
 		#region Retrieve functions
-	    /// <summary>
+		/// <summary>
 		/// Retrieves all the users from the DB.
 		/// </summary>
 		/// <returns>A UserSet containing the retrieved users.</returns>
-        [DataObjectMethod(DataObjectMethodType.Select, true)]
-		static public Entities.IUser[] GetUsers()
+		[DataObjectMethod(DataObjectMethodType.Select, true)]
+		public Entities.IUser[] GetUsers()
 		{
 			return Collection<Entities.IUser>.ConvertAll(DataStore.GetEntities<Entities.IUser>());
 		}
@@ -41,11 +62,11 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="userIDs">An array of IDs of users to retrieve.</param>
 		/// <returns>An array of the retrieved users.</returns>
-        [DataObjectMethod(DataObjectMethodType.Select, true)]
-        static public Entities.IUser[] GetUsers(Guid[] userIDs)
+		[DataObjectMethod(DataObjectMethodType.Select, true)]
+		public Entities.IUser[] GetUsers(Guid[] userIDs)
 		{
 			// Create a new user collection
-            Collection<Entities.IUser> users = new Collection<Entities.IUser>();
+			Collection<Entities.IUser> users = new Collection<Entities.IUser>();
 
 			// Loop through the IDs and add each user to the collection
 			foreach (Guid userID in userIDs)
@@ -55,7 +76,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			}
 
 			// Return the collection
-            return users.ToArray();
+			return users.ToArray();
 		}
 
 		/// <summary>
@@ -63,20 +84,20 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="userID">The ID of the user to retrieve.</param>
 		/// <returns>A User object containing the requested info.</returns>
-        [DataObjectMethod(DataObjectMethodType.Select, true)]
-        static public Entities.IUser GetUser(Guid userID)
+		[DataObjectMethod(DataObjectMethodType.Select, true)]
+		public Entities.IUser GetUser(Guid userID)
 		{
-            // If the ID is empty return null
-            if (userID == Guid.Empty)
-                return null;
+			// If the ID is empty return null
+			if (userID == Guid.Empty)
+				return null;
 
-            return (Entities.IUser)DataAccess.Data.GetEntity<IUser>("ID", userID);
+			return (Entities.IUser)DataAccess.Data.GetEntity<IUser>("ID", userID);
 		}
 
 		/// <summary>
 		/// Retrieves the user with the provided username.
 		/// </summary>
-        static public Entities.IUser GetUserByUsername(string username)
+		public Entities.IUser GetUserByUsername(string username)
 		{
 			Entities.IUser user = null;
 			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the user with the username: " + username, NLog.LogLevel.Debug))
@@ -91,29 +112,29 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			return user;
 		}
 
-        /// <summary>
-        /// Retrieves the user with the provided email.
-        /// </summary>
-        static public Entities.IUser[] GetUsersByEmail(string email)
-        {
-            return Collection<Entities.IUser>.ConvertAll(DataAccess.Data.GetEntities<IUser>("Email", email));
-        }
+		/// <summary>
+		/// Retrieves the user with the provided email.
+		/// </summary>
+		public Entities.IUser[] GetUsersByEmail(string email)
+		{
+			return Collection<Entities.IUser>.ConvertAll(DataAccess.Data.GetEntities<IUser>("Email", email));
+		}
 
-        /// <summary>
-        /// Retrieves the users with the provided name.
-        /// </summary>
-        static public Entities.IUser[] GetUsersByName(string name)
-        {
-            return Collection<Entities.IUser>.ConvertAll(DataAccess.Data.GetEntities<IUser>("Name", name));
-        }
+		/// <summary>
+		/// Retrieves the users with the provided name.
+		/// </summary>
+		public Entities.IUser[] GetUsersByName(string name)
+		{
+			return Collection<Entities.IUser>.ConvertAll(DataAccess.Data.GetEntities<IUser>("Name", name));
+		}
 
-        /// <summary>
-        /// Retrieves the user with the provided email.
-        /// </summary>
-        static public Entities.IUser GetUserByEmail(string email)
-        {
-            return (Entities.IUser)DataAccess.Data.GetEntity<IUser>("Email", email);
-        }
+		/// <summary>
+		/// Retrieves the user with the provided email.
+		/// </summary>
+		public Entities.IUser GetUserByEmail(string email)
+		{
+			return (Entities.IUser)DataAccess.Data.GetEntity<IUser>("Email", email);
+		}
 		#endregion
 
 		#region Security functions
@@ -123,25 +144,25 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="username">The username of the user to retrieve.</param>
 		/// <param name="password">The password of the user to retrieve.</param>
 		/// <returns>The user with the provided credentials.</returns>
-        static public Entities.IUser AuthenticateUser(string username, string password)
+		public Entities.IUser AuthenticateUser(string username, string password)
 		{
 			Entities.IUser user = null;
 
 			using(LogGroup logGroup = AppLogger.StartGroup("Retrieves the user with the specified username and password.", NLog.LogLevel.Debug))
 			{
 				AppLogger.Debug("Username: " + username);
-                  // TODO: Check encrypt password code
-			// Encrypt the password if necessary.
-			//if (encryptPassword)
+				// TODO: Check encrypt password code
+				// Encrypt the password if necessary.
+				//if (encryptPassword)
 				password = Crypter.EncryptPassword(password);
-			
-			// Create the query
-		            Dictionary<string, object> parameters = new Dictionary<string, object>();
-		            parameters.Add("Username", username);
-		            parameters.Add("Password", password);
+				
+				// Create the query
+				Dictionary<string, object> parameters = new Dictionary<string, object>();
+				parameters.Add("Username", username);
+				parameters.Add("Password", password);
 
-			// Retrieve and return the user with the username and password.
-            			user = (Entities.IUser)DataStore.GetEntity<Entities.IUser>(parameters);
+				// Retrieve and return the user with the username and password.
+				user = (Entities.IUser)DataStore.GetEntity<Entities.IUser>(parameters);
 
 				if (user != null)
 				{
@@ -163,8 +184,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="user">The user to save.</param>
 		/// <returns>A boolean value indicating whether the username is taken.</returns>
-        [DataObjectMethod(DataObjectMethodType.Insert, true)]
-        static public bool SaveUser(Entities.IUser user)
+		[DataObjectMethod(DataObjectMethodType.Insert, true)]
+		public bool SaveUser(Entities.IUser user)
 		{
 			// Check if the username is already taken.
 			if (UsernameTaken(user))
@@ -190,8 +211,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="user">The user to update.</param>
 		/// <returns>A boolean value indicating whether the username is taken.</returns>
-        [DataObjectMethod(DataObjectMethodType.Update, true)]
-        static public bool UpdateUser(Entities.IUser user)
+		[DataObjectMethod(DataObjectMethodType.Update, true)]
+		public bool UpdateUser(Entities.IUser user)
 		{
 			// Check if the username is already taken.
 			if (UsernameTaken(user))
@@ -203,7 +224,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			else
 			{
 				// Update the object.
-                		DataStore.Update(user);
+				DataStore.Update(user);
 
 				// Update successful.
 				return true;
@@ -216,17 +237,17 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// Deletes the provided user.
 		/// </summary>
 		/// <param name="user">The user to delete.</param>
-        [DataObjectMethod(DataObjectMethodType.Delete, true)]
-        static public void DeleteUser(Entities.IUser user)
+		[DataObjectMethod(DataObjectMethodType.Delete, true)]
+		public void DeleteUser(Entities.IUser user)
 		{
-            if (user != null)
-            {
-                // Check that the user is bound to the DB
-                if (!DataStore.IsStored(user))
-                    user = GetUser(user.ID);
+			if (user != null)
+			{
+				// Check that the user is bound to the DB
+				if (!DataStore.IsStored(user))
+					user = GetUser(user.ID);
 
-                DataStore.Delete(user);
-            }
+				DataStore.Delete(user);
+			}
 		}
 		#endregion
 
@@ -236,54 +257,54 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="query">The query to search users with.</param>
 		/// <returns>A UserSet containing the matching users.</returns>
-        static public Collection<Entities.IUser> SearchUsers(string query)
+		public Collection<Entities.IUser> SearchUsers(string query)
 		{
 			// Create a list of searchable properties
 			string[] properties = new string[] {"firstName",
-												   "lastName",
-												   "username"};
+				"lastName",
+				"username"};
 
 			// Search the users
-            Collection<Entities.IUser> users = new Collection<Entities.IUser>(Db4oHelper.SearchObjects(typeof(Entities.IUser), properties, query));
+			Collection<Entities.IUser> users = new Collection<Entities.IUser>(Db4oHelper.SearchObjects(typeof(Entities.IUser), properties, query));
 
 			// Return all matching users
 			return users;
 		}*/
-		#endregion
+			#endregion
 
-		#region Validation functions
-		/// <summary>
-		/// Checks whether the username of the provided user is already taken.
-		/// </summary>
-		/// <param name="user">The user to check the username of.</param>
-		/// <returns>A boolean value indicating whether the username is taken.</returns>
-        static public bool UsernameTaken(Entities.IUser user)
+			#region Validation functions
+			/// <summary>
+			/// Checks whether the username of the provided user is already taken.
+			/// </summary>
+			/// <param name="user">The user to check the username of.</param>
+			/// <returns>A boolean value indicating whether the username is taken.</returns>
+			public bool UsernameTaken(Entities.IUser user)
 		{
-            using (LogGroup logGroup = AppLogger.StartGroup("Verifying that the username is unique.", NLog.LogLevel.Info))
-            {
-                AppLogger.Info("User ID: " + user.ID.ToString());
-                AppLogger.Info("Username: " + user.Username);
+			using (LogGroup logGroup = AppLogger.StartGroup("Verifying that the username is unique.", NLog.LogLevel.Info))
+			{
+				AppLogger.Info("User ID: " + user.ID.ToString());
+				AppLogger.Info("Username: " + user.Username);
 
-                // If no username was specified just skip this function
-                if (user.Username == null || user.Username == String.Empty)
-                    return false;
+				// If no username was specified just skip this function
+				if (user.Username == null || user.Username == String.Empty)
+					return false;
 
-                // Retrieve any existing user with the username.
-                Entities.IUser existing = GetUserByUsername(user.Username);
+				// Retrieve any existing user with the username.
+				Entities.IUser existing = GetUserByUsername(user.Username);
 
-                AppLogger.Info("Found match - User ID: " + user.ID.ToString());
-                AppLogger.Info("Found match - Username: " + user.Username);
+				AppLogger.Info("Found match - User ID: " + user.ID.ToString());
+				AppLogger.Info("Found match - Username: " + user.Username);
 
-                bool isTaken = (existing != null && existing.ID != user.ID);
+				bool isTaken = (existing != null && existing.ID != user.ID);
 
-                if (isTaken)
-                    AppLogger.Info("Username has already been taken.");
-                else
-                    AppLogger.Info("Username can be used.");
+				if (isTaken)
+					AppLogger.Info("Username has already been taken.");
+				else
+					AppLogger.Info("Username can be used.");
 
-                // If a user was found and the IDs are not the same then it's already taken.
-                return isTaken;
-            }
+				// If a user was found and the IDs are not the same then it's already taken.
+				return isTaken;
+			}
 		}
 		#endregion
 	}

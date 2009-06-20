@@ -41,7 +41,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 
 		string SmtpServer { get; }
 
-        SerializableDictionary<string, object> Settings { get;set; }
+        ConfigurationDictionary Settings { get;set; }
 
     }
 }

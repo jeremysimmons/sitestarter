@@ -56,6 +56,39 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
             } 
         }
         
+        
+        /// <summary>
+        /// Gets/sets the application configuration object.
+        /// </summary>
+        static public MappingConfig Mappings
+        {
+            get {
+                if (All != null && All.Count > 0)
+                {
+                    for (int i = 0; i < All.Count; i++)
+                    {
+                        if (All[i] is MappingConfig)
+                            return (MappingConfig)All[i];
+                    }
+                }
+                
+                return null;
+            }
+            set
+            {
+                if (All.Contains((IConfig)value))
+                {
+                    for (int i = 0; i < All.Count; i++)
+                    {
+                        if (All[i] is MappingConfig)
+                            All[i] = (IConfig)value;
+                    }
+                }
+                else
+                    All.Add((IConfig)value);
+            } 
+        }
+        
         /*
         static protected string VirtualServerKey
         {
@@ -118,7 +151,8 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
         /// Initializes all configuration objects.
         /// </summary>
         /// <param name="physicalApplicationPath">The physical path to the root of the application.</param>
-        static public void Initialize(string physicalApplicationPath)
+        /// <param name="variation">The path variation applied to configuration files.</param>
+        static public void Initialize(string physicalApplicationPath, string variation)
         {
             using (LogGroup logGroup = AppLogger.StartGroup("Initializes the application configuration settings."))
             {
@@ -142,7 +176,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
                 if (virtualServerID != null && virtualServerID != String.Empty && virtualServerID != Guid.Empty.ToString())
                 	fullPath += virtualServerID + @"\";
 
-                All = ConfigFactory.LoadAllConfigs(fullPath, typeof(AppConfig));
+                All = ConfigFactory.LoadAllConfigs(fullPath, variation);
             }
         }
         

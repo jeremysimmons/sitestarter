@@ -182,7 +182,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
             {
                 foreach (string rolename in rolenames)
                 {
-                    IUser user = UserFactory.GetUserByUsername(username);
+                    IUser user = UserFactory.Current.GetUserByUsername(username);
 
                     IUserRole role = UserRoleFactory.GetUserRoleByName(rolename);
 
@@ -192,7 +192,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
                     role.AddUser(user);
 
 
-                    UserFactory.UpdateUser(user);
+                    UserFactory.Current.UpdateUser(user);
 
                     UserRoleFactory.UpdateUserRole(role);
                 }
@@ -320,7 +320,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 
         public override string[] GetRolesForUser(string username)
         {
-            IUser user = UserFactory.GetUserByUsername(username);
+            IUser user = UserFactory.Current.GetUserByUsername(username);
 
             IUserRole[] roles = UserRoleFactory.GetUserRoles(user.RoleIDs);
 
@@ -342,7 +342,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
         {
             IUserRole role = UserRoleFactory.GetUserRoleByName(rolename);
 
-            IUser[] users = UserFactory.GetUsers(role.UserIDs);
+            IUser[] users = UserFactory.Current.GetUsers(role.UserIDs);
 
             List<string> usernames = new List<string>();
             foreach (User user in users)
@@ -360,7 +360,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 
         public override bool IsUserInRole(string username, string rolename)
         {
-            IUser user = UserFactory.GetUserByUsername(username);
+            IUser user = UserFactory.Current.GetUserByUsername(username);
 
             IUserRole role = UserRoleFactory.GetUserRoleByName(rolename);
 
@@ -408,7 +408,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
             {
                 foreach (string rolename in rolenames)
                 {
-                    IUser user = UserFactory.GetUserByUsername(username);
+                    IUser user = UserFactory.Current.GetUserByUsername(username);
 
                     IUserRole role = UserRoleFactory.GetUserRoleByName(rolename);
 
@@ -418,7 +418,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
                     role.RemoveUser(user);
 
 
-                    UserFactory.UpdateUser(user);
+                    UserFactory.Current.UpdateUser(user);
 
                     UserRoleFactory.UpdateUserRole(role);
                 }
@@ -447,7 +447,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 
             IUserRole role = UserRoleFactory.GetUserRoleByName(rolename);
 
-            IUser[] allUsers = UserFactory.GetUsers(role.UserIDs);
+            IUser[] allUsers = UserFactory.Current.GetUsers(role.UserIDs);
 
             foreach (User user in allUsers)
                 if (Array.IndexOf(user.RoleIDs, role.ID) > -1)
