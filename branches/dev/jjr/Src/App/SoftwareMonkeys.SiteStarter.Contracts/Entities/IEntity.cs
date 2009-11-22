@@ -2,6 +2,7 @@ using System;
 using System.Data;
 using System.Configuration;
 using System.Web;
+using SoftwareMonkeys.SiteStarter.Configuration;
 
 namespace SoftwareMonkeys.SiteStarter.Entities
 {
@@ -10,6 +11,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
     /// </summary>
     public interface IEntity
     {
-        Guid ID { get;set;}
+        Guid ID { get;set; }
+        string ShortTypeName { get; }
     }
 }

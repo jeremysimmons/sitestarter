@@ -15,22 +15,33 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// Provides an interface for interacting with users.
 	/// </summary>
 	[DataObject(true)]
-	public class UserFactory : BaseFactory
+	public class UserFactory : UserFactory<Entities.User>
 	{
-		static private UserFactory current;
-		static public UserFactory Current
+		
+	}
+	
+	
+	/// <summary>
+	/// Provides an interface for interacting with users.
+	/// </summary>
+	[DataObject(true)]
+	public class UserFactory<U> : BaseFactory
+		where U : IUser
+	{
+		static private UserFactory<U> current;
+		static public UserFactory<U> Current
 		{
 			get {
 				if (current == null)
-					current = new UserFactory();
+					current = new UserFactory<U>();
 				return current; }
 		}
 		
-		public virtual Dictionary<string, Type> DefaultTypes
+		/*public override Dictionary<string, Type> DefaultTypes
 		{
 			get { return base.DefaultTypes; }
 			set { base.DefaultTypes = value; }
-		}
+		}*/
 		
 		/// <summary>
 		/// Gets the data store containing the objects that this factory interact with.
@@ -52,9 +63,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <returns>A UserSet containing the retrieved users.</returns>
 		[DataObjectMethod(DataObjectMethodType.Select, true)]
-		public Entities.IUser[] GetUsers()
+		public U[] GetUsers()
 		{
-			return Collection<Entities.IUser>.ConvertAll(DataStore.GetEntities<Entities.IUser>());
+			return Collection<U>.ConvertAll(DataStore.GetEntities<U>());
 		}
 
 		/// <summary>
@@ -63,10 +74,10 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="userIDs">An array of IDs of users to retrieve.</param>
 		/// <returns>An array of the retrieved users.</returns>
 		[DataObjectMethod(DataObjectMethodType.Select, true)]
-		public Entities.IUser[] GetUsers(Guid[] userIDs)
+		public U[] GetUsers(Guid[] userIDs)
 		{
 			// Create a new user collection
-			Collection<Entities.IUser> users = new Collection<Entities.IUser>();
+			Collection<U> users = new Collection<U>();
 
 			// Loop through the IDs and add each user to the collection
 			foreach (Guid userID in userIDs)
@@ -85,24 +96,24 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="userID">The ID of the user to retrieve.</param>
 		/// <returns>A User object containing the requested info.</returns>
 		[DataObjectMethod(DataObjectMethodType.Select, true)]
-		public Entities.IUser GetUser(Guid userID)
+		public U GetUser(Guid userID)
 		{
 			// If the ID is empty return null
 			if (userID == Guid.Empty)
-				return null;
+				return default(U);
 
-			return (Entities.IUser)DataAccess.Data.GetEntity<IUser>("ID", userID);
+			return (U)DataAccess.Data.GetEntity<U>("ID", userID);
 		}
 
 		/// <summary>
 		/// Retrieves the user with the provided username.
 		/// </summary>
-		public Entities.IUser GetUserByUsername(string username)
+		public U GetUserByUsername(string username)
 		{
-			Entities.IUser user = null;
+			U user = default(U);
 			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the user with the username: " + username, NLog.LogLevel.Debug))
 			{
-				user = (Entities.IUser)DataAccess.Data.GetEntity<IUser>("Username", username);
+				user = (U)DataAccess.Data.GetEntity<U>("Username", username);
 
 				if (user != null)
 					AppLogger.Debug("User ID: "+  user.ID);
@@ -115,25 +126,25 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <summary>
 		/// Retrieves the user with the provided email.
 		/// </summary>
-		public Entities.IUser[] GetUsersByEmail(string email)
+		public U[] GetUsersByEmail(string email)
 		{
-			return Collection<Entities.IUser>.ConvertAll(DataAccess.Data.GetEntities<IUser>("Email", email));
+			return Collection<U>.ConvertAll(DataAccess.Data.GetEntities<U>("Email", email));
 		}
 
 		/// <summary>
 		/// Retrieves the users with the provided name.
 		/// </summary>
-		public Entities.IUser[] GetUsersByName(string name)
+		public U[] GetUsersByName(string name)
 		{
-			return Collection<Entities.IUser>.ConvertAll(DataAccess.Data.GetEntities<IUser>("Name", name));
+			return Collection<U>.ConvertAll(DataAccess.Data.GetEntities<U>("Name", name));
 		}
 
 		/// <summary>
 		/// Retrieves the user with the provided email.
 		/// </summary>
-		public Entities.IUser GetUserByEmail(string email)
+		public U GetUserByEmail(string email)
 		{
-			return (Entities.IUser)DataAccess.Data.GetEntity<IUser>("Email", email);
+			return (U)DataAccess.Data.GetEntity<U>("Email", email);
 		}
 		#endregion
 
@@ -162,7 +173,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				parameters.Add("Password", password);
 
 				// Retrieve and return the user with the username and password.
-				user = (Entities.IUser)DataStore.GetEntity<Entities.IUser>(parameters);
+				user = (Entities.IUser)DataAccess.Data.GetEntity<Entities.IUser>(parameters);
 
 				if (user != null)
 				{
@@ -183,25 +194,32 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// Saves the provided user to the DB.
 		/// </summary>
 		/// <param name="user">The user to save.</param>
-		/// <returns>A boolean value indicating whether the username is taken.</returns>
+		/// <returns>A boolean value indicating whether the save was successful (if not the username is taken).</returns>
 		[DataObjectMethod(DataObjectMethodType.Insert, true)]
 		public bool SaveUser(Entities.IUser user)
 		{
-			// Check if the username is already taken.
-			if (UsernameTaken(user))
+			bool isComplete = false;
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Saving the user: " + user.Username, NLog.LogLevel.Debug))
 			{
-				// Save unsuccessful.
-				return false;
-			}
-			// ... if the username is NOT taken.
-			else
-			{
-				// Save the object.
-				DataStore.Save(user);
+				// Check if the username is already taken.
+				if (UsernameTaken(user))
+				{
+					// Save unsuccessful.
+					isComplete = false;
+				}
+				// ... if the username is NOT taken.
+				else
+				{
+					// Save the object.
+					DataStore.Save(user);
 
-				// Save successful.
-				return true;
+					// Save successful.
+					isComplete = true;
+				}
 			}
+			
+			return isComplete;
 		}
 		#endregion
 
@@ -280,10 +298,10 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			/// <returns>A boolean value indicating whether the username is taken.</returns>
 			public bool UsernameTaken(Entities.IUser user)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Verifying that the username is unique.", NLog.LogLevel.Info))
+			using (LogGroup logGroup = AppLogger.StartGroup("Verifying that the username is unique.", NLog.LogLevel.Debug))
 			{
-				AppLogger.Info("User ID: " + user.ID.ToString());
-				AppLogger.Info("Username: " + user.Username);
+				AppLogger.Debug("User ID: " + user.ID.ToString());
+				AppLogger.Debug("Username: " + user.Username);
 
 				// If no username was specified just skip this function
 				if (user.Username == null || user.Username == String.Empty)
@@ -292,15 +310,20 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				// Retrieve any existing user with the username.
 				Entities.IUser existing = GetUserByUsername(user.Username);
 
-				AppLogger.Info("Found match - User ID: " + user.ID.ToString());
-				AppLogger.Info("Found match - Username: " + user.Username);
+				if (existing != null)
+				{
+					AppLogger.Debug("Found user - User ID: " + existing.ID.ToString());
+					AppLogger.Debug("Found user - Username: " + existing.Username);
+				}
+				else
+					AppLogger.Debug("No existing user found with the username '" + user.Username + "'.");
 
 				bool isTaken = (existing != null && existing.ID != user.ID);
 
 				if (isTaken)
-					AppLogger.Info("Username has already been taken.");
+					AppLogger.Debug("Username has already been taken.");
 				else
-					AppLogger.Info("Username can be used.");
+					AppLogger.Debug("Username can be used.");
 
 				// If a user was found and the IDs are not the same then it's already taken.
 				return isTaken;

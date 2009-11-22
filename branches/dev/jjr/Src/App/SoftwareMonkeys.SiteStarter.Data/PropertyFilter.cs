@@ -66,8 +66,12 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			Type entityType = entity.GetType();
 			foreach (Type type in Types)
 			{
-				if (type.Equals(entityType) || entityType.IsSubclassOf(type))
+				if (type.Equals(entityType)
+				    || entityType.IsSubclassOf(type)
+				    || type.ToString() == entityType.ToString())
+				{
 					typeMatches = true;
+				}
 			}
 			
 			PropertyInfo property = entityType.GetProperty(PropertyName);

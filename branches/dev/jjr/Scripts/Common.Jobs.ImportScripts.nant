@@ -25,6 +25,7 @@
 		   			<copy todir="${Project.RootPath}\Scripts\" overwrite="true">
 		      			<fileset basedir="${LocalScriptsPath}">
 		        			<include name="Common.*" />
+		        			<include name="*.bat" />
 		      			</fileset>
 		    		</copy>
 		    </if>

@@ -103,6 +103,17 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
         	set { pathVariation = value; }
         }
 
+        /// <summary>
+        /// Gets/sets the flexible settings collection.
+        /// </summary>
+        [XmlIgnore]
+        IConfigurationDictionary IAppConfig.Settings
+        {
+            get {
+            	return this.Settings; }
+        	set { this.Settings = new ConfigurationDictionary(value); }
+        }
+        
         private ConfigurationDictionary settings = new ConfigurationDictionary();
         /// <summary>
         /// Gets/sets the flexible settings collection.

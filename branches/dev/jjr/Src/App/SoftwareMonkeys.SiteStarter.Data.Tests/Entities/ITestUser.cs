@@ -1,14 +1,13 @@
 using System;
-using System.Data;
-using System.Configuration;
+using SoftwareMonkeys.SiteStarter.Entities;
 
-namespace SoftwareMonkeys.SiteStarter.Entities
+namespace SoftwareMonkeys.SiteStarter.Data.Tests.Entities
 {
     /// <summary>
     /// Defines the interface for a user in the application.
     /// </summary>
     [DataStore("Users")]
-    public interface IUser : IEntity
+    public interface ITestUser : IEntity
     {
         string Name { get; }
         string Username { get;set; }
@@ -16,11 +15,6 @@ namespace SoftwareMonkeys.SiteStarter.Entities
         string Email { get;set;}
         string FirstName { get;set; }
         string LastName { get;set; }
-        IUserRole[] Roles { get;set; }
-        Guid[] RoleIDs { get;set; }
-        
-        void AddRole(IUserRole role);
-        void RemoveRole(IUserRole role);
-		//UserPermission[] Permissions { get;set; }
+        Collection<ITestRole> Roles { get;set; }
     }
 }

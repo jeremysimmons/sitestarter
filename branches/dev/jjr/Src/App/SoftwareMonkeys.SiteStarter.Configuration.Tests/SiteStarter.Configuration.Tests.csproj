@@ -48,18 +48,19 @@
       <Project>{4B83307F-8307-43EF-A176-8AB1CDA78264}</Project>
       <Name>SiteStarter.Configuration</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Contracts\SiteStarter.Contracts.csproj">
+      <Project>737DFD8E-BF43-4BA9-ABE6-25B2DC21800F</Project>
+      <Name>SiteStarter.Contracts</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Diagnostics\SiteStarter.Diagnostics.csproj">
       <Project>{C3626F0A-DFD4-4EF2-8755-3532DE3712A4}</Project>
       <Name>SiteStarter.Diagnostics</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Entities\SiteStarter.Entities.csproj">
-      <Project>{3609F512-9E15-41C7-95AF-D1B3E7F93562}</Project>
-      <Name>SiteStarter.Entities</Name>
     </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.State\SiteStarter.State.csproj">
       <Project>{34129651-3B9F-4A0D-AEBF-7DE2098DD98F}</Project>
       <Name>SiteStarter.State</Name>
     </ProjectReference>
+    <Compile Include="ConfigFactoryTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConfigTests.cs" />

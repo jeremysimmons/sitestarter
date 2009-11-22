@@ -3,6 +3,7 @@ using System.Data;
 using System.Configuration;
 using System.Xml.Serialization;
 using System.Collections.Generic;
+using SoftwareMonkeys.SiteStarter.Configuration;
 
 namespace SoftwareMonkeys.SiteStarter.Entities
 {
@@ -10,7 +11,6 @@ namespace SoftwareMonkeys.SiteStarter.Entities
     /// Represents a user in the application.
     /// </summary>
     [Serializable]
-	[DataStore("Users")]
     public class User : BaseEntity, IUser
     {
         private string firstName;
@@ -171,61 +171,48 @@ namespace SoftwareMonkeys.SiteStarter.Entities
             set { creationDate = value; }
         }
 
-        private Guid[] roleIDs = new Guid[] { };
-        /// <summary>
-        /// Gets/sets the IDs of the roles for this issue.
-        /// </summary>
-        [EntityIDReferences(
-           EntitiesPropertyName = "Roles",
-            MirrorName = "UserIDs",
-            IDsPropertyName = "RoleIDs")]
-        public virtual Guid[] RoleIDs
-        {
-            get
-            {
-                if (roles != null)
-                    return Collection<IUserRole>.GetIDs(roles);
-                return roleIDs;
-            }
-            set
-            {
-                roleIDs = value;
-                if (roleIDs == null || (roles != null && !roleIDs.Equals(Collection<IUserRole>.GetIDs(roles))))
-                    roles = null;
-            }
-        }
-
-        private IUserRole[] roles = new UserRole[] { };
+        [NonSerialized]
+        private Collection<UserRole> roles;
         /// <summary>
         /// Gets/sets the roles to this issue.
         /// </summary>
-        [EntityReferences(ExcludeFromDataStore=true,
-            MirrorName="Users",
-            EntitiesPropertyName="Roles",
-            IDsPropertyName="RoleIDs")]
-        [XmlIgnore()]
-        public virtual IUserRole[] Roles
+        [Reference]
+        public Collection<UserRole> Roles
         {
-            get { return roles; }
+            get {
+        		if (roles == null)
+        			roles = new Collection<UserRole>();
+        		return roles; }
             set
             {
-                roles = value;
+            	roles = value;
             }
         }
 
+        [Reference]
+        ICollection<IUserRole> IUser.Roles
+        {
+        	get { return (roles == null
+        	              ? new Collection<IUserRole>()
+        	              : new Collection<IUserRole>(roles.ToArray())); }
+        	set { roles = (value == null
+        	               ? new Collection<UserRole>()
+        	               : new Collection<UserRole>(value.ToArray())); }
+        }
 
         /// <summary>
         /// Empty constructor.
         /// </summary>
         public User()
         {
+        	//roles.SourceEntity = this;
         }
 
         /// <summary>
         /// Sets the ID of the user.
         /// </summary>
         /// <param name="userID">The ID of the user.</param>
-        public User(Guid userID)
+        public User(Guid userID) : this()
         {
             ID = userID;
         }
@@ -235,13 +222,42 @@ namespace SoftwareMonkeys.SiteStarter.Entities
         /// </summary>
         /// <param name="username">The username of the user.</param>
         /// <param name="password">The password of the user.</param>
-        public User(string username, string password)
+        public User(string username, string password) : this()
         {
             Username = username;
             Password = password;
         }
+        
+        /// <summary>
+        /// Registers the entity in the system.
+        /// </summary>
+        /// <param name="config">The mapping configuration object to add the settings to.</param>
+        static public void RegisterType()
+        {
+			MappingItem item = new MappingItem("User");
+			item.Settings.Add("DataStoreName", "Users");
+			item.Settings.Add("IsEntity", true);
+			item.Settings.Add("FullName", typeof(User).FullName);
+			item.Settings.Add("AssemblyName", typeof(User).Assembly.FullName);
+			
+			
+			MappingItem item2 = new MappingItem("IUser");
+			item2.Settings.Add("Alias", "User");
+			
+			Config.Mappings.AddItem(item);
+			Config.Mappings.AddItem(item2);
+        }
+        
+        /// <summary>
+        /// Deregisters the entity from the system.
+        /// </summary>
+        /// <param name="config">The mapping configuration object to remove the settings from.</param>
+        static public void DeregisterType()
+        {
+        	throw new NotImplementedException();
+        }
 
-        public void AddRole(IUserRole role)
+      /*  public void AddRole(IUserRole role)
         {
             if (roles != null)
             {
@@ -293,6 +309,6 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 
                 RoleIDs = (Guid[])list.ToArray();
             }
-        }
+        }*/
     }
 }

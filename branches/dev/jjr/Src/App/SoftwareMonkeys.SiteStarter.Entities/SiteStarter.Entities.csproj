@@ -28,6 +28,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NLog">
+      <HintPath>..\..\..\..\WorkHub2\Lib\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework, Version=2.2.9.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\3rdParty\dlls-2-0\nunit.framework.dll</HintPath>
@@ -40,20 +43,18 @@
   <ItemGroup>
     <Compile Include="BaseEntityReferenceAttribute.cs" />
     <Compile Include="BaseEntity.cs" />
-    <Compile Include="IEntity.cs" />
-    <Compile Include="IUser.cs" />
-    <Compile Include="IUserPermission.cs" />
-    <Compile Include="IVirtualServer.cs" />
-    <Compile Include="VirtualServer.cs" />
     <Compile Include="DataStoreAttribute.cs" />
-    <Compile Include="EntityCollection.cs" />
+    <Compile Include="EntitiesUtilities.cs" />
     <Compile Include="EntityEventArgs.cs" />
+    <Compile Include="EntityIDReferenceCollection.cs" />
+    <Compile Include="EntityPointer.cs" />
+    <Compile Include="EntityReference.cs" />
+    <Compile Include="EntityReferenceCollection.cs" />
+    <Compile Include="EntityIDReference.cs" />
+    <Compile Include="ReferenceAttribute.cs" />
+    <Compile Include="VirtualServer.cs" />
+    <Compile Include="EntityCollection.cs" />
     <Compile Include="EntityEventHandler.cs" />
-    <Compile Include="EntityIDReferenceAttribute.cs" />
-    <Compile Include="EntityIDReferencesAttribute.cs" />
-    <Compile Include="EntityReferenceAttribute.cs" />
-    <Compile Include="EntityReferencesAttribute.cs" />
-    <Compile Include="IUserRole.cs" />
     <Compile Include="Keyword.cs" />
     <Compile Include="SortDirection.cs" />
     <Compile Include="User.cs" />
@@ -64,6 +65,14 @@
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration\SiteStarter.Configuration.csproj">
       <Project>{4B83307F-8307-43EF-A176-8AB1CDA78264}</Project>
       <Name>SiteStarter.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Contracts\SiteStarter.Contracts.csproj">
+      <Project>737DFD8E-BF43-4BA9-ABE6-25B2DC21800F</Project>
+      <Name>SiteStarter.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Diagnostics\SiteStarter.Diagnostics.csproj">
+      <Project>{C3626F0A-DFD4-4EF2-8755-3532DE3712A4}</Project>
+      <Name>SiteStarter.Diagnostics</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -51,7 +51,7 @@
         
 
 	        // Update the config
-	        SoftwareMonkeys.SiteStarter.Configuration.ConfigFactory.SaveConfig(Request.MapPath(Request.ApplicationPath + "/App_Data"), config, WebUtilities.GetLocationVariation(Request.Url));
+	        SoftwareMonkeys.SiteStarter.Configuration.ConfigFactory<AppConfig>.SaveConfig(Request.MapPath(Request.ApplicationPath + "/App_Data"), config, WebUtilities.GetLocationVariation(Request.Url));
 	
 			Config.Application = config;
 	

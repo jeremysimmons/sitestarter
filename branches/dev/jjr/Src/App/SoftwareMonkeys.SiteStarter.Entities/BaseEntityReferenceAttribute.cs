@@ -76,7 +76,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
             set { mirrorName = value; }
         }
         
-        private Type mirrorType;
+        /*private Type mirrorType;
         /// <summary>
         /// Gets/sets the type of the mirror propery.
         /// </summary>
@@ -84,6 +84,17 @@ namespace SoftwareMonkeys.SiteStarter.Entities
         {
             get { return mirrorType; }
             set { mirrorType = value; }
+        }*/
+        
+                
+        private string referenceTypeName = String.Empty;
+        /// <summary>
+        /// Gets/sets the short name of the mirror type.
+        /// </summary>
+        public string ReferenceTypeName
+        {
+            get { return referenceTypeName; }
+            set { referenceTypeName = value; }
         }
         
         private Type entitiesPropertyType;

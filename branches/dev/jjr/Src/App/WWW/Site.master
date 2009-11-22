@@ -7,7 +7,7 @@
 <script runat="server">
 private void Page_Load(object sender, EventArgs e)
 {
-	MenuSource.DataBind();
+		MenuSource.DataBind();
 }
 
 private string GetMenuDataFile()

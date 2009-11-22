@@ -107,6 +107,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 
 		public void OpenServer()
 		{
+			Db4oFactory.Configure().ActivationDepth(2);
+			
 			string fileName = Name;
 
 			string prefix = (string)StateAccess.State.GetSession("VirtualServerID");
@@ -162,159 +164,134 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 
 		#endregion
 
-		public IEntity[] PreSave(IEntity entity)
+		public void PreSave(IEntity entity, out IEntity[] entitiesToUpdate, out IEntity[] entitiesToDelete)
 		{
-			List<IEntity> toSave = new List<IEntity>();
-
-			if (entity != null)
+			List<IEntity> toUpdate = new List<IEntity>();
+			List<IEntity> toDelete = new List<IEntity>();
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Preparing entity for saving: " + entity.GetType().ToString(), NLog.LogLevel.Debug))
 			{
-				DataUtilities.TransferReferenceIDs(entity);
-
-				// Loop through all the properties on the entity class
-				foreach (PropertyInfo property in entity.GetType().GetProperties())
+				if (entity != null)
 				{
-					// Get the custom attributes
-					object[] attributes = (object[])property.GetCustomAttributes(true);
-
-					// Loop through all the attributes
-					foreach (object attribute in attributes)
+					
+					foreach (EntityIDReference reference in EntitiesUtilities.GetRemovedReferenceIDs(entity))
 					{
-						if (attribute is BaseEntityReferenceAttribute)
-						{
-							BaseEntityReferenceAttribute reference = (BaseEntityReferenceAttribute)attribute;
-
-							// TODO: IDs should be saved even when ExcludeFromDataStore=true
-							// if (!reference.ExcludeFromDataStore)
-							// {
-							// Get the referenced entities from the property
-							object referenceValue = property.GetValue(entity, null);
-
-							if (referenceValue != null)
-							{
-								// If the property type is an entity array
-								if (referenceValue is IEntity[])
-								{
-									toSave.AddRange(PreSaveEntitiesReference(entity, property, reference));
-								}
-								// Otherwise the type is a Guid array
-								else if (referenceValue is Guid[])
-								{
-									toSave.AddRange(PreSaveIDsReference(entity, property, reference));
-								}
-								// If the property type is an entity
-								else if (referenceValue is IEntity)
-								{
-									toSave.AddRange(PreSaveEntityReference(entity, property, reference));
-								}
-								else if (referenceValue is Guid)
-								{
-									toSave.AddRange(PreSaveIDReference(entity, property, reference));
-								}
-								else
-									throw new ArgumentException("entity", "The object types are invalid.");
-							}
-						}
+						toDelete.Add(reference);
 					}
+					
+					foreach (EntityIDReference reference in EntitiesUtilities.GetReferences(entity))
+					{
+						toUpdate.Add(reference.ToData());
+					}
+					
+					//  Clear all the references from the entity once they're ready to be saved separately
+					/*foreach (PropertyInfo property in entity.GetType().GetProperties())
+					{
+						if (EntitiesUtilities.IsReference(entity, property.Name, property.PropertyType))
+						{
+							Reflector.SetPropertyValue(entity, property.Name, null);
+						}
+					}*/
 				}
-
-				DataUtilities.ApplyExclusions(entity);
 			}
-
-			return (IEntity[])toSave.ToArray();
+			
+			entitiesToUpdate = toUpdate.ToArray();
+			entitiesToDelete = toDelete.ToArray();
 		}
-
+		
 		public void Save(IEntity entity)
 		{
-			IEntity[] toUpdate = PreSave(entity);
+			IEntity[] toUpdate = new IEntity[]{};
+			IEntity[] toDelete = new IEntity[]{};
+			
+			PreSave(entity, out toUpdate, out toDelete);
 
-			foreach (object entityToUpdate in toUpdate)
+			// Update any entities that were modified (eg. references)
+			foreach (IEntity entityToUpdate in toUpdate)
 			{
-				DataAccess.Data.Stores[entityToUpdate.GetType()].Update((IEntity)entityToUpdate);
+				DataAccess.Data.Stores[entityToUpdate].Update((IEntity)entityToUpdate);
 			}
+			
+			// Not necessary for saving
+			// Delete any entities that are obsolete (eg. references)
+			//foreach (IEntity entityToDelete in toDelete)
+			//{
+			//	DataAccess.Data.Stores[entityToDelete].Delete((IEntity)entityToDelete);
+			//}
+
 
 			if (entity != null)
 			{
+				
+				// Save the entity
 				ObjectContainer.Store(entity);
 				ObjectContainer.Commit();
 			}
 		}
 
-		public IEntity[] PreUpdate(IEntity entity)
+		public void PreUpdate(IEntity entity, out IEntity[] entitiesToUpdate, out IEntity[] entitiesToDelete)
 		{
-			System.Diagnostics.Trace.WriteLine(entity.GetType() + ": " + entity.ToString(), "Db4oHelper.Update");
-
 			List<IEntity> toUpdate = new List<IEntity>();
-
-			if (entity != null)
+			List<IEntity> toDelete = new List<IEntity>();
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Preparting entity to be updated.", NLog.LogLevel.Debug))
 			{
-
-				DataUtilities.TransferReferenceIDs(entity);
-
-				// Loop through all the properties on the entity class
-				foreach (PropertyInfo property in entity.GetType().GetProperties())
+				AppLogger.Debug("Entity type: " + entity.GetType().ToString());
+				AppLogger.Debug("Entity ID : " + entity.ID);
+				
+				if (entity != null)
 				{
-					// Get the custom attributes
-					object[] attributes = (object[])property.GetCustomAttributes(true);
+					EntityReferenceCollection latestReferences = EntitiesUtilities.GetReferences(entity);
 					
-					// Loop through all the attributes
-					foreach (object attribute in attributes)
+					// Delete the old references
+					foreach (EntityIDReference reference in DataAccess.Data.GetObsoleteReferences(entity, new Collection<IEntity>(latestReferences.GetReferencedEntities(entity)).IDs))
 					{
-						if (attribute is BaseEntityReferenceAttribute)
-						{
-							BaseEntityReferenceAttribute reference = (BaseEntityReferenceAttribute)attribute;
-							
-							// TODO: Check if needed
-							// if (!reference.ExcludeFromDataStore)
-							//  {
-							// Get the referenced entities from the property
-							object referenceValue = property.GetValue(entity, null);
-							
-							if (referenceValue != null)
-							{
-								// If the property type is an entity array
-								if (referenceValue is IEntity[])
-								{
-									toUpdate.AddRange(PreUpdateEntitiesReference(entity, property, reference));
-								}
-								// Otherwise the type is a Guid array
-								else if (referenceValue is Guid[])
-								{
-									toUpdate.AddRange(PreUpdateIDsReference(entity, property, reference));
-								}
-								// If the property type is an entity
-								else if (referenceValue is IEntity)
-								{
-									toUpdate.AddRange(PreUpdateEntityReference(entity, property, reference));
-								}
-								// If the property type is an entity
-								else if (referenceValue is Guid)
-								{
-									toUpdate.AddRange(PreUpdateIDReference(entity, property, reference));
-								}
-							}
-							// }
-						}
+						toDelete.Add(reference);
 					}
+					
+					AppLogger.Debug("# to delete: " + toDelete.Count);
+					
+					foreach (EntityIDReference reference in latestReferences)
+					{
+						Data.DataAccess.Data.ActivateReference((EntityReference)reference);
+						toUpdate.Add(reference.ToData());
+					}
+					
+					AppLogger.Debug("# to update: " + toUpdate.Count);
+					
+					//  Clear all the references from the entity once they're ready to be saved separately
+					/*foreach (PropertyInfo property in entity.GetType().GetProperties())
+				{
+					if (EntitiesUtilities.IsReference(entity, property.Name, property.PropertyType))
+					{
+						Reflector.SetPropertyValue(entity, property.Name, null);
+					}
+				}*/
 				}
-
-
-				DataUtilities.ApplyExclusions(entity);
+				
+				entitiesToUpdate = toUpdate.ToArray();
+				entitiesToDelete = toDelete.ToArray();
 			}
-
-			return (IEntity[])toUpdate.ToArray();
 		}
 
 		public void Update(IEntity entity)
 		{
+			IEntity[] toUpdate = new IEntity[]{};
+			IEntity[] toDelete = new IEntity[]{};
+			
 			// Preupdate must be called to ensure all references are correctly stored
-			IEntity[] toUpdate = PreUpdate(entity);
-
-			// TODO: Update entities
+			PreUpdate(entity, out toUpdate, out toDelete);
+			
+			// Update any entities that were modified (eg. references)
 			foreach (IEntity entityToUpdate in toUpdate)
 			{
-				//ApplyExclusions(entityToUpdate);
-
-				DataAccess.Data.Stores[entityToUpdate.GetType()].Update(entityToUpdate);
+				DataAccess.Data.Stores[entityToUpdate].Update((IEntity)entityToUpdate);
+			}
+			
+			// Delete any entities that are obsolete (eg. references)
+			foreach (IEntity entityToDelete in toDelete)
+			{
+				DataAccess.Data.Stores[entityToDelete].Delete((IEntity)entityToDelete);
 			}
 
 			if (entity != null)
@@ -325,69 +302,26 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			}
 		}
 
-		public IEntity[] PreDelete(IEntity entity)
+		public void PreDelete(IEntity entity, out IEntity[] entitiesToUpdate, out IEntity[] entitiesToDelete)
 		{
 
 			List<IEntity> toUpdate = new List<IEntity>();
+			List<IEntity> toDelete = new List<IEntity>();
 
 			if (entity != null)
 			{
-
-				DataUtilities.TransferReferenceIDs(entity);
-
-				System.Diagnostics.Trace.WriteLine(entity.GetType() + ": " + entity.ToString(), "Db4oHelper.Delete");
-
-
-				// Loop through all the properties on the entity class
-				foreach (PropertyInfo property in entity.GetType().GetProperties())
+				EntityReferenceCollection latestReferences = EntitiesUtilities.GetReferences(entity);
+				
+				// Delete all references
+				foreach (EntityIDReference reference in DataAccess.Data.GetObsoleteReferences(entity, new Guid[]  {}))
 				{
-					// Get the custom attributes
-					object[] attributes = (object[])property.GetCustomAttributes(true);
-
-					// Loop through all the attributes
-					foreach (object attribute in attributes)
-					{
-						if (attribute is BaseEntityReferenceAttribute)
-						{
-							BaseEntityReferenceAttribute reference = (BaseEntityReferenceAttribute)attribute;
-
-							// TODO: IDs should be saved even when ExcludeFromDataStore=true
-							// if (!reference.ExcludeFromDataStore)
-							// {
-							// Get the referenced entities from the property
-							object referenceValue = property.GetValue(entity, null);
-
-							if (referenceValue != null)
-							{
-								// If the property type is an entity array
-								if (referenceValue is IEntity[])
-								{
-									toUpdate.AddRange(PreDeleteEntitiesReference(entity, property, reference));
-								}
-								// Otherwise the type is a Guid array
-								else if (referenceValue is Guid[])
-								{
-									toUpdate.AddRange(PreDeleteIDsReference(entity, property, reference));
-								}
-								// If the property type is an entity
-								else if (referenceValue is IEntity)
-								{
-									toUpdate.AddRange(PreDeleteEntityReference(entity, property, reference));
-								}
-								// If the property type is an entity
-								else if (referenceValue is Guid)
-								{
-									toUpdate.AddRange(PreDeleteIDReference(entity, property, reference));
-								}
-							}
-						}
-					}
+					toDelete.Add(reference);
 				}
-
-				DataUtilities.ApplyExclusions(entity);
+				
 			}
-
-			return (IEntity[])toUpdate.ToArray();
+			
+			entitiesToUpdate = toUpdate.ToArray();
+			entitiesToDelete = toDelete.ToArray();
 		}
 
 		/// <summary>
@@ -396,14 +330,22 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <param name="entity"></param>
 		public void Delete(IEntity entity)
 		{
-			// Preupdate must be called to ensure all references are correctly stored
-			IEntity[] toUpdate = PreDelete(entity);
+			IEntity[] toUpdate = new IEntity[]{};
+			IEntity[] toDelete = new IEntity[]{};
+			
+			// Preupdate must be called to ensure all references are correctly managed
+			PreDelete(entity, out toUpdate, out toDelete);
 
-			// Update all modified entities
+			// Update any entities that were modified (eg. references)
 			foreach (IEntity entityToUpdate in toUpdate)
 			{
-				//ApplyExclusions(entityToUpdate);
-				DataAccess.Data.Stores[entityToUpdate.GetType()].Update(entityToUpdate);
+				DataAccess.Data.Stores[entityToUpdate].Update((IEntity)entityToUpdate);
+			}
+			
+			// Delete any entities that are obsolete (eg. references)
+			foreach (IEntity entityToDelete in toDelete)
+			{
+				DataAccess.Data.Stores[entityToDelete].Delete((IEntity)entityToDelete);
 			}
 
 			// Delete the entity
@@ -466,12 +408,22 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <param name="type">The type of entity to retrieve.</param>
 		/// <param name="parameters">The parameters to query with.</param>
 		/// <returns></returns>
-		public IEntity GetEntity(Type type, IDictionary<string, object> parameters)
+		public IEntity GetEntityByTypeAndProperties(Type type, IDictionary<string, object> parameters)
 		{
-			return (IEntity)Reflector.InvokeGenericMethod(DataAccess.Data, // Source object
-			                                              "GetEntity", // Method name
-			                                              new Type[] {type}, // Generic types
-			                                              new object[] {parameters}); // Method arguments);
+			//return (IEntity)Reflector.InvokeGenericMethod(DataAccess.Data, // Source object
+			//                                              "GetEntity", // Method name
+			//                                              new Type[] {type}, // Generic types
+			//                                              new object[] {parameters}); // Method arguments);
+			
+			IEntity[] entities = GetEntitiesByTypeAndProperties(type, parameters);
+			if (entities == null || entities.Length == 0)
+			{
+				return null;
+			}
+			else
+			{
+				return entities[0];
+			}
 		}
 		
 		
@@ -484,9 +436,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		public IEntity[] GetEntities(Type type, Guid[] ids)
 		{
 			return (IEntity[])Reflector.InvokeGenericMethod(DataAccess.Data, // Source object
-			                                              "GetEntities", // Method name
-			                                              new Type[] {type}, // Generic types
-			                                              new object[] {ids}); // Method arguments);
+			                                                "GetEntities", // Method name
+			                                                new Type[] {type}, // Generic types
+			                                                new object[] {ids}); // Method arguments);
 		}
 		
 		/// <summary>
@@ -511,12 +463,34 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <param name="propertyName">Name of the property to match.</param>
 		/// <param name="propertyValue">The value of the property to match.</param>
 		/// <returns></returns>
-		public IEntity GetEntity(Type type, string propertyName, object propertyValue)
+		public IEntity GetEntityByTypeAndProperty(Type type, string propertyName, object propertyValue)
 		{
-			return (IEntity)Reflector.InvokeGenericMethod(DataAccess.Data, // Source object
-			                                              "GetEntity", // Method name
-			                                              new Type[] {type}, // Generic types
-			                                              new object[] {propertyName, propertyValue}); // Method arguments);
+			IEntity entity = null;
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the entity matching the specified type and property value.", NLog.LogLevel.Debug))
+			{
+				/*entity = (IEntity)Reflector.InvokeGenericMethod(DataAccess.Data, // Source object
+				                                                "GetEntity", // Method name
+				                                                new Type[] {type}, // Generic types
+				                                                new object[] {propertyName, propertyValue}); // Method arguments);*/
+				
+				Dictionary<string, object> parameters = new Dictionary<string, object>();
+				parameters.Add(propertyName, propertyValue);
+				
+				entity = GetEntityByTypeAndProperties(type, parameters);
+				
+				if (entity == null)
+					AppLogger.Debug("Retrieved entity: [null]");
+				else
+				{
+					AppLogger.Debug("Retrieved entity ID: " + entity.ID);
+					AppLogger.Debug("Retrieved entity type: " + entity.GetType().ToString());
+					AppLogger.Debug("Retrieved entity: " + entity.ToString());
+				}
+				
+			}
+			
+			return entity;
 		}
 		
 		/// <summary>
@@ -543,12 +517,39 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <param name="propertyName">Name of the property to match.</param>
 		/// <param name="propertyValue">The value of the property to match.</param>
 		/// <returns>The matching entities.</returns>
-		IEntity[] IDataStore.GetEntities(Type type, string propertyName, object propertyValue)
+		IEntity[] IDataStore.GetEntitiesByTypeAndProperty(Type type, string propertyName, object propertyValue)
 		{
-			return (IEntity[])Reflector.InvokeGenericMethod(DataAccess.Data, // Source object
-			                                              "GetEntities", // Method name
-			                                              new Type[] {type}, // Generic types
-			                                              new object[] {propertyName, propertyValue}); // Method arguments);
+			if (type == null)
+				throw new ArgumentNullException("type");
+			
+			if (propertyName == null || propertyName == String.Empty)
+				throw new ArgumentNullException("propertyName");
+			
+			List<IEntity> entities = new List<IEntity>();
+			
+			Dictionary<string, object> parameters = new Dictionary<string, object>();
+			
+			parameters.Add(propertyName, propertyValue);
+			
+			entities.AddRange(GetEntitiesByTypeAndProperties(type, parameters));
+			
+			/*IList<IEntity> results = ObjectContainer.Query<IEntity>(delegate(IEntity e)
+			                                            {
+			                                            	if (e.GetType() == typeof(IEntity))
+			                                            	{
+			                                            		PropertyInfo property = e.GetType().GetProperty(propertyName);
+			                                            		object value = property.GetValue(e, null);
+			                                            		
+			                                            		if (value == propertyValue || value.Equals(propertyValue))
+			                                            			return true;
+			                                            	}
+			                                            	
+			                                            	return false;
+			                                            });
+			
+			entities.AddRange(results);*/
+			
+			return (IEntity[])entities.ToArray();
 		}
 		
 		/// <summary>
@@ -586,12 +587,55 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <param name="type">The type of entity to retrieve.</param>
 		/// <param name="parameters">The parameters to query with.</param>
 		/// <returns></returns>
-		public IEntity[] GetEntities(Type type, IDictionary<string, object> parameters)
+		public IEntity[] GetEntitiesByTypeAndProperties(Type type, IDictionary<string, object> parameters)
 		{
-			return (IEntity[])Reflector.InvokeGenericMethod(DataAccess.Data, // Source object
+			/*return (IEntity[])Reflector.InvokeGenericMethod(DataAccess.Data, // Source object
 			                                                "GetEntities", // Method name
 			                                                new Type[] {type}, // Generic types
-			                                                new object[] {parameters}); // Method arguments);
+			                                                new object[] {parameters}); // Method arguments);*/
+			
+			List<IEntity> entities = null;
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Querying the data store based on the provided type and parameters.", NLog.LogLevel.Debug))
+			{
+				
+				if (parameters == null)
+					throw new ArgumentNullException("parameters");
+
+				entities = new List<IEntity>(ObjectContainer.Query<IEntity>(delegate(IEntity e)
+				                                                            {
+				                                                            	AppLogger.Debug("Checking type " + e.GetType().ToString());
+				                                                            	
+				                                                            	bool matches = true;
+				                                                            	foreach (string key in parameters.Keys)
+				                                                            	{
+				                                                            		AppLogger.Debug("Checking parameter '" + key + "' for value '" + parameters[key].ToString() + "'");
+				                                                            		
+				                                                            		PropertyInfo property = e.GetType().GetProperty(key, parameters[key].GetType());
+				                                                            		if (property == null)
+				                                                            			throw new InvalidOperationException("The property '" + key + "' was not found on the type " + e.GetType().ToString());
+				                                                            		else
+				                                                            		{
+				                                                            			object value = property.GetValue(e, null);
+				                                                            			
+				                                                            			AppLogger.Debug("Actual value is: " + (value == null ? "null" : value.ToString()));
+				                                                            			
+				                                                            			if (parameters[key] != value && parameters[key] != null && !parameters[key].Equals(value))
+				                                                            			{
+				                                                            				AppLogger.Debug("Parameter match failed for '" + key + "'.");
+				                                                            				matches = false;
+				                                                            			}
+				                                                            		}
+				                                                            	}
+				                                                            	AppLogger.Debug("Matches: " + matches.ToString());
+				                                                            	return matches;
+				                                                            }));
+
+
+				
+			}
+
+			return (IEntity[])entities.ToArray();
 		}
 
 		
@@ -607,7 +651,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			Dictionary<string, object> parameters = new Dictionary<string, object>();
 			parameters.Add(propertyName, propertyValue);
 			
-			return (T[])GetEntities<T>(parameters);
+			return GetEntities<T>(parameters);
 		}
 		
 		/// <summary>
@@ -624,6 +668,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			using (LogGroup logGroup = AppLogger.StartGroup("Querying the data store based on the provided parameters.", NLog.LogLevel.Debug))
 			{
+				
+				if (parameters == null)
+					throw new ArgumentNullException("parameters");
 
 				entities = new List<T>(ObjectContainer.Query<T>(delegate(T e)
 				                                                {
@@ -655,7 +702,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				                                                }));
 
 
-		
+				
 			}
 
 			return (T[])entities.ToArray();
@@ -670,11 +717,58 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		public T GetEntity<T>(IDictionary<string, object> parameters)
 			where T : IEntity
 		{
-			T[] entities = GetEntities<T>(parameters);
-			if (entities == null || entities.Length == 0)
-				return default(T);
-			else
-				return entities[0];
+			T entity = default(T);
+			
+			using (LogGroup logGroup= AppLogger.StartGroup("Retrieving the entity matching the provided parameters.", NLog.LogLevel.Debug))
+			{
+				T[] entities = GetEntities<T>(parameters);
+				if (entities == null || entities.Length == 0)
+					entity = default(T);
+				else
+					entity = entities[0];
+				
+				if (entity == null)
+					AppLogger.Debug("Retrieved entity: [null]");
+				else
+				{
+					AppLogger.Debug("Retrieved entity ID: " + entity.ID);
+					AppLogger.Debug("Retrieved entity type: " + entity.GetType().ToString());
+					AppLogger.Debug("Retrieved entity: " + entity.ToString());
+				}
+			}
+			
+			return (T)entity;
+		}
+		
+		
+		/// <summary>
+		/// Retrieves the entity of the specified type matching the specified values.
+		/// </summary>
+		/// <returns></returns>
+		public T GetEntity<T>(string propertyName, object propertyValue)
+			where T : IEntity
+		{
+			T entity = default(T);
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the entity matching the specified property value.", NLog.LogLevel.Debug))
+			{
+				
+				IDictionary<string, object> parameters = new Dictionary<string, object>();
+				parameters.Add(propertyName, propertyValue);
+				
+				entity = GetEntity<T>(parameters);
+				
+				if (entity == null)
+					AppLogger.Debug("Retrieved entity: [null]");
+				else
+				{
+					AppLogger.Debug("Retrieved entity ID: " + entity.ID);
+					AppLogger.Debug("Retrieved entity type: " + entity.GetType().ToString());
+					AppLogger.Debug("Retrieved entity: " + entity.ToString());
+				}
+			}
+			
+			return entity;
 		}
 
 		/* /// <summary>
@@ -722,6 +816,42 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 
 			return (IEntity[])list.ToArray(typeof(IEntity));
 		}
+		
+		/// <summary>
+		/// Retrieves the specified page of objects from the data store.
+		/// </summary>
+		/// <param name="type">The type of entities to retrieve.</param>
+		/// <param name="pageIndex">The index of the page to retrieve.</param>
+		/// <param name="pageSize">The size of each page.</param>
+		/// <param name="sortExpression">The sort expression to apply before retrieving the page.</param>
+		/// <param name="totalObjects">The total number of objects found.</param>
+		/// <returns>An array of the objects retrieved.</returns>
+		public IEntity[] GetEntitiesPage(Type type, int pageIndex, int pageSize, string sortExpression, out int totalObjects)
+		{
+			ActiveQuery = ObjectContainer.Query();
+			ActiveQuery.Constrain(type);
+
+			ApplySorting(sortExpression);
+
+			IObjectSet os = ActiveQuery.Execute();
+
+			int i = 0;
+			//        os.Reset();
+
+			ArrayList page = new ArrayList();
+			while (os.HasNext())
+			{
+				if ((i >= pageIndex * pageSize) && (i < (pageIndex + 1) * pageSize))
+				{
+					page.Add(os.Next());
+				}
+				else
+					os.Next();
+				i++;
+			}
+			totalObjects = i;
+			return (IEntity[])page.ToArray(type);
+		}
 
 		/// <summary>
 		/// Retrieves the specified page of objects from the data store.
@@ -731,50 +861,28 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <param name="sortExpression">The sort expression to apply before retrieving the page.</param>
 		/// <param name="totalObjects">The total number of objects found.</param>
 		/// <returns>An array of the objects retrieved.</returns>
-		public T[] GetPage<T>(int pageIndex, int pageSize, string sortExpression, out int totalObjects)
+		public T[] GetEntitiesPage<T>(int pageIndex, int pageSize, string sortExpression, out int totalObjects)
 			where T : IEntity
 		{
-			ActiveQuery = ObjectContainer.Query();
-			ActiveQuery.Constrain(typeof(T));
-
-			ApplySorting(sortExpression);
-
-			IObjectSet os = ActiveQuery.Execute();
-
-			int i = 0;
-			//        os.Reset();
-
-			ArrayList page = new ArrayList();
-			while (os.HasNext())
-			{
-				if ((i >= pageIndex * pageSize) && (i < (pageIndex + 1) * pageSize))
-				{
-					page.Add(os.Next());
-				}
-				else
-					os.Next();
-				i++;
-			}
-			totalObjects = i;
-			return (T[])page.ToArray(typeof(T));
+			return Collection<T>.ConvertAll(GetEntitiesPage(typeof(T), pageIndex, pageSize, sortExpression, out totalObjects));
 		}
-
+		
 		/// <summary>
-		/// Retrieves the specified page of objects from the provided IObjectSet.
+		/// Retrieves the specified page of objects from the data store.
 		/// </summary>
-		/// <param name="fieldName">The name of the field to query for.</param>
-		/// <param name="propertyValue">The value of the field to query for.</param>
+		/// <param name="type">The type of entities to retrieve.</param>
+		/// <param name="propertyName">The name of the property to query for.</param>
+		/// <param name="propertyValue">The value of the property to query for.</param>
 		/// <param name="pageIndex">The index of the page to retrieve.</param>
 		/// <param name="pageSize">The size of each page.</param>
 		/// <param name="sortExpression">The sort expression to apply before retrieving the page.</param>
 		/// <param name="totalObjects">The total number of objects found.</param>
 		/// <returns>An array of the objects retrieved.</returns>
-		public T[] GetPage<T>(string fieldName, object propertyValue, int pageIndex, int pageSize, string sortExpression, out int totalObjects)
-			where T : IEntity
+		public IEntity[] GetEntitiesPage(Type type, string propertyName, object propertyValue, int pageIndex, int pageSize, string sortExpression, out int totalObjects)
 		{
 			ActiveQuery = ObjectContainer.Query();
-			ActiveQuery.Constrain(typeof(T));
-			ActiveQuery.Descend(fieldName).Constrain(propertyValue);
+			ActiveQuery.Constrain(type);
+			ActiveQuery.Descend(propertyName).Constrain(propertyValue);
 
 			ApplySorting(sortExpression);
 
@@ -795,7 +903,23 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				i++;
 			}
 			totalObjects = i;
-			return (T[])page.ToArray(typeof(T));
+			return (IEntity[])page.ToArray(type);
+		}
+
+		/// <summary>
+		/// Retrieves the specified page of objects from the provided IObjectSet.
+		/// </summary>
+		/// <param name="propertyName">The name of the property to query for.</param>
+		/// <param name="propertyValue">The value of the property to query for.</param>
+		/// <param name="pageIndex">The index of the page to retrieve.</param>
+		/// <param name="pageSize">The size of each page.</param>
+		/// <param name="sortExpression">The sort expression to apply before retrieving the page.</param>
+		/// <param name="totalObjects">The total number of objects found.</param>
+		/// <returns>An array of the objects retrieved.</returns>
+		public T[] GetEntitiesPage<T>(string propertyName, object propertyValue, int pageIndex, int pageSize, string sortExpression, out int totalObjects)
+			where T : IEntity
+		{
+			return Collection<T>.ConvertAll(GetEntitiesPage(typeof(T), propertyName, propertyValue, pageIndex, pageSize, sortExpression, out totalObjects));
 		}
 
 		/// <summary>
@@ -860,7 +984,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 
 
 
-		/// <summary>
+		/*/// <summary>
 		/// Prepares the provided reference for update. Does NOT synchronise mirrors because that's done by the IDs references.
 		/// </summary>
 		/// <param name="entity"></param>
@@ -1008,22 +1132,22 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					
 					if (entitiesProperty == null)
 					{
-						throw new Exception("The entities property '" + attribute.EntitiesPropertyName + "' of type '" + attribute.EntitiesPropertyType.ToString() + "' could not be found on the type '" + type.ToString() + "'.");
+						throw new Exception("The entities property '" + attribute.EntitiesPropertyName + "' matching type '" + attribute.ReferenceTypeName + "' could not be found on the type '" + type.ToString() + "'.");
 					}
 
-					Type referenceEntityType = entitiesProperty.PropertyType.GetElementType();
+					Type referenceEntityType = DataUtilities.GetReferenceType(entity, property);
 					
 					if (attribute.MirrorName != String.Empty)
 					{
 						
-						PropertyInfo mirrorProperty = DataUtilities.GetMirrorProperty(entity, property);
+						//PropertyInfo mirrorProperty = DataUtilities.GetMirrorProperty(entity, property);
+						//
+						//if (mirrorProperty == null)
+						//	throw new Exception("Mirror property '" + attribute.MirrorName + "' not found on the type '" + referenceEntityType.ToString());
 						
-						if (mirrorProperty == null)
-							throw new Exception("Mirror property '" + attribute.MirrorName + "' not found on the type '" + referenceEntityType.ToString());
-						
-						AppLogger.Debug("Mirror property: " + mirrorProperty.Name);
-						AppLogger.Debug("Mirror property type: " + mirrorProperty.PropertyType);
-						AppLogger.Debug("Reference entity type: " + referenceEntityType.ToString());
+						//AppLogger.Debug("Mirror property: " + mirrorProperty.Name);
+						//AppLogger.Debug("Mirror property type: " + mirrorProperty.PropertyType);
+						//AppLogger.Debug("Reference entity type: " + referenceEntityType.ToString());
 						
 						toUpdate.Add(DataUtilities.SynchroniseReverseReferences(entity, property, DataAccess.Data.Stores[referenceEntityType].GetEntities(referenceEntityType, DataUtilities.GetReferenceIDs(entity, property)), DataAccess.Data.GetEntitiesContainingReverseReferences(entity, property)));
 						
@@ -1080,45 +1204,45 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				if (attribute.MirrorName != String.Empty)
 				{
 					toUpdate.Add(DataUtilities.SynchroniseReverseReferences(entity, property, DataAccess.Data.Stores[referenceEntityType].GetEntities(referenceEntityType, DataUtilities.GetReferenceIDs(entity, property)), DataAccess.Data.GetEntitiesContainingReverseReferences(entity, property)));
-					/*PropertyInfo mirrorProperty = null;
-                    if (referenceEntityType != null && attribute != null && attribute.MirrorName != null)
-                    {
-                        mirrorProperty = referenceEntityType.GetProperty(attribute.MirrorName);
-
-                        if (mirrorProperty == null)
-                            System.Diagnostics.Trace.WriteLine("Mirror property was specified but not found: '" + attribute.MirrorName + "' on " + referenceEntityType.ToString());
-
-                        if (reference != null && mirrorProperty != null)
-                        {
-                            object mirrorValue = mirrorProperty.GetValue(reference, null);
-
-                            // If the reference is already there then don't bother creating it
-                            if (mirrorProperty.PropertyType.Equals(typeof(Guid)))
-                            {
-                                if (mirrorValue == null || (Guid)mirrorValue != entity.ID)
-                                {
-                                    // Update the mirror references
-                                    toUpdate.Add(DataUtilities.AddReferences(reference, entity, DataUtilities.GetMirrorPropertyName(property)));
-
-                                    // Update the referenced entity
-                                    // TODO: Shouldn't be needed
-                                    //toUpdate.Add(r);
-                                }
-                            }
-                            else if (mirrorProperty.PropertyType.Equals(typeof(Guid[])))
-                            {
-                                if (mirrorValue == null || Array.IndexOf((Guid[])mirrorValue, entity.ID) == -1)
-                                {
-                                    // Update the mirror references
-                                    toUpdate.Add(DataUtilities.AddReferences(reference, entity, DataUtilities.GetMirrorPropertyName(property)));
-
-                                    // Update the referenced entity
-                                    // TODO: Shouldn't be needed
-                                    //toUpdate.Add(r);
-                                }
-                            }
-                        }
-                    }*/
+//					/*PropertyInfo mirrorProperty = null;
+					//                    if (referenceEntityType != null && attribute != null && attribute.MirrorName != null)
+					//                    {
+					//                        mirrorProperty = referenceEntityType.GetProperty(attribute.MirrorName);
+//
+					//                        if (mirrorProperty == null)
+					//                            System.Diagnostics.Trace.WriteLine("Mirror property was specified but not found: '" + attribute.MirrorName + "' on " + referenceEntityType.ToString());
+//
+					//                        if (reference != null && mirrorProperty != null)
+					//                        {
+					//                            object mirrorValue = mirrorProperty.GetValue(reference, null);
+//
+					//                            // If the reference is already there then don't bother creating it
+					//                            if (mirrorProperty.PropertyType.Equals(typeof(Guid)))
+					//                            {
+					//                                if (mirrorValue == null || (Guid)mirrorValue != entity.ID)
+					//                                {
+					//                                    // Update the mirror references
+					//                                    toUpdate.Add(DataUtilities.AddReferences(reference, entity, DataUtilities.GetMirrorPropertyName(property)));
+//
+					//                                    // Update the referenced entity
+					//                                    // TODO: Shouldn't be needed
+					//                                    //toUpdate.Add(r);
+					//                                }
+					//                            }
+					//                            else if (mirrorProperty.PropertyType.Equals(typeof(Guid[])))
+					//                            {
+					//                                if (mirrorValue == null || Array.IndexOf((Guid[])mirrorValue, entity.ID) == -1)
+					//                                {
+					//                                    // Update the mirror references
+					//                                    toUpdate.Add(DataUtilities.AddReferences(reference, entity, DataUtilities.GetMirrorPropertyName(property)));
+//
+					//                                    // Update the referenced entity
+					//                                    // TODO: Shouldn't be needed
+					//                                    //toUpdate.Add(r);
+					//                                }
+					//                            }
+					//                        }
+					//                    }
 				}
 			}
 
@@ -1184,6 +1308,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			Collection<IEntity> toUpdate = new Collection<IEntity>();
 
 			object referenceValue = property.GetValue(entity, null);
+			Type referenceEntityType = DataUtilities.GetReferenceType(entity, property);
 
 			// Check if the save is to cascade
 			if (reference.CascadeUpdate)
@@ -1200,10 +1325,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			}
 			else
 			{
-				toUpdate.Add(DataUtilities.AddReferences((IEntity)referenceValue, entity, DataUtilities.GetMirrorProperty(entity, property)));
+				toUpdate.Add(DataUtilities.SynchroniseReverseReferences(entity, property, DataAccess.Data.GetEntities(referenceEntityType, DataUtilities.GetReferenceIDs(entity, property)), DataAccess.Data.GetEntitiesContainingReverseReferences(entity, property)));
 
+				// TODO: See if its needed
 				// Set a bound copy of the referenced object to the property to ensure it won't get duplicated
-				property.SetValue(entity, DataAccess.Data.GetEntity(property.PropertyType, "ID", ((IEntity)referenceValue).ID), null);
+				//property.SetValue(entity, DataAccess.Data.GetEntity(property.PropertyType, "ID", ((IEntity)referenceValue).ID), null);
 			}
 
 			return (IEntity[])toUpdate.ToArray(typeof(IEntity));
@@ -1260,10 +1386,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					
 					
 					// Set a bound copy of the referenced object to the property to ensure it won't get duplicated
-					/*if (references != null && references.Count > 0)
-	                    property.SetValue(entity, references.GetIDs(), null);
-	                else
-	                    property.SetValue(entity, null, null);*/
+//					if (references != null && references.Count > 0)
+//	                    property.SetValue(entity, references.GetIDs(), null);
+//	                else
+//	                    property.SetValue(entity, null, null);
 				}
 
 			}
@@ -1325,12 +1451,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 						AppLogger.Debug("Mirror property name: String.Empty");
 					}
 
-					// TODO: Check if needed
-					// Set a bound copy of the referenced object to the property to ensure it won't get duplicated
-					/*if (references != null && references.Count > 0)
-                        property.SetValue(entity, references.GetIDs(), null);
-                    else
-                        property.SetValue(entity, null, null);*/
+//					// TODO: Check if needed
+//					// Set a bound copy of the referenced object to the property to ensure it won't get duplicated
+//					if (references != null && references.Count > 0)
+					//                        property.SetValue(entity, references.GetIDs(), null);
+					//                    else
+					//                        property.SetValue(entity, null, null);
 				}
 			}
 
@@ -1588,6 +1714,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 
 			return (IEntity[])toDelete.ToArray(typeof(IEntity));
 		}
-
+		*/
+			
 	}
 }

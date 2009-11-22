@@ -317,7 +317,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			//{
 				//WriteLine("************************************************************");
 				//WriteLine("** ====================================================== **");
-				Write("Start... - " + Summary, LogLevel, callingMethod);
+				Write(Summary, LogLevel, callingMethod);
                 //WriteLine("** Date/Time: " + DateTime.Now, callingMethod);
 				//WriteLine("** ====================================================== **");
 				//WriteLine("************************************************************");
@@ -334,7 +334,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			//{
 				//WriteLine("************************************************************");
 				//WriteLine("** ====================================================== **");
-            Write("...End", LogLevel, callingMethod);
+            //Write("End", LogLevel, callingMethod);
            // WriteLine("** Date/Time: " + DateTime.Now, callingMethod);
 				//WriteLine("** ====================================================== **");
 				//WriteLine("************************************************************");

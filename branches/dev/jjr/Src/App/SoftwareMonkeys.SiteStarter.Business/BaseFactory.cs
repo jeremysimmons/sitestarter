@@ -23,5 +23,10 @@ namespace SoftwareMonkeys.SiteStarter.Business
     		get { return defaultTypes; }
     		set { defaultTypes = value; }
     	}
+    	
+    	public virtual void Activate(IEntity entity)
+    	{
+    		DataAccess.Data.Activate(entity);
+    	}
 	}
 }

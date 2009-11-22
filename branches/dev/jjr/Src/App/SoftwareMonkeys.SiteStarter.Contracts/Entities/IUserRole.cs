@@ -11,9 +11,9 @@ namespace SoftwareMonkeys.SiteStarter.Entities
     {
         string Name { get;set; }
 		IUserPermission[] Permissions { get;set; }
-		IUser[] Users {get;set;}
-		Guid[] UserIDs {get;set;}
-		void AddUser(IUser user);
-		void RemoveUser(IUser user);
+		ICollection<IUser> Users {get;set;}
+		//Guid[] UserIDs {get;set;}
+		//void AddUser(IUser user);
+		//void RemoveUser(IUser user);
     }
 }

@@ -43,6 +43,7 @@
     <Compile Include="LogGroup.cs" />
     <Compile Include="LogGroupMode.cs" />
     <Compile Include="LogGroupSite.cs" />
+    <Compile Include="LogUtilities.cs" />
     <Compile Include="Reflector.cs" />
   </ItemGroup>
   <ItemGroup>

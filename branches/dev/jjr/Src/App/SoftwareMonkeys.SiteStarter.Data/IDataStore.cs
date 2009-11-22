@@ -32,32 +32,36 @@ namespace SoftwareMonkeys.SiteStarter.Data
         T[] GetEntities<T>(Guid[] entityIDs)
         	where T : IEntity;
         //IEntity GetEntity(Type entityType, string propertyName, object propertyValue);
-        IEntity GetEntity(Type type, IDictionary<string, object> parameters);
+        IEntity GetEntityByTypeAndProperties(Type type, IDictionary<string, object> parameters);
         T GetEntity<T>(IDictionary<string, object> parameters)
         	where T : IEntity;
         
-        IEntity[] GetEntities(Type type, IDictionary<string, object> parameters);
+        IEntity[] GetEntitiesByTypeAndProperties(Type type, IDictionary<string, object> parameters);
         T[] GetEntities<T>(IDictionary<string, object> parameters)
         	where T : IEntity;
         
         
-        IEntity[] GetEntities(Type type, string propertyName, object propertyValue);
+        IEntity[] GetEntitiesByTypeAndProperty(Type type, string propertyName, object propertyValue);
         T[] GetEntities<T>(string propertyName, object propertyValue)
         	where T : IEntity;
-        IEntity GetEntity(Type type, string propertyName, object propertyValue);
+        IEntity GetEntityByTypeAndProperty(Type type, string propertyName, object propertyValue);
         T GetEntity<T>(string propertyName, object propertyValue)
         	where T : IEntity;
         
         //IEntity[] GetEntities(Type entityType, string propertyName, object propertyValue);
-        T[] GetPage<T>(int pageIndex, int pageSize, string sortExpression, out int totalObjects)
+        T[] GetEntitiesPage<T>(int pageIndex, int pageSize, string sortExpression, out int totalObjects)
         	where T : IEntity;
-        T[] GetPage<T>(string fieldName, object fieldValue, int pageIndex, int pageSize, string sortExpression, out int totalObjects)
+        T[] GetEntitiesPage<T>(string fieldName, object fieldValue, int pageIndex, int pageSize, string sortExpression, out int totalObjects)
         	where T : IEntity;
-        IEntity[] PreSave(IEntity entity);
+        
+ 		IEntity[] GetEntitiesPage(Type type, int pageIndex, int pageSize, string sortExpression, out int totalObjects);
+        IEntity[] GetEntitiesPage(Type type, string fieldName, object fieldValue, int pageIndex, int pageSize, string sortExpression, out int totalObjects);
+        
+        void PreSave(IEntity entity, out IEntity[] entitiesToUpdate, out IEntity[] entitiesToDelete);
         void Save(IEntity entity);
-        IEntity[] PreUpdate(IEntity entity);
+        void PreUpdate(IEntity entity, out IEntity[] entitiesToUpdate, out IEntity[] entitiesToDelete);
         void Update(IEntity entity);
-        IEntity[] PreDelete(IEntity entity);
+        void PreDelete(IEntity entity, out IEntity[] entitiesToUpdate, out IEntity[] entitiesToDelete);
         void Delete(IEntity entity);
         bool IsStored(IEntity entity);
         void ApplySorting(string sortExpression);

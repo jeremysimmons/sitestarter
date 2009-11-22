@@ -8,6 +8,10 @@ void Page_Load(object sender, EventArgs e)
     {
     //    Response.Redirect("Setup.aspx");
     }
+
+
+    if (!Request.IsAuthenticated && Convert.ToBoolean(ConfigurationSettings.AppSettings["SecureTests"]) == true)
+    	Response.Redirect("../Members/Login.aspx");
 }
 
     protected void Testing1_Load(object sender, EventArgs e)

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using SoftwareMonkeys.SiteStarter.Entities;
 
 namespace SoftwareMonkeys.SiteStarter.Data
 {
@@ -37,11 +38,26 @@ namespace SoftwareMonkeys.SiteStarter.Data
             }
         }
 
-        public IDataStore this[Type entityType]
+        public IDataStore this[IEntity entity]
         {
             get
             {
-                string dataStoreName = DataUtilities.GetDataStoreName(entityType);
+                string dataStoreName = DataUtilities.GetDataStoreName(entity);
+                IDataStore store = GetByName(dataStoreName);
+                if (store == null)
+                {
+                    store = DataAccess.Data.InitializeDataStore(dataStoreName);
+                    Add(store);
+                }
+                return store;
+            }
+        }
+        
+        public IDataStore this[Type type]
+        {
+            get
+            {
+                string dataStoreName = DataUtilities.GetDataStoreName(type);
                 IDataStore store = GetByName(dataStoreName);
                 if (store == null)
                 {

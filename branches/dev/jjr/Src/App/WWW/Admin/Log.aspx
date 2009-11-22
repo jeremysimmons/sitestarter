@@ -1,52 +1,266 @@
-<%@ Page language="c#" AutoEventWireup="true" theme="" %>
+<%@ Page language="c#" AutoEventWireup="true" theme="" masterpagefile="~/Site.master" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Web" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Entities" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Configuration" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Business" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Web.Properties" %>
-<%@ Import namespace="SoftwareMonkeys.SiteStarter.Configuration" %>
+<%@ Import namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
 <%@ Import namespace="System.IO" %>
+<%@ Import namespace="System.Xml" %>
 
 <script language="C#" runat="server">
-private void Page_Load(object sender, EventArgs e)
-{
-    if (!IsPostBack)
-    {
-	PrepareLog();
-	//ShowLog();
-    }
-    
-}
 
-    private void PrepareLog()
-    {
-	Response.ContentType = "text/xml";
+	protected string LogsDir
+	{
+		get {
+			return Server.MapPath(Request.ApplicationPath + "/App_Data/Logs");
+		}
+	}
 
-	string logPath = Server.MapPath(Request.ApplicationPath + "/App_Data/Logs/" + DateTime.Now.ToString("yyyy-MM-dd") + "/Log.xml");
+
+	private void Page_Load(object sender, EventArgs e)
+	{
+	    if (!IsPostBack)
+	    {
+		if (Request.QueryString["LogDate"] == null || Request.QueryString["LogDate"] == String.Empty)
+		{
+			ListLogs();	
+
+		}
+		else if (Request.QueryString["LogThread"] == null || Request.QueryString["LogThread"] == String.Empty)
+		{
+			ListThreads();	
+
+		}
+		else
+		{
+			PrepareLogContents();
+		}
+		//ShowLog();
+	    }
+	    
+	}
+	
+	private void ListLogs()
+	{
+		if (Directory.Exists(LogsDir))
+		{
+			foreach (string directory in Directory.GetDirectories(LogsDir))
+			{
+				HyperLink link = new HyperLink();
+				link.Text = Path.GetFileName(directory);
+				link.NavigateUrl = Request.Url + "?LogDate=" + Path.GetFileName(directory);
+				OutputHolder.Controls.Add(link);
+				OutputHolder.Controls.Add(new LiteralControl("<br/>"));
+			}
+		}
+	}
+
+
+	
+	private void ListThreads()
+	{
+		string logRoot = LogsDir + "\\" + Request.QueryString["LogDate"];
+
+		LogUtilities.AnalyzeLog(logRoot);
+
+		string[] fileNames = Directory.GetFiles(logRoot + @"\Detail");
+
+		// Now read the creation time for each file
+		DateTime[] creationTimes = new DateTime[fileNames.Length];
+		for (int i=0; i < fileNames.Length; i++)
+		creationTimes[i] = new FileInfo(fileNames[i]).CreationTime;
+		
+		// sort it
+		Array.Sort(creationTimes,fileNames);
+
+			foreach (string file in fileNames)
+			{
+				HyperLink link = new HyperLink();
+				link.Text = Path.GetFileNameWithoutExtension(file);
+				link.NavigateUrl = Request.Url + "&LogThread=" + LogUtilities.PrepareFileName(Path.GetFileNameWithoutExtension(file));
+				OutputHolder.Controls.Add(link);
+				OutputHolder.Controls.Add(new LiteralControl("<br/>"));
+			}
+	}
+
+    private void PrepareLogContents()
+    {
+	//Response.ContentType = "text/xml";
+
+	string logDate = Request.QueryString["LogDate"];
+	string logThread = Request.QueryString["LogThread"];
+
+	string logPath = Server.MapPath(Request.ApplicationPath + "/App_Data/Logs/" + logDate + "/Detail/" + LogUtilities.PrepareFileName(logThread) + ".xml");
+
 	if (File.Exists(logPath))
 	{
+		string output = String.Empty;
 		string logContents = String.Empty;
-		using (StreamReader reader = new StreamReader(File.OpenRead(logPath)))
+
+	//	NameTable nt = new NameTable();
+	//	    XmlNamespaceManager nsmgr = new XmlNamespaceManager(nt);
+	//	    nsmgr.AddNamespace("SS", "urn:SiteStarter");
+		
+	//	    //Create the XmlParserContext.
+	//	    XmlParserContext context = new XmlParserContext(null, nsmgr, null, XmlSpace.None);
+
+    		/*using (XmlTextReader xmlReader = new XmlTextReader(logPath))//, context))
 		{
-			// Get the contents of the log
-			logContents = reader.ReadToEnd();
+			logContents = String.Empty; // Clearing from memory
 
-			reader.Close();
-		}
+			while(xmlReader.Read()) 
+			{
+				if (xmlReader.ElementType
+	
+				output += CreateLogItem(xmlReader);
+			}
+		}*/
 
-			
-		// Change the path of the LogTemplate file to suit the web setup
-		logContents = logContents.Replace("../../../LogTemplate.xsl", "../LogTemplate.xsl");
+				XmlDocument doc = new XmlDocument();
+				doc.Load(logPath);
 
-		// Add the ending </Log> tag if necessary
-		if (logContents.IndexOf("</Log>") == -1)
-				logContents = logContents + "</Log>";
+				XmlNodeList nodeList;
+				XmlNode root = doc.DocumentElement;
 
-		// Write the contents of the log to the page
-		Response.Write(logContents);
+				nodeList=root.SelectNodes("Entry");
+				
+				XmlNode threadRoot = null;
+				
+				XmlDocument threadDoc = null;
+				
+				
+				string threadTitle = string.Empty;
+				string threadFile = string.Empty;
+
+				int i = 0;
+				
+				foreach (XmlNode node in nodeList)
+				{
+					
+					int indent = Convert.ToInt32(node.SelectSingleNode("Indent").InnerText);
+					
+					
+
+						OutputHolder.Controls.Add(CreateLogItem(node, i));
+					
+
+					i++;
+				}
+
 	}
 	else
-		Response.Write("No log found: " + logPath);
+		throw new Exception("No log found: " + logPath);
     }
 
+	private LiteralControl CreateLogItem(XmlNode node, int id)
+	{
+						string componentName = node.SelectSingleNode("Component").InnerText;
+						string methodName = node.SelectSingleNode("Method").InnerText;
+						string stackTrace = node.SelectSingleNode("StackTrace").InnerText;
+						string timestamp = node.SelectSingleNode("Timestamp").InnerText;
+						int indent = Int32.Parse(node.SelectSingleNode("Indent").InnerText);
+						string data = node.SelectSingleNode("Data").InnerText;
+						string src = componentName + "." + methodName;
+
+		string output = "<div>";
+		output += "<table><tr><td valign=top>";
+		output += "<a id='" + id + "_Toggle' href=\"javascript:ToggleExpansion('" + id + "')\">&raquo;</a>";
+		output += "</td><td style='padding-left: " + (indent*10) + "px;'>";
+		//output += "<br/>";
+		//output += HttpUtility.HtmlEncode(timestamp);
+		//output += "<br/>";
+		output += HttpUtility.HtmlEncode(data);
+
+		output += "<div style='display:none;' id='" + id + "_Expand' class='LogBox'>";
+
+		//output += "<div>";
+		output += HttpUtility.HtmlEncode(src);
+		output += " - ";
+		output += HttpUtility.HtmlEncode(timestamp);
+		//output += "</div>";
+
+		output += "<hr/>";
+
+		//output += "<div>";
+		output += "<div class='LogSubTitle'>Stack Trace</div>";
+		output += HttpUtility.HtmlEncode(stackTrace).Replace("\n\n", "<br/>");
+		//output += "</div>";
+
+		output += "</div>";
+
+		output += "</td></tr></table>";
+		output += "</div>";
+		return new LiteralControl(output);
+	}
+
+	private string CreatePartItem(string part)
+	{
+		string output = "<p>";
+		output += HttpUtility.HtmlEncode(part);
+		output += "</p>";
+		return output;
+	}
+
+	private LiteralControl CreateIndent(int indent)
+	{
+		string output = String.Empty;
+		for (int i = 0; i < indent; i++)
+		{
+			output += "&nbsp;&nbsp;";
+		}
+		return new LiteralControl(output);
+	}
+
 </script>
+
+    <asp:Content runat="server" ContentPlaceHolderID="Body">
+<style>
+	.LogBox
+	{
+		/*font-family: courier new;*/
+		padding: 3px; 5px; 3px; 5px;
+		border: 1px solid #33E6EE;
+		font-size: 11px;
+		margin: 3px 0px 3px 0px;
+		background-color: #BAFAFD;
+	}
+
+	.LogBox HR
+	{
+		border: 1px dashed #33E6EE;
+	}
+
+	.LogSubTitle
+	{
+		font-family: verdana;
+		font-size: 11px;
+		font-weight: bold;
+		color: black;
+		margin: 6px 0px 3px 0px;
+	}
+</style>
+	<script language="Javascript">
+	function ToggleExpansion(id)
+	{
+		var expand = document.getElementById(id + "_Expand");
+		var toggle = document.getElementById(id + "_Toggle");
+
+		if (expand)
+		{
+			if (expand.style.display == "none")
+			{
+				expand.style.display = "";
+				toggle.innerHTML = '&laquo;';
+			}
+			else
+			{
+				expand.style.display = "none";
+				toggle.innerHTML = "&raquo;";
+			}
+		}
+	}
+	</script>
+<asp:Panel runat="server" id="OutputHolder"></asp:Panel>
+	
+	</asp:Content>

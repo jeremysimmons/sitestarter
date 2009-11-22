@@ -22,7 +22,7 @@ private void Page_Load(object sender, EventArgs e)
             user.IsLockedOut = false;
 			user.Email = "test@softwaremonkeys.net";
 
-			SoftwareMonkeys.SiteStarter.Configuration.IAppConfig config = new SoftwareMonkeys.SiteStarter.Configuration.AppConfig();
+			AppConfig config = new AppConfig();
 			config.ApplicationPath = Request.ApplicationPath;
 			//config.ApplicationUrl = Request.Url.ToString().ToLower().Replace("/setup.aspx", "");
 			config.PhysicalPath = Request.PhysicalApplicationPath;
@@ -43,7 +43,7 @@ private void Page_Load(object sender, EventArgs e)
             //Config.Application = config;
             
 
-            ConfigFactory.SaveConfig(Request.MapPath(Request.ApplicationPath + "/App_Data"), (IConfig)config, WebUtilities.GetLocationVariation(Request.Url));
+            ConfigFactory<AppConfig>.SaveConfig(Request.MapPath(Request.ApplicationPath + "/App_Data"), config, WebUtilities.GetLocationVariation(Request.Url));
             
             SetupMappings();
 
@@ -52,17 +52,17 @@ private void Page_Load(object sender, EventArgs e)
             SoftwareMonkeys.SiteStarter.Web.Providers.DataProviderManager.Initialize();
 
 
-            if (!SoftwareMonkeys.SiteStarter.Business.UserFactory.Current.SaveUser(user))
+            if (!SoftwareMonkeys.SiteStarter.Business.UserFactory<User>.Current.SaveUser(user))
             {
-            	user = (User)UserFactory.Current.GetUserByUsername(user.Username);
+            	user = (User)UserFactory<User>.Current.GetUserByUsername(user.Username);
             	
             	config.PrimaryAdministratorID = user.ID;
             	
-            	ConfigFactory.SaveConfig(Request.MapPath(Request.ApplicationPath + "/App_Data"), (IConfig)config, WebUtilities.GetLocationVariation(Request.Url));
+            	ConfigFactory<AppConfig>.SaveConfig(Request.MapPath(Request.ApplicationPath + "/App_Data"), config, WebUtilities.GetLocationVariation(Request.Url));
             }
 
 
-            if(!Roles.RoleExists("Administrator"))
+           if(!Roles.RoleExists("Administrator"))
                 Roles.CreateRole("Administrator");
 
             if (!Roles.IsUserInRole(user.Username, "Administrator"))
@@ -75,23 +75,31 @@ private void Page_Load(object sender, EventArgs e)
 
 private void SetupMappings()
 {
-	MappingConfig config = Config.Mappings;
-	if (config == null)
-		config = new MappingConfig();
-		
-	MappingItem userEntityItem = new MappingItem(typeof(IUser));
+			if (Config.Mappings == null)
+				Config.Mappings = ConfigFactory<MappingConfig>.NewConfig("Mappings");
+	
+	SoftwareMonkeys.SiteStarter.Entities.User.RegisterType();
+	UserRole.RegisterType();
+	Keyword.RegisterType();
+/*	MappingItem userEntityItem = new MappingItem("IUser");
 	userEntityItem.Settings.Add("DataStoreName", "Users");
 	
 	config.AddItem(userEntityItem);
 	
-	MappingItem userRoleEntityItem = new MappingItem(typeof(IUserRole));
+	MappingItem userRoleEntityItem = new MappingItem("IUserRole");
 	userRoleEntityItem.Settings.Add("DataStoreName", "UserRoles");
 	
 	config.AddItem(userRoleEntityItem);
 	
+	MappingItem keywordItem = new MappingItem("Keyword");
+	keywordItem.Settings.Add("DataStoreName", "Keywords");
+	
+	config.AddItem(keywordItem);
+	*/
+	
 	string path = Server.MapPath(Request.ApplicationPath + "/App_Data");
 	
-	ConfigFactory.SaveConfig(path, config);
+	ConfigFactory<MappingConfig>.SaveConfig(path, (MappingConfig)Config.Mappings);
 }
 </script>
 <asp:Content runat="server" ContentPlaceHolderID="Body">

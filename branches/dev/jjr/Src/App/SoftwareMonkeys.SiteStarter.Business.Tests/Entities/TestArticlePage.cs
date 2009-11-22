@@ -16,7 +16,7 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
         }
 
         private TestArticle article;
-        [EntityReferences(MirrorName="Pages")]
+        [Reference]
         public TestArticle Article
         {
             get { return article; }

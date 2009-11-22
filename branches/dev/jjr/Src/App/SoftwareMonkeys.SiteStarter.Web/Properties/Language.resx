@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -131,5 +131,11 @@
   </data>
   <data name="UserDeleted" xml:space="preserve">
     <value>The user was deleted successfully.</value>
+  </data>
+  <data name="TestFixtures" xml:space="preserve">
+    <value>Test Fixtures</value>
+  </data>
+  <data name="RunAllTests" xml:space="preserve">
+    <value>Run All Tests</value>
   </data>
 </root>

@@ -72,7 +72,9 @@
     <Compile Include="WebControls\EntityForm.cs" />
     <Compile Include="WebControls\EntityFormLabelItem.cs" />
     <Compile Include="WebControls\EntityFormButtonsItem.cs" />
-    <Compile Include="WebControls\EntityFormCheckBoxItem.cs" />
+    <Compile Include="WebControls\EntityFormCheckBoxItem.cs">
+      <DependentUpon>EntityFormButtonsItem.cs</DependentUpon>
+    </Compile>
     <Compile Include="WebControls\EntityFormHelper.cs" />
     <Compile Include="WebControls\EntityFormItem.cs" />
     <Compile Include="WebControls\EntityFormItemCollection.cs" />
@@ -111,6 +113,10 @@
       <Project>{4B83307F-8307-43EF-A176-8AB1CDA78264}</Project>
       <Name>SiteStarter.Configuration</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Contracts\SiteStarter.Contracts.csproj">
+      <Project>737DFD8E-BF43-4BA9-ABE6-25B2DC21800F</Project>
+      <Name>SiteStarter.Contracts</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Data.Tests\SiteStarter.Data.Tests.csproj">
       <Project>{0BBD2A6C-9955-4BB6-9DCA-6AA57715C3F2}</Project>
       <Name>SiteStarter.Data.Tests</Name>
@@ -118,6 +124,10 @@
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Data\SiteStarter.Data.csproj">
       <Project>{0D77AB54-E3BE-4B29-8750-91F16BC3DEDB}</Project>
       <Name>SiteStarter.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Diagnostics.Tests\SiteStarter.Diagnostics.Tests.csproj">
+      <Project>B82C8670-C976-47E4-B06C-B75FC97A1C7D</Project>
+      <Name>SiteStarter.Diagnostics.Tests</Name>
     </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.State\SiteStarter.State.csproj">
       <Project>{34129651-3B9F-4A0D-AEBF-7DE2098DD98F}</Project>

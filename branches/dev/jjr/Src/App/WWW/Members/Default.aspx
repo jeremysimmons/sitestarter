@@ -35,7 +35,7 @@
     {
         OperationManager.StartOperation("EditAccount", FormView);
 
-        DataForm.DataSource = UserFactory.GetUserByUsername(My.Username);
+        DataForm.DataSource = UserFactory.Current.GetUserByUsername(My.Username);
 
         DataForm.DataBind();
         FormView.DataBind();
@@ -46,7 +46,7 @@
         if (IsValid)
         {
             // Get a fresh copy of the user object
-            User user = UserFactory.GetUserByUsername(My.Username);
+            User user = UserFactory.Current.GetUserByUsername(My.Username);
 
 			string originalUsername = user.Username;
             string originalPassword = user.Password;
@@ -60,7 +60,7 @@
                 user.Password = Crypter.EncryptPassword(user.Password);
 
             // Update the user object
-            if (UserFactory.UpdateUser(user))
+            if (UserFactory.Current.UpdateUser(user))
             {
                 // Display the result to the user
                 Result.Display(Resources.Language.AccountUpdated);

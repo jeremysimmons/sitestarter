@@ -60,15 +60,15 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
         /// <summary>
         /// Gets/sets the application configuration object.
         /// </summary>
-        static public MappingConfig Mappings
+        static public IMappingConfig Mappings
         {
             get {
                 if (All != null && All.Count > 0)
                 {
                     for (int i = 0; i < All.Count; i++)
                     {
-                        if (All[i] is MappingConfig)
-                            return (MappingConfig)All[i];
+                        if (All[i] is IMappingConfig)
+                            return (IMappingConfig)All[i];
                     }
                 }
                 
@@ -80,7 +80,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
                 {
                     for (int i = 0; i < All.Count; i++)
                     {
-                        if (All[i] is MappingConfig)
+                        if (All[i] is IMappingConfig)
                             All[i] = (IConfig)value;
                     }
                 }
@@ -144,7 +144,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
         /// </summary>
         static public bool IsInitialized
         {
-            get { return (Application != null); }
+            get { return (Application != null && Mappings != null); }
         }
         
         /// <summary>
@@ -154,9 +154,9 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
         /// <param name="variation">The path variation applied to configuration files.</param>
         static public void Initialize(string physicalApplicationPath, string variation)
         {
-            using (LogGroup logGroup = AppLogger.StartGroup("Initializes the application configuration settings."))
+            using (LogGroup logGroup = AppLogger.StartGroup("Initializes the application configuration settings.", NLog.LogLevel.Debug))
             {
-                AppLogger.Info("Looking for configs in: " + physicalApplicationPath);
+                AppLogger.Debug("Looking for configs in: " + physicalApplicationPath);
                 
                 string fullPath = physicalApplicationPath.TrimEnd('\\') + @"\App_Data\";
                 
@@ -175,8 +175,8 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
                 
                 if (virtualServerID != null && virtualServerID != String.Empty && virtualServerID != Guid.Empty.ToString())
                 	fullPath += virtualServerID + @"\";
-
-                All = ConfigFactory.LoadAllConfigs(fullPath, variation);
+                All.Add(ConfigFactory<AppConfig>.LoadConfig(fullPath, "Default", variation));
+                All.Add(ConfigFactory<MappingConfig>.LoadConfig(fullPath, "Mappings", variation));
             }
         }
         

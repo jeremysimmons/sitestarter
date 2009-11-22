@@ -18,6 +18,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
             get { return textBox; }
             set { textBox = value; }
         }*/
+        
+        public EntityFormButtonsItem()
+        {
+        	AutoBind = false;
+        }
 
         protected override void CreateFieldControls()
         {

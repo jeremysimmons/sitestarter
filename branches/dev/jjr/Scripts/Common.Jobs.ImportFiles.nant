@@ -1,23 +1,24 @@
 <?xml version="1.0"?>
 <project name="Common.Jobs.ImportFiles" default="Common.Jobs.ImportFiles" xmlns="http://nant.sf.net/schemas/nant.xsd">
 
+
 	<include buildfile="Common.Jobs.BackupFiles.nant"/>
 	
   	<target name="Common.Jobs.ImportFiles">
   	
 			<xmlpeek
-		    file="${Solution.PropertiesPath}"
-		    xpath="/x:project/x:property[@name = 'Solution.Name']/@value"
-		    property="Solution.Name">
+		    file="${Project.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Project.Name']/@value"
+		    property="Project.Name">
 		        <namespaces>
         			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
     			</namespaces>
     	</xmlpeek>
 
 			<xmlpeek
-		    file="${Solution.PropertiesPath}"
-		    xpath="/x:project/x:property[@name = 'Solution.BaseNamespace']/@value"
-		    property="Solution.BaseNamespace">
+		    file="${Project.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Project.BaseNamespace']/@value"
+		    property="Project.BaseNamespace">
 		        <namespaces>
         			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
     			</namespaces>
@@ -25,16 +26,16 @@
     	
     		<call target="Common.Jobs.BackupFiles"/>
     		
-    		<echo message="Solution.RootPath: ${Solution.RootPath}"/>
+    		<echo message="Project.RootPath: ${Project.RootPath}"/>
 
 			<foreach item="File" property="filename">
 		    <in>
-		        <items basedir="${Solution.RootPath}">
+		        <items basedir="${Project.RootPath}">
 		            <include name="**\*.Import.nant" />
 		        </items>
 		    </in>
 		    <do>
-		    
+
 	    		<echo message="Checking import file: ${filename}"/>
 		    
 				<xmlpeek
@@ -108,25 +109,38 @@
 	        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
 	    			</namespaces>
 	    		</xmlpeek>
+
+
+		    		<xmlpeek
+					    file="${Solution.PropertiesPath}"
+					    xpath="/x:project/x:property[@name = 'Solution.BaseNamespace']/@value"
+					    property="Solution.BaseNamespace">
+				        <namespaces>
+		        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+		    			</namespaces>
+		    		</xmlpeek>	
 	    		
-	    		<property name="Import.To" value="${path::get-full-path(string::replace(Import.To, '${Solution.RootPath}', Solution.RootPath))}"/>
-	    		<property name="Import.To" value="${path::get-full-path(string::replace(Import.To, '${Solution.BaseNamespace}', Solution.BaseNamespace))}"/>
+	    		<property name="Import.To" value="${string::replace(Import.To, '${Project.RootPath}', Project.RootPath)}"/>
+	    		<property name="Import.To" if="${bool::parse(Import.ReplaceBaseNamespace) == true}" value="${string::replace(Import.To, '${Project.BaseNamespace}', Project.BaseNamespace)}"/>
+			<property name="Import.To" if="${bool::parse(Import.ReplaceBaseNamespace) == true}" value="${string::replace(Import.To, '${Solution.BaseNamespace}', Solution.BaseNamespace)}"/>
+	    		<property name="Import.To" if="${bool::parse(Import.ReplaceName) == true}" value="${string::replace(Import.To, '${Project.BaseNamespace}', Project.Name)}"/>
+			<property name="Import.To" if="${bool::parse(Import.ReplaceName) == true}" value="${string::replace(Import.To, '${Solution.BaseNamespace}', Solution.Name)}"/>
+			<property name="Import.To" value="${string::replace(Import.To, '${Solution.RootPath}', Solution.RootPath)}"/>
 	    			    		
 
-	    		<property name="Import.FromProject.RootPath" value="${path::get-full-path(Solution.RootPath + '\..\..\..\' + Import.FromProject + '\Src\App')}"/>
-	    		<!--property name="Import.FromProject.RootPath" value="${Solution::GetRootPath(path::get-full-path(Import.FromProject.PropertiesPath))}"/-->
-	    		<property name="Import.FromProject.PropertiesPath" value="${Import.FromProject.RootPath}\${Import.FromProject}.Solution.nant"/>
+	    		<property name="Import.FromProject.RootPath" value="${path::get-full-path(Project.RootPath + '\..\' + Import.FromProject + '')}"/>
+	    		<!--property name="Import.FromProject.RootPath" value="${Project::GetRootPath(path::get-full-path(Import.FromProject.PropertiesPath))}"/-->
+	    		<property name="Import.FromProject.PropertiesPath" value="${Import.FromProject.RootPath}\${Import.FromProject}.Project.nant"/>
 
 <echo message="Import.FromProject.RootPath: ${Import.FromProject.RootPath}"/>
 
-	    		<property name="Solution.RootPath" value="${path::get-directory-name(Solution.PropertiesPath)}"/>
-	    		
+	    		<property name="Project.RootPath" value="${path::get-directory-name(Project.PropertiesPath)}"/>	    	    		
 	    			
 	    		<if test="${file::exists(Import.FromProject.PropertiesPath)}">
 					<xmlpeek
 					    file="${Import.FromProject.PropertiesPath}"
-					    xpath="/x:project/x:property[@name = 'Solution.BaseNamespace']/@value"
-					    property="Import.OriginalBaseNamespace">
+					    xpath="/x:project/x:property[@name = 'Project.BaseNamespace']/@value"
+					    property="Import.FromProject.BaseNamespace">
 				        <namespaces>
 		        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
 		    			</namespaces>
@@ -134,64 +148,93 @@
 		    		
 		    		<xmlpeek
 					    file="${Import.FromProject.PropertiesPath}"
-					    xpath="/x:project/x:property[@name = 'Solution.Name']/@value"
-					    property="Import.OriginalSolutionName">
+					    xpath="/x:project/x:property[@name = 'Project.Name']/@value"
+					    property="Import.FromProject.ProjectName">
 				        <namespaces>
 		        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
 		    			</namespaces>
-		    		</xmlpeek>
+		    		</xmlpeek>		    		
+
+	    		<property name="Import.FromSolution.BaseNamespace" value="${Import.FromProject.BaseNamespace}"/>	
+
+
+		    		<echo message="Import.From: ${Import.From}"/>
+
+		    		<echo message="Solution.RootPath: ${Solution.RootPath}"/>
+		    		<echo message="Import.FromProject.RootPath: ${Import.FromProject.RootPath}"/>
 		    		
+
+
+	    		<property name="Import.FromSolution.RootPath" value="${Import.FromProject.RootPath}\Src\${Solution.Name}"/>
+
 		    		
-	    		<property name="Import.From" value="${path::get-full-path(string::replace(Import.From, '${Solution.RootPath}', Import.FromProject.RootPath))}"/>
-	    		<property name="Import.From" value="${path::get-full-path(string::replace(Import.From, '${Solution.BaseNamespace}', Import.OriginalBaseNamespace))}"/>
+		    		<property name="Import.FromPath" value="${Import.From}"/>
 		    		
-		    		
-		    		
-		    		<property name="Import.From" value="${path::get-full-path(string::replace(Import.From, '${Solution.RootPath}', Import.FromProject.RootPath))}"/>
-		    		<if test="${string::index-of(Import.From, ':') == -1}">
-			    		<property name="Import.FromPath" value="${path::get-full-path(Import.FromProject.RootPath + '\' + Import.From)}"/>
+		    		<property name="Import.FromPath" value="${string::replace(Import.FromPath, '${Project.RootPath}', Import.FromProject.RootPath)}"/>
+		    		<property name="Import.FromPath" value="${string::replace(Import.FromPath, '${Solution.RootPath}', Import.FromSolution.RootPath)}"/>
+
+	    		<property name="Import.FromPath" value="${string::replace(Import.FromPath, '${Project.BaseNamespace}', Import.FromProject.BaseNamespace)}"/>
+
+	    		<property name="Import.FromPath" value="${string::replace(Import.FromPath, '${Solution.BaseNamespace}', Import.FromSolution.BaseNamespace)}"/>
+
+		    		<if test="${string::index-of(Import.FromPath, ':') == -1}">
+			    		<property name="Import.FromPath" value="${path::get-full-path(Import.FromProject.RootPath + '\' + Import.FromPath)}"/>
 		    		</if>
-		    		<if test="${string::index-of(Import.From, ':') > -1}">
-			    		<property name="Import.FromPath" value="${path::get-full-path(Import.From)}"/>
-		    		</if>
 		    		
 		    		
-		    		<echo message="New solution root path: ${Solution.RootPath}"/>
-		    		<echo message="Original solution root path: ${Import.FromProject.RootPath}"/>
-		    		<echo message="Original base namespace: ${Import.OriginalBaseNamespace}"/>
-		    		<echo message="New base namespace: ${Solution.BaseNamespace}"/>
+		    		<echo message="New Project root path: ${Project.RootPath}"/>
+		    		<echo message="Original Project root path: ${Import.FromProject.RootPath}"/>
+		    		<echo message="Original base namespace: ${Import.FromProject.BaseNamespace}"/>
+		    		<echo message="New base namespace: ${Project.BaseNamespace}"/>
 		    		<echo message="Import.From: ${Import.From}"/>
 		    		<echo message="Import.FromPath: ${Import.FromPath}"/>
 		    		<echo message="Import.To: ${Import.To}"/>
 		    		
 		    		<!-- Only import if the source project is not the destination -->
-		    		<if test="${Import.OriginalBaseNamespace != Solution.BaseNamespace}">
+		    		<if test="${Import.FromProject.BaseNamespace != Project.BaseNamespace}">
 		    			<!-- Loop through each folder in the specified query (likely only 1 folder) -->
 		    			<foreach item="Folder" property="folderName">
 		    				<in>
 		    					<items>
-			    					<include name="${path::get-full-path(Import.From)}"/>
+			    					<include name="${Import.FromPath}"/>
 			    				</items>
 		    				</in>
 		    				<do>
-					    		<copy todir="${Import.To}" overwrite="true" flatten="${Import.Flatten}">
+					    		<copy todir="${Import.To}/_importing" overwrite="true" flatten="${Import.Flatten}">
 								    <fileset basedir="${folderName}">
 								        <exclude name="**.Import.nant" />
 								        <exclude name="**/nant/**.*" />
 								        <exclude name="**/Auto.exe" />
+								        <exclude name="**/_SVN/*" />
+								        <exclude name="**/.SVN/*" />
 								        <include name="${Import.Include}" />
 								    </fileset>
 									    <filterchain>
-									        <replacestring from="${Import.FromProject.RootPath}" to="${Solution.RootPath}" />
-									        <replacestring from="${Import.OriginalBaseNamespace}" to="${Solution.BaseNamespace}" />
-									        <replacestring from="${Import.OriginalSolutionName}" to="${Solution.Name}"/>
+									        <replacestring from="${Import.FromProject.RootPath}" to="${Project.RootPath}" />
+									        <replacestring from="${Import.FromProject.BaseNamespace}" to="${Project.BaseNamespace}" if="${Import.ReplaceBaseNamespace}" />
+									        <replacestring from="${Import.FromProject.ProjectName}" to="${Project.Name}"
+ if="${Import.ReplaceName}"/>
+
 									    </filterchain>
 								</copy>
 							</do>
 						</foreach>
-				        <call target="Common.Actions.ImportRenameFiles"/>
-				        <call target="Common.Actions.RemoveObsoleteFolders"/>
-				        <!--call target="Common.Actions.RemoveObsoleteFolders"/-->
+										<nant
+											buildfile="${filename}"
+											target="Actions.Import.Adapt"
+											if="${target::exists('Actions.Import.Adapt')}">
+										</nant>
+
+
+						<if test="${Import.ReplaceName or Import.ReplaceBaseNamespace}">
+					        	<call target="Common.Actions.ImportRenameFiles"/>
+					        	<!--call target="Common.Actions.RemoveObsoleteFolders"/-->
+						</if>
+
+
+									<call target="Action.Import.Finalize"/>
+
+					        <!--call target="Common.Actions.RemoveObsoleteFolders"/-->
 					</if>
 				</if>
 	    		<if test="${file::exists(Import.FromProject.PropertiesPath) != true}">
@@ -201,21 +244,30 @@
 	    		
 		    </do>
 		</foreach>
+
   	</target>   
  
   	<target name="Common.Actions.ImportRenameFiles">
-			<foreach item="File" property="filename">
+			<foreach item="File" property="filePath">
 			    <in>
-			        <items basedir="${Import.To}">
+			        <items basedir="${Import.To}/_importing">
 			            <include name="**/*.*" />
 			        </items>
 			    </in>
 			    <do>
-			    	<property name="NewFileName" value="${string::replace(filename, Import.OriginalSolutionName, Solution.Name)}"/>
-			    	<!--echo message="Original file name: ${filename}"/-->
-			    	<!--echo message="New file name: ${NewFileName}"/-->
-			    	<if test="${filename != NewFileName}">
-				    	<move file="${filename}" tofile="${NewFileName}" overwrite="true">
+			    	<property name="fileName" value="${path::get-file-name(filePath)}"/>
+			    	<echo message="Original file path: ${filePath}"/>
+			    	<echo message="Original file name: ${fileName}"/>
+			
+			    	<property name="newFileName" value="${fileName}"/>
+			    	<property name="newFileName" value="${string::replace(newFileName, Import.FromProject.ProjectName, Project.Name)}" if="${Import.ReplaceName}"/>
+			    	<!--property name="newFileName" value="${string::replace(newFileName, Import.FromSolution.SolutionName, Solution.Name)}" if="${Import.ReplaceName}"/-->
+			    	<property name="newFileName" value="${string::replace(newFileName, Import.FromProject.BaseNamespace, Project.BaseNamespace)}" if="${Import.ReplaceBaseNamespace}"/>
+			    	<!--property name="newFileName" value="${string::replace(newFileName, Import.FromSolution.BaseNamespace, Solution.BaseNamespace)}" if="${Import.ReplaceBaseNamespace}"/-->
+			    	<property name="newFilePath" value="${string::replace(filePath, fileName, newFileName)}"/>
+			    	<echo message="New file name: ${newFileName}"/>
+			    	<if test="${filePath != newFileName}">
+				    	<move file="${filePath}" tofile="${newFilePath}" overwrite="true">
 				    	</move>
 			    	</if>
 			    </do>
@@ -223,14 +275,15 @@
   	</target>
   	
   	<target name="Common.Actions.ImportRenameFolders">
+		<if test="${bool::parse(Import.ReplaceName) == true}">
 			<foreach item="Folder" property="foldername">
 			    <in>
-			        <items basedir="${Import.To}">
-			            <include name="**/${Import.OriginalSolutionName}/**" />
+			        <items basedir="${Import.To}/_importing">
+			            <include name="**/${Import.FromProject.ProjectName}/**" />
 			        </items>
 			    </in>
 			    <do>
-			    	<property name="NewFolderName" value="${string::replace(foldername, Import.OriginalSolutionName, Solution.Name)}"/>
+			    	<property name="NewFolderName" value="${string::replace(foldername, Import.FromProject.ProjectName, Project.Name)}"/>
 				    <echo message="Checking folder: ${foldername}"/>
 				    <echo message="New folder name: ${NewFolderName}"/>
 			    	<if test="${foldername != NewFolderName}">
@@ -243,10 +296,11 @@
 			    	</if>
 			    </do>
 		    </foreach>
+		</if>
   	</target>
   	
   	<target name="Common.Actions.RemoveObsoleteFolders">
-  		<property name="DeleteQuery" value="${Import.To}\**\*${Import.OriginalSolutionName}*"/>
+  		<property name="DeleteQuery" value="${Import.To}\**\*.${Import.FromProject.ProjectName}.*\"/>
   		<echo message="Delete query: ${DeleteQuery}"/>
 		<foreach item="Folder" property="foldername">
             <in>
@@ -260,6 +314,17 @@
         </foreach>
 
   	</target>
+
+	<target name="Action.Import.Finalize">
+		<echo message="Moving from ${Import.To}\_importing to ${Import.To}"/>
+		<move todir="${Import.To}" overwrite="true" flatten="${Import.Flatten}">
+								    <fileset basedir="${Import.To}\_importing">
+								        <include name="*" />
+								    </fileset>
+									   
+								</move>
+		<delete dir="${Import.To}\_importing"/>
+	</target>
 
 </project>
   	

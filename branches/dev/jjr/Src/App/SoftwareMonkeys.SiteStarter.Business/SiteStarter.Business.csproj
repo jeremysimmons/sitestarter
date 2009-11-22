@@ -50,7 +50,6 @@
     <Compile Include="BaseFactory.cs" />
     <Compile Include="Crypter.cs" />
     <Compile Include="FactoryManager.cs" />
-    <Compile Include="IFactory.cs" />
     <Compile Include="TestExecutor.cs" />
     <Compile Include="UserFactory.cs" />
   </ItemGroup>
@@ -58,6 +57,10 @@
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration\SiteStarter.Configuration.csproj">
       <Project>{4B83307F-8307-43EF-A176-8AB1CDA78264}</Project>
       <Name>SiteStarter.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Contracts\SiteStarter.Contracts.csproj">
+      <Project>737DFD8E-BF43-4BA9-ABE6-25B2DC21800F</Project>
+      <Name>SiteStarter.Contracts</Name>
     </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Data\SiteStarter.Data.csproj">
       <Project>{0D77AB54-E3BE-4B29-8750-91F16BC3DEDB}</Project>

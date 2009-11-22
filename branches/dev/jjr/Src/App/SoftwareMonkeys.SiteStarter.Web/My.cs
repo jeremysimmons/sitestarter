@@ -54,7 +54,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 						user.Permissions = UserEngine.GetPermissions(user);
 						HttpContext.Current.Items["User"] = user;
 					}*/
-                    HttpContext.Current.Items["User"] = UserFactory.Current.GetUserByUsername(HttpContext.Current.User.Identity.Name);
+                    HttpContext.Current.Items["User"] = UserFactory<Entities.User>.Current.GetUserByUsername(HttpContext.Current.User.Identity.Name);
 				}
 				return (User)HttpContext.Current.Items["User"];
 			}

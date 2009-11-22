@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using SoftwareMonkeys.SiteStarter.Entities;
 using System.Xml.Serialization;
+using SoftwareMonkeys.SiteStarter.Configuration;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Tests.Entities
 {
@@ -20,9 +21,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests.Entities
         /// <summary>
         /// Gets/sets the ID of the article that the step belongs to.
         /// </summary>
-        [EntityIDReference(MirrorName="PageIDs",
-            IDsPropertyName="ArticleID",
-            EntitiesPropertyName="Article")]
+        [Reference]
         public Guid ArticleID
         {
             get
@@ -39,18 +38,37 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests.Entities
             }
         }
 
-        private TestArticle article;
+        private ITestArticle article;
         /// <summary>
         /// Gets/sets the article that the step belongs to.
         /// </summary>
-        [EntityReference(ExcludeFromDataStore = true,
-            MirrorName="PageIDs",
-            IDsPropertyName="ArticleID",
-            EntitiesPropertyName="Article")]
-        public TestArticle Article
+        [Reference]
+        public ITestArticle Article
         {
             get { return article; }
             set { article = value; }
         }
+        /// <summary>
+        /// Registers the entity in the system.
+        /// </summary>
+        static public void RegisterType()
+        {
+			MappingItem item2 = new MappingItem("TestArticlePage");
+			item2.Settings.Add("DataStoreName", "Testing_Articles");
+			item2.Settings.Add("IsEntity", true);
+			item2.Settings.Add("FullName", typeof(TestArticlePage).FullName);
+			item2.Settings.Add("AssemblyName", typeof(TestArticlePage).Assembly.FullName);
+			
+			Config.Mappings.AddItem(item2);
+        }
+        
+        /// <summary>
+        /// Deregisters the entity from the system.
+        /// </summary>
+        static public void DeregisterType()
+        {
+        	throw new NotImplementedException();
+        }
+
     }
 }

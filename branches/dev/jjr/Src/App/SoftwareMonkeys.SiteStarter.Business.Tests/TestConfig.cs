@@ -7,7 +7,7 @@ using System.Xml;
 using SoftwareMonkeys.SiteStarter.Configuration;
 using System.Collections;
 
-namespace SoftwareMonkeys.SiteStarter.Tests
+namespace SoftwareMonkeys.SiteStarter.Business.Tests
 {
 	/// <summary>
 	/// Holds the configuration settings for the application.
@@ -412,11 +412,11 @@ namespace SoftwareMonkeys.SiteStarter.Tests
 
 
 
-        private ConfigurationDictionary settings;
+        private IConfigurationDictionary settings;
         /// <summary>
         /// Gets/sets the flexible settings collection.
         /// </summary>
-        public ConfigurationDictionary Settings
+        public IConfigurationDictionary Settings
         {
             get { return settings; }
             set { settings = value; }
@@ -426,7 +426,7 @@ namespace SoftwareMonkeys.SiteStarter.Tests
         /// <summary>
         /// Gets/sets the title of the application.
         /// </summary>
-        public string Title
+        string IAppConfig.Title
         {
             get { return title; }
             set { title = value; }

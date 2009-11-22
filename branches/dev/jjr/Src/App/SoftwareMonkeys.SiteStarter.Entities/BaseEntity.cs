@@ -2,6 +2,7 @@ using System;
 using System.Data;
 using System.Configuration;
 using System.Web;
+using SoftwareMonkeys.SiteStarter.Configuration;
 
 namespace SoftwareMonkeys.SiteStarter.Entities
 {
@@ -19,6 +20,11 @@ namespace SoftwareMonkeys.SiteStarter.Entities
         {
             get { return id; }
             set { id = value; }
+        }
+        
+        public virtual string ShortTypeName
+        {
+        	get { return GetType().Name; }
         }
 
         /// <summary>
