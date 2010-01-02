@@ -24,7 +24,6 @@
   		<call target="Common.Jobs.ConfigureIIS"/>
   		<call target="Common.Jobs.ImportLibrariesToWWW"/>
   		<call target="Common.Jobs.ArchiveLogs"/>
-  		<call target="Common.Jobs.InstallModules"/>
   		<!--call target="Common.Jobs.ResetSiteMap"/-->
 	</target>
 	

@@ -48,8 +48,6 @@
 
 </loadtasks> 
 		
-		
-		<!--include buildfile="Common.Jobs.BuildProject.nant"/-->
 
   		
 	<target name="Common.Start.BuildSolution-Full" description="Builds the current solution in both Debug and Release mode">		
