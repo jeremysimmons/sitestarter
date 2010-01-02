@@ -5,6 +5,7 @@
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Entities" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
 <script runat="server">
     #region Main functions
     /// <summary>
@@ -79,38 +80,41 @@
 
     private void UpdateUser()
     {
-        // Get a fresh copy of the user object
-        User user = (User)UserFactory.Current.GetUser(((User)DataForm.DataSource).ID);
-
-		string originalUsername = user.Username;
-        string originalPassword = user.Password;
-        bool editingSelf = (My.Username == user.Username);
-
-        // Transfer data from the form to the object
-        DataForm.ReverseBind(user);
-
-        if (user.Password != null && user.Password != String.Empty)
-            user.Password = Crypter.EncryptPassword(user.Password);
-        else
-            user.Password = originalPassword;
-        
-        // Update the user
-        if (UserFactory.Current.UpdateUser(user))
-        {        
-            // Display the result to the user
-            Result.Display(Resources.Language.UserUpdated);
-            
-            // If the user changed their own username they need to sign in again
-            if (editingSelf
-            	&& !originalUsername.Equals(user.Username))
-            	Response.Redirect("../Members/Logout.aspx");
-
-            // Show the index again
-            ManageUsers();
-        }
-        else
-        {
-            Result.DisplayError(Resources.Language.UsernameTaken);
+    	using (LogGroup logGroup = AppLogger.StartGroup("Updating the user from the form.", NLog.LogLevel.Debug))
+    	{
+	        // Get a fresh copy of the user object
+	        User user = (User)UserFactory.Current.GetUser(((User)DataForm.DataSource).ID);
+	
+			string originalUsername = user.Username;
+	        string originalPassword = user.Password;
+	        bool editingSelf = (My.Username == user.Username);
+	
+	        // Transfer data from the form to the object
+	        DataForm.ReverseBind(user);
+	
+	        if (user.Password != null && user.Password != String.Empty)
+	            user.Password = Crypter.EncryptPassword(user.Password);
+	        else
+	            user.Password = originalPassword;
+	        
+	        // Update the user
+	        if (UserFactory.Current.UpdateUser(user))
+	        {        
+	            // Display the result to the user
+	            Result.Display(Resources.Language.UserUpdated);
+	            
+	            // If the user changed their own username they need to sign in again
+	            if (editingSelf
+	            	&& !originalUsername.Equals(user.Username))
+	            	Response.Redirect("../Members/Logout.aspx");
+	
+	            // Show the index again
+	            ManageUsers();
+	        }
+	        else
+	        {
+	            Result.DisplayError(Resources.Language.UsernameTaken);
+	        }
         }
     }
 

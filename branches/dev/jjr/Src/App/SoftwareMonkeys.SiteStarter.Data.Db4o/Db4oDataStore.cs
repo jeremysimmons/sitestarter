@@ -171,28 +171,31 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			using (LogGroup logGroup = AppLogger.StartGroup("Preparing entity for saving: " + entity.GetType().ToString(), NLog.LogLevel.Debug))
 			{
-				if (entity != null)
+				if (entity == null)
+					throw new ArgumentNullException("entity");
+				
+				Type entityType = entity.GetType();
+				
+				foreach (EntityIDReference reference in EntitiesUtilities.GetRemovedReferenceIDs(entity))
 				{
-					
-					foreach (EntityIDReference reference in EntitiesUtilities.GetRemovedReferenceIDs(entity))
-					{
-						toDelete.Add(reference);
-					}
-					
-					foreach (EntityIDReference reference in EntitiesUtilities.GetReferences(entity))
-					{
-						toUpdate.Add(reference.ToData());
-					}
-					
-					//  Clear all the references from the entity once they're ready to be saved separately
-					/*foreach (PropertyInfo property in entity.GetType().GetProperties())
-					{
-						if (EntitiesUtilities.IsReference(entity, property.Name, property.PropertyType))
-						{
-							Reflector.SetPropertyValue(entity, property.Name, null);
-						}
-					}*/
+					toDelete.Add(reference);
 				}
+				
+				foreach (EntityIDReference reference in EntitiesUtilities.GetReferences(entity))
+				{
+					toUpdate.Add(reference.ToData());
+				}
+				
+				//  Clear all the references from the entity once they're ready to be saved separately
+				foreach (PropertyInfo property in entityType.GetProperties())
+				{
+					if (EntitiesUtilities.IsReference(entityType, property.Name, property.PropertyType))
+					{
+						Reflector.SetPropertyValue(entity, property.Name, null);
+					}
+				}
+				
+				DataUtilities.StripReferences(entity);
 			}
 			
 			entitiesToUpdate = toUpdate.ToArray();
@@ -204,7 +207,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			IEntity[] toUpdate = new IEntity[]{};
 			IEntity[] toDelete = new IEntity[]{};
 			
-			PreSave(entity, out toUpdate, out toDelete);
+			// Clone the entity, but do it in reverse so the data store is dealing with the bound instance.
+			// The entity needs to be cloned so that the one currently in memory doesn't reflect the preparations applied before saving/updating.
+			IEntity clonedEntity = entity;
+			entity = clonedEntity.Clone();
+			
+			PreSave(clonedEntity, out toUpdate, out toDelete);
 
 			// Update any entities that were modified (eg. references)
 			foreach (IEntity entityToUpdate in toUpdate)
@@ -220,11 +228,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			//}
 
 
-			if (entity != null)
+			if (clonedEntity != null)
 			{
 				
 				// Save the entity
-				ObjectContainer.Store(entity);
+				ObjectContainer.Store(clonedEntity);
 				ObjectContainer.Commit();
 			}
 		}
@@ -239,35 +247,48 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				AppLogger.Debug("Entity type: " + entity.GetType().ToString());
 				AppLogger.Debug("Entity ID : " + entity.ID);
 				
-				if (entity != null)
+				if (entity == null)
+					throw new ArgumentNullException("entity");
+				
+				EntityReferenceCollection latestReferences = EntitiesUtilities.GetReferences(entity);
+				
+				using (LogGroup logGroup2 = AppLogger.StartGroup("Creating list of deletable obsolete references.", NLog.LogLevel.Debug))
 				{
-					EntityReferenceCollection latestReferences = EntitiesUtilities.GetReferences(entity);
-					
 					// Delete the old references
-					foreach (EntityIDReference reference in DataAccess.Data.GetObsoleteReferences(entity, new Collection<IEntity>(latestReferences.GetReferencedEntities(entity)).IDs))
+					foreach (EntityIDReference reference in DataAccess.Data.GetObsoleteReferences(entity, new Collection<IEntity>(DataUtilities.GetReferencedEntities(latestReferences, entity)).IDs))
 					{
+						DataAccess.Data.ActivateReference((EntityReference)reference);
+						
+						AppLogger.Debug("Reference type #1: " + reference.TypeName1);
+						AppLogger.Debug("Reference ID #1: " + reference.Entity1ID.ToString());
+						AppLogger.Debug("Reference type #2: " + reference.TypeName2);
+						AppLogger.Debug("Reference ID #2: " + reference.Entity2ID.ToString());
+						
 						toDelete.Add(reference);
 					}
-					
-					AppLogger.Debug("# to delete: " + toDelete.Count);
-					
+				}
+				
+				AppLogger.Debug("# to delete: " + toDelete.Count);
+				
+				using (LogGroup logGroup2 = AppLogger.StartGroup("Creating list of references to be updated.", NLog.LogLevel.Debug))
+				{
 					foreach (EntityIDReference reference in latestReferences)
 					{
+						AppLogger.Debug("Reference type #1: " + reference.TypeName1);
+						AppLogger.Debug("Reference ID #1: " + reference.Entity1ID.ToString());
+						AppLogger.Debug("Reference type #2: " + reference.TypeName2);
+						AppLogger.Debug("Reference ID #2: " + reference.Entity2ID.ToString());
+						
 						Data.DataAccess.Data.ActivateReference((EntityReference)reference);
 						toUpdate.Add(reference.ToData());
 					}
-					
-					AppLogger.Debug("# to update: " + toUpdate.Count);
-					
-					//  Clear all the references from the entity once they're ready to be saved separately
-					/*foreach (PropertyInfo property in entity.GetType().GetProperties())
-				{
-					if (EntitiesUtilities.IsReference(entity, property.Name, property.PropertyType))
-					{
-						Reflector.SetPropertyValue(entity, property.Name, null);
-					}
-				}*/
 				}
+				
+				AppLogger.Debug("# to update: " + toUpdate.Count);
+				
+				
+				DataUtilities.StripReferences(entity);
+				
 				
 				entitiesToUpdate = toUpdate.ToArray();
 				entitiesToDelete = toDelete.ToArray();
@@ -279,26 +300,56 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			IEntity[] toUpdate = new IEntity[]{};
 			IEntity[] toDelete = new IEntity[]{};
 			
-			// Preupdate must be called to ensure all references are correctly stored
-			PreUpdate(entity, out toUpdate, out toDelete);
-			
-			// Update any entities that were modified (eg. references)
-			foreach (IEntity entityToUpdate in toUpdate)
+			using (LogGroup logGroup = AppLogger.StartGroup("Updating the provided entity.", NLog.LogLevel.Debug))
 			{
-				DataAccess.Data.Stores[entityToUpdate].Update((IEntity)entityToUpdate);
-			}
-			
-			// Delete any entities that are obsolete (eg. references)
-			foreach (IEntity entityToDelete in toDelete)
-			{
-				DataAccess.Data.Stores[entityToDelete].Delete((IEntity)entityToDelete);
-			}
-
-			if (entity != null)
-			{
-				ObjectContainer.Store(entity);
+				if (entity == null)
+					throw new ArgumentNullException("entity");
 				
-				ObjectContainer.Commit();
+				AppLogger.Debug("Entity type: " + entity.GetType().ToString());
+				AppLogger.Debug("Entity ID: " + entity.ID);
+				
+				// Clone the entity, but do it in reverse so the data store is dealing with the bound instance/
+				// The entity needs to be cloned so that the one currently in memory doesn't reflect the preparations applied before saving/updating.
+				IEntity clonedEntity = entity;
+				entity = clonedEntity.Clone();
+				
+				AppLogger.Debug("Entity cloned");
+				
+				if (clonedEntity == entity)
+					AppLogger.Debug("Cloned entity == original entity.");
+				else
+					AppLogger.Debug("Cloned entity == separate instance.");
+				
+				// Preupdate must be called to ensure all references are correctly stored
+				PreUpdate(clonedEntity, out toUpdate, out toDelete);
+				
+				using (LogGroup logGroup2 = AppLogger.StartGroup("Updating all other entities that need updating.", NLog.LogLevel.Debug))
+				{
+					// Update any entities that were modified (eg. references)
+					foreach (IEntity entityToUpdate in toUpdate)
+					{
+						DataAccess.Data.Stores[entityToUpdate].Update((IEntity)entityToUpdate);
+					}
+				}
+				
+				
+				using (LogGroup logGroup2 = AppLogger.StartGroup("Deleting all entities that need to be deleted.", NLog.LogLevel.Debug))
+				{
+					// Delete any entities that are obsolete (eg. references)
+					foreach (IEntity entityToDelete in toDelete)
+					{
+						DataAccess.Data.Stores[entityToDelete].Delete((IEntity)entityToDelete);
+					}
+				}
+				
+				if (clonedEntity != null)
+				{
+					ObjectContainer.Store(clonedEntity);
+					AppLogger.Debug("Entity updated.");
+					
+					ObjectContainer.Commit();
+					AppLogger.Debug("ObjectContainer committed.");
+				}
 			}
 		}
 
@@ -332,6 +383,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			IEntity[] toUpdate = new IEntity[]{};
 			IEntity[] toDelete = new IEntity[]{};
+			
+			// The entity doesn't need to be cloned in this one
 			
 			// Preupdate must be called to ensure all references are correctly managed
 			PreDelete(entity, out toUpdate, out toDelete);

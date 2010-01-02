@@ -39,6 +39,8 @@ namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
         	AppConfig config = (AppConfig)Configuration.Config.Application;
             
             string title = config.Title = "Test1";
+            config.Settings["TestSetting"] = "TestValue";
+            config.Settings["TestSetting2"] = true;
             
             ConfigFactory<AppConfig>.SaveConfig(fullPath, config, "");
 
@@ -50,6 +52,8 @@ namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
             Assert.IsNotNull(config2);
             
             Assert.AreEqual("Test1", config2.Title, "Titles don't match.");
+            Assert.AreEqual("TestValue", config2.Settings["TestSetting"], "Test setting 1 doesn't match.");
+            Assert.AreEqual(true, config2.Settings["TestSetting2"], "Test setting 2 doesn't don't match.");
         }
         #endregion
 

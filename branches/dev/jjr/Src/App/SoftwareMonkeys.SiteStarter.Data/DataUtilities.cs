@@ -143,7 +143,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				if (Config.Mappings == null)
 					throw new  InvalidOperationException("No mappings have been initialized.");
 				
-				Type actualType = GetType(type.Name);
+				Type actualType = EntitiesUtilities.GetType(type.Name);
 				
 				if (actualType == null)
 					actualType = type;
@@ -242,8 +242,8 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				AppLogger.Debug("Type name 0: " + typeNames[0]);
 				AppLogger.Debug("Type name 1: " + typeNames[1]);
 				
-				Type type0 = GetType(typeNames[0]);
-				Type type1 = GetType(typeNames[1]);
+				Type type0 = EntitiesUtilities.GetType(typeNames[0]);
+				Type type1 = EntitiesUtilities.GetType(typeNames[1]);
 				
 				AppLogger.Debug("Type 0: " + type0.ToString());
 				AppLogger.Debug("Type 1: " + type1.ToString());
@@ -252,7 +252,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					GetDataStoreName(type0),
 					GetDataStoreName(type1)
 				};
-								
+				
 				returnName = dataStoreNames[0] + "-" + dataStoreNames[1];
 				
 				AppLogger.Debug("Data store name: " + returnName);
@@ -266,7 +266,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			Type type = null;
 
 			using (LogGroup group = AppLogger.StartGroup("Retrieving the type of entity being referenced by the provided property.", NLog.LogLevel.Debug))
-			{
+			{				
 				if (entity == null)
 					throw new ArgumentNullException("entity");
 				
@@ -277,14 +277,21 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				AppLogger.Debug("Property name: " + property.Name);
 				AppLogger.Debug("Property type: " + property.PropertyType.Name);
 				
-				if (property.PropertyType.IsSubclassOf(typeof(IEntity)))
+				type = EntitiesUtilities.GetReferenceType(entity.GetType(), property);
+				
+				/*if (typeof(IEntity).IsAssignableFrom(property.PropertyType))
 				{
+					AppLogger.Debug("typeof(IEntity).IsAssignableFrom(property.PropertyType)");
 					type = property.PropertyType;
 				}
 				else
 				{
-					type = property.PropertyType.GetGenericArguments()[0];
-				}
+					AppLogger.Debug("!typeof(IEntity).IsAssignableFrom(property.PropertyType)");
+					
+					EntityReference reference = EntitiesUtilities.GetReferen
+					
+					//type = property.PropertyType.GetGenericArguments()[0];
+				}*/
 				
 				/*if (property.PropertyType.FullName == typeof(EntityIDReference).FullName
 				    || property.PropertyType.FullName == typeof(EntityReference).FullName)
@@ -321,7 +328,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					//if (reference != null)
 						type = GetType(collection.ReferenceTypeName);//reference.TypeNames[1]);
 				}
-				*/
+				 */
 				/*if (property == null)
 					throw new ArgumentNullException("property");
 
@@ -359,62 +366,88 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			return type;
 		}
 		
-		static public Type GetType(string typeName)
+		/// <summary>
+		/// Checks whether the specified counter is within the specified page.
+		/// </summary>
+		/// <param name="i">The counter of the items being paged.</param>
+		/// <param name="pageIndex">The index of the page to retrieve.</param>
+		/// <param name="pageSize">The number of items on each page.</param>
+		/// <returns>A flag indicating whether the specified counter is within the specified page.</returns>
+		static public bool IsInPage(int i, int pageIndex, int pageSize)
 		{
-			Type returnType = null;
+			int first = (pageIndex * pageSize);
+			int last = (pageIndex * pageSize) + pageSize;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the actual type based on the specified type/alias.", NLog.LogLevel.Debug))
+			return i >= first
+				&& i <= last;
+			
+		}
+		
+		
+		static public IEntity[] GetReferencedEntities(EntityReferenceCollection references, IEntity entity)
+		{
+			Collection<IEntity> collection = new Collection<IEntity>();
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Getting the referenced entities from the provided entity.", NLog.LogLevel.Debug))
 			{
-				if (typeName == null || typeName == String.Empty)
-					throw new ArgumentNullException("typeName");
+				if (entity == null)
+					throw new ArgumentNullException("entity");
 				
-				AppLogger.Debug("Type name: " + typeName);
-				
-				IMappingItem mappingItem = Config.Mappings.GetItem<IMappingItem>(typeName, true);
-				if (mappingItem == null)
-					throw new InvalidOperationException("No mapping item found for type " + typeName);
-				
-				string alias = String.Empty;
-				if (mappingItem.Settings.ContainsKey("Alias"))
-					alias = (string)mappingItem.Settings["Alias"];
-				
-				if (mappingItem.Settings == null || mappingItem.Settings.Count == 0)
-					AppLogger.Debug("No settings defined for this mapping item.");
-				else
-					AppLogger.Debug(mappingItem.Settings.Count.ToString() + " settings found for this mapping item.");
-				
-				// If no alias is specified then use the FullName specified
-				if (alias == null || alias == String.Empty)
+				foreach (EntityReference reference in references)
 				{
-					AppLogger.Debug("No alias. This is the actual type.");
+					AppLogger.Debug("Reference type #1: " + reference.TypeName1);
+					AppLogger.Debug("Reference ID #1: " + reference.Entity1ID.ToString());
+					AppLogger.Debug("Reference type #2: " + reference.TypeName2);
+					AppLogger.Debug("Reference ID #2: " + reference.Entity2ID.ToString());
 					
-					string fullTypeName = String.Empty;
-					if (mappingItem.Settings.ContainsKey("FullName"))
-						fullTypeName = (string)mappingItem.Settings["FullName"];
+					DataAccess.Data.ActivateReference(reference);
+					
+					IEntity otherEntity = reference.GetOtherEntity(entity);
+					
+					if (otherEntity != null)
+					{
+						AppLogger.Debug("Other entity type: " + otherEntity.GetType().ToString());
+						AppLogger.Debug("Other entity ID: " + otherEntity.ID.ToString());
+						
+						collection.Add(otherEntity);
+					}
 					else
-						throw new InvalidOperationException("No 'FullName' specified in mappings for type " + typeName);
-					
-					
-					string assemblyName = String.Empty;
-					if (mappingItem.Settings.ContainsKey("AssemblyName"))
-						assemblyName = (string)mappingItem.Settings["AssemblyName"];
-					else
-						throw new InvalidOperationException("No 'AssemblyName' specified in mappings for type " + typeName);
-					
-					returnType = Type.GetType(fullTypeName + ", " + assemblyName);
-					
-					AppLogger.Debug("Returning type: " + returnType.ToString());
-					
-				}
-				else
-				{
-					AppLogger.Debug("Alias: " + alias);
-					// Use the alias if specified
-					returnType = GetType(alias);
+					{
+						AppLogger.Debug("Other entity == null");
+					}
 				}
 			}
 			
-			return returnType;
+			return collection.ToArray();
 		}
+		
+		static public void StripReferences(IEntity entity)
+		{
+			using (LogGroup logGroup2 = AppLogger.StartGroup("Clearing all the object references so that they don't cascade automatically.", NLog.LogLevel.Debug))
+			{
+				if (entity is EntityIDReference)
+				{
+					((EntityReference)entity).Deactivate();
+				}
+				else
+				{
+					//  Clear all the references from the entity once they're ready to be saved separately
+					foreach (PropertyInfo property in entity.GetType().GetProperties())
+					{
+						AppLogger.Debug("Property name: " + property.Name);
+						AppLogger.Debug("Property type: " + property.PropertyType.ToString());
+						
+						// If the property is a reference
+						// OR the actual provided entity is a reference AND the property holds an IEntity instance
+						if (EntitiesUtilities.IsReference(entity.GetType(), property.Name, property.PropertyType))
+						{
+							AppLogger.Debug("Cleared property. (Set to null)");
+							Reflector.SetPropertyValue(entity, property.Name, null);
+						}
+					}
+				}
+			}
+		}
+		
 	}
 }

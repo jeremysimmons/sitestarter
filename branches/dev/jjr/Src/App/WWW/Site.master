@@ -1,6 +1,7 @@
 <%@ Master Language="C#" AutoEventWireup="true" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.State" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Configuration" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,6 +9,16 @@
 private void Page_Load(object sender, EventArgs e)
 {
 		MenuSource.DataBind();
+		
+        EnsureSetup();
+}
+
+
+private void EnsureSetup()
+{
+	if (!Config.IsInitialized
+		&& Request.Url.ToString().ToLower().IndexOf("/setup.aspx") == -1)
+		HttpContext.Current.Response.Redirect(Request.ApplicationPath + "/Admin/Setup.aspx");
 }
 
 private string GetMenuDataFile()

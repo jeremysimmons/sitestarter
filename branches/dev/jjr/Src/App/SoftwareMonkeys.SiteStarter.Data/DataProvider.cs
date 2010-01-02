@@ -60,6 +60,9 @@ namespace SoftwareMonkeys.SiteStarter.Data
         
         public abstract IEntity[] GetEntities(Type type, string propertyName, object propertyValue);
         public abstract IEntity GetEntity(Type type, string propertyName, object propertyValue);
+        
+        public abstract T[] GetEntitiesMatchReference<T>(string propertyName, Guid referencedEntityID)
+        	where T : IEntity;
 
         public abstract T[] GetEntitiesPage<T>(int pageIndex, int pageSize, string sortExpression, out int totalObjects)
         	where T : IEntity;
@@ -69,6 +72,9 @@ namespace SoftwareMonkeys.SiteStarter.Data
         public abstract IEntity[] GetEntitiesPage(Type type, int pageIndex, int pageSize, string sortExpression, out int totalObjects);
         public abstract IEntity[] GetEntitiesPage(Type type, string fieldName, object fieldValue, int pageIndex, int pageSize, string sortExpression, out int totalObjects);
 
+        public abstract T[] GetEntitiesPageMatchReference<T>(string propertyName, Guid referencedEntityID, int pageIndex, int pageSize, string sortExpression, out int totalObjects)
+        	where T : IEntity;
+        
         /// <summary>
 		/// Retrieves all the entities of the specified type matching the specified values.
 		/// </summary>
@@ -107,9 +113,15 @@ namespace SoftwareMonkeys.SiteStarter.Data
         /// Retrieves all the references to the entities provided.
         /// </summary>
         /// <returns>The references to the entities provided.</returns>
-        public abstract EntityReferenceCollection GetReferences(IEntity entity, Type referenceType, bool fullActivation);
+        public abstract EntityReferenceCollection GetReferences(IEntity entity, string propertyName, Type referenceType, bool fullActivation);
         
-        public abstract EntityReferenceCollection GetObsoleteReferences(IEntity entity, Type referenceType, Guid[] idsOfEntitiesToKeep);
+        /// <summary>
+        /// Retrieves the reference from the specified entity to the entity matching the specified type and the specified ID.
+        /// </summary>
+        /// <returns>The reference matching the parameters.</returns>
+        public abstract EntityReference GetReference(IEntity entity, string propertyName, Type referenceType, Guid referenceEntityID, string mirrorPropertyName, bool activateAll);
+        
+        public abstract EntityReferenceCollection GetObsoleteReferences(IEntity entity, string propertyName, Type referenceType, Guid[] idsOfEntitiesToKeep);
         	
         public abstract EntityReferenceCollection GetObsoleteReferences(IEntity entity, Guid[] idsOfEntitiesToKeep);
         	
@@ -118,9 +130,15 @@ namespace SoftwareMonkeys.SiteStarter.Data
 	public abstract void Update(IEntity entity);
 	public abstract void Delete(IEntity entity);
 	
+	
+	public abstract void Activate(IEntity[] entity);
+	public abstract void Activate(IEntity[] entity, int depth);
 	public abstract void Activate(IEntity entity);
+	public abstract void Activate(IEntity entity, int depth);
 	public abstract void Activate(IEntity entity, string propertyName);
+	public abstract void Activate(IEntity entity, string propertyName, int depth);
 	public abstract void Activate(IEntity entity, string propertyName, Type propertyType);
+	public abstract void Activate(IEntity entity, string propertyName, Type propertyType, int depth);
 	public abstract void ActivateReference(EntityReference reference);
 	#endregion
     }

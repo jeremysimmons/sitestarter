@@ -62,18 +62,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entities\TestEntity.cs" />
-    <Compile Include="Entities\EntityOne.cs" />
-    <Compile Include="Entities\EntityTwo.cs" />
-    <Compile Include="Entities\TestArticle.cs" />
-    <Compile Include="Entities\TestArticlePage.cs" />
-    <Compile Include="Entities\TestCategory.cs" />
-    <Compile Include="Entities\TestSample.cs" />
     <Compile Include="ExampleTests.cs" />
     <Compile Include="TestConfig.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

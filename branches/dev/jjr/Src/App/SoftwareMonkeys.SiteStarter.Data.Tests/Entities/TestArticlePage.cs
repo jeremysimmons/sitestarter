@@ -7,6 +7,7 @@ using SoftwareMonkeys.SiteStarter.Configuration;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Tests.Entities
 {
+	[Serializable]
     [DataStore("Testing")]
     public class TestArticlePage : BaseEntity
     {
@@ -15,27 +16,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests.Entities
         {
             get { return title; }
             set { title = value; }
-        }
-
-        private Guid articleID;
-        /// <summary>
-        /// Gets/sets the ID of the article that the step belongs to.
-        /// </summary>
-        [Reference]
-        public Guid ArticleID
-        {
-            get
-            {
-                if (article != null)
-                    return article.ID;
-                return articleID;
-            }
-            set
-            {
-                articleID = value;
-                if (article != null && article.ID != value)
-                    article = null;
-            }
         }
 
         private ITestArticle article;

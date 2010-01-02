@@ -49,7 +49,12 @@
 			{
 				HyperLink link = new HyperLink();
 				link.Text = Path.GetFileName(directory);
-				link.NavigateUrl = Request.Url + "?LogDate=" + Path.GetFileName(directory);
+				string urlStart = Request.Url.ToString();
+				if (urlStart.IndexOf("?") > -1)
+					urlStart += "&";
+				else
+					urlStart += "?";
+				link.NavigateUrl = urlStart + "LogDate=" + Path.GetFileName(directory);
 				OutputHolder.Controls.Add(link);
 				OutputHolder.Controls.Add(new LiteralControl("<br/>"));
 			}
@@ -62,9 +67,26 @@
 	{
 		string logRoot = LogsDir + "\\" + Request.QueryString["LogDate"];
 
+		string indexFile = logRoot + @"\Detail\Index.xml";
+
 		LogUtilities.AnalyzeLog(logRoot);
 
-		string[] fileNames = Directory.GetFiles(logRoot + @"\Detail");
+		XmlDocument indexDoc = new XmlDocument();
+		indexDoc.Load(indexFile);
+
+		foreach (XmlNode node in indexDoc.DocumentElement)
+		{
+				Guid id = new Guid(node.Attributes["ID"].Value);
+				string title = node.Attributes["Title"].Value;
+
+				HyperLink link = new HyperLink();
+				link.Text = title;
+				link.NavigateUrl = Request.Url + "&LogThread=" + id;
+				OutputHolder.Controls.Add(link);
+				OutputHolder.Controls.Add(new LiteralControl("<br/>"));
+		}
+
+		/*string[] fileNames = Directory.GetFiles(logRoot + @"\Detail");
 
 		// Now read the creation time for each file
 		DateTime[] creationTimes = new DateTime[fileNames.Length];
@@ -81,7 +103,7 @@
 				link.NavigateUrl = Request.Url + "&LogThread=" + LogUtilities.PrepareFileName(Path.GetFileNameWithoutExtension(file));
 				OutputHolder.Controls.Add(link);
 				OutputHolder.Controls.Add(new LiteralControl("<br/>"));
-			}
+			}*/
 	}
 
     private void PrepareLogContents()
@@ -91,7 +113,7 @@
 	string logDate = Request.QueryString["LogDate"];
 	string logThread = Request.QueryString["LogThread"];
 
-	string logPath = Server.MapPath(Request.ApplicationPath + "/App_Data/Logs/" + logDate + "/Detail/" + LogUtilities.PrepareFileName(logThread) + ".xml");
+	string logPath = Server.MapPath(Request.ApplicationPath + "/App_Data/Logs/" + logDate + "/Detail/" + logThread + ".xml");
 
 	if (File.Exists(logPath))
 	{
@@ -171,12 +193,15 @@
 		//output += HttpUtility.HtmlEncode(timestamp);
 		//output += "<br/>";
 		output += HttpUtility.HtmlEncode(data);
+		output += "<div style='font-size:x-small; color:gray;'>";
+		
+		output += HttpUtility.HtmlEncode(src);
+		
+		output += "</div>";
 
 		output += "<div style='display:none;' id='" + id + "_Expand' class='LogBox'>";
 
 		//output += "<div>";
-		output += HttpUtility.HtmlEncode(src);
-		output += " - ";
 		output += HttpUtility.HtmlEncode(timestamp);
 		//output += "</div>";
 
@@ -261,6 +286,7 @@
 		}
 	}
 	</script>
+	<div class="Heading1">Log</div>
 <asp:Panel runat="server" id="OutputHolder"></asp:Panel>
 	
 	</asp:Content>

@@ -16,13 +16,13 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 	{
 		#region Load functions
 
-			/// <summary>
-			/// Loads the config file at the specified path.
-			/// </summary>
-			/// <param name="configPath">The physical path to the config file.</param>
-			/// <param name="type">The type of configuration object to load.</param>
-			/// <returns>The config from the specified path.</returns>
-			static public T LoadConfig(string configPath, string name, string variation)
+		/// <summary>
+		/// Loads the config file at the specified path.
+		/// </summary>
+		/// <param name="configPath">The physical path to the config file.</param>
+		/// <param name="type">The type of configuration object to load.</param>
+		/// <returns>The config from the specified path.</returns>
+		static public T LoadConfig(string configPath, string name, string variation)
 		{
 			if (configPath.ToLower().IndexOf(".config") == -1)
 				configPath = CreateConfigPath(configPath, name, variation);
@@ -113,39 +113,60 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 		{
 			SaveConfig(physicalDataDirectoryPath, typeof(T), config, variation);
 		}*/
-		
-		/// <summary>
-		/// Saves the provided configuration object to file.
-		/// </summary>
-		/// <param name="physicalDataDirectoryPath">The physical path to the data directory.</param>
-		/// <param name="config">The configuration object to save.</param>
-		/// <param name="variation">The variation to be applied to the configuration file (ie. local, staging, etc.).</param>
-		static public void SaveConfig(string physicalDataDirectoryPath, T config, string variation)
+			
+			/// <summary>
+			/// Saves the provided configuration object to file.
+			/// </summary>
+			/// <param name="physicalDataDirectoryPath">The physical path to the data directory.</param>
+			/// <param name="config">The configuration object to save.</param>
+			/// <param name="variation">The variation to be applied to the configuration file (ie. local, staging, etc.).</param>
+			static public void SaveConfig(string physicalDataDirectoryPath, T config, string variation)
 		{			
-			// Check if it's the application level configuration object
-			if (config is IAppConfig)
-				Config.Application = (IAppConfig)config;
-
-			string name = config.Name;
-			config.PathVariation = variation;
-			
-			// All virtual server config files should be named VirtualServer.config because they have separate directories
-			if (config is IVirtualServerConfig)
-				name = "VirtualServer";
-			
-			string configPath = CreateConfigPath(physicalDataDirectoryPath, name, variation);
-
-			if (!Directory.Exists(physicalDataDirectoryPath))
-				Directory.CreateDirectory(physicalDataDirectoryPath);
-
-			using (FileStream stream = File.Create(configPath))
+			using (LogGroup logGroup = AppLogger.StartGroup("Saving configuration file.", NLog.LogLevel.Debug))
 			{
-				XmlSerializer serializer = new XmlSerializer(typeof(T));
-				serializer.Serialize(stream, config);
-				stream.Close();
+				AppLogger.Debug("Physical data directory path: " + physicalDataDirectoryPath);
+				AppLogger.Debug("Config type: " + config == null ? "[null]" : config.GetType().ToString());
+				AppLogger.Debug("Variation: " + variation);
+				AppLogger.Debug("Config name: " + config.Name);
+				
+				// Check if it's the application level configuration object
+				if (config is IAppConfig)
+				{
+					AppLogger.Debug("The configuration object is derived from IAppConfig. Setting it to Config.Application.");
+					Config.Application = (IAppConfig)config;
+				}
+
+				string name = config.Name;
+				config.PathVariation = variation;
+				
+				// All virtual server config files should be named VirtualServer.config because they have separate directories
+				if (config is IVirtualServerConfig)
+				{
+					AppLogger.Debug("The configuration object is derived from IVirtualServerConfig. Setting the name of it to 'VirtualServer'.");
+					
+					name = "VirtualServer";
+				}
+				
+				string configPath = CreateConfigPath(physicalDataDirectoryPath, name, variation);
+				
+				AppLogger.Debug("Configuration path: " + configPath);
+
+				if (!Directory.Exists(physicalDataDirectoryPath))
+					Directory.CreateDirectory(physicalDataDirectoryPath);
+
+				using (FileStream stream = File.Create(configPath))
+				{
+					AppLogger.Debug("Created configuration file stream");
+					XmlSerializer serializer = new XmlSerializer(typeof(T));
+					serializer.Serialize(stream, config);
+					AppLogger.Debug("Serialized config to file");
+					stream.Close();
+				}
+				
+				Config.All.Add(config);
+				
+				AppLogger.Debug("Configuration file added to Config.All.");
 			}
-			
-			Config.All.Add(config);
 		}
 		#endregion
 

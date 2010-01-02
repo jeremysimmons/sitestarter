@@ -70,11 +70,29 @@ namespace SoftwareMonkeys.SiteStarter.Web.Properties {
 		}
 		
 		/// <summary>
+		///   Looks up a localized string similar to Index.
+		/// </summary>
+		internal static string Index {
+			get {
+				return ResourceManager.GetString("Index", resourceCulture);
+			}
+		}
+		
+		/// <summary>
 		///   Looks up a localized string similar to Name.
 		/// </summary>
 		internal static string Name {
 			get {
 				return ResourceManager.GetString("Name", resourceCulture);
+			}
+		}
+		
+		/// <summary>
+		///   Looks up a localized string similar to No tests found..
+		/// </summary>
+		internal static string NoTestsFound {
+			get {
+				return ResourceManager.GetString("NoTestsFound", resourceCulture);
 			}
 		}
 		
@@ -93,6 +111,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.Properties {
 		internal static string Register {
 			get {
 				return ResourceManager.GetString("Register", resourceCulture);
+			}
+		}
+		
+		/// <summary>
+		///   Looks up a localized string similar to Run.
+		/// </summary>
+		internal static string Run {
+			get {
+				return ResourceManager.GetString("Run", resourceCulture);
 			}
 		}
 		

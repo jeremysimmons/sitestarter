@@ -30,9 +30,26 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
         {
             throw new Exception("The method or operation is not implemented.");
         }
+        
+        #region Application state
+        public override bool ContainsApplication(string key)
+        {
+        	if (key == String.Empty)
+        		throw new ArgumentException("The provided key cannot be null or String.Empty.");
+        	
+       		if (key != String.Empty
+        	    && HttpContext.Current != null &&
+        	    HttpContext.Current.Application[key] != null)
+	            return true;
+	        else
+	        	return false;
+        }
 
         public override void SetApplication(string key, object value)
         {
+        	if (key == String.Empty)
+        		throw new ArgumentException("The provided key cannot be null or String.Empty.");
+        	
             if (key != String.Empty && HttpContext.Current != null)
             {
                 HttpContext.Current.Application[key] = value;
@@ -41,14 +58,35 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
 
         public override object GetApplication(string key)
         {
+        	if (key == String.Empty)
+        		throw new ArgumentException("The provided key cannot be null or String.Empty.");
+        	
        	if (key != String.Empty && HttpContext.Current != null)
 	            return HttpContext.Current.Application[key];
 	        else
 	        	return null;
         }
+        #endregion
+        
+        #region Session state
+        public override bool ContainsSession(string key)
+        {
+        	if (key == String.Empty)
+        		throw new ArgumentException("The provided key cannot be null or String.Empty.");
+        	
+       		if (key != String.Empty
+        	    && HttpContext.Current != null &&
+        	    HttpContext.Current.Session[key] != null)
+	            return true;
+	        else
+	        	return false;
+        }
         
         public override void SetSession(string key, object value)
         {
+        	if (key == String.Empty)
+        		throw new ArgumentException("The provided key cannot be null or String.Empty.");
+        	
             if (key != String.Empty && HttpContext.Current != null)
             {
                 HttpContext.Current.Session[key] = value;
@@ -57,11 +95,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
 
         public override object GetSession(string key)
         {
+        	if (key == String.Empty)
+        		throw new ArgumentException("The provided key cannot be null or String.Empty.");
+        	
         	if (key != String.Empty && HttpContext.Current != null && HttpContext.Current.Session != null)
 	            return HttpContext.Current.Session[key];
 	        else
 	        	return null;
         }
+        #endregion
 
         public override void Initialize(string name, System.Collections.Specialized.NameValueCollection config)
         {

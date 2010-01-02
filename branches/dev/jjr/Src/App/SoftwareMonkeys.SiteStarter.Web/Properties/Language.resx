@@ -138,4 +138,13 @@
   <data name="RunAllTests" xml:space="preserve">
     <value>Run All Tests</value>
   </data>
+  <data name="Run" xml:space="preserve">
+    <value>Run</value>
+  </data>
+  <data name="NoTestsFound" xml:space="preserve">
+    <value>No tests found.</value>
+  </data>
+  <data name="Index" xml:space="preserve">
+    <value>Index</value>
+  </data>
 </root>

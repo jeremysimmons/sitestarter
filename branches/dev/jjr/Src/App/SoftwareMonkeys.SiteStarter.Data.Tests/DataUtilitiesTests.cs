@@ -1071,9 +1071,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				e2.ID = Guid.NewGuid();
 				e2.Title = "Test 2";
 
-				e1.PageIDs = new Guid[] { e2.ID };
+				e1.Pages = new TestArticlePage[] { e2 };
 				
-				Type type =  DataUtilities.GetType("ITestArticle");
+				Type type =  EntitiesUtilities.GetType("ITestArticle");
 
 				Assert.IsNotNull(type, "Null type was returned.");
 				
@@ -1146,8 +1146,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				role.ID = Guid.NewGuid();
 				role.Name = "Test Role";
 				
-				user.Roles.Add(role);
-				role.Users.Add(user);
+				user.Roles = Collection<TestRole>.Add(user.Roles, role);
+				role.Users = Collection<TestUser>.Add(role.Users, user);
 				
 				PropertyInfo rolesProperty = user.GetType().GetProperty("Roles");
 				
@@ -1185,7 +1185,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			//PropertyInfo rolesProperty = user.GetType().GetProperty("Roles");
 			
-			Type type = DataUtilities.GetType("ITestUser");
+			Type type = EntitiesUtilities.GetType("ITestUser");
 			
 			Assert.AreEqual(type.FullName, typeof(TestUser).FullName, "The types don't match.");
 		}
@@ -1209,7 +1209,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			//PropertyInfo rolesProperty = user.GetType().GetProperty("Roles");
 			
-			Type type = DataUtilities.GetType("TestUser");
+			Type type = EntitiesUtilities.GetType("TestUser");
 			
 			Assert.AreEqual(type.FullName, typeof(TestUser).FullName, "The types don't match.");
 			
@@ -1261,7 +1261,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			}
 		}
 		
-				[Test]
+		[Test]
 		public void Test_GetDataStoreName_FromNames()
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetDataStoreName function from a provided type.", NLog.LogLevel.Debug))
@@ -1281,6 +1281,54 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 				
 				Assert.AreEqual("Testing_Articles-Testing_Articles", name, "The wrong data store name was returned.");
+			}
+		}
+		
+		[Test]
+		public void Test_IsInPage_Pre()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing the IsInPage function on an item that appears on a earlier page.", NLog.LogLevel.Debug))
+			{
+				int i = 0;
+				int pageIndex = 1;
+				int pageSize = 10;
+				
+				bool isInPage = DataUtilities.IsInPage(i, pageIndex, pageSize);
+				
+				Assert.IsFalse(isInPage, "Returned true when it shouldn't have.");
+			}
+		}
+		
+		[Test]
+		public void Test_IsInPage_In()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing the IsInPage function on an item that appears on the specified page.", NLog.LogLevel.Debug))
+			{
+				
+				int i = 5;
+				int pageIndex = 0;
+				int pageSize = 10;
+				
+				bool isInPage = DataUtilities.IsInPage(i, pageIndex, pageSize);
+				
+				
+				Assert.IsTrue(isInPage, "Returned false when it should have been true.");
+			}
+		}
+		
+		[Test]
+		public void Test_IsInPage_Post()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing the IsInPage function on an item that appears on a later page.", NLog.LogLevel.Debug))
+			{
+				
+				int i = 30;
+				int pageIndex = 1;
+				int pageSize = 10;
+				
+				bool isInPage = DataUtilities.IsInPage(i, pageIndex, pageSize);
+				
+				Assert.IsFalse(isInPage, "Returned true when it shouldn't have.");
 			}
 		}
 	}

@@ -11,19 +11,11 @@ namespace SoftwareMonkeys.SiteStarter.State
     /// </summary>
     public abstract class StateProvider : ProviderBase
     {
-     //   { get; }
-
-       // public abstract void Initialize(string name, NameValueCollection settings);
-
-       // void Dispose();
-
-     //   public abstract IDataStore InitializeDataStore(string dataStoreName);
-     //   public abstract string GetDataStoreName(Type objectType);
-     //   public abstract string[] GetDataStoreNames();
-
+        public abstract bool ContainsApplication(string key);
         public abstract void SetApplication(string key, object value);
         public abstract object GetApplication(string key);
         
+        public abstract bool ContainsSession(string key);
         public abstract void SetSession(string key, object value);
         public abstract object GetSession(string key);
     }

@@ -62,7 +62,16 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 			MappingItem item = new MappingItem("Keyword");
 			item.Settings.Add("DataStoreName", "Keywords");
+			item.Settings.Add("IsEntity", true);
+			item.Settings.Add("FullName", typeof(Keyword).FullName);
+			item.Settings.Add("AssemblyName", typeof(Keyword).Assembly.FullName);
+			
+			
+			MappingItem item2 = new MappingItem("IKeyword");
+			item2.Settings.Add("Alias", "Keyword");
+			
 			Config.Mappings.AddItem(item);
+			Config.Mappings.AddItem(item2);
 			
 		}
 		

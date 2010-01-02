@@ -6,6 +6,7 @@ using SoftwareMonkeys.SiteStarter.Configuration;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Tests.Entities
 {
+	[Serializable]
     [DataStore("Testing")]
     public class TestEntity : BaseEntity
     {

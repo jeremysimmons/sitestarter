@@ -113,7 +113,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 						
 						AppLogger.Debug("ID: Guid.Empty");
 						//if (base.TypeNames.Length > 0)
-					//		AppLogger.Debug("Short type name remains: " + base.TypeNames[1]);
+						//		AppLogger.Debug("Short type name remains: " + base.TypeNames[1]);
 						
 						//base.TypeNames[1] = String.Empty;
 						base.Entity2ID = Guid.Empty;
@@ -129,43 +129,59 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <returns></returns>
 		public IEntity GetOtherEntity(IEntity entity)
 		{
-			if (entity == null)
-				throw new ArgumentNullException("entity");
+			IEntity otherEntity = null;
 			
-			if (referenceEntity == null)
-				throw new InvalidOperationException("The referenced entity is null.");
+			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the entity from the reference that is not the one provided (ie. the other entity).", NLog.LogLevel.Debug))
+			{
+				if (entity == null)
+					throw new ArgumentNullException("entity");
+				
+				if (referenceEntity == null)
+					throw new InvalidOperationException("The referenced entity is null.");
+				
+				if (sourceEntity == null)
+					throw new InvalidOperationException("The source entity is null.");
+				
+				if (referenceEntity.ID != entity.ID)
+					otherEntity = referenceEntity;
+				else if (sourceEntity.ID != entity.ID)
+					otherEntity = sourceEntity;
+				else
+					throw new InvalidOperationException("Can't get the other entity. Both entities match.");
+				
+				AppLogger.Debug("Other entity type: " + otherEntity.GetType().ToString());
+				AppLogger.Debug("Other entity ID: " + otherEntity.ID.ToString());
+			}
 			
-			if (sourceEntity == null)
-				throw new InvalidOperationException("The source entity is null.");
-			
-			if (referenceEntity.ID != entity.ID)
-				return referenceEntity;
-			else if (sourceEntity.ID != entity.ID)
-				return sourceEntity;
-			else
-				throw new InvalidOperationException("Can't get the other entity. Both entities match.");
+			return otherEntity;
+		}
+		
+		public void Deactivate()
+		{
+			referenceEntity = null;
+			sourceEntity = null;
 		}
 	}
 }
 
-	/*/// <summary>
-	/// Description of EntityReference.
-	/// </summary>
-	[Serializable]
-	[XmlRootAttribute("EntityReference")]
-	[XmlTypeAttribute("EntityReference")]
-	public class EntityReference<E1, E2> : EntityReference, IXmlSerializable
-		where E1 : IEntity
-		where E2 : IEntity
+/*/// <summary>
+/// Description of EntityReference.
+/// </summary>
+[Serializable]
+[XmlRootAttribute("EntityReference")]
+[XmlTypeAttribute("EntityReference")]
+public class EntityReference<E1, E2> : EntityReference, IXmlSerializable
+	where E1 : IEntity
+	where E2 : IEntity
+{
+	private Guid id = Guid.NewGuid();
+	public new Guid ID
 	{
-		private Guid id = Guid.NewGuid();
-		public new Guid ID
-		{
-			get { return id; }
-			set { id = value; }
-		}
-		
-///		/// <summary>
+		get { return id; }
+		set { id = value; }
+	}
+	
+	///		/// <summary>
 //		/// Gets/sets the source entity
 //		/// </summary>
 //		[XmlIgnore]
@@ -180,12 +196,12 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 //				//if (base.SourceEntity != null)
 //				//	base.Remove(base.SourceEntity);
 //				base.SourceEntity = value;
-//				
+//
 //				//if (base.SourceEntity != null)
 //				//	base.Add(base.SourceEntity);
 //			}
 //		}
-		
+	
 //		/// <summary>
 //		/// Gets/sets the entity being referenced.
 //		/// </summary>
@@ -201,21 +217,21 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 //				//if (base.ReferenceEntity != null)
 //				//	base.Remove(base.ReferenceEntity);
 //				base.ReferenceEntity = value;
-				
+	
 //				//if (base.ReferenceEntity != null)
 //				//	base.Add(base.ReferenceEntity);
 //			}
 //		}
-		
-		/// <summary>
-		/// Empty constructor.
-		/// </summary>
-		public EntityReference()
-		{
-			TypeNames[0] = typeof(E1).Name;
-			TypeNames[1] = typeof(E2).Name;
-		}
-		
+	
+	/// <summary>
+	/// Empty constructor.
+	/// </summary>
+	public EntityReference()
+	{
+		TypeNames[0] = typeof(E1).Name;
+		TypeNames[1] = typeof(E2).Name;
+	}
+	
 //		/// <summary>
 //		/// Sets the source entity of the reference.
 //		/// </summary>
@@ -224,40 +240,40 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 //		{
 //			if (source == null)
 //				throw new ArgumentNullException("source");
-//			
+//
 //			this.sourceEntity = source;
 //			Add(source);
 //		}
-			
-			/// <summary>
-			/// Sets the source and reference entities.
-			/// </summary>
-			/// <param name="reader">The source entity.</param>
-			/// <param name="reference">The reference entity.</param>
-			public EntityReference(E1 source, E2 reference)
-		{
-			//if (source == null)
-			//	throw new ArgumentNullException("source");
-			
-			using (LogGroup logGroup = AppLogger.StartGroup("Constructing entity reference.", NLog.LogLevel.Debug))
-			{
-				if (reference == null)
-					throw new ArgumentNullException("reference");
-				
-				AppLogger.Debug("Source entity type: " + source != null ? source.GetType().ToString() : "[null]");
-				AppLogger.Debug("Reference entity type: " + reference != null ? reference.GetType().ToString() : "[null]");
-				AppLogger.Debug("Source entity ID: " + source != null ? source.ID.ToString() : "[null]");
-				AppLogger.Debug("Reference entity ID: " + reference != null ? reference.ID.ToString() : "[null]");
-				
-				
-				SourceEntity = source;
-				//Add(source);
-				ReferenceEntity = reference;
-				//Add(reference);
-				
-			}
-		}
+	
+	/// <summary>
+	/// Sets the source and reference entities.
+	/// </summary>
+	/// <param name="reader">The source entity.</param>
+	/// <param name="reference">The reference entity.</param>
+	public EntityReference(E1 source, E2 reference)
+	{
+		//if (source == null)
+		//	throw new ArgumentNullException("source");
 		
+		using (LogGroup logGroup = AppLogger.StartGroup("Constructing entity reference.", NLog.LogLevel.Debug))
+		{
+			if (reference == null)
+				throw new ArgumentNullException("reference");
+			
+			AppLogger.Debug("Source entity type: " + source != null ? source.GetType().ToString() : "[null]");
+			AppLogger.Debug("Reference entity type: " + reference != null ? reference.GetType().ToString() : "[null]");
+			AppLogger.Debug("Source entity ID: " + source != null ? source.ID.ToString() : "[null]");
+			AppLogger.Debug("Reference entity ID: " + reference != null ? reference.ID.ToString() : "[null]");
+			
+			
+			SourceEntity = source;
+			//Add(source);
+			ReferenceEntity = reference;
+			//Add(reference);
+			
+		}
+	}
+	
 //		public E GetEntity<E>()
 //			where E : IEntity
 //		{
@@ -268,7 +284,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 //			}
 //			return default(E);
 //		}
-//		
+//
 //		public void SetEntity<E>(E entity)
 //			where E : IEntity
 //		{
@@ -286,42 +302,42 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 //				Add(entity);
 //			}
 //		}
-		
+	
 //		public bool Includes(IEntity entity)
 //		{
 //			if (entity == null)
 //				throw new ArgumentNullException("entity");
-//			
+//
 //			return (SourceEntity != null && SourceEntity.ID == entity.ID)
 //				|| (ReferenceEntity != null && ReferenceEntity.ID == entity.ID);
 //		}
+	
+	public new void ReadXml ( XmlReader reader )
+	{
 		
-		public new void ReadXml ( XmlReader reader )
-		{
-			
-			base.ReadXml(reader);
-		}
+		base.ReadXml(reader);
+	}
 
-		public new void WriteXml ( XmlWriter writer )
-		{
-			base.WriteXml(writer);
-		}
+	public new void WriteXml ( XmlWriter writer )
+	{
+		base.WriteXml(writer);
+	}
+	
+	public XmlSchema GetSchema()
+	{
+		return(null);
+	}
+	
+	public override EntityIDReference ToData()
+	{
+		return this;
 		
-		public XmlSchema GetSchema()
-		{
-			return(null);
-		}
-		
-		public override EntityIDReference ToData()
-		{
-			return this;
-			
 //			/*EntityReference reference = new EntityReference();
-//			
+//
 //			using (LogGroup logGroup = AppLogger.StartGroup("Stripping this reference down to bare ID reference.", NLog.LogLevel.Debug))
 //			{
-//				
-//				
+//
+//
 //				reference.ID = this.ID;
 //				AppLogger.Debug("ID: " + reference.ID);
 //				reference.TypeNames = this.TypeNames;
@@ -339,9 +355,9 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 //					AppLogger.Debug("Entity ID 1: " + this.EntityIDs[1]);
 //				}
 //			}
-			
-//			return reference;
-		}
 		
+//			return reference;
 	}
+	
+}
 }*/

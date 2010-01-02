@@ -4,6 +4,7 @@ using System.Text;
 using NLog;
 using System.Reflection;
 using System.Diagnostics;
+using System.Configuration;
 
 namespace SoftwareMonkeys.SiteStarter.Diagnostics
 {
@@ -62,7 +63,10 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		[ Conditional("DEBUG") ]
 		public static void Debug(string message, MethodBase callingMethod)
 		{
-			logger.Info(FormatLogEntry(LogLevel.Debug, message, callingMethod, Indent));
+			if (PerformLogging(LogLevel.Debug))
+			{
+				logger.Info(FormatLogEntry(LogLevel.Debug, message, callingMethod, Indent));
+			}
 		}
 
 		#endregion
@@ -177,7 +181,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		static public LogGroup StartGroup(string summary, LogLevel logLevel, MethodBase callingMethod)
 		{
 			LogGroup newGroup = new LogGroup(summary, callingMethod);
-			newGroup.Start(callingMethod);
+			newGroup.Start(callingMethod, logLevel);
 
 			currentGroup = newGroup;
 
@@ -222,6 +226,17 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 					currentGroup = null;
 
 			}
+		}
+		
+		static public bool PerformLogging(LogLevel level)
+		{
+			if (ConfigurationSettings.AppSettings["EnableDebugLogging"].ToLower() == "true"
+			    || level != LogLevel.Debug)
+			{
+				return true;
+			}
+			else
+				return false;
 		}
 
 	}

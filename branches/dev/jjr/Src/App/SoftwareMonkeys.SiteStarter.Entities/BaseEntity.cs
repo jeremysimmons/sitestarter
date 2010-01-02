@@ -42,5 +42,15 @@ namespace SoftwareMonkeys.SiteStarter.Entities
         {
             ID = id;
         }
+        
+        public BaseEntity Clone()
+        {
+        	return ObjectCloner.Clone(this);
+        }
+        
+        IEntity IEntity.Clone()
+        {
+        	return (IEntity)this.Clone();
+        }
     }
 }

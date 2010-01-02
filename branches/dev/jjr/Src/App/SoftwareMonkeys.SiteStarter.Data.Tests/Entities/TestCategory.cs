@@ -6,6 +6,7 @@ using SoftwareMonkeys.SiteStarter.Configuration;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Tests.Entities
 {
+	[Serializable]
     [DataStore("Testing")]
     public class TestCategory : BaseEntity
     {
@@ -14,6 +15,14 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests.Entities
         {
             get { return name; }
             set { name = value; }
+        }
+        
+        private TestArticle[] articles;
+        [Reference]
+        public TestArticle[] Articles
+        {
+        	get { return articles; }
+        	set { articles = value; }
         }
         
         

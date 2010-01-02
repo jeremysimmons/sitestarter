@@ -111,7 +111,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				if (selectedEntities == null)
 				{
 					if (DataSource != null && GetDataSourceLength() > 0)
-						selectedEntities = (IEntity[])Data.DataAccess.Data.GetEntities(DataSource.GetType().GetElementType(), SelectedEntityIDs);
+						selectedEntities = (IEntity[])Data.DataAccess.Data.GetEntities(EntitiesUtilities.GetType(EntityType), SelectedEntityIDs);
 				}
 				return selectedEntities;
 			}
@@ -178,23 +178,30 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Selecting the items that match the info specified.", NLog.LogLevel.Debug))
 			{
+				Guid[] selectedEntityIDs = new Guid[] {};
+				
 				if (ViewState["SelectedEntityIDs"] != null)
 				{
-					if (((Guid[])ViewState["SelectedEntityIDs"]).Length > 0)
-					{
-						foreach (ListItem item in Items)
-						{
-							AppLogger.Debug("item.Text: " + item.Text);
-							AppLogger.Debug("item.Value: " + item.Value);
-							item.Selected = (Array.IndexOf((Guid[])ViewState["SelectedEntityIDs"], new Guid(item.Value)) > -1);
-							AppLogger.Debug("item.Selected: " + item.Selected.ToString());
-						}
-					}
-					else
-						AppLogger.Debug("((Guid[])ViewState[\"SelectedEntityIDs\"]).Length == 0");
+					AppLogger.Debug("ViewState[\"SelectedEntityIDs\"] != null");
+					
+					selectedEntityIDs = (Guid[])ViewState["SelectedEntityIDs"];
 				}
 				else
 					AppLogger.Debug("ViewState[\"SelectedEntityIDs\"] == null");
+				
+				
+				AppLogger.Debug("# of selected entities: " + selectedEntityIDs.Length.ToString());
+				
+				foreach (ListItem item in Items)
+				{
+					using (LogGroup logGroup2 = AppLogger.StartGroup("Selecting/deselecting item.", NLog.LogLevel.Debug))
+					{
+						AppLogger.Debug("item.Text: " + item.Text);
+						AppLogger.Debug("item.Value: " + item.Value);
+						item.Selected = (Array.IndexOf(selectedEntityIDs, new Guid(item.Value)) > -1);
+						AppLogger.Debug("item.Selected: " + item.Selected.ToString());
+					}
+				}
 			}
 		}
 
@@ -438,23 +445,34 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		/// </summary>
 		public override void DataBind()
 		{
-			if (DataSource != null)
+			using (LogGroup logGroup = AppLogger.StartGroup("Data binding the EntitySelect control.", NLog.LogLevel.Debug))
 			{
-				// Organise the data.
-				Collection<E> data = new Collection<E>(DataSource);
-				data.Sort(ValuePropertyName, Entities.SortDirection.Ascending);
-				DataSource = (E[])data.ToArray(typeof(E));
-
-				if (!DataPosted)
+				if (DataSource != null)
 				{
-					// Start the base binding functionality
-					base.DataBind();
+					AppLogger.Debug("DataSource property != null");
+					// Organise the data.
+					Collection<E> data = new Collection<E>(DataSource);
+					data.Sort(ValuePropertyName, Entities.SortDirection.Ascending);
+					DataSource = (E[])data.ToArray(typeof(E));
 
-					Populate();
+					if (!DataPosted)
+					{
+						AppLogger.Debug("DataPosted == false");
+						
+						// Start the base binding functionality
+						base.DataBind();
 
-					// Select the appropriate list item.
-					SelectItems();
+						Populate();
+					}
+					else
+						AppLogger.Debug("DataPosted == true");
 				}
+				else
+					AppLogger.Debug("DataSource property == null");
+				
+				
+				// Select the appropriate list item.
+				SelectItems();
 			}
 		}
 
@@ -462,51 +480,191 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
 		protected void RaisePostDataChangedEvent()
 		{
+			AppLogger.Debug("Raising PostDataChanged event.");
+			
 			OnSelectedIndexChanged(EventArgs.Empty);
 		}
 
 		protected override bool LoadPostData(string postDataKey, System.Collections.Specialized.NameValueCollection postCollection)
 		{
-			string postValue = postCollection[postDataKey];
+			using (LogGroup logGroup = AppLogger.StartGroup("Loading post data.", NLog.LogLevel.Debug))
+			{
+				//if (DataSource == null || DataSource.Length == 0)
+				//{
+				//	if (DataSource == null)
+				//		AppLogger.Debug("DataSource == null");
+				//	
+				//	if (DataSource.Length == 0)
+				//		AppLogger.Debug("DataSource.Length == 0");
+				//	
+				//	AppLogger.Debug("Raising DataLoading event to reload DataSource.");
+					
+					RaiseDataLoading();
+				//}
+				
+				AppLogger.Debug("Post data key: " + postDataKey);
+				
+				
+				string postValue = GetPostValue(postDataKey, postCollection);
+				
+				E[] entities = GetPostedEntities(postValue);
+				
+				bool posted = IsDataPosted(entities);
+				
+				AppLogger.Debug("Data posted: " + posted.ToString());
+
+				if (posted)
+				{
+					AppLogger.Debug("Setting posted IDs to SelectedEntityIDs");
+					
+					AppLogger.Debug("Posted entities #: " + entities.Length.ToString());
+					
+					SelectedEntityIDs = Collection<E>.GetIDs(entities);
+				}
+				
+				DataPosted = posted;
+			}
+			return DataPosted;
+		}
+		#endregion
+		
+		protected Type MakeGenericType()
+		{
 			Type innerType = null;
+			
+			if (EntityType == null)
+				throw new Exception("EntityType isn't specified.");
 
 			//if (EntityType == null)
 			innerType = EntityFactory.GetType(EntityType);
 			//else
 			//    innerType = EntityType;
+			
+			if (innerType == null)
+				throw new Exception("Inner type not configured or can't be identified.");
+			
+			AppLogger.Debug("Inner type: " + innerType.ToString());
 
 			Type genericType = typeof(Collection<>).MakeGenericType(new System.Type[] { innerType });
+			
+			if (genericType == null)
+				throw new Exception("Generic type not configured or can't be identified.");
+			
+			return genericType;
+		}
+		
+		protected string GetPostValue(string postDataKey, System.Collections.Specialized.NameValueCollection postCollection)
+		{
+			string postValue = String.Empty;
+			
+			if (postCollection != null)
+				postValue = postCollection[postDataKey];
+			
+			return postValue;
+		}
+		
+		protected E[] GetPostedEntities(string postValue)
+		{
+			AppLogger.Debug("Post value: " + postValue);
+			
+			Type genericType = MakeGenericType();
+			
+			AppLogger.Debug("Generic type: " + genericType.ToString());
+			
 			Collection<E> entities = (Collection<E>)Activator.CreateInstance(genericType);
+			
+			
+			if (entities == null)
+				throw new Exception("Generic collection for type '" + typeof(E).ToString() + "' cannot be instantiated.");
+			
+			
 			if (postValue != null)
 			{
+				AppLogger.Debug("Post value: !null");
+				
 				foreach (string stringID in postValue.Split(','))
 				{
+					AppLogger.Debug("Post contains ID: " + stringID);
+					
 					Guid id = new Guid(stringID);
-					E entity = default(E);
-					if (DataSource != null)
+					
+					if (id != Guid.Empty)
+					{
+						
+						E entity = default(E);
+						
+						// TODO: Check if needed. Was throwing errors so it's been removed to simplify code.
+						// ////!May incur performance hit though by always reloading entities from DB instead of DataSource property
+						//if (DataSource != null)
+						//{
+						if (DataSource == null)
+							throw new Exception("DataSource == null");
+						
+						//AppLogger.Debug("DataSource != null");
+						
+						AppLogger.Debug("Getting entity from DataSource");
+						
 						entity = (E)Collection<E>.GetByID((E[])DataSource, id);
-					else
-						entity = (E)EntityFactory.GetEntity<E>(id);
-					entities.Add(entity);
+						
+						if (entity == null)
+							throw new Exception("Entity could not be retrieved from DataSource property.");
+						
+						AppLogger.Debug("Found entity from post ID: " + entity.GetType().ToString());
+						//}
+						//else
+						//{
+						//	AppLogger.Debug("DataSource == null");
+						
+						//	AppLogger.Debug("Getting entity from EntityFactory");
+						
+						//	entity = (E)EntityFactory.GetEntity<E>(id);
+						
+						//	AppLogger.Debug("Found entity from post ID: " + typeof(E).ToString());
+						//}
+						
+						AppLogger.Debug("Adding entity to list.");
+						entities.Add(entity);
+					}
 				}
 			}
-			bool posted = false;
-			if (SelectedEntityIDs.Length == entities.Count)
-			{
-				foreach (Guid id in entities.GetIDs())
-				{
-					if (Array.IndexOf(SelectedEntityIDs, id) == -1)
-						posted = true;
-				}
-			}
-			else
-				posted = true;
-
-			if (posted)
-				SelectedEntityIDs = entities.GetIDs();
-			return DataPosted = posted;
+			
+			return entities.ToArray();
 		}
-		#endregion
+		
+		protected bool IsDataPosted(E[] entities)
+		{
+			bool posted = false;
+			
+			int existingCount = 0;
+			if (SelectedEntityIDs != null)
+				existingCount = SelectedEntityIDs.Length;
+			
+			// If the new count matches the existing count
+			if (existingCount == entities.Length)
+			{
+				AppLogger.Debug("SelectedEntityIDs.Length == entities.Count");
+				
+				// Loop through the IDs and compare
+				foreach (Guid id in Collection<E>.GetIDs(entities))
+				{
+					AppLogger.Debug("Checking whether ID '" + id.ToString() + "' is in SelectedEntityIDs.");
+					
+					if (SelectedEntityIDs == null
+					    || Array.IndexOf(SelectedEntityIDs, id) == -1)
+					{
+						AppLogger.Debug("ID is not in SelectedEntityIDs");
+						
+						posted = true;
+					}
+				}
+			} // Otherwise a different count means data was posted
+			else
+			{
+				posted = true;
+			}
+			
+			return posted;
+		}
 
 		protected override void AddAttributesToRender(HtmlTextWriter writer)
 		{
@@ -556,23 +714,70 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
 		public virtual void Populate()
 		{
-			Items.Clear();
-
-			// Add the first item.
-			if (!HideNoSelection)
-				this.Items.Insert(0, new ListItem(NoSelectionText, Guid.Empty.ToString()));
-
-			// TODO: Check if code is necessary
-			// Add the rest of the items
-			foreach (IEntity entity in (IEnumerable)DataSource)
+			using (LogGroup logGroup = AppLogger.StartGroup("Populating the EntitySelect control.", NLog.LogLevel.Debug))
 			{
-				ArrayList existingIDs = new ArrayList();
-				if (!existingIDs.Contains(entity.ID))
+				Items.Clear();
+
+				// Add the first item.
+				if (!HideNoSelection)
 				{
-					PropertyInfo property = entity.GetType().GetProperty(ValuePropertyName);
-					object value = property.GetValue(entity, null);
-					Items.Add(new ListItem(value == null ? String.Empty : value.ToString(), entity.ID.ToString()));
-					existingIDs.Add(entity.ID);
+					AppLogger.Debug("HideNoSelection == false");
+					AppLogger.Debug("Inserting the 'No Selection' item.");
+					this.Items.Insert(0, new ListItem(NoSelectionText, Guid.Empty.ToString()));
+				}
+				else
+				{
+					AppLogger.Debug("HideNoSelection == true");
+					AppLogger.Debug("NOT inserting the 'No Selection' item.");
+				}
+
+				using (LogGroup logGroup2 = AppLogger.StartGroup("Looping through DataSource entities.", NLog.LogLevel.Debug))
+				{
+					// TODO: Check if code is necessary
+					// Add the rest of the items
+					foreach (IEntity entity in (IEnumerable)DataSource)
+					{
+						using (LogGroup logGroup3 = AppLogger.StartGroup("Adding entity to control.", NLog.LogLevel.Debug))
+						{
+							AppLogger.Debug("Entity type: " + entity.GetType().ToString());
+							AppLogger.Debug("Entity ID: " + entity.ID.ToString());
+							
+							// Create a list of each entity ID that gets added.
+							ArrayList existingIDs = new ArrayList();
+							
+							// Check if the entity has already been added
+							if (!existingIDs.Contains(entity.ID))
+							{
+								AppLogger.Debug("Adding entity.");
+								
+								PropertyInfo property = entity.GetType().GetProperty(ValuePropertyName);
+								
+								if (property == null)
+									AppLogger.Debug("Value property '" + ValuePropertyName + "' NOT found.");
+								else
+									AppLogger.Debug("Value property '" + ValuePropertyName + "' found.");
+								
+								object value = property.GetValue(entity, null);
+								
+								if (value == null)
+									AppLogger.Debug("Value property == null.");
+								else
+									AppLogger.Debug("Value property != null.");
+								
+								string stringValue = (value == null
+								                      ? String.Empty
+								                      : value.ToString());
+								
+								AppLogger.Debug("String value: " + stringValue);
+								
+								Items.Add(new ListItem(stringValue, entity.ID.ToString()));
+								
+								existingIDs.Add(entity.ID);
+							}
+							else
+								AppLogger.Debug("Entity already added so it was skipped.");
+						}
+					}
 				}
 			}
 		}

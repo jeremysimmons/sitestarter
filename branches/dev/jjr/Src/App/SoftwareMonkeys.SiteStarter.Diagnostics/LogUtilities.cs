@@ -15,35 +15,17 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		static public void AnalyzeLog(string dir)
 		{
 			string file = dir.TrimEnd('\\') + @"\FinalizedLog.xml";
+			string indexFile = dir.TrimEnd('\\') + @"\Detail\Index.xml";
+			
+			Guid threadID = Guid.Empty;
 			
 			FinalizeLog(dir);
 			
 			if (File.Exists(file))
-			{
-				/*XmlReader reader = new XmlTextReader(file);
+			{			
+				XmlDocument indexDoc = new XmlDocument();
+				indexDoc.AppendChild(indexDoc.CreateElement("Index"));
 				
-				while (reader.Read())
-				{
-					if (reader.NodeType == XmlNodeType.Element)
-					{
-						if (reader.Name == "Entry")
-						{
-							string indentString = reader.ReadElementString("Indent");
-							
-							int indent = Int32.Parse(indentString);
-							
-							if (indent == 0)
-							{
-								string component = reader.ReadElementString("Component");
-								string method = reader.ReadElementString("Method");
-								
-								string title = component + "." + method;
-								
-								throw new Exception(title);
-							}
-						}
-					}
-				}*/
 				
 				XmlDocument doc = new XmlDocument();
 				doc.Load(file);
@@ -58,68 +40,110 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 				XmlNode threadRoot = null;
 				
 				XmlDocument threadDoc = null;
+				XmlDocument previousThreadDoc = null;
 				
 				
 				string threadTitle = string.Empty;
 				string threadFile = string.Empty;
+				
+				string previousThreadTitle = String.Empty;
 				
 				// OBSOLETE COMMENT: The analyses should only run if the /Detail/ directory isn't already there. If it is there then it's already been run and should be skipped.
 				if (!Directory.Exists(dir.TrimEnd('\\') + @"\Detail\"))
 				{
 					Directory.CreateDirectory(dir.TrimEnd('\\') + @"\Detail\");
 				}
+				
+				//Change the price on the books.
+				foreach (XmlNode node in nodeList)
+				{
 					
-					//Change the price on the books.
-					foreach (XmlNode node in nodeList)
-					{
-						
-						
-						int indent = Convert.ToInt32(node.SelectSingleNode("Indent").InnerText);
-						
-						// If this is the thread root
-						if (indent == 0)
+					int indent = Convert.ToInt32(node.SelectSingleNode("Indent").InnerText);
+					
+					// If this is the thread root then move it to a new thread
+					if (indent == 0)
+					{						
+						// Save the previous thread
+						if (previousThreadDoc != null)
 						{
-							
-							string componentName = node.SelectSingleNode("Component").InnerText;
-							string methodName = node.SelectSingleNode("Method").InnerText;
-							
-							threadTitle = componentName + "." + methodName;
-							threadFile = dir.TrimEnd('\\') + @"\Detail\" + PrepareFileName(threadTitle) + ".xml";
-							
-							// Save the previous thread
-							
-							if (threadDoc != null)
-							{
-								threadDoc.Save(threadFile);
-							}
-							
-							
-							// Create the new thread
-							
-							
-							threadDoc = new XmlDocument();
-							XmlNode documentNode = threadDoc.CreateNode(XmlNodeType.Element, "Log", "");
-							threadDoc.AppendChild(documentNode);
-							threadRoot = node;
-							
+							SaveThread(dir, previousThreadDoc, threadID);
+							AddThreadToIndex(indexDoc, threadID, previousThreadTitle);
 						}
-						//else
-						//{
 						
-						//}
+						threadID = Guid.NewGuid();
 						
-						threadDoc.DocumentElement.AppendChild(threadDoc.ImportNode(node, true));
+						// Switch the current thread to the previous one
+						previousThreadDoc = threadDoc;
+						previousThreadTitle = threadTitle;
 						
-						//throw new Exception(indent.ToString());
+						// Create the title of the new thread
+						string componentName = node.SelectSingleNode("Component").InnerText;
+						string methodName = node.SelectSingleNode("Method").InnerText;
+						//string nextTimeStampString = node.SelectSingleNode("Timestamp").InnerText;
+						
+						threadTitle = componentName + "." + methodName;
+						
+						threadDoc = CreateNewThread();
+						
+						
 					}
+					//else
+					//{
 					
+					//}
 					
-					if (threadDoc != null)
-					{
-						threadDoc.Save(threadFile);
-					}
+					threadDoc.DocumentElement.AppendChild(threadDoc.ImportNode(node, true));
+					
+					//throw new Exception(indent.ToString());
+				}
+				
+				
+				if (threadDoc != null)
+				{
+					SaveThread(dir, threadDoc, threadID);
+					AddThreadToIndex(indexDoc, threadID, threadTitle);
+				}
 				//}
+				
+				indexDoc.Save(indexFile);
 			}
+		}
+		
+		static public void SaveThread(string rootDir, XmlDocument threadDoc, Guid threadID)
+		{
+			if (threadDoc != null)
+			{
+				string threadFile = rootDir.TrimEnd('\\') + @"\Detail\" + threadID + ".xml";
+				threadDoc.Save(threadFile);
+			}
+		}
+		
+		static public XmlDocument CreateNewThread()
+		{
+			XmlDocument threadDoc = new XmlDocument();
+			
+			XmlNode documentNode = threadDoc.CreateNode(XmlNodeType.Element, "Log", "");
+			threadDoc.AppendChild(documentNode);
+			
+			return threadDoc;
+			
+		}
+		
+		static public void AddThreadToIndex(XmlDocument indexDoc, Guid threadID, string threadTitle)
+		{
+			// Add the thread to the index
+			XmlNode threadIndexNode = indexDoc.CreateElement("Thread");
+			
+			XmlAttribute idAttribute = indexDoc.CreateAttribute("ID");
+			idAttribute.Value = threadID.ToString();
+			threadIndexNode.Attributes.Append(idAttribute);
+			
+			XmlAttribute titleAttribute = indexDoc.CreateAttribute("Title");
+			titleAttribute.Value = threadTitle.ToString();
+			threadIndexNode.Attributes.Append(titleAttribute);
+			
+			indexDoc.DocumentElement.AppendChild(threadIndexNode);
+			
 		}
 		
 		static public string PrepareFileName(string text)

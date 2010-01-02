@@ -7,6 +7,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests.Entities
 	/// <summary>
 	/// Description of Class1.
 	/// </summary>
+	[Serializable]
+	[DataStore("TestUsers")]
 	public class TestUser : BaseEntity, ITestUser
 	{
 		private string firstName;
@@ -186,16 +188,16 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests.Entities
 		 */
 
 		[NonSerialized]
-		private Collection<TestRole> roles;
+		private TestRole[] roles;
 		/// <summary>
 		/// Gets/sets the roles to this issue.
 		/// </summary>
-		[Reference]
-		public Collection<TestRole> Roles
+		[Reference(MirrorPropertyName="Users")]
+		public TestRole[] Roles
 		{
 			get {
 				if (roles == null)
-					roles = new Collection<TestRole>();
+					roles = new TestRole[]{};
 				return roles; }
 			set
 			{
@@ -203,14 +205,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests.Entities
 			}
 		}
 
-        Collection<ITestRole> ITestUser.Roles
+        ITestRole[] ITestUser.Roles
         {
-        	get { return (roles == null
-        	              ? new Collection<ITestRole>()
-        	              : new Collection<ITestRole>(roles.ToArray())); }
-        	set { roles = (value == null
-        	               ? new Collection<TestRole>()
-        	               : new Collection<TestRole>(value.ToArray())); }
+        	get { return (ITestRole[])roles; }
+        	set { roles = (TestRole[])value; }
         }
 		
 		public TestUser()

@@ -37,6 +37,20 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			set { entity2ID = value; }
 		}
 		
+		private string property1Name = String.Empty;
+		public string Property1Name
+		{
+			get { return property1Name; }
+			set { property1Name = value; }
+		}
+		
+		private string property2Name = String.Empty;
+		public string Property2Name
+		{
+			get { return property2Name; }
+			set { property2Name = value; }
+		}
+		
 		/*private string[] typeNames = new String[2];
 		/// <summary>
 		/// Gets/sets the short names of the types involved in the reference.
@@ -121,7 +135,14 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			return flag;
 		}*/
 		
-		public virtual bool Includes(Guid id)
+		/// <summary>
+		/// Checks whether the reference includes an entity with the specified ID and a property with the specified name.
+		/// Note: The ID and property belong to the same entity. The property does not contain the provided ID.
+		/// </summary>
+		/// <param name="id"></param>
+		/// <param name="propertyName"></param>
+		/// <returns></returns>
+		public virtual bool Includes(Guid id, string propertyName)
 		{
 			bool flag = false;
 			
@@ -133,12 +154,14 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				AppLogger.Debug("Provided entity ID: " + id.ToString());
 				AppLogger.Debug("Reference entity 1 ID: " + Entity1ID.ToString());
 				AppLogger.Debug("Reference entity 2 ID: " + Entity2ID.ToString());
+				AppLogger.Debug("Reference property 1: " + Property1Name.ToString());
+				AppLogger.Debug("Reference property 2: " + Property2Name.ToString());
 				AppLogger.Debug("Reference entity type name 1: " + TypeName1);
 				AppLogger.Debug("Reference entity type name 2: " + TypeName2);
 				
 				
-				flag = (id.Equals(Entity1ID))
-					|| (id.Equals(Entity2ID));
+				flag = (id.Equals(Entity1ID) && propertyName.Equals(Property1Name))
+					|| (id.Equals(Entity2ID) && propertyName.Equals(Property2Name));
 				
 				AppLogger.Debug("Entity is included in reference: " + flag.ToString());
 			}
@@ -215,6 +238,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				AppLogger.Debug("Existing reference entity type: " + TypeName2);
 				AppLogger.Debug("Existing source entity ID: " + Entity1ID.ToString());
 				AppLogger.Debug("Existing reference entity ID: " + Entity2ID.ToString());
+				AppLogger.Debug("Existing source property name: " + Property1Name.ToString());
+				AppLogger.Debug("Existing reference property name: " + Property2Name.ToString());
 				
 				if (EntitiesUtilities.MatchAlias(entity.GetType().Name, TypeName1))
 				{
@@ -232,11 +257,17 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 					string typeName1 = TypeName1;
 					string typeName2 = TypeName2;
 					
+					string property1Name = Property1Name;
+					string property2Name = Property2Name;
+					
 					this.Entity1ID = entity2ID;
 					this.Entity2ID = entity1ID;
 					
 					this.TypeName1 = typeName2;
 					this.TypeName2 = typeName1;
+					
+					this.Property1Name = property2Name;
+					this.Property2Name = property1Name;
 					
 					return this;
 				}

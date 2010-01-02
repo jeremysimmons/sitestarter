@@ -1,15 +1,16 @@
 <?xml version="1.0"?>
-<project name="Common.Jobs.ClearData" default="Common.Jobs.CreateReleaseZips" xmlns="http://nant.sf.net/schemas/nant.xsd">
+<project name="Common.Jobs.ClearData" default="Common.Jobs.ClearData" xmlns="http://nant.sf.net/schemas/nant.xsd">
 
 	
 <target name="Common.Jobs.ClearData">
 		<delete>
     		<fileset basedir="${path::get-full-path(Solution.RootPath)}/">
-        		<include name="**/WWW/App_Data/*.config" />
-        		<include name="**/WWW/App_Data/*.yap" />
-        		<include name="**/WWW/App_Data/Log/*.*" />
+        		<include name="WWW/App_Data/*.config" />
+        		<include name="WWW/App_Data/*.yap" />
+        		<include name="WWW/App_Data/Logs/*.*" />
     		</fileset>
 		</delete>
+		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Logs/" />
 
   </target>
 

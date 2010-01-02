@@ -232,20 +232,23 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		[DataObjectMethod(DataObjectMethodType.Update, true)]
 		public bool UpdateUser(Entities.IUser user)
 		{
-			// Check if the username is already taken.
-			if (UsernameTaken(user))
+			using (LogGroup logGroup = AppLogger.StartGroup("Updating the provided user object.", NLog.LogLevel.Debug))
 			{
-				// Update unsuccessful.
-				return false;
-			}
-			// ... if the username is NOT taken.
-			else
-			{
-				// Update the object.
-				DataStore.Update(user);
-
-				// Update successful.
-				return true;
+				// Check if the username is already taken.
+				if (UsernameTaken(user))
+				{
+					// Update unsuccessful.
+					return false;
+				}
+				// ... if the username is NOT taken.
+				else
+				{
+					// Update the object.
+					DataStore.Update(user);
+	
+					// Update successful.
+					return true;
+				}
 			}
 		}
 		#endregion

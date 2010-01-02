@@ -146,7 +146,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			{
 				AppLogger.Debug("Checking property: " + property.Name);
 				
-				if (IsReference(entity, property.Name, property.PropertyType))
+				if (IsReference(entity.GetType(), property.Name, property.PropertyType))
 				{
 					AppLogger.Debug("Property is a reference.");
 					
@@ -198,18 +198,24 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			
 			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the reference entities from the specified property on the provided entity.", NLog.LogLevel.Debug))
 			{
-				PropertyInfo property = entity.GetType().GetProperty(propertyName, returnType);
+				Type entityType = entity.GetType();
+				
+				PropertyInfo property = GetProperty(entityType, propertyName, returnType);
 				
 				if (property == null)
 					AppLogger.Debug("Property: [null]");
 				else
 					AppLogger.Debug("Property name: " + property.Name);
 				
-				if (IsReference(entity, propertyName, returnType))
+				if (IsReference(entityType, propertyName, returnType))
 				{
 					EntityReferenceCollection references = null;
 					
-					if (property.PropertyType.GetInterface("IEnumerable") != null)
+					Type referencedEntityType = GetReferenceType(entityType, propertyName, returnType);
+					
+					string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(entity.GetType(), property);
+					
+					if (IsMultipleReference(entity.GetType(), property))
 					{
 						AppLogger.Debug("Multiple reference property.");
 						
@@ -221,10 +227,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 						
 						//if (propertyValue is Array)
 						//{
-						foreach (IEntity o in Collection<IEntity>.ConvertAll(propertyValue))
-						{
-							referencedEntities.Add((IEntity)o);
-						}
+						referencedEntities.AddRange(GetReferencedEntities(entity, property));
 						//}
 						//else
 						//{
@@ -236,7 +239,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 						
 						AppLogger.Debug("# of referenced entities found: " + referencedEntities.Count);
 						
-						references = new EntityReferenceCollection(entity, referencedEntities.ToArray());
+						references = new EntityReferenceCollection(entity, propertyName, referencedEntities.ToArray(), mirrorPropertyName);
 						
 						AppLogger.Debug("Reference objects created.");
 						
@@ -244,36 +247,46 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 						{
 							AppLogger.Debug("Adding reference with ID: " + reference.ID.ToString());
 
-								AppLogger.Debug("Source entity ID: " + reference.Entity1ID.ToString());
-								AppLogger.Debug("Referenced entity ID: " + reference.Entity2ID.ToString());
-						
-								AppLogger.Debug("Source entity name: " + reference.TypeName1);
-								AppLogger.Debug("Referenced entity name: " + reference.TypeName2);
+							AppLogger.Debug("Source entity ID: " + reference.Entity1ID.ToString());
+							AppLogger.Debug("Referenced entity ID: " + reference.Entity2ID.ToString());
+							
+							AppLogger.Debug("Source entity name: " + reference.TypeName1);
+							AppLogger.Debug("Referenced entity name: " + reference.TypeName2);
+							
+							AppLogger.Debug("Source property name: " + reference.Property1Name);
+							AppLogger.Debug("Mirror property name: " + reference.Property2Name);
 							
 							
 							collection.Add(reference.ToData());
 						}
 					}
-					else if (property.PropertyType.GetInterface("IEntity") != null)
+					else if (IsSingleReference(entityType, property))
 					{
 						AppLogger.Debug("Single reference property.");
 						
-						IEntity referencedEntity = (IEntity)property.GetValue(entity, null);
+						IEntity[] referencedEntities = GetReferencedEntities(entity, property);
 						
-						references = new EntityReferenceCollection(entity, (IEntity)referencedEntity);
-						
-						foreach (EntityIDReference reference in references)
+						if (referencedEntities != null && referencedEntities.Length > 0)
 						{
-							AppLogger.Debug("Adding reference with ID: " + reference.ID.ToString());
+							IEntity referencedEntity = referencedEntities[0];
 							
+							references = new EntityReferenceCollection(entity, propertyName, new IEntity[] {referencedEntity}, mirrorPropertyName);
+							
+							foreach (EntityIDReference reference in references)
+							{
+								AppLogger.Debug("Adding reference with ID: " + reference.ID.ToString());
+								
 								AppLogger.Debug("Source entity ID: " + reference.Entity1ID.ToString());
 								AppLogger.Debug("Referenced entity ID: " + reference.Entity2ID.ToString());
-						
+								
 								AppLogger.Debug("Source entity name: " + reference.TypeName1);
 								AppLogger.Debug("Referenced entity name: " + reference.TypeName2);
-							
-							collection.Add(reference.ToData());
+								
+								collection.Add(reference.ToData());
+							}
 						}
+						else
+							AppLogger.Debug("referencedEntities == null || referencedEntities.Length = 0");
 					}
 					else
 						throw new NotSupportedException("The property type '" + property.PropertyType.ToString() + "' is not supported.");
@@ -286,25 +299,38 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		}
 		
 		
-		static public bool IsReference(IEntity entity, string propertyName, Type returnType)
+		static public bool IsReference(Type entityType, string propertyName, Type returnType)
+		{
+			bool isReference = false;
+			
+			PropertyInfo property = GetProperty(entityType, propertyName, returnType);
+			
+			isReference = IsReference(entityType, property);
+			
+			return isReference;
+		}
+		
+		static public bool IsReference(Type sourceType, PropertyInfo property)
 		{
 			bool isReference = false;
 			
 			// Logging disabled simply to reduce the size of the logs
 			//using (LogGroup logGroup = AppLogger.StartGroup("Checking if the specified property is an entity reference.", NLog.LogLevel.Debug))
 			//{
-			PropertyInfo property = entity.GetType().GetProperty(propertyName, returnType);
+			//	AppLogger.Debug("Entity: " + sourceType.ToString());
+			//	AppLogger.Debug("Property name: " + property.Name);
 			
-			//	AppLogger.Debug("Entity: " + entity.GetType().ToString());
-			//	AppLogger.Debug("Property name: " + propertyName);
+			ReferenceAttribute reference = GetReferenceAttribute(sourceType, property);
 			
-			foreach (Attribute attribute in property.GetCustomAttributes(true))
+			isReference = reference != null;
+			
+			/*foreach (Attribute attribute in property.GetCustomAttributes(true))
 			{
 				if (attribute is ReferenceAttribute)
 				{
 					isReference = true;
 				}
-			}
+			}*/
 			
 			//	AppLogger.Debug("Is reference? " + isReference.ToString());
 			//}
@@ -345,6 +371,336 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			//}
 			
 			return isReference;
+		}
+		
+		static public ReferenceAttribute GetReferenceAttribute(IEntity entity, string propertyName, Type returnType)
+		{
+			ReferenceAttribute attribute = null;
+			
+			// Logging disabled simply to reduce the size of the logs
+			//using (LogGroup logGroup = AppLogger.StartGroup("...", NLog.LogLevel.Debug))
+			//{
+			PropertyInfo property = entity.GetType().GetProperty(propertyName, returnType);
+			
+			//	AppLogger.Debug("Entity: " + entity.GetType().ToString());
+			//	AppLogger.Debug("Property name: " + propertyName);
+			
+			attribute = GetReferenceAttribute(entity.GetType(), property);
+			
+			//	AppLogger.Debug("Is reference? " + isReference.ToString());
+			//}
+			
+			return attribute;
+		}
+		
+		static public ReferenceAttribute GetReferenceAttribute(Type sourceType, PropertyInfo property)
+		{
+			ReferenceAttribute attribute = null;
+			
+			// Logging disabled simply to reduce the size of the logs
+			//using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the reference attribute for the specified property.", NLog.LogLevel.Debug))
+			//{
+			
+			//	AppLogger.Debug("Entity: " + sourceType.ToString());
+			//	AppLogger.Debug("Property name: " + property.Name);
+			//	AppLogger.Debug("Property type: " + property.PropertyType.ToString());
+			
+			foreach (Attribute a in property.GetCustomAttributes(true))
+			{
+				if (a is ReferenceAttribute)
+				{
+					attribute = (ReferenceAttribute)a;
+				}
+			}
+			
+			//	AppLogger.Debug("Attribute found: " + (attribute != null).ToString());
+			//}
+			
+			return attribute;
+		}
+		
+		static public Type GetReferenceType(Type entityType, string propertyName, Type returnType)
+		{
+			if (entityType == null)
+				throw new ArgumentNullException("entityType");
+			
+			if (propertyName == null || propertyName == String.Empty)
+				throw new ArgumentException("propertyName", "Property name cannot be null or String.Empty.");
+			
+			
+			PropertyInfo property = GetProperty(entityType, propertyName, returnType);
+			
+			return GetReferenceType(entityType, property);
+		}
+		
+		static public Type GetReferenceType(Type sourceType, PropertyInfo property)
+		{
+			Type type = null;
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the referenced entity type.", NLog.LogLevel.Debug))
+			{
+				if (sourceType == null)
+					throw new ArgumentNullException("sourceType");
+				
+				if (property == null)
+					throw new ArgumentNullException("property");
+				
+				AppLogger.Debug("Entity type: " + sourceType.ToString());
+				AppLogger.Debug("Property name: " + property.Name);
+				AppLogger.Debug("Property type: " + property.PropertyType.ToString());
+				
+				ReferenceAttribute attribute = GetReferenceAttribute(sourceType, property);
+				
+				if (attribute == null)
+					throw new Exception("The reference attribute was not found on the '" + property.Name + "' property of the type '" + sourceType.ToString() + "'.");
+				
+				if (attribute.TypeName != String.Empty)
+				{
+					AppLogger.Debug("attribute.TypeName != String.Empty");
+					AppLogger.Debug("attribute.TypeName == " + attribute.TypeName);
+					
+					type = EntitiesUtilities.GetType(attribute.TypeName);
+				}
+				else
+				{
+					AppLogger.Debug("attribute.TypeName == String.Empty");
+					
+					// If the property is a single entity instance
+					if (IsSingleReference(sourceType, property))
+					{
+						AppLogger.Debug("Is a single entity");
+						
+						type = property.PropertyType;
+					} // Otherwise the property is a collection/array
+					else
+					{
+						AppLogger.Debug("Is a collection/array");
+						
+						// If it's an array this should work
+						type = property.PropertyType.GetElementType();
+						
+						// If it's not an array (ie. it's a collection) then this should work
+						if (type == null)
+							type = property.PropertyType.GetGenericArguments()[0];
+					}
+				}
+				
+				if (type != null)
+					AppLogger.Debug("Type: " + type.ToString());
+			}
+			
+			return type;
+		}
+		
+		static public Type GetType(string typeName)
+		{
+			Type returnType = null;
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the actual type based on the specified type/alias.", NLog.LogLevel.Debug))
+			{
+				if (typeName == null || typeName == String.Empty)
+					throw new ArgumentNullException("typeName");
+				
+				AppLogger.Debug("Type name: " + typeName);
+				
+				// If a short type name was provided (eg. User)
+				if (typeName.IndexOf('.') == -1
+				    && typeName.IndexOf(',') == -1)
+				{
+					
+					IMappingItem mappingItem = Config.Mappings.GetItem<IMappingItem>(typeName, true);
+					if (mappingItem == null)
+						throw new InvalidOperationException("No mapping item found for type " + typeName);
+					
+					string alias = String.Empty;
+					if (mappingItem.Settings.ContainsKey("Alias"))
+						alias = (string)mappingItem.Settings["Alias"];
+					
+					if (mappingItem.Settings == null || mappingItem.Settings.Count == 0)
+						AppLogger.Debug("No settings defined for this mapping item.");
+					else
+						AppLogger.Debug(mappingItem.Settings.Count.ToString() + " settings found for this mapping item.");
+					
+					// If no alias is specified then use the FullName specified
+					if (alias == null || alias == String.Empty)
+					{
+						AppLogger.Debug("No alias. This is the actual type.");
+						
+						string fullTypeName = String.Empty;
+						if (mappingItem.Settings.ContainsKey("FullName"))
+							fullTypeName = (string)mappingItem.Settings["FullName"];
+						else
+							throw new InvalidOperationException("No 'FullName' specified in mappings for type " + typeName);
+						
+						
+						string assemblyName = String.Empty;
+						if (mappingItem.Settings.ContainsKey("AssemblyName"))
+							assemblyName = (string)mappingItem.Settings["AssemblyName"];
+						else
+							throw new InvalidOperationException("No 'AssemblyName' specified in mappings for type " + typeName);
+						
+						returnType = Type.GetType(fullTypeName + ", " + assemblyName);
+						
+						AppLogger.Debug("Returning type: " + returnType.ToString());
+						
+					}
+					else
+					{
+						AppLogger.Debug("Alias: " + alias);
+						// Use the alias if specified
+						returnType = GetType(alias);
+					}
+				} // Otherwise a long type name was provided
+				else
+				{
+					returnType = Type.GetType(typeName);
+				}
+			}
+			
+			return returnType;
+			
+		}
+		
+		static public PropertyInfo GetProperty(Type entityType, string propertyName, Type returnType)
+		{
+			PropertyInfo property = entityType.GetProperty(propertyName, returnType);
+			
+			//if (property == null)
+			//	property = entityType.GetProperty(propertyName);
+			
+			return property;
+		}
+		
+		static public bool IsMultipleReference(Type entityType, PropertyInfo property)
+		{
+			if (entityType == null)
+				throw new ArgumentNullException("entityType");
+			
+			if (property == null)
+				throw new ArgumentNullException("property");
+			
+			Type propertyType = property.PropertyType;
+			
+			return IsReference(entityType, property) &&
+				(propertyType.GetInterface("IEnumerable") != null
+				 || typeof(Array).IsAssignableFrom(propertyType));
+		}
+		
+		static public bool IsSingleReference(Type entityType, PropertyInfo property)
+		{
+			if (entityType == null)
+				throw new ArgumentNullException("entityType");
+			
+			if (property == null)
+				throw new ArgumentNullException("property");
+			
+			return  IsReference(entityType, property) && !IsMultipleReference(entityType, property);
+			//return property.PropertyType.GetInterface("IEntity") != null
+			//	|| typeof(IEntity).IsAssignableFrom(property.PropertyType);
+		}
+		
+		/// <summary>
+		/// Determines whether the specified reference is an array (rather than a collection).
+		/// </summary>
+		/// <param name="entity"></param>
+		/// <param name="property"></param>
+		/// <returns></returns>
+		static public bool IsArrayReference(Type entityType, PropertyInfo property)
+		{
+			if (entityType == null)
+				throw new ArgumentNullException("entityType");
+			
+			if (property == null)
+				throw new ArgumentNullException("property");
+			
+			return IsMultipleReference(entityType, property) && typeof(Array).IsAssignableFrom(property.PropertyType);
+		}
+		
+		/// <summary>
+		/// Determines whether the specified reference is a collection (rather than an array).
+		/// </summary>
+		/// <param name="entity"></param>
+		/// <param name="property"></param>
+		/// <returns></returns>
+		static public bool IsCollectionReference(Type entityType, PropertyInfo property)
+		{
+			if (entityType == null)
+				throw new ArgumentNullException("entityType");
+			
+			if (property == null)
+				throw new ArgumentNullException("property");
+			
+			return IsMultipleReference(entityType, property) && !IsArrayReference(entityType, property);
+		}
+		
+		
+		static public IEntity[] GetReferencedEntities(IEntity entity, PropertyInfo property)
+		{
+			List<IEntity> list = new List<IEntity>();
+			
+			object propertyValue = property.GetValue(entity, null);
+			
+			if (IsMultipleReference(entity.GetType(), property))
+			{
+				foreach (IEntity o in Collection<IEntity>.ConvertAll(propertyValue))
+				{
+					list.Add((IEntity)o);
+				}
+			}
+			else
+			{
+				if (propertyValue != null)
+					list.Add((IEntity)propertyValue);
+			}
+			
+			return list.ToArray();
+		}
+		
+		static public string GetMirrorPropertyName(Type sourceType, PropertyInfo property)
+		{
+			string mirrorPropertyName = String.Empty;
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the mirror property name.", NLog.LogLevel.Debug))
+			{
+				if (sourceType == null)
+					throw new ArgumentNullException("sourceType");
+				
+				if (property == null)
+					throw new ArgumentNullException("property");
+				
+				ReferenceAttribute attribute = GetReferenceAttribute(sourceType, property);
+				
+				// Is the mirror property name specified on the attribute?
+				if (attribute.MirrorPropertyName != String.Empty)
+					mirrorPropertyName = attribute.MirrorPropertyName;
+				else
+				{
+					// Should the mirror property name be automatically discovered based on the property type matching the source entity?
+					if (attribute.AutoDiscoverMirror)
+					{
+						Type referencedEntityType = GetReferenceType(sourceType, property);
+						
+						// Loop through each property and check the types
+						foreach (PropertyInfo p in referencedEntityType.GetProperties())
+						{
+							// Is the property a reference?
+							if (IsReference(referencedEntityType, p))
+							{
+								// Retrieve the entity type being stored on the property
+								Type reciprocalType = GetReferenceType(referencedEntityType, p);
+								
+								// If the entity types match then return the property name
+								if (reciprocalType.FullName == sourceType.FullName)
+									mirrorPropertyName = p.Name;
+							}
+						}
+					}
+				}
+				
+				AppLogger.Debug("Mirror property name: " + mirrorPropertyName);
+			}
+			
+			return mirrorPropertyName;
 		}
 	}
 }

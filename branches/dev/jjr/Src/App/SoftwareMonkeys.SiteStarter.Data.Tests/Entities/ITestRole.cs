@@ -10,7 +10,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests.Entities
     {
         string Name { get;set; }
 		IUserPermission[] Permissions { get;set; }
-		Collection<ITestUser> Users {get;set;}
+		ITestUser[] Users {get;set;}
 		//Guid[] UserIDs {get;set;}
 		//void AddUser(IUser user);
 		//void RemoveUser(IUser user);

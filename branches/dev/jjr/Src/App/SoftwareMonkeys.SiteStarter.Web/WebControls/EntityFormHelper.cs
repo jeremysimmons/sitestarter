@@ -23,10 +23,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			{
 				try
 				{
-					// TODO: Test modification
 					if (field == null)
 						throw new ArgumentNullException("The provided field cannot be null.", "field");
-					// ENDTODO
 
 					if (controlValuePropertyName != String.Empty)
 					{
@@ -78,6 +76,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Dynamically retrieves the value of the specified field on the form.", NLog.LogLevel.Debug))
 			{
+				if (field == null)
+					throw new ArgumentNullException("field");
+				
+				if (returnType == null)
+					throw new ArgumentNullException("returnType");
+								
 				logGroup.Debug("Field control ID: " + field.ID);
 
 				logGroup.Debug("Field type: " + field.GetType().ToString());
@@ -86,14 +90,18 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				{
 					logGroup.Debug("Name of value property on the field control: " + controlValuePropertyName);
 
-					PropertyInfo property = field.GetType().GetProperty(controlValuePropertyName, returnType);
+					 PropertyInfo property = field.GetType().GetProperty(controlValuePropertyName, returnType);
 					if (property == null)
 						throw new Exception("The property '" + controlValuePropertyName + "' (of type '" + returnType.FullName + "') on the field '" + field.ID + "' (of type '" + field.GetType() + "') could not be found.");
 
 
 					object fieldValue = property.GetValue(field, null);
 
-					logGroup.Debug("Field value: " + fieldValue.ToString());
+					if (fieldValue == null)
+						logGroup.Debug("Field value: [null]");
+					else
+						logGroup.Debug("Field value: " + fieldValue.ToString());
+					
 
 					return fieldValue;
 				}

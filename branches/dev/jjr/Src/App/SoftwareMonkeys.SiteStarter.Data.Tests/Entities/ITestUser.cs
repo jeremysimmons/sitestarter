@@ -15,6 +15,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests.Entities
         string Email { get;set;}
         string FirstName { get;set; }
         string LastName { get;set; }
-        Collection<ITestRole> Roles { get;set; }
+        ITestRole[] Roles { get;set; }
     }
 }

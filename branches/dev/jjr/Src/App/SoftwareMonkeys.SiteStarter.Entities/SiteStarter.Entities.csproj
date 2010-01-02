@@ -51,6 +51,7 @@
     <Compile Include="EntityReference.cs" />
     <Compile Include="EntityReferenceCollection.cs" />
     <Compile Include="EntityIDReference.cs" />
+    <Compile Include="ObjectCloner.cs" />
     <Compile Include="ReferenceAttribute.cs" />
     <Compile Include="VirtualServer.cs" />
     <Compile Include="EntityCollection.cs" />

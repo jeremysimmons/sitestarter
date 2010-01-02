@@ -92,7 +92,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			{
 				foreach (object entity in list)
 				{
-					if (entity.GetType().FullName == typeof(E).FullName)
+					if (entity.GetType().FullName == typeof(E).FullName
+					    || typeof(E).IsAssignableFrom(entity.GetType()))
 						Add((E)entity);
 					else
 						throw new NotSupportedException("Invalid type: Expected " + typeof(E).ToString() + " but was " + entity.GetType() + ".");
@@ -549,9 +550,12 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <returns>A collection of entities with the specified IDs.</returns>
 		static public E GetByID(E[] entities, Guid id)
 		{
-			// Create the specific collection type
-			System.Type specificType = typeof(Collection<>).MakeGenericType(new System.Type[] { typeof(E) });
-
+			if (entities == null)
+				throw new ArgumentNullException("entities");
+			
+			if (id == Guid.Empty)
+				throw new ArgumentException("id", "The provided ID cannot be Guid.Empty.");
+			
 			foreach (E entity in entities)
 			{
 				if (entity != null)
@@ -653,9 +657,27 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		static public E[] Add(E[] items, E newItem)
 		{
 			List<E> list = new List<E>(items);
-			if (Collection<E>.GetByID(items, newItem.ID) != null)
+			// Only add it if the item isn't already in the list (ie. GetByID(...) == null)
+			if (Collection<E>.GetByID(items, newItem.ID) == null)
 			{
 				list.Add(newItem);
+			}
+			return (E[])list.ToArray();
+		}
+		
+		
+		/// <summary>
+		/// Adds the provided item to the provided array.
+		/// </summary>
+		/// <param name="collection">The array of items.</param>
+		/// <param name="newItem">The index of the item to remove..</param>
+		/// <returns>An array containing the all the provided items.</returns>
+		static public E[] RemoveAt(E[] items, int index)
+		{
+			List<E> list = new List<E>(items);
+			if (items.Length > index)
+			{
+				list.RemoveAt(index);
 			}
 			return (E[])list.ToArray();
 		}
@@ -685,6 +707,27 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				throw new NotSupportedException("Type note supported:" + entities.GetType().ToString());
 			
 			return collection.ToArray();
+			//return (E[])Array.ConvertAll<object, E>((object[])entities, new Converter<object, E>(object_Convert));
+		}
+		
+		static public E[] ConvertAll(object entities, Type type)
+		{
+			if (entities == null)
+				return new E[] {};
+			
+			ArrayList collection = new ArrayList();
+			
+			if (entities is IEnumerable)
+			{
+				foreach (object obj in (IEnumerable)entities)
+				{
+					collection.Add((E)obj);
+				}
+			}
+			else
+				throw new NotSupportedException("Type note supported:" + entities.GetType().ToString());
+			
+			return (E[])collection.ToArray(type);
 			//return (E[])Array.ConvertAll<object, E>((object[])entities, new Converter<object, E>(object_Convert));
 		}
 

@@ -13,5 +13,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
     {
         Guid ID { get;set; }
         string ShortTypeName { get; }
+        
+        IEntity Clone();
     }
 }

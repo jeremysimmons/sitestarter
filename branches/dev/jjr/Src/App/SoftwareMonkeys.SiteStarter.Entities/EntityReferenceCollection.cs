@@ -26,7 +26,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			set { sourceEntity = value; }
 		}
 		
-				
+		
 		public EntityReferenceCollection()
 		{
 			
@@ -60,42 +60,34 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			}
 		}*/
 		
-		public EntityReferenceCollection(IEntity sourceEntity, params IEntity[] referencedEntities)
+		public EntityReferenceCollection(IEntity sourceEntity, string sourcePropertyName, IEntity[] referencedEntities, string referencedPropertyName)
 		{
 			if (sourceEntity != null && referencedEntities != null)
 			{
 				foreach (IEntity referencedEntity in referencedEntities)
 				{
-					EntityReference reference = new EntityReference();
-					reference.ID = Guid.NewGuid();
-					
-					reference.Entity1ID = sourceEntity.ID;
-					reference.Entity2ID = referencedEntity.ID;
-					
-					reference.TypeName1 = sourceEntity.ShortTypeName;
-					reference.TypeName2 = referencedEntity.ShortTypeName;
-					
-					Add(reference);
+					if (referencedEntity != null)
+					{
+						EntityReference reference = new EntityReference();
+						reference.ID = Guid.NewGuid();
+						
+						reference.Entity1ID = sourceEntity.ID;
+						reference.Entity2ID = referencedEntity.ID;
+						
+						reference.Property1Name = sourcePropertyName;
+						reference.Property2Name = referencedPropertyName;
+						
+						reference.TypeName1 = sourceEntity.ShortTypeName;
+						reference.TypeName2 = referencedEntity.ShortTypeName;
+						
+						Add(reference);
+					}
 				}
 			}
 		}
-		
-		public IEntity[] GetReferencedEntities(IEntity entity)
-		{
-			Collection<IEntity> collection = new Collection<IEntity>();
-			
-			foreach (EntityReference reference in this)
-			{
-				IEntity otherEntity = reference.GetOtherEntity(entity);
-				if (otherEntity != null)
-					collection.Add(otherEntity);
-			}
-			
-			return collection.ToArray();
-		}
 	}
 }
-	
+
 /*	/// <summary>
 	/// Description of EntityReferenceCollection.
 	/// </summary>
@@ -136,7 +128,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		
 //		public EntityReferenceCollection()
 //		{
-//			
+//
 //		}
 		
 		protected new void Add(EntityReference<E1, E2> reference)
@@ -158,7 +150,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 //		{
 //			if (reference == null)
 //				throw new ArgumentNullException("reference");
-//			
+//
 //			Add((EntityReference<E1, E2>)reference);
 //		}
 		
@@ -324,9 +316,9 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			
 //			foreach (EntityReference reference in c)
 //			{
-//				
+//
 //			}
 //		}
 //	}
 //}
-*/
+ */

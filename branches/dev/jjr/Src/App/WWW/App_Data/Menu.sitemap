@@ -4,7 +4,6 @@
     <siteMapNode title="Administration" url="" description="">
       <siteMapNode title="Users" url="~/Admin/Users.aspx" description="" />
       <siteMapNode title="Roles" url="~/Admin/UserRoles.aspx" description="" />
-      <siteMapNode title="Modules" url="~/Admin/Modules.aspx" description="" />
       <siteMapNode title="Settings" url="~/Admin/Settings.aspx" description="" />
       <siteMapNode title="Backup" url="~/Admin/Backup.aspx" description="" />
       <siteMapNode title="Unit Tests" url="~/Admin/UnitTests.aspx" description="" />

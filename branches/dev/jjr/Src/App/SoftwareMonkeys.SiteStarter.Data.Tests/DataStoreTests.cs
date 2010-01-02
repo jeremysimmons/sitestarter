@@ -48,7 +48,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			// Config.Initialize(ApplicationPath, "");
 			
-         TestUtilities.RegisterTestEntities();
+			TestUtilities.RegisterTestEntities();
 		}
 		
 
@@ -117,7 +117,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			}
 		}*/
 
-	/*	[Test]
+		/*	[Test]
 		public void Test_PreSave_IDsToIDReference()
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing a the preparation for saving entities IDs references.", NLog.LogLevel.Debug))
@@ -301,7 +301,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				DataAccess.Data.Delete(e42);
 			}
 		}
-		*/
+		 */
 
 		/*[Test]
 	public void Test_PreUpdate_EntitiesToEntitiesReference()
@@ -880,7 +880,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				IEntity[] found = (IEntity[])DataAccess.Data.GetEntities(filterGroup);
 				
 				Assert.IsNotNull(found, "Null array returned.");
-			
+				
 				Collection<TestEntity> foundList = new Collection<TestEntity>(found);
 				
 				if (found != null)
@@ -1037,84 +1037,142 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			}
 		}
 		
-		
 		[Test]
 		public void Test_PreSave()
 		{
 			
-				TestUser.RegisterType();
-				TestRole.RegisterType();
-				
-				
-				TestUser user = new TestUser();
-				Guid userID = user.ID = Guid.NewGuid();
-				user.FirstName = "Test";
-				user.LastName = "User";
-				
-				TestRole role = new TestRole();
-				Guid roleID = role.ID = Guid.NewGuid();
-				role.Name = "Test Role";
-				
-				user.Roles.Add(role);
-				
-				
-				IEntity[] toUpdate = null;
-				IEntity[] toDelete = null;
-				
-				DataAccess.Data.Stores[typeof(TestUser)].PreSave(user, out toUpdate, out toDelete);
-				
-				IEntity user2 = DataAccess.Data.GetEntity(typeof(TestUser), "ID", user.ID);
-				
-				Assert.AreEqual(1, toUpdate.Length, "Incorrect number of related entities modified.");				
-				
+			TestUser.RegisterType();
+			TestRole.RegisterType();
+			
+			
+			TestUser user = new TestUser();
+			Guid userID = user.ID = Guid.NewGuid();
+			user.FirstName = "Test";
+			user.LastName = "User";
+			
+			TestRole role = new TestRole();
+			Guid roleID = role.ID = Guid.NewGuid();
+			role.Name = "Test Role";
+			
+			user.Roles = Collection<TestRole>.Add(user.Roles, role);
+			
+			
+			IEntity[] toUpdate = null;
+			IEntity[] toDelete = null;
+			
+			DataAccess.Data.Stores[typeof(TestUser)].PreSave(user, out toUpdate, out toDelete);
+			
+			IEntity user2 = DataAccess.Data.GetEntity(typeof(TestUser), "ID", user.ID);
+			
+			Assert.AreEqual(1, toUpdate.Length, "Incorrect number of related entities modified.");
+			
 		}
 		
 		[Test]
 		public void Test_PreUpdate()
 		{
+			// Register the types
+			TestUser.RegisterType();
+			TestRole.RegisterType();
 			
-				TestUser.RegisterType();
-				TestRole.RegisterType();
-				
-				
-				TestUser user = new TestUser();
-				Guid userID = user.ID = Guid.NewGuid();
-				user.FirstName = "Test";
-				user.LastName = "User";
-				
-				TestRole role = new TestRole();
-				Guid roleID = role.ID = Guid.NewGuid();
-				role.Name = "Test Role";
-				
-				user.Roles.Add(role);
-				
-				DataAccess.Data.Save(role);
-				
-				DataAccess.Data.Save(user);
-				
-				TestUser user2 = (TestUser)DataAccess.Data.GetEntity(typeof(TestUser), "ID", user.ID);
-				
-				DataAccess.Data.Activate(user2);
-				
-				user2.Roles.RemoveAt(0);
-				
-				IEntity[] toUpdate = null;
-				IEntity[] toDelete = null;
-				
-				DataAccess.Data.Stores[typeof(TestUser)].PreUpdate(user2, out toUpdate, out toDelete);
-				
-				
-				TestUser user3 = (TestUser)DataAccess.Data.GetEntity(typeof(TestUser), "ID", user2.ID);
-				
-				Assert.AreEqual(0, user3.Roles.Count, "Incorrect number of roles found on retrieved user entity.");				
-				
-				Assert.IsNotNull(toDelete, "The toDelete list is null.");
-				if (toDelete != null)
-					Assert.AreEqual(1, toDelete.Length, "Incorrect number of entities in toDelete list. Expecting the obsolete reference to be in the list.");			
-				
+			// Create the dummy objects
+			TestUser user = new TestUser();
+			Guid userID = user.ID = Guid.NewGuid();
+			user.FirstName = "Test";
+			user.LastName = "User";
+			
+			TestRole role = new TestRole();
+			Guid roleID = role.ID = Guid.NewGuid();
+			role.Name = "Test Role";
+			
+			// Add the role to the User.Roles collection
+			user.Roles = Collection<TestRole>.Add(user.Roles, role);
+			
+			// Save both objects
+			DataAccess.Data.Save(role);
+			DataAccess.Data.Save(user);
+			
+			// Load the user to another variable
+			TestUser user2 = (TestUser)DataAccess.Data.GetEntity(typeof(TestUser), "ID", user.ID);
+			
+			// Activate the loaded user object
+			DataAccess.Data.Activate(user2);
+			
+			// Remove the role from the list
+			user2.Roles = Collection<TestRole>.RemoveAt(user2.Roles, 0);
+			
+			// Create the toUpdate and toDelete arrays
+			IEntity[] toUpdate = null;
+			IEntity[] toDelete = null;
+			
+			// Run the DataStore.PreUpdate function
+			DataAccess.Data.Stores[typeof(TestUser)].PreUpdate(user2, out toUpdate, out toDelete);
+			
+			// Load the user again to a new variable, which should now reflect the changes
+			TestUser user3 = (TestUser)DataAccess.Data.GetEntity(typeof(TestUser), "ID", user2.ID);
+			
+			// Check the roles list on the newly loaded user object
+			// Should be Length == 0
+			Assert.AreEqual(0, user3.Roles.Length, "Incorrect number of roles found on retrieved user entity.");
+			
+			// Check the toDelete list (containing obsolete reference)
+			Assert.IsNotNull(toDelete, "The toDelete list is null.");
+			
+			if (toDelete != null)
+			{
+				// Check the length of the toDelete list
+				// Should be Length == 1
+				Assert.AreEqual(1, toDelete.Length, "Incorrect number of entities in toDelete list. Expecting the obsolete reference to be in the list.");
+			}
+			
 		}
 		
-	/*			[Test]
+		[Test]
+		public void Test_Update()
+		{
+			
+			TestUser.RegisterType();
+			TestRole.RegisterType();
+			
+			
+			TestUser user = new TestUser();
+			Guid userID = user.ID = Guid.NewGuid();
+			user.FirstName = "Test";
+			user.LastName = "User";
+			
+			TestRole role = new TestRole();
+			Guid roleID = role.ID = Guid.NewGuid();
+			role.Name = "Test Role";
+			
+			user.Roles = Collection<TestRole>.Add(user.Roles, role);
+			
+			DataAccess.Data.Save(role);
+			
+			DataAccess.Data.Save(user);
+			
+			TestUser user2 = (TestUser)DataAccess.Data.GetEntity(typeof(TestUser), "ID", user.ID);
+			
+			DataAccess.Data.Activate(user2);
+			
+			user2.FirstName = "Test-Updated";
+			
+			//user2.Roles.RemoveAt(0);
+			
+			
+			DataAccess.Data.Update(user2);
+			
+			
+			TestUser user3 = (TestUser)DataAccess.Data.GetEntity(typeof(TestUser), "ID", user2.ID);
+			
+			Assert.AreEqual("Test-Updated", user3.FirstName, "The name doesn't appear to have been updated.");
+			
+			//Assert.IsNotNull(toDelete, "The toDelete list is null.");
+			//if (toDelete != null)
+			//	Assert.AreEqual(1, toDelete.Length, "Incorrect number of entities in toDelete list. Expecting the obsolete reference to be in the list.");
+			
+		}
+		
+		/*			[Test]
 		public void Test_Save_Reference()
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetEntities<T>(IDictionary<string, object>) function to ensure it excludes entities properly.", NLog.LogLevel.Debug))
