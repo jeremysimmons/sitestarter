@@ -11,41 +11,52 @@ using SoftwareMonkeys.SiteStarter.Data;
 
 namespace SoftwareMonkeys.SiteStarter.Business
 {
+	
 	/// <summary>
-	/// Provides an interface for interacting with keywords.
+	/// Provides functions for interacting with keywords.
 	/// </summary>
     [DataObject(true)]
-	public class KeywordFactory
+    public class KeywordFactory : KeywordFactory<Keyword>
+	{
+	
+	}
+	
+	/// <summary>
+	/// Provides functions for interacting with keywords.
+	/// </summary>
+    [DataObject(true)]
+	public class KeywordFactory<K>
+		where K : IKeyword
     {
         /// <summary>
         /// Gets the data store containing the objects that this factory interact with.
         /// </summary>
         static public IDataStore DataStore
         {
-            get { return DataAccess.Data.Stores[typeof(Entities.Keyword)]; }
+            get { return DataAccess.Data.Stores[typeof(K)]; }
         }
 
 		#region Retrieve functions
 	    /// <summary>
 		/// Retrieves all the keywords from the DB.
 		/// </summary>
-		/// <returns>A KeywordSet containing the retrieved keywords.</returns>
+		/// <returns>An array of keywords.</returns>
         [DataObjectMethod(DataObjectMethodType.Select, true)]
-		static public Entities.Keyword[] GetKeywords()
+		static public K[] GetKeywords()
 		{
-            return (Keyword[])Collection<Entities.Keyword>.ConvertAll(DataStore.GetEntities(typeof(Entities.Keyword)));
+            return (K[])Collection<K>.ConvertAll(DataStore.GetEntities<K>());
 		}
 
 		/// <summary>
 		/// Retrieves all the specified keywords from the DB.
 		/// </summary>
 		/// <param name="keywordIDs">An array of IDs of keywords to retrieve.</param>
-		/// <returns>A KeywordSet containing the retrieved keywords.</returns>
+		/// <returns>An array of keywords.</returns>
         [DataObjectMethod(DataObjectMethodType.Select, true)]
-        static public Entities.Keyword[] GetKeywords(Guid[] keywordIDs)
+        static public K[] GetKeywords(Guid[] keywordIDs)
 		{
 			// Create a new keyword collection
-            Collection<Entities.Keyword> keywords = new Collection<Entities.Keyword>();
+            Collection<K> keywords = new Collection<K>();
 
 			// Loop through the IDs and add each keyword to the collection
 			foreach (Guid keywordID in keywordIDs)
@@ -64,29 +75,21 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="keywordID">The ID of the keyword to retrieve.</param>
 		/// <returns>A Keyword object containing the requested info.</returns>
         [DataObjectMethod(DataObjectMethodType.Select, true)]
-        static public Entities.Keyword GetKeyword(Guid keywordID)
+        static public K GetKeyword(Guid keywordID)
 		{
             // If the ID is empty return null
             if (keywordID == Guid.Empty)
-                return null;
+            	return default(K);
 
-            return (Entities.Keyword)DataStore.GetEntity(typeof(Entities.Keyword), "id", keywordID);
+            return (K)DataAccess.Data.GetEntity<K>("ID", keywordID);
 		}
 
         /// <summary>
         /// Retrieves the keyword with the provided name.
         /// </summary>
-        static public Entities.Keyword GetKeywordByName(string name)
+        static public K GetKeywordByName(string name)
         {
-            return (Entities.Keyword)DataStore.GetEntity(typeof(Entities.Keyword), "name", name);
-        }
-
-        /// <summary>
-        /// Retrieves the keyword with the provided email.
-        /// </summary>
-        static public Entities.Keyword GetKeywordByEmail(string email)
-        {
-            return (Entities.Keyword)DataStore.GetEntity(typeof(Entities.Keyword), "email", email);
+            return (K)DataAccess.Data.GetEntity<K>("Name", name);
         }
 		#endregion
 
@@ -97,7 +100,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="keyword">The keyword to save.</param>
 		/// <returns>A boolean value indicating whether the keywordname is taken.</returns>
         [DataObjectMethod(DataObjectMethodType.Insert, true)]
-        static public bool SaveKeyword(Entities.Keyword keyword)
+        static public bool SaveKeyword(K keyword)
 		{
 			// Check if the keywordname is already taken.
 			if (KeywordNameTaken(keyword))
@@ -124,7 +127,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="keyword">The keyword to update.</param>
 		/// <returns>A boolean value indicating whether the keywordname is taken.</returns>
         [DataObjectMethod(DataObjectMethodType.Update, true)]
-        static public bool UpdateKeyword(Entities.Keyword keyword)
+        static public bool UpdateKeyword(K keyword)
 		{
 			// Check if the keywordname is already taken.
 			if (KeywordNameTaken(keyword))
@@ -150,7 +153,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="keyword">The keyword to delete.</param>
         [DataObjectMethod(DataObjectMethodType.Delete, true)]
-        static public void DeleteKeyword(Entities.Keyword keyword)
+        static public void DeleteKeyword(K keyword)
 		{
             if (keyword != null)
             {
@@ -169,7 +172,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="query">The query to search keywords with.</param>
 		/// <returns>A KeywordSet containing the matching keywords.</returns>
-        static public Collection<Entities.Keyword> SearchKeywords(string query)
+        static public Collection<K> SearchKeywords(string query)
 		{
 			// Create a list of searchable properties
 			string[] properties = new string[] {"firstName",
@@ -177,7 +180,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 												   "keywordname"};
 
 			// Search the keywords
-            Collection<Entities.Keyword> keywords = new Collection<Entities.Keyword>(Db4oHelper.SearchObjects(typeof(Entities.Keyword), properties, query));
+            Collection<K> keywords = new Collection<K>(Db4oHelper.SearchObjects(typeof(K), properties, query));
 
 			// Return all matching keywords
 			return keywords;
@@ -190,7 +193,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="keyword">The keyword to check the keywordname of.</param>
 		/// <returns>A boolean value indicating whether the keywordname is taken.</returns>
-        static public bool KeywordNameTaken(Entities.Keyword keyword)
+        static public bool KeywordNameTaken(K keyword)
 		{
             using (LogGroup logGroup = AppLogger.StartGroup("Verifying that the keywordname is unique.", NLog.LogLevel.Info))
             {
@@ -202,7 +205,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
                     return false;
 
                 // Retrieve any existing keyword with the keywordname.
-                Entities.Keyword existing = GetKeywordByName(keyword.Name);
+                K existing = GetKeywordByName(keyword.Name);
 
                 AppLogger.Info("Found match - Keyword ID: " + keyword.ID.ToString());
                 AppLogger.Info("Found match - Keywordname: " + keyword.Name);

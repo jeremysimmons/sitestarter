@@ -187,8 +187,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
         public override bool DeleteUser(string username, bool deleteAllRelatedData)
         {
             throw new NotImplementedException();
-            User user = UserFactory.GetUserByUsername(username);
-            UserFactory.DeleteUser(user);
+            IUser user = UserFactory<Entities.User>.Current.GetUserByUsername(username);
+            UserFactory<Entities.User>.Current.DeleteUser(user);
             return true;
         }
 
@@ -241,7 +241,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 
         public override string GetUserNameByEmail(string email)
         {
-            return UserFactory.GetUserByEmail(email).Username;
+            return UserFactory<Entities.User>.Current.GetUserByEmail(email).Username;
         }
 
         public override int MaxInvalidPasswordAttempts
@@ -307,7 +307,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		{
 			
 	            // The password doesn't need to be encrypted yet
-	            valid = UserFactory.AuthenticateUser(username, password) != null;
+	            valid = UserFactory<Entities.User>.Current.AuthenticateUser(username, password) != null;
         	    //return UserFactory.AuthenticateUser(username, password);
 
 			AppLogger.Debug("Is Valid: " + valid);

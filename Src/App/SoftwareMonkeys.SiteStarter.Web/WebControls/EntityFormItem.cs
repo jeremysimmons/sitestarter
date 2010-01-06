@@ -55,6 +55,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
                     LabelCell.Text = "&nbsp;&nbsp;&nbsp;" + value;
             }
         }
+        
+        private bool autoBind = true;
+        /// <summary>
+        /// Gets/sets a flag indicating whether the field controls should automatically be populated.
+        /// </summary>
+        public bool AutoBind
+        {
+        	get { return autoBind; }
+        	set { autoBind = value; }
+        }
 
         /// <summary>
         /// The ID of the control that will be involved in the two way binding.

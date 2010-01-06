@@ -9,6 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SoftwareMonkeys.SiteStarter.Web.Tests</RootNamespace>
     <AssemblyName>SoftwareMonkeys.SiteStarter.Web.Tests</AssemblyName>
+    <SourceAnalysisOverrideSettingsFile>C:\Documents and Settings\J\Application Data\ICSharpCode/SharpDevelop3.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -38,10 +39,35 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration\SiteStarter.Configuration.csproj">
+      <Project>{4B83307F-8307-43EF-A176-8AB1CDA78264}</Project>
+      <Name>SiteStarter.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Contracts\SiteStarter.Contracts.csproj">
+      <Project>737DFD8E-BF43-4BA9-ABE6-25B2DC21800F</Project>
+      <Name>SiteStarter.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Diagnostics\SiteStarter.Diagnostics.csproj">
+      <Project>{C3626F0A-DFD4-4EF2-8755-3532DE3712A4}</Project>
+      <Name>SiteStarter.Diagnostics</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Web\SiteStarter.Web.csproj">
       <Project>{A5D49D94-D936-4123-BA9A-572AA7C7F426}</Project>
       <Name>SiteStarter.Web</Name>
     </ProjectReference>
+    <Folder Include="Entities" />
+    <Folder Include="WebControls" />
+    <Folder Include="WebControls\_svn" />
+    <Folder Include="WebControls\_svn\prop-base" />
+    <Folder Include="WebControls\_svn\props" />
+    <Folder Include="WebControls\_svn\text-base" />
+    <Folder Include="WebControls\_svn\tmp" />
+    <Folder Include="WebControls\_svn\tmp\prop-base" />
+    <Folder Include="WebControls\_svn\tmp\props" />
+    <Folder Include="WebControls\_svn\tmp\text-base" />
+    <None Include="WebControls\_svn\entries" />
+    <Compile Include="Entities\TestEnum.cs" />
+    <Compile Include="WebControls\EntityFormHelperTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

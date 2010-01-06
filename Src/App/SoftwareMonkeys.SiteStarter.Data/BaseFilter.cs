@@ -11,7 +11,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 	/// <summary>
 	/// Defines the base data filter class that all other filter objects inherit.
 	/// </summary>
-    public abstract class BaseFilter
+    public abstract class BaseFilter : IDataFilter
     {
         private Type[] types;
         /// <summary>
@@ -36,13 +36,13 @@ namespace SoftwareMonkeys.SiteStarter.Data
 
             if (type != null)
             {
-                List<Type> list = types == null ? new List<Type>() : new List<Type>(types);
+                List<Type> list = (types == null ? new List<Type>() : new List<Type>(types));
                 list.Add(type);
                 types = (Type[])list.ToArray();
             }
         }
 
-		public virtual bool IsMatch(BaseEntity entity)
+		public virtual bool IsMatch(IEntity entity)
 		{
 			throw new NotSupportedException("The BaseFilter.IsMatch property cannot be called directly. A derived filter class must override it.");
 		}

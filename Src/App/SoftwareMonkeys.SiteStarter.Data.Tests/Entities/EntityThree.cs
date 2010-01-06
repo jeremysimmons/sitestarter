@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using SoftwareMonkeys.SiteStarter.Entities;
+using SoftwareMonkeys.SiteStarter.Configuration;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Tests.Entities
 {
+	[Serializable]
     [DataStore("Testing3")]
     public class EntityThree : BaseEntity
     {
@@ -16,9 +18,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests.Entities
         }
 
         private Guid[] referencedEntityIDs = new Guid[] {};
-	[EntityIDReferences(MirrorName="ReferencedEntityIDs",
-		EntitiesPropertyName="ReferencedEntities",
-		IDsPropertyName="ReferencedEntityIDs")]
+	[Reference]
         public Guid[] ReferencedEntityIDs
         {
             get {
@@ -33,10 +33,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests.Entities
         }
 
 	private EntityFour[] referencedEntities;
-	[EntityReferences(ExcludeFromDataStore=true,
-		MirrorName="ReferencedEntities",
-		EntitiesPropertyName="ReferencedEntities",
-		IDsPropertyName="ReferencedEntityIDs")]
+	[Reference]
         public EntityFour[] ReferencedEntities
 	{
 		get { return referencedEntities; }
@@ -44,5 +41,28 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests.Entities
 		//	referencedEntityIDs = Collection<BaseEntity>.GetIDs(referencedEntities);
 		}
 	}
+        
+        /// <summary>
+        /// Registers the entity in the system.
+        /// </summary>
+        static public void RegisterType()
+        {
+			MappingItem item2 = new MappingItem("EntityThree");
+			item2.Settings.Add("DataStoreName", "Testing_EntityThrees");
+			item2.Settings.Add("IsEntity", true);
+			item2.Settings.Add("FullName", typeof(EntityThree).FullName);
+			item2.Settings.Add("AssemblyName", typeof(EntityThree).Assembly.FullName);
+			
+			Config.Mappings.AddItem(item2);
+        }
+        
+        /// <summary>
+        /// Deregisters the entity from the system.
+        /// </summary>
+        static public void DeregisterType()
+        {
+        	throw new NotImplementedException();
+        }
+
     }
 }

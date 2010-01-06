@@ -25,53 +25,53 @@ namespace SoftwareMonkeys.SiteStarter.Business
         }*/
 
 		#region Retrieve functions
-	    /// <summary>
+	    /*/// <summary>
 		/// Retrieves all the entities from the DB.
 		/// </summary>
 		/// <returns>An array of the retrieved entities.</returns>
         [DataObjectMethod(DataObjectMethodType.Select, true)]
-		static public BaseEntity[] GetEntities()
+		static public IEntity[] GetEntities()
 		{
             return (BaseEntity[])(DataAccess.Data.Stores[typeof(BaseEntity)].GetEntities(typeof(Entities.BaseEntity)));
-		}
+		}*/
 
 		/// <summary>
 		/// Retrieves all the specified entities from the DB.
 		/// </summary>
-        /// <param name="type">The type of the entities to retrieve.</param>
 		/// <param name="entityIDs">An array of IDs of entities to retrieve.</param>
 		/// <returns>A BaseEntitySet containing the retrieved entities.</returns>
         [DataObjectMethod(DataObjectMethodType.Select, true)]
-        static public BaseEntity[] GetEntities(Type type, Guid[] entityIDs)
+        static public T[] GetEntities<T>(Guid[] entityIDs)
+        	where T : IEntity
 		{
 			// Create a new entity collection
-            Collection<Entities.BaseEntity> entities = new Collection<Entities.BaseEntity>();
+            Collection<T> entities = new Collection<T>();
 
 			// Loop through the IDs and add each entity to the collection
 			foreach (Guid entityID in entityIDs)
 			{
 				if (entityID != Guid.Empty)
-					entities.Add(GetEntity(type, entityID));
+					entities.Add(GetEntity<T>(entityID));
 			}
 
 			// Return the collection
-			return (BaseEntity[])entities.ToArray(typeof(BaseEntity));
+			return (T[])entities.ToArray(typeof(T));
 		}
 
 		/// <summary>
 		/// Retrieves the specified entity from the DB.
 		/// </summary>
-        /// <param name="type">The type of entity to retrieve.</param>
 		/// <param name="entityID">The ID of the entity to retrieve.</param>
 		/// <returns>A BaseEntity object containing the requested info.</returns>
         [DataObjectMethod(DataObjectMethodType.Select, true)]
-        static public Entities.BaseEntity GetEntity(Type type, Guid entityID)
+        static public T GetEntity<T>(Guid entityID)
+        	where T : IEntity
 		{
             // If the ID is empty return null
             if (entityID == Guid.Empty)
-                return null;
+            	return default(T);
 
-            return (Entities.BaseEntity)DataAccess.Data.Stores[type].GetEntity(type, "id", entityID);
+            return (T)DataAccess.Data.GetEntity<T>("ID", entityID);
 		}
 		#endregion
 
@@ -134,7 +134,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
         /// <param name="entity">The entity to retrieve the property value from.</param>
         /// <param name="propertyName">The name of the property to retrieve the value of.</param>
         /// <returns>The value of the specified property on the provided entity.</returns>
-        static public object GetPropertyValue(BaseEntity entity, string propertyName)
+        static public object GetPropertyValue(IEntity entity, string propertyName)
         {
             // todo: add unit testing
             PropertyInfo property = entity.GetType().GetProperty(propertyName);

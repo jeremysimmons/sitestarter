@@ -12,40 +12,41 @@ using SoftwareMonkeys.SiteStarter.Data;
 using SoftwareMonkeys.SiteStarter.Data.Tests.Entities;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
- 
+
 namespace SoftwareMonkeys.SiteStarter.Data.Tests
 {
-    [TestFixture]
-    public class DataUtilitiesTests
-    {
-        public string ApplicationPath
-        {
-            // TODO: Path MUST NOT be hard coded
-         //   get { return @"f:\SoftwareMonkeys\WorkHub\Application 2\Web\"; }
-       //     get { return System.Configuration.ConfigurationSettings.AppSettings["ApplicationPath"]; }
-            get { return SoftwareMonkeys.SiteStarter.Configuration.Config.Application.PhysicalPath; }
-        }
-
-	public DataUtilitiesTests()
+	[TestFixture]
+	public class DataUtilitiesTests
 	{
-       // if (!SoftwareMonkeys.SiteStarter.Configuration.Config.IsInitialized == null)
-       // {
-       //     string path = Directory.GetCurrentDirectory().Substring(0, Directory.GetCurrentDirectory().ToCharArray().Length - 3);
-       //     SoftwareMonkeys.SiteStarter.Configuration.Config.Initialize(path);
-       // }
-	}
+		public string ApplicationPath
+		{
+			// TODO: Path MUST NOT be hard coded
+			//   get { return @"f:\SoftwareMonkeys\WorkHub\Application 2\Web\"; }
+			//     get { return System.Configuration.ConfigurationSettings.AppSettings["ApplicationPath"]; }
+			get { return SoftwareMonkeys.SiteStarter.Configuration.Config.Application.PhysicalPath; }
+		}
 
-        #region Singleton tests
-        [Test]
-        public void Test_Data_EnsureInitialized()
-        {
-            DataProvider provider = DataAccess.Data;
+		public DataUtilitiesTests()
+		{
 
-            Assert.IsNotNull((object)provider);
-        }
-        #endregion
+			// TODO: Check if needed for testing the DataUtilities class
+			//   Config.Initialize(ApplicationPath, "Testing");
+			
+			TestUtilities.RegisterTestEntities();
+		}
+		
+		
+		#region Singleton tests
+		[Test]
+		public void Test_Data_EnsureInitialized()
+		{
+			DataProvider provider = DataAccess.Data;
 
-	[Test]
+			Assert.IsNotNull((object)provider);
+		}
+		#endregion
+
+		/*[Test]
 	public void Test_AddReferences_IDsToIDs()
 	{
 		using (LogGroup logGroup = AppLogger.StartGroup("Testing the AddReferences function for an IDs to IDs reference.", NLog.LogLevel.Debug))
@@ -61,15 +62,15 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 			e3.ReferencedEntityIDs = new Guid[] {e4.ID};
 			
-			BaseEntity[] toUpdate = DataUtilities.AddReferences(e4, e3, "ReferencedEntityIDs");
+			IEntity[] toUpdate = DataUtilities.AddReferences(e4, e3, e4.GetType().GetProperty("ReferencedEntityIDs"));
 
 			Assert.IsNotNull(toUpdate, "The toUpdate variable was returned null.");
 			if (toUpdate != null)
 				Assert.AreEqual(1, toUpdate.Length, "The modified entity isn't in the 'to update' list.");
 		}
-	}
+	}*/
 
-	/*[Test]
+		/*[Test]
 	public void Test_AddReferences_EntitiesToEntities()
 	{
 		using (LogGroup logGroup = AppLogger.StartGroup("Testing the AddReferences function for an entities to entities reference.", NLog.LogLevel.Debug))
@@ -87,7 +88,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 			PropertyInfo property = e4.GetType().GetProperty("ReferencedEntities");
 
-			BaseEntity[] toUpdate = DataUtilities.AddReferences(e4, e3, property);
+			IEntity[] toUpdate = DataUtilities.AddReferences(e4, e3, property);
 
 			Assert.IsNotNull(toUpdate, "The toUpdate variable was returned null.");
 			if (toUpdate != null)
@@ -95,7 +96,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		}
 	}*/
 
-	[Test]
+		/*[Test]
 	public void Test_AddReferences_IDToIDs()
 	{
 		using (LogGroup logGroup = AppLogger.StartGroup("Testing the AddReferences function for an ID to IDs reference.", NLog.LogLevel.Debug))
@@ -111,15 +112,15 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 			e1.PageIDs = new Guid[] { e2.ID };
 			
-			BaseEntity[] toUpdate = DataUtilities.AddReferences(e2, e1, "ArticleID");
+			IEntity[] toUpdate = DataUtilities.AddReferences(e2, e1, e2.GetType().GetProperty("ArticleID"));
 
 			Assert.IsNotNull(toUpdate, "The toUpdate variable was returned null.");
 			if (toUpdate != null)
 				Assert.AreEqual(1, toUpdate.Length, "The modified entity isn't in the 'to update' list.");
 		}
-	}
+	}*/
 
-	[Test]
+		/*[Test]
 	public void Test_AddReferences_IDsToID()
 	{
 		using (LogGroup logGroup = AppLogger.StartGroup("Testing the AddReferences function for an IDs to ID reference.", NLog.LogLevel.Debug))
@@ -137,15 +138,15 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 
 
-			BaseEntity[] toUpdate = DataUtilities.AddReferences(e1, e2, "PageIDs");
+			IEntity[] toUpdate = DataUtilities.AddReferences(e1, e2, e1.GetType().GetProperty("PageIDs"));
 
 			Assert.IsNotNull(toUpdate, "The toUpdate variable was returned null.");
 			if (toUpdate != null)
 				Assert.AreEqual(1, toUpdate.Length, "The modified entity isn't in the 'to update' list.");
 		}
-	}
+	}*/
 
-	[Test]
+		/*[Test]
 	public void Test_RemoveReferences_IDsToIDs()
 	{
 		using (LogGroup logGroup = AppLogger.StartGroup("Testing the RemoveReferences function with and IDs to IDs reference.", NLog.LogLevel.Debug))
@@ -165,7 +166,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			//DataAccess.Data.Stores[typeof(EntityThree)].Save(e4);
 			//DataAccess.Data.Stores[typeof(EntityThree)].Save(e3);
 
-			BaseEntity[] toUpdate = DataUtilities.RemoveReferences(e4, e3, "ReferencedEntityIDs");
+			IEntity[] toUpdate = DataUtilities.RemoveReferences(e4, e3, e4.GetType().GetProperty("ReferencedEntityIDs"));
 
 			Assert.IsNotNull(toUpdate, "The toUpdate variable was returned null.");
 			if (toUpdate != null)
@@ -175,8 +176,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				Assert.AreEqual(0, ((EntityFour)toUpdate[0]).ReferencedEntityIDs.Length, "The original referenced entity's now obsolete references weren't removed properly.");
 			}
 		}
-	}
-
+	}*/
+		/*
 	[Test]
 	public void Test_RemoveReferences_IDToIDs()
 	{
@@ -196,7 +197,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			//DataAccess.Data.Stores[typeof(EntityThree)].Save(e1);
 			//DataAccess.Data.Stores[typeof(EntityThree)].Save(e2);
 
-			TestArticle[] toUpdate = Collection<TestArticle>.ConvertAll(DataUtilities.RemoveReferences(e1, e2, "PageIDs"));
+			TestArticle[] toUpdate = Collection<TestArticle>.ConvertAll(DataUtilities.RemoveReferences(e1, e2, e1.GetType().GetProperty("PageIDs")));
 
 			Assert.IsNotNull(toUpdate, "The toUpdate variable was returned null.");
 			if (toUpdate != null)
@@ -228,7 +229,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			//DataAccess.Data.Stores[typeof(EntityThree)].Save(e1);
 			//DataAccess.Data.Stores[typeof(EntityThree)].Save(e2);
 
-			TestArticlePage[] toUpdate = Collection<TestArticlePage>.ConvertAll(DataUtilities.RemoveReferences(e2, e1, "ArticleID"));
+			TestArticlePage[] toUpdate = Collection<TestArticlePage>.ConvertAll(DataUtilities.RemoveReferences(e2, e1, e2.GetType().GetProperty("ArticleID")));
 
 			Assert.IsNotNull(toUpdate, "The toUpdate variable was returned null.");
 			if (toUpdate != null)
@@ -240,7 +241,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			}
 		}
 	}
-
+		 */
+		/*
 	[Test]
 	public void Test_GetReferenceType_EntityIDs()
 	{
@@ -263,9 +265,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
             Assert.AreEqual(e4.GetType().ToString(), type.ToString(), "The wrong type was retrieved.");
 		}
-	}
+	}*/
 
-	/*[Test]
+		/*[Test]
 	public void Test_GetReferenceType_EntityID()
 	{
 		using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetReferenceType function.", NLog.LogLevel.Debug))
@@ -289,7 +291,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		}
 	}*/
 
-	[Test]
+		/*[Test]
 	public void Test_GetReferenceType_Entities()
 	{
 		using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetReferenceType function.", NLog.LogLevel.Debug))
@@ -309,10 +311,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 			Type type = DataUtilities.GetReferenceType(e3, property);
 
-			Assert.AreEqual(e4.GetType(), type, "The wrong type was retrieved.");
+			Assert.AreEqual(e4.GetType().ToString(), type.ToString(), "The wrong type was retrieved.");
 		}
-	}
-
+	}*/
+		/*
 	[Test]
 	public void Test_GetMirrorProperty_IDs()
 	{
@@ -331,7 +333,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 			PropertyInfo property = e3.GetType().GetProperty("ReferencedEntityIDs");
 
-			PropertyInfo mirrorProperty = e4.GetType().GetProperty(DataUtilities.GetMirrorProperty(property, DataUtilities.GetReferenceAttribute(property)));
+			PropertyInfo mirrorProperty = e4.GetType().GetProperty(DataUtilities.GetMirrorPropertyName(property, DataUtilities.GetReferenceAttribute(property)));
 
 			Assert.AreEqual("ReferencedEntityIDs", mirrorProperty.Name, "The names don't match");
 
@@ -357,11 +359,75 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 			PropertyInfo property = e3.GetType().GetProperty("ReferencedEntities");
 
-			PropertyInfo mirrorProperty = e4.GetType().GetProperty(DataUtilities.GetMirrorProperty(property, DataUtilities.GetReferenceAttribute(property)));
+			PropertyInfo mirrorProperty = e4.GetType().GetProperty(DataUtilities.GetMirrorPropertyName(property, DataUtilities.GetReferenceAttribute(property)));
 
 			Assert.AreEqual("ReferencedEntities", mirrorProperty.Name, "The names don't match");
 
 			Assert.AreEqual(e4.GetType(), mirrorProperty.DeclaringType, "The types don't match.");
+		}
+	}
+	
+	
+	[Test]
+	public void Test_GetMirrorProperty_Entities_ReferenceTypeNameProvided()
+	{
+		using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetMirrorProperty function.", NLog.LogLevel.Debug))
+		{
+	        	TestArticle article = new TestArticle();
+			article.ID = Guid.NewGuid();
+			article.Title = "Test Article";
+			
+
+			TestArticlePage page = new TestArticlePage();
+			page.ID = Guid.NewGuid();
+			page.Title = "Test Article Page";
+			
+			article.Pages = new TestArticlePage[] { page};
+			page.Article = article;
+
+			
+			PropertyInfo mirrorProperty = DataUtilities.GetMirrorProperty(article, article.GetType().GetProperty("Pages"));
+			
+			Assert.IsNotNull(mirrorProperty, "The returned mirror property is null.");
+			
+			if (mirrorProperty != null)
+			{
+				Assert.AreEqual("Article", mirrorProperty.Name, "The names don't match");
+
+				Assert.AreEqual(page.GetType().ToString(), mirrorProperty.DeclaringType.ToString(), "The types don't match.");
+			}
+		}
+	}
+	
+	
+	[Test]
+	public void Test_GetMirrorProperty_IDs_ReferenceTypeNameProvided()
+	{
+		using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetMirrorProperty function.", NLog.LogLevel.Debug))
+		{
+	        	TestArticle article = new TestArticle();
+			article.ID = Guid.NewGuid();
+			article.Title = "Test Article";
+			
+
+			TestArticlePage page = new TestArticlePage();
+			page.ID = Guid.NewGuid();
+			page.Title = "Test Article Page";
+			
+			article.PageIDs = new Guid[] { page.ID};
+			page.ArticleID = article.ID;
+
+			
+			PropertyInfo mirrorProperty = DataUtilities.GetMirrorProperty(article, article.GetType().GetProperty("PageIDs"));
+			
+			Assert.IsNotNull(mirrorProperty, "The returned mirror property is null.");
+			
+			if (mirrorProperty != null)
+			{
+				Assert.AreEqual("ArticleID", mirrorProperty.Name, "The names don't match");
+
+				Assert.AreEqual(page.GetType().ToString(), mirrorProperty.DeclaringType.ToString(), "The types don't match.");
+			}
 		}
 	}
 
@@ -388,10 +454,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 
 		}
-	}
+	}*/
 
 
-	[Test]
+		/*[Test]
 	public void Test_ApplyExclusions()
 	{
 		using (LogGroup logGroup = AppLogger.StartGroup("Testing the ApplyExclusions function.", NLog.LogLevel.Debug))
@@ -414,9 +480,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 
 		}
-	}
+	}*/
 
-        [Test]
+		/*   [Test]
         public void Test_SynchroniseReverseReferences_IDsToIDs()
         {
             using (LogGroup logGroup = AppLogger.StartGroup("Testing a the preparation for saving entities references.", NLog.LogLevel.Debug))
@@ -438,10 +504,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 
 
-                                /*PropertyFilter filter = (PropertyFilter)DataAccess.Data.CreateFilter(typeof(PropertyFilter));
-                                filter.PropertyName = "ID";
-                                filter.PropertyValue = e4.ID;
-                                filter.AddType(typeof(EntityFour));*/
+ //                              PropertyFilter filter = (PropertyFilter)DataAccess.Data.CreateFilter(typeof(PropertyFilter));
+ //                               filter.PropertyName = "ID";
+ //                               filter.PropertyValue = e4.ID;
+ //                               filter.AddType(typeof(EntityFour));
 
 
 
@@ -451,7 +517,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
                                 PropertyInfo property = e3.GetType().GetProperty("ReferencedEntityIDs");
 
-                                BaseEntity[] updated = (BaseEntity[])DataUtilities.SynchroniseReverseReferences(e3, property, new BaseEntity[] {e4}, new BaseEntity[] {e4});
+                                IEntity[] updated = (IEntity[])DataUtilities.SynchroniseReverseReferences(e3, property, new IEntity[] {e4}, new IEntity[] {e4});
 
                                 if (updated != null)
                                 {
@@ -476,8 +542,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
                                 //DataAccess.Data.Stores[typeof(TestEntity)].Delete(e3);
                                 //DataAccess.Data.Stores[typeof(TestEntity)].Delete(e4);
             }
-        }
-
+        }*/
+		/*
        [Test]
         public void Test_SynchroniseReverseReferences_IDsToID()
         {
@@ -501,7 +567,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
                                 PropertyInfo property = e2.GetType().GetProperty("ArticleID");
 
-                                BaseEntity[] updated = (BaseEntity[])DataUtilities.SynchroniseReverseReferences(e2, property, new BaseEntity[] { e1 }, new BaseEntity[] { e1 });
+                                IEntity[] updated = (IEntity[])DataUtilities.SynchroniseReverseReferences(e2, property, new IEntity[] { e1 }, new IEntity[] { e1 });
 
                                 if (updated != null)
                                 {
@@ -548,7 +614,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
                                 PropertyInfo property = e1.GetType().GetProperty("PageIDs");
 
-                                BaseEntity[] updated = (BaseEntity[])DataUtilities.SynchroniseReverseReferences(e1, property, new BaseEntity[] { e2 }, new BaseEntity[] { });
+                                IEntity[] updated = (IEntity[])DataUtilities.SynchroniseReverseReferences(e1, property, new IEntity[] { e2 }, new IEntity[] { });
 
                                 if (updated != null)
                                 {
@@ -560,16 +626,16 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
                                     Assert.AreEqual(e2.ID, foundPage.ID, "The wrong entity was modified or returned.");
                                     Assert.IsTrue(foundPage.ArticleID == e1.ID, "The obsolete reference wasn't cleared properly.");
 					//Assert.IsTrue(entity.ArticleID == null || entity.ArticleID == Guid.Empty, "The obsolete reference wasn't cleared properly.");
-                                    /*if (entity.ReferencedEntityIDs != null)
-                                    {
-                                        AppLogger.Debug("entity.ReferencedEntityIDs != null");
-
-                                        Assert.AreEqual(1, entity.ReferencedEntityIDs.Length, "Incorrect number of reference entity IDs.");
-                                    }
-                                    else
-                                    {
-                                        AppLogger.Debug("entity.ReferencedEntities == null");
-                                    }*/
+ //                                   if (entity.ReferencedEntityIDs != null)
+ //                                   {
+ //                                       AppLogger.Debug("entity.ReferencedEntityIDs != null");
+//
+ //                                       Assert.AreEqual(1, entity.ReferencedEntityIDs.Length, "Incorrect number of reference entity IDs.");
+ //                                   }
+ //                                   else
+ //                                   {
+ //                                       AppLogger.Debug("entity.ReferencedEntities == null");
+ //                                   }
                                 }
                                 else
                                     Assert.Fail("No entity found. The save must have failed.");
@@ -577,8 +643,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
                                 //DataAccess.Data.Stores[typeof(TestEntity)].Delete(e2);
                                 //DataAccess.Data.Stores[typeof(TestEntity)].Delete(e1);
             }
-        }
-
+        }*/
+		/*
        [Test]
         public void Test_GetReferenceIDs_Many()
         {
@@ -685,8 +751,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 			PropertyInfo property = e4.GetType().GetProperty("ReferencedEntityIDs");
 
-			BaseEntity[] oldReverseReferences = new BaseEntity[] {e3};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntitiesContainingReverseReferences(article1, property);
-			BaseEntity[] newReferences =  new BaseEntity[] {e32};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntities(article1.PageIDs);
+			IEntity[] oldReverseReferences = new IEntity[] {e3};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntitiesContainingReverseReferences(article1, property);
+			IEntity[] newReferences =  new IEntity[] {e32};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntities(article1.PageIDs);
 
                          EntityThree[] found = Collection<EntityThree>.ConvertAll(DataUtilities.RemoveObsoleteReverseReferences(e4, property, newReferences, oldReverseReferences));
 
@@ -733,8 +799,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 			PropertyInfo property = article1.GetType().GetProperty("PageIDs");
 
-			BaseEntity[] oldReverseReferences = new BaseEntity[] {page1};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntitiesContainingReverseReferences(article1, property);
-			BaseEntity[] newReferences =  new BaseEntity[] {page2};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntities(article1.PageIDs);
+			IEntity[] oldReverseReferences = new IEntity[] {page1};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntitiesContainingReverseReferences(article1, property);
+			IEntity[] newReferences =  new IEntity[] {page2};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntities(article1.PageIDs);
 
                          TestArticlePage[] found = Collection<TestArticlePage>.ConvertAll(DataUtilities.RemoveObsoleteReverseReferences(article1, property, newReferences, oldReverseReferences));
 
@@ -782,8 +848,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 			PropertyInfo property = page1.GetType().GetProperty("ArticleID");
 
-			BaseEntity[] oldReverseReferences = new BaseEntity[] {article1};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntitiesContainingReverseReferences(article1, property);
-			BaseEntity[] newReferences =  new BaseEntity[] {article2};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntities(article1.PageIDs);
+			IEntity[] oldReverseReferences = new IEntity[] {article1};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntitiesContainingReverseReferences(article1, property);
+			IEntity[] newReferences =  new IEntity[] {article2};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntities(article1.PageIDs);
 
                          TestArticle[] found = Collection<TestArticle>.ConvertAll(DataUtilities.RemoveObsoleteReverseReferences(page1, property, newReferences, oldReverseReferences));
 
@@ -831,8 +897,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
                 
 			PropertyInfo property = e3.GetType().GetProperty("ReferencedEntityIDs");
 
-			//BaseEntity[] oldReverseReferences = new BaseEntity[] {e3};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntitiesContainingReverseReferences(article1, property);
-			BaseEntity[] newReferences =  new BaseEntity[] {e4};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntities(article1.PageIDs);
+			//IEntity[] oldReverseReferences = new IEntity[] {e3};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntitiesContainingReverseReferences(article1, property);
+			IEntity[] newReferences =  new IEntity[] {e4};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntities(article1.PageIDs);
 
                          EntityFour[] found = Collection<EntityFour>.ConvertAll(DataUtilities.AddNewReverseReferences(e3, property, newReferences));
 
@@ -879,8 +945,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 			PropertyInfo property = article1.GetType().GetProperty("PageIDs");
 
-			BaseEntity[] oldReverseReferences = new BaseEntity[] {page1};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntitiesContainingReverseReferences(article1, property);
-			BaseEntity[] newReferences =  new BaseEntity[] {page2};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntities(article1.PageIDs);
+			IEntity[] oldReverseReferences = new IEntity[] {page1};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntitiesContainingReverseReferences(article1, property);
+			IEntity[] newReferences =  new IEntity[] {page2};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntities(article1.PageIDs);
 
                          TestArticlePage[] found = Collection<TestArticlePage>.ConvertAll(DataUtilities.AddNewReverseReferences(article1, property, newReferences));
 
@@ -926,8 +992,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 			PropertyInfo property = page1.GetType().GetProperty("ArticleID");
 
-			BaseEntity[] oldReverseReferences = new BaseEntity[] {article1};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntitiesContainingReverseReferences(article1, property);
-			BaseEntity[] newReferences =  new BaseEntity[] {article2};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntities(article1.PageIDs);
+			IEntity[] oldReverseReferences = new IEntity[] {article1};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntitiesContainingReverseReferences(article1, property);
+			IEntity[] newReferences =  new IEntity[] {article2};//DataAccess.Data.Stores[typeof(TestEntity)].GetEntities(article1.PageIDs);
 
                          TestArticle[] found = Collection<TestArticle>.ConvertAll(DataUtilities.AddNewReverseReferences(page1, property, newReferences));
 
@@ -962,7 +1028,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			string name = DataUtilities.GetDataStoreNameForReference(e1, e1.GetType().GetProperty("PageIDs"));
 
-				Assert.AreEqual("Testing", name, "The wrong data store name was returned.");
+				Assert.AreEqual("Testing_TestArticles", name, "The wrong data store name was returned.");
 		}
 	}
 	
@@ -984,11 +1050,39 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			string name = DataUtilities.GetDataStoreNameForReference(e1, e1.GetType().GetProperty("PageIDs"));
 
-				Assert.AreEqual("Testing", name, "The wrong data store name was returned.");
+				Assert.AreEqual("Testing_TestArticles", name, "The wrong data store name was returned.");
 		}
-	}
-	
-	[Test]
+	}*/
+		
+		[Test]
+		public void Test_GetType_AliasName()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing the DataUtilities.GetType function.", NLog.LogLevel.Debug))
+			{
+				TestArticle.RegisterType();
+				TestArticlePage.RegisterType();
+				
+				TestArticle e1 = new TestArticle();
+				e1.ID = Guid.NewGuid();
+				e1.Title = "Test 1";
+				
+
+				TestArticlePage e2 = new TestArticlePage();
+				e2.ID = Guid.NewGuid();
+				e2.Title = "Test 2";
+
+				e1.Pages = new TestArticlePage[] { e2 };
+				
+				Type type =  EntitiesUtilities.GetType("ITestArticle");
+
+				Assert.IsNotNull(type, "Null type was returned.");
+				
+				if (type != null)
+					Assert.AreEqual("TestArticle", type.Name, "The wrong data type was returned.");
+			}
+		}
+		
+		/*[Test]
 	public void Test_GetDataStoreNameForReference_Many_Null()
 	{
 		using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetDataStoreNameForReference function for a multiple reference.", NLog.LogLevel.Debug))
@@ -1007,7 +1101,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			string name = DataUtilities.GetDataStoreNameForReference(e2, e2.GetType().GetProperty("ArticleID"));
 
 			
-			Assert.AreEqual("Testing", name, "The wrong data store name was returned.");
+			Assert.AreEqual("Testing_Articles", name, "The wrong data store name was returned.");
 		}
 	}
 	
@@ -1030,9 +1124,212 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			string name = DataUtilities.GetDataStoreNameForReference(e2, e2.GetType().GetProperty("ArticleID"));
 
 			
-			Assert.AreEqual("Testing", name, "The wrong data store name was returned.");
+			Assert.AreEqual("Testing_Articles", name, "The wrong data store name was returned.");
+		}
+	}*/
+		
+		[Test]
+		public void Test_GetEntityType()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing the DataUtilities.GetEntityType function.", NLog.LogLevel.Debug))
+			{
+				TestUser.RegisterType();
+				TestRole.RegisterType();
+				
+				
+				TestUser user = new TestUser();
+				user.ID = Guid.NewGuid();
+				user.FirstName = "Test";
+				user.LastName = "User";
+				
+				TestRole role = new TestRole();
+				role.ID = Guid.NewGuid();
+				role.Name = "Test Role";
+				
+				user.Roles = Collection<TestRole>.Add(user.Roles, role);
+				role.Users = Collection<TestUser>.Add(role.Users, user);
+				
+				PropertyInfo rolesProperty = user.GetType().GetProperty("Roles");
+				
+				Type entityType = DataUtilities.GetEntityType(user, rolesProperty);
+				
+				Assert.AreEqual(entityType.FullName, role.GetType().FullName, "The types don't match #1.");
+				
+				
+				
+				PropertyInfo usersProperty = role.GetType().GetProperty("Users");
+				
+				Type entityType2 = DataUtilities.GetEntityType(role, usersProperty);
+				
+				Assert.AreEqual(entityType2.FullName, user.GetType().FullName, "The types don't match #2.");
+			}
+		}
+		
+		
+		[Test]
+		public void Test_GetType_Alias()
+		{
+			TestUser.RegisterType();
+			//TestRole.RegisterType();
+			
+			//TestUser user = new TestUser();
+			//user.ID = Guid.NewGuid();
+			//user.FirstName = "Test";
+			//user.LastName = "User";
+			
+			//TestRole role = new TestRole();
+			//role.ID = Guid.NewGuid();
+			//role.Name = "Test Role";
+			
+			//user.Roles.Add(role);
+			
+			//PropertyInfo rolesProperty = user.GetType().GetProperty("Roles");
+			
+			Type type = EntitiesUtilities.GetType("ITestUser");
+			
+			Assert.AreEqual(type.FullName, typeof(TestUser).FullName, "The types don't match.");
+		}
+		
+		[Test]
+		public void Test_GetType_Name()
+		{
+			TestUser.RegisterType();
+			//TestRole.RegisterType();
+			
+			//TestUser user = new TestUser();
+			//user.ID = Guid.NewGuid();
+			//user.FirstName = "Test";
+			//user.LastName = "User";
+			
+			//TestRole role = new TestRole();
+			//role.ID = Guid.NewGuid();
+			//role.Name = "Test Role";
+			
+			//user.Roles.Add(role);
+			
+			//PropertyInfo rolesProperty = user.GetType().GetProperty("Roles");
+			
+			Type type = EntitiesUtilities.GetType("TestUser");
+			
+			Assert.AreEqual(type.FullName, typeof(TestUser).FullName, "The types don't match.");
+			
+		}
+		
+		[Test]
+		public void Test_GetDataStoreName_FromType()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetDataStoreName function from a provided type.", NLog.LogLevel.Debug))
+			{
+				TestArticle e1 = new TestArticle();
+				e1.ID = Guid.NewGuid();
+				e1.Title = "Test 1";
+				
+
+				TestArticlePage e2 = new TestArticlePage();
+				e2.ID = Guid.NewGuid();
+				e2.Title = "Test 2";
+				
+				//e2.ArticleID = e1.ID;
+				
+				string name = DataUtilities.GetDataStoreName(typeof(TestArticle));
+
+				
+				Assert.AreEqual("Testing_Articles", name, "The wrong data store name was returned.");
+			}
+		}
+		
+		[Test]
+		public void Test_GetDataStoreName_FromEntity()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetDataStoreName function from a provided type.", NLog.LogLevel.Debug))
+			{
+				TestArticle e1 = new TestArticle();
+				e1.ID = Guid.NewGuid();
+				e1.Title = "Test 1";
+				
+
+				TestArticlePage e2 = new TestArticlePage();
+				e2.ID = Guid.NewGuid();
+				e2.Title = "Test 2";
+				
+				//e2.ArticleID = e1.ID;
+				
+				string name = DataUtilities.GetDataStoreName(e1);
+
+				
+				Assert.AreEqual("Testing_Articles", name, "The wrong data store name was returned.");
+			}
+		}
+		
+		[Test]
+		public void Test_GetDataStoreName_FromNames()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetDataStoreName function from a provided type.", NLog.LogLevel.Debug))
+			{
+				TestArticle e1 = new TestArticle();
+				e1.ID = Guid.NewGuid();
+				e1.Title = "Test 1";
+				
+
+				TestArticlePage e2 = new TestArticlePage();
+				e2.ID = Guid.NewGuid();
+				e2.Title = "Test 2";
+				
+				//e2.ArticleID = e1.ID;
+				
+				string name = DataUtilities.GetDataStoreName(e1.GetType().Name, e2.GetType().Name);
+
+				
+				Assert.AreEqual("Testing_Articles-Testing_Articles", name, "The wrong data store name was returned.");
+			}
+		}
+		
+		[Test]
+		public void Test_IsInPage_Pre()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing the IsInPage function on an item that appears on a earlier page.", NLog.LogLevel.Debug))
+			{
+				int i = 0;
+				int pageIndex = 1;
+				int pageSize = 10;
+				
+				bool isInPage = DataUtilities.IsInPage(i, pageIndex, pageSize);
+				
+				Assert.IsFalse(isInPage, "Returned true when it shouldn't have.");
+			}
+		}
+		
+		[Test]
+		public void Test_IsInPage_In()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing the IsInPage function on an item that appears on the specified page.", NLog.LogLevel.Debug))
+			{
+				
+				int i = 5;
+				int pageIndex = 0;
+				int pageSize = 10;
+				
+				bool isInPage = DataUtilities.IsInPage(i, pageIndex, pageSize);
+				
+				
+				Assert.IsTrue(isInPage, "Returned false when it should have been true.");
+			}
+		}
+		
+		[Test]
+		public void Test_IsInPage_Post()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing the IsInPage function on an item that appears on a later page.", NLog.LogLevel.Debug))
+			{
+				
+				int i = 30;
+				int pageIndex = 1;
+				int pageSize = 10;
+				
+				bool isInPage = DataUtilities.IsInPage(i, pageIndex, pageSize);
+				
+				Assert.IsFalse(isInPage, "Returned true when it shouldn't have.");
+			}
 		}
 	}
-	
-    }
 }

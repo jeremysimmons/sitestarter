@@ -36,15 +36,14 @@
 		<call target="Common.Actions.CleanSolution"/>
 		<call target="Common.Jobs.ImportLibraries"/>
 		
-		<foreach item="String" in="${Solution.BuildOrder}" delim="," property="count">
-    		<property name="AssemblyProject.PropertiesPath" value="${Solution.RootPath}\${Solution.BaseNamespace}.${count}\${Solution.Name}.${count}.Assembly.nant"/>
+		<foreach item="String" in="${Solution.BuildOrder}" delim="," property="item">
+    		<property name="AssemblyProject.PropertiesPath" value="${Solution.RootPath}\${Solution.BaseNamespace}.${item}\${Solution.Name}.${item}.Assembly.nant"/>
     		<echo message="Building assembly: ${AssemblyProject.PropertiesPath}"/>
 			<if test="${file::exists(AssemblyProject.PropertiesPath)}">
 				<call target="Common.Jobs.BuildAssembly"/>
 			</if>
 		</foreach>
 		
-			
 		<if test="${directory::exists(Solution.RootPath + '\Modules\')}">
 			<foreach item="Folder" in="${Solution.RootPath}\Modules"  property="currentModule">
 	    		<in>
@@ -86,7 +85,8 @@
 	  		<echo message="To: ${Project.LibrariesPath}\${Build.Mode}"/>
 	   			<copy todir="${Project.LibrariesPath}\${Build.Mode}" overwrite="true">
 	      			<fileset basedir="${SiteStarter.BinPath}\${Build.Mode}">
-	        			<include name="SoftwareMonkeys.SiteStarter*dll" />
+	        			<!--include name="SoftwareMonkeys.SiteStarter*dll" /-->
+	        			<exclude name="*" />
 	      			</fileset>
 	    		</copy>
 	    	</if>

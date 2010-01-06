@@ -23,7 +23,7 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
         }*/
 
         private TestArticle[] articles;
-        [EntityReferences(MirrorName="Samples")]
+        [Reference]
         public TestArticle[] Articles
         {
             get { return articles; }

@@ -5,7 +5,7 @@
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.State" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Configuration" %>
-<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business.State" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.State" %>
 <%@ Import Namespace="System.Web.Security" %>
 <script runat="server">
     private void Page_Load(object sender, EventArgs e)
@@ -46,7 +46,7 @@
         VirtualServerDataForm.DataSource = server;
         AdministratorDataForm.DataSource = user;
 
-        DataBind();
+        CreateView.DataBind();
     }
     
         /// <summary>
@@ -67,7 +67,9 @@
     	VirtualServer server = (VirtualServer)VirtualServerDataForm.DataSource;
     	User administrator = (User)AdministratorDataForm.DataSource;
     	
-    	server.PrimaryAdministratorID = administrator.ID;
+    	User systemAdministrator = UserFactory.GetUser(Config.Application.PrimaryAdministratorID);
+    	
+    	server.PrimaryAdministrator = administrator;
         
         VirtualServerDataForm.ReverseBind(server);
         AdministratorDataForm.ReverseBind(administrator);
@@ -80,8 +82,7 @@
         if (VirtualServerFactory.SaveVirtualServer(server))
         {
 	            if (Config.Application.AutoApproveVirtualServerRegistration)
-	            {        
-		            
+	            {                    
 		            VirtualServerState.Switch(server.Name, server.ID);
 		            
 		            UserFactory.SaveUser(administrator);
@@ -94,6 +95,11 @@
 		            
 		            FormsAuthentication.SetAuthCookie(administrator.Username, false);
 		            
+		            server.PrimaryAdministrator = My.User = administrator;
+
+                    VirtualServerFactory.SendWelcomeEmail(server, TextParser.ParseSetting("VirtualServerWelcomeEmailSubject"), TextParser.ParseSetting("VirtualServerWelcomeEmail"), systemAdministrator);
+                    VirtualServerFactory.SendRegistrationAlert(server, TextParser.ParseSetting("VirtualServerRegistrationAlertSubject"), TextParser.ParseSetting("VirtualServerRegistrationAlert"), systemAdministrator);
+                    
 	    	        // Display the result to the server
 		            Result.Display(Resources.Language.VirtualServerCreated);
 		            

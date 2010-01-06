@@ -2,8 +2,11 @@
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.State" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Data" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Providers" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Configuration" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Entities" %>
 <%@ Import Namespace="NLog" %>
 <script runat="server">
 
@@ -16,7 +19,7 @@
 	//logger.Info("test worked");
 	////System.Diagnostics.Trace.Listeners.Add(new LogWriter());
 
-        using (LogGroup logGroup = AppLogger.StartGroup("Initializes the state management, config, modules, and data.", LogLevel.Info))
+        using (LogGroup logGroup = AppLogger.StartGroup("Preparing to start application.", LogLevel.Info))
         {
             //log4net.Config.XmlConfigurator.Configure();
             // Attempt to initialize the config
@@ -40,9 +43,21 @@
 
     void Session_Start(object sender, EventArgs e) 
     {
-        // Code that runs when a new session is started
-        if (!StateAccess.IsInitialized || !Config.IsInitialized || !DataAccess.IsInitialized)
-            Initialize();
+        using (LogGroup logGroup = AppLogger.StartGroup("Preparing to start session.", LogLevel.Info))
+        {
+	        if (Request.QueryString["VS"] != null && Request.QueryString["VS"] != String.Empty)
+	        {
+	            VirtualServer server = VirtualServerFactory.GetVirtualServerByName(Request.QueryString["VS"]);
+	
+	            if (server != null)
+	                VirtualServerState.Switch(server.Name, server.ID);
+	            
+	        }
+	        
+	        // Code that runs when a new session is started
+	        if (!StateAccess.IsInitialized || !Config.IsInitialized || !DataAccess.IsInitialized)
+	            Initialize();
+		}
 
     }
 
@@ -57,12 +72,15 @@
 
     private void Initialize()
     {
-        if (!StateAccess.IsInitialized || !Config.IsInitialized)
+        using (LogGroup logGroup = AppLogger.StartGroup("Initializing the state management, config, modules, and data.", LogLevel.Info))
         {
-            SoftwareMonkeys.SiteStarter.Web.State.StateProviderManager.Initialize();   
-            Config.Initialize(Server.MapPath(HttpContext.Current.Request.ApplicationPath));
-            DataProviderManager.Initialize();
-        }
+	        if (!StateAccess.IsInitialized || !Config.IsInitialized)
+	        {
+	            SoftwareMonkeys.SiteStarter.Web.State.StateProviderManager.Initialize();   
+	            Config.Initialize(Server.MapPath(HttpContext.Current.Request.ApplicationPath), WebUtilities.GetLocationVariation(HttpContext.Current.Request.Url));
+	            DataProviderManager.Initialize();
+	        }
+		}
     }
 
     public override void Dispose()

@@ -1,11 +1,37 @@
 <%@ Master Language="C#" AutoEventWireup="true" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web" %>
-<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business.State" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.State" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Configuration" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <script runat="server">
+private void Page_Load(object sender, EventArgs e)
+{
+		MenuSource.DataBind();
+		
+        EnsureSetup();
+}
 
+
+private void EnsureSetup()
+{
+	if (!Config.IsInitialized
+		&& Request.Url.ToString().ToLower().IndexOf("/setup.aspx") == -1)
+		HttpContext.Current.Response.Redirect(Request.ApplicationPath + "/Admin/Setup.aspx");
+}
+
+private string GetMenuDataFile()
+{
+	if (VirtualServerState.VirtualServerSelected)
+	{
+		return @"~\App_Data\VS\" + VirtualServerState.VirtualServerID + @"\Menu.sitemap";
+	}
+	else
+	{
+		return @"~\App_Data\Menu.sitemap";
+	}
+}
 </script>
 
 <html xmlns="http://www.w3.org/1999/xhtml" >
@@ -20,25 +46,22 @@
     <tr><td colspan="2" style="padding: 0px;" class="PageHeader"><table width="100%"><tr><td></td><td class="PageHeaderText">SiteStarter</td><td class="PageHeaderIdentity">
         &nbsp;<asp:LoginView ID="LoginView1" runat="server">
             <LoggedInTemplate>
-                <%= Resources.Language.YouAreLoggedInAs %>: <%= Request.IsAuthenticated ? My.User.Username : String.Empty %>&nbsp;(<a href='<%= Request.ApplicationPath + "/Members/Logout.aspx" %>'><%= Resources.Language.Logout %></a>)
+                <%= Resources.Language.YouAreLoggedInAs %>: <%= Request.IsAuthenticated && My.User != null ? My.User.Username : String.Empty %>&nbsp;(<a href='<%= Request.ApplicationPath + "/Members/Logout.aspx" %>'><%= Resources.Language.Logout %></a>)
             </LoggedInTemplate>
             <AnonymousTemplate>
                 <a href='<%= Request.ApplicationPath + "/Members/Login.aspx" %>'>Login</a>
             </AnonymousTemplate>
         </asp:LoginView></td></tr></table>
     </td></tr>
-    <tr><td class="Column" nowrap>
-        <ul><li><a href='<%= Request.ApplicationPath + "/Default.aspx" %>'>Home</a></li><li>
-        <a href='<%= Request.ApplicationPath + "/Admin/Setup.aspx" %>'>Setup</a></li><li>
-        <a href='<%= Request.ApplicationPath + "/Members/Register.aspx" %>'>Register</a></li><li>
-        <a href='<%= Request.ApplicationPath + "/Members/Login.aspx" %>'>Login</a></li><li>
-        <a href='<%= Request.ApplicationPath + "/Members/Default.aspx" %>'>My Account</a></li><li>
-        <a href='<%= Request.ApplicationPath + "/Members/Logout.aspx" %>'>Logout</a></li><li>
-        <a href='<%= Request.ApplicationPath + "/Admin/Users.aspx" %>'>Users</a></li><li>
-        <a href='<%= Request.ApplicationPath + "/Admin/UserRoles.aspx" %>'>Roles</a></li><li>
-        <a href='<%= Request.ApplicationPath + "/Admin/Settings.aspx" %>'>Settings</a></li><li>
-        <a href='<%= Request.ApplicationPath + "/Admin/UnitTests.aspx" %>'>Unit Tests</a></li><li>
-        <a href='<%= Request.ApplicationPath + "/Admin/Data.aspx" %>'>Data</a></li></ul>
+    <tr><td class="Column" nowrap="nowrap">
+        
+                                <asp:TreeView ID="Menu" runat="server" DataSourceID="MenuSource">
+			          <Databindings>
+			            <asp:TreeNodeBinding DataMember="siteMapNode" TextField="title" NavigateUrlField="url"/>
+			          </Databindings>
+
+                                </asp:TreeView>
+                                <asp:XmlDataSource ID="MenuSource" XPath="siteMap/*" DataFile='<%# GetMenuDataFile() %>' runat="server" />
         </td><td>
         <asp:contentplaceholder id="Body" runat="server">
         </asp:contentplaceholder>

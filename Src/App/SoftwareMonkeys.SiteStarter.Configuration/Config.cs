@@ -56,15 +56,54 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
             } 
         }
         
+        
         /// <summary>
-        /// Gets/sets the virtual server configuration object.
+        /// Gets/sets the application configuration object.
         /// </summary>
-        static public IVirtualServerConfig VirtualServer
+        static public IMappingConfig Mappings
         {
             get {
-            	IVirtualServerConfig server = null;
-            	
                 if (All != null && All.Count > 0)
+                {
+                    for (int i = 0; i < All.Count; i++)
+                    {
+                        if (All[i] is IMappingConfig)
+                            return (IMappingConfig)All[i];
+                    }
+                }
+                
+                return null;
+            }
+            set
+            {
+                if (All.Contains((IConfig)value))
+                {
+                    for (int i = 0; i < All.Count; i++)
+                    {
+                        if (All[i] is IMappingConfig)
+                            All[i] = (IConfig)value;
+                    }
+                }
+                else
+                    All.Add((IConfig)value);
+            } 
+        }
+        
+        /*
+        static protected string VirtualServerKey
+        {
+        	get { return "VirtualServer_" + VirtualServerState.VirtualServerID; }
+        }*/
+
+//        /// <summary>
+  //      /// Gets/sets the virtual server configuration object.
+  //      /// </summary>
+  //      static public IVirtualServerConfig VirtualServer
+  //      {
+  //              get {
+   //         	IVirtualServerConfig server = null;
+            	
+                /*if (All != null && All.Count > 0)
                 {
                     for (int i = 0; i < All.Count; i++)
                     {
@@ -73,15 +112,19 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
                             server = (IVirtualServerConfig)All[i];
                         }
                     }
-                }
+                }*/
                 
-                if (server == null)
-                {
-                	server = LoadVirtualServerConfig();
-                }
-                return server;
-            }
-            set
+    //            server = (IVirtualServerConfig)StateAccess.State.GetApplication(VirtualServerKey);
+                
+    //            if (server == null)
+     //           {
+    //            	server = LoadVirtualServerConfig();
+     //           	
+    //            	StateAccess.State.SetApplication(VirtualServerKey, server);
+    //            }
+    //            return server;
+    //        }
+            /*set
             {
                 if (All.Contains((IVirtualServerConfig)value))
                 {
@@ -93,45 +136,71 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
                 }
                 else
                     All.Add((IVirtualServerConfig)value);
-            } 
-        }
+            } */
+      //  }
 
         /// <summary>
         /// Gets a flag indicating whether the application configuration has been initialized.
         /// </summary>
         static public bool IsInitialized
         {
-            get { return (Application != null); }
+            get { return (Application != null && Mappings != null); }
         }
-
+        
         /// <summary>
         /// Initializes all configuration objects.
         /// </summary>
         /// <param name="physicalApplicationPath">The physical path to the root of the application.</param>
-        static public void Initialize(string physicalApplicationPath)
+        /// <param name="variation">The path variation applied to configuration files.</param>
+        static public void Initialize(string physicalApplicationPath, string variation)
         {
-            using (LogGroup logGroup = AppLogger.StartGroup("Initializes the application configuration settings."))
+            using (LogGroup logGroup = AppLogger.StartGroup("Initializes the application configuration settings.", NLog.LogLevel.Debug))
             {
-                AppLogger.Info("Looking for configs in: " + physicalApplicationPath);
+                AppLogger.Debug("Looking for configs in: " + physicalApplicationPath);
                 
                 string fullPath = physicalApplicationPath.TrimEnd('\\') + @"\App_Data\";
                 
-                string virtualServerName = String.Empty;
+                /*string virtualServerName = String.Empty;
                 
                 if (StateAccess.IsInitialized && StateAccess.State != null)
                 	virtualServerName = (string)StateAccess.State.GetSession("VirtualServerName");
                 
                 if (virtualServerName != null && virtualServerName != String.Empty)
-                	fullPath += virtualServerName + @"\";
-
-                All = ConfigFactory.LoadAllConfigs(fullPath);
+                	fullPath += virtualServerName + @"\";*/
+                	
+            	string virtualServerID = String.Empty;
+                
+                if (StateAccess.IsInitialized && StateAccess.State != null)
+                	virtualServerID = (string)StateAccess.State.GetSession("VirtualServerID");
+                
+                if (virtualServerID != null && virtualServerID != String.Empty && virtualServerID != Guid.Empty.ToString())
+                	fullPath += virtualServerID + @"\";
+                All.Add(ConfigFactory<AppConfig>.LoadConfig(fullPath, "Default", variation));
+                All.Add(ConfigFactory<MappingConfig>.LoadConfig(fullPath, "Mappings", variation));
             }
         }
         
-        static protected IVirtualServerConfig LoadVirtualServerConfig()
+       /* static protected IVirtualServerConfig LoadVirtualServerConfig()
         {
-        	return (IVirtualServerConfig)ConfigFactory.LoadConfig(Config.Application.PhysicalPath + @"\App_Data\VS\" + StateAccess.State.GetSession("VirtualServerID"), typeof(IVirtualServerConfig));
-        }
+        	using (LogGroup logGroup = AppLogger.StartGroup("Loading the current virtual server config.", NLog.LogLevel.Debug))
+        	{
+        		string path = Config.Application.PhysicalPath + @"\App_Data\VS\" + StateAccess.State.GetSession("VirtualServerID") + @"\VirtualServer.config";
+        		
+        		AppLogger.Debug("Path: " + path);
+        		AppLogger.Debug("Virtual server name: " + VirtualServerState.VirtualServerName);
+        		AppLogger.Debug("Virtual server ID: " + VirtualServerState.VirtualServerID);
+        		
+	        	if (!VirtualServerState.VirtualServerSelected
+	        		|| StateAccess.State.GetSession("VirtualServerID") == null
+	        		|| StateAccess.State.GetSession("VirtualServerID") == String.Empty
+	        		|| StateAccess.State.GetSession("VirtualServerID") == Guid.Empty.ToString())
+	        	{
+	        		return null;
+	        	}
+	        		
+	        	return (IVirtualServerConfig)ConfigFactory.LoadConfig(path, typeof(VirtualServer));
+        	}
+        }*/
 
         /// <summary>
         /// Clears and disposes all configuration objects.

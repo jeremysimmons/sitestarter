@@ -22,25 +22,48 @@ namespace SoftwareMonkeys.SiteStarter.Data
         #endregion
 
         #region C.R.U.D. and related functions
-        BaseEntity[] GetAllEntities();
-        BaseEntity[] GetEntities(Type entityType);
+        IEntity[] GetAllEntities();
+        T[] GetEntities<T>()
+        	where T : IEntity;
 	// TODO: Remove if not necessary
-        //BaseEntity[] GetEntities(BaseFilter filter);
-        //BaseEntity[] GetEntities(FilterGroup group);
-        BaseEntity[] GetEntities(Guid[] entityIDs);
-        BaseEntity GetEntity(Type entityType, string propertyName, object propertyValue);
-        BaseEntity GetEntity(Type entityType, IDictionary<string, object> parameters);
-        BaseEntity[] GetEntities(Type entityType, IDictionary<string, object> parameters);
-        //BaseEntity[] GetEntities(Type entityType, string propertyName, object propertyValue);
-        BaseEntity[] GetPage(Type type, int pageIndex, int pageSize, string sortExpression, out int totalObjects);
-        BaseEntity[] GetPage(Type type, string fieldName, object fieldValue, int pageIndex, int pageSize, string sortExpression, out int totalObjects);
-        BaseEntity[] PreSave(BaseEntity entity);
-        void Save(BaseEntity entity);
-        BaseEntity[] PreUpdate(BaseEntity entity);
-        void Update(BaseEntity entity);
-        BaseEntity[] PreDelete(BaseEntity entity);
-        void Delete(BaseEntity entity);
-        bool IsStored(BaseEntity entity);
+        //IEntity[] GetEntities(BaseFilter filter);
+        //IEntity[] GetEntities(FilterGroup group);
+        IEntity[] GetEntities(Type type, Guid[] entityIDs);
+        T[] GetEntities<T>(Guid[] entityIDs)
+        	where T : IEntity;
+        //IEntity GetEntity(Type entityType, string propertyName, object propertyValue);
+        IEntity GetEntityByTypeAndProperties(Type type, IDictionary<string, object> parameters);
+        T GetEntity<T>(IDictionary<string, object> parameters)
+        	where T : IEntity;
+        
+        IEntity[] GetEntitiesByTypeAndProperties(Type type, IDictionary<string, object> parameters);
+        T[] GetEntities<T>(IDictionary<string, object> parameters)
+        	where T : IEntity;
+        
+        
+        IEntity[] GetEntitiesByTypeAndProperty(Type type, string propertyName, object propertyValue);
+        T[] GetEntities<T>(string propertyName, object propertyValue)
+        	where T : IEntity;
+        IEntity GetEntityByTypeAndProperty(Type type, string propertyName, object propertyValue);
+        T GetEntity<T>(string propertyName, object propertyValue)
+        	where T : IEntity;
+        
+        //IEntity[] GetEntities(Type entityType, string propertyName, object propertyValue);
+        T[] GetEntitiesPage<T>(int pageIndex, int pageSize, string sortExpression, out int totalObjects)
+        	where T : IEntity;
+        T[] GetEntitiesPage<T>(string fieldName, object fieldValue, int pageIndex, int pageSize, string sortExpression, out int totalObjects)
+        	where T : IEntity;
+        
+ 		IEntity[] GetEntitiesPage(Type type, int pageIndex, int pageSize, string sortExpression, out int totalObjects);
+        IEntity[] GetEntitiesPage(Type type, string fieldName, object fieldValue, int pageIndex, int pageSize, string sortExpression, out int totalObjects);
+        
+        void PreSave(IEntity entity, out IEntity[] entitiesToUpdate, out IEntity[] entitiesToDelete);
+        void Save(IEntity entity);
+        void PreUpdate(IEntity entity, out IEntity[] entitiesToUpdate, out IEntity[] entitiesToDelete);
+        void Update(IEntity entity);
+        void PreDelete(IEntity entity, out IEntity[] entitiesToUpdate, out IEntity[] entitiesToDelete);
+        void Delete(IEntity entity);
+        bool IsStored(IEntity entity);
         void ApplySorting(string sortExpression);
 
         #endregion

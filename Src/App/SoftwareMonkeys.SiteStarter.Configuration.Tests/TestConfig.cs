@@ -1,14 +1,13 @@
 using System;
 using System.Xml.Serialization;
-using Db4objects.Db4o.Query;
-using Db4objects.Db4o;
 using System.Web;
 using System.IO;
 //using System.Web.Mail;
 using System.Xml;
 using SoftwareMonkeys.SiteStarter.Configuration;
+using System.Collections;
 
-namespace SoftwareMonkeys.SiteStarter.Tests
+namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
 {
 	/// <summary>
 	/// Holds the configuration settings for the application.
@@ -119,23 +118,6 @@ namespace SoftwareMonkeys.SiteStarter.Tests
             }
         }*/
 
-        private IObjectContainer db;
-        /// <summary>
-        /// Gets the DB container.
-        /// </summary>
-        [XmlIgnore]
-        public IObjectContainer DB
-        {
-            get
-            {
-                return db;
-            }
-            set
-            {
-                db = value;
-            }
-        }
-
         private string dataDirectory = "Data";
         /// <summary>
         /// Gets/sets the name of the data directory.
@@ -220,21 +202,6 @@ namespace SoftwareMonkeys.SiteStarter.Tests
         //		}
         //	}*/
 
-        [XmlIgnore]
-		public IObjectServer DatabaseServer
-		{
-			get
-			{
-
-				IObjectServer server;
-				//if(currentContext.Application.Contents[databaseServerID.ToString()] != null)
-				//	server = (ObjectServer)currentContext.Application[databaseServerID.ToString()];
-				//else
-					server = Db4oFactory.OpenServer(TestConfig.Current.MapPath(DatabasePath), 0);
-
-				return server;
-			}
-		}
 		#endregion
 
 		#region Folder settings
@@ -441,6 +408,47 @@ namespace SoftwareMonkeys.SiteStarter.Tests
         {
         	get { return defaultVirtualServerKeywords; }
         	set { defaultVirtualServerKeywords = value; }
+        }
+
+
+        private IConfigurationDictionary settings;
+        /// <summary>
+        /// Gets/sets the flexible settings collection.
+        /// </summary>
+        public IConfigurationDictionary Settings
+        {
+            get { return settings; }
+            set { settings = value; }
+        }
+        
+        private string name;
+        /// <summary>
+        /// Gets/sets the name of the config.
+        /// </summary>
+        public string Name
+        {
+            get { return name; }
+            set { name = value; }
+        }
+
+        private string title;
+        /// <summary>
+        /// Gets/sets the title of the application.
+        /// </summary>
+        string IAppConfig.Title
+        {
+            get { return title; }
+            set { title = value; }
+        }
+        
+    	private string pathVariation;
+        /// <summary>
+        /// Gets/sets the variation applied to the config file path (eg. staging, local, etc.).
+        /// </summary>
+        public string PathVariation
+        {
+        	get { return pathVariation; }
+        	set { pathVariation = value; }
         }
     }
 }

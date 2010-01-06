@@ -245,8 +245,7 @@
 	        <include name="${Project.RootPath}/Lib/NUnit.Framework.dll" />
 	        <include name="${Project.RootPath}/Lib/NLog.dll" />
 	        <include name="${Project.RootPath}/Lib/Db4objects.Db4o.dll" />
-	        <include name="${Project.RootPath}\Lib\${Build.Mode}\SoftwareMonkeys.SiteStarter.*.dll" />
-	        <include name="${Project.RootPath}\Bin\${Build.Mode}\${Solution.BaseNamespace}.*.dll" />
+	        <include name="${Project.RootPath}/Bin/${Build.Mode}/${Solution.BaseNamespace}.*.dll"/>
 	        <include name="System.Configuration.dll" />
 	        <include name="System.Data.dll" />
 	        <include name="System.Xml.dll" />

@@ -174,10 +174,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
         /// Gets/sets the Entity data required for this control.
         /// </summary>
         [Browsable(false)]
-        public new BaseEntity[] DataSource
+        public new IEntity[] DataSource
         {
             get
-            {return (BaseEntity[])base.DataSource;
+            {return (IEntity[])base.DataSource;
             }
             set { base.DataSource = value;}
         }
@@ -276,9 +276,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 	
 	            		Page.RegisterStartupScript("IndexUtil", "<script language='javascript' src='/Scripts/IndexUtil.js'></script>");
 	
+	            		
+			}
+	            		
 				base.OnInit(e);
 
-			}
 		}
 
         protected override void OnLoad(EventArgs e)
