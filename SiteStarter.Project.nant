@@ -8,7 +8,7 @@
 		  <property name="Project.CompanyName" value="SoftwareMonkeys.net" />
 		  <property name="Project.BaseNamespace" value="SoftwareMonkeys.SiteStarter" />
 		  <property name="Project.BinariesPath" value="${Solution.RootPath}\..\..\Bin" />
-		  <property name="Project.Version" value="1-0-6" />
+		  <property name="Project.Version" value="1-1-0" />
 		<property name="Project.VersionFile" value="${path::get-full-path('VersionNumber.txt')}" />
 		<property name="Project.VirtualDirectoryName" value="SiteStarter" />
 		<property name="Project.LibrariesPath" value="${Solution.RootPath}\Lib" />
