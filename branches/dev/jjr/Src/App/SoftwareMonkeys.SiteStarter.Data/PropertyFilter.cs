@@ -78,7 +78,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			object value = property.GetValue(entity, null);
 			bool valueMatches = value.Equals(PropertyValue);
 			
-			return true;////typeMatches && valueMatches;
+			return typeMatches && valueMatches;
 		}
 	
     }

@@ -5,6 +5,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Reflection;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using SoftwareMonkeys.SiteStarter.Entities;
 
 namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 {
@@ -74,77 +75,91 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
 		static public object GetFieldValue(Control field, string controlValuePropertyName, Type returnType)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Dynamically retrieves the value of the specified field on the form.", NLog.LogLevel.Debug))
-			{
-				if (field == null)
-					throw new ArgumentNullException("field");
-				
-				if (returnType == null)
-					throw new ArgumentNullException("returnType");
-								
-				logGroup.Debug("Field control ID: " + field.ID);
-
-				logGroup.Debug("Field type: " + field.GetType().ToString());
-
-				if (controlValuePropertyName != String.Empty)
-				{
-					logGroup.Debug("Name of value property on the field control: " + controlValuePropertyName);
-
-					 PropertyInfo property = field.GetType().GetProperty(controlValuePropertyName, returnType);
-					if (property == null)
-						throw new Exception("The property '" + controlValuePropertyName + "' (of type '" + returnType.FullName + "') on the field '" + field.ID + "' (of type '" + field.GetType() + "') could not be found.");
-
-
-					object fieldValue = property.GetValue(field, null);
-
-					if (fieldValue == null)
-						logGroup.Debug("Field value: [null]");
-					else
-						logGroup.Debug("Field value: " + fieldValue.ToString());
-					
-
-					return fieldValue;
-				}
-				else
-				{
-					logGroup.Debug("No name specified for the value property on the control");
-
-					object fieldValue = null;
-
-					// todo: add the rest of the field types
-					if (IsType(field, typeof(TextBox)))
-						fieldValue = ((TextBox)field).Text;
-					else if (IsType(field, typeof(DropDownList)))
-						fieldValue = ((DropDownList)field).SelectedValue;
-					else if (IsType(field, typeof(ListBox)))
-						fieldValue = ((ListBox)field).SelectedValue;
-					else if (IsType(field, typeof(CheckBox)))
-						fieldValue = ((CheckBox)field).Checked;
-					else if (IsType(field, typeof(Label))) // Label fields should be skipped by calling code
-						fieldValue = ((Label)field).Text;
-					else
-						throw new NotSupportedException(field.GetType().Name + " type is not supported by the GetFieldValue function.");
-
-					logGroup.Debug("Field value: " + fieldValue.ToString());
-
-					return fieldValue;
-				}
-			}
+			return WebControlUtilities.GetFieldValue(field, controlValuePropertyName, returnType);
 		}
 		#endregion
 
 		#region Type functions
 		static public bool IsType(Control field, Type type)
 		{
-			Type fieldType = field.GetType();
-			//while (fieldType != typeof(object))
-			//{
-			if (fieldType.FullName == type.FullName)
-				return true;
-			//   fieldType = fieldType.BaseType;
-			//}
-			return false;
+			return WebControlUtilities.IsType(field, type);
+		}
+		
+		/// <summary>
+		/// Converts the provide value to the specified type.
+		/// </summary>
+		/// <param name="value">The value to convert.</param>
+		/// <param name="type">The type to convert the value to.</param>
+		/// <returns>The convert value.</returns>
+		static public object Convert(object value, Type type)
+		{
+			object returnValue = null;
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Converting the provided value to the specified type.", NLog.LogLevel.Debug))
+			{
+				if (value == null)
+					AppLogger.Debug("Value: [null]");
+				else
+					AppLogger.Debug("Value: " + value.ToString());
+				
+				if (type.FullName == typeof(Int32).FullName)
+				{
+					AppLogger.Debug("Value is Int32");
+					
+					if (value != null)
+						returnValue = System.Convert.ToInt32(value);
+					else
+						returnValue = 0;
+				}
+				else if (type.FullName == typeof(String).FullName)
+				{
+					AppLogger.Debug("Value is String");
+					
+					if (value != null)
+					{
+						if (value is String)
+							returnValue = value;
+						else
+							returnValue = value.ToString();
+					}
+					else
+						returnValue = String.Empty;
+				}
+				else if (typeof(Enum).IsAssignableFrom(type) && Enum.IsDefined(type, value))
+				{
+					if (value == null)
+						returnValue = null;
+					else
+					{
+						if (value is Enum)
+							returnValue = value;
+						else if (value is int)
+							returnValue = Enum.ToObject(type, (int)value);
+						else
+							returnValue = Enum.Parse(type, value.ToString());
+					}
+				}
+				else if (typeof(IEntity).IsAssignableFrom(type))
+				{
+					returnValue = value;
+				}
+				else if (typeof(Array).IsAssignableFrom(type))
+				{
+					Type elementType = type.GetElementType();
+					if (typeof(IEntity).IsAssignableFrom(elementType))
+						returnValue = value;
+				}
+				else if (type.IsAssignableFrom(value.GetType()))
+				{
+					returnValue = value;
+				}
+				else
+					throw new InvalidOperationException("Type not yet supported: " + type.ToString());
+			}
+			
+			return returnValue;
 		}
 		#endregion
 	}
 }
+

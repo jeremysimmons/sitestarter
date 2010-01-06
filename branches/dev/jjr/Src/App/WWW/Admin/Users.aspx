@@ -41,7 +41,6 @@
     /// </summary>
     private void SaveUser()
     {
-        
         // Save the new user
         DataForm.ReverseBind();
 
@@ -60,6 +59,9 @@
         else
             Result.DisplayError(Resources.Language.UsernameTaken);
     }
+    
+   
+
 
     private void EditUser(Guid userID)
     {

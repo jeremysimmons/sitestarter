@@ -44,6 +44,11 @@ namespace SoftwareMonkeys.SiteStarter.Data
         /// <returns>The entities of the specified type found in the data store.</returns>
         public abstract IEntity[] GetEntities(FilterGroup group);
         
+          
+        public abstract IEntity GetEntity(IDataFilter filter);
+
+        public abstract IEntity GetEntity(FilterGroup group);
+        
         public abstract IEntity[] GetEntities(Type type);
         
         public abstract IEntity[] GetEntities(Type type, Guid[] ids);
@@ -140,6 +145,8 @@ namespace SoftwareMonkeys.SiteStarter.Data
 	public abstract void Activate(IEntity entity, string propertyName, Type propertyType);
 	public abstract void Activate(IEntity entity, string propertyName, Type propertyType, int depth);
 	public abstract void ActivateReference(EntityReference reference);
+	
+	public abstract bool MatchReference(IEntity entity, string propertyName, Type propertyType, Guid referencedEntityID);
 	#endregion
     }
 }

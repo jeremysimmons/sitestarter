@@ -14,9 +14,9 @@ private void Page_Load(object sender, EventArgs e)
     
 			User user = new User();
             user.ID = Guid.NewGuid();
-            user.FirstName = "Joe";
-			user.LastName = "Bloggs";
-			user.Username = "test";
+            user.FirstName = "Default";
+			user.LastName = "Administrator";
+			user.Username = "admin";
             user.Password = SoftwareMonkeys.SiteStarter.Business.Crypter.EncryptPassword("pass");
             user.IsApproved = true;
             user.IsLockedOut = false;
@@ -106,6 +106,6 @@ private void SetupMappings()
 <div class="Heading1">Quick Setup</div>
 <p>
 Setup complete.</p>
-<p>Test user "Joe Bloggs" was created with username "test" and password "pass".
+<p>Test user "Default Administrator" was created with username "admin" and password "pass".
 </p>
 		</asp:Content>

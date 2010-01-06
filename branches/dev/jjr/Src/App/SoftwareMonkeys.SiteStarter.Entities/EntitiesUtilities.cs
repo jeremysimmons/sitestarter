@@ -702,5 +702,57 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			
 			return mirrorPropertyName;
 		}
+		
+		/*public IEntity[] GetEntitiesFromArray(IEntity[] source, Guid[] ids)
+		{
+			if (source == null || source.Length == 0)
+				return new IEntity[]{};
+			
+			Collection<IEntity> entities = new Collection<IEntity>(source);
+			*/
+			/*foreach (Guid id in ids)
+			{
+				AppLogger.Debug("Post contains ID: " + id.ToString());
+								
+				if (id != Guid.Empty)
+				{
+					
+					IEntity entity = null;
+					
+					// TODO: Check if needed. Was throwing errors so it's been removed to simplify code.
+					// ////!May incur performance hit though by always reloading entities from DB instead of DataSource property
+					//if (DataSource != null)
+					//{
+					
+					//AppLogger.Debug("DataSource != null");
+					
+					AppLogger.Debug("Getting entity from DataSource");
+					
+					entity = Collection<IEntity>.GetByID(source, id);
+					
+					if (entity == null)
+						throw new Exception("Entity could not be retrieved from DataSource property.");
+					
+					AppLogger.Debug("Found entity from post ID: " + entity.GetType().ToString());
+					//}
+					//else
+					//{
+					//	AppLogger.Debug("DataSource == null");
+					
+					//	AppLogger.Debug("Getting entity from EntityFactory");
+					
+					//	entity = (E)EntityFactory.GetEntity<E>(id);
+					
+					//	AppLogger.Debug("Found entity from post ID: " + typeof(E).ToString());
+					//}
+					
+					AppLogger.Debug("Adding entity to list.");
+					entities.Add(entity);
+				}
+			}*/
+			
+		/*	return entities.GetByIDs(ids).ToArray();
+		
+		}*/
 	}
 }

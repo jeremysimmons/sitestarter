@@ -53,6 +53,8 @@
     <None Include="Admin\Settings.aspx" />
     <None Include="Admin\Setup.aspx" />
     <None Include="Admin\Tests\EntityFormTests.aspx" />
+    <None Include="Admin\Tests\EntitySelectDelivererTests.aspx" />
+    <None Include="Admin\Tests\EntitySelectRequesterTests.aspx" />
     <None Include="Admin\Tests\EntitySelectTests.aspx" />
     <None Include="Admin\UnitTests.aspx" />
     <None Include="Admin\UserRoles.aspx" />

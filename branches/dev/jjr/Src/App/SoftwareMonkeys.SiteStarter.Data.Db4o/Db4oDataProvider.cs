@@ -145,6 +145,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 
 					return new Db4oPropertyFilter();
 				}
+				else if (filterType.Equals(typeof(ReferenceFilter)))
+				{	
+					AppLogger.Debug("Filter type supported.");
+
+					return new Db4oReferenceFilter();
+				}
 				else
 				{
 					AppLogger.Debug("Creation failed. " + filterType.ToString() + " isn't a supported filter.");
@@ -199,9 +205,39 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 
 			return (IEntity[])entities.ToArray();
 		}
+		
+		/// <summary>
+		/// Retrieves the entity matching the filter .
+		/// </summary>
+		/// <param name="filter">The filter to apply to the query.</param>
+		/// <returns>The matching entity.</returns>
+		public override IEntity GetEntity(IDataFilter filter)
+		{
+			IEntity[] entities = GetEntities(filter);
+			
+			if (entities != null && entities.Length > 0)
+				return entities[0];
+			else
+				return null;
+		}
+		
+		/// <summary>
+		/// Retrieves the entity matching the filter group.
+		/// </summary>
+		/// <param name="group">The group of filters to apply to the query.</param>
+		/// <returns>The matching entity.</returns>
+		public override IEntity GetEntity(FilterGroup group)
+		{
+			IEntity[] entities = GetEntities(group);
+			
+			if (entities != null && entities.Length > 0)
+				return entities[0];
+			else
+				return null;
+		}
 
 		/// <summary>
-		/// Retrieves all the entities of the specified type from the data store.
+		/// Retrieves all the entities matching the filter group.
 		/// </summary>
 		/// <param name="group">The group of filters to apply to the query.</param>
 		/// <returns>The entities of the specified type found in the data store.</returns>
@@ -589,8 +625,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				                                                                              		AppLogger.Debug("Checking type " + e.GetType().ToString());
 				                                                                              		AppLogger.Debug("Entity ID: " + e.ID);
 				                                                                              		
-				                                                                              		
-				                                                                              		PropertyInfo property = type.GetProperty(propertyName);
+				                                                                              		// TODO: Clean up
+				                                                                              		/*PropertyInfo property = type.GetProperty(propertyName);
 				                                                                              		
 				                                                                              		if (property == null)
 				                                                                              			AppLogger.Debug("property == null");
@@ -619,7 +655,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				                                                                              		else
 				                                                                              			AppLogger.Debug("reference != null");
 				                                                                              		
-				                                                                              		matches = (reference != null);
+				                                                                              		matches = (reference != null);*/
+				                                                                              		
+				                                                                              		matches = MatchReference(e, propertyName, null, referencedEntityID);
 				                                                                              		
 				                                                                              		AppLogger.Debug("Matches: " + matches);
 				                                                                              	}
@@ -679,8 +717,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				                                                                              		AppLogger.Debug("Checking type " + e.GetType().ToString());
 				                                                                              		AppLogger.Debug("Entity ID: " + e.ID);
 				                                                                              		
-				                                                                              		
-				                                                                              		PropertyInfo property = type.GetProperty(propertyName);
+				                                                                              		// TODO: Clean up
+				                                                                              		/*PropertyInfo property = type.GetProperty(propertyName);
 				                                                                              		
 				                                                                              		if (property == null)
 				                                                                              			AppLogger.Debug("property == null");
@@ -709,7 +747,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				                                                                              		else
 				                                                                              			AppLogger.Debug("reference != null");
 				                                                                              		
-				                                                                              		matches = (reference != null);
+				                                                                              		matches = (reference != null);*/
+				                                                                              		
+				                                                                              		matches = MatchReference(e, propertyName, null, referencedEntityID);
 				                                                                              		
 				                                                                              		AppLogger.Debug("Matches: " + matches);
 				                                                                              	}
@@ -1248,7 +1288,47 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				Activate(entity, propertyName, null, depth);
 			}
 		}
-	
+		
+		public override bool MatchReference(IEntity entity, string propertyName, Type propertyType, Guid referencedEntityID)
+		{
+			bool matches = false;
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the provided entity and specified property matches the specified referenced entity ID.", NLog.LogLevel.Debug))
+			{
+				PropertyInfo property = entity.GetType().GetProperty(propertyName);
+				
+				Type referenceEntityType = EntitiesUtilities.GetReferenceType(entity.GetType(), property);
+				
+				if (referenceEntityType == null)
+				{
+					AppLogger.Debug("referenceEntityType == null");
+					throw new Exception("Reference entity type could not be determined.");
+				}
+				else
+				{
+					AppLogger.Debug("referenceEntityType != null");
+					AppLogger.Debug("Reference entity type: " + referenceEntityType.ToString());
+				}
+				
+				string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(entity.GetType(), property);
+				
+				AppLogger.Debug("Mirror property name: " + mirrorPropertyName);
+				
+				EntityReference reference = DataAccess.Data.GetReference(entity, propertyName, referenceEntityType, referencedEntityID, mirrorPropertyName, false);
+				
+				if (reference == null)
+					AppLogger.Debug("reference == null");
+				else
+					AppLogger.Debug("reference != null");
+				
+				matches = (reference != null);
+				
+				AppLogger.Debug("Matches: " + matches.ToString());
+			}
+			
+			return matches;
+		}
+		
 		public override void Save(IEntity entity)
 		{
 			Stores[entity.GetType()].Save(entity);

@@ -2,6 +2,7 @@
 <project name="Common.Jobs.BuildSolution" default="Common.Jobs.BuildSolution" xmlns="http://nant.sf.net/schemas/nant.xsd">
 	
 	<include buildfile="Common.Jobs.WWW.nant"/>
+	<include buildfile="Common.Jobs.Modules.nant"/>
 	
 		<xmlpeek
 		    file="${Solution.PropertiesPath}"
@@ -43,7 +44,25 @@
 			</if>
 		</foreach>
 		
-			
+		<if test="${directory::exists(Solution.RootPath + '\Modules\')}">
+			<foreach item="Folder" in="${Solution.RootPath}\Modules"  property="currentModule">
+	    		<in>
+	        		<items>
+	            		<exclude name="**\.svn\" />
+	            		<exclude name="**\_svn\" />
+	            		<include name="**" />
+	       		 	</items>
+	   		 	</in>
+	    		<do>
+	    			<property name="moduleName" value="${path::get-file-name(currentModule)}"/>
+					<property name="AssemblyProject.PropertiesPath" value="${Solution.RootPath}\Modules\${moduleName}\${Solution.Name}.${moduleName}.Assembly.nant"/>
+					<echo message="Project properties path: ${AssemblyProject.PropertiesPath}"/>
+					<if test="${file::exists(AssemblyProject.PropertiesPath)}">
+						<call target="Common.Jobs.BuildAssembly"/>
+					</if>
+	    		</do>
+			</foreach>
+		</if>
 		
 		<call target="Common.Jobs.PrepareWWW"/>
 	
@@ -82,6 +101,8 @@
         		<include name="${Solution.RootPath}\Bin\${Build.Mode}\*.*" />
         		<include name="${Solution.RootPath}\SoftwareMonkeys.*\bin\${Build.Mode}\*.dll" />
         		<include name="${Solution.RootPath}\SoftwareMonkeys.*\bin\${Build.Mode}\*.pdb" />
+        		<include name="${Solution.RootPath}\Modules\**\bin\${Build.Mode}\*.dll" />
+        		<include name="${Solution.RootPath}\Modules\**\bin\${Build.Mode}\*.pdb" />
         		<include name="${Solution.RootPath}\WWW\bin\*.dll" />
         		<include name="${Solution.RootPath}\WWW\bin\*.pdb" />
     		</fileset>

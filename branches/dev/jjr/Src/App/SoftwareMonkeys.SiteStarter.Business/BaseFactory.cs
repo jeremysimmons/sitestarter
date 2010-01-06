@@ -30,7 +30,16 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="entity">The entity to activate.</param>
 		public virtual void Activate(IEntity entity)
 		{
-			DataAccess.Data.Activate(entity);
+			Activate(entity, 1);
+		}
+		
+		/// <summary>
+		/// Activates the entity by loading all references to the specified depth.
+		/// </summary>
+		/// <param name="entity">The entity to activate.</param>
+		public virtual void Activate(IEntity entity, int depth)
+		{
+			DataAccess.Data.Activate(entity, depth);
 		}
 		
 		/// <summary>
@@ -39,12 +48,21 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="entities">The array of entities to activate.</param>
 		public virtual void Activate(Array entities)
 		{
+			Activate(entities, 1);
+		}
+		
+		/// <summary>
+		/// Activates all the entities provided by loading all references for each entity to the specified depth.
+		/// </summary>
+		/// <param name="entities">The array of entities to activate.</param>
+		public virtual void Activate(Array entities, int depth)
+		{
 			if (entities != null)
 			{
 				foreach (IEntity entity in entities)
 				{
 					if (entity != null)
-						Activate(entity);
+						Activate(entity, depth);
 				}
 			}
 		}

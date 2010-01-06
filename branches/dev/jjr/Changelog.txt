@@ -1,3 +1,0 @@
-===== Version 1.1.0.0 =====
-- Major system overhaul. Too many changes to document.
-- Changelog reset

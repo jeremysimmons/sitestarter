@@ -436,6 +436,67 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			}
 		}
 		
+		[Test]
+		public void Test_MatchReference()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing the MatchReference function to ensure matches properly.", NLog.LogLevel.Debug))
+			{
+				TestArticle article = new TestArticle();
+				article.ID = Guid.NewGuid();
+				article.Title = "Test Article";
+				
+				TestCategory category = new TestCategory();
+				category.ID = Guid.NewGuid();
+				category.Name = "Test Category";
+				
+				article.Categories = new TestCategory[] { category };
+				
+				DataAccess.Data.Save(article);
+				DataAccess.Data.Save(category);
+				
+				
+				
+				bool match = DataAccess.Data.MatchReference(article, "Categories", null, category.ID);
+				
+				Assert.IsTrue(match, "Didn't match when it should have.");
+				
+			
+				DataAccess.Data.Delete(article);
+				DataAccess.Data.Delete(category);
+			}
+		}
+		
+		[Test]
+		public void Test_MatchReference_Exclusion()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing the MatchReference function to ensure excludes properly.", NLog.LogLevel.Debug))
+			{
+				TestArticle article = new TestArticle();
+				article.ID = Guid.NewGuid();
+				article.Title = "Test Article";
+				
+				TestCategory category = new TestCategory();
+				category.ID = Guid.NewGuid();
+				category.Name = "Test Category";
+				
+				// Must remain commented out to test exclusion
+				//article.Categories = new TestCategory[] { category };
+				
+				DataAccess.Data.Save(article);
+				DataAccess.Data.Save(category);
+				
+				
+				
+				bool match = DataAccess.Data.MatchReference(article, "Categories", null, category.ID);
+				
+				Assert.IsFalse(match, "Matched when it shouldn't have.");
+				
+			
+				DataAccess.Data.Delete(article);
+				DataAccess.Data.Delete(category);
+			}
+		}
+		
 		
 		
 		[Test]
@@ -480,6 +541,246 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				}
 			}
 		}
+		
+		#region Filter tests
+		[Test]
+		public void Test_GetEntitiesByPropertyFilter()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
+			{
+				ClearTestEntities();
+
+				TestEntity e1 = new TestEntity();
+				e1.Name = "Test E1";
+				
+				PropertyFilter filter = (PropertyFilter)DataAccess.Data.CreateFilter(typeof(PropertyFilter));
+				filter.PropertyName = "Name";
+				filter.PropertyValue = e1.Name;
+				filter.AddType(typeof(TestEntity));
+				
+				DataAccess.Data.Save(e1);
+				
+				IEntity[] found = (IEntity[])DataAccess.Data.GetEntities(filter);
+				
+				Assert.IsNotNull(found, "Null value returned");
+				
+				if (found != null)
+					Assert.IsTrue(found.Length > 0, "No results found.");
+
+				ClearTestEntities();
+			}
+		}
+		
+		[Test]
+		public void Test_GetEntitiesByReferenceFilter()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
+			{
+				ClearTestEntities();
+
+				TestUser user = new TestUser();
+				user.ID = Guid.NewGuid();
+				user.FirstName = "Test";
+				user.LastName = "User";
+				
+				TestRole role = new TestRole();
+				role.ID = Guid.NewGuid();
+				role.Name = "Test role";
+				
+				user.Roles = new TestRole[]{role};
+				
+				DataAccess.Data.Save(user);
+				DataAccess.Data.Save(role);
+				
+				ReferenceFilter filter = (ReferenceFilter)DataAccess.Data.CreateFilter(typeof(ReferenceFilter));
+				filter.PropertyName = "Roles";
+				filter.ReferencedEntityID = role.ID;
+				filter.AddType(typeof(TestUser));
+								
+				IEntity[] found = (IEntity[])DataAccess.Data.GetEntities(filter);
+				
+				Assert.IsNotNull(found, "Null value returned");
+				
+				if (found != null)
+				{
+					Assert.IsTrue(found.Length > 0, "No results found.");
+					
+					if (found.Length > 0)
+					{
+						TestUser foundUser = (TestUser)found[0];
+						
+						Assert.AreEqual(user.ID, foundUser.ID, "The IDs don't match.");
+					}
+				}
+
+				ClearTestEntities();
+			}
+		}
+		
+		[Test]
+		public void Test_GetEntitiesByReferenceFilter_Exclusion()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
+			{
+				ClearTestEntities();
+
+				TestUser user = new TestUser();
+				user.ID = Guid.NewGuid();
+				user.FirstName = "Test";
+				user.LastName = "User";
+				
+				TestRole role = new TestRole();
+				role.ID = Guid.NewGuid();
+				role.Name = "Test role";
+				
+				// This should remain commented out to check for exclusion
+				//user.Roles = new TestRole[]{role};
+				
+				DataAccess.Data.Save(user);
+				DataAccess.Data.Save(role);
+				
+				ReferenceFilter filter = (ReferenceFilter)DataAccess.Data.CreateFilter(typeof(ReferenceFilter));
+				filter.PropertyName = "Roles";
+				filter.ReferencedEntityID = role.ID;
+				filter.AddType(typeof(TestUser));
+								
+				IEntity[] found = (IEntity[])DataAccess.Data.GetEntities(filter);
+				
+				Assert.IsNotNull(found, "Null value returned");
+				
+				if (found != null)
+				{
+					Assert.IsTrue(found.Length == 0, "Results returned when none should have been returned.");
+					
+					/*if (found.Length > 0)
+					{
+						TestUser foundUser = (TestUser)found[0];
+						
+						Assert.AreEqual(user.ID, foundUser.ID, "The IDs don't match.");
+					}*/
+				}
+
+				ClearTestEntities();
+			}
+		}
+
+		[Test]
+		public void Test_FilterGroup_Or()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing a filter group query with the OR operator.", NLog.LogLevel.Debug))
+			{
+				TestEntity e1 = new TestEntity();
+				e1.Name = "Test E1";
+				
+				FilterGroup filterGroup = new FilterGroup();
+				filterGroup.Operator = FilterOperator.Or;
+				
+				PropertyFilter filter1 = (PropertyFilter)DataAccess.Data.CreateFilter(typeof(PropertyFilter));
+				filter1.PropertyName = "Name";
+				filter1.PropertyValue = e1.Name;
+				filter1.AddType(typeof(TestEntity));
+				
+				PropertyFilter filter2 = (PropertyFilter)DataAccess.Data.CreateFilter(typeof(PropertyFilter));
+				filter2.PropertyName = "Name";
+				filter2.PropertyValue = "Another value";
+				filter2.AddType(typeof(TestEntity));
+				
+				filterGroup.Filters = new BaseFilter[] {filter1, filter2};
+				
+				DataAccess.Data.Stores[typeof(TestEntity)].Save(e1);
+				
+				IEntity[] found = (IEntity[])DataAccess.Data.GetEntities(filterGroup);
+				
+				Assert.IsNotNull(found, "Null value returned.");
+				
+				if (found != null)
+					Assert.IsTrue(found.Length > 0, "No results found.");
+				
+				
+				DataAccess.Data.Stores[typeof(TestEntity)].Delete(e1);
+			}
+		}
+
+		[Test]
+		public void Test_FilterGroup_And_Exclusion()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing a filter group query with the AND operator.", NLog.LogLevel.Debug))
+			{
+				TestEntity e1 = new TestEntity();
+				e1.Name = "Test E1";
+				
+				FilterGroup filterGroup = new FilterGroup();
+				filterGroup.Operator = FilterOperator.And;
+				
+				PropertyFilter filter1 = (PropertyFilter)DataAccess.Data.CreateFilter(typeof(PropertyFilter));
+				filter1.PropertyName = "Name";
+				filter1.PropertyValue = e1.Name;
+				filter1.AddType(typeof(TestEntity));
+				
+				PropertyFilter filter2 = (PropertyFilter)DataAccess.Data.CreateFilter(typeof(PropertyFilter));
+				filter2.PropertyName = "Name";
+				filter2.PropertyValue = "Another value";
+				filter2.AddType(typeof(TestEntity));
+				
+				filterGroup.Filters = new BaseFilter[] {filter1, filter2};
+				
+				DataAccess.Data.Save(e1);
+				
+				IEntity[] found = (IEntity[])DataAccess.Data.GetEntities(filterGroup);
+				
+				Assert.IsNotNull(found, "Null array returned.");
+				
+				Collection<TestEntity> foundList = new Collection<TestEntity>(found);
+				
+				if (found != null)
+					Assert.AreEqual(0, foundList.Count, "Entity retrieved when it shouldn't have matched.");
+				
+				
+				DataAccess.Data.Delete(e1);
+			}
+		}
+
+		[Test]
+		public void Test_GetEntitiesByPropertyFilter_Exclusion()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing exclusion with the PropertyFilter.", NLog.LogLevel.Debug))
+			{
+				TestEntity e1 = new TestEntity();
+				e1.ID = Guid.NewGuid();
+				e1.Name = "Test E1";
+
+				AppLogger.Debug("Entity ID: " + e1.ID);
+				AppLogger.Debug("Entity name: " + e1.Name);
+				
+				//FilterGroup filterGroup = new FilterGroup();
+				//filterGroup.Operator
+				
+				PropertyFilter filter = (PropertyFilter)DataAccess.Data.CreateFilter(typeof(PropertyFilter));
+				filter.Operator = FilterOperator.Equal;
+				filter.PropertyName = "Name";
+				filter.PropertyValue = "Another Name";
+				filter.AddType(typeof(TestEntity));
+				
+				
+				AppLogger.Debug("Filter.FieldName: " + filter.PropertyName);
+				AppLogger.Debug("Filter.FieldValue: " + filter.PropertyValue);
+				
+				DataAccess.Data.Stores[typeof(TestEntity)].Save(e1);
+				
+				IEntity[] found = (IEntity[])DataAccess.Data.GetEntities(filter);
+				
+				Assert.IsNotNull(found, "Null array returned.");
+				
+				Collection<TestEntity> foundList = new Collection<TestEntity>(found);
+				
+				if (found != null)
+					Assert.AreEqual(0, foundList.Count, "Entities weren't properly excluded.");
+
+
+				DataAccess.Data.Stores[typeof(TestEntity)].Delete(e1);
+			}
+		}
+		#endregion
 		
 		/*[Test]
 		public void Test_GetEntity_Generic_SingleParameter()

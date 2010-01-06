@@ -73,6 +73,7 @@
     <None Include="Entities\TestEntity.cs" />
     <None Include="Entities\TestSample.cs" />
     <Folder Include="Entities" />
+    <Compile Include="Entities\TestEnum.cs" />
     <Compile Include="Entities\TestGoal.cs" />
     <Compile Include="Entities\ITestRole.cs" />
     <Compile Include="Entities\ITestUser.cs" />

@@ -52,6 +52,7 @@
     <Compile Include="FilterOperator.cs" />
     <Compile Include="IDataStore.cs" />
     <Compile Include="PropertyFilter.cs" />
+    <Compile Include="ReferenceFilter.cs" />
     <Compile Include="XmlHelper.cs" />
   </ItemGroup>
   <ItemGroup>

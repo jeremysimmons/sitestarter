@@ -3,6 +3,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.ComponentModel;
 using System.Collections;
+using System.Collections.Generic;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Business;
 using System.Reflection;
@@ -111,7 +112,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				if (selectedEntities == null)
 				{
 					if (DataSource != null && GetDataSourceLength() > 0)
-						selectedEntities = (IEntity[])Data.DataAccess.Data.GetEntities(EntitiesUtilities.GetType(EntityType), SelectedEntityIDs);
+						selectedEntities = Collection<IEntity>.GetByIDs(DataSource, SelectedEntityIDs);
+					else
+						selectedEntities = new IEntity[]{};
 				}
 				return selectedEntities;
 			}
@@ -478,7 +481,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
 		#region IPostBackDataHandler Members
 
-		protected void RaisePostDataChangedEvent()
+		protected override void RaisePostDataChangedEvent()
 		{
 			AppLogger.Debug("Raising PostDataChanged event.");
 			
@@ -493,13 +496,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				//{
 				//	if (DataSource == null)
 				//		AppLogger.Debug("DataSource == null");
-				//	
+				//
 				//	if (DataSource.Length == 0)
 				//		AppLogger.Debug("DataSource.Length == 0");
-				//	
+				//
 				//	AppLogger.Debug("Raising DataLoading event to reload DataSource.");
-					
-					RaiseDataLoading();
+				
+				RaiseDataLoading();
 				//}
 				
 				AppLogger.Debug("Post data key: " + postDataKey);
@@ -566,69 +569,33 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		protected E[] GetPostedEntities(string postValue)
 		{
 			AppLogger.Debug("Post value: " + postValue);
-			
-			Type genericType = MakeGenericType();
-			
-			AppLogger.Debug("Generic type: " + genericType.ToString());
-			
-			Collection<E> entities = (Collection<E>)Activator.CreateInstance(genericType);
-			
-			
-			if (entities == null)
-				throw new Exception("Generic collection for type '" + typeof(E).ToString() + "' cannot be instantiated.");
-			
+						
+			E[] entities = null;
 			
 			if (postValue != null)
 			{
+				Guid[] ids = GetIDsFromString(postValue);
+				
 				AppLogger.Debug("Post value: !null");
 				
-				foreach (string stringID in postValue.Split(','))
-				{
-					AppLogger.Debug("Post contains ID: " + stringID);
-					
-					Guid id = new Guid(stringID);
-					
-					if (id != Guid.Empty)
-					{
-						
-						E entity = default(E);
-						
-						// TODO: Check if needed. Was throwing errors so it's been removed to simplify code.
-						// ////!May incur performance hit though by always reloading entities from DB instead of DataSource property
-						//if (DataSource != null)
-						//{
-						if (DataSource == null)
-							throw new Exception("DataSource == null");
-						
-						//AppLogger.Debug("DataSource != null");
-						
-						AppLogger.Debug("Getting entity from DataSource");
-						
-						entity = (E)Collection<E>.GetByID((E[])DataSource, id);
-						
-						if (entity == null)
-							throw new Exception("Entity could not be retrieved from DataSource property.");
-						
-						AppLogger.Debug("Found entity from post ID: " + entity.GetType().ToString());
-						//}
-						//else
-						//{
-						//	AppLogger.Debug("DataSource == null");
-						
-						//	AppLogger.Debug("Getting entity from EntityFactory");
-						
-						//	entity = (E)EntityFactory.GetEntity<E>(id);
-						
-						//	AppLogger.Debug("Found entity from post ID: " + typeof(E).ToString());
-						//}
-						
-						AppLogger.Debug("Adding entity to list.");
-						entities.Add(entity);
-					}
-				}
+				entities = Collection<E>.GetByIDs(DataSource, ids);
 			}
 			
-			return entities.ToArray();
+			return entities;
+		}
+		
+		protected Guid[] GetIDsFromString(string value)
+		{
+			List<Guid> list = new List<Guid>();
+			
+			foreach (string stringID in value.Split(','))
+			{
+				Guid id = new Guid(stringID.Trim());
+				
+				list.Add(id);
+			}
+			
+			return list.ToArray();
 		}
 		
 		protected bool IsDataPosted(E[] entities)
@@ -639,8 +606,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			if (SelectedEntityIDs != null)
 				existingCount = SelectedEntityIDs.Length;
 			
+			int newCount = 0;
+			if (entities != null)
+				newCount = entities.Length;
+			
 			// If the new count matches the existing count
-			if (existingCount == entities.Length)
+			if (existingCount == newCount)
 			{
 				AppLogger.Debug("SelectedEntityIDs.Length == entities.Count");
 				

@@ -322,8 +322,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 								
 								AppLogger.Debug("Field value type: " + (value == null ? "[null]" : value.GetType().ToString()));
 								AppLogger.Debug("Field value: " + (value == null ? "[null]" : value.ToString()));
+														
+								object castValue = EntityFormHelper.Convert(value, propertyType);
 								
-								Reflector.SetPropertyValue(DataSource, item.PropertyName, value);
+								Reflector.SetPropertyValue(DataSource, item.PropertyName, castValue);
 							}
 							//}
 							//else

@@ -8,6 +8,7 @@
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Business" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Entities" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
+<%@ Import namespace="SoftwareMonkeys.SiteStarter.Web" %>
 <script runat="server">
 	public void Page_Load(object sender, EventArgs e)
 	{
@@ -30,6 +31,8 @@
     	using (LogGroup logGroup = AppLogger.StartGroup("Loading the EntitySelect1 data.", NLog.LogLevel.Debug))
 		{
         	EntitySelect1.DataSource = UserFactory.Current.GetUsers();
+        	if (Request.IsAuthenticated && My.User != null)
+	        	EntitySelect1.SelectedEntity = My.User;
         }
     }
     
