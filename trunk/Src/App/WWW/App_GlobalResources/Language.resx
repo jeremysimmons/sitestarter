@@ -493,7 +493,7 @@
     <value>The virtual server was created successfully.</value>
   </data>
   <data name="VirtualServerSettings" xml:space="preserve">
-    <value>VirtualServerSettings</value>
+    <value>Virtual Server Settings</value>
   </data>
   <data name="VirtualServerUpdated" xml:space="preserve">
     <value>The virtual server was updated successfully.</value>
@@ -533,5 +533,64 @@
   </data>
   <data name="DefaultVirtualServerKeywords" xml:space="preserve">
     <value>Default Virtual Server Keywords</value>
+  </data>
+  <data name="SmtpServer" xml:space="preserve">
+    <value>SMTP Server</value>
+  </data>
+  <data name="InvalidSmtpServer" xml:space="preserve">
+    <value>The SMTP server is invalid or could not be found.</value>
+  </data>
+  <data name="EmailSettings" xml:space="preserve">
+    <value>Email Settings</value>
+  </data>
+  <data name="RegistrationAlert" xml:space="preserve">
+    <value>Registration Alert</value>
+  </data>
+  <data name="WelcomeEmail" xml:space="preserve">
+    <value>Welcome Email</value>
+  </data>
+  <data name="WelcomeEmailSubject" xml:space="preserve">
+    <value>Welcome Email Subject</value>
+  </data>
+  <data name="RegistrationAlertSubject" xml:space="preserve">
+    <value>Registration Alert Subject</value>
+  </data>
+  <data name="DefaultVirtualServerRegistrationAlertSubject" xml:space="preserve">
+    <value>Virtual Server Registration</value>
+  </data>
+  <data name="DefaultVirtualServerRegistrationAlert" xml:space="preserve">
+    <value>
+    	&lt;p&gt;A virtual server has been registered.&lt;br /&gt;
+		&lt;br /&gt;
+		Name: ${User.Name}&lt;br /&gt;
+		URL: ${VirtualServer.Url}&lt;br /&gt;
+		&lt;br /&gt;
+Regards,&lt;br /&gt;
+${SystemAdministrator.Name}&lt;br /&gt;
+${WebSite.Title}&lt;/p&gt;
+    </value>
+  </data>
+  <data name="DefaultVirtualServerWelcomeEmailSubject" xml:space="preserve">
+    <value>Virtual Server Created</value>
+  </data>
+  <data name="DefaultVirtualServerWelcomeEmail" xml:space="preserve">
+    <value>&lt;p&gt;Hi ${User.FirstName},&lt;br /&gt;
+&lt;br /&gt;
+Your virtual server has been created at ${WebSite.Title}.&lt;br /&gt;
+&lt;br /&gt;
+Access your virtual server here:&lt;br /&gt;
+${VirtualServer.Url}&lt;br /&gt;
+&lt;br /&gt;
+Regards,&lt;br /&gt;
+${SystemAdministrator.Name}&lt;br /&gt;
+${WebSite.Title}&lt;br /&gt;
+&lt;br /&gt;
+&amp;nbsp;&lt;/p&gt;</value>
+  </data>
+  <data name="WebSiteSettings" xml:space="preserve">
+    <value>WebSite Settings</value>
+  </data>
+  <data name="EditWebSiteSettingsIntro" xml:space="preserve">
+    <value>Edit the settings for this website in the form below.</value>
   </data>
 </root>

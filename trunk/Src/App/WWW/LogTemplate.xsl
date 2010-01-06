@@ -9,24 +9,19 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
         Body, TD
         {
           font-family: verdana;
-         font-size: 10px;
+         font-size: 12;
         }
-
-	TD
-	{
-		padding: 0px;
-	}
       </style>
       <body>
         <h2>Log</h2>
         <table>
           <xsl:for-each select="Log/Entry">
             <tr>
-              <td width="200px">
+              <td>
                 <xsl:value-of select="Timestamp"/>
               </td>
               <td>
-                <table cellspacing="0">
+                <table>
                   <tr>
                     <xsl:call-template name="IndentLoop">
                       <xsl:with-param name="i">0</xsl:with-param>
@@ -46,6 +41,14 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
               </td>
             </tr>
+        	
+              	<tr>
+                    <td colspan="2">
+                      <font color="gray">
+                      <xsl:value-of select="StackTrace"/>
+                      </font>
+                    </td>
+                  </tr>
           </xsl:for-each>
         </table>
       </body>
@@ -60,7 +63,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
     <!--begin_: Line_by_Line_Output -->
     <xsl:if test="$i &lt;= $count">
-      <td>->&#160;&#160;&#160;</td>
+      <td>&#160;&#160;&#160;&#160;</td>
     </xsl:if>
 
     <!--begin_: RepeatTheLoopUntilFinished-->

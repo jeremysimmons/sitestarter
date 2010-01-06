@@ -10,12 +10,20 @@
   		
 
 		
+  		<property name="Project.PropertiesPath" value="${Argument.ProjectPath}"/>
+  		<property name="Project.RootPath" value="${path::get-directory-name(Project.PropertiesPath)}"/>
+  		
+  		<echo message="Project.PropertiesPath: ${Project.PropertiesPath}"/>
+  		<echo message="Project.RootPath: ${Project.RootPath}"/>
+
+
+  		
   		<property name="Solution.PropertiesPath" value="${Argument.SolutionPath}"/>
   		<property name="Solution.RootPath" value="${path::get-directory-name(Solution.PropertiesPath)}"/>
+  		<property name="Solution.Name" value="${path::get-file-name(Solution.RootPath)}"/>
   		
   		<echo message="Solution.PropertiesPath: ${Solution.PropertiesPath}"/>
   		<echo message="Solution.RootPath: ${Solution.RootPath}"/>
-  		
   		
   		
 	<include buildfile="Common.Jobs.ImportFiles.nant"/>

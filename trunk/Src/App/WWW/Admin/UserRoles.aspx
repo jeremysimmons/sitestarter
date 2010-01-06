@@ -15,7 +15,7 @@
         OperationManager.StartOperation("ManageUserRoles", IndexView);
 
         
-        IndexGrid.DataSource = UserRoleFactory.GetUserRoles();
+        IndexGrid.DataSource = Collection<BaseEntity>.ConvertAll(UserRoleFactory.Current.GetUserRoles());
 
         IndexView.DataBind();
     }
@@ -41,7 +41,7 @@
     {
         // Save the new role
         DataForm.ReverseBind();
-        if (UserRoleFactory.SaveUserRole((UserRole)DataForm.DataSource))
+        if (UserRoleFactory.Current.SaveUserRole((UserRole)DataForm.DataSource))
         {
             // Display the result to the role
             Result.Display(Resources.Language.UserRoleSaved);
@@ -59,7 +59,8 @@
         OperationManager.StartOperation("EditUserRole", FormView);
 
         // Load the specified role
-        DataForm.DataSource = UserRoleFactory.GetUserRole(roleID);
+        DataForm.DataSource = UserRoleFactory.Current.GetUserRole(roleID);
+        UserRoleFactory.Current.Activate((UserRole)DataForm.DataSource);
 
         // Bind the form
         FormView.DataBind();
@@ -68,13 +69,13 @@
     private void UpdateUserRole()
     {
         // Get a fresh copy of the role object
-        UserRole role = UserRoleFactory.GetUserRole(((UserRole)DataForm.DataSource).ID);
+        UserRole role = (UserRole)UserRoleFactory.Current.GetUserRole(((UserRole)DataForm.DataSource).ID);
 
         // Transfer data from the form to the object
         DataForm.ReverseBind(role);
         
         // Update the role
-        if (UserRoleFactory.UpdateUserRole(role))
+        if (UserRoleFactory.Current.UpdateUserRole(role))
         {
             // Display the result to the role
             Result.Display(Resources.Language.UserRoleUpdated);
@@ -95,7 +96,7 @@
     private void DeleteUserRole(Guid roleID)
     {
         // Delete the specified role
-        UserRoleFactory.DeleteUserRole(UserRoleFactory.GetUserRole(roleID));
+        UserRoleFactory.Current.DeleteUserRole(UserRoleFactory.Current.GetUserRole(roleID));
 
         // Display the result to the role
         Result.Display(Resources.Language.UserRoleDeleted);
@@ -200,7 +201,7 @@
 
     protected void UsersSelect_DataLoading(object sender, EventArgs e)
     {
-        ((EntitySelect)sender).DataSource = UserFactory.GetUsers();
+        ((EntitySelect)sender).DataSource = UserFactory.Current.GetUsers();
     }
     #endregion
 </script>
@@ -261,7 +262,7 @@
                          </p>
                            <cc:EntityForm runat="server" id="DataForm" OnEntityCommand="DataForm_EntityCommand" CssClass="Panel" headingtext='<%# OperationManager.CurrentOperation == "CreateUserRole" ? Resources.Language.NewUserRoleDetails : Resources.Language.UserRoleDetails %>' headingcssclass="Heading2" width="100%">
                              <cc:EntityFormTextBoxItem runat="server" PropertyName="Name" TextBox-Width="400" FieldControlID="Name" IsRequired="true" text='<%# Resources.Language.Name + ":" %>' RequiredErrorMessage='<%# Resources.Language.UserRoleNameRequired %>'></cc:EntityFormTextBoxItem>
-				<cc:EntityFormItem runat="server" PropertyName="UserIDs" FieldControlID="Users" ControlValuePropertyName="SelectedEntityIDs" text='<%# Resources.Language.Users + ":" %>'><FieldTemplate><cc:EntitySelect width="400px" EntityType="SoftwareMonkeys.SiteStarter.Entities.User, SoftwareMonkeys.SiteStarter.Entities" runat="server" ValuePropertyName='Name' id="Users" displaymode="multiple" selectionmode="multiple" NoDataText='<%# "-- " + Resources.Language.NoUsers + " --" %>' OnDataLoading='UsersSelect_DataLoading'></cc:EntitySelect></FieldTemplate></cc:EntityFormItem>
+				<cc:EntityFormItem runat="server" PropertyName="Users.IDs" FieldControlID="Users" ControlValuePropertyName="SelectedEntityIDs" text='<%# Resources.Language.Users + ":" %>'><FieldTemplate><cc:EntitySelect SelectedEntityIDs='<%# ((UserRole)DataForm.DataSource).Users.IDs %>' width="400px" EntityType="SoftwareMonkeys.SiteStarter.Entities.User, SoftwareMonkeys.SiteStarter.Entities" runat="server" ValuePropertyName='Name' id="Users" displaymode="multiple" selectionmode="multiple" NoDataText='<%# "-- " + Resources.Language.NoUsers + " --" %>' OnDataLoading='UsersSelect_DataLoading'></cc:EntitySelect></FieldTemplate></cc:EntityFormItem>
                                   <cc:EntityFormButtonsItem ID="EntityFormButtonsItem1" runat="server"><FieldTemplate><asp:Button ID="SaveButton" runat="server" CausesValidation="True" CommandName="Save"
                                                     Text='<%# Resources.Language.Save %>' Visible='<%# OperationManager.CurrentOperation == "CreateUserRole" %>'></asp:Button>
                                                     <asp:Button ID="UpdateButton" runat="server" CausesValidation="True" CommandName="Update"

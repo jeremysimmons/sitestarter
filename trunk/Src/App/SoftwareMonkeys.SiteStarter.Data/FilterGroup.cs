@@ -24,22 +24,22 @@ namespace SoftwareMonkeys.SiteStarter.Data
 	            get { return _operator; }
 	            set { _operator = value; }
 	        }
-      
-		private BaseFilter[] filters;
+
+        private IDataFilter[] filters;
 		/// <summary>
 		/// Gets/sets the filters in the group.
 		/// </summary>
-		public BaseFilter[] Filters
+        public IDataFilter[] Filters
 		{
 			get { return filters; }
 			set { filters = value; }
 		}
 
-		public void Add(BaseFilter filter)
+        public void Add(IDataFilter filter)
 		{
-			List<BaseFilter> list = (filters == null ? new List<BaseFilter>() : new List<BaseFilter>());
+            List<IDataFilter> list = (filters == null ? new List<IDataFilter>() : new List<IDataFilter>());
 			list.Add(filter);
-			filters = (BaseFilter[])list.ToArray();
+            filters = (IDataFilter[])list.ToArray();
 		}
 	}
 

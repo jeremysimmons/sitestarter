@@ -5,7 +5,7 @@
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Entities" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Configuration" %>
-<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business.State" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.State" %>
 <script runat="server">
     
     private void Page_Load(object sender, EventArgs e)
@@ -19,11 +19,18 @@
             VirtualServer server = null;
             
             string name = Request.QueryString["Server"];
-            if (name != String.Empty)
-                server = VirtualServerFactory.GetVirtualServerByName(name);
+            if (name == "Default")
+            	name = String.Empty;
+            else
+	        {
+	            if (name != String.Empty)
+	                server = VirtualServerFactory.GetVirtualServerByName(name);
+            }
 
             if (server != null)
                 VirtualServerState.Switch(name, server.ID);
+            else
+            	VirtualServerState.Switch(null, Guid.Empty);//String.Empty, Guid.Empty);
 
             FormsAuthentication.SignOut();
 

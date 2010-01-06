@@ -60,21 +60,25 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 		}
 	
-		public override bool IsMatch(BaseEntity entity)
+		public override bool IsMatch(IEntity entity)
 		{
 			bool typeMatches = false;
 			Type entityType = entity.GetType();
 			foreach (Type type in Types)
 			{
-				if (type.Equals(entityType) || entityType.IsSubclassOf(type))
+				if (type.Equals(entityType)
+				    || entityType.IsSubclassOf(type)
+				    || type.ToString() == entityType.ToString())
+				{
 					typeMatches = true;
+				}
 			}
 			
 			PropertyInfo property = entityType.GetProperty(PropertyName);
 			object value = property.GetValue(entity, null);
 			bool valueMatches = value.Equals(PropertyValue);
 			
-			return true;////typeMatches && valueMatches;
+			return typeMatches && valueMatches;
 		}
 	
     }

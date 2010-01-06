@@ -3,38 +3,40 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.ComponentModel;
 using System.Collections;
+using System.Collections.Generic;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Business;
 using System.Reflection;
 using System.Xml.Serialization;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 
 namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 {
-    [ControlBuilder(typeof(EntitySelectControlBuilder))]
-    public class EntitySelect : ListBox, IPostBackDataHandler
-    {
-        private string entityType = typeof(SoftwareMonkeys.SiteStarter.Entities.BaseEntity).FullName;
-        /// <summary>
-        /// Gets/sets the type of entity being displayed in the list.
-        /// </summary>
-        public virtual string EntityType
-        {
-            get
-            {
-              //  if (entityType != null)
-              //      return entityType.FullName;
-               return entityType;
-            }
-            set
-            {
-                entityType = value;
-                // Reset the entity type object if it's been made obsolete by the entity type string.
-            //    if (!entityType.FullName.Equals(entityTypeString))
-              //      entityType = null;
-            }
-        }
+	[ControlBuilder(typeof(EntitySelectControlBuilder))]
+	public class EntitySelect : ListBox, IPostBackDataHandler
+	{
+		private string entityType = typeof(SoftwareMonkeys.SiteStarter.Entities.IEntity).FullName;
+		/// <summary>
+		/// Gets/sets the type of entity being displayed in the list.
+		/// </summary>
+		public virtual string EntityType
+		{
+			get
+			{
+				//  if (entityType != null)
+				//      return entityType.FullName;
+				return entityType;
+			}
+			set
+			{
+				entityType = value;
+				// Reset the entity type object if it's been made obsolete by the entity type string.
+				//    if (!entityType.FullName.Equals(entityTypeString))
+				//      entityType = null;
+			}
+		}
 
-       /* private Type entityType;
+		/* private Type entityType;
         /// <summary>
         /// Gets/sets the type of entity being displayed in the list.
         /// </summary>
@@ -47,178 +49,220 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
             set { entityType = value; }
         }*/
 
-        /// <summary>
-        /// Gets/sets the Entity data required for this control.
-        /// </summary>
-        [Browsable(false)]
-        public new BaseEntity[] DataSource
-        {
-            get
-            {
-                if (base.DataSource == null)
-                {
-                    RaiseDataLoading();
-                }
-                return (BaseEntity[])base.DataSource;
-            }
-            set { base.DataSource = value; }
-        }
+		/// <summary>
+		/// Gets/sets the Entity data required for this control.
+		/// </summary>
+		[Browsable(false)]
+		public new IEntity[] DataSource
+		{
+			get
+			{
+				if (base.DataSource == null)
+				{
+					RaiseDataLoading();
+				}
+				return (IEntity[])base.DataSource;
+			}
+			set { base.DataSource = value; }
+		}
 
-       /*/// <summary>
-        /// Gets/sets the Entity data required for this control.
-        /// </summary>
-        [Browsable(false)]
-        public new object DataSource
-        {
-            get
-            {
-                return base.DataSource;
-            }
-            set { base.DataSource = value; }
-        }*/
+		/*/// <summary>
+		/// Gets/sets the Entity data required for this control.
+		/// </summary>
+		[Browsable(false)]
+		public new object DataSource
+		{
+			get
+			{
+				return base.DataSource;
+			}
+			set { base.DataSource = value; }
+		}*/
 
-        /// <summary>
-        /// Gets/sets the ID of the selected Entity.
-        /// </summary>
-        [Browsable(false)]
-        [Bindable(true)]
-        public BaseEntity SelectedEntity
-        {
-            get
-            {
-                if (SelectedEntities != null && SelectedEntities.Length > 0)
-                    return SelectedEntities[0];
-                else
-                    return null;
-            }
-            set
-            {
-                SelectedEntities = new BaseEntity[] { value };
-            }
-        }
+			/// <summary>
+			/// Gets/sets the ID of the selected Entity.
+			/// </summary>
+			[Browsable(false)]
+			[Bindable(true)]
+			public IEntity SelectedEntity
+		{
+			get
+			{
+				if (SelectedEntities != null && SelectedEntities.Length > 0)
+					return SelectedEntities[0];
+				else
+					return null;
+			}
+			set
+			{
+				SelectedEntities = new IEntity[] { value };
+			}
+		}
 
-        private BaseEntity[] selectedEntities;
-        /// <summary>
-        /// Gets/sets the selected entities.
-        /// </summary>
-        [Browsable(false)]
-        [Bindable(true)]
-        public BaseEntity[] SelectedEntities
-        {
-            get
-            {
-                if (selectedEntities == null)
-                {
-                    if (DataSource != null && GetDataSourceLength() > 0)
-                        selectedEntities = EntityFactory.GetEntities(DataSource.GetType().GetElementType(), SelectedEntityIDs);
-                }
-                return selectedEntities;
-            }
-            set
-            {
-                selectedEntities = value;
-                SelectedEntityIDs = Collection<BaseEntity>.GetIDs(value);
-            }
-        }
+		private IEntity[] selectedEntities;
+		/// <summary>
+		/// Gets/sets the selected entities.
+		/// </summary>
+		[Browsable(false)]
+		[Bindable(true)]
+		public IEntity[] SelectedEntities
+		{
+			get
+			{
+				if (selectedEntities == null)
+				{
+					if (DataSource != null && GetDataSourceLength() > 0)
+						selectedEntities = Collection<IEntity>.GetByIDs(DataSource, SelectedEntityIDs);
+					else
+						selectedEntities = new IEntity[]{};
+				}
+				return selectedEntities;
+			}
+			set
+			{
+				selectedEntities = value;
+				SelectedEntityIDs = Collection<IEntity>.GetIDs(value);
+			}
+		}
 
-        /// <summary>
-        /// Gets/sets the ID of the selected Entity.
-        /// </summary>
-        [Browsable(false)]
-        [Bindable(true)]
-        public Guid SelectedEntityID
-        {
-            get
-            {
-                if (SelectedEntityIDs != null && SelectedEntityIDs.Length > 0)
-                    return SelectedEntityIDs[0];
-                else
-                    return Guid.Empty;
-            }
-            set
-            {
-                SelectedEntityIDs = new Guid[] { value };
-            }
-        }
+		/// <summary>
+		/// Gets/sets the ID of the selected Entity.
+		/// </summary>
+		[Browsable(false)]
+		[Bindable(true)]
+		public Guid SelectedEntityID
+		{
+			get
+			{
+				if (SelectedEntityIDs != null && SelectedEntityIDs.Length > 0)
+					return SelectedEntityIDs[0];
+				else
+					return Guid.Empty;
+			}
+			set
+			{
+				SelectedEntityIDs = new Guid[] { value };
+			}
+		}
 
-        /// <summary>
-        /// Gets/sets the IDs of the selected entities.
-        /// </summary>
-        [Browsable(false)]
-        [Bindable(true)]
-        public Guid[] SelectedEntityIDs
-        {
-            get
-            {
-                if (ViewState["SelectedEntityIDs"] == null)
-                {
-                    ViewState["SelectedEntityIDs"] = new Guid[] { };
-                }
-                return (Guid[])ViewState["SelectedEntityIDs"];
-            }
-            set
-            {
-                ViewState["SelectedEntityIDs"] = value;
-                SelectItems();
-            }
-        }
+		/// <summary>
+		/// Gets/sets the IDs of the selected entities.
+		/// </summary>
+		[Browsable(false)]
+		[Bindable(true)]
+		public Guid[] SelectedEntityIDs
+		{
+			get
+			{
+				if (ViewState["SelectedEntityIDs"] == null)
+				{
+					ViewState["SelectedEntityIDs"] = new Guid[] { };
+				}
+				return (Guid[])ViewState["SelectedEntityIDs"];
+			}
+			set
+			{
+				using (LogGroup logGroup = AppLogger.StartGroup("Setting the SelectedEntityIDs property of the EntitySelect with ID " + ID + ".", NLog.LogLevel.Debug))
+				{
+					if (value != null)
+						AppLogger.Debug("#: " + value.Length.ToString());
+					else
+						AppLogger.Debug("#: " + 0);
+					ViewState["SelectedEntityIDs"] = value;
+					SelectItems();
+				}
+			}
+		}
 
-        /// <summary>
-        /// Selects the appropriate items depending on the SelectedEntityIDs.
-        /// </summary>
-        protected void SelectItems()
-        {
-            if (ViewState["SelectedEntityIDs"] != null)
-            {
-                if (((Guid[])ViewState["SelectedEntityIDs"]).Length > 0)
-                {
-                    foreach (ListItem item in Items)
-                    {
-                        item.Selected = (Array.IndexOf((Guid[])ViewState["SelectedEntityIDs"], new Guid(item.Value)) > -1);
-                    }
-                }
-            }
-        }
+		/// <summary>
+		/// Selects the appropriate items depending on the SelectedEntityIDs.
+		/// </summary>
+		protected void SelectItems()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Selecting the items that match the info specified.", NLog.LogLevel.Debug))
+			{
+				Guid[] selectedEntityIDs = new Guid[] {};
+				
+				if (ViewState["SelectedEntityIDs"] != null)
+				{
+					AppLogger.Debug("ViewState[\"SelectedEntityIDs\"] != null");
+					
+					selectedEntityIDs = (Guid[])ViewState["SelectedEntityIDs"];
+				}
+				else
+					AppLogger.Debug("ViewState[\"SelectedEntityIDs\"] == null");
+				
+				
+				AppLogger.Debug("# of selected entities: " + selectedEntityIDs.Length.ToString());
+				
+				foreach (ListItem item in Items)
+				{
+					using (LogGroup logGroup2 = AppLogger.StartGroup("Selecting/deselecting item.", NLog.LogLevel.Debug))
+					{
+						AppLogger.Debug("item.Text: " + item.Text);
+						AppLogger.Debug("item.Value: " + item.Value);
+						item.Selected = (Array.IndexOf(selectedEntityIDs, new Guid(item.Value)) > -1);
+						AppLogger.Debug("item.Selected: " + item.Selected.ToString());
+					}
+				}
+			}
+		}
 
-        #region Events
-        /// <summary>
-        /// Raised when data is being loaded.
-        /// </summary>
-        public event EventHandler DataLoading;
+		#region Events
+		/// <summary>
+		/// Raised when data is being loaded.
+		/// </summary>
+		public event EventHandler DataLoading;
 
-        /// <summary>
-        /// Called to raise the DataLoading event.
-        /// </summary>
-        protected void RaiseDataLoading()
-        {
-            if (DataLoading != null)
-                DataLoading(this, EventArgs.Empty);
-        }
-        #endregion
+		/// <summary>
+		/// Called to raise the DataLoading event.
+		/// </summary>
+		protected void RaiseDataLoading()
+		{
+			if (DataLoading != null)
+				DataLoading(this, EventArgs.Empty);
+		}
+		#endregion
+		
+		
+		/// <summary>
+		/// Sets the default data settings of the dropdownlist.
+		/// </summary>
+		public EntitySelect()
+		{
+			this.DataValueField = "ID";
+		}
+		
+		protected override void OnInit(EventArgs e)
+		{
+			CssClass = "Field";
+			
+			base.OnInit(e);
+		}
 
 
-	protected int GetDataSourceLength()
-	{
-		if (DataSource is Array)
-			return ((Array)DataSource).Length;
-		else
-			throw new NotSupportedException("Invalid type: " + DataSource.GetType().ToString());
+		protected int GetDataSourceLength()
+		{
+			if (DataSource is Array)
+				return ((Array)DataSource).Length;
+			else
+				throw new NotSupportedException("Invalid type: " + DataSource.GetType().ToString());
+		}
+
+		protected override void OnLoad(EventArgs e)
+		{
+			// This is called just-in-time in DataSource_get
+			//RaiseDataLoading();
+
+			base.OnLoad(e);
+		}
 	}
-
-	protected override void OnLoad(EventArgs e)
-	{
-		// This is called just-in-time in DataSource_get
-		//RaiseDataLoading();
-
-		base.OnLoad(e);
-	}
-    }
 
 	/// <summary>
 	/// Displays a dropdown list for the Entity to select a Entity.
 	/// </summary>
 	public class EntitySelect<E> : EntitySelect
-        where E : BaseEntity
+		where E : IEntity
 	{
 		protected bool DataPosted = false;
 
@@ -229,15 +273,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		[Browsable(false)]
 		public new E[] DataSource
 		{
-			get 
+			get
 			{
-		                if (base.DataSource == null)
-		                {
-		                    RaiseDataLoading();
-		                }
-		                return (E[])base.DataSource;
-		            }
-			set { base.DataSource = value; }
+				if (base.DataSource == null)
+				{
+					RaiseDataLoading();
+				}
+				return Collection<E>.ConvertAll(base.DataSource);
+			}
+			set { base.DataSource = Collection<IEntity>.ConvertAll(value); }
 		}
 
 		/*/// <summary>
@@ -246,98 +290,98 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		[Browsable(false)]
 		public new object DataSource
 		{
-			get 
+			get
 			{
-		                //if (base.DataSource == null)
-		                //{
-		                //    RaiseDataLoading();
-		                //}
-		                return base.DataSource;
-           		}
+				//if (base.DataSource == null)
+				//{
+				//    RaiseDataLoading();
+				//}
+				return base.DataSource;
+			}
 			set { base.DataSource = value; }
 		}*/
 
-        // TODO: Check if necessary
-        /// <summary>
-        /// Gets/sets the selected Entity.
-        /// </summary>
-        [Browsable(false)]
-        [Bindable(true)]
-        public new Guid SelectedEntityID
-        {
-            get 
-            {
-                if (SelectedEntityIDs != null && SelectedEntityIDs.Length > 0)
-                    return SelectedEntityIDs[0];
-                else
-                    return Guid.Empty;
-            }
-            set
-            {
-                if (value == Guid.Empty)
-                    SelectedEntityIDs = new Guid[] { };
-                else
-                    SelectedEntityIDs = new Guid[] { value };
-            }
-        }
+			// TODO: Check if necessary
+			/// <summary>
+			/// Gets/sets the selected Entity.
+			/// </summary>
+			[Browsable(false)]
+			[Bindable(true)]
+			public new Guid SelectedEntityID
+		{
+			get
+			{
+				if (SelectedEntityIDs != null && SelectedEntityIDs.Length > 0)
+					return SelectedEntityIDs[0];
+				else
+					return Guid.Empty;
+			}
+			set
+			{
+				if (value == Guid.Empty)
+					SelectedEntityIDs = new Guid[] { };
+				else
+					SelectedEntityIDs = new Guid[] { value };
+			}
+		}
 
-        /// <summary>
-        /// Gets/sets the selected entities.
-        /// </summary>
-        [Browsable(false)]
-        [Bindable(true)]
-        public Guid[] SelectedEntityIDs
-        {
-            get
-            {
-                return base.SelectedEntityIDs;
-            }
-            set
-            {
-                base.SelectedEntityIDs = value;
-            }
-        }
+		/// <summary>
+		/// Gets/sets the selected entities.
+		/// </summary>
+		[Browsable(false)]
+		[Bindable(true)]
+		public Guid[] SelectedEntityIDs
+		{
+			get
+			{
+				return base.SelectedEntityIDs;
+			}
+			set
+			{
+				base.SelectedEntityIDs = value;
+			}
+		}
 
-        /// <summary>
-        /// Gets/sets the selected entity.
-        /// </summary>
-        [Browsable(false)]
-        [Bindable(true)]
-        public E SelectedEntity
-        {
-            get
-            {
-                return (E)base.SelectedEntity;
-            }
-            set
-            {
-                base.SelectedEntity = value;
-            }
-        }
+		/// <summary>
+		/// Gets/sets the selected entity.
+		/// </summary>
+		[Browsable(false)]
+		[Bindable(true)]
+		public E SelectedEntity
+		{
+			get
+			{
+				return (E)base.SelectedEntity;
+			}
+			set
+			{
+				base.SelectedEntity = value;
+			}
+		}
 
-        /// <summary>
-        /// Gets/sets the selected entity.
-        /// </summary>
-        [Browsable(false)]
-        [Bindable(true)]
-        public E[] SelectedEntities
-        {
-            get
-            {
-                return (E[])(new Collection<E>(base.SelectedEntities).ToArray(typeof(E)));
-            }
-            set
-            {
-                base.SelectedEntities = value;
-            }
-        }
+		/// <summary>
+		/// Gets/sets the selected entity.
+		/// </summary>
+		[Browsable(false)]
+		[Bindable(true)]
+		public new E[] SelectedEntities
+		{
+			get
+			{
+				return (E[])(new Collection<E>(base.SelectedEntities).ToArray(typeof(E)));
+			}
+			set
+			{
+				base.SelectedEntities = Collection<IEntity>.ConvertAll(value);
+			}
+		}
 
-        /// <summary>
+		/// <summary>
 		/// Gets/sets a value determining whether to hide the no selection option.
 		/// </summary>
 		public bool HideNoSelection
 		{
-			get 
+			get
 			{
 				if (ViewState["HideNoSelection"] == null)
 					ViewState["HideNoSelection"] = false;
@@ -350,7 +394,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		/// </summary>
 		public string NoSelectionText
 		{
-			get 
+			get
 			{
 				if (ViewState["NoSelectionText"] == null || (String)ViewState["NoSelectionText"] == String.Empty)
 					ViewState["NoSelectionText"] = "-- Select " + typeof(E).Name + " --";
@@ -363,7 +407,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		/// </summary>
 		public ListSelectionMode DisplayMode
 		{
-			get 
+			get
 			{
 				if (ViewState["DisplayMode"] == null)
 					ViewState["DisplayMode"] = ListSelectionMode.Single;
@@ -371,108 +415,227 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			set { ViewState["DisplayMode"] = value; }
 		}
 
-        /// <summary>
-        /// Gets/sets the name of the property to use for the value of the items.
-        /// </summary>
-        public string ValuePropertyName
-        {
-            get
-            {
-                if (ViewState["ValuePropertyName"] == null)
-                {
-                    ViewState["ValuePropertyName"] = DataTextField = "Name";
-                }
-                return (string)ViewState["ValuePropertyName"];
-            }
-            set { ViewState["ValuePropertyName"] = value;
-            DataTextField = value;
-            }
-        }
+		/// <summary>
+		/// Gets/sets the name of the property to use for the value of the items.
+		/// </summary>
+		public string ValuePropertyName
+		{
+			get
+			{
+				if (ViewState["ValuePropertyName"] == null)
+				{
+					ViewState["ValuePropertyName"] = DataTextField = "Name";
+				}
+				return (string)ViewState["ValuePropertyName"];
+			}
+			set { ViewState["ValuePropertyName"] = value;
+				DataTextField = value;
+			}
+		}
 		#endregion
 
-        /// <summary>
+		/// <summary>
 		/// Sets the default data settings of the dropdownlist.
 		/// </summary>
 		public EntitySelect()
 		{
-            this.DataTextField = ValuePropertyName;
+			this.DataTextField = ValuePropertyName;
 			this.DataValueField = "ID";
 		}
 
 		/// <summary>
 		/// Binds and populates the control.
 		/// </summary>
-        public override void DataBind()
-        {
-            if (DataSource != null)
-            {
-                // Organise the data.
-                Collection<BaseEntity> data = new Collection<BaseEntity>(DataSource);
-                data.Sort(ValuePropertyName, Entities.SortDirection.Ascending);
-                DataSource = (E[])data.ToArray(typeof(E));
+		public override void DataBind()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Data binding the EntitySelect control.", NLog.LogLevel.Debug))
+			{
+				if (DataSource != null)
+				{
+					AppLogger.Debug("DataSource property != null");
+					// Organise the data.
+					Collection<E> data = new Collection<E>(DataSource);
+					data.Sort(ValuePropertyName, Entities.SortDirection.Ascending);
+					DataSource = (E[])data.ToArray(typeof(E));
 
-                if (!DataPosted)
-                {
-                    // Start the base binding functionality
-                    base.DataBind();
+					if (!DataPosted)
+					{
+						AppLogger.Debug("DataPosted == false");
+						
+						// Start the base binding functionality
+						base.DataBind();
 
-                    Populate();
-
-                    // Select the appropriate list item.
-                    SelectItems();
-                }
-            }
-        }
+						Populate();
+					}
+					else
+						AppLogger.Debug("DataPosted == true");
+				}
+				else
+					AppLogger.Debug("DataSource property == null");
+				
+				
+				// Select the appropriate list item.
+				SelectItems();
+			}
+		}
 
 		#region IPostBackDataHandler Members
 
-		protected void RaisePostDataChangedEvent()
+		protected override void RaisePostDataChangedEvent()
 		{
-            OnSelectedIndexChanged(EventArgs.Empty);
+			AppLogger.Debug("Raising PostDataChanged event.");
+			
+			OnSelectedIndexChanged(EventArgs.Empty);
 		}
 
-        protected override bool LoadPostData(string postDataKey, System.Collections.Specialized.NameValueCollection postCollection)
-        {
-            string postValue = postCollection[postDataKey];
-            Type innerType = null;
+		protected override bool LoadPostData(string postDataKey, System.Collections.Specialized.NameValueCollection postCollection)
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Loading post data.", NLog.LogLevel.Debug))
+			{
+				//if (DataSource == null || DataSource.Length == 0)
+				//{
+				//	if (DataSource == null)
+				//		AppLogger.Debug("DataSource == null");
+				//
+				//	if (DataSource.Length == 0)
+				//		AppLogger.Debug("DataSource.Length == 0");
+				//
+				//	AppLogger.Debug("Raising DataLoading event to reload DataSource.");
+				
+				RaiseDataLoading();
+				//}
+				
+				AppLogger.Debug("Post data key: " + postDataKey);
+				
+				
+				string postValue = GetPostValue(postDataKey, postCollection);
+				
+				E[] entities = GetPostedEntities(postValue);
+				
+				bool posted = IsDataPosted(entities);
+				
+				AppLogger.Debug("Data posted: " + posted.ToString());
 
-            //if (EntityType == null)
-                innerType = EntityFactory.GetType(EntityType);
-            //else
-            //    innerType = EntityType;
-
-            Type genericType = typeof(Collection<>).MakeGenericType(new System.Type[] { innerType });
-            Collection<E> entities = (Collection<E>)Activator.CreateInstance(genericType);
-            if (postValue != null)
-            {
-                foreach (string stringID in postValue.Split(','))
-                {
-                    Guid id = new Guid(stringID);
-                    E entity = null;
-                    if (DataSource != null)
-                        entity = (E)Collection<E>.GetByID((E[])DataSource, id);
-                    else
-                        entity = (E)EntityFactory.GetEntity(typeof(E), id);
-                    entities.Add(entity);
-                }
-            }
-            bool posted = false;
-            if (SelectedEntityIDs.Length == entities.Count)
-            {
-                foreach (Guid id in entities.GetIDs())
-                {
-                    if (Array.IndexOf(SelectedEntityIDs, id) == -1)
-                        posted = true;
-                }
-            }
-            else
-                posted = true;
-
-            if (posted)
-                SelectedEntityIDs = entities.GetIDs();
-            return DataPosted = posted;
-        }
+				if (posted)
+				{
+					AppLogger.Debug("Setting posted IDs to SelectedEntityIDs");
+					
+					AppLogger.Debug("Posted entities #: " + entities.Length.ToString());
+					
+					SelectedEntityIDs = Collection<E>.GetIDs(entities);
+				}
+				
+				DataPosted = posted;
+			}
+			return DataPosted;
+		}
 		#endregion
+		
+		protected Type MakeGenericType()
+		{
+			Type innerType = null;
+			
+			if (EntityType == null)
+				throw new Exception("EntityType isn't specified.");
+
+			//if (EntityType == null)
+			innerType = EntityFactory.GetType(EntityType);
+			//else
+			//    innerType = EntityType;
+			
+			if (innerType == null)
+				throw new Exception("Inner type not configured or can't be identified.");
+			
+			AppLogger.Debug("Inner type: " + innerType.ToString());
+
+			Type genericType = typeof(Collection<>).MakeGenericType(new System.Type[] { innerType });
+			
+			if (genericType == null)
+				throw new Exception("Generic type not configured or can't be identified.");
+			
+			return genericType;
+		}
+		
+		protected string GetPostValue(string postDataKey, System.Collections.Specialized.NameValueCollection postCollection)
+		{
+			string postValue = String.Empty;
+			
+			if (postCollection != null)
+				postValue = postCollection[postDataKey];
+			
+			return postValue;
+		}
+		
+		protected E[] GetPostedEntities(string postValue)
+		{
+			AppLogger.Debug("Post value: " + postValue);
+						
+			E[] entities = null;
+			
+			if (postValue != null)
+			{
+				Guid[] ids = GetIDsFromString(postValue);
+				
+				AppLogger.Debug("Post value: !null");
+				
+				entities = Collection<E>.GetByIDs(DataSource, ids);
+			}
+			
+			return entities;
+		}
+		
+		protected Guid[] GetIDsFromString(string value)
+		{
+			List<Guid> list = new List<Guid>();
+			
+			foreach (string stringID in value.Split(','))
+			{
+				Guid id = new Guid(stringID.Trim());
+				
+				list.Add(id);
+			}
+			
+			return list.ToArray();
+		}
+		
+		protected bool IsDataPosted(E[] entities)
+		{
+			bool posted = false;
+			
+			int existingCount = 0;
+			if (SelectedEntityIDs != null)
+				existingCount = SelectedEntityIDs.Length;
+			
+			int newCount = 0;
+			if (entities != null)
+				newCount = entities.Length;
+			
+			// If the new count matches the existing count
+			if (existingCount == newCount)
+			{
+				AppLogger.Debug("SelectedEntityIDs.Length == entities.Count");
+				
+				// Loop through the IDs and compare
+				foreach (Guid id in Collection<E>.GetIDs(entities))
+				{
+					AppLogger.Debug("Checking whether ID '" + id.ToString() + "' is in SelectedEntityIDs.");
+					
+					if (SelectedEntityIDs == null
+					    || Array.IndexOf(SelectedEntityIDs, id) == -1)
+					{
+						AppLogger.Debug("ID is not in SelectedEntityIDs");
+						
+						posted = true;
+					}
+				}
+			} // Otherwise a different count means data was posted
+			else
+			{
+				posted = true;
+			}
+			
+			return posted;
+		}
 
 		protected override void AddAttributesToRender(HtmlTextWriter writer)
 		{
@@ -496,10 +659,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			writer.AddAttribute(HtmlTextWriterAttribute.Class, CssClass);
 
 			// Height and width
-            if (Height.Value > 0)
-			writer.AddStyleAttribute(HtmlTextWriterStyle.Height, Utilities.FormatUnit(Height));
-            if (Width.Value > 0)
-            writer.AddStyleAttribute(HtmlTextWriterStyle.Width, Utilities.FormatUnit(Width));
+			if (Height.Value > 0)
+				writer.AddStyleAttribute(HtmlTextWriterStyle.Height, Utilities.FormatUnit(Height));
+			if (Width.Value > 0)
+				writer.AddStyleAttribute(HtmlTextWriterStyle.Width, Utilities.FormatUnit(Width));
 
 			// AutoPostBack of SelectedIndexChanged event
 			if (AutoPostBack)
@@ -520,55 +683,102 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			}
 		}
 
-        public virtual void Populate()
-        {
-            Items.Clear();
+		public virtual void Populate()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Populating the EntitySelect control.", NLog.LogLevel.Debug))
+			{
+				Items.Clear();
 
-            // Add the first item.
-            if (!HideNoSelection)
-                this.Items.Insert(0, new ListItem(NoSelectionText, Guid.Empty.ToString()));
+				// Add the first item.
+				if (!HideNoSelection)
+				{
+					AppLogger.Debug("HideNoSelection == false");
+					AppLogger.Debug("Inserting the 'No Selection' item.");
+					this.Items.Insert(0, new ListItem(NoSelectionText, Guid.Empty.ToString()));
+				}
+				else
+				{
+					AppLogger.Debug("HideNoSelection == true");
+					AppLogger.Debug("NOT inserting the 'No Selection' item.");
+				}
 
-            // TODO: Check if code is necessary
-            // Add the rest of the items
-            foreach (BaseEntity entity in (IEnumerable)DataSource)
-            {
-                ArrayList existingIDs = new ArrayList();
-                if (!existingIDs.Contains(entity.ID))
-                {
-                    PropertyInfo property = entity.GetType().GetProperty(ValuePropertyName);
-                    object value = property.GetValue(entity, null);
-                    Items.Add(new ListItem(value == null ? String.Empty : value.ToString(), entity.ID.ToString()));
-                    existingIDs.Add(entity.ID);
-                }
-            }
-        }
+				using (LogGroup logGroup2 = AppLogger.StartGroup("Looping through DataSource entities.", NLog.LogLevel.Debug))
+				{
+					// TODO: Check if code is necessary
+					// Add the rest of the items
+					foreach (IEntity entity in (IEnumerable)DataSource)
+					{
+						using (LogGroup logGroup3 = AppLogger.StartGroup("Adding entity to control.", NLog.LogLevel.Debug))
+						{
+							AppLogger.Debug("Entity type: " + entity.GetType().ToString());
+							AppLogger.Debug("Entity ID: " + entity.ID.ToString());
+							
+							// Create a list of each entity ID that gets added.
+							ArrayList existingIDs = new ArrayList();
+							
+							// Check if the entity has already been added
+							if (!existingIDs.Contains(entity.ID))
+							{
+								AppLogger.Debug("Adding entity.");
+								
+								PropertyInfo property = entity.GetType().GetProperty(ValuePropertyName);
+								
+								if (property == null)
+									AppLogger.Debug("Value property '" + ValuePropertyName + "' NOT found.");
+								else
+									AppLogger.Debug("Value property '" + ValuePropertyName + "' found.");
+								
+								object value = property.GetValue(entity, null);
+								
+								if (value == null)
+									AppLogger.Debug("Value property == null.");
+								else
+									AppLogger.Debug("Value property != null.");
+								
+								string stringValue = (value == null
+								                      ? String.Empty
+								                      : value.ToString());
+								
+								AppLogger.Debug("String value: " + stringValue);
+								
+								Items.Add(new ListItem(stringValue, entity.ID.ToString()));
+								
+								existingIDs.Add(entity.ID);
+							}
+							else
+								AppLogger.Debug("Entity already added so it was skipped.");
+						}
+					}
+				}
+			}
+		}
 
-        public void Populate(E[] entities)
-        {
-            DataSource = entities;
-            Populate();
-        }
+		public void Populate(E[] entities)
+		{
+			DataSource = entities;
+			Populate();
+		}
 	}
 
-    
-    public class EntitySelectControlBuilder : ControlBuilder {
-        public override void Init(TemplateParser parser, ControlBuilder parentBuilder, Type type, string tagName, string id,
-                                  IDictionary attribs) {
+	
+	public class EntitySelectControlBuilder : ControlBuilder {
+		public override void Init(TemplateParser parser, ControlBuilder parentBuilder, Type type, string tagName, string id,
+		                          IDictionary attribs) {
 
-            string entityTypeName = (string)attribs["EntityType"];
+			string entityTypeName = (string)attribs["EntityType"];
 
-            if (entityTypeName != null || entityTypeName != String.Empty)
-            {
-                Type entityType = EntityFactory.GetType(entityTypeName);
-                if (entityType == null)
-                {
-                    throw new Exception(string.Format("The '{0}' type cannot be found or is invalid/incomplete.", entityTypeName));
-                }
-                Type controlType = typeof(EntitySelect<>).MakeGenericType(entityType);
-                base.Init(parser, parentBuilder, controlType, tagName, id, attribs);
-            }
-            else
-                throw new Exception("The EntityType property must be set to the type of Entity being displayed in the control.");
-        }
-    }
+			if (entityTypeName != null || entityTypeName != String.Empty)
+			{
+				Type entityType = EntityFactory.GetType(entityTypeName);
+				if (entityType == null)
+				{
+					throw new Exception(string.Format("The '{0}' type cannot be found or is invalid/incomplete.", entityTypeName));
+				}
+				Type controlType = typeof(EntitySelect<>).MakeGenericType(entityType);
+				base.Init(parser, parentBuilder, controlType, tagName, id, attribs);
+			}
+			else
+				throw new Exception("The EntityType property must be set to the type of Entity being displayed in the control.");
+		}
+	}
 }

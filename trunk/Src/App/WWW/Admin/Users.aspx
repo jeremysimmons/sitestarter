@@ -5,6 +5,7 @@
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Entities" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
 <script runat="server">
     #region Main functions
     /// <summary>
@@ -13,8 +14,10 @@
     private void ManageUsers()
     {
         OperationManager.StartOperation("ManageUsers", IndexView);
+        
+        IndexGrid.DataSource = UserFactory.Current.GetUsers();
 
-        IndexSource.DataBind();
+        IndexGrid.DataBind();
 
         IndexView.DataBind();
     }
@@ -38,7 +41,6 @@
     /// </summary>
     private void SaveUser()
     {
-        
         // Save the new user
         DataForm.ReverseBind();
 
@@ -46,7 +48,7 @@
 
         user.Password = Crypter.EncryptPassword(user.Password);
         
-        if (UserFactory.SaveUser(user))
+        if (UserFactory.Current.SaveUser(user))
         {
             // Display the result to the user
             Result.Display(Resources.Language.UserSaved);
@@ -57,14 +59,22 @@
         else
             Result.DisplayError(Resources.Language.UsernameTaken);
     }
+    
+   
+
 
     private void EditUser(Guid userID)
     {
+    	if (userID == Guid.Empty)
+    		throw new ArgumentException("userID", "A user ID must be provided.");
+    
         // Start the operation
         OperationManager.StartOperation("EditUser", FormView);
 
         // Load the specified user
-        DataForm.DataSource = UserFactory.GetUser(userID);
+        DataForm.DataSource = UserFactory.Current.GetUser(userID);
+        
+        UserFactory.Current.Activate((User)DataForm.DataSource);
 
         // Bind the form
         FormView.DataBind();
@@ -72,31 +82,41 @@
 
     private void UpdateUser()
     {
-        // Get a fresh copy of the user object
-        User user = UserFactory.GetUser(((User)DataForm.DataSource).ID);
-
-        string originalPassword = user.Password;
-
-        // Transfer data from the form to the object
-        DataForm.ReverseBind(user);
-
-        if (user.Password != null && user.Password != String.Empty)
-            user.Password = Crypter.EncryptPassword(user.Password);
-        else
-            user.Password = originalPassword;
-        
-        // Update the user
-        if (UserFactory.UpdateUser(user))
-        {
-            // Display the result to the user
-            Result.Display(Resources.Language.UserUpdated);
-
-            // Show the index again
-            ManageUsers();
-        }
-        else
-        {
-            Result.DisplayError(Resources.Language.UsernameTaken);
+    	using (LogGroup logGroup = AppLogger.StartGroup("Updating the user from the form.", NLog.LogLevel.Debug))
+    	{
+	        // Get a fresh copy of the user object
+	        User user = (User)UserFactory.Current.GetUser(((User)DataForm.DataSource).ID);
+	
+			string originalUsername = user.Username;
+	        string originalPassword = user.Password;
+	        bool editingSelf = (My.Username == user.Username);
+	
+	        // Transfer data from the form to the object
+	        DataForm.ReverseBind(user);
+	
+	        if (user.Password != null && user.Password != String.Empty)
+	            user.Password = Crypter.EncryptPassword(user.Password);
+	        else
+	            user.Password = originalPassword;
+	        
+	        // Update the user
+	        if (UserFactory.Current.UpdateUser(user))
+	        {        
+	            // Display the result to the user
+	            Result.Display(Resources.Language.UserUpdated);
+	            
+	            // If the user changed their own username they need to sign in again
+	            if (editingSelf
+	            	&& !originalUsername.Equals(user.Username))
+	            	Response.Redirect("../Members/Logout.aspx");
+	
+	            // Show the index again
+	            ManageUsers();
+	        }
+	        else
+	        {
+	            Result.DisplayError(Resources.Language.UsernameTaken);
+	        }
         }
     }
 
@@ -107,7 +127,7 @@
     private void DeleteUser(Guid userID)
     {
         // Delete the specified user
-        UserFactory.DeleteUser(UserFactory.GetUser(userID));
+        UserFactory.Current.DeleteUser(UserFactory.Current.GetUser(userID));
 
         // Display the result to the user
         Result.Display(Resources.Language.UserDeleted);
@@ -212,15 +232,11 @@
     
         protected void UserRolesSelect_DataLoading(object sender, EventArgs e)
     {
-        ((EntitySelect)sender).DataSource = UserRoleFactory.GetUserRoles();
+        ((EntitySelect)sender).DataSource = UserRoleFactory.Current.GetUserRoles();
     }
     #endregion
 </script>
 <asp:Content ID="Body" ContentPlaceHolderID="Body" runat="Server">
-    <asp:ObjectDataSource ID="IndexSource" runat="server" DataObjectTypeName="SoftwareMonkeys.SiteStarter.Entities.User"
-        InsertMethod="SaveUser" OldValuesParameterFormatString="original_{0}" SelectMethod="GetUsers"
-        TypeName="SoftwareMonkeys.SiteStarter.Business.UserFactory" DeleteMethod="DeleteUser"
-        UpdateMethod="UpdateUser"></asp:ObjectDataSource>
     <asp:MultiView ID="PageView" runat="server">
         <asp:View ID="IndexView" runat="server">
             <table class="OuterPanel">
@@ -239,9 +255,9 @@
                                 CommandName="New" />&nbsp;</p>
                         <p>
                             <cc:IndexGrid ID="IndexGrid" runat="server" AllowPaging="True" HeaderStyle-CssClass="Heading2" AllowSorting="True"
-                                AutoGenerateColumns="False" DataSourceID="IndexSource" EmptyDataText='<%# Resources.Language.NoUsersFound %>'
+                                AutoGenerateColumns="False" EmptyDataText='<%# Resources.Language.NoUsersFound %>'
                                 Width="100%"
-                                PageSize="2" OnItemCommand="IndexGrid_ItemCommand" DataKeyField="ID">
+                                PageSize="10" OnItemCommand="IndexGrid_ItemCommand" DataKeyField="ID">
                                 <Columns>
                                     <asp:BoundColumn DataField="Username" HeaderText="Username" SortExpression="Username" />
                                     <asp:BoundColumn DataField="Email" HeaderText="Email" SortExpression="Email" />
@@ -284,10 +300,10 @@
    <cc:EntityFormTextBoxItem runat="server" PropertyName="Email" TextBox-Width="400" FieldControlID="Email" IsRequired="true" text='<%# Resources.Language.Email + ":" %>' RequiredErrorMessage='<%# Resources.Language.EmailRequired %>'></cc:EntityFormTextBoxItem>
                                     <cc:EntityFormTextBoxItem runat="server" PropertyName="Username" TextBox-Width="400" FieldControlID="Username" IsRequired="true" text='<%# Resources.Language.Username + ":" %>' RequiredErrorMessage='<%# Resources.Language.UsernameRequired %>'></cc:EntityFormTextBoxItem>
                                     <cc:EntityFormPasswordItem runat="server" PropertyName="Password" TextBox-Width="400" FieldControlID="Password" IsRequired='<%# OperationManager.CurrentOperation == "CreateUser" %>' text='<%# Resources.Language.Password + ":" %>' RequiredErrorMessage='<%# Resources.Language.PasswordRequired %>'></cc:EntityFormPasswordItem>
-                                     <cc:EntityFormPasswordConfirmItem runat="server" PropertyName="PasswordConfirm" TextBox-Width="400" FieldControlID="PasswordConfirm" IsRequired='<%# OperationManager.CurrentOperation == "CreateUser" %>' text='<%# Resources.Language.PasswordConfirm + ":" %>' CompareTo="Password" CompareToErrorMessage='<%# Resources.Language.PasswordsDontMatch %>'></cc:EntityFormPasswordConfirmItem>
+                                     <cc:EntityFormPasswordConfirmItem runat="server" AutoBind="false" TextBox-Width="400" FieldControlID="PasswordConfirm" IsRequired='<%# OperationManager.CurrentOperation == "CreateUser" %>' text='<%# Resources.Language.PasswordConfirm + ":" %>' CompareTo="Password" CompareToErrorMessage='<%# Resources.Language.PasswordsDontMatch %>'></cc:EntityFormPasswordConfirmItem>
                                      <cc:EntityFormCheckBoxItem runat="server" PropertyName="IsApproved" Text='<%# Resources.Language.IsApproved + ":" %>' FieldControlID="IsApproved" TextBox-Text='<%# Resources.Language.IsApprovedNote %>'></cc:EntityFormCheckBoxItem>
                                       <cc:EntityFormCheckBoxItem runat="server" PropertyName="IsLockedOut" Text='<%# Resources.Language.IsLockedOut + ":" %>' FieldControlID="IsLockedOut" TextBox-Text='<%# Resources.Language.IsLockedOutNote %>'></cc:EntityFormCheckBoxItem>
-                                      <cc:EntityFormItem runat="server" PropertyName="RoleIDs" FieldControlID="UserRoles" ControlValuePropertyName="SelectedEntityIDs"
+                                      <cc:EntityFormItem runat="server" PropertyName="Roles.IDs" FieldControlID="UserRoles" ControlValuePropertyName="SelectedEntityIDs"
                               text='<%# Resources.Language.Roles + ":" %>'>
                               <FieldTemplate>
                                   <cc:EntitySelect width="400" EntityType="SoftwareMonkeys.SiteStarter.Entities.UserRole, SoftwareMonkeys.SiteStarter.Entities" runat="server"

@@ -8,7 +8,7 @@ namespace SoftwareMonkeys.SiteStarter.State
     {
         private static StateProvider state;
         /// <summary>
-        /// 
+        /// Gets/sets the current StateProvider instance.
         /// </summary>
         public static StateProvider State
         {

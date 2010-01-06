@@ -65,7 +65,13 @@
                             if (value is Guid[])
                             {
                                 foreach (Guid id in (Guid[])value)
-                                    stringValue += id + "|";
+                                    stringValue += "<br/>- " + id;
+                                stringValue = stringValue.TrimEnd('|');
+                            }
+                            else if (value is string[])
+                            {
+                                foreach (string s in (string[])value)
+                                    stringValue += "<br/>- " + s;
                                 stringValue = stringValue.TrimEnd('|');
                             }
                             else

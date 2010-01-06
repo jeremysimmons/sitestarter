@@ -28,9 +28,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NLog, Version=1.0.0.505, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\NLog.dll</HintPath>
+    <Reference Include="NLog">
+      <HintPath>..\..\..\Lib\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -44,10 +43,8 @@
     <Compile Include="LogGroup.cs" />
     <Compile Include="LogGroupMode.cs" />
     <Compile Include="LogGroupSite.cs" />
+    <Compile Include="LogUtilities.cs" />
     <Compile Include="Reflector.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

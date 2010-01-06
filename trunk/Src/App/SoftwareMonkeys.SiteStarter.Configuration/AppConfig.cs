@@ -1,5 +1,6 @@
 using System;
 using System.Xml.Serialization;
+using System.Collections;
 
 namespace SoftwareMonkeys.SiteStarter.Configuration
 {
@@ -19,6 +20,17 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
             get { return name; }
             set { name = value; }
         }
+
+        private string title;
+        /// <summary>
+        /// Gets/sets the title of the application.
+        /// </summary>
+        public string Title
+        {
+            get { return title; }
+            set { title = value; }
+        }
+
 
         #region IAppConfig Members
         private int sessionTimeout;
@@ -69,6 +81,50 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
         {
             get { return primaryAdministratorID; }
             set { primaryAdministratorID = value; }
+        }
+        
+        private string smtpServer;
+        /// <summary>
+        /// Gets/sets the SMTP server to use for sending emails.
+        /// </summary>
+        public string SmtpServer
+        {
+        	get { return smtpServer; }
+        	set { smtpServer = value; }
+        }
+        
+    	private string pathVariation;
+        /// <summary>
+        /// Gets/sets the variation applied to the config file path (eg. staging, local, etc.).
+        /// </summary>
+        public string PathVariation
+        {
+        	get { return pathVariation; }
+        	set { pathVariation = value; }
+        }
+
+        /// <summary>
+        /// Gets/sets the flexible settings collection.
+        /// </summary>
+        [XmlIgnore]
+        IConfigurationDictionary IAppConfig.Settings
+        {
+            get {
+            	return this.Settings; }
+        	set { this.Settings = new ConfigurationDictionary(value); }
+        }
+        
+        private ConfigurationDictionary settings = new ConfigurationDictionary();
+        /// <summary>
+        /// Gets/sets the flexible settings collection.
+        /// </summary>
+        public ConfigurationDictionary Settings
+        {
+            get {
+            	if (settings == null)
+            		settings = new ConfigurationDictionary();
+            	return settings; }
+            set { settings = value; }
         }
         #endregion
         

@@ -35,7 +35,7 @@
     {
         OperationManager.StartOperation("EditAccount", FormView);
 
-        DataForm.DataSource = UserFactory.GetUserByUsername(My.Username);
+        DataForm.DataSource = UserFactory.Current.GetUserByUsername(My.Username);
 
         DataForm.DataBind();
         FormView.DataBind();
@@ -46,8 +46,9 @@
         if (IsValid)
         {
             // Get a fresh copy of the user object
-            User user = UserFactory.GetUserByUsername(My.Username);
+            User user = UserFactory.Current.GetUserByUsername(My.Username);
 
+			string originalUsername = user.Username;
             string originalPassword = user.Password;
          
             // Reverse-bind the data
@@ -59,10 +60,14 @@
                 user.Password = Crypter.EncryptPassword(user.Password);
 
             // Update the user object
-            if (UserFactory.UpdateUser(user))
+            if (UserFactory.Current.UpdateUser(user))
             {
                 // Display the result to the user
                 Result.Display(Resources.Language.AccountUpdated);
+                
+	            // If the user changed their own username they need to sign in again
+	            if (!originalUsername.Equals(user.Username))
+	            	Response.Redirect("Logout.aspx");
 
                 // Show the index again
                 ViewAccount();

@@ -7,34 +7,34 @@ namespace SoftwareMonkeys.SiteStarter.Entities
     /// <summary>
     /// Defines the interface for a user role in the application.
     /// </summary>
-    public struct UserPermission
+    public class UserPermission : BaseEntity, IUserPermission
     {
         private string verb;
-	/// <summary>
-	/// Gets/sets the verb that the permission applies to.
-	/// </summary>
-	public string Verb
-	{
-		get
+		/// <summary>
+		/// Gets/sets the verb that the permission applies to.
+		/// </summary>
+		public string Verb
 		{
-			return verb;
+			get
+			{
+				return verb;
+			}
+			set
+			{
+				verb = value;
+			}
 		}
-		set
+	
+		private string entityType;
+		/// <summary>
+		/// Gets/sets the entity type that the permission applies to.
+		public string EntityType
 		{
-			verb = value;
+			get
+			{
+				return entityType;
+			}
+			set { entityType = value; }
 		}
-	}
-
-	private Type entityType;
-	/// <summary>
-	/// Gets/sets the entity type that the permission applies to.
-	public Type EntityType
-	{
-		get
-		{
-			return entityType;
-		}
-		set { entityType = value; }
-	}
     }
 }

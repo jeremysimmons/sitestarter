@@ -20,6 +20,11 @@ namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
        //     get { return System.Configuration.ConfigurationSettings.AppSettings["ApplicationPath"]; }
             get { return SoftwareMonkeys.SiteStarter.Configuration.Config.Application.PhysicalPath; }
         }
+        
+        public ConfigTests()
+        {
+            //Config.Initialize(ApplicationPath, "");
+        }
 
         #region Singleton tests
         [Test]

@@ -30,11 +30,11 @@
   <ItemGroup>
     <Reference Include="Db4objects.Db4o, Version=7.2.44.10827, Culture=neutral, PublicKeyToken=6199cd4f203aa8eb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\Db4objects.Db4o.dll</HintPath>
+      <HintPath>..\..\..\Lib\Db4objects.Db4o.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=1.0.0.505, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\NLog.dll</HintPath>
+      <HintPath>..\..\..\Lib\NLog.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=2.2.9.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -49,6 +49,10 @@
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration\SiteStarter.Configuration.csproj">
       <Project>{4B83307F-8307-43EF-A176-8AB1CDA78264}</Project>
       <Name>SiteStarter.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Contracts\SiteStarter.Contracts.csproj">
+      <Project>737DFD8E-BF43-4BA9-ABE6-25B2DC21800F</Project>
+      <Name>SiteStarter.Contracts</Name>
     </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Data\SiteStarter.Data.csproj">
       <Project>{0D77AB54-E3BE-4B29-8750-91F16BC3DEDB}</Project>
@@ -66,9 +70,16 @@
       <Project>{F294B839-0C1E-4187-AA58-6EA1C35E6B66}</Project>
       <Name>SiteStarter.Business</Name>
     </ProjectReference>
+    <Compile Include="DataProviderTests.cs" />
+    <Compile Include="DataStoreTests.cs" />
+    <Compile Include="Entities\ITestRole.cs" />
+    <Compile Include="Entities\ITestUser.cs" />
+    <Compile Include="Entities\TestRole.cs" />
+    <Compile Include="Entities\TestUser.cs" />
+    <Compile Include="Entities\ITestArticle.cs" />
+    <Compile Include="TestUtilities.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataTests.cs" />
     <Compile Include="DataUtilitiesTests.cs" />
     <Compile Include="Entities\EntityFour.cs" />
     <Compile Include="Entities\EntityThree.cs" />
@@ -80,9 +91,6 @@
     <Compile Include="Entities\TestCategory.cs" />
     <Compile Include="Entities\TestSample.cs" />
     <Compile Include="TestConfig.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

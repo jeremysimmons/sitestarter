@@ -75,7 +75,37 @@ namespace SoftwareMonkeys.SiteStarter.Entities
             get { return mirrorName; }
             set { mirrorName = value; }
         }
-
+        
+        /*private Type mirrorType;
+        /// <summary>
+        /// Gets/sets the type of the mirror propery.
+        /// </summary>
+        public Type MirrorType
+        {
+            get { return mirrorType; }
+            set { mirrorType = value; }
+        }*/
+        
+                
+        private string referenceTypeName = String.Empty;
+        /// <summary>
+        /// Gets/sets the short name of the mirror type.
+        /// </summary>
+        public string ReferenceTypeName
+        {
+            get { return referenceTypeName; }
+            set { referenceTypeName = value; }
+        }
+        
+        private Type entitiesPropertyType;
+        /// <summary>
+        /// Gets/sets the entities property type.
+        /// </summary>
+        public Type EntitiesPropertyType
+        {
+            get { return entitiesPropertyType; }
+            set { entitiesPropertyType = value; }
+        }
 
         public BaseEntityReferenceAttribute()
         {

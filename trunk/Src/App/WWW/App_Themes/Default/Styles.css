@@ -7,7 +7,7 @@
 /* Template */
 .PageHeader
 {
-	border-bottom: dashed 1px gray;
+	border-bottom: dotted 1px gray;
 }
 
 .PageHeaderText
@@ -26,7 +26,7 @@
 {
 	width: 5%;
 	vertical-align: top;
-	border-right: dashed 1px gray;
+	border-right: dotted 1px gray;
 }
 
 .Column UL

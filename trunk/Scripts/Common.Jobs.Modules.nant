@@ -56,6 +56,57 @@
 			</foreach>
 		</if>
   	</target>
+
+
+	  	<!-- Actions.InstallModuleWebFiles -->
+  	<target name="Common.Jobs.InstallModuleWebFiles">
+  		<if test="${directory::exists(Solution.RootPath + '\Modules')}">
+	  	  		<foreach item="Folder" in="${Solution.RootPath}\Modules"  property="currentModule">
+	  	  			<echo message="Copying module folder: ${currentModule}"/>
+	  	  			<echo message="To: ${Solution.RootPath}\WWW\Modules"/>
+	    		<in>
+	        		<items>
+	            		<exclude name="**/.svn/*" />
+	            		<exclude name="**/_svn/*" />
+	       		 	</items>
+	   		 	</in>
+	    		<do>
+				  	<copy todir="${Solution.RootPath}\WWW\Modules\${path::get-file-name(currentModule)}" overwrite="true">
+	    				<fileset basedir="${currentModule}/Web">
+	        				<include name="**/*.ascx" />
+	    				</fileset>
+					</copy>
+					
+					<property name="Module.ConfigPath" value="${Solution.RootPath}\WWW\Modules\${path::get-file-name(currentModule)}\Module.config"/>
+					
+					<!-- Get the flag indicating whether the module is "Enabled" -->
+					<if test="${file::exists(Module.ConfigPath)}">
+						<xmlpeek
+						    file="${Module.ConfigPath}"
+						    xpath="/Module/Enabled"
+						    property="Module.Enabled">
+			    		</xmlpeek>
+					</if>
+	
+					
+						<copy todir="${Solution.RootPath}\WWW\Modules\${path::get-file-name(currentModule)}" overwrite="true">
+		    				<fileset basedir="${currentModule}">
+		        				<include name="*.config" />
+		    				</fileset>
+						</copy>
+					
+					<if test="${property::exists('Module.Enabled') and file::exists(Module.ConfigPath)}">
+						<xmlpoke
+						    file="${Module.ConfigPath}"
+						    xpath="/Module/Enabled"
+						    value="${Module.Enabled}" />
+					</if>
+					
+				
+	    		</do>
+			</foreach>
+		</if>
+  	</target>
   	
   	<target name="Common.Jobs.ResetModules">
   		<if test="${directory::exists(Solution.RootPath + '\Modules')}">

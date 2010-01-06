@@ -15,43 +15,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
     /// </summary>
     public class Db4oPropertyFilter : PropertyFilter
     {
-        /*public override BaseEntity[] GetEntities(IDataStore dataStore)
-        {
-            Collection<BaseEntity> entities = null;
-            Db4oDataStore store = null;
-	
-            if (dataStore is Db4oDataStore)
-                store = (Db4oDataStore)dataStore;
-            else
-                throw new ArgumentException("The provided data store is not supported: " + dataStore.GetType().ToString());
-	
-            using (LogGroup logGroup = AppLogger.StartGroup("Using filter to retrieve entities.", NLog.LogLevel.Debug))
-            {
-	
-                AppLogger.Debug("Field Name: " + PropertyName);
-                AppLogger.Debug("Field Value: " + PropertyValue);
-	
-                AppLogger.Debug("The provided object is of type IQuery.");
-	
-                entities = new Collection<BaseEntity>(store.ObjectContainer.Query<BaseEntity>(delegate(BaseEntity entity)
-          {
-              return IsMatch(entity);
-	
-          }));
-	
-                AppLogger.Debug("Filter applied.");
-	           
-            }
-	
-            return (BaseEntity[])entities.ToArray();
-        }*/
-
-        /*public void Apply(IQuery query)
-        {
-            query.Descend(PropertyName).Constrain(PropertyValue).Equal();
-        }*/
-
-        public override bool IsMatch(BaseEntity entity)
+        public override bool IsMatch(IEntity entity)
         {
             bool isMatch = false;
 

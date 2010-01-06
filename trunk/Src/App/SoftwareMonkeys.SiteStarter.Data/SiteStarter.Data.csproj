@@ -30,7 +30,7 @@
   <ItemGroup>
     <Reference Include="NLog, Version=1.0.0.505, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\NLog.dll</HintPath>
+      <HintPath>..\..\..\Lib\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -40,19 +40,30 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="BaseFilter.cs" />
+    <Compile Include="DataUtilities.cs" />
+    <Compile Include="IDataFilterGroup.cs" />
+    <Compile Include="IDataFilter.cs" />
     <Compile Include="DataAccess.cs" />
     <Compile Include="DataProvider.cs" />
     <Compile Include="DataProviderCollection.cs" />
     <Compile Include="DataProviderConfiguration.cs" />
     <Compile Include="DataStoreCollection.cs" />
-    <Compile Include="DataUtilities.cs" />
     <Compile Include="FilterGroup.cs" />
     <Compile Include="FilterOperator.cs" />
-    <Compile Include="IDataServer.cs" />
     <Compile Include="IDataStore.cs" />
     <Compile Include="PropertyFilter.cs" />
+    <Compile Include="ReferenceFilter.cs" />
+    <Compile Include="XmlHelper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration\SiteStarter.Configuration.csproj">
+      <Project>{4B83307F-8307-43EF-A176-8AB1CDA78264}</Project>
+      <Name>SiteStarter.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Contracts\SiteStarter.Contracts.csproj">
+      <Project>737DFD8E-BF43-4BA9-ABE6-25B2DC21800F</Project>
+      <Name>SiteStarter.Contracts</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Diagnostics\SiteStarter.Diagnostics.csproj">
       <Project>{C3626F0A-DFD4-4EF2-8755-3532DE3712A4}</Project>
       <Name>SiteStarter.Diagnostics</Name>

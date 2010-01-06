@@ -23,8 +23,7 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
         }
 
         private TestCategory[] categories;
-        [EntityReferences(ExcludeFromDataStore=true,
-            IDsPropertyName="CategoryIDs")]
+        [Reference]
         public TestCategory[] Categories
         {
             get { return categories; }
@@ -32,9 +31,7 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
         }
 
         private TestArticlePage[] pages;
-        [EntityReferences(CascadeDelete=true,
-            CascadeSave=true,
-            MirrorName="Article")]
+        [Reference]
         public TestArticlePage[] Pages
         {
             get { return pages; }
@@ -49,7 +46,7 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
         }*/
 
         private TestSample[] samples;
-        [EntityReferences(MirrorName="Articles")]
+        [Reference]
         public TestSample[] Samples
         {
             get { return samples; }

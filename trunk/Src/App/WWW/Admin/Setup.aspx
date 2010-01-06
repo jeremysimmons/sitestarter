@@ -14,15 +14,15 @@ private void Page_Load(object sender, EventArgs e)
     
 			User user = new User();
             user.ID = Guid.NewGuid();
-            user.FirstName = "Joe";
-			user.LastName = "Bloggs";
-			user.Username = "test";
+            user.FirstName = "Default";
+			user.LastName = "Administrator";
+			user.Username = "admin";
             user.Password = SoftwareMonkeys.SiteStarter.Business.Crypter.EncryptPassword("pass");
             user.IsApproved = true;
             user.IsLockedOut = false;
 			user.Email = "test@softwaremonkeys.net";
 
-			SoftwareMonkeys.SiteStarter.Configuration.IAppConfig config = new SoftwareMonkeys.SiteStarter.Configuration.AppConfig();
+			AppConfig config = new AppConfig();
 			config.ApplicationPath = Request.ApplicationPath;
 			//config.ApplicationUrl = Request.Url.ToString().ToLower().Replace("/setup.aspx", "");
 			config.PhysicalPath = Request.PhysicalApplicationPath;
@@ -30,35 +30,39 @@ private void Page_Load(object sender, EventArgs e)
             config.EnableVirtualServer = true;
             config.EnableVirtualServerRegistration = true;
             config.AutoApproveVirtualServerRegistration = true;
-			//config.BackupDirectory = "Backup";
-			//config.DataDirectory = "Data";
-		//	config.FriendlyDateFormat = "D";
-		//	config.HostingDirectory = "Hosted";
-		//	config.AttachmentDirectory = "Attachments";
-		//	config.PrimaryAdministrator = user;
-		//	config.ProjectID = new Guid("2b60aba5-db91-4af8-a5bf-e8ad948d50cd");
-		//	config.WorkHubID = new Guid("14bbbd37-51f6-4d82-a8f5-66fa737f4438");
-         //   config.WorkHubUrl = "http://www.softwaremonkeys.net/Hub";
-		//	config.WorkHubUsername = "WorkHubClient";
-		//	config.WorkHubPassword = "d8h3ns6gh";
-		//	config.WorkHubHostedUrl = "http://localhost/SoftwareMonkeys/WorkHub/Application/Web";
+            config.PrimaryAdministratorID = user.ID;
+            config.Settings["VirtualServerWelcomeEmailSubject"] = Resources.Language.DefaultVirtualServerWelcomeEmailSubject;
+            config.Settings["VirtualServerWelcomeEmail"] = Resources.Language.DefaultVirtualServerWelcomeEmail;
+            config.Settings["VirtualServerRegistrationAlertSubject"] = Resources.Language.DefaultVirtualServerRegistrationAlertSubject;
+            config.Settings["VirtualServerRegistrationAlert"] = Resources.Language.DefaultVirtualServerRegistrationAlert;
 	
 			//SoftwareMonkeys.SiteStarter.Web.Config.Current = config;
 
 			//config.Save();
 
             //Config.Application = config;
+            
 
-            ConfigFactory.SaveConfig(Request.MapPath(Request.ApplicationPath + "/App_Data"), (IConfig)config, WebUtilities.GetLocationVariation(Request.Url));
+            ConfigFactory<AppConfig>.SaveConfig(Request.MapPath(Request.ApplicationPath + "/App_Data"), config, WebUtilities.GetLocationVariation(Request.Url));
+            
+            SetupMappings();
 
             // Initialize everything now that the default config has been created
-            Config.Initialize(Server.MapPath(Request.ApplicationPath));
+            Config.Initialize(Server.MapPath(Request.ApplicationPath), WebUtilities.GetLocationVariation(HttpContext.Current.Request.Url));
             SoftwareMonkeys.SiteStarter.Web.Providers.DataProviderManager.Initialize();
 
 
-            SoftwareMonkeys.SiteStarter.Business.UserFactory.SaveUser(user);
+            if (!SoftwareMonkeys.SiteStarter.Business.UserFactory<User>.Current.SaveUser(user))
+            {
+            	user = (User)UserFactory<User>.Current.GetUserByUsername(user.Username);
+            	
+            	config.PrimaryAdministratorID = user.ID;
+            	
+            	ConfigFactory<AppConfig>.SaveConfig(Request.MapPath(Request.ApplicationPath + "/App_Data"), config, WebUtilities.GetLocationVariation(Request.Url));
+            }
 
-            if(!Roles.RoleExists("Administrator"))
+
+           if(!Roles.RoleExists("Administrator"))
                 Roles.CreateRole("Administrator");
 
             if (!Roles.IsUserInRole(user.Username, "Administrator"))
@@ -68,11 +72,40 @@ private void Page_Load(object sender, EventArgs e)
 
            // Response.Redirect("SetupDefaultData.aspx");
 }
+
+private void SetupMappings()
+{
+			if (Config.Mappings == null)
+				Config.Mappings = ConfigFactory<MappingConfig>.NewConfig("Mappings");
+	
+	SoftwareMonkeys.SiteStarter.Entities.User.RegisterType();
+	UserRole.RegisterType();
+	Keyword.RegisterType();
+/*	MappingItem userEntityItem = new MappingItem("IUser");
+	userEntityItem.Settings.Add("DataStoreName", "Users");
+	
+	config.AddItem(userEntityItem);
+	
+	MappingItem userRoleEntityItem = new MappingItem("IUserRole");
+	userRoleEntityItem.Settings.Add("DataStoreName", "UserRoles");
+	
+	config.AddItem(userRoleEntityItem);
+	
+	MappingItem keywordItem = new MappingItem("Keyword");
+	keywordItem.Settings.Add("DataStoreName", "Keywords");
+	
+	config.AddItem(keywordItem);
+	*/
+	
+	string path = Server.MapPath(Request.ApplicationPath + "/App_Data");
+	
+	ConfigFactory<MappingConfig>.SaveConfig(path, (MappingConfig)Config.Mappings);
+}
 </script>
 <asp:Content runat="server" ContentPlaceHolderID="Body">
 <div class="Heading1">Quick Setup</div>
 <p>
 Setup complete.</p>
-<p>Test user "Joe Bloggs" was created with username "test" and password "pass".
+<p>Test user "Default Administrator" was created with username "admin" and password "pass".
 </p>
 		</asp:Content>
