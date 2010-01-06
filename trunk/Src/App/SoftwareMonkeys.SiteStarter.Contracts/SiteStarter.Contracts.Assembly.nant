@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<project name="SiteStarter.Contracts.Assembly" xmlns="http://nant.sf.net/schemas/nant.xsd">
+  <!-- Global Properties -->
+  		<property name="Assembly.Name" value="SiteStarter.Contracts" />
+	    <property name="Assembly.BaseNamespace" value="SoftwareMonkeys.SiteStarter" />
+	  <property name="Assembly.AssemblyName" value="${Assembly.BaseNamespace}.Contracts.dll" />
+</project>
