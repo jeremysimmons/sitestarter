@@ -113,7 +113,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				{
 					if (fieldID != String.Empty)
 					{
-						Control control = WebUtilities.FindControlRecursive(Page, fieldID);
+						Control control = WebControlUtilities.FindControlRecursive(Page, fieldID);
 						if (control == null)
 							throw new Exception("No control found with ID of '" + fieldID + "'.");
 						string clientID = control.ClientID;
@@ -150,7 +150,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		{
 			//string url = CreateNavigateUrl();
 			
-			string text = (string)WebControlUtilities.GetFieldValue(WebUtilities.FindControlRecursive(Page,TextControlID), "Text", typeof(String));
+			string text = (string)WebControlUtilities.GetFieldValue(WebControlUtilities.FindControlRecursive(Page,TextControlID), "Text", typeof(String));
 			
 			StringBuilder builder = new StringBuilder();
 			

@@ -132,7 +132,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		
 		private void RegisterScript()
 		{
-			string selectClientID = WebUtilities.FindControlRecursive(Page,EntitySelectControlID).ClientID;
+			string selectClientID = WebControlUtilities.FindControlRecursive(Page,EntitySelectControlID).ClientID;
 			
 			string url = CreateNavigateUrl();
 			
@@ -145,7 +145,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			
 			foreach (string key in transferData.Keys)
 			{
-				Control control = WebUtilities.FindControlRecursive(Page,transferData[key]);
+				Control control = WebControlUtilities.FindControlRecursive(Page,transferData[key]);
 				if (control == null)
 					throw new Exception("No control found with ID of '" + transferData[key] + "'.");
 				string clientID = control.ClientID;
