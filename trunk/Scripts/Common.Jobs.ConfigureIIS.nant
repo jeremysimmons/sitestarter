@@ -16,7 +16,7 @@
 
 		<cd dir="${Solution.RootPath}\WWW"/>
 
-		<mkiisdir dirpath="${Solution.RootPath}\WWW" vdirname="${Project.VirtualDirectoryName}" appfriendlyname="${Project.VirtualDirectoryName}" verbose="true" />
+		<mkiisdir dirpath="${Solution.RootPath}\WWW" vdirname="${Solution.VirtualDirectoryName}" appfriendlyname="${Solution.VirtualDirectoryName}" verbose="true" />
 	</target>
      
 </project>
