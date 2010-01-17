@@ -99,7 +99,7 @@ private void SetupMappings()
 	
 	string path = Server.MapPath(Request.ApplicationPath + "/App_Data");
 	
-	ConfigFactory<MappingConfig>.SaveConfig(path, (MappingConfig)Config.Mappings);
+	ConfigFactory<MappingConfig>.SaveConfig(path, (MappingConfig)Config.Mappings, WebUtilities.GetLocationVariation(Request.Url));
 }
 </script>
 <asp:Content runat="server" ContentPlaceHolderID="Body">
