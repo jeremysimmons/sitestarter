@@ -107,21 +107,33 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 
 		public void OpenServer()
 		{
-			Db4oFactory.Configure().ActivationDepth(2);
-			
-			string fileName = Name;
-
-			string prefix = (string)StateAccess.State.GetSession("VirtualServerID");
-			if (prefix != null && prefix != String.Empty && prefix != Guid.Empty.ToString())
+			using (LogGroup logGroup = AppLogger.StartGroup("Opening data server.", NLog.LogLevel.Info))
 			{
-				fileName = @"VS\" + prefix + @"\" + fileName;
-			}
+				Db4oFactory.Configure().ActivationDepth(2);
+				
+				string fileName = Name;
+				
+				AppLogger.Info("Store name: " + Name);
 
-			string fullName = Config.Application.PhysicalPath + @"\App_Data\" + fileName + ".yap";
-			if (!Directory.Exists(Path.GetDirectoryName(fullName)))
-				Directory.CreateDirectory(Path.GetDirectoryName(fullName));
-			ObjectServer = Db4oFactory.OpenServer(fullName, 0);
-			//objectContainer = ObjectServer.OpenClient();
+					string prefix = (string)StateAccess.State.GetSession("VirtualServerID");
+				if (prefix != null && prefix != String.Empty && prefix != Guid.Empty.ToString())
+				{
+					fileName = @"VS\" + prefix + @"\" + fileName;
+				}
+
+				string fullName = Config.Application.PhysicalPath + @"\App_Data\" + fileName + ".yap";
+				
+				
+				AppLogger.Info("Full file name: " + fullName);
+				
+				if (!Directory.Exists(Path.GetDirectoryName(fullName)))
+					Directory.CreateDirectory(Path.GetDirectoryName(fullName));
+				
+				ObjectServer = Db4oFactory.OpenServer(fullName, 0);
+				
+				AppLogger.Info("Server opened");
+				//objectContainer = ObjectServer.OpenClient();
+			}
 		}
 		
 		public void Open()
@@ -130,19 +142,29 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		
 		public void OpenContainer()
 		{
-			string fileName = Name;
-
-			string prefix = (string)StateAccess.State.GetSession("VirtualServerID");
-			if (prefix != null && prefix != String.Empty && prefix != Guid.Empty.ToString())
+			using (LogGroup logGroup = AppLogger.StartGroup("Opening data container.", NLog.LogLevel.Info))
 			{
-				fileName = @"VS\" + prefix + @"\" + fileName;
-			}
+				string fileName = Name;
+				
+				AppLogger.Info("Name: " + Name);
 
-			string fullName = Config.Application.PhysicalPath + @"\App_Data\" + fileName + ".yap";
-			if (!Directory.Exists(Path.GetDirectoryName(fullName)))
-				Directory.CreateDirectory(Path.GetDirectoryName(fullName));
-			//ObjectServer = Db4oFactory.OpenServer(fullName, 0);
-			ObjectContainer = ObjectServer.OpenClient();//Db4oFactory.OpenFile(fullName);
+				string prefix = (string)StateAccess.State.GetSession("VirtualServerID");
+				if (prefix != null && prefix != String.Empty && prefix != Guid.Empty.ToString())
+				{
+					fileName = @"VS\" + prefix + @"\" + fileName;
+				}
+
+				string fullName = Config.Application.PhysicalPath + @"\App_Data\" + fileName + ".yap";
+				
+				AppLogger.Info("Full file name: " + fullName);
+				
+				if (!Directory.Exists(Path.GetDirectoryName(fullName)))
+					Directory.CreateDirectory(Path.GetDirectoryName(fullName));
+				//ObjectServer = Db4oFactory.OpenServer(fullName, 0);
+				ObjectContainer = ObjectServer.OpenClient();//Db4oFactory.OpenFile(fullName);
+				
+				AppLogger.Info("Container opened");
+			}
 		}
 
 		public void Dispose()
@@ -204,36 +226,51 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		
 		public void Save(IEntity entity)
 		{
-			IEntity[] toUpdate = new IEntity[]{};
-			IEntity[] toDelete = new IEntity[]{};
-			
-			// Clone the entity, but do it in reverse so the data store is dealing with the bound instance.
-			// The entity needs to be cloned so that the one currently in memory doesn't reflect the preparations applied before saving/updating.
-			IEntity clonedEntity = entity;
-			entity = clonedEntity.Clone();
-			
-			PreSave(clonedEntity, out toUpdate, out toDelete);
-
-			// Update any entities that were modified (eg. references)
-			foreach (IEntity entityToUpdate in toUpdate)
+			using (LogGroup logGroup = AppLogger.StartGroup("Saving entity.", NLog.LogLevel.Debug))
 			{
-				DataAccess.Data.Stores[entityToUpdate].Update((IEntity)entityToUpdate);
-			}
-			
-			// Not necessary for saving
-			// Delete any entities that are obsolete (eg. references)
-			//foreach (IEntity entityToDelete in toDelete)
-			//{
-			//	DataAccess.Data.Stores[entityToDelete].Delete((IEntity)entityToDelete);
-			//}
-
-
-			if (clonedEntity != null)
-			{
+				if (entity == null)
+					throw new ArgumentNullException("entity");
 				
-				// Save the entity
-				ObjectContainer.Store(clonedEntity);
-				ObjectContainer.Commit();
+				AppLogger.Debug("Entity type: " + entity.GetType().ToString());
+				AppLogger.Debug("Entity ID: " + entity.ID.ToString());
+				
+				IEntity[] toUpdate = new IEntity[]{};
+				IEntity[] toDelete = new IEntity[]{};
+				
+				// Clone the entity, but do it in reverse so the data store is dealing with the bound instance.
+				// The entity needs to be cloned so that the one currently in memory doesn't reflect the preparations applied before saving/updating.
+				IEntity clonedEntity = entity;
+				entity = clonedEntity.Clone();
+				
+				PreSave(clonedEntity, out toUpdate, out toDelete);
+
+				// Update any entities that were modified (eg. references)
+				foreach (IEntity entityToUpdate in toUpdate)
+				{
+					DataAccess.Data.Stores[entityToUpdate].Update((IEntity)entityToUpdate);
+				}
+				
+				// Not necessary for saving
+				// Delete any entities that are obsolete (eg. references)
+				//foreach (IEntity entityToDelete in toDelete)
+				//{
+				//	DataAccess.Data.Stores[entityToDelete].Delete((IEntity)entityToDelete);
+				//}
+
+
+				if (clonedEntity != null)
+				{
+					// Save the entity
+					ObjectContainer.Store(clonedEntity);
+					ObjectContainer.Commit();
+					
+					AppLogger.Debug("Entity stored in '" + Name + "' store.");
+				}
+				else
+				{
+					AppLogger.Debug("Cloned entity == null. Not stored.");
+					
+				}
 			}
 		}
 
@@ -259,9 +296,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					{
 						DataAccess.Data.ActivateReference((EntityReference)reference);
 						
-						AppLogger.Debug("Reference type #1: " + reference.TypeName1);
+						AppLogger.Debug("Reference type #1: " + reference.Type1Name);
 						AppLogger.Debug("Reference ID #1: " + reference.Entity1ID.ToString());
-						AppLogger.Debug("Reference type #2: " + reference.TypeName2);
+						AppLogger.Debug("Reference type #2: " + reference.Type2Name);
 						AppLogger.Debug("Reference ID #2: " + reference.Entity2ID.ToString());
 						
 						toDelete.Add(reference);
@@ -274,9 +311,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				{
 					foreach (EntityIDReference reference in latestReferences)
 					{
-						AppLogger.Debug("Reference type #1: " + reference.TypeName1);
+						AppLogger.Debug("Reference type #1: " + reference.Type1Name);
 						AppLogger.Debug("Reference ID #1: " + reference.Entity1ID.ToString());
-						AppLogger.Debug("Reference type #2: " + reference.TypeName2);
+						AppLogger.Debug("Reference type #2: " + reference.Type2Name);
 						AppLogger.Debug("Reference ID #2: " + reference.Entity2ID.ToString());
 						
 						Data.DataAccess.Data.ActivateReference((EntityReference)reference);

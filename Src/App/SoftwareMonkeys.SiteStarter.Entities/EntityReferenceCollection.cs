@@ -77,8 +77,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 						reference.Property1Name = sourcePropertyName;
 						reference.Property2Name = referencedPropertyName;
 						
-						reference.TypeName1 = sourceEntity.ShortTypeName;
-						reference.TypeName2 = referencedEntity.ShortTypeName;
+						reference.Type1Name = sourceEntity.ShortTypeName;
+						reference.Type2Name = referencedEntity.ShortTypeName;
 						
 						Add(reference);
 					}

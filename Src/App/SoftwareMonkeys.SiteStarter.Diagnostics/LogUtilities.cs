@@ -14,6 +14,9 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		
 		static public void AnalyzeLog(string dir)
 		{
+			if (dir == null)
+				throw new ArgumentNullException("dir");
+			
 			string file = dir.TrimEnd('\\') + @"\FinalizedLog.xml";
 			string indexFile = dir.TrimEnd('\\') + @"\Detail\Index.xml";
 			
@@ -33,13 +36,19 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 				XmlNodeList nodeList;
 				XmlNode root = doc.DocumentElement;
 				
+				if (root == null)
+					throw new Exception("Document element missing.");
+				
 				//	throw new Exception("sdf" + root.Name);
 
 				nodeList=root.SelectNodes("Entry");
 				
+				if (nodeList == null)
+					throw new Exception("No 'Entry' nodes found.");
+				
 				XmlNode threadRoot = null;
 				
-				XmlDocument threadDoc = null;
+				XmlDocument threadDoc = CreateNewThread();
 				XmlDocument previousThreadDoc = null;
 				
 				
@@ -57,8 +66,12 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 				//Change the price on the books.
 				foreach (XmlNode node in nodeList)
 				{
+					XmlNode indentNode = node.SelectSingleNode("Indent");
+					if (indentNode == null)
+						throw new Exception("Indent node not found.");
 					
-					int indent = Convert.ToInt32(node.SelectSingleNode("Indent").InnerText);
+					
+					int indent = Convert.ToInt32(indentNode.InnerText);
 					
 					// If this is the thread root then move it to a new thread
 					if (indent == 0)
@@ -76,9 +89,19 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 						previousThreadDoc = threadDoc;
 						previousThreadTitle = threadTitle;
 						
+						XmlNode componentNode = node.SelectSingleNode("Component");
+						
+						if (componentNode == null)
+							throw new Exception("No component node found.");
+						
+						XmlNode methodNode = node.SelectSingleNode("Method");
+						
+						if (methodNode == null)
+							throw new Exception("No method node found.");
+						
 						// Create the title of the new thread
-						string componentName = node.SelectSingleNode("Component").InnerText;
-						string methodName = node.SelectSingleNode("Method").InnerText;
+						string componentName = componentNode.InnerText;
+						string methodName = methodNode.InnerText;
 						//string nextTimeStampString = node.SelectSingleNode("Timestamp").InnerText;
 						
 						threadTitle = componentName + "." + methodName;
@@ -91,8 +114,15 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 					//{
 					
 					//}
+					if (threadDoc == null)
+						throw new Exception("Thread doc == null");
 					
-					threadDoc.DocumentElement.AppendChild(threadDoc.ImportNode(node, true));
+					threadRoot = threadDoc.DocumentElement;
+					
+					if (threadRoot == null)
+						throw new Exception("Thread root node is null");
+					
+					threadRoot.AppendChild(threadDoc.ImportNode(node, true));
 					
 					//throw new Exception(indent.ToString());
 				}
@@ -104,6 +134,9 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 					AddThreadToIndex(indexDoc, threadID, threadTitle);
 				}
 				//}
+				
+				if (indexDoc == null)
+					throw new Exception("Index doc == null");
 				
 				indexDoc.Save(indexFile);
 			}

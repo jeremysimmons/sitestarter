@@ -782,6 +782,29 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		}
 		#endregion
 		
+		[Test]
+		public void Test_Save_EntityIDReference()
+		{
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing saving of an EntityIDReference.", NLog.LogLevel.Debug))
+			{
+				EntityIDReference reference = new EntityIDReference();
+				reference.ID = Guid.NewGuid();
+				reference.Type1Name = "Type1";
+				reference.Type2Name = "Type2";
+				reference.Entity1ID = Guid.NewGuid();
+				reference.Entity2ID = Guid.NewGuid();
+				reference.Property1Name = "TestProperty1";
+				reference.Property2Name = "TestProperty2";
+				
+				DataAccess.Data.Save(reference);
+				
+				IDataStore store = DataAccess.Data.Stores["Type1-Type2"];
+				
+				Assert.IsNotNull(store, "The data store wasn't created/initialized.");
+			}
+		}
+		
 		/*[Test]
 		public void Test_GetEntity_Generic_SingleParameter()
 		{

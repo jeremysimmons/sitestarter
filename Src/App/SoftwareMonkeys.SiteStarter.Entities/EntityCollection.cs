@@ -681,6 +681,20 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			}
 			return (E[])list.ToArray();
 		}
+		
+		/// <summary>
+		/// Removes the provided item from the provided array.
+		/// </summary>
+		/// <param name="collection">The array of items.</param>
+		/// <param name="newItem">The index of the item to remove..</param>
+		/// <returns>An array containing the all the provided items.</returns>
+		static public E[] Remove(E[] items, E item)
+		{
+			List<E> list = new List<E>(items);
+			list.Remove(item);
+			
+			return (E[])list.ToArray();
+		}
 
 		/*static public E[] ConvertAll(IEntity[] entities)
         {

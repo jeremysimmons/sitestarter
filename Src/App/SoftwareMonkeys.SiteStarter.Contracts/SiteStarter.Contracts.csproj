@@ -43,8 +43,6 @@
     <Compile Include="Configuration\IAppConfig.cs" />
     <Compile Include="Configuration\IConfig.cs" />
     <Compile Include="Configuration\IConfigurationDictionary.cs" />
-    <Compile Include="Configuration\IMappingConfig.cs" />
-    <Compile Include="Configuration\IMappingItem.cs" />
     <Compile Include="Configuration\IVirtualServerConfig.cs" />
     <Compile Include="Entities\ICollection[E].cs" />
     <Compile Include="Entities\IEntity.cs" />

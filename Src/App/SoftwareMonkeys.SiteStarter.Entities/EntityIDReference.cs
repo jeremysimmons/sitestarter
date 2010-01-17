@@ -61,18 +61,18 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			set { typeNames = value; }
 		}*/
 		
-		private string typeName1;
-		public string TypeName1
+		private string type1Name;
+		public string Type1Name
 		{
-			get { return typeName1; }
-			set { typeName1 = value; }
+			get { return type1Name; }
+			set { type1Name = value; }
 		}
 		
-		private string typeName2;
-		public string TypeName2
+		private string type2Name;
+		public string Type2Name
 		{
-			get { return typeName2; }
-			set { typeName2 = value; }
+			get { return type2Name; }
+			set { type2Name = value; }
 		}
 		
 		public EntityIDReference()
@@ -122,12 +122,12 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				AppLogger.Debug("Provided entity ID: " + entity.ID.ToString());
 				AppLogger.Debug("Reference entity 1 ID: " + Entity1ID.ToString());
 				AppLogger.Debug("Reference entity 2 ID: " + Entity2ID.ToString());
-				AppLogger.Debug("Reference entity type name 1: " + TypeName1);
-				AppLogger.Debug("Reference entity type name 2: " + TypeName2);
+				AppLogger.Debug("Reference entity type name 1: " + Type1Name);
+				AppLogger.Debug("Reference entity type name 2: " + Type2Name);
 				
 				
-				flag = (entity.ID.Equals(Entity1ID) && entity.ShortTypeName.Equals(TypeName1))
-					|| (entity.ID.Equals(Entity2ID) && entity.ShortTypeName.Equals(TypeName2));
+				flag = (entity.ID.Equals(Entity1ID) && entity.ShortTypeName.Equals(Type1Name))
+					|| (entity.ID.Equals(Entity2ID) && entity.ShortTypeName.Equals(Type2Name));
 				
 				AppLogger.Debug("Entity is included in reference: " + flag.ToString());
 			}
@@ -156,8 +156,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				AppLogger.Debug("Reference entity 2 ID: " + Entity2ID.ToString());
 				AppLogger.Debug("Reference property 1: " + Property1Name.ToString());
 				AppLogger.Debug("Reference property 2: " + Property2Name.ToString());
-				AppLogger.Debug("Reference entity type name 1: " + TypeName1);
-				AppLogger.Debug("Reference entity type name 2: " + TypeName2);
+				AppLogger.Debug("Reference entity type name 1: " + Type1Name);
+				AppLogger.Debug("Reference entity type name 2: " + Type2Name);
 				
 				
 				flag = (id.Equals(Entity1ID) && propertyName.Equals(Property1Name))
@@ -234,14 +234,14 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 					throw new ArgumentNullException("entity");
 				
 				AppLogger.Debug("Existing target Entity type: " + entity.GetType().ToString());
-				AppLogger.Debug("Existing source entity type: " + TypeName1);
-				AppLogger.Debug("Existing reference entity type: " + TypeName2);
+				AppLogger.Debug("Existing source entity type: " + Type1Name);
+				AppLogger.Debug("Existing reference entity type: " + Type2Name);
 				AppLogger.Debug("Existing source entity ID: " + Entity1ID.ToString());
 				AppLogger.Debug("Existing reference entity ID: " + Entity2ID.ToString());
 				AppLogger.Debug("Existing source property name: " + Property1Name.ToString());
 				AppLogger.Debug("Existing reference property name: " + Property2Name.ToString());
 				
-				if (EntitiesUtilities.MatchAlias(entity.GetType().Name, TypeName1))
+				if (EntitiesUtilities.MatchAlias(entity.GetType().Name, Type1Name))
 				{
 					AppLogger.Debug("The reference is already suited for the specified entity. No need to switch.");
 					
@@ -254,8 +254,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 					Guid entity1ID = Entity1ID;
 					Guid entity2ID = Entity2ID;
 					
-					string typeName1 = TypeName1;
-					string typeName2 = TypeName2;
+					string type1Name = Type1Name;
+					string type2Name = Type2Name;
 					
 					string property1Name = Property1Name;
 					string property2Name = Property2Name;
@@ -263,8 +263,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 					this.Entity1ID = entity2ID;
 					this.Entity2ID = entity1ID;
 					
-					this.TypeName1 = typeName2;
-					this.TypeName2 = typeName1;
+					this.Type1Name = type2Name;
+					this.Type2Name = type1Name;
 					
 					this.Property1Name = property2Name;
 					this.Property2Name = property1Name;

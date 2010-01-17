@@ -26,7 +26,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 		{
 			if (configPath.ToLower().IndexOf(".config") == -1)
 				configPath = CreateConfigPath(configPath, name, variation);
-			
+						
 			T config = default(T);
 			
 			using (LogGroup logGroup = AppLogger.StartGroup("Loading configuration file: " + configPath))
@@ -34,6 +34,8 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 
 				if (!File.Exists(configPath))
 				{
+					// Exception not needed
+					//throw new Exception("Configuration file not found: " + configPath);
 					AppLogger.Debug("Configuration file not found.");
 					return default(T);
 				}
@@ -206,7 +208,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 
 			// Add the file extension to the end
 			path += ".config";
-
+			
 			// Return the file path
 			return path;
 		}

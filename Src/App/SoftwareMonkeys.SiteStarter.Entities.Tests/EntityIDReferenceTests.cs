@@ -41,8 +41,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 			EntityIDReference reference = new EntityIDReference();
 			reference.Entity1ID = id1;
 			reference.Entity2ID = id2;
-			reference.TypeName1 = type1;
-			reference.TypeName2 = type2;
+			reference.Type1Name = type1;
+			reference.Type2Name = type2;
 			reference.Property1Name = propertyName1;
 			reference.Property2Name = propertyName2;
 			
@@ -70,8 +70,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 			EntityIDReference reference = new EntityIDReference();
 			reference.Entity1ID = id1;
 			reference.Entity2ID = id2;
-			reference.TypeName1 = type1;
-			reference.TypeName2 = type2;
+			reference.Type1Name = type1;
+			reference.Type2Name = type2;
 			reference.Property1Name = propertyName1;
 			reference.Property2Name = propertyName2;
 			
@@ -98,8 +98,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 			EntityIDReference reference = new EntityIDReference();
 			reference.Entity1ID = user.ID;
 			reference.Entity2ID = role.ID;
-			reference.TypeName1 = user.ShortTypeName;
-			reference.TypeName2 = role.ShortTypeName;
+			reference.Type1Name = user.ShortTypeName;
+			reference.Type2Name = role.ShortTypeName;
 			reference.Property1Name = "Roles"; // ie. user.Roles
 			reference.Property2Name = "Users"; // ie. role.Users
 			
@@ -107,8 +107,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 						
 			Assert.AreEqual(switchedReference.Entity1ID, role.ID, "The IDs of entity 1 weren't switched.");
 			Assert.AreEqual(switchedReference.Entity2ID, user.ID, "The IDs of entity 2 weren't switched.");
-			Assert.AreEqual(switchedReference.TypeName1, role.ShortTypeName, "The type names of entity 1 weren't switched.");
-			Assert.AreEqual(switchedReference.TypeName2, user.ShortTypeName, "The type names of entity 2 weren't switched.");
+			Assert.AreEqual(switchedReference.Type1Name, role.ShortTypeName, "The type names of entity 1 weren't switched.");
+			Assert.AreEqual(switchedReference.Type2Name, user.ShortTypeName, "The type names of entity 2 weren't switched.");
 			Assert.AreEqual(switchedReference.Property1Name,
 			              "Users", // ie. role.Users
 			              "The property names of entity 1 weren't switched.");

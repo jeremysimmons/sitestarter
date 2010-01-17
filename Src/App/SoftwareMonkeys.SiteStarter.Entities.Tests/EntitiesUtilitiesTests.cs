@@ -186,8 +186,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 				Assert.AreEqual(goal.ID, references[0].Entity1ID, "The entity 1 ID wasn't set correctly.");
 				Assert.AreEqual(goal2.ID, references[0].Entity2ID, "The entity 2 ID wasn't set correctly.");
 				
-				Assert.AreEqual("TestGoal", references[0].TypeName1, "The type name 1 wasn't set correctly.");
-				Assert.AreEqual("TestGoal", references[0].TypeName2, "The type name 2 wasn't set correctly.");
+				Assert.AreEqual("TestGoal", references[0].Type1Name, "The type name 1 wasn't set correctly.");
+				Assert.AreEqual("TestGoal", references[0].Type2Name, "The type name 2 wasn't set correctly.");
 				
 				Assert.AreEqual("Prerequisites", references[0].Property1Name, "The property 1 name wasn't set correctly.");
 				Assert.AreEqual(String.Empty, references[0].Property2Name, "The property 2 name wasn't set correctly.");
@@ -218,8 +218,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 				Assert.AreEqual(user.ID, references[0].Entity1ID, "The entity 1 ID wasn't set correctly.");
 				Assert.AreEqual(role.ID, references[0].Entity2ID, "The entity 2 ID wasn't set correctly.");
 				
-				Assert.AreEqual("TestUser", references[0].TypeName1, "The type name 1 wasn't set correctly.");
-				Assert.AreEqual("TestRole", references[0].TypeName2, "The type name 2 wasn't set correctly.");
+				Assert.AreEqual("TestUser", references[0].Type1Name, "The type name 1 wasn't set correctly.");
+				Assert.AreEqual("TestRole", references[0].Type2Name, "The type name 2 wasn't set correctly.");
 				
 				Assert.AreEqual("Roles", references[0].Property1Name, "The property 1 name wasn't set correctly.");
 				Assert.AreEqual("Users", references[0].Property2Name, "The property 2 name wasn't set correctly.");

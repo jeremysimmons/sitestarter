@@ -29,17 +29,33 @@ namespace SoftwareMonkeys.SiteStarter.Entities
             }
         }
 
-        private IUserPermission[] permissions;
+       /* private UserPermission[] permioss;
+        /// <summary>
+        /// Gets/sets the users to this role.
+        /// </summary>
+        [Reference]
+        public User[] Users
+        {
+            get {
+        		if (users == null)
+        			users = new User[]{};
+        		return users; }
+            set
+            {
+            	users = value;//(EntityReferenceCollection<IUserRole, IUser>)value.SwitchFor(this);
+            }
+        }       
+        
         /// <summary>
         /// Gets/sets the permissions available to the role.
-        public IUserPermission[] Permissions
+       	IUserPermission[] IUserRole.Permissions
         {
             get
             {
                 return permissions;
             }
             set { permissions = value; }
-        }
+        }*/
 /*
         private Guid[] userIDs = new Guid[] { };
         /// <summary>
@@ -65,17 +81,16 @@ namespace SoftwareMonkeys.SiteStarter.Entities
             }
         }*/
 
-        [NonSerialized]
-		private Collection<User> users;
+        private User[] users;
         /// <summary>
         /// Gets/sets the users to this role.
         /// </summary>
         [Reference]
-        public Collection<User> Users
+        public User[] Users
         {
             get {
         		if (users == null)
-        			users = new Collection<User>();
+        			users = new User[]{};
         		return users; }
             set
             {
@@ -84,14 +99,10 @@ namespace SoftwareMonkeys.SiteStarter.Entities
         }        
 
         [Reference]
-        ICollection<IUser> IUserRole.Users
+        IUser[] IUserRole.Users
         {
-        	get { return (users == null
-        	              ? new Collection<IUser>()
-        	              : new Collection<IUser>(users.ToArray())); }
-        	set { users = (value == null
-        	               ? new Collection<User>()
-        	               : new Collection<User>(value.ToArray())); }
+        	get { return Collection<IUser>.ConvertAll(users); }
+        	set { users = Collection<User>.ConvertAll(value); }
         }
         
         public UserRole()

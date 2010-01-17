@@ -199,7 +199,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 
 					IUserRole role = UserRoleFactory<Entities.UserRole>.Current.GetUserRoleByName(rolename);
 
-					user.Roles.Add(role);
+					user.Roles = Collection<IUserRole>.Add(user.Roles, role);
 
 					// Not needed. Previous line does it all.
 					//                role.Users.Add(user);
@@ -340,7 +340,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		{
 			IUser user = UserFactory<Entities.User>.Current.GetUserByUsername(username);
 
-			IUserRole[] roles = UserRoleFactory<UserRole>.Current.GetUserRoles(user.Roles.IDs);
+			IUserRole[] roles = UserRoleFactory<UserRole>.Current.GetUserRoles(Collection<IUserRole>.GetIDs(user.Roles));
 
 			List<string> names = new List<string>();
 			foreach (IUserRole role in roles)
@@ -360,7 +360,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		{
 			IUserRole role = UserRoleFactory<Entities.UserRole>.Current.GetUserRoleByName(rolename);
 
-			IUser[] users = UserFactory<Entities.User>.Current.GetUsers(role.Users.IDs);
+			IUser[] users = UserFactory<Entities.User>.Current.GetUsers(Collection<IUser>.GetIDs(role.Users));
 
 			List<string> usernames = new List<string>();
 			foreach (User user in users)
@@ -390,10 +390,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 			if (role == null)
 				throw new ProviderException("Role not found with specified name.");
 			
-			if (user.Roles.IDs == null)
+			if (user.Roles == null)
 				return false;
 
-			return Array.IndexOf(user.Roles.IDs, role.ID) > -1;
+			return Array.IndexOf(Collection<IUserRole>.GetIDs(user.Roles), role.ID) > -1;
 		}
 		
 		public override bool IsUserInRole(string username, string rolename)
@@ -437,9 +437,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 					IUserRole role = UserRoleFactory<Entities.UserRole>.Current.GetUserRoleByName(rolename);
 
 
-					user.Roles.Remove(role);
+					user.Roles = Collection<IUserRole>.Remove(user.Roles, role);
 
-					role.Users.Remove(user);
+					role.Users = Collection<IUser>.Remove(role.Users, user);
 
 
 					UserFactory<Entities.User>.Current.UpdateUser(user);
@@ -477,10 +477,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 
 			IUserRole role = UserRoleFactory<R>.Current.GetUserRoleByName(rolename);
 
-			U[] allUsers = UserFactory<U>.Current.GetUsers(role.Users.IDs);
+			U[] allUsers = UserFactory<U>.Current.GetUsers(Collection<IUser>.GetIDs(role.Users));
 
 			foreach (U user in allUsers)
-				if (Array.IndexOf(user.Roles.IDs, role.ID) > -1)
+				if (Array.IndexOf(Collection<IUserRole>.GetIDs(user.Roles), role.ID) > -1)
 				usernames.Add(user.Username);
 
 			return (string[])usernames.ToArray();

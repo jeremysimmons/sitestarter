@@ -38,7 +38,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 						AppLogger.Debug("Short type name: " + sourceEntity.ShortTypeName);
 						AppLogger.Debug("Entity ID: " + sourceEntity.ID);
 						
-						base.TypeName1 = sourceEntity.ShortTypeName;
+						base.Type1Name = sourceEntity.ShortTypeName;
 						base.Entity1ID = sourceEntity.ID;
 					}
 					else
@@ -104,7 +104,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 						AppLogger.Debug("Short type name: " + referenceEntity.ShortTypeName);
 						AppLogger.Debug("Type ID: " + referenceEntity.ID);
 						
-						base.TypeName2 = referenceEntity.ShortTypeName;
+						base.Type2Name = referenceEntity.ShortTypeName;
 						base.Entity2ID = referenceEntity.ID;
 					}
 					else

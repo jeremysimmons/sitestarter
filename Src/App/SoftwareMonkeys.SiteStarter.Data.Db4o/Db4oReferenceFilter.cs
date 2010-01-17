@@ -8,7 +8,6 @@ using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Data;
 using System.Reflection;
-using System;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 {
