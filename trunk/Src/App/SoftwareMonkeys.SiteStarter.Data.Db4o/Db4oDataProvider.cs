@@ -893,8 +893,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 								//if (idReference.TypeNames == null)
 								//	AppLogger.Debug("Loaded reference - Type names: [null]");
 								//{
-								AppLogger.Debug("Loaded reference - Type name 1: " + reference.TypeName1);
-								AppLogger.Debug("Loaded reference - Type name 2: " + reference.TypeName2);
+								AppLogger.Debug("Loaded reference - Type name 1: " + reference.Type1Name);
+								AppLogger.Debug("Loaded reference - Type name 2: " + reference.Type2Name);
 								//}
 								
 								if (activateAll)
@@ -987,8 +987,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 								//if (idReference.TypeNames == null)
 								//	AppLogger.Debug("Loaded reference - Type names: [null]");
 								//{
-								AppLogger.Debug("Loaded reference - Type name 1: " + reference.TypeName1);
-								AppLogger.Debug("Loaded reference - Type name 2: " + reference.TypeName2);
+								AppLogger.Debug("Loaded reference - Type name 1: " + reference.Type1Name);
+								AppLogger.Debug("Loaded reference - Type name 2: " + reference.Type2Name);
 								//}
 								
 								if (activateAll)
@@ -1068,18 +1068,18 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Activating reference.", NLog.LogLevel.Debug))
 			{
-				if (reference.TypeName1 == string.Empty)
-					throw new ArgumentNullException("reference.TypeName1");
-				if (reference.TypeName2 == string.Empty)
-					throw new ArgumentNullException("reference.TypeName2");
+				if (reference.Type1Name == string.Empty)
+					throw new ArgumentNullException("reference.Type1Name");
+				if (reference.Type2Name == string.Empty)
+					throw new ArgumentNullException("reference.Type2Name");
 				
-				AppLogger.Debug("Type 1: " + reference.TypeName1);
-				AppLogger.Debug("Type 2: " + reference.TypeName2);
+				AppLogger.Debug("Type 1: " + reference.Type1Name);
+				AppLogger.Debug("Type 2: " + reference.Type2Name);
 				AppLogger.Debug("ID 1: " + reference.Entity1ID);
 				AppLogger.Debug("ID 2: " + reference.Entity2ID);
 				
-				Type type1 = EntitiesUtilities.GetType(reference.TypeName1);
-				Type type2 = EntitiesUtilities.GetType(reference.TypeName2);
+				Type type1 = EntitiesUtilities.GetType(reference.Type1Name);
+				Type type2 = EntitiesUtilities.GetType(reference.Type2Name);
 				
 				AppLogger.Debug("Full type 1: " + type1.ToString());
 				AppLogger.Debug("Full type 2: " + type2.ToString());
@@ -1331,17 +1331,17 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		
 		public override void Save(IEntity entity)
 		{
-			Stores[entity.GetType()].Save(entity);
+			Stores[DataUtilities.GetDataStoreName(entity)].Save(entity);
 		}
 
 		public override void Update(IEntity entity)
 		{
-			Stores[entity.GetType()].Update(entity);
+			Stores[DataUtilities.GetDataStoreName(entity)].Update(entity);
 		}
 
 		public override void Delete(IEntity entity)
 		{
-			Stores[entity.GetType()].Delete(entity);
+			Stores[DataUtilities.GetDataStoreName(entity)].Delete(entity);
 		}
 
 		#endregion

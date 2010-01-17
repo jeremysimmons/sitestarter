@@ -12,7 +12,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 	/// Description of MappingItem.
 	/// </summary>
 	//[XmlType("SiteStarter.MappingItem")]
-	public class MappingItem : IMappingItem//, IXmlSerializable
+	public class MappingItem// : //IMappingItem//, IXmlSerializable
 	{
 		private string typeName;
 		public string TypeName
@@ -21,7 +21,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 			set { typeName = value; }
 		}
 		
-		/// <summary>
+		/*/// <summary>
         /// Gets/sets the flexible settings collection.
         /// </summary>
         [XmlIgnore]
@@ -30,7 +30,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
             get {
             	return this.Settings; }
         	set { this.Settings = new ConfigurationDictionary(value); }
-        }
+        }*/
         
         private ConfigurationDictionary settings = new ConfigurationDictionary();
         /// <summary>

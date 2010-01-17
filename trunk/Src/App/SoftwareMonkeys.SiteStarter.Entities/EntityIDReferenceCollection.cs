@@ -39,7 +39,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			if (reference == null)
 				throw new ArgumentNullException("reference");
 			
-			referenceTypeName = reference.TypeName2;
+			referenceTypeName = reference.Type2Name;
 			
 			base.Add(reference);
 		}

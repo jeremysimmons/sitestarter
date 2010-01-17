@@ -25,7 +25,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				
 				// Save the mappings config
 				string path = Config.Application.PhysicalPath.TrimEnd('\\') + @"\App_Data\";
-				ConfigFactory<MappingConfig>.SaveConfig(path, (MappingConfig)Config.Mappings);
+				ConfigFactory<MappingConfig>.SaveConfig(path, (MappingConfig)Config.Mappings, Config.Mappings.PathVariation);
 				
 				//AddMappings(type, dataStoreName);
 			}
@@ -45,7 +45,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				
 				// Save the mappings config
 				string path = Config.Application.PhysicalPath.TrimEnd('\\') + @"\App_Data\";
-				ConfigFactory<MappingConfig>.SaveConfig(path, (MappingConfig)Config.Mappings);
+				ConfigFactory<MappingConfig>.SaveConfig(path, (MappingConfig)Config.Mappings, Config.Mappings.PathVariation);
 				
 				//RemoveMappings(type);
 			}
@@ -96,11 +96,11 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Matching the type '" + typeName + "' with alias type '" + aliasTypeName + "'.", NLog.LogLevel.Debug))
 			{
-				IMappingConfig config = Config.Mappings;
+				MappingConfig config = Config.Mappings;
 				
 				if (config != null)
 				{
-					IMappingItem item = config.GetItem<IMappingItem>(typeName, true);
+					MappingItem item = config.GetItem(typeName, true);
 					
 					if (item != null)
 					{
@@ -250,8 +250,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 							AppLogger.Debug("Source entity ID: " + reference.Entity1ID.ToString());
 							AppLogger.Debug("Referenced entity ID: " + reference.Entity2ID.ToString());
 							
-							AppLogger.Debug("Source entity name: " + reference.TypeName1);
-							AppLogger.Debug("Referenced entity name: " + reference.TypeName2);
+							AppLogger.Debug("Source entity name: " + reference.Type1Name);
+							AppLogger.Debug("Referenced entity name: " + reference.Type2Name);
 							
 							AppLogger.Debug("Source property name: " + reference.Property1Name);
 							AppLogger.Debug("Mirror property name: " + reference.Property2Name);
@@ -279,8 +279,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 								AppLogger.Debug("Source entity ID: " + reference.Entity1ID.ToString());
 								AppLogger.Debug("Referenced entity ID: " + reference.Entity2ID.ToString());
 								
-								AppLogger.Debug("Source entity name: " + reference.TypeName1);
-								AppLogger.Debug("Referenced entity name: " + reference.TypeName2);
+								AppLogger.Debug("Source entity name: " + reference.Type1Name);
+								AppLogger.Debug("Referenced entity name: " + reference.Type2Name);
 								
 								collection.Add(reference.ToData());
 							}
@@ -508,7 +508,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				    && typeName.IndexOf(',') == -1)
 				{
 					
-					IMappingItem mappingItem = Config.Mappings.GetItem<IMappingItem>(typeName, true);
+					MappingItem mappingItem = Config.Mappings.GetItem(typeName, true);
 					if (mappingItem == null)
 						throw new InvalidOperationException("No mapping item found for type " + typeName);
 					

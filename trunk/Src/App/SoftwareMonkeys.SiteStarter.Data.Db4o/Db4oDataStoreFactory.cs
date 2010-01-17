@@ -10,34 +10,33 @@ using System.Reflection;
 using SoftwareMonkeys.SiteStarter;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Configuration;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 {
-    /// <summary>
-    /// Assists in interaction with the db4o database.
-    /// </summary>
+	/// <summary>
+	/// Assists in interaction with the db4o database.
+	/// </summary>
 	public static class Db4oDataStoreFactory
-    {
-        /// <summary>
-        /// Loads the data from the .yap file.
-        /// </summary>
-        static public Db4oDataStore InitializeDataStore(string dataStoreName)
-        {
-            if (!Config.IsInitialized)
-                throw new InvalidOperationException("The application config file is not present. Run the setup process and try again.");
-           
-            // Add messages to the trace
-            System.Diagnostics.Trace.WriteLine(Config.Application.PhysicalPath + @"\App_Data\" + dataStoreName + ".yap", "Loading data store: " + dataStoreName);
-
-            if (!Directory.Exists(Path.GetDirectoryName(Config.Application.PhysicalPath + @"\App_Data\")))
-                Directory.CreateDirectory(Path.GetDirectoryName(Config.Application.PhysicalPath + @"\App_Data\"));
-
-		// Create a new data store and load the yap file
-		Db4oDataStore store = new Db4oDataStore();
-		store.Name = dataStoreName;
-
-            return store;
-           
-        }
-    }
+	{
+		/// <summary>
+		/// Loads the data from the .yap file.
+		/// </summary>
+		static public Db4oDataStore InitializeDataStore(string dataStoreName)
+		{
+			Db4oDataStore store = null;
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Initializing data store.", NLog.LogLevel.Debug))
+			{
+				if (!Config.IsInitialized)
+					throw new InvalidOperationException("The application config file is not present. Run the setup process and try again.");
+				
+				// Create a new data store
+				store = new Db4oDataStore();
+				store.Name = dataStoreName;
+			}
+			return store;
+			
+		}
+	}
 }

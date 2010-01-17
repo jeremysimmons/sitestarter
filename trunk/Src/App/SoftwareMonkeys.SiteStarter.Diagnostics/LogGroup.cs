@@ -241,13 +241,13 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 
 		internal void Start(MethodBase callingMethod, NLog.LogLevel logLevel)
 		{
-			AppLogger.Push(this);
-
-			CallingMethod = callingMethod;
-
-			
 			if (AppLogger.PerformLogging(logLevel))
 			{
+				AppLogger.Push(this);
+
+				CallingMethod = callingMethod;
+
+				
 				StartLevel1(callingMethod);
 
 				AppLogger.AddIndent();
@@ -283,14 +283,16 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			// Ensure this doesnt run twice for the same group.
 			if (!HasEnded)
 			{
-				AppLogger.RemoveIndent();
-				//switch (mode)
-				//{
-				//	case LogGroupMode.Level1:
-				EndLevel1(CallingMethod);
-				//		break;
-				//	case LogGroupMode.Level2:
-				/*        EndLevel2(callingMethod);
+				if (AppLogger.PerformLogging(LogLevel))
+				{
+					AppLogger.RemoveIndent();
+					//switch (mode)
+					//{
+					//	case LogGroupMode.Level1:
+					EndLevel1(CallingMethod);
+					//		break;
+					//	case LogGroupMode.Level2:
+					/*        EndLevel2(callingMethod);
 						break;
 					case LogGroupMode.Level3:
                         EndLevel3(callingMethod);
@@ -303,14 +305,16 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 						break;
 					default:
 						throw new Exception("The trace group mode is not valid.");*/
-				//}
+					//}
 
-				//Trace.Indent();
+					//Trace.Indent();
 
+					
+					AppLogger.Pop();
+					
+				}
 				HasEnded = true;
 
-
-				AppLogger.Pop();
 			}
 		}
 

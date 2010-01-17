@@ -171,17 +171,17 @@ namespace SoftwareMonkeys.SiteStarter.Entities
             set { creationDate = value; }
         }
 
-        [NonSerialized]
-        private Collection<UserRole> roles;
+        //[NonSerialized]
+        private UserRole[] roles;
         /// <summary>
         /// Gets/sets the roles to this issue.
         /// </summary>
         [Reference]
-        public Collection<UserRole> Roles
+        public UserRole[] Roles
         {
             get {
         		if (roles == null)
-        			roles = new Collection<UserRole>();
+        			roles = new UserRole[]{};
         		return roles; }
             set
             {
@@ -190,14 +190,10 @@ namespace SoftwareMonkeys.SiteStarter.Entities
         }
 
         [Reference]
-        ICollection<IUserRole> IUser.Roles
+        IUserRole[] IUser.Roles
         {
-        	get { return (roles == null
-        	              ? new Collection<IUserRole>()
-        	              : new Collection<IUserRole>(roles.ToArray())); }
-        	set { roles = (value == null
-        	               ? new Collection<UserRole>()
-        	               : new Collection<UserRole>(value.ToArray())); }
+        	get { return Collection<IUserRole>.ConvertAll(roles); }
+        	set { roles = Collection<UserRole>.ConvertAll(roles); }
         }
 
         /// <summary>

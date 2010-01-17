@@ -60,15 +60,15 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
         /// <summary>
         /// Gets/sets the application configuration object.
         /// </summary>
-        static public IMappingConfig Mappings
+        static public MappingConfig Mappings
         {
             get {
                 if (All != null && All.Count > 0)
                 {
                     for (int i = 0; i < All.Count; i++)
                     {
-                        if (All[i] is IMappingConfig)
-                            return (IMappingConfig)All[i];
+                        if (All[i] is MappingConfig)
+                            return (MappingConfig)All[i];
                     }
                 }
                 
@@ -80,7 +80,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
                 {
                     for (int i = 0; i < All.Count; i++)
                     {
-                        if (All[i] is IMappingConfig)
+                        if (All[i] is MappingConfig)
                             All[i] = (IConfig)value;
                     }
                 }

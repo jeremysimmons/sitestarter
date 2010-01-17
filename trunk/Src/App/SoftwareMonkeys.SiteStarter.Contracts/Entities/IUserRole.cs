@@ -10,8 +10,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities
     public interface IUserRole : IEntity
     {
         string Name { get;set; }
-		IUserPermission[] Permissions { get;set; }
-		ICollection<IUser> Users {get;set;}
+		//IUserPermission[] Permissions { get;set; }
+		IUser[] Users {get;set;}
 		//Guid[] UserIDs {get;set;}
 		//void AddUser(IUser user);
 		//void RemoveUser(IUser user);

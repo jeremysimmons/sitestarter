@@ -145,12 +145,13 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				
 				Type actualType = EntitiesUtilities.GetType(type.Name);
 				
+				
 				if (actualType == null)
 					actualType = type;
 				
 				AppLogger.Debug("Actual type: " + actualType.ToString());
 				
-				IMappingItem item = Config.Mappings.GetItem<IMappingItem>(actualType, false);
+				MappingItem item = Config.Mappings.GetItem(actualType, false);
 				if (item == null){
 					throw new InvalidOperationException("No mappings found for the type " + actualType.ToString() + ".");
 				}
@@ -201,7 +202,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				{
 					EntityIDReference reference = (EntityIDReference)entity;
 					
-					dataStoreName = GetDataStoreName(new string[] {reference.TypeName1, reference.TypeName2});//GetType(names[0]), GetType(names[1]));//dataStoreNames[0] + "-" + dataStoreNames[1];
+					dataStoreName = GetDataStoreName(new string[] {reference.Type1Name, reference.Type2Name});//GetType(names[0]), GetType(names[1]));//dataStoreNames[0] + "-" + dataStoreNames[1];
 				}
 				else
 				{
@@ -395,9 +396,9 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				
 				foreach (EntityReference reference in references)
 				{
-					AppLogger.Debug("Reference type #1: " + reference.TypeName1);
+					AppLogger.Debug("Reference type #1: " + reference.Type1Name);
 					AppLogger.Debug("Reference ID #1: " + reference.Entity1ID.ToString());
-					AppLogger.Debug("Reference type #2: " + reference.TypeName2);
+					AppLogger.Debug("Reference type #2: " + reference.Type2Name);
 					AppLogger.Debug("Reference ID #2: " + reference.Entity2ID.ToString());
 					
 					DataAccess.Data.ActivateReference(reference);

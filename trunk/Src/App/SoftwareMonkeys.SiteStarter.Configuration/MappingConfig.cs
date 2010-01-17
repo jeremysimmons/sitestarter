@@ -14,8 +14,23 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 	//[XmlRoot(Namespace = "urn:SoftwareMonkeys.SiteStarter.Configuration")]
 	[Serializable]
 	//[XmlType("SiteStarter.MappingConfig")]
-	public class MappingConfig : IMappingConfig, IXmlSerializable
+	public class MappingConfig : IConfig//IMappingConfig//, IXmlSerializable
 	{
+		public MappingItem this[string name]
+		{
+			get
+			{
+				foreach (MappingItem item in Items)
+				{
+					if (item.TypeName == name)
+					{
+						return item;
+					}
+				}
+				return null;
+			}
+		}
+		
 		private string name = "Mappings";
 		/// <summary>
 		/// Gets/sets the name of the configuration file.
@@ -36,21 +51,30 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 			set { pathVariation = value; }
 		}
 		
-		private IMappingItem[] items;
+		
+		private MappingItem[] items;
 		/// <summary>
 		/// Gets/sets the mapping settings.
 		/// </summary>
-		public virtual IMappingItem[] Items
+		public virtual MappingItem[] Items
 		{
 			get { return items; }
 			set { items = value; }
 		}
 		
+		/*/// <summary>
+		/// Gets/sets the mapping settings.
+		/// </summary>
+		IMappingItem[] IMappingConfig.Items
+		{
+			get { return new List<IMappingItem>(items).ToArray(); }
+			//set { items = new List(value).ToArray(typeof(MappingItem)); }
+		}*/
+		
 		public MappingConfig()
 		{}
 		
-		public void AddItem<I>(I item)
-			where I : IMappingItem
+		public void AddItem(MappingItem item)
 		{
 			if (item == null)
 				return;
@@ -66,18 +90,16 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 			
 			bool exists = false;
 			
-			List<IMappingItem> list = new List<IMappingItem>();
+			List<MappingItem> list = new List<MappingItem>();
 			
 			if (Items != null && Items.Length > 0)
 			{
-				foreach (object t in Items)
-					list.Add((IMappingItem)t);
+				foreach (MappingItem i in Items)
+					list.Add(i);
 
-				foreach (object t in list)
+				foreach (MappingItem i in list)
 				{
-					if (t is I)
-					{
-						if (((I)t).TypeName == item.TypeName)
+						if (i.TypeName == item.TypeName)
 						{
 							exists = true;
 							//					AppLogger.Debug("Item already exists.");
@@ -86,7 +108,6 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 						{
 							exists = false;
 						}
-					}
 				}
 			}
 			if (!exists)
@@ -99,10 +120,9 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 			//}
 		}
 		
-		public I GetItem<I>(Type type, bool includeInterfaces)
-			where I : IMappingItem
+		public MappingItem GetItem(Type type, bool includeInterfaces)
 		{
-			I returnValue = default(I);
+			MappingItem returnValue = null;//default(I);
 			// NOTE: Logging is commented out simply to reduce size of log.
 			// Should be kept in case it's needed for debugging at some point.
 			
@@ -112,29 +132,28 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 				throw new ArgumentNullException("type");
 			
 			if (Items == null || Items.Length == 0)
-				returnValue = default(I);
+				returnValue = null;//default(I);
 			else
 			{
-				foreach (object item in Items)
+				foreach (MappingItem item in Items)
 				{
-					if (item is I)
-					{
+					//if (item is I)
+					//{
 						// Match either type name or full name
-						if (MatchesType<I>((I)item, type, includeInterfaces))
+						if (MatchesType(item, type, includeInterfaces))
 						{
-							returnValue = (I)item;
+							returnValue = item;
 						}
-					}
+					//}
 				}
 			}
 			//}
 			return returnValue;
 		}
 		
-		public I GetItem<I>(string name, bool includeInterfaces)
-			where I : IMappingItem
+		public MappingItem GetItem(string name, bool includeInterfaces)
 		{
-			I returnValue = default(I);
+			MappingItem returnValue = null;//default(I);
 			
 			// NOTE: Logging is commented out simply to reduce size of log.
 			// Should be kept in case it's needed for debugging at some point.
@@ -142,27 +161,26 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 			//using (LogGroup logGroup = AppLogger.StartGroup("Retrieving item for the name: " + name, NLog.LogLevel.Debug))
 			//{
 			if (name == null || name == String.Empty || items == null)
-				returnValue = default(I);
+				returnValue = null;//default(I);
 			
-			foreach (object item in Items)
+			foreach (MappingItem item in Items)
 			{
-				if (item is I)
-				{
+				//if (item is I)
+				//{
 					// Match either type name or full name
-					if (MatchesType<I>((I)item, name, includeInterfaces))
+					if (MatchesType(item, name, includeInterfaces))
 					{
 						//				AppLogger.Debug("Found item with type name: " + ((I)item).TypeName);
-						returnValue = (I)item;
+						returnValue = item;
 					}
-				}
+				//}
 			}
 			//	AppLogger.Debug("No item found.");
 			//}
 			return returnValue;
 		}
 		
-		private bool MatchesType<I>(I item, Type type, bool includeInterfaces)
-			where I : IMappingItem
+		private bool MatchesType(MappingItem item, Type type, bool includeInterfaces)
 		{
 			if (item == null)
 				throw new ArgumentNullException("item");
@@ -186,8 +204,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 		}
 		
 		
-		private bool MatchesType<I>(I item, string name, bool includeInterfaces)
-			where I : IMappingItem
+		private bool MatchesType(MappingItem item, string name, bool includeInterfaces)
 		{
 			bool flag = false;
 			
@@ -214,7 +231,56 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 			return flag;
 		}
 		
-		void IXmlSerializable.ReadXml ( XmlReader reader )
+		public void RemoveItem(MappingItem item)
+		{
+			if (item == null)
+				return;
+			
+			// NOTE: Logging is commented out simply to reduce size of log.
+			// This commented code should be kept in case it's needed for debugging at some point.
+			//using (LogGroup logGroup = AppLogger.StartGroup("Adding mapping item to mapping config.", NLog.LogLevel.Debug))
+			//{
+			//	if (Items != null)
+			//		AppLogger.Debug("Existing items: " + Items.Length);
+			//	else
+			//		AppLogger.Debug("Items collection is null. This is first item.");
+			
+			bool exists = false;
+			
+			List<MappingItem> list = new List<MappingItem>();
+			
+			if (Items != null && Items.Length > 0)
+			{
+				foreach (object t in Items)
+					list.Add((MappingItem)t);
+
+				foreach (MappingItem t in list)
+				{
+					//if (t is I)
+					//{
+						if (t.TypeName == item.TypeName)
+						{
+							exists = true;
+							//					AppLogger.Debug("Item already exists.");
+						}
+						else
+						{
+							exists = false;
+						}
+					//}
+				}
+			}
+			if (exists)
+			{
+				//		AppLogger.Debug("Adding item to the list.");
+				list.Remove(item);
+			}
+			
+			Items = list.ToArray();
+			//}
+		}
+		
+		/*void IXmlSerializable.ReadXml ( XmlReader reader )
 		{
 			// Name
 			Name = reader.ReadElementString("Name");
@@ -256,6 +322,6 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 		public XmlSchema GetSchema()
 		{
 			return(null);
-		}
+		}*/
 	}
 }

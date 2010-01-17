@@ -15,6 +15,6 @@ namespace SoftwareMonkeys.SiteStarter.Entities
         string Email { get;set;}
         string FirstName { get;set; }
         string LastName { get;set; }
-        ICollection<IUserRole> Roles { get;set; }
+        IUserRole[] Roles { get;set; }
     }
 }
