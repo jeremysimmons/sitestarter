@@ -303,7 +303,7 @@
                                      <cc:EntityFormPasswordConfirmItem runat="server" AutoBind="false" TextBox-Width="400" FieldControlID="PasswordConfirm" IsRequired='<%# OperationManager.CurrentOperation == "CreateUser" %>' text='<%# Resources.Language.PasswordConfirm + ":" %>' CompareTo="Password" CompareToErrorMessage='<%# Resources.Language.PasswordsDontMatch %>'></cc:EntityFormPasswordConfirmItem>
                                      <cc:EntityFormCheckBoxItem runat="server" PropertyName="IsApproved" Text='<%# Resources.Language.IsApproved + ":" %>' FieldControlID="IsApproved" TextBox-Text='<%# Resources.Language.IsApprovedNote %>'></cc:EntityFormCheckBoxItem>
                                       <cc:EntityFormCheckBoxItem runat="server" PropertyName="IsLockedOut" Text='<%# Resources.Language.IsLockedOut + ":" %>' FieldControlID="IsLockedOut" TextBox-Text='<%# Resources.Language.IsLockedOutNote %>'></cc:EntityFormCheckBoxItem>
-                                      <cc:EntityFormItem runat="server" PropertyName="Roles.IDs" FieldControlID="UserRoles" ControlValuePropertyName="SelectedEntityIDs"
+                                      <cc:EntityFormItem runat="server" PropertyName="Roles" FieldControlID="UserRoles" ControlValuePropertyName="SelectedEntities"
                               text='<%# Resources.Language.Roles + ":" %>'>
                               <FieldTemplate>
                                   <cc:EntitySelect width="400" EntityType="SoftwareMonkeys.SiteStarter.Entities.UserRole, SoftwareMonkeys.SiteStarter.Entities" runat="server"

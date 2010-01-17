@@ -176,7 +176,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
         /// <summary>
         /// Gets/sets the roles to this issue.
         /// </summary>
-        [Reference]
+        [Reference(MirrorPropertyName="Users")]
         public UserRole[] Roles
         {
             get {
@@ -189,7 +189,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
             }
         }
 
-        [Reference]
+        //[Reference(MirrorPropertyName="Users")]
         IUserRole[] IUser.Roles
         {
         	get { return Collection<IUserRole>.ConvertAll(roles); }

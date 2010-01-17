@@ -68,6 +68,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				}
 				catch (Exception ex)
 				{
+					throw ex;
 					AppLogger.Error(ex.ToString());
 				}
 			}

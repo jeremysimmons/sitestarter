@@ -227,8 +227,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				{
 					if (DataSource != null)
 					{
+						AppLogger.Debug("DataSource != null");
+						
 						if (row is EntityFormItem)
 						{
+							AppLogger.Debug("row is EntityFormItem");
+							
 							EntityFormItem item = (EntityFormItem)row;
 							string propertyName = ((EntityFormItem)item).PropertyName;
 							
@@ -236,20 +240,36 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 							{
 								using (LogGroup logGroup2 = AppLogger.StartGroup("Property: " + propertyName, NLog.LogLevel.Debug))
 								{
+									AppLogger.Debug("Field control ID: " + item.FieldControlID);
+									
 									object propertyValue = Reflector.GetPropertyValue(DataSource, propertyName);
+									Type propertyType = Reflector.GetPropertyType(DataSource, propertyName);
+									
+									AppLogger.Debug("Property type: " + propertyType.ToString());
 
 									if (propertyValue == null)
 										AppLogger.Debug("PropertyValue: [null]");
 									else
+									{
 										AppLogger.Debug("Property value: " + propertyValue.ToString());
+										
+										if (propertyValue is Array)
+										{
+											AppLogger.Debug("Property array length: " + ((Array)propertyValue).Length.ToString());
+										}
+									}
 									
 									Control field = FindControl(item.FieldControlID);
 									
-									EntityFormHelper.SetFieldValue(field, propertyValue, item.ControlValuePropertyName, null);
+									EntityFormHelper.SetFieldValue(field, propertyValue, item.ControlValuePropertyName, propertyType);
 								}
 							}
 						}
+						else
+							AppLogger.Debug("!(row is EntityFormItem)");
 					}
+					else
+						AppLogger.Debug("DataSource == null");
 				}
 			}
 		}
