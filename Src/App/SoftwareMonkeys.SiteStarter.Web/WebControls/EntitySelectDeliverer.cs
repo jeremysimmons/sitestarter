@@ -89,10 +89,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		
 		protected override void OnInit(EventArgs e)
 		{
-			// Script is always registered on OnInit so that it transfers values to the form even when not loaded on the same PageView
-			if (!Page.IsPostBack
-			    && Page.Request.QueryString["RequesterID"] != null)
-				RegisterScript();
 			
 			/*if (Page.Request.QueryString[SourceEntityType + "ID"] != null
 			    && Page.Request.QueryString[SourceEntityType + "ID"] != String.Empty)
@@ -119,6 +115,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		
 		protected override void OnLoad(EventArgs e)
 		{
+			// Script is always registered on OnInit so that it transfers values to the form even when not loaded on the same PageView
+			if (!Page.IsPostBack
+			    && Page.Request.QueryString["RequesterID"] != null)
+				RegisterScript();
 				
 			
 			base.OnLoad(e);

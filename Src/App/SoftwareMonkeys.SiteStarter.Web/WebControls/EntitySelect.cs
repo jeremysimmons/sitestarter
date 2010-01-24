@@ -525,7 +525,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				{
 					AppLogger.Debug("Setting posted IDs to SelectedEntityIDs");
 					
-					AppLogger.Debug("Posted entities #: " + entities.Length.ToString());
+					if (entities != null)
+						AppLogger.Debug("Posted entities #: " + entities.Length.ToString());
+					else
+						AppLogger.Debug("Posted entities: [null]");
 					
 					SelectedEntityIDs = Collection<E>.GetIDs(entities);
 				}
@@ -575,7 +578,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		{
 			AppLogger.Debug("Post value: " + postValue);
 						
-			E[] entities = null;
+			E[] entities = new E[] {};
 			
 			if (postValue != null)
 			{

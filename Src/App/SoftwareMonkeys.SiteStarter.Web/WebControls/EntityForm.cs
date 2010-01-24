@@ -10,6 +10,7 @@ using System.Web.UI.HtmlControls;
 using System.ComponentModel;
 using System.Reflection;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using SoftwareMonkeys.SiteStarter.Entities;
 
 namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 {
@@ -34,6 +35,22 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
 
 		#region Properties
+		/// <summary>
+		/// Gets the ID of the entity set to the DataSource.
+		/// Note: If DataSource == null then returns Guid.Empty.
+		/// </summary>
+		public Guid EntityID
+		{
+			get {
+				if (DataSource != null)
+				{
+					return ((IEntity)DataSource).ID;
+				}
+				return Guid.Empty;
+			}
+		}
+		
+		
 		/// <summary>
 		/// Gets/sets the heading text to be displayed on the form.
 		/// </summary>
