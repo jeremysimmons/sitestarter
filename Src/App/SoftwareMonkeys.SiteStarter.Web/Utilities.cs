@@ -9,6 +9,7 @@ using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using System.IO;
 
 namespace SoftwareMonkeys.SiteStarter.Web
 {
@@ -141,5 +142,20 @@ namespace SoftwareMonkeys.SiteStarter.Web
 
             return (Guid[])list.ToArray();
         }
+        
+        static public string GetVersion()
+		{
+			string version = String.Empty;
+			string versionFile = HttpContext.Current.Server.MapPath(HttpContext.Current.Request.ApplicationPath + "/Version.Number");
+			if (File.Exists(versionFile))
+			{
+				using (StreamReader reader = new StreamReader(File.OpenRead(versionFile)))
+				{
+					version = reader.ReadToEnd();
+				}
+			}
+			
+			return version;
+		}
     }
 }

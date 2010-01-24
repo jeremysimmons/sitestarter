@@ -95,10 +95,10 @@ Name: <asp:TextBox runat="server" id="Name"/>
                                   </ss:EntitySelect><br/>
                                   <asp:Label runat="server" id="EntitySelect1Result"></asp:Label>
                                   <ss:EntitySelectRequester runat="server" id="Requester1" EntitySelectControlID="EntitySelect1"
-                                  	text="Add Item &raquo;"
+                                  	text='<%# "Add Item &raquo;" %>'
                                   	CommandKey="a" CommandName="TestRequest"
                                   	DeliveryPage="~/Admin/Tests/EntitySelectDelivererTests.aspx"
-                                  	EntityIDKey="TestID" EntityID='<%# Guid.NewGuid() %>'
+                                  	EntityType="TestEntity" EntityID='<%# Guid.NewGuid() %>'
                                   	TransferData="Title=Name&Description=Summary"
                                   	/>
                                   </div>
