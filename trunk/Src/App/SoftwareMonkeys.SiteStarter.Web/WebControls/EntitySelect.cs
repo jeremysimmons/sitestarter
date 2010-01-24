@@ -510,6 +510,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				
 				string postValue = GetPostValue(postDataKey, postCollection);
 				
+				if (postValue != null)
+					AppLogger.Debug("Post value: " + postValue.ToString());
+				else
+					AppLogger.Debug("Post value: [null]");
+				
 				E[] entities = GetPostedEntities(postValue);
 				
 				bool posted = IsDataPosted(entities);

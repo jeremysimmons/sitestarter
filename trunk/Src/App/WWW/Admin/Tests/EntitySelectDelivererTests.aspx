@@ -71,10 +71,10 @@
 			Title: <asp:TextBox runat="server" id="Title"/>
 			<br/>
 			Description: <asp:TextBox runat="server" id="Description"/>
-			 <ss:EntitySelectDeliverer runat="server" id="Deliverer1" TransferFields="Title,Description"
-			 	TextControlID="Title" EntityID='<%# EntityID %>'
-                                  	
-                                  	/>
+				 <ss:EntitySelectDeliverer runat="server" id="Deliverer1" TransferFields="Title,Description"
+				 	TextControlID="Title" EntityID='<%# EntityID %>'
+	                                  	SourceEntityType="TestEntity"
+	                                  	/>
                                   </div>
                                  
                                   <div>

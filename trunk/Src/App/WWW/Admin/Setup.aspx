@@ -36,6 +36,8 @@ private void Page_Load(object sender, EventArgs e)
             config.Settings["VirtualServerRegistrationAlertSubject"] = Resources.Language.DefaultVirtualServerRegistrationAlertSubject;
             config.Settings["VirtualServerRegistrationAlert"] = Resources.Language.DefaultVirtualServerRegistrationAlert;
 	
+            config.Settings["ApplicationVersion"] = Utilities.GetVersion();
+
 			//SoftwareMonkeys.SiteStarter.Web.Config.Current = config;
 
 			//config.Save();

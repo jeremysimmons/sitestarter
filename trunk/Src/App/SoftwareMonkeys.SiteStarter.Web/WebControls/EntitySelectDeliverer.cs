@@ -36,6 +36,19 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			set { ViewState["EntityID"] = value; }
 		}
 		
+		// TODO: Obsolete
+		/*[Bindable(true)]
+		public string EntityIDKey
+		{
+			get
+			{
+				if (ViewState["EntityIDKey"] == null)
+					ViewState["EntityIDKey"] = string.Empty;
+				return (string)ViewState["EntityIDKey"];
+			}
+			set { ViewState["EntityIDKey"] = value; }
+		}*/
+		
 		public Guid RequesterEntityID
 		{
 			get
@@ -59,23 +72,56 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			set { ViewState["TransferFields"] = value; }
 		}
 		
+		public string SourceEntityType
+		{
+			get
+			{
+				if (ViewState["SourceEntityType"] == null)
+					ViewState["SourceEntityType"] = String.Empty;
+				return (string)ViewState["SourceEntityType"];
+			}
+			set { ViewState["SourceEntityType"] = value; }
+		}
+		
 		public EntitySelectDeliverer()
 		{
 		}
 		
 		protected override void OnInit(EventArgs e)
 		{
-			/*HyperLink link = new HyperLink();
-			link.Text = this.Text;
-			link.NavigateUrl = CreateNavigateUrl();
+			// Script is always registered on OnInit so that it transfers values to the form even when not loaded on the same PageView
+			if (!Page.IsPostBack
+			    && Page.Request.QueryString["RequesterID"] != null)
+				RegisterScript();
 			
-			Controls.Add(link);
-			 */
+			/*if (Page.Request.QueryString[SourceEntityType + "ID"] != null
+			    && Page.Request.QueryString[SourceEntityType + "ID"] != String.Empty)
+			{
+				try{
+				RequesterEntityID = new Guid(Page.Request.QueryString[SourceEntityType + "ID"]);
+				}
+				catch (Exception ex)
+				{
+					AppLogger.Debug(ex.ToString());
+				}
+			}*/
 			
-			if (Page.Request.QueryString["EntityID"] != String.Empty)
-				RequesterEntityID = new Guid(Page.Request.QueryString["EntityID"]);
+			// TODO: Remove: obsolete
+			// Get the Entity ID from the query string
+			/*if (EntityIDKey != String.Empty
+			    && EntityID == Guid.Empty)
+			{
+				EntityID = new Guid(Page.Request.QueryString[EntityIDKey]);
+			}*/
 			
 			base.OnInit(e);
+		}
+		
+		protected override void OnLoad(EventArgs e)
+		{
+				
+			
+			base.OnLoad(e);
 		}
 		
 		protected override void OnPreRender(EventArgs e)
@@ -90,8 +136,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				}
 				
 			}
-			else
-				RegisterScript();
+			//else
 			
 			
 			
@@ -105,7 +150,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			StringBuilder builder = new StringBuilder();
 			
 			builder.Append("<script language='javascript' defer>\n");
-			builder.Append("function AcceptTransfer(){\n");
+			builder.Append("function AcceptTransfer_" + ClientID + "(){\n");
 			
 			if (TransferFields != String.Empty)
 			{
@@ -122,7 +167,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 						builder.Append("if (field == null)\n");
 						builder.Append("alert('Field not found: " + clientID + "');\n");
 						
-						builder.Append("field.value = GetTransferValue('" + fieldID + "');\n");
+						builder.Append("field.value = GetTransferValue_" + ClientID + "('" + fieldID + "');\n");
 						
 						builder.Append("\n");
 					}
@@ -133,16 +178,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			
 			
 			builder.Append("\n");
-			builder.Append("function GetTransferValue(id){\n");
-			builder.Append("	return window.opener.GetData(id);\n");
+			builder.Append("function GetTransferValue_" + ClientID + "(id){\n");
+			builder.Append("	return window.opener.GetData_" + GetRequesterID() + "(id);\n");
 			builder.Append("}\n");
 			
-			builder.Append("AcceptTransfer();");
+			builder.Append("AcceptTransfer_" + ClientID + "();");
 			
 			builder.Append("</script>\n");
 
 			
-			if (!Page.ClientScript.IsClientScriptBlockRegistered("EntitySelectDelivererScript"))
+			//if (!Page.ClientScript.IsClientScriptBlockRegistered("EntitySelectDelivererScript"))
 				Page.ClientScript.RegisterClientScriptBlock(typeof(EntitySelectDeliverer), "EntitySelectDelivererScript", builder.ToString());
 		}
 		
@@ -155,7 +200,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			StringBuilder builder = new StringBuilder();
 			
 			builder.Append("<script language='javascript' defer>\n");
-			builder.Append("window.opener.AddItem('" + EntityID + "', '" + WebUtilities.EncodeJsString(text) + "');\n");
+			builder.Append("window.opener.AddItem_" + GetRequesterID() + "('" + EntityID + "', '" + WebUtilities.EncodeJsString(text) + "');\n");
 			builder.Append("window.close();\n");
 			
 			
@@ -164,6 +209,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			
 			if (!Page.ClientScript.IsClientScriptBlockRegistered("EntitySelectDelivererReturnScript"))
 				Page.ClientScript.RegisterClientScriptBlock(typeof(EntitySelectDeliverer), "EntitySelectDelivererReturnScript", builder.ToString());
+		}
+		
+		private string GetRequesterID()
+		{
+			return Page.Request.QueryString["RequesterID"];
 		}
 	}
 }

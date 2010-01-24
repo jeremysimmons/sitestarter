@@ -14,7 +14,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 	/// </summary>
 	public class EntitySelectRequester : WebControl
 	{
+		protected HyperLink TextLink;
 		
+		[Bindable(true)]
 		public string Text
 		{
 			get
@@ -23,7 +25,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 					ViewState["Text"] = String.Empty;
 				return (string)ViewState["Text"];
 			}
-			set { ViewState["Text"] = value; }
+			set { ViewState["Text"] = value;
+				TextLink.Text = value;
+			}
 		}
 		
 		public string DeliveryPage
@@ -70,16 +74,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			set { ViewState["EntitySelectControlID"] = value; }
 		}
 		
-		/*public string EntityIDKey
+		public string EntityType
 		{
 			get
 			{
-				if (ViewState["EntityIDKey"] == null)
-					ViewState["EntityIDKey"] = String.Empty;
-				return (string)ViewState["EntityIDKey"];
+				if (ViewState["EntityType"] == null)
+					ViewState["EntityType"] = String.Empty;
+				return (string)ViewState["EntityType"];
 			}
-			set { ViewState["EntityIDKey"] = value; }
-		}*/
+			set { ViewState["EntityType"] = value; }
+		}
 		
 		[Bindable(true)]
 		public Guid EntityID
@@ -104,19 +108,43 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			set { ViewState["TransferData"] = value; }
 		}
 		
+		[Browsable(true)]
+		public Unit WindowHeight
+		{
+			get
+			{
+				if (ViewState["WindowHeight"] == null)
+					ViewState["WindowHeight"] = Unit.Pixel(400);
+				return (Unit)ViewState["WindowHeight"];
+			}
+			set { ViewState["WindowHeight"] = value; }
+		}
+		
+		[Browsable(true)]
+		public Unit WindowWidth
+		{
+			get
+			{
+				if (ViewState["WindowWidth"] == null)
+					ViewState["WindowWidth"] = Unit.Pixel(400);
+				return (Unit)ViewState["WindowWidth"];
+			}
+			set { ViewState["WindowWidth"] = value; }
+		}
+		
 		public EntitySelectRequester()
 		{
 		}
 		
 		protected override void OnInit(EventArgs e)
 		{
-			HyperLink link = new HyperLink();
-			link.Text = this.Text;
-			link.NavigateUrl = "javascript:NewItem();";
+			TextLink = new HyperLink();
+			TextLink.Text = this.Text;
+			TextLink.NavigateUrl = "javascript:NewItem_" + ClientID + "();";
 			
 			//CreateNavigateUrl();
 			
-			Controls.Add(link);
+			Controls.Add(TextLink);
 			
 			
 			base.OnInit(e);
@@ -141,7 +169,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			NameValueCollection transferData = ParseTransferData();
 			
 			builder.Append("<script language='javascript' defer>\n");
-			builder.Append("function GetData(key){\n");
+			builder.Append("function GetData_" + ClientID + "(key){\n");
 			
 			foreach (string key in transferData.Keys)
 			{
@@ -158,31 +186,49 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			
 			
 			builder.Append("\n");
-			builder.Append("function NewItem(){\n");
+			builder.Append("function NewItem_" + ClientID + "(){\n");
 			builder.Append("	var url = '" + WebUtilities.EncodeJsString(CreateNavigateUrl()) + "';\n");
-			builder.Append("	var win = window.open(url);\n");
+			builder.Append("	var settings = 'Location=0,Scrollbars=1,Height=" + WindowHeight + ",Width=" + WindowWidth + "';\n");
+			builder.Append("	var win = window.open(url, 'AddItem-" + Guid.NewGuid() + "', settings);\n");
 			//builder.Append("	var url = " + CreateNavigateUrl() + "\n");
 			builder.Append("}\n");
 			
 			builder.Append("\n");
 			
-			builder.Append(@"function AddItem(id, text){
+			builder.Append(@"function AddItem_" + ClientID + @"(id, text){
+			
+							if (id == '" + Guid.Empty.ToString() + @"')
+			               		alert('Cannot add item with Guid.Empty value.');
+			
 			 				var newOption = document.createElement('option');
 		    				newOption.value = id;
 		    				newOption.text = text;
 		    				newOption.selected = true;
-		    				alert(id + ' - ' + text);
+		    				
+		    				// Only used while debugging. Leave commented out
+		    				//alert(id + ' - ' + text);
 
 		    				var field = document.getElementById('" + selectClientID + @"')
+		    				
+		    				if (field == null)
+		    					alert('" + selectClientID + @" field not found.');
 		    
-            				field.appendChild(newOption)
+            				//field.appendChild(newOption)
+            				
+            				try {
+							    field.add(newOption, null); // standards compliant; doesn't work in IE
+							  }
+							  catch(ex) {
+							    field.add(newOption); // IE only
+							  }
+
 							}
 							");
 			
 			builder.Append("</script>\n");
 
 			
-			if (!Page.ClientScript.IsClientScriptBlockRegistered("EntitySelectRequesterScript"))
+			//if (!Page.ClientScript.IsClientScriptBlockRegistered("EntitySelectRequesterScript"))
 				Page.ClientScript.RegisterClientScriptBlock(typeof(EntitySelectRequester), "EntitySelectRequesterScript", builder.ToString());
 		}
 		
@@ -209,7 +255,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			builder = AppendQueryString(builder,  "HideTemplate=true");
 			builder = AppendQueryString(builder,  "AutoReturn=true");
 			//builder = AppendQueryString(builder,  EntityIDKey + "=" + EntityID.ToString());
-			builder = AppendQueryString(builder,  "EntityID=" + EntityID.ToString());
+			builder = AppendQueryString(builder,  EntityType + "ID=" + EntityID.ToString());
+			builder = AppendQueryString(builder,  "RequesterID=" + ClientID);
 			
 			
 			return builder.ToString();

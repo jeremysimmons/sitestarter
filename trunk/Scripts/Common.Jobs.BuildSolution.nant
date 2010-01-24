@@ -65,6 +65,11 @@
 		</if>
 		
 		<call target="Common.Jobs.PrepareWWW"/>
+
+
+			<version buildtype="NoIncrement"
+	            revisiontype="Increment"
+	            path="${Solution.RootPath}\WWW\Version.Number"/>
 	
 	</target>
 	
