@@ -134,6 +134,16 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 			Assert.AreEqual(String.Empty, mirrorPropertyName, "The mirror property name wasn't determined correctly.");
 		}
 		
+				[Test]
+		public void Test_GetMirrorPropertyNameReverse_Multiple_Implicit_Sync()
+		{
+			TestUser user = new TestUser();
+			
+			string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyNameReverse(user.GetType(), "Roles", typeof(TestRole));
+			
+			Assert.AreEqual("Users", mirrorPropertyName, "The mirror property name wasn't determined correctly.");
+		}
+		
 		[Test]
 		public void Test_GetMirrorPropertyName_Multiple_Implicit_Sync()
 		{

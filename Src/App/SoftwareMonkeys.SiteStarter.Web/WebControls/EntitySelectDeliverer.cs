@@ -1,4 +1,4 @@
-
+	
 using System;
 using System.Web.UI.WebControls;
 using System.Web.UI;
@@ -182,13 +182,21 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			builder.Append("	return window.opener.GetData_" + GetRequesterID() + "(id);\n");
 			builder.Append("}\n");
 			
-			builder.Append("AcceptTransfer_" + ClientID + "();");
-			
 			builder.Append("</script>\n");
 
 			
 			//if (!Page.ClientScript.IsClientScriptBlockRegistered("EntitySelectDelivererScript"))
 				Page.ClientScript.RegisterClientScriptBlock(typeof(EntitySelectDeliverer), "EntitySelectDelivererScript", builder.ToString());
+
+
+			// Start up script
+
+			StringBuilder startUpBuilder = new StringBuilder();
+			startUpBuilder.Append("AcceptTransfer_" + ClientID + "();");
+			Page.ClientScript.RegisterStartupScript(typeof(EntitySelectDeliverer), "EntitySelectDelivererStartUpScript", startUpBuilder.ToString(), true);
+
+			
+			
 		}
 		
 		private void RegisterReturnScript()

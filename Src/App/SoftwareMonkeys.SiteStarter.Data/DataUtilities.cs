@@ -426,7 +426,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			using (LogGroup logGroup2 = AppLogger.StartGroup("Clearing all the object references so that they don't cascade automatically.", NLog.LogLevel.Debug))
 			{
-				if (entity is EntityIDReference)
+				if (entity is EntityReference)
 				{
 					((EntityReference)entity).Deactivate();
 				}

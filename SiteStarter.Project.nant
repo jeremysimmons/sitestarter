@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="WorkHub2.Solution" default="Private.InitSolution" xmlns="http://nant.sf.net/schemas/nant.xsd">
+<project name="SiteStarter.Solution" default="Private.InitSolution" xmlns="http://nant.sf.net/schemas/nant.xsd">
 	  <!-- Includes -->
 	  <!-- Settings -->
 	  <!-- Global Properties -->

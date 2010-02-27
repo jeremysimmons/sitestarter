@@ -28,6 +28,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Logging">
+      <HintPath>..\..\..\Lib\Microsoft.Practices.EnterpriseLibrary.Logging.dll</HintPath>
+    </Reference>
     <Reference Include="NLog">
       <HintPath>..\..\..\Lib\NLog.dll</HintPath>
     </Reference>
@@ -45,6 +48,12 @@
     <Compile Include="LogGroupSite.cs" />
     <Compile Include="LogUtilities.cs" />
     <Compile Include="Reflector.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.State\SiteStarter.State.csproj">
+      <Project>{34129651-3B9F-4A0D-AEBF-7DE2098DD98F}</Project>
+      <Name>SiteStarter.State</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

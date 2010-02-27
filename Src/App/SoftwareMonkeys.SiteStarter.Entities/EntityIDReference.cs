@@ -61,14 +61,14 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			set { typeNames = value; }
 		}*/
 		
-		private string type1Name;
+		private string type1Name = String.Empty;
 		public string Type1Name
 		{
 			get { return type1Name; }
 			set { type1Name = value; }
 		}
 		
-		private string type2Name;
+		private string type2Name = String.Empty;
 		public string Type2Name
 		{
 			get { return type2Name; }
@@ -152,6 +152,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 					throw new ArgumentException("entity");
 				
 				AppLogger.Debug("Provided entity ID: " + id.ToString());
+				AppLogger.Debug("Provided property name: " + propertyName);
 				AppLogger.Debug("Reference entity 1 ID: " + Entity1ID.ToString());
 				AppLogger.Debug("Reference entity 2 ID: " + Entity2ID.ToString());
 				AppLogger.Debug("Reference property 1: " + Property1Name.ToString());
@@ -226,14 +227,20 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			return this;
 		}
 		
+		
 		public EntityIDReference SwitchFor(IEntity entity)
+		{
+			return SwitchFor(entity.GetType(), entity.ID);
+		}
+		
+		public EntityIDReference SwitchFor(Type entityType, Guid id)
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Switching reference data to the perspective of a specific entity.", NLog.LogLevel.Debug))
 			{
-				if (entity == null)
-					throw new ArgumentNullException("entity");
+				if (entityType == null)
+					throw new ArgumentNullException("entityType");
 				
-				AppLogger.Debug("Existing target Entity type: " + entity.GetType().ToString());
+				AppLogger.Debug("Existing target Entity type: " + entityType.ToString());
 				AppLogger.Debug("Existing source entity type: " + Type1Name);
 				AppLogger.Debug("Existing reference entity type: " + Type2Name);
 				AppLogger.Debug("Existing source entity ID: " + Entity1ID.ToString());
@@ -241,7 +248,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				AppLogger.Debug("Existing source property name: " + Property1Name.ToString());
 				AppLogger.Debug("Existing reference property name: " + Property2Name.ToString());
 				
-				if (EntitiesUtilities.MatchAlias(entity.GetType().Name, Type1Name))
+				if (EntitiesUtilities.MatchAlias(entityType.Name, Type1Name))
 				{
 					AppLogger.Debug("The reference is already suited for the specified entity. No need to switch.");
 					
@@ -249,7 +256,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				}
 				else
 				{
-					AppLogger.Debug("Switching to the perspective of entity type: " + entity.GetType());
+					AppLogger.Debug("Switching to the perspective of entity type: " + entityType);
 					
 					Guid entity1ID = Entity1ID;
 					Guid entity2ID = Entity2ID;
@@ -273,5 +280,6 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				}
 			}
 		}
+		
 	}
 }

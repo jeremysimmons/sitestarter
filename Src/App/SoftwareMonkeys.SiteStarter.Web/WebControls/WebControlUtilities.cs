@@ -25,13 +25,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				if (returnType == null)
 					throw new ArgumentNullException("returnType");
 				
-				logGroup.Debug("Field control ID: " + field.ID);
+				AppLogger.Debug("Field control ID: " + field.ID);
 
-				logGroup.Debug("Field type: " + field.GetType().ToString());
+				AppLogger.Debug("Field type: " + field.GetType().ToString());
 
 				if (controlValuePropertyName != String.Empty)
 				{
-					logGroup.Debug("Name of value property on the field control: " + controlValuePropertyName);
+					AppLogger.Debug("Name of value property on the field control: " + controlValuePropertyName);
 
 					PropertyInfo property = field.GetType().GetProperty(controlValuePropertyName, returnType);
 					if (property == null)
@@ -41,16 +41,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 					object fieldValue = property.GetValue(field, null);
 
 					if (fieldValue == null)
-						logGroup.Debug("Field value: [null]");
+						AppLogger.Debug("Field value: [null]");
 					else
-						logGroup.Debug("Field value: " + fieldValue.ToString());
+						AppLogger.Debug("Field value: " + fieldValue.ToString());
 					
 
 					return fieldValue;
 				}
 				else
 				{
-					logGroup.Debug("No name specified for the value property on the control");
+					AppLogger.Debug("No name specified for the value property on the control");
 
 					object fieldValue = null;
 
@@ -68,7 +68,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 					else
 						throw new NotSupportedException(field.GetType().Name + " type is not supported by the GetFieldValue function.");
 
-					logGroup.Debug("Field value: " + fieldValue.ToString());
+					AppLogger.Debug("Field value: " + fieldValue.ToString());
 
 					return fieldValue;
 				}
