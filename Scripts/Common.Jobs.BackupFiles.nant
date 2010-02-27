@@ -35,21 +35,20 @@
 	        <exclude name="**/*._cs"/>
 	        <exclude name="**/*._*"/>
 	        <exclude name="**/*.csexclude"/>
+	        <exclude name="**/*.excluded"/>
 	        <exclude name="**/*.excludecs"/>
 	        <exclude name="**/*.csproj.user"/>
 	        <exclude name="**/*.exclude"/>
-	        <exclude name="**/SoftwareMonkeys_.*/**/*.*"/>
-	        <exclude name="**/SoftwareMonkeys.*/Bin/**/*.dll"/>
 	        <exclude name="**/*.security"/>
 	        <exclude name="**/*.dll.r*"/>
 	        <exclude name="**/*.exe.r*"/>
 	        <exclude name="**/App_Data/VS/**"/>
 	        <exclude name="**/fckeditor/**"/>
 	        <exclude name="**/Backups/**"/>
-	        <include name="**/Src/*" />
-	        <include name="**/Docs/*" />
-	        <include name="**/Scripts/*" />
-	        <include name="**/Bin/*" />
+	        <include name="**/Src/**" />
+	        <include name="**/Docs/**" />
+	        <include name="**/Scripts/**" />
+	        <include name="**/Bin/**" />
 	    </fileset>	   
 
 	</zip>
