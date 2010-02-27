@@ -5,43 +5,54 @@ using System.ComponentModel;
 using System.Collections;
 using SoftwareMonkeys.SiteStarter.Entities;
 using System.Reflection;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 
 namespace SoftwareMonkeys.SiteStarter.Data
 {
 	/// <summary>
 	/// Defines the base field filter class that all field filter objects inherit.
 	/// </summary>
-    public class ReferenceFilter : BaseFilter
-    {
-        private FilterOperator _operator;
-        /// <summary>
-        /// Gets/sets the base log level for this group.
-        /// </summary>
-        public FilterOperator Operator
-        {
-            get { return _operator; }
-            set { _operator = value; }
-        }
+	public class ReferenceFilter : BaseFilter
+	{
+		private FilterOperator _operator;
+		/// <summary>
+		/// Gets/sets the base log level for this group.
+		/// </summary>
+		public FilterOperator Operator
+		{
+			get { return _operator; }
+			set { _operator = value; }
+		}
 
-        private string propertyName;
-        /// <summary>
-        /// Gets/sets the name of the property being matched.
-        /// </summary>
-        public string PropertyName
-        {
-            get { return propertyName; }
-            set { propertyName = value; }
-        }
+		private string propertyName;
+		/// <summary>
+		/// Gets/sets the name of the property being matched.
+		/// </summary>
+		public string PropertyName
+		{
+			get { return propertyName; }
+			set { propertyName = value; }
+		}
 
-        private Guid referencedEntityID;
-        /// <summary>
-        /// Gets/sets the ID of the referenced entity.
-        /// </summary>
-        public Guid ReferencedEntityID
-        {
-            get { return referencedEntityID; }
-            set { referencedEntityID = value; }
-        }
+		private Guid referencedEntityID;
+		/// <summary>
+		/// Gets/sets the ID of the referenced entity.
+		/// </summary>
+		public Guid ReferencedEntityID
+		{
+			get { return referencedEntityID; }
+			set { referencedEntityID = value; }
+		}
+		
+		private Type referenceType;
+		/// <summary>
+		/// Gets/sets the type of entity being referenced.
+		/// </summary>
+		public Type ReferenceType
+		{
+			get { return referenceType; }
+			set { referenceType = value; }
+		}
 
 		/// <summary>
 		/// Sets the provided property name and property value to the filter.
@@ -52,39 +63,61 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			PropertyName = propertyName;
 			ReferencedEntityID = referencedEntityID;
 		}
-	
+		
 		/// <summary>
 		/// Empty constructor.
 		/// </summary>
 		public ReferenceFilter()
 		{
 		}
-	
+		
 		public override bool IsMatch(IEntity entity)
 		{
 			bool typeMatches = false;
-			Type entityType = entity.GetType();
-			foreach (Type type in Types)
+			bool referenceMatches = false;
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Checking whether provided entity matches this filter.", NLog.LogLevel.Debug))
 			{
-				if (type.Equals(entityType)
-				    || entityType.IsSubclassOf(type)
-				    || type.ToString() == entityType.ToString())
+				AppLogger.Debug("Property name: " + propertyName);
+				AppLogger.Debug("Referenced entity ID: " + referencedEntityID.ToString());
+				
+				
+				//Type referenceType = Types[0];
+				
+				
+				AppLogger.Debug("Referenced type: " + referenceType.ToString());
+				
+				Type entityType = entity.GetType();
+				
+				AppLogger.Debug("Checking entity type: " + entityType.ToString());
+				AppLogger.Debug("Checking entity with ID: " + entity.ID);
+				
+				foreach (Type type in Types)
 				{
-					typeMatches = true;
+					if (type.Equals(entityType)
+					    || entityType.IsSubclassOf(type)
+					    || type.ToString() == entityType.ToString())
+					{
+						typeMatches = true;
+					}
 				}
-			}
-			
-			/*PropertyInfo property = entityType.GetProperty(PropertyName);
+				
+				/*PropertyInfo property = entityType.GetProperty(PropertyName);
 			object value = property.GetValue(entity, null);*/
-			
-			
-			//bool valueMatches = value.Equals(PropertyValue);
-			
-			bool referenceMatches = DataAccess.Data.MatchReference(entity, propertyName, null, referencedEntityID);
-			
+				
+				
+				//bool valueMatches = value.Equals(PropertyValue);
+				referenceMatches = DataAccess.Data.MatchReference(entity.GetType(), entity.ID, propertyName, referenceType, referencedEntityID);
+				//bool referenceMatches = DataAccess.Data.MatchReference(entity.GetType(), entity.ID, propertyName, property.Type, referencedEntityType, referencedEntityID);
+				
+				
+				AppLogger.Debug("Type matches: " + typeMatches.ToString());
+				AppLogger.Debug("Reference matches: " + referenceMatches.ToString());
+				
+			}
 			return typeMatches && referenceMatches;
 		}
-	
-    }
+		
+	}
 
 }

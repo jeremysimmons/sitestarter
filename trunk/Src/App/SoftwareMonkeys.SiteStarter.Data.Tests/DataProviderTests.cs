@@ -51,6 +51,52 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
         }*/
 
 		#region Tests
+		
+		[Test]
+		public void Test_IsStored_Reference()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing the IsStored function on a reference object", NLog.LogLevel.Debug))
+			{
+				TestUser.RegisterType();
+				TestRole.RegisterType();
+				
+				EntityReference reference = new EntityReference();
+				EntityReference reference2 = new EntityReference();
+				reference.ID =  Guid.NewGuid();
+				reference2.ID = Guid.NewGuid();
+				reference.Type1Name = reference2.Type2Name = "TestUser";
+				reference2.Type1Name = reference.Type2Name = "TestRole";
+				reference.Property1Name = reference2.Property2Name = "Roles";
+				reference2.Property1Name = reference.Property2Name = "Users";
+				reference.Entity1ID = reference2.Entity2ID = Guid.NewGuid();
+				reference2.Entity1ID = reference.Entity2ID = Guid.NewGuid();
+				
+				/*TestUser user = new TestUser();
+				Guid userID = user.ID = Guid.NewGuid();
+				user.FirstName = "Test";
+				user.LastName = "User";*/
+				
+				//TestRole role = new TestRole();
+				//Guid roleID = role.ID = Guid.NewGuid();
+				//role.Name = "Test Role";
+				
+				
+				//user.Roles.Add(role);
+				
+				DataAccess.Data.Save(reference);
+				
+				bool isStored = DataAccess.Data.IsStored(reference2);
+				
+				//DataAccess.Data.Save(role);
+				
+				
+				
+				
+				Assert.IsTrue(isStored, "The reference wasn't detected.");
+				
+			}
+		}
+		
 		[Test]
 		public void Test_GetEntity_Generic_ByPropertyValue()
 		{
@@ -134,6 +180,50 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				}
 			}
 		}
+		
+		[Test]
+		public void Test_Activate_SingleReference()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
+			{
+				TestArticle.RegisterType();
+				TestArticlePage.RegisterType();
+				
+				
+				TestArticle article = new TestArticle();
+				Guid articleID = article.ID = Guid.NewGuid();
+				article.Title = "Test";
+				
+				TestArticlePage page = new TestArticlePage();
+				Guid pageID = page.ID = Guid.NewGuid();
+				page.Title = "Test Page";
+				
+				article.Pages = new TestArticlePage[] {page};
+				//user.Roles = Collection<TestRole>.Add(user.Roles, role);
+				
+				DataAccess.Data.Save(page);
+				
+				DataAccess.Data.Save(article);
+				
+				page = null;
+				article = null;
+				
+				
+				TestArticlePage page2 = DataAccess.Data.GetEntity<TestArticlePage>("ID", pageID);
+				
+				DataAccess.Data.Activate(page2, "Article");
+				
+				
+				
+				Assert.IsNotNull(page2.Article, "The page2.Article property is null.");
+				
+				if (page2.Article != null)
+				{
+					
+					Assert.AreEqual(articleID, page2.Article.ID, "ID of referenced article after activating doesn't match the original.");
+				}
+			}
+		}
 
 		[Test]
 		public void Test_GetReferences_Basic()
@@ -162,7 +252,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				
 				
-				EntityReferenceCollection references = DataAccess.Data.GetReferences(user, "Roles", typeof(TestRole), false);
+				EntityReferenceCollection references = DataAccess.Data.GetReferences(user.GetType(), user.ID, "Roles", typeof(TestRole), false);
 				
 				
 				
@@ -207,7 +297,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				
 				
-				EntityReferenceCollection references = DataAccess.Data.GetReferences(user, "Roles", typeof(TestRole), true);
+				EntityReferenceCollection references = DataAccess.Data.GetReferences(user.GetType(), user.ID, "Roles", typeof(TestRole), true);
 				
 				
 				
@@ -280,23 +370,24 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetReference function with an asynchronous reference to ensure it retrieves the correct reference.", NLog.LogLevel.Debug))
 			{
-				TestArticle.RegisterType();
+				TestAction.RegisterType();
 				TestCategory.RegisterType();
 				
-				TestArticle article = new TestArticle();
-				article.ID = Guid.NewGuid();
-				article.Title = "Test Article";
+				TestAction action = new TestAction();
+				action.ID = Guid.NewGuid();
+				action.Title = "Test Action";
 				
 				TestCategory category = new TestCategory();
 				category.ID = Guid.NewGuid();
 				category.Name = "Test Category";
 				
-				article.Categories = new TestCategory[] {category};
+				action.Categories = new TestCategory[] {category};
 				
-				DataAccess.Data.Save(article);
+				DataAccess.Data.Save(action);
 				DataAccess.Data.Save(category);
 				
-				EntityReference reference = DataAccess.Data.GetReference(article,
+				EntityReference reference = DataAccess.Data.GetReference(action.GetType(),
+				                                                         action.ID,
 				                                                         "Categories",
 				                                                         category.GetType(),
 				                                                         category.ID,
@@ -306,10 +397,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				Assert.IsNotNull(reference, "The return value is null.");
 				
-				Assert.IsTrue(reference.Includes(article.ID, "Categories"), "The returned reference is invalid. (#1)");
+				Assert.IsTrue(reference.Includes(action.ID, "Categories"), "The returned reference is invalid. (#1)");
 				Assert.IsTrue(reference.Includes(category.ID, ""), "The returned reference is invalid. (#2)");
 				
-				DataAccess.Data.Delete(article);
+				DataAccess.Data.Delete(action);
 				DataAccess.Data.Delete(category);
 			}
 		}
@@ -336,7 +427,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				DataAccess.Data.Save(user);
 				DataAccess.Data.Save(role);
 				
-				EntityReference reference = DataAccess.Data.GetReference(user,
+				EntityReference reference = DataAccess.Data.GetReference(user.GetType(),
+				                                                         user.ID,
 				                                                         "Roles",
 				                                                         role.GetType(),
 				                                                         role.ID,
@@ -377,7 +469,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				int total = 0;
 				
-				IEntity[] results = DataAccess.Data.GetEntitiesPageMatchReference<TestArticle>("Categories", category.ID, 0, 10, "NameAscending", out total);
+				IEntity[] results = DataAccess.Data.GetEntitiesPageMatchReference<TestArticle>("Categories", typeof(TestCategory), category.ID, 0, 10, "NameAscending", out total);
 				
 				Assert.IsNotNull(results, "The results were null.");
 				
@@ -417,7 +509,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				
 				
-				IEntity[] results = DataAccess.Data.GetEntitiesMatchReference<TestArticle>("Categories", category.ID);
+				IEntity[] results = DataAccess.Data.GetEntitiesMatchReference<TestArticle>("Categories", typeof(TestCategory), category.ID);
 				
 				Assert.IsNotNull(results, "The results were null.");
 				
@@ -455,12 +547,48 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				DataAccess.Data.Save(category);
 				
 				
+				string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(article.GetType(),
+				                                                                    EntitiesUtilities.GetProperty(article.GetType(), "Categories", typeof(TestCategory[])));
 				
-				bool match = DataAccess.Data.MatchReference(article, "Categories", null, category.ID);
+				
+				bool match = DataAccess.Data.MatchReference(article.GetType(), article.ID, "Categories", category.GetType(), category.ID);
 				
 				Assert.IsTrue(match, "Didn't match when it should have.");
 				
-			
+				
+				DataAccess.Data.Delete(article);
+				DataAccess.Data.Delete(category);
+			}
+		}
+		
+		
+		[Test]
+		public void Test_MatchReference_Opposite()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing the MatchReference function to ensure matches properly.", NLog.LogLevel.Debug))
+			{
+				TestArticle article = new TestArticle();
+				article.ID = Guid.NewGuid();
+				article.Title = "Test Article";
+				
+				TestCategory category = new TestCategory();
+				category.ID = Guid.NewGuid();
+				category.Name = "Test Category";
+				
+				article.Categories = new TestCategory[] { category };
+				
+				DataAccess.Data.Save(article);
+				DataAccess.Data.Save(category);
+				
+				
+				//string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(category.GetType(),
+				//                                                                    EntitiesUtilities.GetProperty(category.GetType(), "Articles", typeof(TestArticle[])));
+
+				bool match = DataAccess.Data.MatchReference(category.GetType(), category.ID, "Articles", article.GetType(), article.ID);
+				
+				Assert.IsTrue(match, "Didn't match when it should have.");
+				
+				
 				DataAccess.Data.Delete(article);
 				DataAccess.Data.Delete(category);
 			}
@@ -486,12 +614,15 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				DataAccess.Data.Save(category);
 				
 				
+				//string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(article.GetType(),
+				//                                                                    EntitiesUtilities.GetProperty(article.GetType(), "Categories", typeof(TestCategory[])));
+
 				
-				bool match = DataAccess.Data.MatchReference(article, "Categories", null, category.ID);
+				bool match = DataAccess.Data.MatchReference(article.GetType(), article.ID, "Categories", category.GetType(), category.ID);
 				
 				Assert.IsFalse(match, "Matched when it shouldn't have.");
 				
-			
+				
 				DataAccess.Data.Delete(article);
 				DataAccess.Data.Delete(category);
 			}
@@ -577,6 +708,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
 			{
 				ClearTestEntities();
+				
+				TestUser.RegisterType();
+				TestRole.RegisterType();
 
 				TestUser user = new TestUser();
 				user.ID = Guid.NewGuid();
@@ -595,8 +729,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				ReferenceFilter filter = (ReferenceFilter)DataAccess.Data.CreateFilter(typeof(ReferenceFilter));
 				filter.PropertyName = "Roles";
 				filter.ReferencedEntityID = role.ID;
+				filter.ReferenceType = role.GetType();
 				filter.AddType(typeof(TestUser));
-								
+				
 				IEntity[] found = (IEntity[])DataAccess.Data.GetEntities(filter);
 				
 				Assert.IsNotNull(found, "Null value returned");
@@ -612,6 +747,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 						Assert.AreEqual(user.ID, foundUser.ID, "The IDs don't match.");
 					}
 				}
+				
+				
+				//TestUser.DeregisterType();
+				//TestRole.DeregisterType();
 
 				ClearTestEntities();
 			}
@@ -642,8 +781,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				ReferenceFilter filter = (ReferenceFilter)DataAccess.Data.CreateFilter(typeof(ReferenceFilter));
 				filter.PropertyName = "Roles";
 				filter.ReferencedEntityID = role.ID;
+				//filter.ReferenceType = role.GetType();
+				
 				filter.AddType(typeof(TestUser));
-								
+				
 				IEntity[] found = (IEntity[])DataAccess.Data.GetEntities(filter);
 				
 				Assert.IsNotNull(found, "Null value returned");
@@ -788,20 +929,124 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing saving of an EntityIDReference.", NLog.LogLevel.Debug))
 			{
+				TestArticle.RegisterType();
+				TestArticlePage.RegisterType();
+				
 				EntityIDReference reference = new EntityIDReference();
 				reference.ID = Guid.NewGuid();
-				reference.Type1Name = "Type1";
-				reference.Type2Name = "Type2";
+				reference.Type1Name = "TestArticle";
+				reference.Type2Name = "TestArticlePage";
 				reference.Entity1ID = Guid.NewGuid();
 				reference.Entity2ID = Guid.NewGuid();
-				reference.Property1Name = "TestProperty1";
-				reference.Property2Name = "TestProperty2";
+				reference.Property1Name = "Pages";
+				reference.Property2Name = "Article";
 				
 				DataAccess.Data.Save(reference);
 				
-				IDataStore store = DataAccess.Data.Stores["Type1-Type2"];
+				IDataStore store = DataAccess.Data.Stores["Testing_Articles-Testing_Articles"];
 				
 				Assert.IsNotNull(store, "The data store wasn't created/initialized.");
+			}
+		}
+		
+		[Test]
+		public void Test_Update_MaintainReferences()
+		{
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing saving of an EntityIDReference.", NLog.LogLevel.Debug))
+			{
+				TestUser.RegisterType();
+				TestRole.RegisterType();
+				
+				TestUser user = new TestUser();
+				user.ID = Guid.NewGuid();
+				user.FirstName = "Test";
+				user.LastName = "User";
+				
+				TestRole role = new TestRole();
+				role.ID = Guid.NewGuid();
+				role.Name = "Test role";
+				
+				// This should remain commented out to check for exclusion
+				user.Roles = new TestRole[]{role};
+				
+				DataAccess.Data.Save(user);
+				DataAccess.Data.Save(role);
+				
+				
+				EntityIDReference reference = new EntityIDReference();
+				reference.ID = Guid.NewGuid();
+				reference.Type1Name = "TestUser";
+				reference.Type2Name = "TestRole";
+				reference.Entity1ID = user.ID;
+				reference.Entity2ID = role.ID;
+				reference.Property1Name = "Roles";
+				reference.Property2Name = "Users";
+				
+				TestUser user2 = DataAccess.Data.GetEntity<TestUser>("ID", user.ID);
+				
+				DataAccess.Data.Activate(user2);
+				
+				string newFirstName =  "Something else";
+				user2.FirstName  = newFirstName;
+				
+				DataAccess.Data.Update(user2);
+				
+				TestUser user3 = DataAccess.Data.GetEntity<TestUser>("ID", user.ID);
+				
+				DataAccess.Data.Activate(user3);
+				
+				Assert.IsNotNull(user3.Roles);
+				
+				if (user3.Roles != null)
+					Assert.AreEqual(1, user3.Roles.Length, "Incorrect number of roles.");
+				Assert.AreEqual(newFirstName, user3.FirstName, "First name mismatch.");
+				
+				//IDataStore store = DataAccess.Data.Stores["Testing_Articles-Testing_Articles"];
+				
+				//Assert.IsNotNull(store, "The data store wasn't created/initialized.");
+			}
+		}
+		
+				[Test]
+		public void Test_Delete_RemoveReferences()
+		{
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing saving of an EntityIDReference.", NLog.LogLevel.Debug))
+			{
+				TestUser.RegisterType();
+				TestRole.RegisterType();
+				
+				TestUser user = new TestUser();
+				user.ID = Guid.NewGuid();
+				user.FirstName = "Test";
+				user.LastName = "User";
+				
+				TestRole role = new TestRole();
+				role.ID = Guid.NewGuid();
+				role.Name = "Test role";
+				
+				// This should remain commented out to check for exclusion
+				user.Roles = new TestRole[]{role};
+				
+				DataAccess.Data.Save(user);
+				DataAccess.Data.Save(role);
+				
+				DataAccess.Data.Delete(role);
+								
+				TestUser user2 = DataAccess.Data.GetEntity<TestUser>("ID", user.ID);
+				
+				DataAccess.Data.Activate(user2);
+				
+				Assert.IsNotNull(user2.Roles);
+				
+				if (user2.Roles != null)
+					Assert.AreEqual(0, user2.Roles.Length, "Incorrect number of roles. The role should have been removed.");
+				//Assert.AreEqual(newFirstName, user3.FirstName, "First name mismatch.");
+				
+				//IDataStore store = DataAccess.Data.Stores["Testing_Articles-Testing_Articles"];
+				
+				//Assert.IsNotNull(store, "The data store wasn't created/initialized.");
 			}
 		}
 		

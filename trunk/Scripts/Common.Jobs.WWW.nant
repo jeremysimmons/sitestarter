@@ -12,6 +12,8 @@
 
 </loadtasks> 
 		
+
+		<include buildfile="Common.Jobs.ConfigureIIS.nant"/>
 		
 		<!--include buildfile="Common.Jobs.BuildProject.nant"/-->
 
@@ -54,29 +56,6 @@
 		</move>
   	</target>
   	
-  	  <target name="Common.Jobs.ConfigureIIS">
-
-    	    	<xmlpeek
-		    file="${Solution.PropertiesPath}"
-		    xpath="/x:project/x:property[@name = 'Solution.VirtualDirectoryName']/@value"
-		    property="Solution.VirtualDirectoryName">
-		        <namespaces>
-        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
-    			</namespaces>
-    		</xmlpeek>
-
-		<exec program="cscript.exe" verbose="true" failonerror="false">
-
-       	     	<arg value="C:\inetpub\AdminScripts\adsutil.vbs" />
-
-            	<arg value="DELETE" />
-
-            	<arg value="W3SVC\1\Root\${Solution.VirtualDirectoryName}" />
-
-		</exec>
-
-		<mkiisdir dirpath="${Solution.RootPath}\WWW" vdirname="${Solution.VirtualDirectoryName}" appfriendlyname="${Solution.VirtualDirectoryName}" verbose="true" />
-	</target>
-     
+  	 
 </project>
   	

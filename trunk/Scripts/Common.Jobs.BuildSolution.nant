@@ -3,6 +3,7 @@
 	
 	<include buildfile="Common.Jobs.WWW.nant"/>
 	<include buildfile="Common.Jobs.Modules.nant"/>
+	<include buildfile="Common.Actions.CleanSolution.nant"/>
 	
 		<xmlpeek
 		    file="${Solution.PropertiesPath}"
@@ -97,22 +98,6 @@
 	    	</if>
     	</if>
   </target>  
-  	
-      	<target name="Common.Actions.CleanSolution">
-  		<echo message="Start path: ${Solution.RootPath}"/>
-  		<delete>
-    		<fileset>
-        		<exclude name="${Solution.RootPath}\Lib\*.*" />
-        		<include name="${Solution.RootPath}\Bin\${Build.Mode}\*.*" />
-        		<include name="${Solution.RootPath}\SoftwareMonkeys.*\bin\${Build.Mode}\*.dll" />
-        		<include name="${Solution.RootPath}\SoftwareMonkeys.*\bin\${Build.Mode}\*.pdb" />
-        		<include name="${Solution.RootPath}\Modules\**\bin\${Build.Mode}\*.dll" />
-        		<include name="${Solution.RootPath}\Modules\**\bin\${Build.Mode}\*.pdb" />
-        		<include name="${Solution.RootPath}\WWW\bin\*.dll" />
-        		<include name="${Solution.RootPath}\WWW\bin\*.pdb" />
-    		</fileset>
-		</delete>
-  	</target>
   	
      
 </project>

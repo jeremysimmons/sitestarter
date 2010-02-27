@@ -26,7 +26,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 		{
 			if (configPath.ToLower().IndexOf(".config") == -1)
 				configPath = CreateConfigPath(configPath, name, variation);
-						
+			
 			T config = default(T);
 			
 			using (LogGroup logGroup = AppLogger.StartGroup("Loading configuration file: " + configPath))
@@ -37,26 +37,28 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 					// Exception not needed
 					//throw new Exception("Configuration file not found: " + configPath);
 					AppLogger.Debug("Configuration file not found.");
-					return default(T);
+					config = default(T);
 				}
-				
-				try
+				else
 				{
-					using (FileStream stream = File.Open(configPath, FileMode.Open))
+					try
 					{
-						XmlSerializer serializer = new XmlSerializer(typeof(T));
-						
-						config = (T)serializer.Deserialize(stream);
-						
-						stream.Close();
+						using (FileStream stream = File.Open(configPath, FileMode.Open))
+						{
+							XmlSerializer serializer = new XmlSerializer(typeof(T));
+							
+							config = (T)serializer.Deserialize(stream);
+							
+							stream.Close();
+						}
 					}
-				}
-				catch (Exception ex)
-				{
-					//DataLogger.Error("Loading configuration file: " + configPath);
-					
-					throw ex;
-					// TODO: Add error handling
+					catch (Exception ex)
+					{
+						//DataLogger.Error("Loading configuration file: " + configPath);
+						
+						throw ex;
+						// TODO: Add error handling
+					}
 				}
 			}
 
@@ -123,7 +125,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 			/// <param name="config">The configuration object to save.</param>
 			/// <param name="variation">The variation to be applied to the configuration file (ie. local, staging, etc.).</param>
 			static public void SaveConfig(string physicalDataDirectoryPath, T config, string variation)
-		{			
+		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Saving configuration file.", NLog.LogLevel.Debug))
 			{
 				AppLogger.Debug("Physical data directory path: " + physicalDataDirectoryPath);

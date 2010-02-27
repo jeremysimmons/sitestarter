@@ -2,9 +2,11 @@
 <project name="Common.Jobs.CreateReleaseZips" default="Common.Jobs.CreateReleaseZips" xmlns="http://nant.sf.net/schemas/nant.xsd">
 
 	<include buildfile="Common.Jobs.Reset.nant"/>
+	<include buildfile="Common.Actions.CleanSolution.nant"/>
 	
 <target name="Common.Jobs.CreateReleaseZips">
 		<call target="Common.Jobs.ResetAll"/>
+	<call target="Common.Actions.CleanSolution"/>
 
 	<xmlpeek
 		    file="${Solution.PropertiesPath}"
@@ -72,6 +74,10 @@
 	        <exclude name="**/*.exe.r*"/>
 	        <exclude name="**/App_Data/VS/**"/>
 	        <exclude name="**/fckeditor/**"/>
+	        <exclude name="**/Backups/*.zip"/>
+	        <exclude name="**/Imported/**.xml"/>
+	        <exclude name="**/Imports/**.xml"/>
+	        <exclude name="**/obj/debug/**"/>
 	        <include name="**/*" />
 	    </fileset>	   
 
@@ -102,6 +108,10 @@
 	        <exclude name="**/*.security"/>
 	        <exclude name="**/App_Data/VS/**"/>
 	        <exclude name="**/fckeditor/**"/>
+	        <exclude name="**/Backups/*.zip"/>
+	        <exclude name="**/Imported/**.xml"/>
+	        <exclude name="**/Imports/**.xml"/>
+	        <exclude name="**/obj/debug/**"/>
 	        <include name="**/*" />
 	    </fileset>	   
 	</zip>

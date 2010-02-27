@@ -185,11 +185,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			builder.Append("}\n");
 			
 			
+			string height = WindowHeight.ToString().Replace("px", "");
+			string width = WindowWidth.ToString().Replace("px", "");
+
 			builder.Append("\n");
 			builder.Append("function NewItem_" + ClientID + "(){\n");
 			builder.Append("	var url = '" + WebUtilities.EncodeJsString(CreateNavigateUrl()) + "';\n");
-			builder.Append("	var settings = 'Location=0,Scrollbars=1,Height=" + WindowHeight + ",Width=" + WindowWidth + "';\n");
-			builder.Append("	var win = window.open(url, 'AddItem-" + Guid.NewGuid() + "', settings);\n");
+			builder.Append("	var settings = 'Location=0,Scrollbars=1,Height=" + height + ",Width=" + width + "';\n");
+			builder.Append("	var win = window.open(url, 'AddItem_" + Guid.NewGuid().ToString().Replace("-", "_") + "', settings);\n");
 			//builder.Append("	var url = " + CreateNavigateUrl() + "\n");
 			builder.Append("}\n");
 			

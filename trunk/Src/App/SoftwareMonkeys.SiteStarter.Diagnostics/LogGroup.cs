@@ -27,6 +27,20 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 				return id; }
 			set { id = value; }
 		}
+		
+		private Guid parentID;
+		public Guid ParentID
+		{
+			get { return parentID; }
+			set { parentID = value; }
+		}
+		
+		private bool isThreadTitle;
+		public bool IsThreadTitle
+		{
+			get { return isThreadTitle; }
+			set { isThreadTitle = value; }
+		}
 
 
 		private LogLevel logLevel = LogLevel.Debug;
@@ -192,19 +206,15 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			if (logLevel < this.LogLevel)
 				throw new ArgumentException("The provided log level " + logLevel + " must be equal or greater than the log level of the group, which is " + logLevel + ".");
 
-			if (LogLevel == LogLevel.Debug)
-			{
-				Debug(message, callingMethod);
-			}
-			else if (LogLevel == LogLevel.Info)
-			{
-				Info(message, callingMethod);
-			}
-			else
-				throw new NotImplementedException("Support for the LogLevel type of " + logLevel + " has not yet been implemented.");
+			//if (LogLevel == LogLevel.Debug)
+			//{
+			AppLogger.WriteGroup(message, callingMethod, LogLevel, ID);
+			//}
+			//else
+			//	throw new NotImplementedException("Support for the LogLevel type of " + logLevel + " has not yet been implemented.");
 		}
 
-		public void Error(string message)
+		/*	public void Error(string message)
 		{
 			MethodBase callingMethod = Reflector.GetCallingMethod();
 			Error(message, callingMethod);
@@ -237,20 +247,21 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		public void Info(string message, MethodBase callingMethod)
 		{
 			AppLogger.Info(message, callingMethod);
-		}
+		}*/
 
 		internal void Start(MethodBase callingMethod, NLog.LogLevel logLevel)
 		{
-			if (AppLogger.PerformLogging(logLevel))
+			AppLogger.Push(this);
+
+			
+			if (AppLogger.PerformLogging(callingMethod, logLevel))
 			{
-				AppLogger.Push(this);
-
+				AppLogger.AddIndent();
+				
 				CallingMethod = callingMethod;
-
 				
 				StartLevel1(callingMethod);
 
-				AppLogger.AddIndent();
 			}
 
 			// TODO: Remove...obsolete
@@ -283,36 +294,18 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			// Ensure this doesnt run twice for the same group.
 			if (!HasEnded)
 			{
-				if (AppLogger.PerformLogging(LogLevel))
+				
+				if (AppLogger.PerformLogging(CallingMethod, LogLevel))
 				{
-					AppLogger.RemoveIndent();
-					//switch (mode)
-					//{
-					//	case LogGroupMode.Level1:
-					EndLevel1(CallingMethod);
-					//		break;
-					//	case LogGroupMode.Level2:
-					/*        EndLevel2(callingMethod);
-						break;
-					case LogGroupMode.Level3:
-                        EndLevel3(callingMethod);
-						break;
-					case LogGroupMode.Level4:
-                        EndLevel4(callingMethod);
-						break;
-					case LogGroupMode.Level5:
-                        EndLevel5(callingMethod);
-						break;
-					default:
-						throw new Exception("The trace group mode is not valid.");*/
-					//}
-
-					//Trace.Indent();
-
+					//AppLogger.RemoveIndent();
 					
-					AppLogger.Pop();
+					EndLevel1(CallingMethod);
+
 					
 				}
+				
+				AppLogger.Pop();
+				
 				HasEnded = true;
 
 			}
@@ -348,110 +341,6 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			//WriteLine("************************************************************");
 			//}
 		}
-
-		/*[Conditional("DEBUG")]
-        private void StartLevel2(MethodBase callingMethod)
-		{
-			//if (!SkipLogging())
-			//{
-				//WriteLine("************************************************************");
-				WriteLine("Starting: " + Summary, callingMethod);
-            //WriteLine("** Date/Time: " + DateTime.Now, callingMethod);
-				//WriteLine("************************************************************");
-            ///WriteLine("** " + Description, callingMethod);
-				//WriteLine("************************************************************");
-			//}
-		}
-
-		[Conditional("DEBUG")]
-        private void EndLevel2(MethodBase callingMethod)
-		{
-			//if (!SkipLogging())
-			//{
-				//WriteLine("************************************************************");
-            WriteLine("...End: ", callingMethod);
-            //WriteLine("** Date/Time: " + DateTime.Now, callingMethod);
-				//WriteLine("************************************************************");
-			//}
-		}
-
-		[Conditional("DEBUG")]
-        private void StartLevel3(MethodBase callingMethod)
-		{
-			//if (!SkipLogging())
-			//{
-				//WriteLine("************************************************************");
-            WriteLine("** ====== Starting: " + Summary, callingMethod);
-            //WriteLine("** Date/Time: " + DateTime.Now, callingMethod);
-            //WriteLine("** " + Description, callingMethod);
-				//WriteLine("************************************************************");
-			//}
-		}
-
-		[Conditional("DEBUG")]
-        private void EndLevel3(MethodBase callingMethod)
-		{
-			//if (!SkipLogging())
-			//{
-				//WriteLine("************************************************************");
-            WriteLine("** ====== Ending: " + Title, callingMethod);
-            //WriteLine("**  Date/Time: " + DateTime.Now, callingMethod);
-				//WriteLine("************************************************************");
-			//}
-		}
-
-		[Conditional("DEBUG")]
-        private void StartLevel4(MethodBase callingMethod)
-		{
-			//if (!SkipLogging())
-			//{
-            WriteLine("** ====== Starting: " + Title, callingMethod);
-            //WriteLine("** " + Description, callingMethod);
-			//}
-		}
-
-		[Conditional("DEBUG")]
-        private void EndLevel4(MethodBase callingMethod)
-		{
-			//if (!SkipLogging())
-			//{
-            WriteLine("** ====== Ending: " + Title, callingMethod);
-			//}
-		}
-
-		[Conditional("DEBUG")]
-        private void StartLevel5(MethodBase callingMethod)
-		{
-			//if (!SkipLogging())
-			//{
-            WriteLine("** == Starting: " + Title, callingMethod);
-            //WriteLine("** " + Description, callingMethod);
-			//}
-		}
-
-		[Conditional("DEBUG")]
-        private void EndLevel5(MethodBase callingMethod)
-		{
-			//if (!SkipLogging())
-			//{
-            WriteLine("** == Ending: " + Title, callingMethod);
-			//}
-		}*/
-
-		/*protected bool SkipLogging()
-		{
-			bool isDebugMode = false;
-
-			bool isDebugMode = true;
-
-			// If the project is running in debug mode
-			// Or the trace group is to be included in the release
-			// Then return false, indicating NOT to skip the logging for this group
-			if (isDebugMode || IncludeInRelease)
-				return false;
-			else
-				return true;
-		}*/
 
 
 		#region IComponent members

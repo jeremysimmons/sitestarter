@@ -25,7 +25,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			FinalizeLog(dir);
 			
 			if (File.Exists(file))
-			{			
+			{
 				XmlDocument indexDoc = new XmlDocument();
 				indexDoc.AppendChild(indexDoc.CreateElement("Index"));
 				
@@ -74,8 +74,8 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 					int indent = Convert.ToInt32(indentNode.InnerText);
 					
 					// If this is the thread root then move it to a new thread
-					if (indent == 0)
-					{						
+					if (IsThreadRoot(node))
+					{
 						// Save the previous thread
 						if (previousThreadDoc != null)
 						{
@@ -140,6 +140,16 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 				
 				indexDoc.Save(indexFile);
 			}
+		}
+		
+		static private bool IsThreadRoot(XmlNode node)
+		{
+			XmlNode subNode = node.SelectSingleNode("Indent");
+			
+			if (subNode != null && subNode.InnerText.ToLower() == 0.ToString())
+				return true;
+			
+			return false;
 		}
 		
 		static public void SaveThread(string rootDir, XmlDocument threadDoc, Guid threadID)

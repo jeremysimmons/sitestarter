@@ -18,6 +18,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests.Entities
             set { title = value; }
         }
 
+        // TODO: Remove if not in use. References don't directly reference IDs
         private Guid[] categoryIDs;
         public Guid[] CategoryIDs
         {
@@ -26,7 +27,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests.Entities
         }
 
         private TestCategory[] categories;
-        [Reference]
+        [Reference(MirrorPropertyName="Articles")]
         public TestCategory[] Categories
         {
             get { return categories; }
@@ -37,8 +38,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests.Entities
         /// <summary>
         /// Gets/sets the associated pages.
         /// </summary>
-        [Reference]
-        [XmlIgnore()]
+        [Reference(MirrorPropertyName="Article")]
+        //[XmlIgnore()]
         public TestArticlePage[] Pages
         {
             get { return pages; }

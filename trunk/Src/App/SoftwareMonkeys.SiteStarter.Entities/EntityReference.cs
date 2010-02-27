@@ -122,6 +122,22 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			}
 		}
 		
+		public EntityReference()
+		{
+		}
+		
+		public EntityReference(EntityIDReference reference)
+		{
+			Property1Name = reference.Property1Name;
+			Property2Name = reference.Property2Name;
+			
+			Type1Name = reference.Type1Name;
+			Type2Name = reference.Type2Name;
+			
+			Entity1ID = reference.Entity1ID;
+			Entity2ID = reference.Entity2ID;
+		}
+		
 		/// <summary>
 		/// Gets the entity in the reference that wasn't provided. Hence the "other" entity.
 		/// </summary>

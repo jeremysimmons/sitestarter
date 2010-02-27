@@ -1,18 +1,30 @@
 <?xml version="1.0"?>
 <project name="Common.Jobs.ConfigureIIS" default="Common.Jobs.ConfigureIIS" xmlns="http://nant.sf.net/schemas/nant.xsd">
-  		
+  	
+
+
+	<xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.VirtualDirectoryName']/@value"
+		    property="Solution.VirtualDirectoryName">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
   	
   		
 	<target name="Common.Jobs.ConfigureIIS" description="Configures IIS to run app">
-		<exec program="cscript.exe" verbose="true" failonerror="true">
 
-       	     	<arg value="C:\inetpub\AdminScripts\adsutil.vbs" />
 
-            	<arg value="DELETE" />
+		<loadtasks>
 
-            	<arg value="W3SVC\1\Root\${Project.VirtualDirectoryName}" />
+            		<fileset>
 
-		</exec>
+              		          <include name="../Lib/nant/bin/tasks/NAnt.Contrib.Tasks.dll" />
+
+            		</fileset>
+
+		</loadtasks> 
 
 		<cd dir="${Solution.RootPath}\WWW"/>
 

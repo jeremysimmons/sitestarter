@@ -22,7 +22,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests.Entities
         /// <summary>
         /// Gets/sets the article that the step belongs to.
         /// </summary>
-        [Reference]
+        [Reference(MirrorPropertyName="Pages",
+                  TypeName="TestArticle")]
         public ITestArticle Article
         {
             get { return article; }

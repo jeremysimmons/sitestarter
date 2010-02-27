@@ -74,9 +74,11 @@
     <Compile Include="DataStoreTests.cs" />
     <Compile Include="Entities\ITestRole.cs" />
     <Compile Include="Entities\ITestUser.cs" />
+    <Compile Include="Entities\TestAction.cs" />
     <Compile Include="Entities\TestRole.cs" />
     <Compile Include="Entities\TestUser.cs" />
     <Compile Include="Entities\ITestArticle.cs" />
+    <Compile Include="ReferenceFilterTests.cs" />
     <Compile Include="TestUtilities.cs" />
   </ItemGroup>
   <ItemGroup>
