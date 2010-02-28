@@ -45,6 +45,9 @@
 		<if test="${file::exists(Solution.RootPath + '\WWW\Web.default.sitemap')}">
 			<copy file="${Solution.RootPath}\WWW\Web.default.sitemap" tofile="${Solution.RootPath}\WWW\Web.sitemap" overwrite="true"/>
 		</if>
+		<if test="${file::exists(Solution.RootPath + '\WWW\App_Data\Menu.default.sitemap')}">
+			<copy file="${Solution.RootPath}\WWW\App_Data\Menu.default.sitemap" tofile="${Solution.RootPath}\WWW\App_Data\Menu.sitemap" overwrite="true"/>
+		</if>
   	</target>
   	
   	  <target name="Common.Jobs.ArchiveLogs"> 		
