@@ -67,7 +67,7 @@
     	VirtualServer server = (VirtualServer)VirtualServerDataForm.DataSource;
     	User administrator = (User)AdministratorDataForm.DataSource;
     	
-    	User systemAdministrator = UserFactory.GetUser(Config.Application.PrimaryAdministratorID);
+    	User systemAdministrator = UserFactory.Current.GetUser(Config.Application.PrimaryAdministratorID);
     	
     	server.PrimaryAdministrator = administrator;
         
@@ -79,26 +79,27 @@
         server.Keywords = Config.Application.DefaultVirtualServerKeywords;
         
         // Reset the current server state temporarily
-        if (VirtualServerFactory.SaveVirtualServer(server))
+        if (VirtualServerFactory.Current.SaveVirtualServer(server))
         {
 	            if (Config.Application.AutoApproveVirtualServerRegistration)
 	            {                    
 		            VirtualServerState.Switch(server.Name, server.ID);
-		            
-		            UserFactory.SaveUser(administrator);
-			            
-		            if(!Roles.RoleExists("Administrator"))
-		                Roles.CreateRole("Administrator");
-		
-		            if (!Roles.IsUserInRole(administrator.Username, "Administrator"))
-		                Roles.AddUserToRole(administrator.Username, "Administrator");
-		            
-		            FormsAuthentication.SetAuthCookie(administrator.Username, false);
-		            
-		            server.PrimaryAdministrator = My.User = administrator;
 
-                    VirtualServerFactory.SendWelcomeEmail(server, TextParser.ParseSetting("VirtualServerWelcomeEmailSubject"), TextParser.ParseSetting("VirtualServerWelcomeEmail"), systemAdministrator);
-                    VirtualServerFactory.SendRegistrationAlert(server, TextParser.ParseSetting("VirtualServerRegistrationAlertSubject"), TextParser.ParseSetting("VirtualServerRegistrationAlert"), systemAdministrator);
+
+                    if (!Roles.RoleExists("Administrator"))
+                        Roles.CreateRole("Administrator");
+
+                    administrator.Roles = new UserRole[] { UserRoleFactory.Current.GetUserRoleByName("Administrator") };
+                    
+		            UserFactory.Current.SaveUser(administrator);
+			            
+		            FormsAuthentication.SetAuthCookie(administrator.Username, false);
+		            My.User = administrator;
+                    
+		            server.PrimaryAdministrator = administrator;
+
+                    VirtualServerFactory.Current.SendWelcomeEmail(server, TextParser.ParseSetting("VirtualServerWelcomeEmailSubject"), TextParser.ParseSetting("VirtualServerWelcomeEmail"), systemAdministrator);
+                    VirtualServerFactory.Current.SendRegistrationAlert(server, TextParser.ParseSetting("VirtualServerRegistrationAlertSubject"), TextParser.ParseSetting("VirtualServerRegistrationAlert"), systemAdministrator);
                     
 	    	        // Display the result to the server
 		            Result.Display(Resources.Language.VirtualServerCreated);

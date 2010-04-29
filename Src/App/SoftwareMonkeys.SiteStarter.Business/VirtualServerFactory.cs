@@ -9,6 +9,7 @@ using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Data;
 using SoftwareMonkeys.SiteStarter.Configuration;
+using System.Configuration;
 using System.Xml.Serialization;
 using System.IO;
 using System.Net.Mail;
@@ -28,13 +29,31 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// Provides an interface for interacting with servers.
 	/// </summary>
     [DataObject(true)]
-    public class VirtualServerFactory<V>
+    public class VirtualServerFactory<V> : BaseFactory
     	where V : IVirtualServer
     {
+        static private VirtualServerFactory<V> current;
+        static public VirtualServerFactory<V> Current
+        {
+            get
+            {
+                if (current == null)
+                    current = new VirtualServerFactory<V>();
+                return current;
+            }
+        }
+
+        public override Dictionary<string, Type> DefaultTypes
+        {
+            get { return base.DefaultTypes; }
+            set { base.DefaultTypes = value; }
+        }
+	
+
         /// <summary>
         /// Gets the data store containing the objects that this factory interact with.
         /// </summary>
-        static public IDataStore DataStore
+        public IDataStore DataStore
         {
             get { return DataAccess.Data.Stores[typeof(V)]; }
         }
@@ -45,7 +64,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <returns>A VirtualServerSet containing the retrieved servers.</returns>
         [DataObjectMethod(DataObjectMethodType.Select, true)]
-		static public V[] GetVirtualServers()
+		public V[] GetVirtualServers()
 		{
 	        SiteStarter.State.VirtualServerState.SuspendVirtualServerState();
 	        
@@ -62,7 +81,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="serverIDs">An array of IDs of servers to retrieve.</param>
 		/// <returns>A VirtualServerSet containing the retrieved servers.</returns>
         [DataObjectMethod(DataObjectMethodType.Select, true)]
-        static public V[] GetVirtualServers(Guid[] serverIDs)
+        public V[] GetVirtualServers(Guid[] serverIDs)
 		{
 	        SiteStarter.State.VirtualServerState.SuspendVirtualServerState();
            
@@ -88,7 +107,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="serverID">The ID of the server to retrieve.</param>
 		/// <returns>A VirtualServer object containing the requested info.</returns>
         [DataObjectMethod(DataObjectMethodType.Select, true)]
-        static public V GetVirtualServer(Guid serverID)
+        public V GetVirtualServer(Guid serverID)
 		{
             // If the ID is empty return null
             if (serverID == Guid.Empty)
@@ -107,7 +126,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
         /// <summary>
         /// Retrieves the servers with the provided name.
         /// </summary>
-        static public V[] GetVirtualServersByName(string name)
+        public V[] GetVirtualServersByName(string name)
         {
 	        SiteStarter.State.VirtualServerState.SuspendVirtualServerState();
 	        
@@ -122,7 +141,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
         /// <summary>
         /// Retrieves the server with the provided name.
         /// </summary>
-        static public V GetVirtualServerByName(string name)
+        public V GetVirtualServerByName(string name)
         {
             SiteStarter.State.VirtualServerState.SuspendVirtualServerState();
             
@@ -142,7 +161,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="server">The server to save.</param>
 		/// <returns>A boolean value indicating whether the servername is taken.</returns>
         [DataObjectMethod(DataObjectMethodType.Insert, true)]
-        static public bool SaveVirtualServer(V server)
+        public bool SaveVirtualServer(V server)
 		{
 			bool success = false;
 	        SiteStarter.State.VirtualServerState.SuspendVirtualServerState();
@@ -180,7 +199,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
         /// <param name="physicalDataDirectoryPath">The physical path to the data directory.</param>
         /// <param name="config">The configuration object to save.</param>
         /// <param name="variation">The variation to be applied to the configuration file (ie. local, staging, etc.).</param>
-        static public void SaveConfig(string physicalDataDirectoryPath, V config)
+        public void SaveConfig(string physicalDataDirectoryPath, V config)
         {
             ConfigFactory<V>.SaveConfig(physicalDataDirectoryPath, config, String.Empty);
         }
@@ -191,7 +210,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
         /// <param name="configPath">The physical path to the config file.</param>
         /// <param name="type">The type of configuration object to load.</param>
         /// <returns>The config from the specified path.</returns>
-        static public V LoadConfig(string physicalDataDirectoryPath)
+        public V LoadConfig(string physicalDataDirectoryPath)
         {
         	return (V)ConfigFactory<V>.LoadConfig(physicalDataDirectoryPath, "VirtualServer", "");
         }
@@ -203,7 +222,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="server">The server to update.</param>
 		/// <returns>A boolean value indicating whether the servername is taken.</returns>
         [DataObjectMethod(DataObjectMethodType.Update, true)]
-        static public bool UpdateVirtualServer(V server)
+        public bool UpdateVirtualServer(V server)
 		{
 		
 			SiteStarter.State.VirtualServerState.SuspendVirtualServerState();
@@ -239,7 +258,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="server">The server to delete.</param>
         [DataObjectMethod(DataObjectMethodType.Delete, true)]
-        static public void DeleteVirtualServer(V server)
+        public void DeleteVirtualServer(V server)
 		{
 			SiteStarter.State.VirtualServerState.SuspendVirtualServerState();
 			
@@ -262,7 +281,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="server">The server to check the servername of.</param>
 		/// <returns>A boolean value indicating whether the servername is taken.</returns>
-        static public bool VirtualServerNameTaken(V server)
+        public bool VirtualServerNameTaken(V server)
 		{
 			bool taken = false;
 			
@@ -305,12 +324,14 @@ namespace SoftwareMonkeys.SiteStarter.Business
         /// <param name="subject">The subject of the welcome email.</param>
         /// <param name="body">The body of the welcome email.</param>
         /// <param name="systemAdministrator">The system administrator.</param>
-        static public void SendWelcomeEmail(V server, string subject, string body, Entities.IUser systemAdministrator)
+        public void SendWelcomeEmail(V server, string subject, string body, Entities.IUser systemAdministrator)
         {            
             if (systemAdministrator == null)
             	throw new InvalidOperationException("The system administrator could not be found with ID " + Config.Application.PrimaryAdministratorID);
-            
-            if (server.PrimaryAdministratorID == Guid.Empty)
+
+            Activate(server, "PrimaryAdministrator");
+
+            if (server.PrimaryAdministrator == null)
             	throw new InvalidOperationException("The primary administrator ID isn't specified for the virtual server.");
             	
             //if (server.PrimaryAdministrator == null)
@@ -329,7 +350,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 
                 message.IsBodyHtml = true;
 
-                new SmtpClient(Config.Application.SmtpServer).Send(message);
+                new SmtpClient(ConfigurationSettings.AppSettings["SmtpServer"]).Send(message);
         }
         /// <summary>
         /// Sends the registration alert.
@@ -338,13 +359,12 @@ namespace SoftwareMonkeys.SiteStarter.Business
         /// <param name="subject">The subject of the registration alert email.</param>
         /// <param name="body">The body of the registration alert email.</param>
         /// <param name="systemAdministrator">The system administrator.</param>
-        static public void SendRegistrationAlert(V server, string subject, string body, Entities.IUser systemAdministrator)
-        {            
-            if (server.PrimaryAdministratorID == Guid.Empty)
-            	throw new InvalidOperationException("The primary administrator ID isn't specified for the virtual server.");
-            	
+        public void SendRegistrationAlert(V server, string subject, string body, Entities.IUser systemAdministrator)
+        {
+
+
             if (server.PrimaryAdministrator == null)
-            	server.PrimaryAdministrator = UserFactory<Entities.User>.Current.GetUser(server.PrimaryAdministratorID);
+                VirtualServerFactory.Current.Activate(server, "PrimaryAdministrator");
 
             if (server.PrimaryAdministrator == null)
             	throw new InvalidOperationException("The administrator of the virtual server could not be found.");
@@ -360,7 +380,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 
                 message.IsBodyHtml = true;
 
-            new SmtpClient(Config.Application.SmtpServer).Send(message);
+            new SmtpClient(ConfigurationSettings.AppSettings["SmtpServer"]).Send(message);
 
         }
 	}

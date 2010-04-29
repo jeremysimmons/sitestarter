@@ -199,6 +199,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 
 					IUserRole role = UserRoleFactory<Entities.UserRole>.Current.GetUserRoleByName(rolename);
 
+                    UserFactory.Current.Activate(user);
+
 					user.Roles = Collection<IUserRole>.Add(user.Roles, role);
 
 					// Not needed. Previous line does it all.
@@ -383,6 +385,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 
 			IUserRole role = UserRoleFactory<R>.Current.GetUserRoleByName(rolename);
 
+            UserFactory<U>.Current.Activate(user, "Roles");
 
 			if (user == null)
 				throw new ProviderException("User not found with specified username.");

@@ -40,37 +40,56 @@ namespace SoftwareMonkeys.SiteStarter.Entities
             get { return isApproved; }
             set { isApproved = value; }
         }
-        
-        private Guid primaryAdministratorID;
-        /// <summary>
-        /// Gets/sets the ID of the primaryAdministrator that the feature is part of.
-        /// </summary>
-        public virtual Guid PrimaryAdministratorID
-        {
-            get {
-                if (primaryAdministrator != null)
-                    return primaryAdministrator.ID;
-                return primaryAdministratorID; }
-            set
-            {
-                primaryAdministratorID = value;
-                if (primaryAdministrator != null && primaryAdministrator.ID != primaryAdministratorID)
-                    primaryAdministrator = null;
-            }
-        }
 
-        private IUser primaryAdministrator;
         /// <summary>
         /// Gets/sets the name of the primaryAdministrator that the feature is part of.
         /// </summary>
         [XmlIgnore]
-        [Reference]
-        public virtual IUser PrimaryAdministrator
+        IUser IVirtualServer.PrimaryAdministrator
+        {
+            get { return (IUser)PrimaryAdministrator; }
+            set
+            {
+                PrimaryAdministrator = (User)value;
+            }
+        }
+
+
+        private User primaryAdministrator;
+        /// <summary>
+        /// Gets/sets the name of the primaryAdministrator that the feature is part of.
+        /// </summary>
+        [Reference(TypeName = "User")]
+        public virtual User PrimaryAdministrator
         {
             get { return primaryAdministrator; }
             set
             {
                 primaryAdministrator = value;
+            }
+        }
+
+        private Guid primaryAdministratorID;
+        public Guid PrimaryAdministratorID
+        {
+            get
+            {
+                if (primaryAdministratorID == Guid.Empty)
+                {
+
+                    if (PrimaryAdministrator != null)
+                        primaryAdministratorID = PrimaryAdministrator.ID;
+                }
+                return primaryAdministratorID;
+            }
+            set
+            {
+                primaryAdministratorID = value;
+                if (primaryAdministrator != null &&
+                    primaryAdministrator.ID != value)
+                {
+                    primaryAdministrator = null;
+                }
             }
         }
         

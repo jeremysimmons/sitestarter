@@ -65,7 +65,10 @@ namespace SoftwareMonkeys.SiteStarter.Data
         
         public abstract IEntity[] GetEntities(Type type, string propertyName, object propertyValue);
         public abstract IEntity GetEntity(Type type, string propertyName, object propertyValue);
-        
+
+
+        public abstract T GetEntityMatchReference<T>(string propertyName, Type referencedEntityType, Guid referencedEntityID)
+            where T : IEntity;
         public abstract T[] GetEntitiesMatchReference<T>(string propertyName, Type referencedEntityType, Guid referencedEntityID)
         	where T : IEntity;
 

@@ -5,6 +5,7 @@
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Entities" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Security" %>
 <script runat="server">
     #region Main functions
     /// <summary>
@@ -12,11 +13,17 @@
     /// </summary>
     private void ManageUserRoles()
     {
+        Authorisation.EnsureIsAuthenticated();
+
+        Authorisation.EnsureIsInRole("Administrator");
+        
         OperationManager.StartOperation("ManageUserRoles", IndexView);
 
-        
-        IndexGrid.DataSource = Collection<BaseEntity>.ConvertAll(UserRoleFactory.Current.GetUserRoles());
+        UserRole[] roles = UserRoleFactory.Current.GetUserRoles();
+        IndexGrid.DataSource = roles;
 
+        Authorisation.EnsureUserCan("View", roles);        
+        
         IndexView.DataBind();
     }
 
@@ -25,11 +32,19 @@
     /// </summary>
     private void CreateUserRole()
     {
+
+        Authorisation.EnsureIsAuthenticated();
+
+        Authorisation.EnsureIsInRole("Administrator");
+        
         OperationManager.StartOperation("CreateUserRole", FormView);
 
         UserRole role = new UserRole();
         role.ID = Guid.NewGuid();
         DataForm.DataSource = role;
+
+
+        Authorisation.EnsureUserCan("Create", role);        
 
         FormView.DataBind();
     }
@@ -55,11 +70,17 @@
 
     private void EditUserRole(Guid roleID)
     {
+
+        Authorisation.EnsureIsAuthenticated();
+
+        Authorisation.EnsureIsInRole("Administrator");
+        
         // Start the operation
         OperationManager.StartOperation("EditUserRole", FormView);
 
         // Load the specified role
-        DataForm.DataSource = UserRoleFactory.Current.GetUserRole(roleID);
+        UserRole role = null;
+        DataForm.DataSource = role = UserRoleFactory.Current.GetUserRole(roleID);
         UserRoleFactory.Current.Activate((UserRole)DataForm.DataSource);
 
         // Bind the form
@@ -95,8 +116,16 @@
     /// <param name="roleID">The ID of the role to delete.</param>
     private void DeleteUserRole(Guid roleID)
     {
+        Authorisation.EnsureIsAuthenticated();
+
+        Authorisation.EnsureIsInRole("Administrator");
+
+        UserRole role = UserRoleFactory.Current.GetUserRole(roleID);
+
+        Authorisation.EnsureUserCan("Delete", role);        
+        
         // Delete the specified role
-        UserRoleFactory.Current.DeleteUserRole(UserRoleFactory.Current.GetUserRole(roleID));
+        UserRoleFactory.Current.DeleteUserRole(role);
 
         // Display the result to the role
         Result.Display(Resources.Language.UserRoleDeleted);

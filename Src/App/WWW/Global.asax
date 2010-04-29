@@ -47,7 +47,7 @@
         {
 	        if (Request.QueryString["VS"] != null && Request.QueryString["VS"] != String.Empty)
 	        {
-	            VirtualServer server = VirtualServerFactory.GetVirtualServerByName(Request.QueryString["VS"]);
+	            VirtualServer server = VirtualServerFactory.Current.GetVirtualServerByName(Request.QueryString["VS"]);
 	
 	            if (server != null)
 	                VirtualServerState.Switch(server.Name, server.ID);

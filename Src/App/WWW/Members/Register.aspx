@@ -45,8 +45,8 @@
      
         // Encrypt the password
         ((User)DataForm.DataSource).Password = Crypter.EncryptPassword(((User)DataForm.DataSource).Password);
-           
-        if (UserFactory.SaveUser((User)DataForm.DataSource))
+
+        if (UserFactory.Current.SaveUser((User)DataForm.DataSource))
         {
             // Display the result to the user
             Result.Display(Resources.Language.RegistrationSuccessful);

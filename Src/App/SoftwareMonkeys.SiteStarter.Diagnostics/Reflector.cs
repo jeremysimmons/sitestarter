@@ -49,6 +49,9 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			PropertyInfo property = null;
 			object value = obj;
 			Type returnType = null;
+
+			if (obj == null)
+				throw new ArgumentException("obj cannot be null");
 			
 			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving property '" + propertyName + "' from type '" + obj.GetType(), NLog.LogLevel.Debug))
 			{

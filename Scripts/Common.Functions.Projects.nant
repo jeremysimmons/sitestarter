@@ -39,7 +39,6 @@
 					return startPath;
 				}
 				
-				return String.Empty;
 			}
 		]]>
 		</code>

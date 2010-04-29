@@ -59,8 +59,38 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			{
 				TestUser.RegisterType();
 				TestRole.RegisterType();
+
+                TestArticle article = new TestArticle();
+                article.ID = Guid.NewGuid();
+                article.Title = "Test Article";
+
+                TestCategory category = new TestCategory();
+                category.ID = Guid.NewGuid();
+                category.Name = "Test Category";
+
+                article.Categories = new TestCategory[] { category };
+
+                DataAccess.Data.Save(article);
+                DataAccess.Data.Save(category);
+
+                EntityReferenceCollection collection = DataAccess.Data.GetReferences(article.GetType(), article.ID, "Categories", category.GetType(), false);
+
+                Assert.IsNotNull(collection, "Reference collection is null.");
+
+                if (collection != null)
+                {
+                    Assert.AreEqual(1, collection.Count, "Incorrect number of references found.");
+                }
+
+                foreach (EntityReference reference in collection)
+                {
+                    bool match = DataAccess.Data.IsStored(reference);
+
+                    Assert.AreEqual(true, match, "Reference wasn't detected.");
+                }
+
 				
-				EntityReference reference = new EntityReference();
+				/*EntityReference reference = new EntityReference();
 				EntityReference reference2 = new EntityReference();
 				reference.ID =  Guid.NewGuid();
 				reference2.ID = Guid.NewGuid();
@@ -70,7 +100,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				reference2.Property1Name = reference.Property2Name = "Users";
 				reference.Entity1ID = reference2.Entity2ID = Guid.NewGuid();
 				reference2.Entity1ID = reference.Entity2ID = Guid.NewGuid();
-				
+				*/
 				/*TestUser user = new TestUser();
 				Guid userID = user.ID = Guid.NewGuid();
 				user.FirstName = "Test";
@@ -83,7 +113,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				//user.Roles.Add(role);
 				
-				DataAccess.Data.Save(reference);
+				/*DataAccess.Data.Save(reference);
 				
 				bool isStored = DataAccess.Data.IsStored(reference2);
 				
@@ -92,7 +122,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				
 				
-				Assert.IsTrue(isStored, "The reference wasn't detected.");
+				Assert.IsTrue(isStored, "The reference wasn't detected.");*/
 				
 			}
 		}
@@ -584,9 +614,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				//string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(category.GetType(),
 				//                                                                    EntitiesUtilities.GetProperty(category.GetType(), "Articles", typeof(TestArticle[])));
 
-				bool match = DataAccess.Data.MatchReference(category.GetType(), category.ID, "Articles", article.GetType(), article.ID);
 				
-				Assert.IsTrue(match, "Didn't match when it should have.");
+                bool match = DataAccess.Data.MatchReference(article.GetType(), article.ID, "Categories", category.GetType(), category.ID);
+                bool match2 = DataAccess.Data.MatchReference(category.GetType(), category.ID, "Articles", article.GetType(), article.ID);
+
+                Assert.IsTrue(match, "Didn't match on standard check.");
+                Assert.IsTrue(match2, "Didn't match on reverse check.");
 				
 				
 				DataAccess.Data.Delete(article);

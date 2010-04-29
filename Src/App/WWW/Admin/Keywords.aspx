@@ -153,10 +153,6 @@
         }
     }
 
-    protected void UsersSelect_DataLoading(object sender, EventArgs e)
-    {
-        ((EntitySelect)sender).DataSource = UserFactory.GetUsers();
-    }
     #endregion
 </script>
 <asp:Content ID="Body" ContentPlaceHolderID="Body" runat="Server">

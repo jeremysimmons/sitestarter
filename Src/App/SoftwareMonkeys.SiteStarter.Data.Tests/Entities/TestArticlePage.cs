@@ -18,13 +18,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests.Entities
             set { title = value; }
         }
 
-        private ITestArticle article;
+        private TestArticle article;
         /// <summary>
         /// Gets/sets the article that the step belongs to.
         /// </summary>
         [Reference(MirrorPropertyName="Pages",
                   TypeName="TestArticle")]
-        public ITestArticle Article
+        public TestArticle Article
         {
             get { return article; }
             set { article = value; }

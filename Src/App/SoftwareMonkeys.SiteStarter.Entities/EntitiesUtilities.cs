@@ -12,6 +12,11 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 	/// </summary>
 	public class EntitiesUtilities
 	{
+        static public bool IsEntity(Type type)
+        {
+            return typeof(IEntity).IsAssignableFrom(type);
+        }
+
 		static public void RegisterEntityType(Type type)
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Registering entity type: "+ type.ToString(), NLog.LogLevel.Debug))

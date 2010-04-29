@@ -135,36 +135,39 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		static public string GetDataStoreName(Type type, bool throwErrorIfNotFound)
 		{
 			string dataStoreName = String.Empty;
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the name of the data store.", NLog.LogLevel.Debug))
-			{
-				if (type == null)
-					throw new ArgumentNullException("type");
-				
-				if (Config.Mappings == null)
-					throw new  InvalidOperationException("No mappings have been initialized.");
-				
-				Type actualType = EntitiesUtilities.GetType(type.Name);
-				
-				
-				if (actualType == null)
-					actualType = type;
-				
-				AppLogger.Debug("Actual type: " + actualType.ToString());
-				
-				MappingItem item = Config.Mappings.GetItem(actualType, false);
-				if (item == null){
-					throw new InvalidOperationException("No mappings found for the type " + actualType.ToString() + ".");
-				}
-				else
-					AppLogger.Debug("Item found: " + item.TypeName);
-				
-				if (!item.Settings.ContainsKey("DataStoreName"))
-					throw new InvalidOperationException("No data store name has been declared in the mappings for the '" + actualType.ToString() + "' type.");
-				else
-					AppLogger.Debug("Data store: " + item.Settings["DataStoreName"]);
-				
-				dataStoreName = (string)item.Settings["DataStoreName"];
-			}
+            using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the name of the data store.", NLog.LogLevel.Debug))
+            {
+                if (type == null)
+                    throw new ArgumentNullException("type");
+
+                if (Config.Mappings == null)
+                    throw new InvalidOperationException("No mappings have been initialized.");
+
+
+                Type actualType = EntitiesUtilities.GetType(type.Name);
+
+
+                if (actualType == null)
+                    actualType = type;
+
+                AppLogger.Debug("Actual type: " + actualType.ToString());
+
+                MappingItem item = Config.Mappings.GetItem(actualType, false);
+                if (item == null)
+                {
+                    throw new InvalidOperationException("No mappings found for the type " + actualType.ToString() + ".");
+                }
+                else
+                    AppLogger.Debug("Item found: " + item.TypeName);
+
+                if (!item.Settings.ContainsKey("DataStoreName"))
+                    throw new InvalidOperationException("No data store name has been declared in the mappings for the '" + actualType.ToString() + "' type.");
+                else
+                    AppLogger.Debug("Data store: " + item.Settings["DataStoreName"]);
+
+                dataStoreName = (string)item.Settings["DataStoreName"];
+
+            }
 			return dataStoreName;
 		}
 

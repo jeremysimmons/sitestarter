@@ -9,7 +9,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
     {
 		Guid ID {get;set;}
 		string Name {get;set;}
-		Guid PrimaryAdministratorID {get;set;}
+		//Guid PrimaryAdministratorID {get;set;}
 		IUser PrimaryAdministrator {get;set;}
     }
 }

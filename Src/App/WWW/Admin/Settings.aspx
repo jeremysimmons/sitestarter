@@ -16,6 +16,10 @@
     /// </summary>
     private void ManageSettings()
     {
+        Authorisation.EnsureIsAuthenticated();
+
+        Authorisation.EnsureIsInRole("Administrator");
+        
         OperationManager.StartOperation("ManageSettings", IndexView);
 
 	    Authorisation.EnsureUserCan("View", typeof(AppConfig));

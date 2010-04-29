@@ -331,6 +331,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Transferring data from form fields to entity.", NLog.LogLevel.Debug))
 			{
+				if (DataSource == null)
+				{
+					AppLogger.Debug("DataSource == null - Reverse bind skipped");
+				}
+				else
+				{
+
 				foreach (TableRow row in this.Rows)
 				{
 					if (row is EntityFormItem)
@@ -369,6 +376,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 							//	AppLogger.Debug("Property not found.");
 						}
 					}
+				}
+
 				}
 			}
 		}

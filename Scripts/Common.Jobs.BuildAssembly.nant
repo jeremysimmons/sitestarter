@@ -13,10 +13,6 @@
 
   		
   		
-  		
-  		<!--property name="Solution.RelativePath" value=""/-->
-  		<!--property name="Solution.RootPath" value="${string::substring(string::trim(Project.RootPath, '\'), string::last-index-of('\'), string::get-length(Project.RootPath)}"/-->
-		
 		
 	
 <loadtasks>
@@ -40,7 +36,7 @@
 	
 		<!--call target="Private.InitializeProject"/-->
 	
-		<!--property name="Local.ProjectQuery" value="..\${AssemblyProject.RelativePath}\*.Project.nant"/-->
+		<!--property name="Local.ProjectQuery" value="${path::combine(path::combine('..', AssemblyProject.RelativePath), "*.Project.nant")}"/-->
 		
 		
     	
@@ -84,7 +80,7 @@
     	</xmlpeek>
     	
     	
-    	<property name="Project.BinariesPath" value="${Project.RootPath}\Bin"/>
+    	<property name="Project.BinariesPath" value="${path::combine(Project.RootPath, 'bin')}"/>
     	
     	<property name="AssemblyProject.AssemblyName" value="${string::replace(AssemblyProject.AssemblyName, '${Assembly.BaseNamespace}', AssemblyProject.BaseNamespace)}"/>
      	
@@ -107,7 +103,7 @@
 		            
 			<version buildtype="NoIncrement"
 	            revisiontype="Increment"
-	            path="${AssemblyProject.RootPath}\Version.Number"/>
+	            path="${path::combine(AssemblyProject.RootPath, 'Version.Number')}"/>
 	            
 	  		<property name="AssemblyProject.Version" value="${buildnumber.version}"/>
 		            
@@ -137,7 +133,7 @@
 		<!--foreach item="File" property="filename"-->
 		    <!--in-->
 		        <!--items-->
-		            <!--include name="${Solution.RootPath}\*.Solution.nant" /-->
+		            <!--include name="${path::combine(Solution.RootPath, '*.Solution.nant')}" /-->
 		        <!--/items-->
 		    <!--/in-->
 		    <!--do-->
@@ -197,21 +193,6 @@
         			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
     			</namespaces>
     	</xmlpeek>    	
-    	
-	<!--xmlpeek
-		    file="${AssemblyProject.PropertiesPath}"
-		    xpath="/x:project/x:property[@name = 'Project.VersionFile']/@value"
-		    property="Project.VersionFile">
-		        <namespaces>
-        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
-    			</namespaces>
-    	</xmlpeek-->
-    	
-    	<!--property name="Project.AssemblyPath" value="${string::replace(Project.AssemblyPath, '${Project.BaseNamespace}', Project.BaseNamespace)}"/-->
-    	<!--property name="Project.VersionFile" value="${string::replace(Project.VersionFile, '${Project.RootPath}', Project.RootPath)}"/-->
-    	
-    	<!--property name="Project.VersionFile" value="${Project.RootPath}\Project.Version"/-->
-
 	</target>
 	
 		
@@ -219,42 +200,52 @@
      
   <target name="Common.Actions.Compile">
       	
-	<property name="Local.AssemblyPath" value="${AssemblyProject.RootPath}\bin\${Build.Mode}\${AssemblyProject.AssemblyName}"/>
       	
+		<property name="Project.LibrariesPath" value="${path::combine(Project.RootPath, 'lib')}"/>
+		<property name="Project.BinariesPath" value="${path::combine(Project.RootPath, 'bin')}"/>
+		<property name="AssemblyProject.BinariesPath" value="${path::combine(AssemblyProject.RootPath, 'bin')}"/>
+
+		<property name="AssemblyProject.BinariesBuildPath" value="${path::combine(path::combine(AssemblyProject.RootPath, 'bin'), Build.Mode)}"/>
+		<property name="AssemblyProject.AssemblyPath" value="${path::combine(AssemblyProject.BinariesBuildPath, AssemblyProject.AssemblyName)}"/>
+
  		<echo message="CWD: ${directory::get-current-directory()}"/>
-  		<echo message="Creating directory: ${AssemblyProject.RootPath}\bin\${Build.Mode}" />
-		<property name="resourcesFile" value="${string::replace(AssemblyProject.RootPath + '\Properties\Language.resx', AssemblyProject.RootPath + '\', '')}"/>
-		<!--property name="resourcesFile" value="../../Properties/Language.resx"/-->
+  		<echo message="Creating directory: ${AssemblyProject.BinariesBuildPath}" />
+
+		<property name="resourcesFile" value="${string::replace(path::combine(path::combine(AssemblyProject.RootPath, 'Properties'), 'Language.resx'), AssemblyProject.RootPath, '')}"/>
+
 		<echo message="Prefix: ${AssemblyProject.BaseNamespace}.Properties"/>
-  		<mkdir dir="${AssemblyProject.RootPath}\bin\${Build.Mode}"/>
-  		<echo message="Compiling to: ${Local.AssemblyPath}" />
+  		<mkdir dir="${AssemblyProject.BinariesBuildPath}"/>
+  		<echo message="Compiling to: ${AssemblyProject.AssemblyPath}" />
   		<cd dir="${AssemblyProject.RootPath}"/>
   		<echo message="Resources path: ${resourcesFile}"/>
-    	<csc output="${Local.AssemblyPath}" debug="${Build.Mode == 'Debug'}" verbose="true" target="library">
+    	<csc output="${AssemblyProject.AssemblyPath}" debug="${Build.Mode == 'Debug'}" verbose="false" target="library">
     		<nowarn>
     			<warning number="0436"/>
     		</nowarn>
 	      <sources basedir="${AssemblyProject.RootPath}">
-	        <include name="**/*.cs" />
+	        <include name="${path::combine('**', '*.cs')}" />
 	      </sources>
 	      <!-- prefix must match the "Default Namespace" of the project...not the namespace of the resource file -->
 	      <resources basedir="${AssemblyProject.RootPath}" prefix="${AssemblyProject.BaseNamespace}" dynamicprefix="true">
 	        <include name="${resourcesFile}" />
 	      </resources>
 	      <references>
-	        <include name="${Project.RootPath}/Lib/NUnit.Framework.dll" />
-	        <include name="${Project.RootPath}/Lib/NLog.dll" />
-	        <include name="${Project.RootPath}/Lib/Db4objects.Db4o.dll" />
-	        <include name="${Project.RootPath}/Bin/${Build.Mode}/${Solution.BaseNamespace}.*.dll"/>
+	        <include name="${path::combine(Project.LibrariesPath, 'NUnit.Framework.dll')}" />
+	        <include name="${path::combine(Project.LibrariesPath, 'NLog.dll')}" />
+	        <include name="${path::combine(Project.LibrariesPath, 'Db4objects.Db4o.dll')}" />
+	        <include name="${path::combine(Project.LibrariesPath, '*.dll')}" />
+	        <include name="${path::combine(Project.LibrariesPath, 'NAnt.Core.dll')}" />
+	        <include name="${path::combine(path::combine(Project.BinariesPath, Build.Mode), Solution.BaseNamespace + '.*.dll')}"/>
 	        <include name="System.Configuration.dll" />
 	        <include name="System.Data.dll" />
 	        <include name="System.Xml.dll" />
+	        <include name="System.Web.dll" />
 	      </references>
 	    </csc>
   	</target>
   	
   	  	<target name="Actions.OutputLibraries">  	
-  		<property name="Local.SourceDirectory" value="${path::get-full-path(path::combine(AssemblyProject.RootPath + '\Bin', Build.Mode))}" />
+  		<property name="Local.SourceDirectory" value="${path::get-full-path(path::combine(path::combine(AssemblyProject.RootPath, 'bin'), Build.Mode))}" />
   		<mkdir dir="${path::combine(Project.BinariesPath, Build.Mode)}"/>
   		
   		<echo message="${'Copying file: ' + Local.SourceDirectory}"/>
@@ -262,8 +253,8 @@
   		<cd dir="${AssemblyProject.RootPath}"/>
     	<copy todir="${path::combine(Project.BinariesPath, Build.Mode)}" flatten="true" verbose="true">
     		<fileset>
-    			<include name="${AssemblyProject.RootPath}\bin\${Build.Mode}\*.dll"/>
-    			<include name="${AssemblyProject.RootPath}\Properties\*.resources"/>
+    			<include name="${path::combine(path::combine(path::combine(AssemblyProject.RootPath, 'bin'), Build.Mode), '*.dll')}"/>
+    			<include name="${path::combine(path::combine(AssemblyProject.RootPath, 'Properties'), '*.resources')}"/>
     		</fileset>
     	</copy>
   	</target>

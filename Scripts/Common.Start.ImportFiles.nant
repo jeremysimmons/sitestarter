@@ -27,8 +27,11 @@
   		
   		
 	<include buildfile="Common.Jobs.ImportFiles.nant"/>
+	<include buildfile="Common.Jobs.ImportTemplateFiles.nant"/>
 
 	<target name="Common.Start.ImportFiles" description="Imports files based on the *.Import.nant files in the project.">		
+		<call target="Common.Jobs.ImportTemplateFiles"/>
+
 		<call target="Common.Jobs.ImportFiles"/>
 	</target>
 </project>

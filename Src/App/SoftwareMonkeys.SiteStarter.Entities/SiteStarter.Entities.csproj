@@ -1,14 +1,19 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{3609F512-9E15-41C7-95AF-D1B3E7F93562}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SoftwareMonkeys.SiteStarter.Entities</RootNamespace>
     <AssemblyName>SoftwareMonkeys.SiteStarter.Entities</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,10 +35,6 @@
   <ItemGroup>
     <Reference Include="NLog">
       <HintPath>..\..\..\..\WorkHub2\Lib\NLog.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework, Version=2.2.9.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\3rdParty\dlls-2-0\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -69,6 +70,10 @@
     </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Contracts\SiteStarter.Contracts.csproj">
       <Project>737DFD8E-BF43-4BA9-ABE6-25B2DC21800F</Project>
+      <Name>SiteStarter.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Contracts\SiteStarter.Contracts.csproj">
+      <Project>{518735AC-EFA2-4205-AE47-CF4664EE3061}</Project>
       <Name>SiteStarter.Contracts</Name>
     </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Diagnostics\SiteStarter.Diagnostics.csproj">

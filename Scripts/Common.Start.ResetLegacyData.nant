@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<project name="Common.Start.ResetLegacyData" default="Common.Start.ResetLegacyData" xmlns="http://nant.sf.net/schemas/nant.xsd">
+  		
+  <property name="nant.settings.currentframework" value="net-2.0" />
+  		  				
+  		<property name="Argument.SolutionPath" value=""/>
+
+  		
+  		<nant buildfile="Common.Functions.Initialize.nant"/>
+  				
+  		<property name="Solution.PropertiesPath" value="${Argument.SolutionPath}"/>
+  		<property name="Solution.RootPath" value="${path::get-directory-name(Solution.PropertiesPath)}"/>
+  		
+  		<echo message="Solution.PropertiesPath: ${Solution.PropertiesPath}"/>
+  		<echo message="Solution.RootPath: ${Solution.RootPath}"/>
+  		
+  		
+  		
+	<include buildfile="Common.Jobs.ResetLegacyData.nant"/>
+	<!--include buildfile="Common.Actions.Compile.nant"/-->
+  		
+	<target name="Common.Start.ResetLegacyData" description="Resets the legacy data (from .../App_Data/LegacyDefault/)">		
+		<call target="Common.Jobs.ResetLegacyData"/>
+	</target>
+</project>
+  	
