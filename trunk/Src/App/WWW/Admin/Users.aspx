@@ -6,6 +6,7 @@
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Entities" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Security" %>
 <script runat="server">
     #region Main functions
     /// <summary>
@@ -13,10 +14,17 @@
     /// </summary>
     private void ManageUsers()
     {
-        OperationManager.StartOperation("ManageUsers", IndexView);
-        
-        IndexGrid.DataSource = UserFactory.Current.GetUsers();
+        Authorisation.EnsureIsAuthenticated();
 
+        Authorisation.EnsureIsInRole("Administrator");
+        
+        OperationManager.StartOperation("ManageUsers", IndexView);
+
+        User[] users = null;
+        IndexGrid.DataSource = users = UserFactory.Current.GetUsers();
+
+        Authorisation.EnsureUserCan("View", users);        
+        
         IndexGrid.DataBind();
 
         IndexView.DataBind();
@@ -27,6 +35,11 @@
     /// </summary>
     private void CreateUser()
     {
+
+        Authorisation.EnsureIsAuthenticated();
+
+        Authorisation.EnsureIsInRole("Administrator");
+        
         OperationManager.StartOperation("CreateUser", FormView);
 
         User user = new User();
@@ -65,6 +78,11 @@
 
     private void EditUser(Guid userID)
     {
+
+        Authorisation.EnsureIsAuthenticated();
+
+        Authorisation.EnsureIsInRole("Administrator");
+        
     	if (userID == Guid.Empty)
     		throw new ArgumentException("userID", "A user ID must be provided.");
     
@@ -72,7 +90,10 @@
         OperationManager.StartOperation("EditUser", FormView);
 
         // Load the specified user
-        DataForm.DataSource = UserFactory.Current.GetUser(userID);
+        User user = null;
+        DataForm.DataSource = user = UserFactory.Current.GetUser(userID);
+
+        Authorisation.EnsureUserCan("Edit", user);
         
         UserFactory.Current.Activate((User)DataForm.DataSource);
 

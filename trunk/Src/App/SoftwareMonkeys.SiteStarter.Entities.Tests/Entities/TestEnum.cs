@@ -1,6 +1,6 @@
 using System;
 
-namespace SoftwareMonkeys.SiteStarter.Web.Tests.Entities
+namespace SoftwareMonkeys.SiteStarter.Entities.Tests.Entities
 {
 	/// <summary>
 	/// Description of TestEnum.

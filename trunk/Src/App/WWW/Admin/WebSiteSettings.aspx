@@ -16,6 +16,10 @@
     /// </summary>
     private void EditSettings()
     {
+        Authorisation.EnsureIsAuthenticated();
+
+        Authorisation.EnsureIsInRole("Administrator");
+        
         // Start the operation
         OperationManager.StartOperation("EditSettings", SettingsFormView);
 

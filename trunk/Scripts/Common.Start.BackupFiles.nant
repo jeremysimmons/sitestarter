@@ -32,7 +32,8 @@
   		
 	<include buildfile="Common.Jobs.BackupFiles.nant"/>
   		
-	<target name="Common.Start.BackupFiles" description="Backup project files.">		
+	<target name="Common.Start.BackupFiles" description="Backup project files.">
+		
 		<call target="Common.Jobs.BackupFiles"/>
 	</target>
 </project>

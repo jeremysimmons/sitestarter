@@ -7,7 +7,7 @@ using System.Xml;
 using SoftwareMonkeys.SiteStarter.Configuration;
 using System.Collections;
 
-namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
+namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 {
 	/// <summary>
 	/// Holds the configuration settings for the application.

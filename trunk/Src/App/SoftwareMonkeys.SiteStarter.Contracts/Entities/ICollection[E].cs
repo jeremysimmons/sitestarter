@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace SoftwareMonkeys.SiteStarter
+namespace SoftwareMonkeys.SiteStarter.Entities
 {
 	/// <summary>
 	/// Description of ICollection_E_.

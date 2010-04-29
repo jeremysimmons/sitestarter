@@ -24,7 +24,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 
             string settingValue = Config.Application.Settings[key].ToString();
 
-            VirtualServer server = VirtualServerFactory.GetVirtualServerByName(SiteStarter.State.VirtualServerState.VirtualServerName);
+            VirtualServer server = VirtualServerFactory.Current.GetVirtualServerByName(SiteStarter.State.VirtualServerState.VirtualServerName);
             IUser user = null;
             if (HttpContext.Current.Request.IsAuthenticated && My.User != null)
                 user = UserFactory<Entities.User>.Current.GetUser(My.User.ID);

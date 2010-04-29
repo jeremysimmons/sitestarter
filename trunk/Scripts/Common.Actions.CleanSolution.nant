@@ -4,6 +4,7 @@
   		<echo message="Start path: ${Solution.RootPath}"/>
   		<delete>
     		<fileset>
+	        		<exclude name="*.vshost.exe" />
         		<exclude name="${Solution.RootPath}\Lib\*.*" />
         		<include name="${Solution.RootPath}\Bin\${Build.Mode}\*.*" />
         		<include name="${Solution.RootPath}\SoftwareMonkeys.*\bin\${Build.Mode}\*.dll" />

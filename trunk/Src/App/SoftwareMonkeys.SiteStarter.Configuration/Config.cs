@@ -175,7 +175,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
                 
                 if (virtualServerID != null && virtualServerID != String.Empty && virtualServerID != Guid.Empty.ToString())
                 	fullPath += virtualServerID + @"\";
-                All.Add(ConfigFactory<AppConfig>.LoadConfig(fullPath, "Default", variation));
+                All.Add(ConfigFactory<AppConfig>.LoadConfig(fullPath, "Application", variation));
                 All.Add(ConfigFactory<MappingConfig>.LoadConfig(fullPath, "Mappings", variation));
             }
         }

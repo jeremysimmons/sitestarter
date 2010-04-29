@@ -14,15 +14,15 @@ private void Page_Load(object sender, EventArgs e)
     
 			User user = new User();
             user.ID = Guid.NewGuid();
-            user.FirstName = "Default";
+            user.FirstName = "System";
 			user.LastName = "Administrator";
 			user.Username = "admin";
             user.Password = SoftwareMonkeys.SiteStarter.Business.Crypter.EncryptPassword("pass");
             user.IsApproved = true;
             user.IsLockedOut = false;
-			user.Email = "test@softwaremonkeys.net";
+			user.Email = "default@softwaremonkeys.net";
 
-			AppConfig config = new AppConfig();
+            AppConfig config = ConfigFactory<AppConfig>.NewConfig("Application");
 			config.ApplicationPath = Request.ApplicationPath;
 			//config.ApplicationUrl = Request.Url.ToString().ToLower().Replace("/setup.aspx", "");
 			config.PhysicalPath = Request.PhysicalApplicationPath;
@@ -53,10 +53,16 @@ private void Page_Load(object sender, EventArgs e)
             Config.Initialize(Server.MapPath(Request.ApplicationPath), WebUtilities.GetLocationVariation(HttpContext.Current.Request.Url));
             SoftwareMonkeys.SiteStarter.Web.Providers.DataProviderManager.Initialize();
 
+            UserRole administratorRole = new UserRole();
+            administratorRole.ID = Guid.NewGuid();
+            administratorRole.Name = Resources.Language.AdministratorDetails; ;
+            administratorRole.Users = new User[] { user };
 
             if (!SoftwareMonkeys.SiteStarter.Business.UserFactory<User>.Current.SaveUser(user))
             {
-            	user = (User)UserFactory<User>.Current.GetUserByUsername(user.Username);
+                UserRoleFactory.Current.SaveUserRole(administratorRole);
+                
+            	//user = (User)UserFactory<User>.Current.GetUserByUsername(user.Username);
             	
             	config.PrimaryAdministratorID = user.ID;
             	
@@ -81,8 +87,9 @@ private void SetupMappings()
 				Config.Mappings = ConfigFactory<MappingConfig>.NewConfig("Mappings");
 	
 	SoftwareMonkeys.SiteStarter.Entities.User.RegisterType();
-	UserRole.RegisterType();
-	Keyword.RegisterType();
+    UserRole.RegisterType();
+    Keyword.RegisterType();
+    VirtualServer.RegisterType();
 /*	MappingItem userEntityItem = new MappingItem("IUser");
 	userEntityItem.Settings.Add("DataStoreName", "Users");
 	

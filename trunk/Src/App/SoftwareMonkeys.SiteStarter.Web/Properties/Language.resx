@@ -147,4 +147,7 @@
   <data name="Index" xml:space="preserve">
     <value>Index</value>
   </data>
+  <data name="InvalidRole" xml:space="preserve">
+    <value>You're not in the right role to do that.</value>
+  </data>
 </root>

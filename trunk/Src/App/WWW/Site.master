@@ -2,6 +2,7 @@
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.State" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Configuration" %>
+<%@ Register Src="BackupLauncher.ascx" TagName="BackupLauncher" TagPrefix="uc1" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -42,6 +43,8 @@ private string GetMenuDataFile()
 <body>
     <form id="form1" runat="server">
     <div>
+    <% if (!Utilities.HideTemplate)
+       { %>
     <table width="100%">
     <tr><td colspan="2" style="padding: 0px;" class="PageHeader"><table width="100%"><tr><td></td><td class="PageHeaderText">SiteStarter</td><td class="PageHeaderIdentity">
         &nbsp;<asp:LoginView ID="LoginView1" runat="server">
@@ -63,10 +66,17 @@ private string GetMenuDataFile()
                                 </asp:TreeView>
                                 <asp:XmlDataSource ID="MenuSource" XPath="siteMap/*" DataFile='<%# GetMenuDataFile() %>' runat="server" />
         </td><td>
+        <% } %>
         <asp:contentplaceholder id="Body" runat="server">
         </asp:contentplaceholder>
+        <% if (!Utilities.HideTemplate)
+           { %>
         </td></tr></table>
-        Current Server: <%= VirtualServerState.VirtualServerName == null || VirtualServerState.VirtualServerName == String.Empty ? "[Default]" : VirtualServerState.VirtualServerName%>
+        <table border="0" width="100%"><tr><td width="50%">Current Server: <%= VirtualServerState.VirtualServerName == null || VirtualServerState.VirtualServerName == String.Empty ? "[Default]" : VirtualServerState.VirtualServerName%></td><td align="right">
+    <uc1:BackupLauncher id="BackupLauncher" runat="server">
+    </uc1:BackupLauncher></td></tr></table>
+        <% } %>
+
     </div>
     </form>
 </body>

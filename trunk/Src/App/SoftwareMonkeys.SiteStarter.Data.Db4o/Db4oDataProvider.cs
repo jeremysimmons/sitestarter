@@ -163,21 +163,31 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			bool isStored = false;
 			using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the provided entity has already been stored.", NLog.LogLevel.Debug))
-			{
+            {
+                if (entity == null)
+                    throw new ArgumentNullException("entity");
+
+                AppLogger.Debug("Entity type: " + entity.GetType());
+
 				if (EntitiesUtilities.IsReference(entity.GetType()))
 				{
 					AppLogger.Debug("Is reference == true");
 					
 					EntityIDReference reference = (EntityIDReference)entity;
 					
-					if (reference.Type1Name == String.Empty)
-						
+					//if (reference.Type1Name == String.Empty)
+
+                    Type type = EntitiesUtilities.GetType(reference.Type1Name);
+                    Type type2 = EntitiesUtilities.GetType(reference.Type2Name);
+
+                    AppLogger.Debug("Type 1: " + type.ToString());
+                    AppLogger.Debug("Type 2: " + type2.ToString());
 					
 					isStored = MatchReference(
-						EntitiesUtilities.GetType(reference.Type1Name),
+						type,
 						reference.Entity1ID,
 						reference.Property1Name,
-						EntitiesUtilities.GetType(reference.Type2Name),
+						type2,
 						reference.Entity2ID,
 						reference.Property2Name);
 				}
@@ -739,6 +749,22 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 
 			return (T[])entities.ToArray();
 		}
+
+        /// <summary>
+		/// 
+		/// </summary>
+		/// <param name="propertyName">The name of the property to query for.</param>
+		/// <param name="referencedEntityID">The ID of the referenced entity to match.</param>
+		/// <returns>An array of the objects retrieved.</returns>
+        public override T GetEntityMatchReference<T>(string propertyName, Type referencedEntityType, Guid referencedEntityID)
+        {
+            T[] entities = GetEntitiesMatchReference<T>(propertyName, referencedEntityType, referencedEntityID);
+
+            if (entities.Length == 0)
+                return default(T);
+            else
+                return entities[0];
+        }
 		
 		/// <summary>
 		/// Retrieves the specified page of objects from the data store.
@@ -1352,10 +1378,15 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				if (referencedEntityType == null)
 					throw new ArgumentNullException("referencedEntityType");
 				
-				if (referencedEntityID == Guid.Empty)
-					throw new ArgumentException("referencedEntityID");
-				
-				
+				/*if (referencedEntityID == Guid.Empty)
+					throw new ArgumentException("referencedEntityID");*/
+
+                AppLogger.Debug("Entity type: " + entityType);
+                AppLogger.Debug("Entity ID: " + entityID);
+                AppLogger.Debug("Property name: " + propertyName);
+                AppLogger.Debug("Referenced entity type: " + referencedEntityType.ToString());
+                AppLogger.Debug("Referenced entity ID: " + referencedEntityID.ToString());
+
 				string mirrorPropertyName = String.Empty;
 				if (propertyName == String.Empty)
 					mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyNameReverse(entityType, propertyName, referencedEntityType);

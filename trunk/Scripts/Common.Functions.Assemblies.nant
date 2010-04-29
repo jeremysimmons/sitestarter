@@ -3,7 +3,7 @@
 
   <target name="Private.InitProjectFunctions">
     <script language="C#" prefix="AssemblyProject">
-    		<references>
+    	<references>
               <include name="System.IO.dll" />
           </references>
 
@@ -38,8 +38,6 @@
 				{
 					return startPath;
 				}
-				
-				return String.Empty;
 			}
 			
 			[Function("LoadVersion")]
@@ -97,7 +95,7 @@
 				
 					return true.ToString();
 				}
-				catch (Exception ex)
+				catch //(Exception ex)
 				{
 					return false.ToString();
 				}
@@ -127,7 +125,7 @@
 					newVersion = string.Format("{0}.{1}.{2}.{3}", versions[0], versions[1], versions[2], revisionNumber+1);
 					
 				}
-				catch (Exception ex)
+				catch// (Exception ex)
 				{	
 					// TODO: Make default version editable via configuration settings
 					newVersion = "1.0.0.0";

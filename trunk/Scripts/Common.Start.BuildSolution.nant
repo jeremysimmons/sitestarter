@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <project name="Common.Start.BuildSolution" default="Common.Start.BuildSolution" xmlns="http://nant.sf.net/schemas/nant.xsd">
   		
-  		<property name="nant.settings.currentframework" value="net-2.0" />
-  		
-		<property name="Argument.BuildMode" value="Release"/>
+		<property name="Argument.BuildMode" value=""/>
 		<property name="Argument.SolutionPath" value=""/>
 		<property name="Argument.ProjectPath" value=""/>
+  		<!-- Arguments are passed in from Commander console. -->
+ 		
   		
   		<nant buildfile="Common.Functions.Initialize.nant"/>
   		

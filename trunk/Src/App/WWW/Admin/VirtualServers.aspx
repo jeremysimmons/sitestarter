@@ -15,7 +15,7 @@
         OperationManager.StartOperation("ManageVirtualServers", IndexView);
 
         
-        IndexGrid.DataSource = VirtualServerFactory.GetVirtualServers();
+        IndexGrid.DataSource = VirtualServerFactory.Current.GetVirtualServers();
 
         IndexView.DataBind();
     }
@@ -41,7 +41,7 @@
     {
         // Save the new server
         DataForm.ReverseBind();
-        if (VirtualServerFactory.SaveVirtualServer((VirtualServer)DataForm.DataSource))
+        if (VirtualServerFactory.Current.SaveVirtualServer((VirtualServer)DataForm.DataSource))
         {
             // Display the result to the server
             Result.Display(Resources.Language.VirtualServerSaved);
@@ -59,7 +59,7 @@
         OperationManager.StartOperation("EditVirtualServer", FormView);
 
         // Load the specified server
-        DataForm.DataSource = VirtualServerFactory.GetVirtualServer(serverID);
+        DataForm.DataSource = VirtualServerFactory.Current.GetVirtualServer(serverID);
 
         // Bind the form
         FormView.DataBind();
@@ -68,13 +68,13 @@
     private void UpdateVirtualServer()
     {
         // Get a fresh copy of the server object
-        VirtualServer server = VirtualServerFactory.GetVirtualServer(((VirtualServer)DataForm.DataSource).ID);
+        VirtualServer server = VirtualServerFactory.Current.GetVirtualServer(((VirtualServer)DataForm.DataSource).ID);
 
         // Transfer data from the form to the object
         DataForm.ReverseBind(server);
         
         // Update the server
-        if (VirtualServerFactory.UpdateVirtualServer(server))
+        if (VirtualServerFactory.Current.UpdateVirtualServer(server))
         {
             // Display the result to the server
             Result.Display(Resources.Language.VirtualServerUpdated);
@@ -95,7 +95,7 @@
     private void DeleteVirtualServer(Guid serverID)
     {
         // Delete the specified server
-        VirtualServerFactory.DeleteVirtualServer(VirtualServerFactory.GetVirtualServer(serverID));
+        VirtualServerFactory.Current.DeleteVirtualServer(VirtualServerFactory.Current.GetVirtualServer(serverID));
 
         // Display the result to the server
         Result.Display(Resources.Language.VirtualServerDeleted);
@@ -200,7 +200,7 @@
 
     protected void PrimaryAdministratorSelect_DataLoading(object sender, EventArgs e)
     {
-        ((EntitySelect)sender).DataSource = UserFactory.GetUsers();
+        ((EntitySelect)sender).DataSource = UserFactory.Current.GetUsers();
     }
     #endregion
 </script>

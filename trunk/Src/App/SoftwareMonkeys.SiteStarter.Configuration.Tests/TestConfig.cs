@@ -17,17 +17,17 @@ namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
     public class TestConfig : IAppConfig
 	{
 		#region Singleton Property
-		static private TestConfig current;
+		static private SoftwareMonkeys.SiteStarter.Configuration.Tests.TestConfig current;
 		/// <summary>
 		/// Gets/sets an instance of the Config object containing all the current settings.
 		/// </summary>
-		static public TestConfig Current
+		static public SoftwareMonkeys.SiteStarter.Configuration.Tests.TestConfig Current
 		{
 			get 
 			{
 				if (current == null)
 				{
-					current = TestConfig.Load();
+					current = SoftwareMonkeys.SiteStarter.Configuration.Tests.TestConfig.Load();
 				}
 				return current;
 			}
@@ -289,13 +289,13 @@ namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
 		/// Loads the configuration settings from the config file.
 		/// </summary>
 		/// <returns>The configuration settings from the config file.</returns>
-		static public TestConfig Load()
+		static public SoftwareMonkeys.SiteStarter.Configuration.Tests.TestConfig Load()
 		{
 			if (File.Exists(PhysicalConfigPath))
             {
 				FileStream stream = File.OpenRead(PhysicalConfigPath);
-				XmlSerializer serializer = new XmlSerializer(typeof(TestConfig));
-				TestConfig config = (TestConfig)serializer.Deserialize(stream);
+				XmlSerializer serializer = new XmlSerializer(typeof(SoftwareMonkeys.SiteStarter.Configuration.Tests.TestConfig));
+				SoftwareMonkeys.SiteStarter.Configuration.Tests.TestConfig config = (SoftwareMonkeys.SiteStarter.Configuration.Tests.TestConfig)serializer.Deserialize(stream);
 				stream.Close();
 				return config;
 			}
@@ -321,7 +321,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
                 Directory.CreateDirectory(Path.GetDirectoryName(PhysicalConfigPath));
 
 			FileStream stream = File.Create(PhysicalConfigPath);
-			XmlSerializer serializer = new XmlSerializer(typeof(TestConfig));
+			XmlSerializer serializer = new XmlSerializer(typeof(SoftwareMonkeys.SiteStarter.Configuration.Tests.TestConfig));
 			serializer.Serialize(stream, this);
 			stream.Close();
 		}

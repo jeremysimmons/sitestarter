@@ -112,6 +112,17 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 					else
 						returnValue = 0;
 				}
+				else if (type.FullName == typeof(double).FullName)
+				{
+					AppLogger.Debug("Value is Double");
+					
+					if (value != null)
+					{
+						returnValue = System.Convert.ToDouble(value);
+					}
+					else
+						returnValue = 0;
+				}
 				else if (type.FullName == typeof(String).FullName)
 				{
 					AppLogger.Debug("Value is String");

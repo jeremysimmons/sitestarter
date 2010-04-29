@@ -593,4 +593,10 @@ ${WebSite.Title}&lt;br /&gt;
   <data name="EditWebSiteSettingsIntro" xml:space="preserve">
     <value>Edit the settings for this website in the form below.</value>
   </data>
+  <data name="ObjectsExported" xml:space="preserve">
+    <value>Objects exported successfully.</value>
+  </data>
+  <data name="Never" xml:space="preserve">
+    <value>Never</value>
+  </data>
 </root>

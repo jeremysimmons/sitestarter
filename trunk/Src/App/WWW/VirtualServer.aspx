@@ -24,7 +24,7 @@
             else
 	        {
 	            if (name != String.Empty)
-	                server = VirtualServerFactory.GetVirtualServerByName(name);
+                    server = VirtualServerFactory.Current.GetVirtualServerByName(name);
             }
 
             if (server != null)

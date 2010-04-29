@@ -61,6 +61,25 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 			
 			Assert.IsFalse(EntitiesUtilities.IsReference(article.GetType(), property), "Returned true when it should have returned false.");
 		}
+
+        [Test]
+        public void Test_IsEntity_True()
+        {
+            TestArticle article = new TestArticle();
+
+
+            Assert.IsTrue(EntitiesUtilities.IsEntity(article.GetType()), "Returned false when it should have returned true.");
+        }
+
+
+        [Test]
+        public void Test_IsEntity_False()
+        {
+            object obj = String.Empty;
+
+
+            Assert.IsFalse(EntitiesUtilities.IsEntity(obj.GetType()), "Returned true when it should have returned false.");
+        }
 				
 		[Test]
 		public void Test_IsMultipleReference_True()

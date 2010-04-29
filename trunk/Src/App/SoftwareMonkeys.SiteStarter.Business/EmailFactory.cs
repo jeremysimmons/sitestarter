@@ -16,12 +16,30 @@ namespace SoftwareMonkeys.SiteStarter.Business
     [DataObject(true)]
 	public class EmailFactory
     {
+        static private EmailFactory current;
+        static public EmailFactory Current
+        {
+            get
+            {
+                if (current == null)
+                    current = new EmailFactory();
+                return current;
+            }
+        }
+
+  	public void SendEmail(string subject, string message, Entities.User fromUser, string name, string email)
+        {
+            MailMessage mm = new MailMessage(fromUser.Email, email, subject, message);
+
+            new SmtpClient(Configuration.Config.Application.SmtpServer).Send(mm);
+        }
+
         /// <summary>
 		/// Sends a test email to the primary administrator to ensure that it works.
 		/// </summary>
 		/// <param name="smtpServer">The SMTP server to send a test email to.</param>
 		/// <returns>A boolean value indicating whether the test succeeded.</returns>
-		static public bool TestSmtpServer(string smtpServer)
+		public bool TestSmtpServer(string smtpServer)
 		{
 			// TODO: The email test can bypass the EnableEmailNotification setting
 		//	if (Config.EnableEmailNotification)
