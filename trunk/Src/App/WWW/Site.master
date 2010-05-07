@@ -72,7 +72,7 @@ private string GetMenuDataFile()
         <% if (!Utilities.HideTemplate)
            { %>
         </td></tr></table>
-        <table border="0" width="100%"><tr><td width="50%">Current Server: <%= VirtualServerState.VirtualServerName == null || VirtualServerState.VirtualServerName == String.Empty ? "[Default]" : VirtualServerState.VirtualServerName%></td><td align="right">
+        <table border="0" width="100%"><tr><td width="50%" style="vertical-align:top;">Current Server: <%= VirtualServerState.VirtualServerName == null || VirtualServerState.VirtualServerName == String.Empty ? "[Default]" : VirtualServerState.VirtualServerName%></td><td align="right">
     <uc1:BackupLauncher id="BackupLauncher" runat="server">
     </uc1:BackupLauncher></td></tr></table>
         <% } %>

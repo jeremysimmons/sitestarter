@@ -6,14 +6,13 @@
 
             <fileset>
 
-                        <include name="../Lib/nant/bin/tasks/NAnt.Contrib.Tasks.dll" />
+                        <include name="../lib/nant/bin/tasks/NAnt.Contrib.Tasks.dll" />
 
             </fileset>
 
 </loadtasks> 
 		
 
-		<include buildfile="Common.Jobs.ConfigureIIS.nant"/>
 		
 		<!--include buildfile="Common.Jobs.BuildProject.nant"/-->
 
@@ -25,8 +24,7 @@
 		
 		
 		<if test="${directory::exists(Solution.RootPath + '\WWW\')}">	
-
-  		<call target="Common.Jobs.ConfigureIIS"/>
+		
   		<call target="Common.Jobs.ArchiveLogs"/>
   		<call target="Common.Jobs.InstallModules"/>
   		<call target="Common.Jobs.ImportLibrariesToWWW"/>

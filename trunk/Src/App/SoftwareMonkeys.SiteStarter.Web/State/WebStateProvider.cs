@@ -38,8 +38,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
         		throw new ArgumentException("The provided key cannot be null or String.Empty.");
         	
        		if (key != String.Empty
-        	    && HttpContext.Current != null &&
-        	    HttpContext.Current.Application[key] != null)
+        	    && HttpContext.Current != null
+                && HttpContext.Current.Application != null
+                && HttpContext.Current.Application[key] != null)
 	            return true;
 	        else
 	        	return false;
@@ -75,8 +76,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
         		throw new ArgumentException("The provided key cannot be null or String.Empty.");
         	
        		if (key != String.Empty
-        	    && HttpContext.Current != null &&
-        	    HttpContext.Current.Session[key] != null)
+        	    && HttpContext.Current != null
+                && HttpContext.Current.Session != null
+        	    && HttpContext.Current.Session[key] != null)
 	            return true;
 	        else
 	        	return false;
@@ -87,7 +89,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
         	if (key == String.Empty)
         		throw new ArgumentException("The provided key cannot be null or String.Empty.");
         	
-            if (key != String.Empty && HttpContext.Current != null)
+            if (key != String.Empty
+                && HttpContext.Current != null
+                && HttpContext.Current.Session != null)
             {
                 HttpContext.Current.Session[key] = value;
             }

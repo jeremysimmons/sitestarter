@@ -20,7 +20,7 @@
 
             		<fileset>
 
-              		          <include name="../Lib/nant/bin/tasks/NAnt.Contrib.Tasks.dll" />
+              		          <include name="../lib/nant/bin/tasks/NAnt.Contrib.Tasks.dll" />
 
             		</fileset>
 

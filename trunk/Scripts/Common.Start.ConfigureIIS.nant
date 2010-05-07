@@ -2,8 +2,6 @@
 <project name="Common.Start.ConfigureIIS" default="Common.Start.ConfigureIIS" xmlns="http://nant.sf.net/schemas/nant.xsd">
   		
 
-
-  		<property name="nant.settings.currentframework" value="net-2.0" />
   		
 		<property name="Argument.SolutionPath" value=""/>
 		<property name="Argument.ProjectPath" value=""/>

@@ -1,9 +1,6 @@
 <?xml version="1.0"?>
 <project name="Common.Start.BackupFiles" default="Common.Start.BackupFiles" xmlns="http://nant.sf.net/schemas/nant.xsd">
   		
-  <property name="nant.settings.currentframework" value="net-2.0" />
-  		
-  		
   		<nant buildfile="Common.Functions.Initialize.nant"/>
   		
 

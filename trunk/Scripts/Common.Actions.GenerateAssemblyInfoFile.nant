@@ -25,8 +25,14 @@
         			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
     			</namespaces>
     	</xmlpeek>
+    	
+    	<property name="propertiesDirectory" value="${path::combine(AssemblyProject.RootPath, 'Properties')}" />
+    	
+    	<if test="${directory::exists(propertiesDirectory) == false}">
+    		<mkdir dir="${propertiesDirectory}"/>
+    	</if>
 
-         <asminfo output="${AssemblyProject.RootPath}\AssemblyInfo.cs" language="CSharp">
+         <asminfo output="${path::combine(propertiesDirectory, 'AssemblyInfo.cs')}" language="CSharp">
 
              <imports>
 
@@ -45,7 +51,7 @@
 
                 <attribute type="AssemblyProductAttribute" value="${AssemblyProject.Name}" />
 
-                 <attribute type="AssemblyCopyrightAttribute" value="Copyright ${Project.CompanyName} (c) 2009" />
+                 <attribute type="AssemblyCopyrightAttribute" value="Copyright ${Project.CompanyName} (c) ${datetime::get-year(datetime::now())}" />
 
                  <attribute type="AssemblyTrademarkAttribute" value="" />
 

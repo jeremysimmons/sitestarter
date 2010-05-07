@@ -38,8 +38,14 @@
 		
 		<foreach item="String" in="${Solution.BuildOrder}" delim="," property="item">
 			<echo message="Looking for assembly '${item}'"/>
-		<property name="AssemblyProject.RootPath" value="${path::combine(Solution.RootPath, Solution.BaseNamespace  + '.' + item)}"/>
+			<property name="AssemblyProject.RootPath" value="${path::combine(Solution.RootPath, Solution.BaseNamespace  + '.' + item)}"/>
+			<if test="${directory::exists(AssemblyProject.RootPath) == false}">
+						<property name="AssemblyProject.RootPath" value="${path::combine(Solution.RootPath, item)}"/>
+			</if>
     		<property name="AssemblyProject.PropertiesPath" value="${path::combine(AssemblyProject.RootPath, Solution.Name + '.' + item + '.Assembly.nant')}"/>
+			<if test="${file::exists(AssemblyProject.PropertiesPath) == false}">
+				<property name="AssemblyProject.PropertiesPath" value="${path::combine(AssemblyProject.RootPath, item + '.Assembly.nant')}"/>
+			</if>
     		<echo message="Building assembly from config: ${AssemblyProject.PropertiesPath}"/>
 			<if test="${file::exists(AssemblyProject.PropertiesPath)}">
 				<echo message="Found assembly config file"/>
@@ -50,6 +56,7 @@
 			</if>
 		</foreach>
 		<property name="Local.ModulesPath" value="${path::combine(Solution.RootPath, 'Modules')}"/>
+		<echo message="Local.ModulesPath: ${Local.ModulesPath}"/>
 		<if test="${directory::exists(Local.ModulesPath)}">
 			<foreach item="Folder" in="${Local.ModulesPath}"  property="currentModule">
 	    		<in>
@@ -60,8 +67,12 @@
 	       		 	</items>
 	   		 	</in>
 	    		<do>
+	    				<echo message="Module path: ${currentModule}"/>
 	    			<property name="moduleName" value="${path::get-file-name(currentModule)}"/>
-					<property name="AssemblyProject.PropertiesPath" value="${path::combine(AssemblyProject.RootPath, Solution.Name + '.' + moduleName + '.Assembly.nant')}"/>
+					<property name="AssemblyProject.PropertiesPath" value="${path::combine(currentModule, Solution.Name + '.' + moduleName + '.Assembly.nant')}"/>
+					<if test="${file::exists(AssemblyProject.PropertiesPath) == false}">
+						<property name="AssemblyProject.PropertiesPath" value="${path::combine(currentModule, moduleName + '.Assembly.nant')}"/>
+					</if>
 					<echo message="Project properties path: ${AssemblyProject.PropertiesPath}"/>
 					<if test="${file::exists(AssemblyProject.PropertiesPath)}">
 						<call target="Common.Jobs.BuildAssembly"/>
