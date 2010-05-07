@@ -19,7 +19,7 @@
 
             <fileset>
 
-                        <include name="../Lib/nant/bin/NAnt.Contrib.Tasks.dll" />
+                        <include name="../lib/nant/bin/tasks/NAnt.Contrib.Tasks.dll" />
 
             </fileset>
 
@@ -40,7 +40,7 @@
 		
 		
     	
-		            <property name="AssemblyProject.LibrariesPath" value="${Project.RootPath}\Lib"/>
+		            <property name="AssemblyProject.LibrariesPath" value="${Project.RootPath}\lib"/>
     	
     	
 	<xmlpeek
@@ -61,6 +61,16 @@
     			</namespaces>
     	</xmlpeek>
     	
+    	
+    		<xmlpeek
+		    file="${AssemblyProject.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Assembly.BaseNamespace']/@value"
+		    property="AssemblyProject.BaseNamespace">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+    	
     	 <xmlpeek
 		    file="${Solution.PropertiesPath}"
 		    xpath="/x:project/x:property[@name = 'Solution.BaseNamespace']/@value"
@@ -70,14 +80,15 @@
     			</namespaces>
     	</xmlpeek>
     	
-    	    	 <xmlpeek
-		    file="${AssemblyProject.PropertiesPath}"
-		    xpath="/x:project/x:property[@name = 'Assembly.BaseNamespace']/@value"
-		    property="AssemblyProject.BaseNamespace">
-		        <namespaces>
-        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
-    			</namespaces>
-    	</xmlpeek>
+    	
+    	
+		<!-- Including both Assembly.Name and AssemblyProject.Name to avoid mistakes -->
+    	<property name="AssemblyProject.BaseNamespace" value="${string::replace(AssemblyProject.BaseNamespace, '${Assembly.Name}', AssemblyProject.Name)}"/>
+    	<property name="AssemblyProject.BaseNamespace" value="${string::replace(AssemblyProject.BaseNamespace, '${AssemblyProject.Name}', AssemblyProject.Name)}"/>
+    	
+    	
+    	<property name="AssemblyProject.AssemblyName" value="${string::replace(AssemblyProject.AssemblyName, '${Assembly.BaseNamespace}', AssemblyProject.BaseNamespace)}"/>
+    	<property name="AssemblyProject.AssemblyName" value="${string::replace(AssemblyProject.AssemblyName, '${AssemblyProject.BaseNamespace}', AssemblyProject.BaseNamespace)}"/>
     	
     	
     	<property name="Project.BinariesPath" value="${path::combine(Project.RootPath, 'bin')}"/>
@@ -100,14 +111,25 @@
 		<cd dir="${AssemblyProject.RootPath}"/>
 		            
 		            
+  		<property name="versionFilePath" value="${path::combine(AssemblyProject.RootPath, 'Version.Number')}"/>
+  		
+  		<echo message="Version file: ${versionFilePath}"/>
+  		
+  		<if test="${file::exists(versionFilePath) == false}">
+			<echo file="${versionFilePath}" message="0.0.0.1" append="false"/>
+  		</if>
+  		<if test="${file::exists(versionFilePath) == false}">
+			<echo file="${versionFilePath}" message="0.0.0.1" append="false"/>
+  		</if>
 		            
 			<version buildtype="NoIncrement"
 	            revisiontype="Increment"
-	            path="${path::combine(AssemblyProject.RootPath, 'Version.Number')}"/>
+	            path="${versionFilePath}"/>
 	            
 	  		<property name="AssemblyProject.Version" value="${buildnumber.version}"/>
 		            
 		
+  		
 		
 		<call target="Common.Actions.GenerateAssemblyInfoFile"/>
 		
@@ -193,6 +215,9 @@
         			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
     			</namespaces>
     	</xmlpeek>    	
+    	
+    	
+    	
 	</target>
 	
 		
@@ -211,14 +236,17 @@
  		<echo message="CWD: ${directory::get-current-directory()}"/>
   		<echo message="Creating directory: ${AssemblyProject.BinariesBuildPath}" />
 
-		<property name="resourcesFile" value="${string::replace(path::combine(path::combine(AssemblyProject.RootPath, 'Properties'), 'Language.resx'), AssemblyProject.RootPath, '')}"/>
+		<!--property name="resourcesFile" value="${string::replace(path::combine(path::combine(AssemblyProject.RootPath, 'Properties'), 'Language.resx'), path::combine(AssemblyProject.RootPath, ''), '')}"/-->
+		<property name="resourcesFile" value="${path::combine('Properties', 'Language.resx')}"/>
 
 		<echo message="Prefix: ${AssemblyProject.BaseNamespace}.Properties"/>
   		<mkdir dir="${AssemblyProject.BinariesBuildPath}"/>
   		<echo message="Compiling to: ${AssemblyProject.AssemblyPath}" />
   		<cd dir="${AssemblyProject.RootPath}"/>
   		<echo message="Resources path: ${resourcesFile}"/>
-    	<csc output="${AssemblyProject.AssemblyPath}" debug="${Build.Mode == 'Debug'}" verbose="false" target="library">
+  		
+  		
+    	<csc output="${AssemblyProject.AssemblyPath}" debug="${Build.Mode == 'Debug'}" verbose="true" target="library">
     		<nowarn>
     			<warning number="0436"/>
     		</nowarn>
@@ -234,14 +262,17 @@
 	        <include name="${path::combine(Project.LibrariesPath, 'NLog.dll')}" />
 	        <include name="${path::combine(Project.LibrariesPath, 'Db4objects.Db4o.dll')}" />
 	        <include name="${path::combine(Project.LibrariesPath, '*.dll')}" />
-	        <include name="${path::combine(Project.LibrariesPath, 'NAnt.Core.dll')}" />
+	        <include name="${path::combine(path::combine(Project.LibrariesPath, 'nant'), 'NAnt.Core.dll')}" />
+	        <include name="${path::combine(path::combine(Project.LibrariesPath, 'nant'), 'NAnt.DotNetTasks.dll')}" />
 	        <include name="${path::combine(path::combine(Project.BinariesPath, Build.Mode), Solution.BaseNamespace + '.*.dll')}"/>
+	        <include name="System.Messaging.dll" />
 	        <include name="System.Configuration.dll" />
 	        <include name="System.Data.dll" />
 	        <include name="System.Xml.dll" />
 	        <include name="System.Web.dll" />
 	      </references>
 	    </csc>
+	    
   	</target>
   	
   	  	<target name="Actions.OutputLibraries">  	

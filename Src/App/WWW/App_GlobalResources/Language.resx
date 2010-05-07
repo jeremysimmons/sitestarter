@@ -599,4 +599,76 @@ ${WebSite.Title}&lt;br /&gt;
   <data name="Never" xml:space="preserve">
     <value>Never</value>
   </data>
+  <data name="Ago" xml:space="preserve">
+    <value>ago</value>
+  </data>
+  <data name="AutoBackupComplete" xml:space="preserve">
+    <value>Automatic Backup Complete</value>
+  </data>
+  <data name="AutomaticBackup" xml:space="preserve">
+    <value>Automatic Backup</value>
+  </data>
+  <data name="BackingUp" xml:space="preserve">
+    <value>Executing</value>
+  </data>
+  <data name="BackupComplete" xml:space="preserve">
+    <value>Backup Complete</value>
+  </data>
+  <data name="BackupCompleted" xml:space="preserve">
+    <value>The backup has been completed successfully.</value>
+  </data>
+  <data name="BackupNow" xml:space="preserve">
+    <value>Backup Now</value>
+  </data>
+  <data name="Complete" xml:space="preserve">
+    <value>Complete</value>
+  </data>
+  <data name="DataBackup" xml:space="preserve">
+    <value>Data Backup</value>
+  </data>
+  <data name="DataBackupIntro" xml:space="preserve">
+    <value>Click "Start" to backup the data in the application.</value>
+  </data>
+  <data name="Days" xml:space="preserve">
+    <value>Day(s)</value>
+  </data>
+  <data name="DeleteBackups" xml:space="preserve">
+    <value>Delete Backups</value>
+  </data>
+  <data name="DeleteBackupsInfo" xml:space="preserve">
+    <value>Do this once the backup has been downloaded to a safe place.</value>
+  </data>
+  <data name="DownloadBackup" xml:space="preserve">
+    <value>Download Backup</value>
+  </data>
+  <data name="Exported" xml:space="preserve">
+    <value>Exported</value>
+  </data>
+  <data name="Found" xml:space="preserve">
+    <value>Found</value>
+  </data>
+  <data name="Hours" xml:space="preserve">
+    <value>Hours</value>
+  </data>
+  <data name="Last" xml:space="preserve">
+    <value>Last</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>Minute(s)</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="Now" xml:space="preserve">
+    <value>Now</value>
+  </data>
+  <data name="Previous" xml:space="preserve">
+    <value>Previous</value>
+  </data>
+  <data name="Seconds" xml:space="preserve">
+    <value>Second(s)</value>
+  </data>
+  <data name="Zipped" xml:space="preserve">
+    <value>Zipped</value>
+  </data>
 </root>

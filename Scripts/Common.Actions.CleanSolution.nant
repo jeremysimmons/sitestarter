@@ -5,7 +5,7 @@
   		<delete>
     		<fileset>
 	        		<exclude name="*.vshost.exe" />
-        		<exclude name="${Solution.RootPath}\Lib\*.*" />
+        		<exclude name="${Solution.RootPath}\lib\*.*" />
         		<include name="${Solution.RootPath}\Bin\${Build.Mode}\*.*" />
         		<include name="${Solution.RootPath}\SoftwareMonkeys.*\bin\${Build.Mode}\*.dll" />
         		<include name="${Solution.RootPath}\SoftwareMonkeys.*\bin\${Build.Mode}\*.pdb" />

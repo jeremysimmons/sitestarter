@@ -33,6 +33,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.5.452, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\lib\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
     <Reference Include="NLog, Version=1.0.0.505, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Lib\NLog.dll</HintPath>
@@ -43,7 +47,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="BaseFilter.cs" />
     <Compile Include="DataUtilities.cs" />
     <Compile Include="IDataFilterGroup.cs" />
@@ -58,6 +61,7 @@
     <Compile Include="IDataStore.cs" />
     <Compile Include="PropertyFilter.cs" />
     <Compile Include="ReferenceFilter.cs" />
+    <Compile Include="XmlBackupManager.cs" />
     <Compile Include="XmlEntityManager.cs" />
     <Compile Include="XmlEntitySchema.cs" />
   </ItemGroup>

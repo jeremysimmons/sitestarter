@@ -63,7 +63,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
             set { physicalPath = value; }
         }
 
-        private Guid universalProjectID;
+        /*private Guid universalProjectID;
         /// <summary>
         /// Gets/sets the universal ID of the project.
         /// </summary>
@@ -71,7 +71,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
         {
             get { return universalProjectID; }
             set { universalProjectID = value; }
-        }
+        }*/
         
         private Guid primaryAdministratorID;
         /// <summary>

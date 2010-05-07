@@ -72,6 +72,10 @@
 	        <exclude name="**/*.dll.r*"/>
 	        <exclude name="**/*.exe.r*"/>
 	        <exclude name="**/App_Data/VS/**"/>
+	        <exclude name="**/App_Data/LegacyDefault/**"/>
+	        <exclude name="**/App_Data/Legacy/**"/>
+	        <exclude name="**/App_Data/Imported/**"/>
+	        <exclude name="**/App_Data/Converted/**"/>
 	        <exclude name="**/fckeditor/**"/>
 	        <exclude name="**/Backups/*.zip"/>
 	        <exclude name="**/App_Data/**.xml"/>
@@ -84,6 +88,8 @@
 	        <exclude name="**.eqbak"/>
 	        <exclude name="**/Backups"/>
 	        <exclude name="*disabled_nant"/>
+	        <exclude name="**/bin/Debug/**"/>
+	        <exclude name="**/bin/Release/**"/>
 	        <include name="**/*" />
 	    </fileset>	   
 
@@ -120,13 +126,19 @@
 	        <exclude name="**/App_Data/*.yap"/>
 	        <exclude name="**/App_Data/Personalisation_Data"/>
 	        <exclude name="**/App_Data/Logs"/>
+	        <exclude name="**/App_Data/LegacyDefault/**"/>
+	        <exclude name="**/App_Data/Legacy/**"/>
+	        <exclude name="**/App_Data/Imported/**"/>
+	        <exclude name="**/App_Data/Converted/**"/>
 	        <exclude name="*.Import.nant"/>
-	        <exclude name="**/Releases"/>
+	        <exclude name="**/Releases/**"/>
 	        <exclude name="**/Backups/**"/>
 	        <exclude name="**/Backups"/>
 	        <exclude name="**.eqbak"/>
 	        <exclude name="**/*.csproj"/>
 	        <exclude name="*disabled*"/>
+	        <exclude name="**/bin/Debug/**"/>
+	        <exclude name="**/bin/Release/**"/>
 	        <include name="**/**" />
 	    </fileset>	   
 	</zip>
