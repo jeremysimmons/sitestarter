@@ -29,7 +29,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
                 return false;
         }
 
-        public static bool UserCan(string action, BaseEntity entity)
+        public static bool UserCan(string action, IEntity entity)
         {
             // TODO: Add security
             if (HttpContext.Current.Request.IsAuthenticated
@@ -39,7 +39,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
                 return false;
         }
 
-        public static bool UserCan(string action, BaseEntity[] entities)
+        public static bool UserCan(string action, IEntity[] entities)
         {
             // TODO: Add security
             if (HttpContext.Current.Request.IsAuthenticated
@@ -57,7 +57,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
             // TODO: Add redirect to friendly page
         }
 
-        public static void EnsureUserCan(string action, BaseEntity entity)
+        public static void EnsureUserCan(string action, IEntity entity)
         {
             if (!UserCan(action, entity))
                 InvalidPermissionsRedirect();
@@ -65,7 +65,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
             // TODO: Add redirect to friendly page
         }
 
-        public static void EnsureUserCan(string action, BaseEntity[] entities)
+        public static void EnsureUserCan(string action, IEntity[] entities)
         {
             if (!UserCan(action, entities))
                 InvalidPermissionsRedirect();

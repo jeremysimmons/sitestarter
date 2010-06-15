@@ -13,28 +13,19 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// Provides an interface for interacting with entities.
 	/// </summary>
     [DataObject(true)]
-	public class EntityFactory
+    public class EntityFactory : BaseFactory
     {
-        // TODO: Remove if not needed
-        /*/// <summary>
-        /// Gets the data store containing the objects that this factory interact with.
-        /// </summary>
-        static public IObjectContainer DataStore
-        {
-            get { return DataAccess.Data.Stores.GetDataStore(typeof(Entities.BaseEntity), true); }
-        }*/
-
-		#region Retrieve functions
-	    /*/// <summary>
-		/// Retrieves all the entities from the DB.
-		/// </summary>
-		/// <returns>An array of the retrieved entities.</returns>
-        [DataObjectMethod(DataObjectMethodType.Select, true)]
-		static public IEntity[] GetEntities()
+    	
+		static private EntityFactory current;
+		static public EntityFactory Current
 		{
-            return (BaseEntity[])(DataAccess.Data.Stores[typeof(BaseEntity)].GetEntities(typeof(Entities.BaseEntity)));
-		}*/
-
+			get {
+				if (current == null)
+					current = new EntityFactory();
+				return current; }
+		}
+		
+		#region Retrieve functions
 		/// <summary>
 		/// Retrieves all the specified entities from the DB.
 		/// </summary>
@@ -82,7 +73,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="entity">The entity to save.</param>
 		/// <returns>A boolean value indicating whether the entityname is taken.</returns>
         [DataObjectMethod(DataObjectMethodType.Insert, true)]
-        static public void SaveEntity(Entities.BaseEntity entity)
+        static public void SaveEntity(IEntity entity)
         {
             // Save the object.
             DataAccess.Data.Stores[entity.GetType()].Save(entity);
@@ -96,7 +87,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="entity">The entity to update.</param>
 		/// <returns>A boolean value indicating whether the entityname is taken.</returns>
         [DataObjectMethod(DataObjectMethodType.Update, true)]
-        static public void UpdateEntity(Entities.BaseEntity entity)
+        static public void UpdateEntity(IEntity entity)
         {
             // Update the object.
             DataAccess.Data.Stores[entity.GetType()].Update(entity);
@@ -109,7 +100,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="entity">The entity to delete.</param>
         [DataObjectMethod(DataObjectMethodType.Delete, true)]
-        static public void DeleteEntity(Entities.BaseEntity entity)
+        static public void DeleteEntity(IEntity entity)
 		{
             if (entity != null)
             {
@@ -123,7 +114,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
             return Type.GetType(type);
         }
 
-		static public void Compress(BaseEntity entity)
+		static public void Compress(IEntity entity)
 		{
 			// TODO: Add compression functionality. Remove all referenced objects and leave only their IDs.
 		}

@@ -135,39 +135,39 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		static public string GetDataStoreName(Type type, bool throwErrorIfNotFound)
 		{
 			string dataStoreName = String.Empty;
-            using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the name of the data store.", NLog.LogLevel.Debug))
-            {
-                if (type == null)
-                    throw new ArgumentNullException("type");
+			//using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the name of the data store.", NLog.LogLevel.Debug))
+			// {
+			if (type == null)
+				throw new ArgumentNullException("type");
 
-                if (Config.Mappings == null)
-                    throw new InvalidOperationException("No mappings have been initialized.");
-
-
-                Type actualType = EntitiesUtilities.GetType(type.Name);
+			if (Config.Mappings == null)
+				throw new InvalidOperationException("No mappings have been initialized.");
 
 
-                if (actualType == null)
-                    actualType = type;
+			Type actualType = EntitiesUtilities.GetType(type.Name);
 
-                AppLogger.Debug("Actual type: " + actualType.ToString());
 
-                MappingItem item = Config.Mappings.GetItem(actualType, false);
-                if (item == null)
-                {
-                    throw new InvalidOperationException("No mappings found for the type " + actualType.ToString() + ".");
-                }
-                else
-                    AppLogger.Debug("Item found: " + item.TypeName);
+			if (actualType == null)
+				actualType = type;
 
-                if (!item.Settings.ContainsKey("DataStoreName"))
-                    throw new InvalidOperationException("No data store name has been declared in the mappings for the '" + actualType.ToString() + "' type.");
-                else
-                    AppLogger.Debug("Data store: " + item.Settings["DataStoreName"]);
+			// AppLogger.Debug("Actual type: " + actualType.ToString());
 
-                dataStoreName = (string)item.Settings["DataStoreName"];
+			MappingItem item = Config.Mappings.GetItem(actualType, false);
+			if (item == null)
+			{
+				throw new InvalidOperationException("No mappings found for the type " + actualType.ToString() + ".");
+			}
+			//else
+			//AppLogger.Debug("Item found: " + item.TypeName);
 
-            }
+			if (!item.Settings.ContainsKey("DataStoreName"))
+				throw new InvalidOperationException("No data store name has been declared in the mappings for the '" + actualType.ToString() + "' type.");
+			//else
+			//AppLogger.Debug("Data store: " + item.Settings["DataStoreName"]);
+
+			dataStoreName = (string)item.Settings["DataStoreName"];
+
+			//}
 			return dataStoreName;
 		}
 
@@ -221,46 +221,46 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			string returnName;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the data store name for provided types.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the data store name for provided types.", NLog.LogLevel.Debug))
+			//{
+			if (typeNames == null)
+				throw new ArgumentNullException("typeNames");
+			
+			if (typeNames.Length != 2)
+				throw new ArgumentException("Incorrect number of type names provided. Expected 2 but was " + typeNames.Length + ".");
+			else
 			{
-				if (typeNames == null)
-					throw new ArgumentNullException("typeNames");
+				if (typeNames[0].Trim().Length == 0)
+					throw new ArgumentException("The type name at position 0 is empty.");
+				if (typeNames[1].Trim().Length == 0)
+					throw new ArgumentException("The type name at position 1 is empty.");
 				
-				if (typeNames.Length != 2)
-					throw new ArgumentException("Incorrect number of type names provided. Expected 2 but was " + typeNames.Length + ".");
-				else
-				{
-					if (typeNames[0].Trim().Length == 0)
-						throw new ArgumentException("The type name at position 0 is empty.");
-					if (typeNames[1].Trim().Length == 0)
-						throw new ArgumentException("The type name at position 1 is empty.");
-					
-					AppLogger.Debug("Type name 0: " + typeNames[0]);
-					AppLogger.Debug("Type name 1: " + typeNames[1]);
-				}
-				
-				Array.Sort(typeNames);
-				
-				AppLogger.Debug("Sorted names.");
-				
-				AppLogger.Debug("Type name 0: " + typeNames[0]);
-				AppLogger.Debug("Type name 1: " + typeNames[1]);
-				
-				Type type0 = EntitiesUtilities.GetType(typeNames[0]);
-				Type type1 = EntitiesUtilities.GetType(typeNames[1]);
-				
-				AppLogger.Debug("Type 0: " + type0.ToString());
-				AppLogger.Debug("Type 1: " + type1.ToString());
-				
-				string[] dataStoreNames = new String[]{
-					GetDataStoreName(type0),
-					GetDataStoreName(type1)
-				};
-				
-				returnName = dataStoreNames[0] + "-" + dataStoreNames[1];
-				
-				AppLogger.Debug("Data store name: " + returnName);
+				//AppLogger.Debug("Type name 0: " + typeNames[0]);
+				//AppLogger.Debug("Type name 1: " + typeNames[1]);
 			}
+			
+			Array.Sort(typeNames);
+			
+			//AppLogger.Debug("Sorted names.");
+			
+			//AppLogger.Debug("Type name 0: " + typeNames[0]);
+			//AppLogger.Debug("Type name 1: " + typeNames[1]);
+			
+			Type type0 = EntitiesUtilities.GetType(typeNames[0]);
+			Type type1 = EntitiesUtilities.GetType(typeNames[1]);
+			
+			//AppLogger.Debug("Type 0: " + type0.ToString());
+			//AppLogger.Debug("Type 1: " + type1.ToString());
+			
+			string[] dataStoreNames = new String[]{
+				GetDataStoreName(type0),
+				GetDataStoreName(type1)
+			};
+			
+			returnName = dataStoreNames[0] + "-" + dataStoreNames[1];
+			
+			//AppLogger.Debug("Data store name: " + returnName);
+			//}
 			
 			return returnName;
 		}
@@ -270,7 +270,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			Type type = null;
 
 			using (LogGroup group = AppLogger.StartGroup("Retrieving the type of entity being referenced by the provided property.", NLog.LogLevel.Debug))
-			{				
+			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");
 				
@@ -379,12 +379,25 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <returns>A flag indicating whether the specified counter is within the specified page.</returns>
 		static public bool IsInPage(int i, int pageIndex, int pageSize)
 		{
-			int first = (pageIndex * pageSize);
-			int last = (pageIndex * pageSize) + pageSize;
-			
-			return i >= first
-				&& i <= last;
-			
+			bool match = false;
+			using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the specified position is within the specified page.", NLog.LogLevel.Debug))
+			{
+				AppLogger.Debug("Position (i): " + i.ToString());
+				AppLogger.Debug("Page index: " + pageIndex);
+				AppLogger.Debug("Page size: " + pageSize);
+				
+				int first = (pageIndex * pageSize);
+				int last = ((pageIndex * pageSize) + pageSize) -1; // -1 to make it the last of the page, instead of first item on next page
+				
+				AppLogger.Debug("First position: " + first.ToString());
+				AppLogger.Debug("Last position: " + last.ToString());
+				
+				match = i >= first
+					&& i <= last;
+				
+				AppLogger.Debug("Match: " + match.ToString());
+			}
+			return match;
 		}
 		
 		

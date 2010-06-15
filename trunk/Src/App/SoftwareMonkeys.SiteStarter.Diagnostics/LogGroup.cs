@@ -12,7 +12,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 	/// <summary>
 	/// Helps with the diagnostics tracing.
 	/// </summary>
-	public class LogGroup : IComponent
+	public class LogGroup : System.ComponentModel.IComponent
 	{
 		protected bool HasEnded = false;
 		protected bool IncludeInRelease = false;
@@ -27,6 +27,8 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 				return id; }
 			set { id = value; }
 		}
+
+
 		
 		private Guid parentID;
 		public Guid ParentID

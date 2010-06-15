@@ -6,7 +6,7 @@
 
             <fileset>
 
-                        <include name="../Lib/nant/bin/tasks/NAnt.Contrib.Tasks.dll" />
+                        <include name="../lib/nant/bin/tasks/NAnt.Contrib.Tasks.dll" />
 
             </fileset>
 
@@ -47,7 +47,7 @@
   
 
 		<svn-checkout
-	    destination="${Solution.RootPath}\..\..\" 
+	    destination="${Project.RootPath}" 
 	    uri="${GoogleSvn.Uri}"
 	    quiet="false"
 	    username="${GoogleSvn.Username}"
@@ -59,11 +59,18 @@
     
 <target name="Common.Jobs.UpdateFromSVN">
 
-  		<property name="Solution.PropertiesPath" value="${Solution::GetPropertiesPath(project::get-base-directory())}"/>
-  		<property name="Solution.RootPath" value="${path::get-directory-name(Solution.PropertiesPath)}"/>
-
 	<xmlpeek
-		    file="${Solution.RootPath}\GoogleSvn.security"
+		    file="${Project.RootPath}\GoogleSvn.security"
+		    xpath="/x:project/x:property[@name = 'GoogleSvn.ProjectName']/@value"
+		    property="GoogleSvn.ProjectName">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+    	
+    	
+	<xmlpeek
+		    file="${Project.RootPath}\GoogleSvn.security"
 		    xpath="/x:project/x:property[@name = 'GoogleSvn.Username']/@value"
 		    property="GoogleSvn.Username">
 		        <namespaces>
@@ -72,27 +79,41 @@
     	</xmlpeek>
     	
 	<xmlpeek
-		    file="${Solution.RootPath}\GoogleSvn.security"
+		    file="${Project.RootPath}\GoogleSvn.security"
 		    xpath="/x:project/x:property[@name = 'GoogleSvn.Password']/@value"
 		    property="GoogleSvn.Password">
 		        <namespaces>
         			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
     			</namespaces>
     	</xmlpeek>
+    	
+    	
+	<xmlpeek
+		    file="${Project.RootPath}\GoogleSvn.security"
+		    xpath="/x:project/x:property[@name = 'GoogleSvn.Uri']/@value"
+		    property="GoogleSvn.Uri">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+  
+  <property name="svnLocation" value="../lib/nant/bin/tasks/svn.exe"/>
+  
+  <exec program="${svnLocation}" verbose="true" commandline="update ${GoogleSvn.Uri} ${GoogleSvn.ProjectName} --username ${GoogleSvn.Username} --password ${GoogleSvn.Password}"/>
   
 
-		<svn-update
-	    destination="${Solution.RootPath}\..\..\" 
-	    uri="https://workhub2.googlecode.com/svn/trunk"
+		<!--svn-update verbose="true"
+	    destination="${Project.RootPath}" 
+	    uri="${GoogleSvn.Uri}"
 	    quiet="false"
 	    username="${GoogleSvn.Username}"
 	    password="${GoogleSvn.Password}"
-/>
+/-->
     
     </target>
     
     
-<target name="Common.Jobs.ImportScriptsFromSVN">
+<!--target name="Common.Jobs.ImportScriptsFromSVN">
 
   		<property name="Solution.PropertiesPath" value="${Solution::GetPropertiesPath(project::get-base-directory())}"/>
   		<property name="Solution.RootPath" value="${path::get-directory-name(Solution.PropertiesPath)}"/>
@@ -126,6 +147,6 @@
 		    password="${GoogleSvn.Password}"
 		/>
     
-    </target>
+    </target-->
 </project>
   	

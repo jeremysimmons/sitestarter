@@ -37,14 +37,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Admin\Tests\EntityFormTests.aspx.cs">
-      <DependentUpon>EntityFormTests.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Admin\Tests\EntitySelectTests.aspx.cs">
       <DependentUpon>EntitySelectTests.aspx</DependentUpon>
     </Compile>
-    <Compile Include="AssemblyInfo.cs" />
+    <None Include="Admin\AutoBackup.aspx" />
     <None Include="Admin\AutoSetup.aspx" />
+    <None Include="Admin\Backup.aspx" />
     <None Include="Admin\Data.aspx" />
     <None Include="Admin\EmailSettings.aspx" />
     <None Include="Admin\Help.aspx" />
@@ -55,7 +53,7 @@
     <None Include="Admin\Log2.aspx" />
     <None Include="Admin\Settings.aspx" />
     <None Include="Admin\Setup.aspx" />
-    <None Include="Admin\Tests\EntityFormTests.aspx" />
+    <None Include="Admin\Tests\CreateHugeData.aspx" />
     <None Include="Admin\Tests\EntitySelectDelivererTests.aspx" />
     <None Include="Admin\Tests\EntitySelectRequesterTests.aspx" />
     <None Include="Admin\Tests\EntitySelectTests.aspx" />
@@ -79,6 +77,7 @@
     <None Include="App_Themes\Default\_svn\text-base\Styles.css.svn-base" />
     <None Include="App_Themes\_svn\entries" />
     <None Include="App_Themes\_svn\format" />
+    <None Include="BackupLauncher.ascx" />
     <None Include="Controls\Guide.ascx" />
     <None Include="Controls\Testing.ascx" />
     <None Include="Controls\_svn\entries" />
@@ -89,7 +88,6 @@
     <None Include="Default.aspx" />
     <None Include="Global.asax" />
     <None Include="Help\VirtualServersInfo.xml" />
-    <None Include="LogTemplate.xsl" />
     <None Include="Members\Default.aspx" />
     <None Include="Members\Login.aspx" />
     <None Include="Members\Logout.aspx" />

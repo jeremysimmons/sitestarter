@@ -43,12 +43,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		#endregion
 
 
-		/*[TearDown]
-        public void CleanUp()
-        {
-            ClearTestEntities();
+		[TearDown]
+		public void CleanUp()
+		{
+			ClearTestEntities();
 
-        }*/
+		}
 
 		#region Tests
 		
@@ -60,34 +60,34 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				TestUser.RegisterType();
 				TestRole.RegisterType();
 
-                TestArticle article = new TestArticle();
-                article.ID = Guid.NewGuid();
-                article.Title = "Test Article";
+				TestArticle article = new TestArticle();
+				article.ID = Guid.NewGuid();
+				article.Title = "Test Article";
 
-                TestCategory category = new TestCategory();
-                category.ID = Guid.NewGuid();
-                category.Name = "Test Category";
+				TestCategory category = new TestCategory();
+				category.ID = Guid.NewGuid();
+				category.Name = "Test Category";
 
-                article.Categories = new TestCategory[] { category };
+				article.Categories = new TestCategory[] { category };
 
-                DataAccess.Data.Save(article);
-                DataAccess.Data.Save(category);
+				DataAccess.Data.Save(article);
+				DataAccess.Data.Save(category);
 
-                EntityReferenceCollection collection = DataAccess.Data.GetReferences(article.GetType(), article.ID, "Categories", category.GetType(), false);
+				EntityReferenceCollection collection = DataAccess.Data.GetReferences(article.GetType(), article.ID, "Categories", category.GetType(), false);
 
-                Assert.IsNotNull(collection, "Reference collection is null.");
+				Assert.IsNotNull(collection, "Reference collection is null.");
 
-                if (collection != null)
-                {
-                    Assert.AreEqual(1, collection.Count, "Incorrect number of references found.");
-                }
+				if (collection != null)
+				{
+					Assert.AreEqual(1, collection.Count, "Incorrect number of references found.");
+				}
 
-                foreach (EntityReference reference in collection)
-                {
-                    bool match = DataAccess.Data.IsStored(reference);
+				foreach (EntityReference reference in collection)
+				{
+					bool match = DataAccess.Data.IsStored(reference);
 
-                    Assert.AreEqual(true, match, "Reference wasn't detected.");
-                }
+					Assert.AreEqual(true, match, "Reference wasn't detected.");
+				}
 
 				
 				/*EntityReference reference = new EntityReference();
@@ -100,7 +100,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				reference2.Property1Name = reference.Property2Name = "Users";
 				reference.Entity1ID = reference2.Entity2ID = Guid.NewGuid();
 				reference2.Entity1ID = reference.Entity2ID = Guid.NewGuid();
-				*/
+				 */
 				/*TestUser user = new TestUser();
 				Guid userID = user.ID = Guid.NewGuid();
 				user.FirstName = "Test";
@@ -440,6 +440,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetReference function with a synchronous reference to ensure it retrieves the correct reference.", NLog.LogLevel.Debug))
 			{
+				ClearTestEntities();
+				
+				CreateDummyReferences(100);
+				
 				TestUser.RegisterType();
 				TestRole.RegisterType();
 				
@@ -448,28 +452,84 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				user.FirstName = "Test";
 				user.LastName = "User";
 				
+				TestUser user2 = new TestUser();
+				user2.ID = Guid.NewGuid();
+				user2.FirstName = "Test";
+				user2.LastName = "User 2";
+				
 				TestRole role = new TestRole();
 				role.ID = Guid.NewGuid();
 				role.Name = "Test Role";
 				
-				user.Roles = new TestRole[] {role};
 				
-				DataAccess.Data.Save(user);
-				DataAccess.Data.Save(role);
+				TestRole role2 = new TestRole();
+				role2.ID = Guid.NewGuid();
+				role2.Name = "Test Role 2";
 				
-				EntityReference reference = DataAccess.Data.GetReference(user.GetType(),
-				                                                         user.ID,
-				                                                         "Roles",
-				                                                         role.GetType(),
-				                                                         role.ID,
-				                                                         "Users",
+				
+				user.Roles = new TestRole[] {role, role2};
+				
+				role2.Users = new TestUser[] {user, user2};
+				
+				EntityReference originalReference = EntitiesUtilities.GetReferences(user)[0];
+				
+				AppLogger.Debug("Original reference - Entity 1 ID: " + originalReference.Entity1ID.ToString());
+				AppLogger.Debug("Original reference - Entity 2 ID: " + originalReference.Entity2ID.ToString());
+				AppLogger.Debug("Original reference - Property 1 name: " + originalReference.Property1Name);
+				AppLogger.Debug("Original reference - Property 2 name: " + originalReference.Property2Name);
+				AppLogger.Debug("Original reference - Type 1 name: " + originalReference.Type1Name);
+				AppLogger.Debug("Original reference - Type 2 name: " + originalReference.Type2Name);
+				
+				foreach (EntityIDReference r in EntitiesUtilities.GetReferences(user))
+					DataAccess.Data.Save(r);
+				
+				foreach (EntityIDReference r in EntitiesUtilities.GetReferences(role2))
+					DataAccess.Data.Save(r);
+				
+				//DataAccess.Data.Save(user);
+				//DataAccess.Data.Save(role);
+				
+				EntityReference reference = DataAccess.Data.GetReference(EntitiesUtilities.GetType(originalReference.Type1Name),
+				                                                         originalReference.Entity1ID,
+				                                                         originalReference.Property1Name,
+				                                                         EntitiesUtilities.GetType(originalReference.Type2Name),
+				                                                         originalReference.Entity2ID,
+				                                                         originalReference.Property2Name,
 				                                                         false);
 				
 				
 				Assert.IsNotNull(reference, "The return value is null.");
 				
-				Assert.IsTrue(reference.Includes(user.ID, "Roles"), "The returned reference is invalid. (#1)");
-				Assert.IsTrue(reference.Includes(role.ID, "Users"), "The returned reference is invalid. (#2)");
+				AppLogger.Debug("Found reference - Entity 1 ID: " + reference.Entity1ID.ToString());
+				AppLogger.Debug("Found reference - Entity 2 ID: " + reference.Entity2ID.ToString());
+				AppLogger.Debug("Found reference - Property 1 name: " + reference.Property1Name);
+				AppLogger.Debug("Found reference - Property 2 name: " + reference.Property2Name);
+				AppLogger.Debug("Found reference - Type 1 name: " + reference.Type1Name);
+				AppLogger.Debug("Found reference - Type 2 name: " + reference.Type2Name);
+				
+				Assert.IsTrue(originalReference.Entity1ID.ToString() == reference.Entity1ID.ToString()
+				              || originalReference.Entity2ID.ToString() == reference.Entity1ID.ToString(), "Entity 1 ID doesn't match expected.");
+				
+				Assert.IsTrue(originalReference.Entity2ID.ToString() == reference.Entity2ID.ToString()
+				              || originalReference.Entity1ID.ToString() == reference.Entity2ID.ToString(), "Entity 2 ID doesn't match expected.");
+				
+				
+				Assert.IsTrue(originalReference.Type1Name.ToString() == reference.Type1Name.ToString()
+				              || originalReference.Type2Name.ToString() == reference.Type1Name.ToString(), "Type 1 name doesn't match expected.");
+				
+				Assert.IsTrue(originalReference.Type2Name.ToString() == reference.Type2Name.ToString()
+				              || originalReference.Type1Name.ToString() == reference.Type2Name.ToString(), "Type 2 name doesn't match expected.");
+				
+				Assert.IsTrue(originalReference.Property1Name.ToString() == reference.Property1Name.ToString()
+				              || originalReference.Property2Name.ToString() == reference.Property1Name.ToString(), "Property 1 name doesn't match expected.");
+				
+				Assert.IsTrue(originalReference.Property2Name.ToString() == reference.Property2Name.ToString()
+				              || originalReference.Property1Name.ToString() == reference.Property2Name.ToString(), "Property 2 name doesn't match expected.");
+				
+				//IsTrue(reference.Includes(user.ID, "Roles"), "The returned reference is invalid. (#1)");
+				
+//				Assert.IsTrue(reference.Includes(user.ID, "Roles"), "The returned reference is invalid. (#1)");
+//				Assert.IsTrue(reference.Includes(role.ID, "Users"), "The returned reference is invalid. (#2)");
 				
 				DataAccess.Data.Delete(user);
 				DataAccess.Data.Delete(role);
@@ -483,6 +543,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetEntitiesPageMatchReference function to ensure it finds entities properly.", NLog.LogLevel.Debug))
 			{
+				ClearTestEntities();
+				
+				
 				TestArticle article = new TestArticle();
 				article.ID = Guid.NewGuid();
 				article.Title = "Test Article";
@@ -491,19 +554,31 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				category.ID = Guid.NewGuid();
 				category.Name = "Test Category";
 				
-				article.Categories = new TestCategory[] { category };
+				TestArticle article2 = new TestArticle();
+				article2.ID = Guid.NewGuid();
+				article2.Title = "Test Article 2";
 				
+				TestCategory category2 = new TestCategory();
+				category2.ID = Guid.NewGuid();
+				category2.Name = "Test Category 2";
+				
+				article.Categories = new TestCategory[] { category, category2 };
+				
+				category.Articles = new TestArticle[] { article, article2 };
+				
+				DataAccess.Data.Save(article2);
+				DataAccess.Data.Save(category2);
 				DataAccess.Data.Save(article);
 				DataAccess.Data.Save(category);
 				
 				
-				int total = 0;
+				PagingLocation location = new PagingLocation(0, 10);
 				
-				IEntity[] results = DataAccess.Data.GetEntitiesPageMatchReference<TestArticle>("Categories", typeof(TestCategory), category.ID, 0, 10, "NameAscending", out total);
+				IEntity[] results = DataAccess.Data.GetEntitiesPageMatchReference<TestArticle>("Categories", typeof(TestCategory), category.ID, location, "NameAscending");
 				
 				Assert.IsNotNull(results, "The results were null.");
 				
-				Assert.AreEqual(1, total, "The returned total count is incorrect.");
+				Assert.AreEqual(1, location.AbsoluteTotal, "The returned total count is incorrect.");
 				
 				if (results != null)
 				{
@@ -516,6 +591,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				DataAccess.Data.Delete(article);
 				DataAccess.Data.Delete(category);
+				DataAccess.Data.Delete(article2);
+				DataAccess.Data.Delete(category2);
 			}
 		}
 		
@@ -524,6 +601,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetEntitiesMatchReference function to ensure it finds entities properly.", NLog.LogLevel.Debug))
 			{
+				ClearTestEntities();
+				
 				TestArticle article = new TestArticle();
 				article.ID = Guid.NewGuid();
 				article.Title = "Test Article";
@@ -563,6 +642,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the MatchReference function to ensure matches properly.", NLog.LogLevel.Debug))
 			{
+				ClearTestEntities();
+				
 				TestArticle article = new TestArticle();
 				article.ID = Guid.NewGuid();
 				article.Title = "Test Article";
@@ -571,10 +652,41 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				category.ID = Guid.NewGuid();
 				category.Name = "Test Category";
 				
-				article.Categories = new TestCategory[] { category };
+				TestArticle article2 = new TestArticle();
+				article2.ID = Guid.NewGuid();
+				article2.Title = "Test Article 2";
 				
+				TestCategory category2 = new TestCategory();
+				category2.ID = Guid.NewGuid();
+				category2.Name = "Test Category 2";
+				
+				//article.Categories = new TestCategory[] { category };
+				
+				
+				
+				article.Categories = new TestCategory[] {category};//, category2};
+				
+				//category2.Articles = new TestArticle[] {article, article2};
+				
+				EntityReference originalReference = EntitiesUtilities.GetReferences(article)[0];
+				
+				AppLogger.Debug("Original reference - Entity 1 ID: " + originalReference.Entity1ID.ToString());
+				AppLogger.Debug("Original reference - Entity 2 ID: " + originalReference.Entity2ID.ToString());
+				AppLogger.Debug("Original reference - Property 1 name: " + originalReference.Property1Name);
+				AppLogger.Debug("Original reference - Property 2 name: " + originalReference.Property2Name);
+				AppLogger.Debug("Original reference - Type 1 name: " + originalReference.Type1Name);
+				AppLogger.Debug("Original reference - Type 2 name: " + originalReference.Type2Name);
+				
+				foreach (EntityIDReference r in EntitiesUtilities.GetReferences(article))
+					DataAccess.Data.Save(r);
+				
+				//foreach (EntityIDReference r in EntitiesUtilities.GetReferences(category2))
+				//	DataAccess.Data.Save(r);
+				
+				
+				/*
 				DataAccess.Data.Save(article);
-				DataAccess.Data.Save(category);
+				DataAccess.Data.Save(category);*/
 				
 				
 				string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(article.GetType(),
@@ -615,11 +727,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				//                                                                    EntitiesUtilities.GetProperty(category.GetType(), "Articles", typeof(TestArticle[])));
 
 				
-                bool match = DataAccess.Data.MatchReference(article.GetType(), article.ID, "Categories", category.GetType(), category.ID);
-                bool match2 = DataAccess.Data.MatchReference(category.GetType(), category.ID, "Articles", article.GetType(), article.ID);
+				bool match = DataAccess.Data.MatchReference(article.GetType(), article.ID, "Categories", category.GetType(), category.ID);
+				bool match2 = DataAccess.Data.MatchReference(category.GetType(), category.ID, "Articles", article.GetType(), article.ID);
 
-                Assert.IsTrue(match, "Didn't match on standard check.");
-                Assert.IsTrue(match2, "Didn't match on reverse check.");
+				Assert.IsTrue(match, "Didn't match on standard check.");
+				Assert.IsTrue(match2, "Didn't match on reverse check.");
 				
 				
 				DataAccess.Data.Delete(article);
@@ -1041,7 +1153,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			}
 		}
 		
-				[Test]
+		[Test]
 		public void Test_Delete_RemoveReferences()
 		{
 			
@@ -1066,7 +1178,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				DataAccess.Data.Save(role);
 				
 				DataAccess.Data.Delete(role);
-								
+				
 				TestUser user2 = DataAccess.Data.GetEntity<TestUser>("ID", user.ID);
 				
 				DataAccess.Data.Activate(user2);
@@ -1243,7 +1355,25 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 		private void ClearTestEntities()
 		{
-			Type[] types = new Type[] { typeof(TestEntity), typeof(EntityThree), typeof(EntityFour) };
+			
+			TestArticle.RegisterType();
+			TestCategory.RegisterType();
+			TestUser.RegisterType();
+			TestRole.RegisterType();
+			
+			Type[] types = new Type[] {
+				typeof(TestArticle),
+				typeof(TestArticlePage),
+				typeof(TestCategory),
+				typeof(TestEntity),
+				typeof(TestSample),
+				typeof(TestUser),
+				typeof(TestRole),
+				typeof(TestEntity),
+				typeof(EntityOne),
+				typeof(EntityTwo),
+				typeof(EntityThree),
+				typeof(EntityFour) };
 
 			Collection<IEntity> entities = new Collection<IEntity>();
 			foreach (Type type in types)
@@ -1255,6 +1385,16 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			}
 		}
 
+		private void CreateDummyReferences(int count)
+		{
+			EntityReference reference = new EntityReference();
+			reference.Entity1ID = Guid.NewGuid();
+			reference.Entity2ID = Guid.NewGuid();
+			reference.Property1Name = "TestProperty1-" + Guid.NewGuid().ToString().Substring(0, 5);
+			reference.Property2Name = "TestProperty2-" + Guid.NewGuid().ToString().Substring(0, 5);
+			reference.Type1Name = "TestUser";
+			reference.Type2Name = "TestRole";
+		}
 
 	}
 }

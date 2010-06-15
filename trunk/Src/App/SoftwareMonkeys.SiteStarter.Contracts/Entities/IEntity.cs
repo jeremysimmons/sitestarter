@@ -11,6 +11,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
     /// </summary>
     public interface IEntity
     {
+    	string UniqueKey {get;}
         Guid ID { get;set; }
         string ShortTypeName { get; }
         

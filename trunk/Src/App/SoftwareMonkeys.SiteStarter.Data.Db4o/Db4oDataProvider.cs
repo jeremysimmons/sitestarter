@@ -8,6 +8,9 @@ using System.IO;
 using SoftwareMonkeys.SiteStarter.Configuration;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using System.Reflection;
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Collections;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 {
@@ -163,11 +166,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			bool isStored = false;
 			using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the provided entity has already been stored.", NLog.LogLevel.Debug))
-            {
-                if (entity == null)
-                    throw new ArgumentNullException("entity");
+			{
+				if (entity == null)
+					throw new ArgumentNullException("entity");
 
-                AppLogger.Debug("Entity type: " + entity.GetType());
+				AppLogger.Debug("Entity type: " + entity.GetType());
 
 				if (EntitiesUtilities.IsReference(entity.GetType()))
 				{
@@ -177,11 +180,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					
 					//if (reference.Type1Name == String.Empty)
 
-                    Type type = EntitiesUtilities.GetType(reference.Type1Name);
-                    Type type2 = EntitiesUtilities.GetType(reference.Type2Name);
+					Type type = EntitiesUtilities.GetType(reference.Type1Name);
+					Type type2 = EntitiesUtilities.GetType(reference.Type2Name);
 
-                    AppLogger.Debug("Type 1: " + type.ToString());
-                    AppLogger.Debug("Type 2: " + type2.ToString());
+					AppLogger.Debug("Type 1: " + type.ToString());
+					AppLogger.Debug("Type 2: " + type2.ToString());
 					
 					isStored = MatchReference(
 						type,
@@ -580,14 +583,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			/// Retrieves the specified page of objects from the data store.
 			/// </summary>
 			/// <param name="type">The type of entities to retrieve.</param>
-			/// <param name="pageIndex">The index of the page to retrieve.</param>
-			/// <param name="pageSize">The size of each page.</param>
+			/// <param name="location"></param>
 			/// <param name="sortExpression">The sort expression to apply before retrieving the page.</param>
-			/// <param name="totalObjects">The total number of objects found.</param>
 			/// <returns>An array of the objects retrieved.</returns>
-			public override IEntity[] GetEntitiesPage(Type type, int pageIndex, int pageSize, string sortExpression, out int totalObjects)
+			public override IEntity[] GetEntitiesPage(Type type, PagingLocation location, string sortExpression)
 		{
-			return Stores[type].GetEntitiesPage(type, pageIndex,pageSize, sortExpression, out totalObjects);
+			return Stores[type].GetEntitiesPage(type, location, sortExpression);
 		}
 
 		/// <summary>
@@ -596,17 +597,15 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <param name="type">The type of entities to retrieve.</param>
 		/// <param name="fieldName">The name of the field to query for.</param>
 		/// <param name="propertyValue">The value of the field to query for.</param>
-		/// <param name="pageIndex">The index of the page to retrieve.</param>
-		/// <param name="pageSize">The size of each page.</param>
+		/// <param name="location"></param>
 		/// <param name="sortExpression">The sort expression to apply before retrieving the page.</param>
-		/// <param name="totalObjects">The total number of objects found.</param>
 		/// <returns>An array of the objects retrieved.</returns>
-		public override IEntity[] GetEntitiesPage(Type type, string fieldName, object propertyValue, int pageIndex, int pageSize, string sortExpression, out int totalObjects)
+		public override IEntity[] GetEntitiesPage(Type type, string fieldName, object propertyValue, PagingLocation location, string sortExpression)
 		{
-			return Stores[type].GetEntitiesPage(type, fieldName, propertyValue, pageIndex,pageSize, sortExpression, out totalObjects);
+			return Stores[type].GetEntitiesPage(type, fieldName, propertyValue, location, sortExpression);
 		}
 		
-		/// <summary>
+		/*/// <summary>
 		/// Retrieves the specified page of objects from the data store.
 		/// </summary>
 		/// <param name="pageIndex">The index of the page to retrieve.</param>
@@ -617,22 +616,70 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		public override T[] GetEntitiesPage<T>(int pageIndex, int pageSize, string sortExpression, out int totalObjects)
 		{
 			return Stores[typeof(T)].GetEntitiesPage<T>(pageIndex,pageSize, sortExpression, out totalObjects);
-		}
+		}*/
+			
+			/*public override T[] GetEntitiesPage<T>(string fieldName, object propertyValue, int pageIndex, int pageSize, string sortExpression, out int totalObjects)
+		{
+			return GetEntitiesPage<T>(fieldName, propertyValue, pageIndex, pageSize, sortExpression, totalObjects, new object[]{});
+		}*/
 
-		/// <summary>
-		/// Retrieves the specified page of objects from the provided IObjectSet.
-		/// </summary>
-		/// <param name="fieldName">The name of the field to query for.</param>
-		/// <param name="propertyValue">The value of the field to query for.</param>
-		/// <param name="pageIndex">The index of the page to retrieve.</param>
-		/// <param name="pageSize">The size of each page.</param>
-		/// <param name="sortExpression">The sort expression to apply before retrieving the page.</param>
-		/// <param name="totalObjects">The total number of objects found.</param>
-		/// <returns>An array of the objects retrieved.</returns>
-		public override T[] GetEntitiesPage<T>(string fieldName, object propertyValue, int pageIndex, int pageSize, string sortExpression, out int totalObjects)
+			/*/// <summary>
+			/// Retrieves the specified page of objects from the provided IObjectSet.
+			/// </summary>
+			/// <param name="fieldName">The name of the field to query for.</param>
+			/// <param name="propertyValue">The value of the field to query for.</param>
+			/// <param name="pageIndex">The index of the page to retrieve.</param>
+			/// <param name="pageSize">The size of each page.</param>
+			/// <param name="sortExpression">The sort expression to apply before retrieving the page.</param>
+			/// <param name="totalObjects">The total number of objects found.</param>
+			/// <returns>An array of the objects retrieved.</returns>
+			public override T[] GetEntitiesPage<T>(string fieldName, object propertyValue, int pageIndex, int pageSize, string sortExpression, out int totalObjects)
 		{
 			return Stores[typeof(T)].GetEntitiesPage<T>(fieldName, propertyValue, pageIndex,pageSize, sortExpression, out totalObjects);
+		}*/
+			
+			public override T[] GetEntitiesPage<T>(string fieldName, object propertyValue, PagingLocation location, string sortExpression)
+		{
+			return Stores[typeof(T)].GetEntitiesPage<T>(fieldName, propertyValue, location, sortExpression);
 		}
+		
+		public override T[] GetEntitiesPage<T>(PagingLocation location, string sortExpression)
+		{
+			return Stores[typeof(T)].GetEntitiesPage<T>(location, sortExpression);
+		}
+		
+		// TODO: Clean up
+		/*public override T[] GetEntitiesPage<T>(PagingLocation location, string sortExpression, params object[] parameters)
+		{
+			//int total = 0;
+			//T[] entities =  GetEntitiesPage<T>(location, sortExpression, parameters,);
+			//location.AbsoluteTotal = total;
+			return DataStores[typeof(T)].GetEntitiesPage<T>(location, sortExpression, parameters);entities;
+		}*/
+		/*
+		public override IEntity[] GetEntitiesPage(Type type, string fieldName, object propertyValue, PagingLocation location, string sortExpression)
+		{
+			int total = 0;
+			IEntity[] entities = GetEntitiesPage(type, fieldName, propertyValue, location.PageIndex, location.PageSize, sortExpression, out total);
+			location.AbsoluteTotal = total;
+			return entities;
+		}*/
+		
+		/*public override IEntity[] GetEntitiesPage(Type type, PagingLocation location, string sortExpression)
+		{
+			int total = 0;
+			IEntity[] entities =  GetEntitiesPage(type, location.PageIndex, location.PageSize, sortExpression, out total);
+			location.AbsoluteTotal = total;
+			return entities;
+		}*/
+		
+		/*public override T[] GetEntitiesPageMatchReference<T>(string propertyName, Type referencedEntityType, Guid referencedEntityID, PagingLocation location, string sortExpression)
+		{
+			int total = 0;
+			T[] entities = GetEntitiesPageMatchReference<T>(propertyName, referencedEntityType, referencedEntityID, location.PageIndex, location.PageSize, sortExpression, out total);
+			location.AbsoluteTotal = total;
+			return entities;
+		}*/
 		
 		/// <summary>
 		/// Retrieves the specified page of objects from the data store.
@@ -640,12 +687,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <param name="type">The type of entities to retrieve.</param>
 		/// <param name="propertyName">The name of the property to query for.</param>
 		/// <param name="referenceID">The ID of the referenced entity.</param>
-		/// <param name="pageIndex">The index of the page to retrieve.</param>
-		/// <param name="pageSize">The size of each page.</param>
+		/// <param name="location"></param>
 		/// <param name="sortExpression">The sort expression to apply before retrieving the page.</param>
-		/// <param name="totalObjects">The total number of objects found.</param>
 		/// <returns>An array of the objects retrieved.</returns>
-		public override T[] GetEntitiesPageMatchReference<T>(string propertyName, Type referencedEntityType, Guid referencedEntityID, int pageIndex, int pageSize, string sortExpression, out int totalObjects)
+		public override T[] GetEntitiesPageMatchReference<T>(string propertyName, Type referencedEntityType, Guid referencedEntityID, PagingLocation location, string sortExpression)
 		{
 			List<T> entities = null;
 			
@@ -658,7 +703,16 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				
 				Type type = typeof(T);
 				
-				entities = new List<T>(((Db4oDataStore)Stores[type]).ObjectContainer.Query<T>(delegate(T e)
+				// TODO: See if this function can be improved performance wise
+				//string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyNameReverse(typeof(T), propertyName, referencedEntityType);
+				
+				
+				// Load references
+				//EntityIDReferenceCollection references = GetReferences(referencedEntityType, referencedEntityID, mirrorPropertyName, typeof(T), false);
+				
+				//foreach (EntityID
+				
+				/*entities = new List<T>(((Db4oDataStore)Stores[type]).ObjectContainer.Query<T>(delegate(T e)
 				                                                                              {
 				                                                                              	bool matches = true;
 				                                                                              	
@@ -668,103 +722,142 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				                                                                              		AppLogger.Debug("Checking type " + e.GetType().ToString());
 				                                                                              		AppLogger.Debug("Entity ID: " + e.ID);
 				                                                                              		
-				                                                                              		// TODO: Clean up
-				                                                                              		/*PropertyInfo property = type.GetProperty(propertyName);
-				                                                                              		
-				                                                                              		if (property == null)
-				                                                                              			AppLogger.Debug("property == null");
-				                                                                              		else
-				                                                                              			AppLogger.Debug("property != null");
-				                                                                              		
-				                                                                              		Type referenceEntityType = DataUtilities.GetEntityType(e, property);
-				                                                                              		
-				                                                                              		string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(e.GetType(), property);
-				                                                                              		
-				                                                                              		if (referenceEntityType == null)
-				                                                                              		{
-				                                                                              			AppLogger.Debug("referenceEntityType == null");
-				                                                                              			throw new Exception("Reference entity type could not be determined.");
-				                                                                              		}
-				                                                                              		else
-				                                                                              		{
-				                                                                              			AppLogger.Debug("referenceEntityType != null");
-				                                                                              			AppLogger.Debug("Reference entity type: " + referenceEntityType.ToString());
-				                                                                              		}
-				                                                                              		
-				                                                                              		EntityReference reference = DataAccess.Data.GetReference(e, propertyName, referenceEntityType, referencedEntityID, mirrorPropertyName, false);
-				                                                                              		
-				                                                                              		if (reference == null)
-				                                                                              			AppLogger.Debug("reference == null");
-				                                                                              		else
-				                                                                              			AppLogger.Debug("reference != null");
-				                                                                              		
-				                                                                              		matches = (reference != null);*/
-				                                                                              		
-				                                                                              		
-				                                                                              		/*string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(e.GetType(),
-				                                                                              		                                                                    EntitiesUtilities.GetProperty(e.GetType(), propertyName, null));
-				                                                                              		
-				                                                                              		matches = MatchReference(e.GetType(), e.ID, propertyName, null, referencedEntityID, mirrorPropertyName);*/
-				                                                                              		
-				                                                                              		
-				                                                                              		//Type referencedEntityType = EntitiesUtilities.GetReferenceType(typeof(T), propertyName);
-				                                                                              		
-				                                                                              		//if (referencedEntityType != null)
-				                                                                              		//	AppLogger.Debug("Referenced entity type: " + referencedEntityType.ToString());
-				                                                                              		//else
-				                                                                              		//	AppLogger.Debug("Referenced entity type: [null]");
-				                                                                              		
 				                                                                              		matches = MatchReference(e.GetType(), e.ID, propertyName, referencedEntityType, referencedEntityID);
 				                                                                              		
 				                                                                              		AppLogger.Debug("Matches: " + matches);
 				                                                                              	}
 				                                                                              	
 				                                                                              	// Check whether the current object is in the specified page
-				                                                                              	bool isInPage = DataUtilities.IsInPage(i, pageIndex, pageSize);
+				                                                                              	bool isInPage = DataUtilities.IsInPage(i, location.PageIndex, location.PageSize);
 				                                                                              	
-				                                                                              	// Increment the counter (only for matching items)
+				                                                                              	// Increment the absolute counter (only for matching items)
 				                                                                              	if (matches)
 				                                                                              		i++;
 				                                                                              	
 				                                                                              	return matches && isInPage;
-				                                                                              }));
+				                                                                              }));*/
+				
+				string sortPropertyName = sortExpression.Replace("Ascending", "").Replace("Descending", "");
+				SortDirection sortDirection = SortDirection.Ascending;
+				if (sortExpression.IndexOf("Descending") > -1)
+					sortDirection = SortDirection.Descending;
+				
+				Db4oDataStore store = (Db4oDataStore)Stores[type];
+				
+				/*entities = new List<T>(store).
+					ObjectContainer.Query<T>(
+						new Predicate<T>(){
+							public bool Match(T e) {
 
+								bool matches = true;
+								
+								using (LogGroup logGroup2 = AppLogger.StartGroup("Querying entity.", NLog.LogLevel.Debug))
+								{
+
+									AppLogger.Debug("Checking type " + e.GetType().ToString());
+									AppLogger.Debug("Entity ID: " + e.ID);
+									
+									matches = MatchReference(e.GetType(), e.ID, propertyName, referencedEntityType, referencedEntityID);
+									
+									AppLogger.Debug("Matches: " + matches);
+								}
+								
+								// Check whether the current object is in the specified page
+								bool isInPage = DataUtilities.IsInPage(i, location.PageIndex, location.PageSize);
+								
+								// Increment the absolute counter (only for matching items)
+								if (matches)
+									i++;
+								
+								return matches && isInPage;
+							},
+							new QueryComparator<T>(){
+								public int compare(T o1, T o2) {
+									if (SortDirection == SortDirection.Ascending;
+									    return EntitiesUtilities.GetPropertyValue(o1, sortPropertyName).CompareTo(EntitiesUtilities.GetPropertyValue(o2, sortPropertyName));
+									    else
+									    	return EntitiesUtilities.GetPropertyValue(o2, sortPropertyName).CompareTo(EntitiesUtilities.GetPropertyValue(o1, sortPropertyName));
+									    
+									}
+							}
+						}
+					));*/
+
+
+
+				entities = new List<T>(
+					store.ObjectContainer.Query<T>(
+						delegate(T e)
+						{
+							bool matches = true;
+							bool isInPage = false;
+							
+							using (LogGroup logGroup2 = AppLogger.StartGroup("Querying entity.", NLog.LogLevel.Debug))
+							{
+
+								AppLogger.Debug("Checking type " + e.GetType().ToString());
+								AppLogger.Debug("Entity ID: " + e.ID);
+								
+								matches = MatchReference(e.GetType(), e.ID, propertyName, referencedEntityType, referencedEntityID);
+								
+								AppLogger.Debug("Matches: " + matches);
+								
+								// Check whether the current object is in the specified page
+								isInPage = DataUtilities.IsInPage(i, location.PageIndex, location.PageSize);
+								
+								// Increment the absolute counter (only for matching items)
+								if (matches)
+									i++;
+							}
+							
+							
+							return matches && isInPage;
+						},
+						new System.Comparison<T>(
+							delegate(T o1, T o2)
+							{
+								if (sortDirection == SortDirection.Ascending)
+									return Comparer<object>.Default.Compare(EntitiesUtilities.GetPropertyValue(o1, sortPropertyName), EntitiesUtilities.GetPropertyValue(o2, sortPropertyName));
+								else
+									return Comparer<object>.Default.Compare(EntitiesUtilities.GetPropertyValue(o2, sortPropertyName), EntitiesUtilities.GetPropertyValue(o1, sortPropertyName));
+							}
+						)));
 
 				
 				if (entities != null)
 				{
 					AppLogger.Debug("entities != null");
 					
-					totalObjects = entities.Count;
+					location.AbsoluteTotal = i;
 				}
 				else
 				{
 					AppLogger.Debug("entities == null");
 					
-					totalObjects = 0;
+					location.AbsoluteTotal = 0;
 				}
 				
-				AppLogger.Debug("Total objects: " + totalObjects);
+				AppLogger.Debug("Absolute total objects: " + location.AbsoluteTotal);
 			}
 
 			return (T[])entities.ToArray();
 		}
 
-        /// <summary>
+		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="propertyName">The name of the property to query for.</param>
 		/// <param name="referencedEntityID">The ID of the referenced entity to match.</param>
 		/// <returns>An array of the objects retrieved.</returns>
-        public override T GetEntityMatchReference<T>(string propertyName, Type referencedEntityType, Guid referencedEntityID)
-        {
-            T[] entities = GetEntitiesMatchReference<T>(propertyName, referencedEntityType, referencedEntityID);
+		public override T GetEntityMatchReference<T>(string propertyName, Type referencedEntityType, Guid referencedEntityID)
+		{
+			T[] entities = GetEntitiesMatchReference<T>(propertyName, referencedEntityType, referencedEntityID);
 
-            if (entities.Length == 0)
-                return default(T);
-            else
-                return entities[0];
-        }
+			if (entities.Length == 0)
+				return default(T);
+			else
+				return entities[0];
+		}
 		
 		/// <summary>
 		/// Retrieves the specified page of objects from the data store.
@@ -992,89 +1085,141 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			//              	referenceType},
 			//              new object[] { entity });
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving references.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = AppLogger.StartGroup("Retrieving references.", NLog.LogLevel.Debug))
+			//{
+			
+			if (entityType == null)
+				throw new ArgumentNullException("entityType");
+			
+			if (referenceType == null)
+				throw new ArgumentNullException("referenceType");
+			
+			//AppLogger.Debug("Entity type: " + entityType.ToString());
+			//AppLogger.Debug("Reference type: " + referenceType.ToString());
+			
+			string storeName = DataUtilities.GetDataStoreName(
+				entityType.Name,
+				referenceType.Name);
+			
+			//AppLogger.Debug("Data store name: " + storeName);
+			
+			Db4oDataStore dataStore = (Db4oDataStore)Data.DataAccess.Data.Stores[storeName];
+
+			EntityIDReferenceCollection list = new EntityIDReferenceCollection();
+			
+			IQuery query1 = dataStore.ObjectContainer.Query();
+			query1.Constrain(typeof(EntityIDReference));
+			
+			query1.Descend("entity1ID").Constrain(entityID).And(
+				query1.Descend("property1Name").Constrain(propertyName).And(
+					query1.Descend("entity2ID").Constrain(referenceEntityID).And(
+						query1.Descend("property2Name").Constrain(mirrorPropertyName))));
+			
+			
+			IQuery query2 = dataStore.ObjectContainer.Query();
+			query2.Constrain(typeof(EntityIDReference));
+			
+			query2.Descend("entity2ID").Constrain(entityID).And(
+				query2.Descend("property2Name").Constrain(propertyName).And(
+					query2.Descend("entity1ID").Constrain(referenceEntityID).And(
+						query2.Descend("property1Name").Constrain(mirrorPropertyName))));
+			
+			
+			
+			
+			IObjectSet os1 = query1.Execute();
+			
+			while (os1.HasNext())
 			{
-				if (entityType == null)
-					throw new ArgumentNullException("entityType");
-				
-				if (referenceType == null)
-					throw new ArgumentNullException("referenceType");
-				
-				AppLogger.Debug("Entity type: " + entityType.ToString());
-				AppLogger.Debug("Reference type: " + referenceType.ToString());
-				
-				string storeName = DataUtilities.GetDataStoreName(
-					entityType.Name,
-					referenceType.Name);
-				
-				AppLogger.Debug("Data store name: " + storeName);
-				
-				Db4oDataStore dataStore = (Db4oDataStore)Data.DataAccess.Data.Stores[storeName];
-				
-				// Load the references from the data store
-				List<EntityIDReference> list = new List<EntityIDReference>(dataStore.ObjectContainer.Query<EntityIDReference>(delegate(EntityIDReference reference)
+				list.Add((EntityIDReference)os1.Next());
+			}
+			
+			IObjectSet os2 = query2.Execute();
+			
+			while (os2.HasNext())
+			{
+				list.Add((EntityIDReference)os2.Next());
+			}
+			
+			
+			// Load the references from the data store
+			/*List<EntityIDReference> list = new List<EntityIDReference>(dataStore.ObjectContainer.Query<EntityIDReference>(delegate(EntityIDReference reference)
 				                                                                                                              {
+				                                                                                                              	//return ((entityID.Equals(reference.Entity1ID) && propertyName.Equals(reference.Property1Name))
+				                                                                                                              	//        || (entityID.Equals(reference.Entity2ID) && propertyName.Equals(reference.Property2Name)));
 				                                                                                                              	return reference.Includes(entityID, propertyName) && reference.Includes(referenceEntityID, mirrorPropertyName);
-				                                                                                                              }));
+				                                                                                                              }));*/
+			
+			if (list.Count == 0)
+			{
+				//AppLogger.Debug("No references loaded from the data store.");
+			}
+			else
+			{
 				
-				if (list.Count == 0)
-					AppLogger.Debug("No references loaded from the data store.");
-				else
+				
+				//AppLogger.Debug("# references loaded: " + list.Count.ToString());
+				
+				if (list.Count > 1)
+					throw new Exception("Multiple (" + list.Count.ToString() + ") references found when there should only be one.");
+				
+				int i = 0;
+				
+				foreach (EntityIDReference idReference in list)
 				{
+					i++;
 					
-					foreach (EntityIDReference idReference in list)
+					//using (LogGroup logGroup2 = AppLogger.StartGroup("Processing ID reference.", NLog.LogLevel.Debug))
+					//{
+					//	AppLogger.Debug("Data store name: " + storeName);
+					
+					EntityReference reference = null;
+					
+					if (!(idReference is EntityReference))
 					{
-						using (LogGroup logGroup2 = AppLogger.StartGroup("Processing ID reference.", NLog.LogLevel.Debug))
-						{
-							AppLogger.Debug("Data store name: " + storeName);
-							
-							EntityReference reference = null;
-							
-							if (!(idReference is EntityReference))
-							{
-								reference = new EntityReference(idReference);
-							}
-							
-							reference = (EntityReference)idReference.SwitchFor(entityType, entityID);
-							
-							//if (idReference.EntityIDs == null)
-							//	AppLogger.Debug("Loaded reference - Entity IDs: [null]");
-							//else
-							//{
-							AppLogger.Debug("Loaded reference - Entity ID 1: " + reference.Entity1ID);
-							AppLogger.Debug("Loaded reference - Entity ID 2: " + reference.Entity2ID);
-							//}
-							
-							
-							AppLogger.Debug("Loaded reference - Property name 1: " + reference.Property1Name);
-							AppLogger.Debug("Loaded reference - Property name 2: " + reference.Property2Name);
-							
-							
-							//if (idReference.TypeNames == null)
-							//	AppLogger.Debug("Loaded reference - Type names: [null]");
-							//{
-							AppLogger.Debug("Loaded reference - Type name 1: " + reference.Type1Name);
-							AppLogger.Debug("Loaded reference - Type name 2: " + reference.Type2Name);
-							//}
-							
-							if (activateAll)
-							{
-								AppLogger.Debug("Activating reference.");
-								ActivateReference(reference);
-							}
-							if (reference.Entity1ID != Guid.Empty
-							    && reference.Entity2ID != Guid.Empty)
-							{
-								AppLogger.Debug("Adding to the collection.");
-								collection.Add(reference);
-							}
-							else
-								AppLogger.Debug("Reference not added to the collection. IDs are empty.");
-							
-						}
+						reference = new EntityReference(idReference);
 					}
+					
+					reference = (EntityReference)idReference.SwitchFor(entityType, entityID);
+					
+					//if (idReference.EntityIDs == null)
+					//	AppLogger.Debug("Loaded reference - Entity IDs: [null]");
+					//else
+					//{
+					//	AppLogger.Debug("Loaded reference " + i + "/" + list.Count.ToString() + " - Entity ID 1: " + reference.Entity1ID);
+					//	AppLogger.Debug("Loaded reference " + i + "/" + list.Count.ToString() + " - Entity ID 2: " + reference.Entity2ID);
+					//}
+					
+					
+					//	AppLogger.Debug("Loaded reference " + i + "/" + list.Count.ToString() + " - Property name 1: " + reference.Property1Name);
+					//	AppLogger.Debug("Loaded reference " + i + "/" + list.Count.ToString() + " - Property name 2: " + reference.Property2Name);
+					
+					
+					//if (idReference.TypeNames == null)
+					//	AppLogger.Debug("Loaded reference - Type names: [null]");
+					//{
+					//	AppLogger.Debug("Loaded reference " + i + "/" + list.Count.ToString() + " - Type name 1: " + reference.Type1Name);
+					//	AppLogger.Debug("Loaded reference " + i + "/" + list.Count.ToString() + " - Type name 2: " + reference.Type2Name);
+					//}
+					
+					if (activateAll)
+					{
+						//		AppLogger.Debug("Activating reference.");
+						ActivateReference(reference);
+					}
+					if (reference.Entity1ID != Guid.Empty
+					    && reference.Entity2ID != Guid.Empty)
+					{
+						//		AppLogger.Debug("Adding to the collection.");
+						collection.Add(reference);
+					}
+					//else
+					//		AppLogger.Debug("Reference not added to the collection. IDs are empty.");
+					
+					//}
 				}
 			}
+			//}
 			if (collection != null && collection.Count > 0)
 				return collection[0];
 			else
@@ -1132,62 +1277,62 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		
 		public override void ActivateReference(EntityReference reference)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Activating reference.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = AppLogger.StartGroup("Activating reference.", NLog.LogLevel.Debug))
+			//{
+			if (reference.Type1Name == string.Empty)
+				throw new ArgumentNullException("reference.Type1Name");
+			if (reference.Type2Name == string.Empty)
+				throw new ArgumentNullException("reference.Type2Name");
+			
+			//AppLogger.Debug("Type 1: " + reference.Type1Name);
+			//AppLogger.Debug("Type 2: " + reference.Type2Name);
+			//AppLogger.Debug("ID 1: " + reference.Entity1ID);
+			//AppLogger.Debug("ID 2: " + reference.Entity2ID);
+			
+			Type type1 = EntitiesUtilities.GetType(reference.Type1Name);
+			Type type2 = EntitiesUtilities.GetType(reference.Type2Name);
+			
+			//AppLogger.Debug("Full type 1: " + type1.ToString());
+			//AppLogger.Debug("Full type 2: " + type2.ToString());
+			
+			if (reference.Entity1ID == Guid.Empty || reference.Entity2ID == Guid.Empty)
 			{
-				if (reference.Type1Name == string.Empty)
-					throw new ArgumentNullException("reference.Type1Name");
-				if (reference.Type2Name == string.Empty)
-					throw new ArgumentNullException("reference.Type2Name");
+				//AppLogger.Debug("Skipped activation because both IDs weren't found.");
+			}
+			else
+			{
+				IEntity entity1 = DataAccess.Data.Stores[type1].GetEntityByTypeAndProperty(
+					type1,
+					"ID",
+					reference.Entity1ID);
 				
-				AppLogger.Debug("Type 1: " + reference.Type1Name);
-				AppLogger.Debug("Type 2: " + reference.Type2Name);
-				AppLogger.Debug("ID 1: " + reference.Entity1ID);
-				AppLogger.Debug("ID 2: " + reference.Entity2ID);
+				IEntity entity2 = DataAccess.Data.Stores[type2].GetEntityByTypeAndProperty(
+					type2,
+					"ID",
+					reference.Entity2ID);
 				
-				Type type1 = EntitiesUtilities.GetType(reference.Type1Name);
-				Type type2 = EntitiesUtilities.GetType(reference.Type2Name);
-				
-				AppLogger.Debug("Full type 1: " + type1.ToString());
-				AppLogger.Debug("Full type 2: " + type2.ToString());
-				
-				if (reference.Entity1ID == Guid.Empty || reference.Entity2ID == Guid.Empty)
-				{
-					AppLogger.Debug("Skipped activation because both IDs weren't found.");
-				}
+				if (entity1 != null)
+					reference.SourceEntity = entity1;
 				else
-				{
-					IEntity entity1 = DataAccess.Data.Stores[type1].GetEntityByTypeAndProperty(
-						type1,
-						"ID",
-						reference.Entity1ID);
-					
-					IEntity entity2 = DataAccess.Data.Stores[type2].GetEntityByTypeAndProperty(
-						type2,
-						"ID",
-						reference.Entity2ID);
-					
-					if (entity1 != null)
-						reference.SourceEntity = entity1;
-					else
-						throw new Exception("Entity not found in data store '" + DataUtilities.GetDataStoreName(type1) + "' with ID '" + reference.Entity1ID.ToString() + "' and type " + type1.ToString() + ".");
-					if (entity2 != null)
-						reference.ReferenceEntity = entity2;
-					else
-						throw new Exception("Entity not found in data store '" + DataUtilities.GetDataStoreName(type2) + "' with ID '" + reference.Entity2ID.ToString() + "' and type " + type2.ToString() + ".");
-					
-				}
-				
-				if (reference.SourceEntity == null)
-					AppLogger.Debug("reference.SourceEntity == null");
+					throw new Exception("Entity not found in data store '" + DataUtilities.GetDataStoreName(type1) + "' with ID '" + reference.Entity1ID.ToString() + "' and type " + type1.ToString() + ".");
+				if (entity2 != null)
+					reference.ReferenceEntity = entity2;
 				else
-					AppLogger.Debug("reference.SourceEntity is " + reference.SourceEntity.GetType().ToString());
-				
-				if (reference.ReferenceEntity == null)
-					AppLogger.Debug("reference.ReferenceEntity == null");
-				else
-					AppLogger.Debug("reference.ReferenceEntity is " + reference.ReferenceEntity.GetType().ToString());
+					throw new Exception("Entity not found in data store '" + DataUtilities.GetDataStoreName(type2) + "' with ID '" + reference.Entity2ID.ToString() + "' and type " + type2.ToString() + ".");
 				
 			}
+			
+			//if (reference.SourceEntity == null)
+			//	AppLogger.Debug("reference.SourceEntity == null");
+			//else
+			//	AppLogger.Debug("reference.SourceEntity is " + reference.SourceEntity.GetType().ToString());
+			
+			//if (reference.ReferenceEntity == null)
+			//	AppLogger.Debug("reference.ReferenceEntity == null");
+			//else
+			//	AppLogger.Debug("reference.ReferenceEntity is " + reference.ReferenceEntity.GetType().ToString());
+			
+			//}
 		}
 		
 		public override void Activate(IEntity[] entities)
@@ -1367,43 +1512,45 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			bool matches = false;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the provided entity and specified property matches the specified referenced entity ID.", NLog.LogLevel.Debug))
-			{
-				if (entityType == null)
-					throw new ArgumentNullException("entityType");
-				
-				if (entityID == Guid.Empty)
-					throw new ArgumentException("entityID");
-				
-				if (referencedEntityType == null)
-					throw new ArgumentNullException("referencedEntityType");
-				
-				/*if (referencedEntityID == Guid.Empty)
+			//using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the provided entity and specified property matches the specified referenced entity ID.", NLog.LogLevel.Debug))
+			//{
+			if (entityType == null)
+				throw new ArgumentNullException("entityType");
+			
+			if (entityID == Guid.Empty)
+				throw new ArgumentException("entityID");
+			
+			if (referencedEntityType == null)
+				throw new ArgumentNullException("referencedEntityType");
+			
+			/*if (referencedEntityID == Guid.Empty)
 					throw new ArgumentException("referencedEntityID");*/
 
-                AppLogger.Debug("Entity type: " + entityType);
-                AppLogger.Debug("Entity ID: " + entityID);
-                AppLogger.Debug("Property name: " + propertyName);
-                AppLogger.Debug("Referenced entity type: " + referencedEntityType.ToString());
-                AppLogger.Debug("Referenced entity ID: " + referencedEntityID.ToString());
+			// Logging disabled to boost performance
+			
+			//AppLogger.Debug("Entity type: " + entityType);
+			//AppLogger.Debug("Entity ID: " + entityID);
+			//AppLogger.Debug("Property name: " + propertyName);
+			//AppLogger.Debug("Referenced entity type: " + referencedEntityType.ToString());
+			//AppLogger.Debug("Referenced entity ID: " + referencedEntityID.ToString());
 
-				string mirrorPropertyName = String.Empty;
-				if (propertyName == String.Empty)
-					mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyNameReverse(entityType, propertyName, referencedEntityType);
-				else
-					mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(entityType, propertyName);
-				
-				EntityReference reference = DataAccess.Data.GetReference(entityType, entityID, propertyName, referencedEntityType, referencedEntityID, mirrorPropertyName, false);
-				
-				if (reference == null)
-					AppLogger.Debug("reference == null");
-				else
-					AppLogger.Debug("reference != null");
-				
-				matches = (reference != null);
-				
-				AppLogger.Debug("Matches: " + matches.ToString());
-			}
+			string mirrorPropertyName = String.Empty;
+			if (propertyName == String.Empty)
+				mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyNameReverse(entityType, propertyName, referencedEntityType);
+			else
+				mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(entityType, propertyName);
+			
+			EntityReference reference = DataAccess.Data.GetReference(entityType, entityID, propertyName, referencedEntityType, referencedEntityID, mirrorPropertyName, false);
+			
+			//if (reference == null)
+			//	AppLogger.Debug("reference == null");
+			//else
+			//	AppLogger.Debug("reference != null");
+			
+			matches = (reference != null);
+			
+			//AppLogger.Debug("Matches: " + matches.ToString());
+			//}
 			
 			return matches;
 		}

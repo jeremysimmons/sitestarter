@@ -118,9 +118,6 @@
   		<if test="${file::exists(versionFilePath) == false}">
 			<echo file="${versionFilePath}" message="0.0.0.1" append="false"/>
   		</if>
-  		<if test="${file::exists(versionFilePath) == false}">
-			<echo file="${versionFilePath}" message="0.0.0.1" append="false"/>
-  		</if>
 		            
 			<version buildtype="NoIncrement"
 	            revisiontype="Increment"

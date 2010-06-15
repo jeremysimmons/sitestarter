@@ -1289,13 +1289,47 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the IsInPage function on an item that appears on a earlier page.", NLog.LogLevel.Debug))
 			{
-				int i = 0;
+				int i = 9;
 				int pageIndex = 1;
 				int pageSize = 10;
 				
 				bool isInPage = DataUtilities.IsInPage(i, pageIndex, pageSize);
 				
 				Assert.IsFalse(isInPage, "Returned true when it shouldn't have.");
+			}
+		}
+		
+		[Test]
+		public void Test_IsInPage_In_Start()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing the IsInPage function on an item that appears on the specified page.", NLog.LogLevel.Debug))
+			{
+				
+				int i = 10;
+				int pageIndex = 1;
+				int pageSize = 10;
+				
+				bool isInPage = DataUtilities.IsInPage(i, pageIndex, pageSize);
+				
+				
+				Assert.IsTrue(isInPage, "Returned false when it should have been true.");
+			}
+		}
+		
+		[Test]
+		public void Test_IsInPage_In_End()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing the IsInPage function on an item that appears on the specified page.", NLog.LogLevel.Debug))
+			{
+				
+				int i = 9;
+				int pageIndex = 0;
+				int pageSize = 10;
+				
+				bool isInPage = DataUtilities.IsInPage(i, pageIndex, pageSize);
+				
+				
+				Assert.IsTrue(isInPage, "Returned false when it should have been true.");
 			}
 		}
 		
@@ -1322,8 +1356,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the IsInPage function on an item that appears on a later page.", NLog.LogLevel.Debug))
 			{
 				
-				int i = 30;
-				int pageIndex = 1;
+				int i = 11;
+				int pageIndex = 0;
 				int pageSize = 10;
 				
 				bool isInPage = DataUtilities.IsInPage(i, pageIndex, pageSize);

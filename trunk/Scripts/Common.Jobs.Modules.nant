@@ -67,6 +67,12 @@
 		        				<include name="*.config" />
 		    				</fileset>
 						</copy>
+						
+						<copy todir="${Solution.RootPath}\WWW\Modules\${path::get-file-name(currentModule)}\Xslt" overwrite="true">
+		    				<fileset basedir="${currentModule}\Web\Xslt">
+		        				<include name="*.xslt" />
+		    				</fileset>
+						</copy>
 					
 					<if test="${property::exists('Module.Enabled') and file::exists(Module.ConfigPath)}">
 						<xmlpoke

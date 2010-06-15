@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Web.UI;
+using System.Web;
+using System.IO;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 
 namespace SoftwareMonkeys.SiteStarter.Web
 {
@@ -10,6 +13,72 @@ namespace SoftwareMonkeys.SiteStarter.Web
 	/// </summary>
 	static public class WebUtilities
 	{
+		static public string ResolveUrl(string originalUrl)
+        {
+
+            if (!string.IsNullOrEmpty(originalUrl) && '~' == originalUrl[0])
+            {
+                int index = originalUrl.IndexOf('?');
+                string queryString = (-1 == index) ? null : originalUrl.Substring(index);
+                if (-1 != index) originalUrl = originalUrl.Substring(0, index);
+                originalUrl = VirtualPathUtility.ToAbsolute(originalUrl) + queryString;
+            }
+
+            return originalUrl;
+
+        }
+
+
+
+		static public string ConvertAbsoluteUrlToRelativeUrl(string absoluteUrl, string relatedPath)
+		{
+			string newPath = String.Empty;
+			using (LogGroup logGroup = AppLogger.StartGroup("Converting the provided absolute URL to one that's relative to the one provided.", NLog.LogLevel.Debug))
+			{
+				AppLogger.Debug("Absolute URL: " + absoluteUrl);
+				AppLogger.Debug("Related path: " + relatedPath);
+				
+				string start = String.Empty;
+				if (HttpContext.Current.Request.IsSecureConnection)
+					start = "https://";
+				else
+					start = "http://";
+				
+				AppLogger.Debug("Start section: " + start);
+				
+				AppLogger.Debug("Port: " + HttpContext.Current.Request.Url.Port.ToString());
+
+				string removable = start + HttpContext.Current.Request.Url.Host.TrimEnd('/');
+				
+				// If there are two instances of ":" character in the URL then a port must be specified
+				// To detect if there are two instances we can compare the first and last instance. If one instance then it returns the same position. If two it returns two different positions.
+				if (HttpContext.Current.Request.Url.ToString().IndexOf(":") != HttpContext.Current.Request.Url.ToString().LastIndexOf(":"))
+					removable = removable + ":" + HttpContext.Current.Request.Url.Port;	
+				
+				// TODO: Remove and clean up
+				//.Port != 0
+				   //&& HttpContext.Current.Request.Url.Port != 80)
+				   
+				removable = removable + relatedPath.TrimEnd('/') + "/";
+				
+				AppLogger.Debug("Removable: " + removable);
+				
+				newPath = "/" + absoluteUrl.Replace(removable, String.Empty).Trim('/');
+				
+				AppLogger.Debug("New path: " + newPath);
+				
+			}
+			return newPath;
+		}
+
+        static public string ConvertRelativeUrlToAbsoluteUrl(string relativeUrl)
+        {
+            if (HttpContext.Current.Request.IsSecureConnection)
+                return string.Format("https://{0}{1}", HttpContext.Current.Request.Url.Host, ResolveUrl(relativeUrl));
+            else
+                return string.Format("http://{0}{1}", HttpContext.Current.Request.Url.Host, ResolveUrl(relativeUrl));
+        }
+	
 		/// <summary>
 		/// Gets the config file name variation based on the provided URI.
 		/// </summary>
@@ -36,6 +105,9 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		
 		public static string EncodeJsString(string s)
 		{
+			if (s == null)
+				return String.Empty;
+			
 			StringBuilder sb = new StringBuilder();
 			//sb.Append("\"");
 			foreach (char c in s)

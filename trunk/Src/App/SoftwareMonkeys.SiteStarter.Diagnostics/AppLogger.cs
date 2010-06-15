@@ -123,20 +123,24 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			//bool isThreadTitle = Indent == 3;
 			
 			StringBuilder logEntry = new StringBuilder();
-
-            logEntry.Append("<Entry>\r\n");
-			logEntry.AppendFormat("<ID>{0}</ID>\r\n", id.ToString());
-            logEntry.AppendFormat("<GroupID>{0}</GroupID>\r\n", CurrentGroup != null ? CurrentGroup.ID : Guid.Empty);
-            logEntry.AppendFormat("<Indent>{0}</Indent>\r\n", indent);
-            logEntry.AppendFormat("<LogLevel>{0}</LogLevel>\r\n", logLevel);
-            logEntry.AppendFormat("<Timestamp>{0}</Timestamp>\r\n", DateTime.Now);
-            //logEntry.AppendFormat("<IsThreadTitle>{0}</IsThreadTitle>\r\n", isThreadTitle.ToString());
-            logEntry.AppendFormat("<Component>{0}</Component>\r\n", EscapeLogData(callingMethod.DeclaringType.ToString()));
-            logEntry.AppendFormat("<Method>{0}</Method>\r\n", EscapeLogData(callingMethod.Name));
-            logEntry.AppendFormat("<Data>{0}</Data>\r\n", EscapeLogData(message));
-            logEntry.AppendFormat("<StackTrace>{0}</StackTrace>\r\n", EscapeLogData(CreateStackTrace()));
-            logEntry.Append("</Entry>\r\n");
-			logEntry.AppendLine();
+			
+			// If the callingMethod property is null then logging must be disabled, so skip the output
+			if (callingMethod != null && PerformLogging(callingMethod, logLevel))
+			{
+				logEntry.Append("<Entry>\r\n");
+				logEntry.AppendFormat("<ID>{0}</ID>\r\n", id.ToString());
+				logEntry.AppendFormat("<GroupID>{0}</GroupID>\r\n", CurrentGroup != null ? CurrentGroup.ID : Guid.Empty);
+				logEntry.AppendFormat("<Indent>{0}</Indent>\r\n", indent);
+				logEntry.AppendFormat("<LogLevel>{0}</LogLevel>\r\n", logLevel);
+				logEntry.AppendFormat("<Timestamp>{0}</Timestamp>\r\n", DateTime.Now);
+				//logEntry.AppendFormat("<IsThreadTitle>{0}</IsThreadTitle>\r\n", isThreadTitle.ToString());
+				logEntry.AppendFormat("<Component>{0}</Component>\r\n", EscapeLogData(callingMethod.DeclaringType.ToString()));
+				logEntry.AppendFormat("<Method>{0}</Method>\r\n", EscapeLogData(callingMethod.Name));
+				logEntry.AppendFormat("<Data>{0}</Data>\r\n", EscapeLogData(message));
+				logEntry.AppendFormat("<StackTrace>{0}</StackTrace>\r\n", EscapeLogData(CreateStackTrace()));
+				logEntry.Append("</Entry>\r\n");
+				logEntry.AppendLine();
+			}
 
 			return logEntry.ToString();
 		}
@@ -209,6 +213,30 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
     {
         throw new NotImplementedException();
     }*/
+		
+		static private bool IsDebug()
+		{
+			bool isDebug = false;
+			#if (DEBUG)
+			isDebug = true;
+			#else
+			isDebug = false;
+			#endif
+			
+			return isDebug;
+		}
+		
+		/*static private bool IsLevel(LogLevel level)
+		{
+			bool isDebug = false;
+			#if (DEBUG)
+			isDebug = true;
+			#else
+			isDebug = false;
+			#endif
+			
+			return isDebug;
+		}*/
 
 		static public LogGroup StartGroup(string summary)
 		{
@@ -220,9 +248,26 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 
 		static public LogGroup StartGroup(string summary, LogLevel logLevel)
 		{
-			MethodBase callingMethod = Reflector.GetCallingMethod();
-
+			
+			// TODO: Skip if logging is not being performed. (ie. loglevel is debug and debug logging is disabled)
+			
+			//bool isDebug = IsDebug();
+			
+			//if (logLevel == LogLevel.Debug && !isDebug)
+			//{
+			// Skip debug logging
+			//	return null;
+			//}
+			//else
+			//{
+			MethodBase callingMethod = null;
+			
+			// Don't get the calling method if its not
+			if (PerformLogging(logLevel))
+				callingMethod = Reflector.GetCallingMethod();
+			
 			return StartGroup(summary, logLevel, callingMethod);
+			///}
 		}
 
 		static public LogGroup StartGroup(string summary, LogLevel logLevel, MethodBase callingMethod)
@@ -281,15 +326,38 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			}
 		}
 		
+		static public bool PerformLogging(LogLevel level)
+		{
+			if (level == LogLevel.Debug && !IsDebug())
+				return false;
+			
+			object value = ConfigurationSettings.AppSettings["Logging." + level.ToString() + ".Enabled"];
+			if (value != null)
+			{
+				// TODO: Clean up and improve performance by skipping logging when it's not enabled
+				bool loggingEnabled = ((string)value).ToLower() == "true";
+				//|| level != LogLevel.Debug;
+				
+				//if (level == LogLevel.Debug && IsDebug())
+				//	return loggingEnabled;
+				//else
+				
+				return loggingEnabled;
+			}
+			else
+				return true;
+			
+		}
+		
 		static public bool PerformLogging(MethodBase callingMethod, LogLevel level)
 		{
 			object value = ConfigurationSettings.AppSettings["Logging." + level.ToString() + ".Enabled"];
 			if (value != null)
 			{
-				bool allDebugLoggingEnabled = ((string)value).ToLower() == "true"
+				bool allLoggingEnabled = ((string)value).ToLower() == "true"
 					|| level != LogLevel.Debug;
 				
-				if (allDebugLoggingEnabled && IsEnabled(level, callingMethod))
+				if (allLoggingEnabled && IsEnabled(level, callingMethod))
 				{
 					return true;
 				}
@@ -304,6 +372,10 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		
 		static public bool IsEnabled(NLog.LogLevel level, MethodBase callingMethod)
 		{
+			// If the callingMethod parameter is null then logging is disabled
+			if (callingMethod == null)
+				return false;
+			
 			Type declaringType = callingMethod.DeclaringType;
 			
 			return IsEnabled(level, declaringType.Name);

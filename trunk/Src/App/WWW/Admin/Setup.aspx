@@ -55,10 +55,12 @@ private void Page_Load(object sender, EventArgs e)
 
             UserRole administratorRole = new UserRole();
             administratorRole.ID = Guid.NewGuid();
-            administratorRole.Name = Resources.Language.AdministratorDetails; ;
-            administratorRole.Users = new User[] { user };
+            administratorRole.Name = Resources.Language.Administrator;
+            //administratorRole.Users = new User[] { user };
+            
+            user.Roles = new UserRole[] {administratorRole};
 
-            if (!SoftwareMonkeys.SiteStarter.Business.UserFactory<User>.Current.SaveUser(user))
+            if (SoftwareMonkeys.SiteStarter.Business.UserFactory<User>.Current.SaveUser(user))
             {
                 UserRoleFactory.Current.SaveUserRole(administratorRole);
                 
@@ -70,11 +72,11 @@ private void Page_Load(object sender, EventArgs e)
             }
 
 
-           if(!Roles.RoleExists("Administrator"))
-                Roles.CreateRole("Administrator");
+           //if(!Roles.RoleExists("Administrator"))
+           //     Roles.CreateRole("Administrator");
 
-            if (!Roles.IsUserInRole(user.Username, "Administrator"))
-                Roles.AddUserToRole(user.Username, "Administrator");
+           // if (!Roles.IsUserInRole(user.Username, "Administrator"))
+           //     Roles.AddUserToRole(user.Username, "Administrator");
 
 	}
 

@@ -12,10 +12,10 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 	/// </summary>
 	public class EntitiesUtilities
 	{
-        static public bool IsEntity(Type type)
-        {
-            return typeof(IEntity).IsAssignableFrom(type);
-        }
+		static public bool IsEntity(Type type)
+		{
+			return typeof(IEntity).IsAssignableFrom(type);
+		}
 
 		static public void RegisterEntityType(Type type)
 		{
@@ -212,92 +212,99 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				else
 					AppLogger.Debug("Property name: " + property.Name);
 				
-				if (IsReference(entityType, propertyName, returnType))
+				if (property != null)
 				{
-					EntityReferenceCollection references = null;
-					
-					Type referencedEntityType = GetReferenceType(entityType, propertyName, returnType);
-					
-					string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(entity.GetType(), property);
-					
-					if (IsMultipleReference(entity.GetType(), property))
+					if (IsReference(entityType, propertyName, returnType))
 					{
-						AppLogger.Debug("Multiple reference property.");
+						EntityReferenceCollection references = null;
 						
-						object propertyValue = property.GetValue(entity, null);
+						Type referencedEntityType = GetReferenceType(entityType, propertyName, returnType);
 						
-						AppLogger.Debug("Property value: " + (propertyValue == null ? "[null]" : propertyValue.ToString()));
+						string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(entity.GetType(), property);
 						
-						Collection<IEntity> referencedEntities = new Collection<IEntity>();
-						
-						//if (propertyValue is Array)
-						//{
-						referencedEntities.AddRange(GetReferencedEntities(entity, property));
-						//}
-						//else
-						//{
-						//	foreach (IEntity entity in (Collection<IEntity>)propertyValue))
-						//	{
-						//		referencedEntities.Add(entity);
-						///	}
-						//}
-						
-						AppLogger.Debug("# of referenced entities found: " + referencedEntities.Count);
-						
-						references = new EntityReferenceCollection(entity, propertyName, referencedEntities.ToArray(), mirrorPropertyName);
-						
-						AppLogger.Debug("Reference objects created.");
-						
-						foreach (EntityIDReference reference in references)
+						if (IsMultipleReference(entity.GetType(), property))
 						{
-							AppLogger.Debug("Adding reference with ID: " + reference.ID.ToString());
-
-							AppLogger.Debug("Source entity ID: " + reference.Entity1ID.ToString());
-							AppLogger.Debug("Referenced entity ID: " + reference.Entity2ID.ToString());
+							AppLogger.Debug("Multiple reference property.");
 							
-							AppLogger.Debug("Source entity name: " + reference.Type1Name);
-							AppLogger.Debug("Referenced entity name: " + reference.Type2Name);
+							object propertyValue = property.GetValue(entity, null);
 							
-							AppLogger.Debug("Source property name: " + reference.Property1Name);
-							AppLogger.Debug("Mirror property name: " + reference.Property2Name);
+							AppLogger.Debug("Property value: " + (propertyValue == null ? "[null]" : propertyValue.ToString()));
 							
+							Collection<IEntity> referencedEntities = new Collection<IEntity>();
 							
-							collection.Add(reference.ToData());
-						}
-					}
-					else if (IsSingleReference(entityType, property))
-					{
-						AppLogger.Debug("Single reference property.");
-						
-						IEntity[] referencedEntities = GetReferencedEntities(entity, property);
-						
-						if (referencedEntities != null && referencedEntities.Length > 0)
-						{
-							IEntity referencedEntity = referencedEntities[0];
+							//if (propertyValue is Array)
+							//{
+							referencedEntities.AddRange(GetReferencedEntities(entity, property));
+							//}
+							//else
+							//{
+							//	foreach (IEntity entity in (Collection<IEntity>)propertyValue))
+							//	{
+							//		referencedEntities.Add(entity);
+							///	}
+							//}
 							
-							references = new EntityReferenceCollection(entity, propertyName, new IEntity[] {referencedEntity}, mirrorPropertyName);
+							AppLogger.Debug("# of referenced entities found: " + referencedEntities.Count);
+							
+							references = new EntityReferenceCollection(entity, propertyName, referencedEntities.ToArray(), mirrorPropertyName);
+							
+							AppLogger.Debug("Reference objects created.");
 							
 							foreach (EntityIDReference reference in references)
 							{
 								AppLogger.Debug("Adding reference with ID: " + reference.ID.ToString());
-								
+
 								AppLogger.Debug("Source entity ID: " + reference.Entity1ID.ToString());
 								AppLogger.Debug("Referenced entity ID: " + reference.Entity2ID.ToString());
 								
 								AppLogger.Debug("Source entity name: " + reference.Type1Name);
 								AppLogger.Debug("Referenced entity name: " + reference.Type2Name);
 								
+								AppLogger.Debug("Source property name: " + reference.Property1Name);
+								AppLogger.Debug("Mirror property name: " + reference.Property2Name);
+								
+								
 								collection.Add(reference.ToData());
 							}
 						}
+						else if (IsSingleReference(entityType, property))
+						{
+							AppLogger.Debug("Single reference property.");
+							
+							IEntity[] referencedEntities = GetReferencedEntities(entity, property);
+							
+							if (referencedEntities != null && referencedEntities.Length > 0)
+							{
+								IEntity referencedEntity = referencedEntities[0];
+								
+								references = new EntityReferenceCollection(entity, propertyName, new IEntity[] {referencedEntity}, mirrorPropertyName);
+								
+								foreach (EntityIDReference reference in references)
+								{
+									AppLogger.Debug("Adding reference with ID: " + reference.ID.ToString());
+									
+									AppLogger.Debug("Source entity ID: " + reference.Entity1ID.ToString());
+									AppLogger.Debug("Referenced entity ID: " + reference.Entity2ID.ToString());
+									
+									AppLogger.Debug("Source entity name: " + reference.Type1Name);
+									AppLogger.Debug("Referenced entity name: " + reference.Type2Name);
+									
+									collection.Add(reference.ToData());
+								}
+							}
+							else
+								AppLogger.Debug("referencedEntities == null || referencedEntities.Length = 0");
+						}
 						else
-							AppLogger.Debug("referencedEntities == null || referencedEntities.Length = 0");
+							throw new NotSupportedException("The property type '" + property.PropertyType.ToString() + "' is not supported.");
 					}
-					else
-						throw new NotSupportedException("The property type '" + property.PropertyType.ToString() + "' is not supported.");
+					
+					AppLogger.Debug("References found: " + collection.Count.ToString());
 				}
-				
-				AppLogger.Debug("References found: " + collection.Count.ToString());
+				else
+				{
+					throw new Exception("Cannot find property '" + propertyName + "' on type '" + entity.GetType().ToString() + "'.");
+				}
 			}
 			
 			return collection;
@@ -306,9 +313,18 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		
 		static public bool IsReference(Type entityType, string propertyName, Type returnType)
 		{
+			
 			bool isReference = false;
 			
 			PropertyInfo property = GetProperty(entityType, propertyName, returnType);
+			
+			if (property == null)
+			{
+				if (returnType == null)
+					throw new ArgumentException("Cannot find property '" + propertyName + "' on type '" + entityType.ToString() + "'.");
+				else
+					throw new ArgumentException("Cannot find property '" + propertyName + "' on type '" + entityType.ToString() + "' with value type '" + returnType.ToString() + "'.");
+			}
 			
 			isReference = IsReference(entityType, property);
 			
@@ -318,6 +334,12 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		static public bool IsReference(Type sourceType, PropertyInfo property)
 		{
 			bool isReference = false;
+			
+			if (property == null)
+				throw new ArgumentNullException("property");
+			
+			if (sourceType == null)
+				throw new ArgumentNullException("sourceType");
 			
 			// Logging disabled simply to reduce the size of the logs
 			//using (LogGroup logGroup = AppLogger.StartGroup("Checking if the specified property is an entity reference.", NLog.LogLevel.Debug))
@@ -400,6 +422,9 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		
 		static public ReferenceAttribute GetReferenceAttribute(PropertyInfo property)
 		{
+			if (property == null)
+				throw new ArgumentNullException("property");
+			
 			ReferenceAttribute attribute = null;
 			
 			// Logging disabled simply to reduce the size of the logs
@@ -508,77 +533,89 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 			Type returnType = null;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the actual type based on the specified type/alias.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the actual type based on the specified type/alias.", NLog.LogLevel.Debug))
+			//{
+			if (typeName == null || typeName == String.Empty)
+				throw new ArgumentNullException("typeName");
+			
+			//AppLogger.Debug("Type name: " + typeName);
+			
+			// If a short type name was provided (eg. User)
+			if (typeName.IndexOf('.') == -1
+			    && typeName.IndexOf(',') == -1)
 			{
-				if (typeName == null || typeName == String.Empty)
-					throw new ArgumentNullException("typeName");
 				
-				AppLogger.Debug("Type name: " + typeName);
+				MappingItem mappingItem = Config.Mappings.GetItem(typeName, true);
+				if (mappingItem == null)
+					throw new InvalidOperationException("No mapping item found for type " + typeName);
 				
-				// If a short type name was provided (eg. User)
-				if (typeName.IndexOf('.') == -1
-				    && typeName.IndexOf(',') == -1)
+				string alias = String.Empty;
+				if (mappingItem.Settings.ContainsKey("Alias"))
+					alias = (string)mappingItem.Settings["Alias"];
+				
+				//if (mappingItem.Settings == null || mappingItem.Settings.Count == 0)
+				//AppLogger.Debug("No settings defined for this mapping item.");
+				//else
+				//AppLogger.Debug(mappingItem.Settings.Count.ToString() + " settings found for this mapping item.");
+				
+				// If no alias is specified then use the FullName specified
+				if (alias == null || alias == String.Empty)
 				{
+					//AppLogger.Debug("No alias. This is the actual type.");
 					
-					MappingItem mappingItem = Config.Mappings.GetItem(typeName, true);
-					if (mappingItem == null)
-						throw new InvalidOperationException("No mapping item found for type " + typeName);
-					
-					string alias = String.Empty;
-					if (mappingItem.Settings.ContainsKey("Alias"))
-						alias = (string)mappingItem.Settings["Alias"];
-					
-					if (mappingItem.Settings == null || mappingItem.Settings.Count == 0)
-						AppLogger.Debug("No settings defined for this mapping item.");
+					string fullTypeName = String.Empty;
+					if (mappingItem.Settings.ContainsKey("FullName"))
+						fullTypeName = (string)mappingItem.Settings["FullName"];
 					else
-						AppLogger.Debug(mappingItem.Settings.Count.ToString() + " settings found for this mapping item.");
+						throw new InvalidOperationException("No 'FullName' specified in mappings for type " + typeName);
 					
-					// If no alias is specified then use the FullName specified
-					if (alias == null || alias == String.Empty)
-					{
-						AppLogger.Debug("No alias. This is the actual type.");
-						
-						string fullTypeName = String.Empty;
-						if (mappingItem.Settings.ContainsKey("FullName"))
-							fullTypeName = (string)mappingItem.Settings["FullName"];
-						else
-							throw new InvalidOperationException("No 'FullName' specified in mappings for type " + typeName);
-						
-						
-						string assemblyName = String.Empty;
-						if (mappingItem.Settings.ContainsKey("AssemblyName"))
-							assemblyName = (string)mappingItem.Settings["AssemblyName"];
-						else
-							throw new InvalidOperationException("No 'AssemblyName' specified in mappings for type " + typeName);
-						
-						returnType = Type.GetType(fullTypeName + ", " + assemblyName);
-						
-						AppLogger.Debug("Returning type: " + returnType.ToString());
-						
-					}
+					
+					string assemblyName = String.Empty;
+					if (mappingItem.Settings.ContainsKey("AssemblyName"))
+						assemblyName = (string)mappingItem.Settings["AssemblyName"];
 					else
-					{
-						AppLogger.Debug("Alias: " + alias);
-						// Use the alias if specified
-						returnType = GetType(alias);
-					}
-				} // Otherwise a long type name was provided
+						throw new InvalidOperationException("No 'AssemblyName' specified in mappings for type " + typeName);
+					
+					returnType = Type.GetType(fullTypeName + ", " + assemblyName);
+					
+					//AppLogger.Debug("Returning type: " + returnType.ToString());
+					
+				}
 				else
 				{
-					returnType = Type.GetType(typeName);
+					//AppLogger.Debug("Alias: " + alias);
+					// Use the alias if specified
+					returnType = GetType(alias);
 				}
+			} // Otherwise a long type name was provided
+			else
+			{
+				returnType = Type.GetType(typeName);
 			}
+			//}
 			
 			return returnType;
 			
 		}
 		
+		
+		static public object GetPropertyValue(IEntity entity, string propertyName)
+		{
+			PropertyInfo property = GetProperty(entity.GetType(), propertyName, null);
+			
+			if (property == null)
+				throw new ArgumentException("Cannot find property '" + propertyName + "' on type '" + entity.GetType().ToString() + "'.");
+			
+			return property.GetValue(entity, null);
+		}
+		
 		static public PropertyInfo GetProperty(Type entityType, string propertyName, Type returnType)
 		{
-			PropertyInfo property = entityType.GetProperty(propertyName, returnType);
-			
-			//if (property == null)
-			//	property = entityType.GetProperty(propertyName);
+			PropertyInfo property = null;
+			if (returnType != null)
+				property = entityType.GetProperty(propertyName, returnType);
+			else
+				property = entityType.GetProperty(propertyName);
 			
 			return property;
 		}
@@ -733,7 +770,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				
 				// Is the mirror property name specified on the attribute?
 				if (attribute.MirrorPropertyName != String.Empty
-				   || attribute.MirrorPropertyName != null)
+				    || attribute.MirrorPropertyName != null)
 					mirrorPropertyName = attribute.MirrorPropertyName;
 				else
 				{
@@ -816,5 +853,53 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/*	return entities.GetByIDs(ids).ToArray();
 		
 		}*/
+
+		static public string FormatUniqueKey(string originalData)
+		{
+			originalData = originalData.Trim()
+				.Replace(" ", "-")
+				.Replace("'", "")
+				.Replace("\"", "-")
+				.Replace("\\", "-")
+				.Replace("/", "-")
+				.Replace("?", "-")
+				.Replace(":", "-")
+				.Replace(".", "_");
+			if (originalData.Length > 100)
+				return originalData.Substring(0, 100);
+			else
+				return originalData;
+		}
+		
+		static public string GetFieldName(Type type, string propertyName)
+		{
+			if (type == null)
+				throw new ArgumentNullException("");
+			string fieldName1 = ToCamelCase(propertyName);
+			
+			string fieldName2 = "_" + propertyName;
+			
+			FieldInfo field = type.GetField(fieldName1, BindingFlags.NonPublic | BindingFlags.Instance);
+			
+			if (field == null)
+			{
+				field = type.GetField(fieldName2, BindingFlags.NonPublic | BindingFlags.Instance);
+			}
+			
+			if (field == null)
+				throw new InvalidOperationException("Cannot find field on type '" + type.ToString() + "' with name '" + fieldName1 + "' or '" + fieldName2 + "' corresponding with property '" + propertyName + "'.");
+			
+			return field.Name;
+		}
+		
+		static public string ToCamelCase(string propertyName)
+		{
+			string firstLetter = propertyName.Substring(0, 1);
+			string withoutFirstLetter = propertyName.Substring(1, propertyName.Length-1);
+			
+			string output = firstLetter.ToLower() + withoutFirstLetter;
+			
+			return output;
+		}
 	}
 }

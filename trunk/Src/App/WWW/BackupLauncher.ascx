@@ -125,10 +125,11 @@ private string GetIFrameSource()
 
 private string GetIFrame()
 {
-	return @"<iframe style='margin:0px;padding:3px;height:50px;border:none;' src='" + GetIFrameSource() + "'/>";
+	return @"<iframe style='margin:0px;padding:3px;height:70px;border:none;' src='" + GetIFrameSource() + "'/>";
 }
 
 </script>
+
 <div style="font-size: smaller; padding: 5px;">
 <%= Resources.Language.AutomaticBackup %><br/>
 

@@ -111,9 +111,18 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			{
 				Db4oFactory.Configure().ActivationDepth(2);
 				
+				Db4oFactory.Configure().ObjectClass(typeof(IEntity)).ObjectField("id").Indexed(true);
+				
+				Db4oFactory.Configure().ObjectClass(typeof(EntityIDReference)).ObjectField("property1Name").Indexed(true);
+				Db4oFactory.Configure().ObjectClass(typeof(EntityIDReference)).ObjectField("type1Name").Indexed(true);
+				Db4oFactory.Configure().ObjectClass(typeof(EntityIDReference)).ObjectField("entity1ID").Indexed(true);
+				Db4oFactory.Configure().ObjectClass(typeof(EntityIDReference)).ObjectField("property2Name").Indexed(true);
+				Db4oFactory.Configure().ObjectClass(typeof(EntityIDReference)).ObjectField("type2Name").Indexed(true);
+				Db4oFactory.Configure().ObjectClass(typeof(EntityIDReference)).ObjectField("entity2ID").Indexed(true);
+				
 				string fileName = Name;
 				
-				AppLogger.Info("Store name: " + Name);
+				AppLogger.Debug("Store name: " + Name);
 
 				string prefix = (string)StateAccess.State.GetSession("VirtualServerID");
 				if (prefix != null && prefix != String.Empty && prefix != Guid.Empty.ToString())
@@ -124,14 +133,14 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				string fullName = Config.Application.PhysicalPath + @"\App_Data\" + fileName + ".yap";
 				
 				
-				AppLogger.Info("Full file name: " + fullName);
+				AppLogger.Debug("Full file name: " + fullName);
 				
 				if (!Directory.Exists(Path.GetDirectoryName(fullName)))
 					Directory.CreateDirectory(Path.GetDirectoryName(fullName));
 				
 				ObjectServer = Db4oFactory.OpenServer(fullName, 0);
 				
-				AppLogger.Info("Server opened");
+				AppLogger.Debug("Server opened");
 				//objectContainer = ObjectServer.OpenClient();
 			}
 		}
@@ -146,7 +155,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			{
 				string fileName = Name;
 				
-				AppLogger.Info("Name: " + Name);
+				AppLogger.Debug("Name: " + Name);
 
 				string prefix = (string)StateAccess.State.GetSession("VirtualServerID");
 				if (prefix != null && prefix != String.Empty && prefix != Guid.Empty.ToString())
@@ -156,14 +165,14 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 
 				string fullName = Config.Application.PhysicalPath + @"\App_Data\" + fileName + ".yap";
 				
-				AppLogger.Info("Full file name: " + fullName);
+				AppLogger.Debug("Full file name: " + fullName);
 				
 				if (!Directory.Exists(Path.GetDirectoryName(fullName)))
 					Directory.CreateDirectory(Path.GetDirectoryName(fullName));
 				//ObjectServer = Db4oFactory.OpenServer(fullName, 0);
 				ObjectContainer = ObjectServer.OpenClient();//Db4oFactory.OpenFile(fullName);
 				
-				AppLogger.Info("Container opened");
+				AppLogger.Debug("Container opened");
 			}
 		}
 
@@ -230,55 +239,58 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Saving entity.", NLog.LogLevel.Debug))
 			{
-				if (EntitiesUtilities.IsReference(entity.GetType()) && DataAccess.Data.IsStored(entity))
+				using (Batch batch = Batch.StartBatch())
 				{
-					AppLogger.Debug("Existing reference found. Skipping save.");
-					// Just skip the saving altogether, if the reference already exists
-				}
-				else
-				{
-					if (entity == null)
-						throw new ArgumentNullException("entity");
-					
-					AppLogger.Debug("Entity type: " + entity.GetType().ToString());
-					AppLogger.Debug("Entity ID: " + entity.ID.ToString());
-					
-					IEntity[] toUpdate = new IEntity[]{};
-					IEntity[] toDelete = new IEntity[]{};
-					
-					// Clone the entity, but do it in reverse so the data store is dealing with the bound instance.
-					// The entity needs to be cloned so that the one currently in memory doesn't reflect the preparations applied before saving/updating.
-					IEntity clonedEntity = entity;
-					entity = clonedEntity.Clone();
-					
-					PreSave(clonedEntity, out toUpdate, out toDelete);
-
-					// Update any entities that were modified (eg. references)
-					foreach (IEntity entityToUpdate in toUpdate)
+					if (EntitiesUtilities.IsReference(entity.GetType()) && DataAccess.Data.IsStored(entity))
 					{
-						DataAccess.Data.Stores[entityToUpdate].Update((IEntity)entityToUpdate);
-					}
-					
-					// Not necessary for saving
-					// Delete any entities that are obsolete (eg. references)
-					//foreach (IEntity entityToDelete in toDelete)
-					//{
-					//	DataAccess.Data.Stores[entityToDelete].Delete((IEntity)entityToDelete);
-					//}
-
-
-					if (clonedEntity != null)
-					{
-						// Save the entity
-						ObjectContainer.Store(clonedEntity);
-						ObjectContainer.Commit();
-						
-						AppLogger.Debug("Entity stored in '" + Name + "' store.");
+						AppLogger.Debug("Existing reference found. Skipping save.");
+						// Just skip the saving altogether, if the reference already exists
 					}
 					else
 					{
-						AppLogger.Debug("Cloned entity == null. Not stored.");
+						if (entity == null)
+							throw new ArgumentNullException("entity");
 						
+						AppLogger.Debug("Entity type: " + entity.GetType().ToString());
+						AppLogger.Debug("Entity ID: " + entity.ID.ToString());
+						
+						IEntity[] toUpdate = new IEntity[]{};
+						IEntity[] toDelete = new IEntity[]{};
+						
+						// Clone the entity, but do it in reverse so the data store is dealing with the bound instance.
+						// The entity needs to be cloned so that the one currently in memory doesn't reflect the preparations applied before saving/updating.
+						IEntity clonedEntity = entity;
+						entity = clonedEntity.Clone();
+						
+						PreSave(clonedEntity, out toUpdate, out toDelete);
+
+						// Update any entities that were modified (eg. references)
+						foreach (IEntity entityToUpdate in toUpdate)
+						{
+							DataAccess.Data.Stores[entityToUpdate].Update((IEntity)entityToUpdate);
+						}
+						
+						// Not necessary for saving
+						// Delete any entities that are obsolete (eg. references)
+						//foreach (IEntity entityToDelete in toDelete)
+						//{
+						//	DataAccess.Data.Stores[entityToDelete].Delete((IEntity)entityToDelete);
+						//}
+
+
+						if (clonedEntity != null)
+						{
+							// Save the entity
+							ObjectContainer.Store(clonedEntity);
+							Commit();
+							
+							AppLogger.Debug("Entity stored in '" + Name + "' store.");
+						}
+						else
+						{
+							AppLogger.Debug("Cloned entity == null. Not stored.");
+							
+						}
 					}
 				}
 			}
@@ -366,55 +378,59 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			using (LogGroup logGroup = AppLogger.StartGroup("Updating the provided entity.", NLog.LogLevel.Debug))
 			{
-				if (entity == null)
-					throw new ArgumentNullException("entity");
-				
-				//DataAccess.Data.Activate(entity);
-				
-				AppLogger.Debug("Entity type: " + entity.GetType().ToString());
-				AppLogger.Debug("Entity ID: " + entity.ID);
-				
-				// Clone the entity, but do it in reverse so the data store is dealing with the bound instance/
-				// The entity needs to be cloned so that the one currently in memory doesn't reflect the preparations applied before saving/updating.
-				IEntity clonedEntity = entity;
-				entity = clonedEntity.Clone();
-				
-				AppLogger.Debug("Entity cloned");
-				
-				if (clonedEntity == entity)
-					AppLogger.Debug("Cloned entity == original entity.");
-				else
-					AppLogger.Debug("Cloned entity == separate instance.");
-				
-				// Preupdate must be called to ensure all references are correctly stored
-				PreUpdate(clonedEntity, out toUpdate, out toDelete);
-				
-				using (LogGroup logGroup2 = AppLogger.StartGroup("Deleting all entities that need to be deleted.", NLog.LogLevel.Debug))
+				using (Batch batch = Batch.StartBatch())
 				{
-					// Delete any entities that are obsolete (eg. references)
-					foreach (IEntity entityToDelete in toDelete)
-					{
-						DataAccess.Data.Stores[entityToDelete].Delete((IEntity)entityToDelete);
-					}
-				}
-				
-				using (LogGroup logGroup2 = AppLogger.StartGroup("Updating all other entities that need updating.", NLog.LogLevel.Debug))
-				{
-					// Update any entities that were modified (eg. references)
-					foreach (IEntity entityToUpdate in toUpdate)
-					{
-						DataAccess.Data.Stores[entityToUpdate].Save((IEntity)entityToUpdate);
-					}
-				}
-				
-				if (clonedEntity != null)
-				{
-					ObjectContainer.Store(clonedEntity);
-					AppLogger.Debug("Entity updated.");
+					if (entity == null)
+						throw new ArgumentNullException("entity");
 					
-					ObjectContainer.Commit();
-					AppLogger.Debug("ObjectContainer committed.");
+					//DataAccess.Data.Activate(entity);
+					
+					AppLogger.Debug("Entity type: " + entity.GetType().ToString());
+					AppLogger.Debug("Entity ID: " + entity.ID);
+					
+					// Clone the entity, but do it in reverse so the data store is dealing with the bound instance/
+					// The entity needs to be cloned so that the one currently in memory doesn't reflect the preparations applied before saving/updating.
+					IEntity clonedEntity = entity;
+					entity = clonedEntity.Clone();
+					
+					AppLogger.Debug("Entity cloned");
+					
+					if (clonedEntity == entity)
+						AppLogger.Debug("Cloned entity == original entity.");
+					else
+						AppLogger.Debug("Cloned entity == separate instance.");
+					
+					// Preupdate must be called to ensure all references are correctly stored
+					PreUpdate(clonedEntity, out toUpdate, out toDelete);
+					
+					using (LogGroup logGroup2 = AppLogger.StartGroup("Deleting all entities that need to be deleted.", NLog.LogLevel.Debug))
+					{
+						// Delete any entities that are obsolete (eg. references)
+						foreach (IEntity entityToDelete in toDelete)
+						{
+							DataAccess.Data.Stores[entityToDelete].Delete((IEntity)entityToDelete);
+						}
+					}
+					
+					using (LogGroup logGroup2 = AppLogger.StartGroup("Updating all other entities that need updating.", NLog.LogLevel.Debug))
+					{
+						// Update any entities that were modified (eg. references)
+						foreach (IEntity entityToUpdate in toUpdate)
+						{
+							DataAccess.Data.Stores[entityToUpdate].Save((IEntity)entityToUpdate);
+						}
+					}
+					
+					if (clonedEntity != null)
+					{
+						ObjectContainer.Store(clonedEntity);
+						AppLogger.Debug("Entity updated.");
+						
+						Commit();
+						AppLogger.Debug("ObjectContainer committed.");
+					}
 				}
+				
 				
 			}
 		}
@@ -447,32 +463,35 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <param name="entity"></param>
 		public void Delete(IEntity entity)
 		{
-			IEntity[] toUpdate = new IEntity[]{};
-			IEntity[] toDelete = new IEntity[]{};
-			
-			// The entity doesn't need to be cloned in this one
-			
-			// Preupdate must be called to ensure all references are correctly managed
-			PreDelete(entity, out toUpdate, out toDelete);
-
-			// Update any entities that were modified (eg. references)
-			foreach (IEntity entityToUpdate in toUpdate)
+			using (Batch batch = Batch.StartBatch())
 			{
-				DataAccess.Data.Stores[entityToUpdate].Update((IEntity)entityToUpdate);
-			}
-			
-			// Delete any entities that are obsolete (eg. references)
-			foreach (IEntity entityToDelete in toDelete)
-			{
-				DataAccess.Data.Stores[entityToDelete].Delete((IEntity)entityToDelete);
-			}
-
-			// Delete the entity
-			if (entity != null)
-			{
-				ObjectContainer.Delete(entity);
+				IEntity[] toUpdate = new IEntity[]{};
+				IEntity[] toDelete = new IEntity[]{};
 				
-				ObjectContainer.Commit();
+				// The entity doesn't need to be cloned in this one
+				
+				// Preupdate must be called to ensure all references are correctly managed
+				PreDelete(entity, out toUpdate, out toDelete);
+
+				// Update any entities that were modified (eg. references)
+				foreach (IEntity entityToUpdate in toUpdate)
+				{
+					DataAccess.Data.Stores[entityToUpdate].Update((IEntity)entityToUpdate);
+				}
+				
+				// Delete any entities that are obsolete (eg. references)
+				foreach (IEntity entityToDelete in toDelete)
+				{
+					DataAccess.Data.Stores[entityToDelete].Delete((IEntity)entityToDelete);
+				}
+
+				// Delete the entity
+				if (entity != null)
+				{
+					ObjectContainer.Delete(entity);
+					
+					Commit();
+				}
 			}
 		}
 
@@ -586,28 +605,28 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			IEntity entity = null;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the entity matching the specified type and property value.", NLog.LogLevel.Debug))
-			{
-				/*entity = (IEntity)Reflector.InvokeGenericMethod(DataAccess.Data, // Source object
+			//using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the entity matching the specified type and property value.", NLog.LogLevel.Debug))
+			//{
+			/*entity = (IEntity)Reflector.InvokeGenericMethod(DataAccess.Data, // Source object
 				                                                "GetEntity", // Method name
 				                                                new Type[] {type}, // Generic types
 				                                                new object[] {propertyName, propertyValue}); // Method arguments);*/
-				
-				Dictionary<string, object> parameters = new Dictionary<string, object>();
-				parameters.Add(propertyName, propertyValue);
-				
-				entity = GetEntityByTypeAndProperties(type, parameters);
-				
-				if (entity == null)
-					AppLogger.Debug("Retrieved entity: [null]");
-				else
-				{
-					AppLogger.Debug("Retrieved entity ID: " + entity.ID);
-					AppLogger.Debug("Retrieved entity type: " + entity.GetType().ToString());
-					AppLogger.Debug("Retrieved entity: " + entity.ToString());
-				}
-				
-			}
+			
+			Dictionary<string, object> parameters = new Dictionary<string, object>();
+			parameters.Add(propertyName, propertyValue);
+			
+			entity = GetEntityByTypeAndProperties(type, parameters);
+			
+			//if (entity == null)
+			//AppLogger.Debug("Retrieved entity: [null]");
+			//else
+			//{
+			//AppLogger.Debug("Retrieved entity ID: " + entity.ID);
+			//AppLogger.Debug("Retrieved entity type: " + entity.GetType().ToString());
+			//AppLogger.Debug("Retrieved entity: " + entity.ToString());
+			//}
+			
+			//}
 			
 			return entity;
 		}
@@ -940,50 +959,62 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// Retrieves the specified page of objects from the data store.
 		/// </summary>
 		/// <param name="type">The type of entities to retrieve.</param>
-		/// <param name="pageIndex">The index of the page to retrieve.</param>
-		/// <param name="pageSize">The size of each page.</param>
+		/// <param name="location"></param>
 		/// <param name="sortExpression">The sort expression to apply before retrieving the page.</param>
-		/// <param name="totalObjects">The total number of objects found.</param>
 		/// <returns>An array of the objects retrieved.</returns>
-		public IEntity[] GetEntitiesPage(Type type, int pageIndex, int pageSize, string sortExpression, out int totalObjects)
+		public IEntity[] GetEntitiesPage(Type type, PagingLocation location, string sortExpression)
 		{
-			ActiveQuery = ObjectContainer.Query();
-			ActiveQuery.Constrain(type);
-
-			ApplySorting(sortExpression);
-
-			IObjectSet os = ActiveQuery.Execute();
-
-			int i = 0;
-			//        os.Reset();
-
-			ArrayList page = new ArrayList();
-			while (os.HasNext())
+			List<IEntity> entities = new List<IEntity>();
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving a page of entities.", NLog.LogLevel.Debug))
 			{
-				if ((i >= pageIndex * pageSize) && (i < (pageIndex + 1) * pageSize))
+				if (location == null)
+					throw new ArgumentNullException("location");
+				
+				AppLogger.Debug("Type: " + type.ToString());
+				AppLogger.Debug("Page index: " + location.PageIndex);
+				AppLogger.Debug("Page size: " + location.PageSize);
+				AppLogger.Debug("Sort expression: " + sortExpression);
+				
+				IQuery query = ObjectContainer.Query();
+				query.Constrain(type);
+
+				ApplySorting(query, type, sortExpression);
+
+				IObjectSet os = query.Execute();
+
+				int i = 0;
+				//        os.Reset();
+
+				while (os.HasNext())
 				{
-					page.Add(os.Next());
+					if (DataUtilities.IsInPage(i, location.PageIndex, location.PageSize))//(i >= pageIndex * pageSize) && (i < (pageIndex + 1) * pageSize))
+					{
+						entities.Add((IEntity)os.Next());
+					}
+					else
+						os.Next();
+					i++;
 				}
-				else
-					os.Next();
-				i++;
+				location.AbsoluteTotal = i;
+				
+				AppLogger.Debug("Absolute count: " + location.AbsoluteTotal.ToString());
+				
+				AppLogger.Debug("Entities count (single page): " + entities.Count.ToString());
 			}
-			totalObjects = i;
-			return (IEntity[])page.ToArray(type);
+			return entities.ToArray();
 		}
 
 		/// <summary>
 		/// Retrieves the specified page of objects from the data store.
 		/// </summary>
-		/// <param name="pageIndex">The index of the page to retrieve.</param>
-		/// <param name="pageSize">The size of each page.</param>
+		/// <param name="location"></param>
 		/// <param name="sortExpression">The sort expression to apply before retrieving the page.</param>
-		/// <param name="totalObjects">The total number of objects found.</param>
 		/// <returns>An array of the objects retrieved.</returns>
-		public T[] GetEntitiesPage<T>(int pageIndex, int pageSize, string sortExpression, out int totalObjects)
+		public T[] GetEntitiesPage<T>(PagingLocation location, string sortExpression)
 			where T : IEntity
 		{
-			return Collection<T>.ConvertAll(GetEntitiesPage(typeof(T), pageIndex, pageSize, sortExpression, out totalObjects));
+			return Collection<T>.ConvertAll(GetEntitiesPage(typeof(T), location, sortExpression));
 		}
 		
 		/// <summary>
@@ -992,20 +1023,18 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <param name="type">The type of entities to retrieve.</param>
 		/// <param name="propertyName">The name of the property to query for.</param>
 		/// <param name="propertyValue">The value of the property to query for.</param>
-		/// <param name="pageIndex">The index of the page to retrieve.</param>
-		/// <param name="pageSize">The size of each page.</param>
+		/// <param name="location"></param>
 		/// <param name="sortExpression">The sort expression to apply before retrieving the page.</param>
-		/// <param name="totalObjects">The total number of objects found.</param>
 		/// <returns>An array of the objects retrieved.</returns>
-		public IEntity[] GetEntitiesPage(Type type, string propertyName, object propertyValue, int pageIndex, int pageSize, string sortExpression, out int totalObjects)
+		public IEntity[] GetEntitiesPage(Type type, string propertyName, object propertyValue, PagingLocation location, string sortExpression)
 		{
-			ActiveQuery = ObjectContainer.Query();
-			ActiveQuery.Constrain(type);
-			ActiveQuery.Descend(propertyName).Constrain(propertyValue);
+			IQuery query = ObjectContainer.Query();
+			query.Constrain(type);
+			query.Descend(propertyName).Constrain(propertyValue);
 
-			ApplySorting(sortExpression);
+			ApplySorting(query, type, sortExpression);
 
-			IObjectSet os = ActiveQuery.Execute();
+			IObjectSet os = query.Execute();
 
 			int i = 0;
 			//        os.Reset();
@@ -1013,7 +1042,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			ArrayList page = new ArrayList();
 			while (os.HasNext())
 			{
-				if ((i >= pageIndex * pageSize) && (i < (pageIndex + 1) * pageSize))
+				if ((i >= location.PageIndex * location.PageSize) && (i < (location.PageIndex + 1) * location.PageSize))
 				{
 					page.Add(os.Next());
 				}
@@ -1021,7 +1050,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					os.Next();
 				i++;
 			}
-			totalObjects = i;
+			location.AbsoluteTotal = i;
 			return (IEntity[])page.ToArray(type);
 		}
 
@@ -1030,15 +1059,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// </summary>
 		/// <param name="propertyName">The name of the property to query for.</param>
 		/// <param name="propertyValue">The value of the property to query for.</param>
-		/// <param name="pageIndex">The index of the page to retrieve.</param>
-		/// <param name="pageSize">The size of each page.</param>
+		/// <param name="location"></param>
 		/// <param name="sortExpression">The sort expression to apply before retrieving the page.</param>
-		/// <param name="totalObjects">The total number of objects found.</param>
 		/// <returns>An array of the objects retrieved.</returns>
-		public T[] GetEntitiesPage<T>(string propertyName, object propertyValue, int pageIndex, int pageSize, string sortExpression, out int totalObjects)
+		public T[] GetEntitiesPage<T>(string propertyName, object propertyValue, PagingLocation location, string sortExpression)
 			where T : IEntity
 		{
-			return Collection<T>.ConvertAll(GetEntitiesPage(typeof(T), propertyName, propertyValue, pageIndex, pageSize, sortExpression, out totalObjects));
+			return Collection<T>.ConvertAll(GetEntitiesPage(typeof(T), propertyName, propertyValue, location, sortExpression));
 		}
 
 		/// <summary>
@@ -1046,24 +1073,27 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// </summary>
 		/// <param name="query">The query to apply the sort expression to.</param>
 		/// <param name="sortExpression">The sort expression to apply to the query.</param>
-		public void ApplySorting(string sortExpression)
+		public void ApplySorting(IQuery query, Type type, string sortExpression)
 		{
-			if (ActiveQuery != null && sortExpression != null)
+			if (sortExpression != null && sortExpression != String.Empty)
 			{
-				if (sortExpression.IndexOf("Descending") > -1)
+				if (query != null && sortExpression != null)
 				{
-					string propertyName = sortExpression.Replace("Descending", String.Empty);
-					propertyName = ToCamelCase(propertyName);
-					ActiveQuery.Descend(propertyName).OrderDescending();
+					if (sortExpression.IndexOf("Descending") > -1)
+					{
+						string propertyName = sortExpression.Replace("Descending", String.Empty);
+						string fieldName = EntitiesUtilities.GetFieldName(type, propertyName);
+						query.Descend(fieldName).OrderDescending();
+					}
+					else if (sortExpression.IndexOf("Ascending") > -1)
+					{
+						string propertyName = sortExpression.Replace("Ascending", String.Empty);
+						string fieldName = EntitiesUtilities.GetFieldName(type, propertyName);
+						query.Descend(fieldName).OrderAscending();
+					}
+					else
+						throw new ArgumentException("The provided sort expression is invalid: " + sortExpression, "sortExpression");
 				}
-				else if (sortExpression.IndexOf("Ascending") > -1)
-				{
-					string propertyName = sortExpression.Replace("Ascending", String.Empty);
-					propertyName = ToCamelCase(propertyName);
-					ActiveQuery.Descend(propertyName).OrderAscending();
-				}
-				else
-					throw new ArgumentException("The provided sort expression is invalid: " + sortExpression);
 			}
 		}
 
@@ -1086,7 +1116,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		}*/
 		#endregion
 
-		static public string ToCamelCase(string text)
+		/*static public string ToCamelCase(string text)
 		{
 			// TODO: Check if this is done properly
 			if (text == string.Empty)
@@ -1099,741 +1129,64 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			text = firstChar.ToLower() + text;
 
 			return text;
-		}
+		}*/
 
-
-
-		/*/// <summary>
-		/// Prepares the provided reference for update. Does NOT synchronise mirrors because that's done by the IDs references.
-		/// </summary>
-		/// <param name="entity"></param>
-		/// <param name="property"></param>
-		protected IEntity[] PreSaveEntitiesReference(IEntity entity, PropertyInfo property, BaseEntityReferenceAttribute attribute)
+		
+		/*public T[] GetEntitiesPage<T>(PagingLocation location, string sortExpression)
+			where T : IEntity
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Preparing entities reference to be saved.", NLog.LogLevel.Debug))
-			{
-				AppLogger.Debug("Entity type: " + entity.GetType().ToString());
-				AppLogger.Debug("Property name: " + property.Name);
-				AppLogger.Debug("Property type: " + property.PropertyType.ToString());
-
-				Collection<IEntity> toUpdate = new Collection<IEntity>();
-
-				object referenceValue = property.GetValue(entity, null);
-
-				// Check if the save is to cascade
-				if (attribute.CascadeSave)
-				{
-					AppLogger.Debug("attribute.CascadeSave == true");
-					// Save the reference entities
-					foreach (IEntity referencedEntity in (IEntity[])referenceValue)
-					{
-						// Delete the original referenced entity
-						Delete(DataAccess.Data.GetEntity(referencedEntity.GetType(), "ID", referencedEntity.ID));
-
-						toUpdate.Add(DataUtilities.AddReferences(referencedEntity, entity, DataUtilities.GetMirrorProperty(entity, property)));
-
-						// Save the new referenced entity
-						DataAccess.Data.Save((IEntity)referencedEntity);
-					}
-				}
-				else
-				{
-					AppLogger.Debug("attribute.CascadeSave == false");
-
-
-					toUpdate.Add(DataUtilities.SynchroniseReverseReferences(entity, property, DataAccess.Data.Stores[DataUtilities.GetDataStoreNameForReference(entity, property)].GetEntities(DataUtilities.GetReferenceType(entity, property), DataUtilities.GetReferenceIDs(entity, property)), DataAccess.Data.GetEntitiesContainingReverseReferences(entity, property)));
-				}
-
-				return (IEntity[])toUpdate.ToArray(typeof(IEntity));
-			}
-		}
-
-		/// <summary>
-		/// Prepares the provided reference for update. Does NOT synchronise mirrors because that's done by the IDs references.
-		/// </summary>
-		/// <param name="entity"></param>
-		/// <param name="property"></param>
-		protected IEntity[] PreSaveEntityReference(IEntity entity, PropertyInfo property, BaseEntityReferenceAttribute reference)
-		{
-			Collection<IEntity> toUpdate = new Collection<IEntity>();
-			object referenceValue = property.GetValue(entity, null);
-
-			// Check if the save is to cascade
-			if (reference.CascadeUpdate)
-			{
-				IEntity referencedEntity = (IEntity)referenceValue;
-
-				// Delete the original referenced entity
-				Delete(DataAccess.Data.GetEntity(referencedEntity.GetType(),"ID", referencedEntity.ID));
-
-				toUpdate.Add(DataUtilities.AddReferences(referencedEntity, entity, DataUtilities.GetMirrorProperty(entity, property)));
-
-				// Save the new referenced entity
-				DataAccess.Data.Save((IEntity)referenceValue);
-			}
-			else
-			{
-				// If the reference is not being stored by an IDs property, a mirror is specified, and the property is not to be excluded
-				if (reference.IDsPropertyName == String.Empty && reference.MirrorName != String.Empty)
-				{
-					toUpdate.Add(DataUtilities.SynchroniseReverseReferences(entity,
-					                                                        property,
-					                                                        DataAccess.Data.Stores[DataUtilities.GetDataStoreNameForReference(entity, property)].GetEntities(DataUtilities.GetReferenceType(entity, property),
-					                                                                                                                                                         DataUtilities.GetReferenceIDs(entity, property)),					                                                        DataAccess.Data.GetEntitiesContainingReverseReferences(entity, property)));
-
-					//toUpdate.Add(DataUtilities.AddReferences((IEntity)referenceValue, entity, DataUtilities.GetMirrorPropertyName(property)));
-
-					// Set a bound copy of the referenced object to the property to ensure it won't get duplicated
-					//property.SetValue(entity, GetEntity(property.PropertyType, "id", ((IEntity)referenceValue).ID), null);
-				}
-
-				if (reference.ExcludeFromDataStore)
-					property.SetValue(entity, null, null);
-			}
-
-			return (IEntity[])toUpdate.ToArray(typeof(IEntity));
-		}
-
-		/// <summary>
-		/// Prepares the provided reference for update. Synchronises mirror references.
-		/// </summary>
-		/// <param name="entity"></param>
-		/// <param name="property"></param>
-		protected IEntity[] PreSaveIDsReference(IEntity entity, PropertyInfo property, BaseEntityReferenceAttribute attribute)
-		{
-			if (entity == null)
-				throw new ArgumentNullException("entity");
-
-			if (property == null)
-				throw new ArgumentNullException("property");
-
-			if (attribute == null)
-				throw new ArgumentNullException("attribute");
-
-			Collection<IEntity> toUpdate = new Collection<IEntity>();
-
-			using (LogGroup logGroup = AppLogger.StartGroup("Preparing IDs reference for saving.", NLog.LogLevel.Debug))
-			{
-				
-				object referenceValue = property.GetValue(entity, null);
-
-				AppLogger.Debug("Reference value: " + referenceValue.ToString());
-				AppLogger.Debug("Entity type: " + entity.GetType());
-				AppLogger.Debug("Property name: " + property.Name);
-				AppLogger.Debug("Property type: " + property.PropertyType);
-				
-				// Check if the save is to cascade
-				if (attribute.CascadeSave)
-				{
-					AppLogger.Debug("attribute.CascadeSave == true");
-
-					// Save the reference entities
-					foreach (Guid referencedEntityID in (Guid[])referenceValue)
-					{
-						IEntity referencedEntity = DataAccess.Data.GetEntity(DataUtilities.GetReferenceType(entity, property), "ID", referencedEntityID);
-						
-						// Delete the original referenced entity
-						DataAccess.Data.Delete(referencedEntity);
-
-						toUpdate.Add(DataUtilities.AddReferences(referencedEntity, entity, DataUtilities.GetMirrorProperty(entity, property)));
-						
-						// Save the new referenced entity
-						DataAccess.Data.Save((IEntity)referencedEntity);
-					}
-				}
-				else
-				{
-					AppLogger.Debug("attribute.CascadeSave == false");
-
-					Type type = entity.GetType();
-
-					PropertyInfo entitiesProperty = DataUtilities.GetEntitiesProperty(property);
-					
-					if (entitiesProperty == null)
-					{
-						throw new Exception("The entities property '" + attribute.EntitiesPropertyName + "' matching type '" + attribute.ReferenceTypeName + "' could not be found on the type '" + type.ToString() + "'.");
-					}
-
-					Type referenceEntityType = DataUtilities.GetReferenceType(entity, property);
-					
-					if (attribute.MirrorName != String.Empty)
-					{
-						
-						//PropertyInfo mirrorProperty = DataUtilities.GetMirrorProperty(entity, property);
-						//
-						//if (mirrorProperty == null)
-						//	throw new Exception("Mirror property '" + attribute.MirrorName + "' not found on the type '" + referenceEntityType.ToString());
-						
-						//AppLogger.Debug("Mirror property: " + mirrorProperty.Name);
-						//AppLogger.Debug("Mirror property type: " + mirrorProperty.PropertyType);
-						//AppLogger.Debug("Reference entity type: " + referenceEntityType.ToString());
-						
-						toUpdate.Add(DataUtilities.SynchroniseReverseReferences(entity, property, DataAccess.Data.Stores[referenceEntityType].GetEntities(referenceEntityType, DataUtilities.GetReferenceIDs(entity, property)), DataAccess.Data.GetEntitiesContainingReverseReferences(entity, property)));
-						
-						
-					}
-					else
-						AppLogger.Debug("No mirror property name specified.");
-				}
-				
-			}
-
-			return (IEntity[])toUpdate.ToArray(typeof(IEntity));
-		}
-
-		/// <summary>
-		/// Prepares the provided reference for update. Synchronises mirror references.
-		/// </summary>
-		/// <param name="entity"></param>
-		/// <param name="property"></param>
-		protected IEntity[] PreSaveIDReference(IEntity entity, PropertyInfo property, BaseEntityReferenceAttribute attribute)
-		{
-			System.Diagnostics.Trace.WriteLine("Db4oDataStore.PreSaveIDReference");
-			System.Diagnostics.Trace.Indent();
-
-			Collection<IEntity> toUpdate = new Collection<IEntity>();
-
-			object referenceValue = property.GetValue(entity, null);
-
-			// Check if the save is to cascade
-			if (attribute.CascadeSave)
-			{
-				IEntity referencedEntity = null;
-				if (referenceValue is Guid)
-				{
-					referencedEntity = DataAccess.Data.GetEntity(DataUtilities.GetReferenceType(entity, property), "ID", (Guid)referenceValue);
-				}
-				else if (referenceValue is IEntity)
-				{
-					referencedEntity = DataAccess.Data.GetEntity(DataUtilities.GetReferenceType(entity, property), "ID", ((IEntity)referenceValue).ID);
-				}
-
-				toUpdate.Add(DataUtilities.AddReferences(referencedEntity, entity, DataUtilities.GetMirrorProperty(entity, property)));
-
-				// Save the new referenced entity
-				Save(referencedEntity);
-			}
-			else
-			{
-				//IEntity reference = DataAccess.Data.GetEntity(DataUtilities.GetReferenceType(entity, property), "ID", (Guid)property.GetValue(entity, null));
-
-				Type referenceEntityType = DataUtilities.GetReferenceType(entity, property);
-				//entity.GetType().GetProperty(attribute.EntitiesPropertyName).PropertyType.GetElementType();
-
-				if (attribute.MirrorName != String.Empty)
-				{
-					toUpdate.Add(DataUtilities.SynchroniseReverseReferences(entity, property, DataAccess.Data.Stores[referenceEntityType].GetEntities(referenceEntityType, DataUtilities.GetReferenceIDs(entity, property)), DataAccess.Data.GetEntitiesContainingReverseReferences(entity, property)));
-//					/*PropertyInfo mirrorProperty = null;
-					//                    if (referenceEntityType != null && attribute != null && attribute.MirrorName != null)
-					//                    {
-					//                        mirrorProperty = referenceEntityType.GetProperty(attribute.MirrorName);
-//
-					//                        if (mirrorProperty == null)
-					//                            System.Diagnostics.Trace.WriteLine("Mirror property was specified but not found: '" + attribute.MirrorName + "' on " + referenceEntityType.ToString());
-//
-					//                        if (reference != null && mirrorProperty != null)
-					//                        {
-					//                            object mirrorValue = mirrorProperty.GetValue(reference, null);
-//
-					//                            // If the reference is already there then don't bother creating it
-					//                            if (mirrorProperty.PropertyType.Equals(typeof(Guid)))
-					//                            {
-					//                                if (mirrorValue == null || (Guid)mirrorValue != entity.ID)
-					//                                {
-					//                                    // Update the mirror references
-					//                                    toUpdate.Add(DataUtilities.AddReferences(reference, entity, DataUtilities.GetMirrorPropertyName(property)));
-//
-					//                                    // Update the referenced entity
-					//                                    // TODO: Shouldn't be needed
-					//                                    //toUpdate.Add(r);
-					//                                }
-					//                            }
-					//                            else if (mirrorProperty.PropertyType.Equals(typeof(Guid[])))
-					//                            {
-					//                                if (mirrorValue == null || Array.IndexOf((Guid[])mirrorValue, entity.ID) == -1)
-					//                                {
-					//                                    // Update the mirror references
-					//                                    toUpdate.Add(DataUtilities.AddReferences(reference, entity, DataUtilities.GetMirrorPropertyName(property)));
-//
-					//                                    // Update the referenced entity
-					//                                    // TODO: Shouldn't be needed
-					//                                    //toUpdate.Add(r);
-					//                                }
-					//                            }
-					//                        }
-					//                    }
-				}
-			}
-
-			System.Diagnostics.Trace.Unindent();
-
-			return (IEntity[])toUpdate.ToArray(typeof(IEntity));
-		}
-
-		/// <summary>
-		/// Prepares the provided reference for update. Does NOT synchronise mirrors because that's done by the IDs references.
-		/// </summary>
-		/// <param name="entity"></param>
-		/// <param name="property"></param>
-		protected IEntity[] PreUpdateEntitiesReference(IEntity entity, PropertyInfo property, BaseEntityReferenceAttribute attribute)
-		{
-			Collection<IEntity> toUpdate = new Collection<IEntity>();
-
-			object referenceValue = property.GetValue(entity, null);
-
-			// Check if the save is to cascade
-			if (attribute.CascadeUpdate)
-			{
-				// Save the reference entities
-				foreach (IEntity referencedEntity in (IEntity[])referenceValue)
-				{
-					// Delete the original referenced entity
-					DataAccess.Data.Delete(DataAccess.Data.GetEntity(referencedEntity.GetType(), "ID", referencedEntity.ID));
-
-					toUpdate.Add(DataUtilities.AddReferences(referencedEntity, entity, DataUtilities.GetMirrorProperty(entity, property)));
-
-					// Save the new referenced entity
-					DataAccess.Data.Save((IEntity)referencedEntity);
-				}
-			}
-			else
-			{
-				Type referenceEntityType = entity.GetType().GetProperty(property.Name).PropertyType.GetElementType();
-
-				IEntity[] newReferences = (IEntity[])property.GetValue(entity, null);
-
-				if (attribute.MirrorName != String.Empty)
-				{
-					toUpdate.Add(DataUtilities.SynchroniseReverseReferences(entity, property, DataAccess.Data.Stores[referenceEntityType].GetEntities(referenceEntityType, DataUtilities.GetReferenceIDs(entity, property)), DataAccess.Data.GetEntitiesContainingReverseReferences(entity, property)));
-
-					
-
-				}
-				else
-					AppLogger.Debug("Mirror name is blank. Skipping.");
-
-			}
-
-			return (IEntity[])toUpdate.ToArray(typeof(IEntity));
-		}
-
-		/// <summary>
-		/// Prepares the provided reference for update. Does NOT synchronise mirrors because that's done by the IDs references.
-		/// </summary>
-		/// <param name="entity"></param>
-		/// <param name="property"></param>
-		protected IEntity[] PreUpdateEntityReference(IEntity entity, PropertyInfo property, BaseEntityReferenceAttribute reference)
-		{
-			Collection<IEntity> toUpdate = new Collection<IEntity>();
-
-			object referenceValue = property.GetValue(entity, null);
-			Type referenceEntityType = DataUtilities.GetReferenceType(entity, property);
-
-			// Check if the save is to cascade
-			if (reference.CascadeUpdate)
-			{
-				IEntity referencedEntity = (IEntity)referenceValue;
-
-				// Delete the original referenced entity
-				DataAccess.Data.Delete(DataAccess.Data.GetEntity(referencedEntity.GetType(), "ID", referencedEntity.ID));
-
-				toUpdate.Add(DataUtilities.AddReferences(referencedEntity, entity, DataUtilities.GetMirrorProperty(entity, property)));
-
-				// Save the new referenced entity
-				DataAccess.Data.Save((IEntity)referenceValue);
-			}
-			else
-			{
-				toUpdate.Add(DataUtilities.SynchroniseReverseReferences(entity, property, DataAccess.Data.GetEntities(referenceEntityType, DataUtilities.GetReferenceIDs(entity, property)), DataAccess.Data.GetEntitiesContainingReverseReferences(entity, property)));
-
-				// TODO: See if its needed
-				// Set a bound copy of the referenced object to the property to ensure it won't get duplicated
-				//property.SetValue(entity, DataAccess.Data.GetEntity(property.PropertyType, "ID", ((IEntity)referenceValue).ID), null);
-			}
-
-			return (IEntity[])toUpdate.ToArray(typeof(IEntity));
-		}
-
-		/// <summary>
-		/// Prepares the provided reference for update. Synchronises mirror references.
-		/// </summary>
-		/// <param name="entity"></param>
-		/// <param name="property"></param>
-		protected IEntity[] PreUpdateIDsReference(IEntity entity, PropertyInfo property, BaseEntityReferenceAttribute attribute)
-		{
-			Collection<IEntity> toUpdate = new Collection<IEntity>();
-
-			using (LogGroup logGroup = AppLogger.StartGroup("Preparing IDs reference for update.", NLog.LogLevel.Debug))
-			{
-
-				object referenceValue = property.GetValue(entity, null);
-				
-				// Check if the save is to cascade
-				if (attribute.CascadeUpdate)
-				{
-					AppLogger.Debug("Cascade update: false");
-
-					// Save the reference entities
-					foreach (Guid referencedEntityID in (Guid[])referenceValue)
-					{
-						IEntity referencedEntity = DataAccess.Data.GetEntity(DataUtilities.GetReferenceType(entity, property), "ID", referencedEntityID);
-						
-						// Delete the original referenced entity
-						DataAccess.Data.Delete(referencedEntity);
-						
-						toUpdate.Add(DataUtilities.AddReferences(referencedEntity, entity, DataUtilities.GetMirrorProperty(entity, property)));
-						
-						// Save the new referenced entity
-						DataAccess.Data.Save((IEntity)referencedEntity);
-					}
-				}
-				else
-				{
-					AppLogger.Debug("Cascade update: false");
-
-					Type referenceEntityType = DataUtilities.GetReferenceType(entity, property);
-					
-					IEntity[] oldReferences = (IEntity[])DataAccess.Data.GetEntitiesContainingReverseReferences(entity, property);
-					//Entity[] originalReferences = GetEntities(referenceEntityType, query.Execute());
-
-					AppLogger.Debug("# of old references: " + oldReferences.Length.ToString());
-					
-					if (attribute.MirrorName != String.Empty)
-					{
-						toUpdate.Add(DataUtilities.SynchroniseReverseReferences(entity, property, DataAccess.Data.Stores[DataUtilities.GetDataStoreNameForReference(entity, property)].GetEntities(referenceEntityType, DataUtilities.GetReferenceIDs(entity, property)), oldReferences));
-					}
-					
-					
-					// Set a bound copy of the referenced object to the property to ensure it won't get duplicated
-//					if (references != null && references.Count > 0)
-//	                    property.SetValue(entity, references.GetIDs(), null);
-//	                else
-//	                    property.SetValue(entity, null, null);
-				}
-
-			}
-
-			return (IEntity[])toUpdate.ToArray(typeof(IEntity));
-		}
-
-		/// <summary>
-		/// Prepares the provided reference for update. Synchronises mirror references.
-		/// </summary>
-		/// <param name="entity"></param>
-		/// <param name="property"></param>
-		protected IEntity[] PreUpdateIDReference(IEntity entity, PropertyInfo property, BaseEntityReferenceAttribute attribute)
-		{
-			Collection<IEntity> toUpdate = new Collection<IEntity>();
-
-			using (LogGroup logGroup = AppLogger.StartGroup("Preparing ID reference for update.", NLog.LogLevel.Debug))
-			{
-				object referenceValue = property.GetValue(entity, null);
-
-				// Check if the save is to cascade
-				if (attribute.CascadeUpdate)
-				{
-					AppLogger.Debug("attribute.CascadeUpdate == true");
-
-					IEntity referencedEntity = DataAccess.Data.GetEntity(DataUtilities.GetReferenceType(entity, property), "ID", (Guid)referenceValue);
-
-					// Delete the original referenced entity
-					DataAccess.Data.Delete(referencedEntity);
-
-					toUpdate.Add(DataUtilities.AddReferences(referencedEntity, entity, DataUtilities.GetMirrorProperty(entity, property)));
-
-					// Save the new referenced entity
-					DataAccess.Data.Save((IEntity)referencedEntity);
-				}
-				else
-				{
-					AppLogger.Debug("attribute.CascadeUpdate == false");
-
-					PropertyInfo entitiesProperty = entity.GetType().GetProperty(attribute.EntitiesPropertyName);
-
-					AppLogger.Debug("Entities property name: " + entitiesProperty.Name);
-
-					Type referenceEntityType = DataUtilities.GetReferenceType(entity, property);
-
-					AppLogger.Debug("Reference entity type: " + referenceEntityType.ToString());
-
-					if (attribute.MirrorName != String.Empty)
-					{
-						PropertyInfo mirrorProperty = referenceEntityType.GetProperty(DataUtilities.GetMirrorPropertyName(property));
-
-						AppLogger.Debug("Mirror property name: " + attribute.MirrorName);
-
-
-						toUpdate.Add(DataUtilities.SynchroniseReverseReferences(entity, property, DataAccess.Data.Stores[DataUtilities.GetDataStoreNameForReference(entity, property)].GetEntities(referenceEntityType, DataUtilities.GetReferenceIDs(entity, property)), DataAccess.Data.GetEntitiesContainingReverseReferences(entity, property)));
-					}
-					else
-					{
-						AppLogger.Debug("Mirror property name: String.Empty");
-					}
-
-//					// TODO: Check if needed
-//					// Set a bound copy of the referenced object to the property to ensure it won't get duplicated
-//					if (references != null && references.Count > 0)
-					//                        property.SetValue(entity, references.GetIDs(), null);
-					//                    else
-					//                        property.SetValue(entity, null, null);
-				}
-			}
-
-			return (IEntity[])toUpdate.ToArray(typeof(IEntity));
-		}
-
-		protected IEntity[] PreDeleteEntitiesReference(IEntity entity, PropertyInfo property, BaseEntityReferenceAttribute attribute)
-		{
-			Collection<IEntity> toDelete = new Collection<IEntity>();
-
-			object referenceValue = property.GetValue(entity, null);
-
-			// Check if the save is to cascade
-			if (attribute.CascadeDelete)
-			{
-				// Save the reference entities
-				foreach (IEntity referencedEntity in (IEntity[])referenceValue)
-				{
-					// Delete the original referenced entity
-					DataAccess.Data.Delete(DataAccess.Data.GetEntity(referencedEntity.GetType(), "ID", referencedEntity.ID));
-				}
-			}
-			else
-			{
-				Type referenceEntityType = entity.GetType().GetProperty(property.Name).PropertyType.GetElementType();
-
-				IEntity[] newReferences = (IEntity[])property.GetValue(entity, null);
-
-				PropertyInfo mirrorProperty = referenceEntityType.GetProperty(attribute.MirrorName);
-
-				IList<IEntity> originalEntities = ObjectContainer.Query<IEntity>(delegate(IEntity e)
-				                                                                 {
-				                                                                 	if (mirrorProperty != null && e.GetType() == referenceEntityType)
-				                                                                 	{
-				                                                                 		object mirrorValue = mirrorProperty.GetValue(e, null);
-				                                                                 		if (mirrorValue != null && mirrorValue is IEntity[])
-				                                                                 			return Array.IndexOf(Collection<IEntity>.GetIDs((IEntity[])mirrorValue), entity.ID) > -1;
-				                                                                 		else
-				                                                                 			return false;
-				                                                                 	}
-				                                                                 	else
-				                                                                 		return false;
-				                                                                 });
-
-				IEntity[] originalReferences = (IEntity[])new List<IEntity>(originalEntities).ToArray();
-
-				ArrayList references = new ArrayList();
-
-				// If a reference exists in both old and new copy then keep it in the new
-				if (originalReferences != null)
-				{
-					for (int i = 0; i < originalReferences.Length; i++)
-					{
-						// TODO: See if this check is necessary
-						// If the references are being stored on this property then delete mirrors.
-						// If the references are being stored on an IDs property then this should be skipped
-						if (attribute.IDsPropertyName == String.Empty && !attribute.ExcludeFromDataStore)
-						{
-							object mirrorValue = null;
-							if (mirrorProperty != null)
-								mirrorValue = mirrorProperty.GetValue(originalReferences[i], null);
-
-							// If the mirror contains a reference but the deleted entity then remove the old reference
-							if ((mirrorProperty == null || Array.IndexOf(Collection<IEntity>.GetIDs((IEntity[])mirrorValue), entity.ID) > -1)
-							    && Array.IndexOf(Collection<IEntity>.GetIDs(newReferences), originalReferences[i].ID) == -1)
-								toDelete.Add(DataUtilities.RemoveReferences(originalReferences[i], entity, DataUtilities.GetMirrorProperty(entity, property)));
-						}
-					}
-				}
-			}
-
-			return (IEntity[])toDelete.ToArray(typeof(IEntity));
-		}
-
-		/// <summary>
-		/// Prepares the provided reference for delete. Does NOT synchronise mirrors because that's done by the IDs references.
-		/// </summary>
-		/// <param name="entity"></param>
-		/// <param name="property"></param>
-		protected IEntity[] PreDeleteEntityReference(IEntity entity, PropertyInfo property, BaseEntityReferenceAttribute reference)
-		{
-			Collection<IEntity> toDelete = new Collection<IEntity>();
-
-			object referenceValue = property.GetValue(entity, null);
-
-			// Check if the save is to cascade
-			if (reference.CascadeDelete)
-			{
-				IEntity referencedEntity = (IEntity)referenceValue;
-
-				// Delete the original referenced entity
-				DataAccess.Data.Delete(DataAccess.Data.GetEntity(referencedEntity.GetType(), "ID", referencedEntity.ID));
-			}
-			else
-			{
-				// Don't do anything
-			}
-
-			return (IEntity[])toDelete.ToArray(typeof(IEntity));
-		}
-
-		/// <summary>
-		/// Prepares the provided reference for delete. Synchronises mirror references.
-		/// </summary>
-		/// <param name="entity"></param>
-		/// <param name="property"></param>
-		protected IEntity[] PreDeleteIDsReference(IEntity entity, PropertyInfo property, BaseEntityReferenceAttribute attribute)
-		{
-			Collection<IEntity> toDelete = new Collection<IEntity>();
-
-			object referenceValue = property.GetValue(entity, null);
-
-			// Check if the save is to cascade
-			if (attribute.CascadeDelete)
-			{
-				// Save the reference entities
-				foreach (Guid referencedEntityID in (Guid[])referenceValue)
-				{
-					IEntity referencedEntity = DataAccess.Data.GetEntity(DataUtilities.GetReferenceType(entity, property), "ID", referencedEntityID);
-
-					// Delete the original referenced entity
-					DataAccess.Data.Delete(referencedEntity);
-				}
-			}
-			else
-			{
-				Type referenceEntityType = entity.GetType().GetProperty(attribute.EntitiesPropertyName).PropertyType.GetElementType();
-
-				PropertyInfo mirrorProperty = referenceEntityType.GetProperty(attribute.MirrorName);
-
-				IList<IEntity> entities = ObjectContainer.Query<IEntity>(delegate(IEntity e)
-				                                                         {
-				                                                         	if (e.GetType() == referenceEntityType)
-				                                                         	{
-				                                                         		object mirrorValue = mirrorProperty.GetValue(e, null);
-				                                                         		if (mirrorValue is Guid[])
-				                                                         		{
-				                                                         			if (mirrorValue != null)
-				                                                         				return Array.IndexOf((Guid[])mirrorValue, entity.ID) > -1;
-				                                                         			else
-				                                                         				return false;
-				                                                         		}
-				                                                         		else
-				                                                         		{
-				                                                         			if (mirrorValue != null)
-				                                                         				return (Guid)mirrorValue == entity.ID;
-				                                                         			else
-				                                                         				return false;
-				                                                         		}
-				                                                         	}
-				                                                         	else
-				                                                         		return false;
-				                                                         });
-
-				IEntity[] originalReferences = (IEntity[])new List<IEntity>(entities).ToArray();
-				//Entity[] originalReferences = GetEntities(referenceEntityType, query.Execute());
-
-				Collection<IEntity> references = new Collection<IEntity>();
-
-				references.Add(GetEntities(referenceEntityType, (Guid[])property.GetValue(entity, null)));
-
-				// If a reference exists in both old and new copy then keep it in the new
-				if (originalReferences != null)
-				{
-					for (int i = 0; i < originalReferences.Length; i++)
-					{
-						// If the reference is not still being kept then allow it to be removed
-						if (!references.Contains(originalReferences[i]))
-						{
-							// Delete the mirror references
-							toDelete.Add(DataUtilities.RemoveReferences(originalReferences[i], entity, DataUtilities.GetMirrorProperty(entity, property)));
-						}
-					}
-				}
-			}
-
-			return (IEntity[])toDelete.ToArray(typeof(IEntity));
-		}
-
-		/// <summary>
-		/// Prepares the provided reference for delete. Synchronises mirror references.
-		/// </summary>
-		/// <param name="entity"></param>
-		/// <param name="property"></param>
-		protected IEntity[] PreDeleteIDReference(IEntity entity, PropertyInfo property, BaseEntityReferenceAttribute attribute)
-		{
-			Collection<IEntity> toDelete = new Collection<IEntity>();
-
-			object referenceValue = property.GetValue(entity, null);
-
-			// Check if the save is to cascade
-			if (attribute.CascadeDelete)
-			{
-				IEntity referencedEntity = DataAccess.Data.GetEntity(DataUtilities.GetReferenceType(entity, property), "ID", (Guid)referenceValue);
-
-				// Delete the original referenced entity
-				DataAccess.Data.Delete(referencedEntity);
-			}
-			else
-			{
-				PropertyInfo entitiesProperty = entity.GetType().GetProperty(attribute.EntitiesPropertyName);
-				Type referenceEntityType = null;
-				if (entitiesProperty.PropertyType.GetElementType() != null)
-					referenceEntityType = entitiesProperty.PropertyType.GetElementType();
-				else
-					referenceEntityType = entitiesProperty.PropertyType;
-
-				Collection<IEntity> references = new Collection<IEntity>();
-
-				if (attribute.MirrorName != String.Empty)
-				{
-					PropertyInfo mirrorProperty = referenceEntityType.GetProperty(attribute.MirrorName);
-
-					IList<IEntity> entities = ObjectContainer.Query<IEntity>(delegate(IEntity e)
-					                                                         {
-					                                                         	if (e.GetType() == referenceEntityType)
-					                                                         	{
-					                                                         		object mirrorValue = (Guid[])mirrorProperty.GetValue(e, null);
-					                                                         		if (mirrorValue != null)
-					                                                         			return Array.IndexOf((Guid[])mirrorValue, entity.ID) > -1;
-					                                                         		else
-					                                                         			return false;
-					                                                         	}
-					                                                         	else
-					                                                         		return false;
-					                                                         });
-
-					IEntity[] originalReferences = (IEntity[])new List<IEntity>(entities).ToArray();
-					//Entity[] originalReferences = GetEntities(referenceEntityType, query.Execute());
-
-					object propertyValue = property.GetValue(entity, null);
-
-					if (propertyValue is Guid[])
-						references.Add(GetEntities(referenceEntityType, (Guid[])propertyValue));
-					else
-					{
-						references.Add(DataAccess.Data.GetEntity(referenceEntityType, "ID", (Guid)propertyValue));
-					}
-
-					// If a reference exists in both old and new copy then keep it in the new
-					if (originalReferences != null)
-					{
-						for (int i = 0; i < originalReferences.Length; i++)
-						{
-							// If the reference is not still being kept then allow it to be removed
-							if (!references.Contains(originalReferences[i]))
-							{
-								// Delete the mirror references
-								toDelete.Add(DataUtilities.RemoveReferences(originalReferences[i], entity, DataUtilities.GetMirrorProperty(entity, property)));
-							}
-						}
-					}
-				}
-			}
-
-			return (IEntity[])toDelete.ToArray(typeof(IEntity));
-		}
-		*/
+			int total = 0;
 			
+			T[] output = GetEntitiesPage<T>(location.PageIndex, location.PageSize, sortExpression, out total);
+			
+			location.AbsoluteTotal = total;
+			
+			return output;
+		}*/
+		/*
+		public T[] GetEntitiesPage<T>(string fieldName, object fieldValue, PagingLocation location, string sortExpression)
+			where T : IEntity
+		{
+			
+			int total = 0;
+			
+			
+			T[] output = GetEntitiesPage<T>(fieldName, fieldValue, location.PageIndex, location.PageSize, sortExpression, out total);
+			
+			location.AbsoluteTotal = total;
+			
+			return output;
+		}*/
+		
+		
+		public void Commit()
+		{
+			Commit(false);
+		}
+		
+		
+		public void Commit(bool forceCommit)
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Committing the data store (or adding to batch for later).", NLog.LogLevel.Debug))
+			{
+				// Only commit if there's no batch running
+				if (forceCommit || !Batch.IsRunning)
+				{
+					AppLogger.Debug("No batch running. Committing immediately.");
+					
+					if (ObjectContainer != null)
+						ObjectContainer.Commit();
+					else
+						throw new InvalidOperationException("ObjectContainer == null");
+				}
+				// If a batch is running then the commit should be skipped. It'll be commit once the batch is complete.
+				else
+				{
+					AppLogger.Debug("Batch running. Adding data source to batch. It will be committed when the batch is over.");
+					
+					Batch.Handle(this);
+				}
+			}
+		}
 	}
 }

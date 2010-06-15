@@ -68,7 +68,7 @@
 		}
 </script>
 <asp:Content ID="Content1" ContentPlaceHolderID="Body" Runat="Server">
-<div align="right" style="padding: 0px; margin:0px;">
+<div align="right" style="padding: 5px; margin:0px;">
 <span style="font-size: smaller;">
 <span style="color:Green;"><%= Resources.Language.BackupComplete %></span><br />
 <%= DateTime.Now.ToString() %>

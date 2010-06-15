@@ -1,6 +1,7 @@
 using System;
 using System.Xml.Serialization;
 using System.Collections;
+using System.IO;
 
 namespace SoftwareMonkeys.SiteStarter.Configuration
 {
@@ -59,7 +60,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
         /// </summary>
         public string PhysicalPath
         {
-            get { return physicalPath; }
+            get { return physicalPath.TrimEnd(Path.DirectorySeparatorChar); }
             set { physicalPath = value; }
         }
 

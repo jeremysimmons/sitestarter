@@ -39,9 +39,12 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			if (reference == null)
 				throw new ArgumentNullException("reference");
 			
-			referenceTypeName = reference.Type2Name;
+			if (!Contains(reference))
+			{
+				referenceTypeName = reference.Type2Name;
 			
-			base.Add(reference);
+				base.Add(reference);
+			}
 		}
 		
 		public EntityIDReferenceCollection SwitchFor(IEntity entity)
@@ -52,6 +55,20 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			}
 			
 			return this;
+		}
+		
+		public bool Contains(EntityIDReference reference)
+		{
+			bool match = false;
+			foreach (EntityIDReference r in this)
+			{
+				if (r.Includes(reference.Entity1ID, reference.Property1Name)
+				    || r.Includes(reference.Entity2ID, reference.Property2Name))
+				{
+					match = true;
+				}
+			}
+			return match;
 		}
 		
 	}

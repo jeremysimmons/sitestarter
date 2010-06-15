@@ -150,4 +150,10 @@
   <data name="InvalidRole" xml:space="preserve">
     <value>You're not in the right role to do that.</value>
   </data>
+  <data name="Asc" xml:space="preserve">
+    <value>(asc)</value>
+  </data>
+  <data name="Desc" xml:space="preserve">
+    <value>(desc)</value>
+  </data>
 </root>

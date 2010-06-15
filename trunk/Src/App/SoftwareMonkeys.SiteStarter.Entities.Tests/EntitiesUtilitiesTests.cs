@@ -255,6 +255,17 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 			}
 		}
 		
+		[Test]
+		public void Test_GetFieldName()
+		{
+			TestArticle article = new TestArticle();
+			article.ID = Guid.NewGuid();
+			
+			string fieldName = EntitiesUtilities.GetFieldName(article.GetType(), "Title");
+			
+			Assert.AreEqual("title", fieldName, "Incorrect field name returned.");
+		}
+		
 		/*[Test]
 		public void Test_MatchAlias_Exact()
 		{
