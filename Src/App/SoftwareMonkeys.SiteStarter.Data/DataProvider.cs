@@ -72,16 +72,32 @@ namespace SoftwareMonkeys.SiteStarter.Data
         public abstract T[] GetEntitiesMatchReference<T>(string propertyName, Type referencedEntityType, Guid referencedEntityID)
         	where T : IEntity;
 
-        public abstract T[] GetEntitiesPage<T>(int pageIndex, int pageSize, string sortExpression, out int totalObjects)
+        // TODO: Clean up
+       /* public abstract T[] GetEntitiesPage<T>(int pageIndex, int pageSize, string sortExpression, out int totalObjects)
         	where T : IEntity;
         public abstract T[] GetEntitiesPage<T>(string fieldName, object fieldValue, int pageIndex, int pageSize, string sortExpression, out int totalObjects)
+        	where T : IEntity;*/
+        
+        //public abstract IEntity[] GetEntitiesPage(Type type, int pageIndex, int pageSize, string sortExpression, out int totalObjects);
+        //public abstract IEntity[] GetEntitiesPage(Type type, string fieldName, object fieldValue, int pageIndex, int pageSize, string sortExpression, out int totalObjects);
+
+        public abstract T[] GetEntitiesPage<T>(PagingLocation location, string sortExpression)
         	where T : IEntity;
         
-        public abstract IEntity[] GetEntitiesPage(Type type, int pageIndex, int pageSize, string sortExpression, out int totalObjects);
-        public abstract IEntity[] GetEntitiesPage(Type type, string fieldName, object fieldValue, int pageIndex, int pageSize, string sortExpression, out int totalObjects);
-
-        public abstract T[] GetEntitiesPageMatchReference<T>(string propertyName, Type referencedEntityType, Guid referencedEntityID, int pageIndex, int pageSize, string sortExpression, out int totalObjects)
+        
+        public abstract T[] GetEntitiesPage<T>(string fieldName, object fieldValue, PagingLocation location, string sortExpression)
         	where T : IEntity;
+        
+        
+        public abstract IEntity[] GetEntitiesPage(Type type, PagingLocation location, string sortExpression);
+        
+        public abstract IEntity[] GetEntitiesPage(Type type, string fieldName, object fieldValue, PagingLocation location, string sortExpression);
+
+        public abstract T[] GetEntitiesPageMatchReference<T>(string propertyName, Type referencedEntityType, Guid referencedEntityID, PagingLocation location, string sortExpression)
+        	where T : IEntity;
+        
+        /*public abstract T[] GetEntitiesPageMatchReference<T>(string propertyName, Type referencedEntityType, Guid referencedEntityID, int pageIndex, int pageSize, string sortExpression, out int totalObjects)
+        	where T : IEntity;*/
         
         /// <summary>
 		/// Retrieves all the entities of the specified type matching the specified values.

@@ -69,8 +69,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseFactory.cs" />
+    <Compile Include="CommandAttribute.cs" />
+    <Compile Include="CommandManager.cs" />
     <Compile Include="Crypter.cs" />
     <Compile Include="FactoryManager.cs" />
+    <Compile Include="GetCommandAttribute.cs" />
     <Compile Include="TestExecutor.cs" />
     <Compile Include="UserFactory.cs" />
     <Compile Include="EmailFactory.cs" />

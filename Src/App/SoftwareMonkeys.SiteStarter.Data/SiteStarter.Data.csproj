@@ -48,6 +48,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseFilter.cs" />
+    <Compile Include="Batch.cs" />
+    <Compile Include="BatchManager.cs" />
     <Compile Include="DataUtilities.cs" />
     <Compile Include="IDataFilterGroup.cs" />
     <Compile Include="IDataFilter.cs" />
@@ -71,7 +73,7 @@
       <Name>SiteStarter.Configuration</Name>
     </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Contracts\SiteStarter.Contracts.csproj">
-      <Project>737DFD8E-BF43-4BA9-ABE6-25B2DC21800F</Project>
+      <Project>{518735AC-EFA2-4205-AE47-CF4664EE3061}</Project>
       <Name>SiteStarter.Contracts</Name>
     </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Diagnostics\SiteStarter.Diagnostics.csproj">

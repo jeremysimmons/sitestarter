@@ -238,13 +238,23 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 				logContents = reader.ReadToEnd();
 				reader.Close();
 			}
+			
+			// Add the start <Log> tag if necessary
+			string startTag = "<Log>";
+			if (logContents.IndexOf(startTag) == -1)
+				logContents = startTag + "\r\n" + logContents;
+			
+			// Add the XML declaration if necessary
+			// This must be done before after the start tag prepend won't work
+			string xmlDeclaration = "<?xml version=\'1.0\'?>";
+			if (logContents.IndexOf(xmlDeclaration) == -1)
+				logContents = xmlDeclaration + "\r\n" + logContents;
 
 			// Add the ending </Log> tag if necessary
 			if (logContents.IndexOf("</Log>") == -1)
 				logContents = logContents + "</Log>";
 			
-			
-			using (StreamWriter writer = new StreamWriter(fixedLogPath))
+			using (StreamWriter writer = File.CreateText(fixedLogPath))
 			{
 				writer.Write(logContents);
 				writer.Close();

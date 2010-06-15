@@ -76,22 +76,23 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			bool typeMatches = false;
 			bool referenceMatches = false;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Checking whether provided entity matches this filter.", NLog.LogLevel.Debug))
-			{
-				AppLogger.Debug("Property name: " + propertyName);
-				AppLogger.Debug("Referenced entity ID: " + referencedEntityID.ToString());
+			
+			//using (LogGroup logGroup = AppLogger.StartGroup("Checking whether provided entity matches this filter.", NLog.LogLevel.Debug))
+			//{
+			//	AppLogger.Debug("Property name: " + propertyName);
+			//	AppLogger.Debug("Referenced entity ID: " + referencedEntityID.ToString());
 				
 				
 				//Type referenceType = Types[0];
 				
 				
-				AppLogger.Debug("Referenced type: " + referenceType.ToString());
+			//	AppLogger.Debug("Referenced type: " + referenceType.ToString());
 				
 				Type entityType = entity.GetType();
 				
-				AppLogger.Debug("Checking entity type: " + entityType.ToString());
-				AppLogger.Debug("Checking entity with ID: " + entity.ID);
-				
+			//	AppLogger.Debug("Checking entity type: " + entityType.ToString());
+			//	AppLogger.Debug("Checking entity with ID: " + entity.ID);
+			//	
 				foreach (Type type in Types)
 				{
 					if (type.Equals(entityType)
@@ -111,10 +112,10 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				//bool referenceMatches = DataAccess.Data.MatchReference(entity.GetType(), entity.ID, propertyName, property.Type, referencedEntityType, referencedEntityID);
 				
 				
-				AppLogger.Debug("Type matches: " + typeMatches.ToString());
-				AppLogger.Debug("Reference matches: " + referenceMatches.ToString());
+			//	AppLogger.Debug("Type matches: " + typeMatches.ToString());
+			//	AppLogger.Debug("Reference matches: " + referenceMatches.ToString());
 				
-			}
+			//}
 			return typeMatches && referenceMatches;
 		}
 		

@@ -26,6 +26,11 @@ namespace SoftwareMonkeys.SiteStarter.Entities
         {
         	get { return GetType().Name; }
         }
+        
+        public virtual string UniqueKey
+        {
+        	get { throw new InvalidOperationException("This property must be overridden."); }
+        }
 
         /// <summary>
         /// Empty constructor.

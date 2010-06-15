@@ -48,14 +48,21 @@ namespace SoftwareMonkeys.SiteStarter.Data
         T GetEntity<T>(string propertyName, object propertyValue)
         	where T : IEntity;
         
-        //IEntity[] GetEntities(Type entityType, string propertyName, object propertyValue);
-        T[] GetEntitiesPage<T>(int pageIndex, int pageSize, string sortExpression, out int totalObjects)
-        	where T : IEntity;
-        T[] GetEntitiesPage<T>(string fieldName, object fieldValue, int pageIndex, int pageSize, string sortExpression, out int totalObjects)
+        T[] GetEntitiesPage<T>(PagingLocation location, string sortExpression)
         	where T : IEntity;
         
- 		IEntity[] GetEntitiesPage(Type type, int pageIndex, int pageSize, string sortExpression, out int totalObjects);
-        IEntity[] GetEntitiesPage(Type type, string fieldName, object fieldValue, int pageIndex, int pageSize, string sortExpression, out int totalObjects);
+        T[] GetEntitiesPage<T>(string fieldName, object fieldValue, PagingLocation location, string sortExpression)
+        	where T : IEntity;
+        
+        // TODO: Clean up
+        //IEntity[] GetEntities(Type entityType, string propertyName, object propertyValue);
+        /*T[] GetEntitiesPage<T>(int pageIndex, int pageSize, string sortExpression, out int totalObjects)
+        	where T : IEntity;*/
+        /*T[] GetEntitiesPage<T>(string fieldName, object fieldValue, int pageIndex, int pageSize, string sortExpression, out int totalObjects)
+        	where T : IEntity;*/
+        
+ 		IEntity[] GetEntitiesPage(Type type, PagingLocation location, string sortExpression);
+        IEntity[] GetEntitiesPage(Type type, string fieldName, object fieldValue, PagingLocation location, string sortExpression);
         
         void PreSave(IEntity entity, out IEntity[] entitiesToUpdate, out IEntity[] entitiesToDelete);
         void Save(IEntity entity);
@@ -64,8 +71,10 @@ namespace SoftwareMonkeys.SiteStarter.Data
         void PreDelete(IEntity entity, out IEntity[] entitiesToUpdate, out IEntity[] entitiesToDelete);
         void Delete(IEntity entity);
         bool IsStored(IEntity entity);
-        void ApplySorting(string sortExpression);
 
         #endregion
+        
+        void Commit();
+        void Commit(bool forceCommit);
     }
 }

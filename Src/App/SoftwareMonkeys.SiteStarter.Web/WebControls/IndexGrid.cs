@@ -6,102 +6,136 @@ using System.ComponentModel;
 using System.Collections;
 using SoftwareMonkeys.SiteStarter.Web.Properties;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using System.Text.RegularExpressions;
+using System.Web;
 
 namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 {
 	public class IndexGrid : DataGrid
-    {
-        #region Sorting
-        public event EventHandler SortChanged;
+	{
+		#region Sorting
+		public event EventHandler SortChanged;
 
-        protected void RaiseSortChanged()
-        {
-            if (SortChanged != null)
-                SortChanged(this, EventArgs.Empty);
-        }
-
-        /// <summary>
-        /// Selects the appropriate sort item.
-        /// </summary>
-        private void SelectSortItem()
-        {
-		using (LogGroup logGroup = AppLogger.StartGroup("Selecting the current sort item.", NLog.LogLevel.Debug))
+		protected void RaiseSortChanged()
 		{
-	            if (Sort != null)
-	            {
-			AppLogger.Debug("Current sort: " + CurrentSort);
-			AppLogger.Debug("Default sort: " + DefaultSort);
-	                if (CurrentSort != null && CurrentSort.Trim().Length > 0)
-			{
-				AppLogger.Debug("Using CurrentSort");
-	                    Sort.SelectedIndex = Sort.Items.IndexOf(Sort.Items.FindByValue(CurrentSort));
-			}
-	                else
-	                {
-				AppLogger.Debug("Using DefaultSort");
-	                    Sort.SelectedIndex = Sort.Items.IndexOf(Sort.Items.FindByValue(DefaultSort));
-	                }
-	            }
-			else
-				AppLogger.Debug("Sort control is null");
+			if (SortChanged != null)
+				SortChanged(this, EventArgs.Empty);
 		}
-        }
 
-        /// <summary>
-        /// Clears all the sort items.
-        /// </summary>
-        public void ClearSortItems()
-        {
-            Sort.Items.Clear();
-        }
+		/// <summary>
+		/// Selects the appropriate sort item.
+		/// </summary>
+		private void SelectSortItem()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Selecting the current sort item.", NLog.LogLevel.Debug))
+			{
+				if (Sort != null)
+				{
+					AppLogger.Debug("Current sort: " + CurrentSort);
+					AppLogger.Debug("Default sort: " + DefaultSort);
+					if (CurrentSort != null && CurrentSort.Trim().Length > 0)
+					{
+						AppLogger.Debug("Using CurrentSort");
+						Sort.SelectedIndex = Sort.Items.IndexOf(Sort.Items.FindByValue(CurrentSort));
+					}
+					else
+					{
+						AppLogger.Debug("Using DefaultSort");
+						Sort.SelectedIndex = Sort.Items.IndexOf(Sort.Items.FindByValue(DefaultSort));
+					}
+				}
+				else
+					AppLogger.Debug("Sort control is null");
+			}
+		}
 
-        /// <summary>
-        /// Adds an item with the provided text and value to the sort dropdown.
-        /// </summary>
-        /// <param name="text">The text of the item to add.</param>
-        /// <param name="value">The value of the item to add.</param>
-        public void AddSortItem(string text, string value)
-        {
-            Sort.Items.Add(new ListItem(text, value));
-        }
+		/// <summary>
+		/// Clears all the sort items.
+		/// </summary>
+		public void ClearSortItems()
+		{
+			Sort.Items.Clear();
+		}
+		
+		/// <summary>
+		/// Adds an item for the provided property.
+		/// </summary>
+		/// <param name="propertyText">The text of the property to add.</param>
+		/// <param name="propertyName">The name of the item to add.</param>
+		public void AddDualSortItem(string propertyText, string propertyName)
+		{
+			AddSortItem(propertyText + " " + Language.Asc, propertyName + "Ascending");
+			AddSortItem(propertyText + " " + Language.Desc, propertyName + "Descending");
+		}
 
-        /// <summary>
-        /// The sort control.
-        /// </summary>
-        public DropDownList Sort;
+		/// <summary>
+		/// Adds an item with the provided text and value to the sort dropdown.
+		/// </summary>
+		/// <param name="text">The text of the item to add.</param>
+		/// <param name="value">The value of the item to add.</param>
+		public void AddSortItem(string text, string value)
+		{
+			Sort.Items.Add(new ListItem(text, value));
+		}
 
-        /// <summary>
-        /// Gets/sets the default sort expression to use when displaying the index.
-        /// </summary>
-        public string DefaultSort
-        {
-            get { return (string)ViewState["DefaultSort"]; }
-            set
-            {
-                ViewState["DefaultSort"] = value;
-                SelectSortItem();
-            }
-        }
+		/// <summary>
+		/// The sort control.
+		/// </summary>
+		public DropDownList Sort;
 
-        /// <summary>
-        /// Gets/sets the default sort expression to use when displaying the index.
-        /// </summary>
-        public string CurrentSort
-        {
-            get {
-                if (ViewState["CurrentSort"] == null || (string)ViewState["CurrentSort"] == String.Empty)
-                    ViewState["CurrentSort"] = DefaultSort;
-                return (string)ViewState["CurrentSort"]; }
-            set
-            {
-                ViewState["CurrentSort"] = value;
-                if (Sort.SelectedValue != value)
-                    SelectSortItem();
-            }
-        }
-        #endregion
+		/// <summary>
+		/// Gets/sets the default sort expression to use when displaying the index.
+		/// </summary>
+		[Bindable(true)]
+		[Browsable(true)]
+		public string DefaultSort
+		{
+			get { return (string)ViewState["DefaultSort"]; }
+			set
+			{
+				ViewState["DefaultSort"] = value;
+				// TODO: Clean up
+				//if (ViewState["CurrentSort"] == null || ViewState["CurrentSort"] == String.Empty)
+				//	CurrentSort = value;
+			}
+		}
 
-        private int expandedCount = 0;
+		/// <summary>
+		/// Gets/sets the default sort expression to use when displaying the index.
+		/// </summary>
+		public string CurrentSort
+		{
+			get {
+				// TODO: Clean up
+				// Check if value from drop down list should be set to CurrentSort upon post back
+				//if (Sort != null)
+				//	ViewState["CurrentSort"] = Sort.SelectedValue;
+				//else{
+				if (ViewState["CurrentSort"] == null || (string)ViewState["CurrentSort"] == String.Empty)
+					ViewState["CurrentSort"] = DefaultSort;
+				//}
+				
+				return (string)ViewState["CurrentSort"]; }
+			set
+			{
+				ViewState["CurrentSort"] = value;
+				if (Sort != null)
+					SelectSortItem();
+			}
+		}
+		#endregion
+		
+		public string NavigateUrl
+		{
+			get {
+				if (ViewState["NavigateUrl"] == null)
+					ViewState["NavigateUrl"] = String.Empty;
+				return (string)ViewState["NavigateUrl"];
+			}
+			set { ViewState["NavigateUrl"] = value; }
+		}
+
+		private int expandedCount = 0;
 		/// <summary>
 		/// Gets/sets the number of expanded IDs used.
 		/// </summary>
@@ -120,13 +154,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		[Browsable(true)]
 		public bool ShowSort
 		{
-			get 
+			get
 			{
 				if (ViewState["ShowSort"] == null)
-					  ViewState["ShowSort"] = true;
+					ViewState["ShowSort"] = true;
 				return (bool)ViewState["ShowSort"];
 			}
-			set	
+			set
 			{
 				ViewState["ShowSort"] = value;
 			}
@@ -139,7 +173,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		[Browsable(true)]
 		public bool EnableExpansion
 		{
-			get 
+			get
 			{
 				if (ViewState["EnableExpansion"] == null)
 					ViewState["EnableExpansion"] = false;
@@ -158,29 +192,29 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		[Browsable(true)]
 		public string HeaderText
 		{
-			get 
+			get
 			{
-                if (ViewState["HeaderText"] == null)
-                    ViewState["HeaderText"] = String.Empty;
-                return (string)ViewState["HeaderText"];
+				if (ViewState["HeaderText"] == null)
+					ViewState["HeaderText"] = String.Empty;
+				return (string)ViewState["HeaderText"];
 			}
 			set
 			{
-                ViewState["HeaderText"] = value;
+				ViewState["HeaderText"] = value;
 			}
 		}
 
-        /// <summary>
-        /// Gets/sets the Entity data required for this control.
-        /// </summary>
-        [Browsable(false)]
-        public new IEntity[] DataSource
-        {
-            get
-            {return (IEntity[])base.DataSource;
-            }
-            set { base.DataSource = value;}
-        }
+		/// <summary>
+		/// Gets/sets the Entity data required for this control.
+		/// </summary>
+		[Browsable(false)]
+		public new IEntity[] DataSource
+		{
+			get
+			{return (IEntity[])base.DataSource;
+			}
+			set { base.DataSource = value;}
+		}
 
 		/// <summary>
 		/// Gets/sets a boolean value indicating whether the grid is displaying the first page.
@@ -203,7 +237,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		/// </summary>
 		public Guid[] SelectedDataKeys
 		{
-			get 
+			get
 			{
 				ArrayList keys = new ArrayList();
 
@@ -223,25 +257,32 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				return (Guid[])keys.ToArray(typeof(Guid));
 			}
 		}
-        
-        /// <summary>
-        /// Gets/sets the text displayed when the data is empty.
-        /// </summary>
-        public string EmptyDataText // TODO: Finish adding support for this property
-        {
-            get
-            {
-                if (ViewState["EmptyDataText"] == null)
-                    ViewState["EmptyDataText"] = String.Empty;
-                return (string)ViewState["EmptyDataText"];
-            }
-            set { ViewState["EmptyDataText"] = value; }
-        }
+		
+		/// <summary>
+		/// Gets/sets the text displayed when the data is empty.
+		/// </summary>
+		public string EmptyDataText // TODO: Finish adding support for this property
+		{
+			get
+			{
+				if (ViewState["EmptyDataText"] == null)
+					ViewState["EmptyDataText"] = String.Empty;
+				return (string)ViewState["EmptyDataText"];
+			}
+			set { ViewState["EmptyDataText"] = value; }
+		}
 
 		protected override void OnInit(EventArgs e)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Initializing IndexGrid control: " + ID, NLog.LogLevel.Info))
+			using (LogGroup logGroup = AppLogger.StartGroup("Initializing IndexGrid control: " + ID, NLog.LogLevel.Debug))
 			{
+				if (Page.Request.QueryString["Page"] != String.Empty)
+					CurrentPageIndex = QueryStrings.PageIndex;
+				
+				if (Page.Request.QueryString["Sort"] != String.Empty)
+					CurrentSort = QueryStrings.Sort;
+				
+				
 				CssClass = "BodyPanel";
 				AutoGenerateColumns = false;
 				Width = Unit.Percentage(100);
@@ -254,97 +295,98 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				PagerStyle.Mode = PagerMode.NumericPages;
 				PagerStyle.Position = PagerPosition.TopAndBottom;
 				ShowFooter = true;
-	          	  AllowCustomPaging = true;
-	
+				AllowCustomPaging = true;
+				
 				Sort = new DropDownList();
 				Sort.ID = "Sort";
 				Sort.AutoPostBack = true;
 				Sort.CssClass = "Field";
-	            		Sort.SelectedIndexChanged += new EventHandler(Sort_SelectedIndexChanged);
-	            		if (CurrentSort != String.Empty)
-	                		Sort.SelectedIndex = Sort.Items.IndexOf(Sort.Items.FindByValue(CurrentSort));
-	            		else
-	                		Sort.SelectedIndex = Sort.Items.IndexOf(Sort.Items.FindByValue(DefaultSort));
+				Sort.SelectedIndexChanged += new EventHandler(Sort_SelectedIndexChanged);
+				
+				// If post back then 
+				if (!Page.IsPostBack)
+				{
+					if (CurrentSort != String.Empty)
+						Sort.SelectedIndex = Sort.Items.IndexOf(Sort.Items.FindByValue(CurrentSort));
+					else
+						Sort.SelectedIndex = Sort.Items.IndexOf(Sort.Items.FindByValue(DefaultSort));
+				}
 
-				AppLogger.Info("Default sort: " + DefaultSort);
-				AppLogger.Info("Current sort: " + CurrentSort);
-	
+				AppLogger.Debug("Default sort: " + DefaultSort);
+				AppLogger.Debug("Current sort: " + CurrentSort);
+				
 				//Sort.Items.Add(new ListItem("------ " + TextHelper.Get("Sort") + " ------", ""));
 				
 				CustomHolder = new PlaceHolder();
 				CustomHolder.ID = "CustomHolder";
-	
-	            		Page.RegisterStartupScript("IndexUtil", "<script language='javascript' src='/Scripts/IndexUtil.js'></script>");
-	
-	            		
+				
+				Page.RegisterStartupScript("IndexUtil", "<script language='javascript' src='/Scripts/IndexUtil.js'></script>");
+				
+				
 			}
-	            		
-				base.OnInit(e);
+			
+			base.OnInit(e);
 
 		}
 
-        protected override void OnLoad(EventArgs e)
-        {
-		using (LogGroup logGroup = AppLogger.StartGroup("Initializing IndexGrid control: " + ID, NLog.LogLevel.Info))
+		protected override void OnLoad(EventArgs e)
 		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Initializing IndexGrid control: " + ID, NLog.LogLevel.Debug))
+			{
 
-		
-		            base.OnLoad(e);
+				
+				base.OnLoad(e);
+				
+				// If no sort items were added then hide the sort list
+				if (Sort.Items.Count == 0)
+					Sort.Visible = false;
+			}
 		}
-        }
 
-        protected override void DataBind(bool raiseOnDataBinding)
-        {
-            
-            base.DataBind(raiseOnDataBinding);
+		protected override void DataBind(bool raiseOnDataBinding)
+		{
+			
+			base.DataBind(raiseOnDataBinding);
 
-        }
+		}
 
-        void Sort_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            CurrentSort = Sort.SelectedValue;
-            RaiseSortChanged();
-        }
+		void Sort_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			HttpContext.Current.Response.Redirect(CompileNavigateUrl(CurrentPageIndex, Sort.SelectedValue));
+			//CurrentSort = Sort.SelectedValue;
+			//RaiseSortChanged();
+		}
 
 		protected override void OnItemCreated(DataGridItemEventArgs e)
 		{
-			if (e.Item.ItemType == ListItemType.Pager)
+			using (LogGroup logGroup = AppLogger.StartGroup("Customizing a grid item upon creation (ItemCreated event).", NLog.LogLevel.Debug))
 			{
-				e.Item.Cells[0].Controls.Clear();
-
-				/*if (!IsFirstPage)
+				if (e.Item.ItemType == ListItemType.Pager)
 				{
-					LinkButton firstButton = new LinkButton();
-					firstButton.Text = "|&laquo;&laquo;";
-					firstButton.CommandName = "Page";
-					firstButton.CommandArgument = "1";
-					firstButton.CausesValidation = false;
-					e.Item.Cells[0].Controls.Add(firstButton);
-
-					e.Item.Cells[0].Controls.Add(new LiteralControl(" | "));
-
-					LinkButton prevButton = new LinkButton();
-					prevButton.Text = "&laquo;";
-					prevButton.CommandName = "Page";
-					prevButton.CommandArgument = (CurrentPageIndex).ToString();
-					prevButton.CausesValidation = false;
-					e.Item.Cells[0].Controls.Add(prevButton);
-
-					e.Item.Cells[0].Controls.Add(new LiteralControl(" | "));
-				}*/
-				
-				
-
-				e.Item.Cells.RemoveAt(0);
+					CustomizePager(e);
+				}
+				else if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
+				{
+					CustomizeItem(e);
+				}
+				else if (e.Item.ItemType == ListItemType.Header)
+				{
+					CustomizeHeader(e);
+				}
+				else if (e.Item.ItemType == ListItemType.Footer)
+				{
+					CustomizeFooter(e);
+				}
 			}
-			else if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
+
+			base.OnItemCreated(e);
+		}
+		
+		protected void CustomizeHeader(DataGridItemEventArgs e)
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Customizing a header item.", NLog.LogLevel.Debug))
 			{
-				e.Item.Attributes.Add("onmouseover", "this.className='ListItemOver';");
-				e.Item.Attributes.Add("onmouseout", "this.className='ListItem';");
-				e.Item.Attributes.Add("onclick", (EnableExpansion ? "ToggleExpansion('" + ClientID + "', " + e.Item.ItemIndex + ")" : String.Empty));
-			}
-			else if (e.Item.ItemType == ListItemType.Header)
-			{
+				
 				// Reduce to a single cell in the header
 				e.Item.Cells[0].ColumnSpan = 1;
 				while (e.Item.Cells.Count > 1)
@@ -375,7 +417,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				// Create cell 2
 				TableCell cell2 = new TableCell();
 				cell2.ID = "CustomCell";
-				cell2.Controls.Add(CustomHolder);
+				if (CustomHolder != null)
+					cell2.Controls.Add(CustomHolder);
 				cell2.CssClass = "CustomContainer";
 				cell2.Wrap = false;
 				cell2.HorizontalAlign = HorizontalAlign.Right;
@@ -390,7 +433,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				if (ShowSort)
 				{
 					//cell3.Controls.Add(new LiteralControl(TextHelper.Get("SortLabel") + "&nbsp;"));
-					cell3.Controls.Add(Sort);
+					if (Sort != null)
+						cell3.Controls.Add(Sort);
 				}
 
 				// Create cell 4
@@ -400,14 +444,19 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				cell4.CssClass = "PagingContainer";
 				cell4.ID = "PagingCell1";
 				cell4.Wrap = false;
-                cell4.Visible = AllowPaging && DataSource != null && DataSource.Length > 0;
+				cell4.Visible = AllowPaging && DataSource != null && DataSource.Length > 0;
 
 				table.Rows[0].Cells.Add(cell1);
 				table.Rows[0].Cells.Add(cell2);
 				table.Rows[0].Cells.Add(cell3);
 				table.Rows[0].Cells.Add(cell4);
 			}
-			else if (e.Item.ItemType == ListItemType.Footer)
+		}
+
+		protected void CustomizeFooter(DataGridItemEventArgs e)
+		{
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Customizing a footer item.", NLog.LogLevel.Debug))
 			{
 				// Reduce to a single cell in the header
 				e.Item.Cells[0].ColumnSpan = 1;
@@ -435,12 +484,55 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				cell1.CssClass = "PagingContainer";
 				cell1.ID = "PagingCell2";
 				cell1.Wrap = false;
-                cell1.Visible = AllowPaging && DataSource != null && DataSource.Length > 0;
+				cell1.Visible = AllowPaging && DataSource != null && DataSource.Length > 0;
 
 				table.Rows[0].Cells.Add(cell1);
 			}
+		}
+		
+		protected void CustomizePager(DataGridItemEventArgs e)
+		{
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Customizing a pager item.", NLog.LogLevel.Debug))
+			{
+				e.Item.Cells[0].Controls.Clear();
 
-			base.OnItemCreated(e);
+				/*if (!IsFirstPage)
+				{
+					LinkButton firstButton = new LinkButton();
+					firstButton.Text = "|&laquo;&laquo;";
+					firstButton.CommandName = "Page";
+					firstButton.CommandArgument = "1";
+					firstButton.CausesValidation = false;
+					e.Item.Cells[0].Controls.Add(firstButton);
+
+					e.Item.Cells[0].Controls.Add(new LiteralControl(" | "));
+
+					LinkButton prevButton = new LinkButton();
+					prevButton.Text = "&laquo;";
+					prevButton.CommandName = "Page";
+					prevButton.CommandArgument = (CurrentPageIndex).ToString();
+					prevButton.CausesValidation = false;
+					e.Item.Cells[0].Controls.Add(prevButton);
+
+					e.Item.Cells[0].Controls.Add(new LiteralControl(" | "));
+				}*/
+				
+				
+
+				e.Item.Cells.RemoveAt(0);
+			}
+		}
+		
+		protected void CustomizeItem(DataGridItemEventArgs e)
+		{
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Customizing a general or alternating item.", NLog.LogLevel.Debug))
+			{
+				e.Item.Attributes.Add("onmouseover", "this.className='ListItemOver';");
+				e.Item.Attributes.Add("onmouseout", "this.className='ListItem';");
+				e.Item.Attributes.Add("onclick", (EnableExpansion ? "ToggleExpansion('" + ClientID + "', " + e.Item.ItemIndex + ")" : String.Empty));
+			}
 		}
 
 		protected override void OnPageIndexChanged(DataGridPageChangedEventArgs e)
@@ -452,10 +544,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
 		protected override void OnPreRender(EventArgs e)
 		{
-            if (DataSource == null || DataSource.Length == 0)
-            {
-                // TODO: Add an item with a message saying there's no records
-            }
+			if (DataSource == null || DataSource.Length == 0)
+			{
+				// TODO: Add an item with a message saying there's no records
+			}
 
 			if (DataSource == null || DataSource.Length == 0)
 			{
@@ -469,7 +561,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			{
 				item.EnableViewState = false;
 			}*/
-	
+			
 
 			if (EnableExpansion)
 			{
@@ -534,6 +626,49 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
 			base.OnPreRender(e);
 		}
+		
+		private string AddPageQueryString(string url, int pageIndex)
+		{
+			string separator = "?";
+			if (url.IndexOf("?") > -1)
+				separator = "&";
+			
+			// Convert index into number. Index is 0 based. Number is 1 based.
+			// Conversion is a usability measure
+			int pageNumber = pageIndex+1;
+			
+			return url + separator + "Page=" + pageNumber.ToString();
+		}
+		
+		
+		private string AddSortQueryString(string url, string sortExpression)
+		{
+			string separator = "?";
+			if (url.IndexOf("?") > -1)
+				separator = "&";
+			
+			return url + separator + "Sort=" + sortExpression;
+		}
+		
+		private string CreateDefaultNavigateUrl()
+		{
+			
+			string url = HttpContext.Current.Request.Url.ToString();
+			
+			// Remove the page query string. The new one gets added as needed.
+			string pageKey = "Page";
+			Regex pageRegex = new Regex("[?&]" + pageKey + "(?:=([^&]*))?", RegexOptions.IgnoreCase);
+			
+			url = pageRegex.Replace(url, "");
+			
+			// Remove the sort query string. The new one gets added as needed.
+			string sortKey = "Sort";
+			Regex sortRegex = new Regex("[?&]" + sortKey + "(?:=([^&]*))?", RegexOptions.IgnoreCase);
+			
+			url = sortRegex.Replace(url, "");
+			
+			return url;
+		}
 
 		private TableCell CreatePagingCell()
 		{
@@ -545,11 +680,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			{
 				if (i != CurrentPageIndex)
 				{
-					LinkButton button = new LinkButton();
-					button.Text = (i+1).ToString();
-					button.CommandName = "Page";
-					button.CommandArgument = (i+1).ToString();
-					cell.Controls.Add(button);
+					
+					string url = CompileNavigateUrl(i, CurrentSort);
+					
+					HyperLink link = new HyperLink();
+					link.Text = (i+1).ToString();
+					//button.CommandName = "Page";
+					//button.CommandArgument = (i+1).ToString();
+					link.NavigateUrl = url;
+					cell.Controls.Add(link);
 				}
 				else
 				{
@@ -606,41 +745,68 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
 			return cell;
 		}
+		
+		private string CompileNavigateUrl(int pageIndex, string sort)
+		{
+			
+					string url = NavigateUrl;
+					if (url == String.Empty)
+						url = CreateDefaultNavigateUrl();
+					
+					url = AddPageQueryString(url, pageIndex);
+					url = AddSortQueryString(url, sort);
+					
+					return url;
+		}
 
 		public override void DataBind()
 		{
 
-			using (LogGroup logGroup = AppLogger.StartGroup("Binding IndexGrid control: " + ID, NLog.LogLevel.Info))
+			using (LogGroup logGroup = AppLogger.StartGroup("Binding IndexGrid control: " + ID, NLog.LogLevel.Debug))
 			{
+				if (DataSource == null)
+					AppLogger.Debug("DataSource == null. Skipping bind.");
+				else
+				{
 
-				SelectSortItem();
+					SelectSortItem();
+					
+					if (Page == null)
+						throw new InvalidOperationException("Page == null");
+					
+					if (Items == null)
+						throw new InvalidOperationException("Items == null");
+					
+					if (Columns == null)
+						throw new InvalidOperationException("Columns == null");
 
-			            if (!Page.IsPostBack)
-			            {
-					if (DataSource == null || DataSource.Length == 0)
+					if (!Page.IsPostBack)
 					{
-						AppLogger.Debug("DataSource is empty. Adding [EmptyDataText] to control.");
-	
-			                	TableCell cell = new TableCell();
-				                cell.Controls.Add(new LiteralControl("<i>[" + EmptyDataText + "]</i>"));
-				
-				                DataGridItem row = new DataGridItem(Items.Count, 0, ListItemType.Item);
-				                row.Cells.Add(cell);
-				
-				                row.Visible = DataSource == null || DataSource.Length == 0;
-				
-				                if (Controls.Count > 0)
-				                    ((Table)Controls[0]).Rows.Add(row);
-					}
-					else
-					{
-						AppLogger.Debug("DataSource is not empty.");
-						AppLogger.Debug("DataSource.Length: " + DataSource.Length);
+						if (DataSource == null || DataSource.Length == 0)
+						{
+							AppLogger.Debug("DataSource is empty. Adding [EmptyDataText] to control.");
+							
+							TableCell cell = new TableCell();
+							cell.Controls.Add(new LiteralControl("<i>[" + EmptyDataText + "]</i>"));
+							
+							DataGridItem row = new DataGridItem(Items.Count, 0, ListItemType.Item);
+							row.Cells.Add(cell);
+							
+							row.Visible = DataSource == null || DataSource.Length == 0;
+							
+							if (Controls.Count > 0)
+								((Table)Controls[0]).Rows.Add(row);
+						}
+						else
+						{
+							AppLogger.Debug("DataSource is not empty.");
+							AppLogger.Debug("DataSource.Length: " + DataSource.Length);
+						}
 					}
 				}
 
 				base.DataBind ();
-		        }
+			}
 		}
 
 

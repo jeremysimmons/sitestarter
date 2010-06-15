@@ -90,6 +90,7 @@
 	        <exclude name="*disabled_nant"/>
 	        <exclude name="**/bin/Debug/**"/>
 	        <exclude name="**/bin/Release/**"/>
+	        <exclude name="**.refresh"/>
 	        <include name="**/*" />
 	    </fileset>	   
 
@@ -139,6 +140,7 @@
 	        <exclude name="*disabled*"/>
 	        <exclude name="**/bin/Debug/**"/>
 	        <exclude name="**/bin/Release/**"/>
+	        <exclude name="**.refresh"/>
 	        <include name="**/**" />
 	    </fileset>	   
 	</zip>

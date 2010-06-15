@@ -1026,6 +1026,101 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			//if (toDelete != null)
 			//	Assert.AreEqual(1, toDelete.Length, "Incorrect number of entities in toDelete list. Expecting the obsolete reference to be in the list.");
 			
+			DataAccess.Data.Delete(user);
+		}
+		
+		[Test]
+		public void Test_GetEntitiesPage_Page1_SortAscending()
+		{
+			TestUser.RegisterType();
+			TestRole.RegisterType();
+			
+			ClearTestEntities();
+			
+			// Create the dummy objects
+			TestUser user = new TestUser();
+			Guid userID = user.ID = Guid.NewGuid();
+			user.FirstName = "C";
+			user.LastName = "User 1";
+			
+			TestUser user2 = new TestUser();
+			Guid user2ID = user2.ID = Guid.NewGuid();
+			user2.FirstName = "B";
+			user2.LastName = "User 2";
+			
+			
+			TestUser user3 = new TestUser();
+			Guid user3ID = user3.ID = Guid.NewGuid();
+			user3.FirstName = "A";
+			user3.LastName = "User 3";
+			
+			DataAccess.Data.Save(user);
+			DataAccess.Data.Save(user2);
+			DataAccess.Data.Save(user3);
+			
+			PagingLocation pagingLocation = new PagingLocation(0, 10);
+			
+			string sortExpression = "FirstNameAscending";
+			
+			TestUser[] entities = DataAccess.Data.GetEntitiesPage<TestUser>(pagingLocation, sortExpression);
+			
+			Assert.IsNotNull(entities);
+			
+			Assert.AreEqual(3, entities.Length, "Invalid number found.");
+			
+			Assert.AreEqual("A", entities[0].FirstName, "Sorting failed #1.");
+			Assert.AreEqual("B", entities[1].FirstName, "Sorting failed #2.");
+			Assert.AreEqual("C", entities[2].FirstName, "Sorting failed #3.");
+			
+		ClearTestEntities();
+		}
+		
+		
+		
+		[Test]
+		public void Test_GetEntitiesPage_Page1_SortDescending()
+		{
+			TestUser.RegisterType();
+			TestRole.RegisterType();
+			
+			ClearTestEntities();
+			
+			// Create the dummy objects
+			TestUser user = new TestUser();
+			Guid userID = user.ID = Guid.NewGuid();
+			user.FirstName = "A";
+			user.LastName = "User 1";
+			
+			TestUser user2 = new TestUser();
+			Guid user2ID = user2.ID = Guid.NewGuid();
+			user2.FirstName = "B";
+			user2.LastName = "User 2";
+			
+			
+			TestUser user3 = new TestUser();
+			Guid user3ID = user3.ID = Guid.NewGuid();
+			user3.FirstName = "C";
+			user3.LastName = "User 3";
+			
+			DataAccess.Data.Save(user);
+			DataAccess.Data.Save(user2);
+			DataAccess.Data.Save(user3);
+			
+			PagingLocation pagingLocation = new PagingLocation(0, 10);
+			
+			string sortExpression = "FirstNameDescending";
+			
+			TestUser[] entities = DataAccess.Data.GetEntitiesPage<TestUser>(pagingLocation, sortExpression);
+			
+			Assert.IsNotNull(entities);
+			
+			Assert.AreEqual(3, entities.Length, "Invalid number found.");
+			
+			Assert.AreEqual("C", entities[0].FirstName, "Sorting failed #1.");
+			Assert.AreEqual("B", entities[1].FirstName, "Sorting failed #2.");
+			Assert.AreEqual("A", entities[2].FirstName, "Sorting failed #3.");
+			
+			ClearTestEntities();
 		}
 		
 		/*			[Test]
@@ -1057,7 +1152,14 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 		private void ClearTestEntities()
 		{
-			Type[] types = new Type[] { typeof(TestEntity), typeof(EntityThree), typeof(EntityFour) };
+			Type[] types = new Type[] {
+				typeof(TestUser),
+				typeof(TestRole),
+				typeof(TestEntity),
+				typeof(EntityOne),
+				typeof(EntityTwo),
+				typeof(EntityThree),
+				typeof(EntityFour) };
 
 			Collection<IEntity> entities = new Collection<IEntity>();
 			foreach (Type type in types)

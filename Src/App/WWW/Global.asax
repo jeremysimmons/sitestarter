@@ -19,7 +19,7 @@
 	//logger.Info("test worked");
 	////System.Diagnostics.Trace.Listeners.Add(new LogWriter());
 
-        using (LogGroup logGroup = AppLogger.StartGroup("Preparing to start application.", LogLevel.Info))
+        using (LogGroup logGroup = AppLogger.StartGroup("Preparing to start application.", LogLevel.Debug))
         {
             //log4net.Config.XmlConfigurator.Configure();
             // Attempt to initialize the config
@@ -43,7 +43,7 @@
 
     void Session_Start(object sender, EventArgs e) 
     {
-        using (LogGroup logGroup = AppLogger.StartGroup("Preparing to start session.", LogLevel.Info))
+        using (LogGroup logGroup = AppLogger.StartGroup("Preparing to start session.", LogLevel.Debug))
         {
 	        if (Request.QueryString["VS"] != null && Request.QueryString["VS"] != String.Empty)
 	        {
@@ -72,7 +72,7 @@
 
     private void Initialize()
     {
-        using (LogGroup logGroup = AppLogger.StartGroup("Initializing the state management, config, modules, and data.", LogLevel.Info))
+        using (LogGroup logGroup = AppLogger.StartGroup("Initializing the state management, config, modules, and data.", LogLevel.Debug))
         {
 	        if (!StateAccess.IsInitialized || !Config.IsInitialized)
 	        {

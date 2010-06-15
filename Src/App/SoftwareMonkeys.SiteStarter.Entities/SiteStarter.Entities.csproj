@@ -34,7 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="NLog">
-      <HintPath>..\..\..\..\WorkHub2\Lib\NLog.dll</HintPath>
+      <HintPath>..\..\..\lib\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -53,6 +53,7 @@
     <Compile Include="EntityReferenceCollection.cs" />
     <Compile Include="EntityIDReference.cs" />
     <Compile Include="ObjectCloner.cs" />
+    <Compile Include="PagingLocation.cs" />
     <Compile Include="ReferenceAttribute.cs" />
     <Compile Include="VirtualServer.cs" />
     <Compile Include="EntityCollection.cs" />

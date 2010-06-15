@@ -648,7 +648,7 @@ ${WebSite.Title}&lt;br /&gt;
     <value>Found</value>
   </data>
   <data name="Hours" xml:space="preserve">
-    <value>Hours</value>
+    <value>Hour(s)</value>
   </data>
   <data name="Last" xml:space="preserve">
     <value>Last</value>
@@ -670,5 +670,8 @@ ${WebSite.Title}&lt;br /&gt;
   </data>
   <data name="Zipped" xml:space="preserve">
     <value>Zipped</value>
+  </data>
+  <data name="Administrator" xml:space="preserve">
+    <value>Administrator</value>
   </data>
 </root>

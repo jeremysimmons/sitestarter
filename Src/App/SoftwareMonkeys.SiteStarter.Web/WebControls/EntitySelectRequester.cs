@@ -254,7 +254,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			
 			
 			//Uri uri = new Uri(baseUri, DeliveryPage);// + "&a=CreateBug&IssueID=' + issueID + '&HideTemplate=true&Title=' + UrlEncode(title) + "&Description=" + UrlEncode(description)
-			builder = AppendQueryString(builder, CommandKey + "=" + CommandName);
+			if (CommandKey != String.Empty && CommandName != String.Empty)
+				builder = AppendQueryString(builder, CommandKey + "=" + CommandName);
 			builder = AppendQueryString(builder,  "HideTemplate=true");
 			builder = AppendQueryString(builder,  "AutoReturn=true");
 			//builder = AppendQueryString(builder,  EntityIDKey + "=" + EntityID.ToString());

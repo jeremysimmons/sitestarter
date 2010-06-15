@@ -141,7 +141,7 @@
 	    		<!--property name="Import.FromProject.RootPath" value="${Project::GetRootPath(path::get-full-path(Import.FromProject.PropertiesPath))}"/-->
 	    		<property name="Import.FromProject.PropertiesPath" value="${Import.FromProject.RootPath}\${Import.FromProject}.Project.nant"/>
 
-<echo message="Import.FromProject.RootPath: ${Import.FromProject.RootPath}"/>
+				<echo message="Import.FromProject.RootPath: ${Import.FromProject.RootPath}"/>
 
 	    		<property name="Project.RootPath" value="${path::get-directory-name(Project.PropertiesPath)}"/>	    	    		
 	    			
@@ -200,7 +200,7 @@
 		    		<echo message="Import.To: ${Import.To}"/>
 		    		
 		    		<!-- Only import if the source project is not the destination -->
-		    		<if test="${Import.FromProject.BaseNamespace != Project.BaseNamespace}">
+		    		<!--if test="${Import.FromProject.BaseNamespace != Project.BaseNamespace}"-->
 		    			<!-- Loop through each folder in the specified query (likely only 1 folder) -->
 		    			
 										<nant
@@ -211,13 +211,15 @@
 
 
 					        <!--call target="Common.Actions.RemoveObsoleteFolders"/-->
-					</if>
+					<!--/if-->
 				</if>
 	    		<if test="${file::exists(Import.FromProject.PropertiesPath) != true}">
 	    			<echo message="Can't import. The project '${Import.FromProject}' wasn't found at: ${Import.FromProject.PropertiesPath}."/>
 	    		</if>
 	    		
 	    		
+	    		<!-- Reset import variables. -->
+	    		<property name="Import.RenameTo" value=""/>
 		    </do>
 		</foreach>
 

@@ -9,10 +9,15 @@
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Security" %>
 <script runat="server">
     #region Main functions
+    private void ManageUsers()
+    {
+    	ManageUsers(QueryStrings.PageIndex);
+    }
+    
     /// <summary>
     /// Displays the index for managing users.
     /// </summary>
-    private void ManageUsers()
+    private void ManageUsers(int pageIndex)
     {
         Authorisation.EnsureIsAuthenticated();
 
@@ -21,7 +26,11 @@
         OperationManager.StartOperation("ManageUsers", IndexView);
 
         User[] users = null;
-        IndexGrid.DataSource = users = UserFactory.Current.GetUsers();
+        PagingLocation location = new PagingLocation(pageIndex, IndexGrid.PageSize);
+        IndexGrid.DataSource = users = UserFactory.Current.GetPage<User>(location, IndexGrid.CurrentSort);
+        IndexGrid.CurrentPageIndex = pageIndex;
+        IndexGrid.VirtualItemCount = location.AbsoluteTotal;
+        //IndexGrid.CurrentSort = QueryStrings.Sort; // TODO: Remove. Should be unnecessary. Taken care of within IndexGrid
 
         Authorisation.EnsureUserCan("View", users);        
         
@@ -173,57 +182,22 @@
             }
         }
     }
+    
+    private void Page_Init(object sender, EventArgs e)
+    {
+        //IndexGrid.AddDualSortItem(Resources.Language.Name, "Name");
+        IndexGrid.AddDualSortItem(Resources.Language.Email, "Email");
+        IndexGrid.AddDualSortItem(Resources.Language.FirstName, "FirstName");
+        IndexGrid.AddDualSortItem(Resources.Language.LastName, "LastName");
+        IndexGrid.AddDualSortItem(Resources.Language.Username, "Username");
+        //IndexGrid.AddDualSortItem(Language.IsEnabled, "IsEna");
+    }
 
     protected void CreateButton_Click(object sender, EventArgs e)
     {
         // Create a new user
         CreateUser();
     }
-
-    // todo: remove
-    /*protected void UserSource_Inserted(object sender, ObjectDataSourceStatusEventArgs e)
-    {
-
-    }
-
-    protected void UserSource_Updated(object sender, ObjectDataSourceStatusEventArgs e)
-    {
-        // Display the result to the user
-        Result.Display("The user was updated successfully.");
-
-        // Show the index again
-        ManageUsers();
-    }*/
-
-    //  TODO: Remove
-    /*protected void IndexGrid_RowEditing(object sender, GridViewEditEventArgs e)
-    {
-        // Begin editing the selected object
-        EditUser(new Guid(IndexGrid.DataKeys[e.NewEditIndex].ToString()));
-        e.NewEditIndex = -1;
-    }*/
-    // TODO: remove
-   /* protected void UserSource_Updating(object sender, ObjectDataSourceMethodEventArgs e)
-    {
-        // Make sure the object has the correct ID
-        if (((User)e.InputParameters[0]).ID == Guid.Empty)
-            ((User)e.InputParameters[0]).ID = new Guid(UserSource.SelectParameters[0].DefaultValue);
-    }*/
-    /*protected void IndexGrid_RowDeleted(object sender, GridViewDeleteEventArgs e)
-    {
-        // Display the result
-        Result.Display("The selected user was deleted.");
-
-        // Go back to the index
-        ManageUsers();
-    }*/
-   /* protected void UserSource_Inserting(object sender, ObjectDataSourceMethodEventArgs e)
-    {
-        // Generate a new ID for any new objects
-        User user = (User)e.InputParameters[0];
-        if (user.ID == Guid.Empty)
-            user.ID = Guid.NewGuid();
-    }*/
 
     private void DataForm_EntityCommand(object sender, EntityFormEventArgs e)
     {
@@ -255,6 +229,16 @@
     {
         ((EntitySelect)sender).DataSource = UserRoleFactory.Current.GetUserRoles();
     }
+    
+    private void IndexGrid_PageIndexChanged(object sender, DataGridPageChangedEventArgs e)
+    {
+        ManageUsers(e.NewPageIndex);
+    }
+    private void IndexGrid_SortChanged(object sender, EventArgs e)
+    {
+        ManageUsers(IndexGrid.CurrentPageIndex);
+    }
+    
     #endregion
 </script>
 <asp:Content ID="Body" ContentPlaceHolderID="Body" runat="Server">
@@ -266,7 +250,7 @@
                         <%# Resources.Language.ManageUsers %></td>
                 </tr>
                 <tr>
-                    <td>
+                    <td width="100%">
                         <cc:Result runat="server" ID="IndexResult">
                         </cc:Result>
                         <p>
@@ -275,10 +259,11 @@
                             <asp:Button ID="CreateButton" runat="server" OnClick="CreateButton_Click" Text='<%# Resources.Language.CreateUser %>'
                                 CommandName="New" />&nbsp;</p>
                         <p>
-                            <cc:IndexGrid ID="IndexGrid" runat="server" AllowPaging="True" HeaderStyle-CssClass="Heading2" AllowSorting="True"
+                            <cc:IndexGrid ID="IndexGrid" runat="server" AllowPaging="True" DefaultSort="UsernameAscending" HeaderStyle-CssClass="Heading2" AllowSorting="True"
                                 AutoGenerateColumns="False" EmptyDataText='<%# Resources.Language.NoUsersFound %>'
+                                OnPageIndexChanged="IndexGrid_PageIndexChanged" OnSortChanged="IndexGrid_SortChanged"
                                 Width="100%"
-                                PageSize="10" OnItemCommand="IndexGrid_ItemCommand" DataKeyField="ID">
+                                PageSize="20" OnItemCommand="IndexGrid_ItemCommand" DataKeyField="ID">
                                 <Columns>
                                     <asp:BoundColumn DataField="Username" HeaderText="Username" SortExpression="Username" />
                                     <asp:BoundColumn DataField="Email" HeaderText="Email" SortExpression="Email" />
