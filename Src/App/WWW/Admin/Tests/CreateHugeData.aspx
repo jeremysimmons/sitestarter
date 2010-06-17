@@ -17,7 +17,7 @@ private void Page_Load(object sender, EventArgs e)
 {
 	using (Batch batch = Batch.StartBatch())
 	{
-		CreateTestUsers(100);
+		CreateTestUsers(1000);
 	}
 	
 	Response.Write("Done");

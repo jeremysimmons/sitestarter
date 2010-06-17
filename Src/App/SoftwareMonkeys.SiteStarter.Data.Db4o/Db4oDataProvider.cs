@@ -692,7 +692,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <returns>An array of the objects retrieved.</returns>
 		public override T[] GetEntitiesPageMatchReference<T>(string propertyName, Type referencedEntityType, Guid referencedEntityID, PagingLocation location, string sortExpression)
 		{
-			List<T> entities = null;
+			Collection<T> entities = null;
+			Collection<T> page = new Collection<T>();
 			
 			int i = 0;
 			
@@ -783,8 +784,42 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 						}
 					));*/
 
+				entities = new Collection<T>(
+					store.ObjectContainer.Query<T>(
+						delegate(T e)
+						{
+							bool matches = true;
+							//bool isInPage = false;
+							
+							using (LogGroup logGroup2 = AppLogger.StartGroup("Querying entity.", NLog.LogLevel.Debug))
+							{
 
-
+								AppLogger.Debug("Checking type " + e.GetType().ToString());
+								AppLogger.Debug("Entity ID: " + e.ID);
+								
+								matches = MatchReference(e.GetType(), e.ID, propertyName, referencedEntityType, referencedEntityID);
+								
+								AppLogger.Debug("Matches: " + matches);
+								
+								// Check whether the current object is in the specified page
+								//isInPage = EntitiesUtilities.IsInPage(i, location.PageIndex, location.PageSize);
+								
+								// Increment the absolute counter (only for matching items)
+								//if (matches)
+								//	i++;
+							}
+							
+							
+							return matches;// && isInPage;
+						}));
+				
+				entities.Sort(sortExpression);
+				
+				location.AbsoluteTotal = entities.Count;
+				
+				page = entities.GetPage(location.PageIndex, location.PageSize);
+				
+				/*
 				entities = new List<T>(
 					store.ObjectContainer.Query<T>(
 						delegate(T e)
@@ -803,7 +838,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 								AppLogger.Debug("Matches: " + matches);
 								
 								// Check whether the current object is in the specified page
-								isInPage = DataUtilities.IsInPage(i, location.PageIndex, location.PageSize);
+								isInPage = EntitiesUtilities.IsInPage(i, location.PageIndex, location.PageSize);
 								
 								// Increment the absolute counter (only for matching items)
 								if (matches)
@@ -821,26 +856,26 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 								else
 									return Comparer<object>.Default.Compare(EntitiesUtilities.GetPropertyValue(o2, sortPropertyName), EntitiesUtilities.GetPropertyValue(o1, sortPropertyName));
 							}
-						)));
+						)));*/
 
 				
-				if (entities != null)
-				{
-					AppLogger.Debug("entities != null");
-					
-					location.AbsoluteTotal = i;
-				}
-				else
-				{
-					AppLogger.Debug("entities == null");
-					
-					location.AbsoluteTotal = 0;
-				}
+				/*if (entities != null)
+						{
+							AppLogger.Debug("entities != null");
+							
+							location.AbsoluteTotal = i;
+						}
+						else
+						{
+							AppLogger.Debug("entities == null");
+							
+							location.AbsoluteTotal = 0;
+						}*/
 				
 				AppLogger.Debug("Absolute total objects: " + location.AbsoluteTotal);
 			}
 
-			return (T[])entities.ToArray();
+			return (T[])page.ToArray();
 		}
 
 		/// <summary>

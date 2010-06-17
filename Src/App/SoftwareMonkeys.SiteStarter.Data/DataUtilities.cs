@@ -370,37 +370,6 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			return type;
 		}
 		
-		/// <summary>
-		/// Checks whether the specified counter is within the specified page.
-		/// </summary>
-		/// <param name="i">The counter of the items being paged.</param>
-		/// <param name="pageIndex">The index of the page to retrieve.</param>
-		/// <param name="pageSize">The number of items on each page.</param>
-		/// <returns>A flag indicating whether the specified counter is within the specified page.</returns>
-		static public bool IsInPage(int i, int pageIndex, int pageSize)
-		{
-			bool match = false;
-			using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the specified position is within the specified page.", NLog.LogLevel.Debug))
-			{
-				AppLogger.Debug("Position (i): " + i.ToString());
-				AppLogger.Debug("Page index: " + pageIndex);
-				AppLogger.Debug("Page size: " + pageSize);
-				
-				int first = (pageIndex * pageSize);
-				int last = ((pageIndex * pageSize) + pageSize) -1; // -1 to make it the last of the page, instead of first item on next page
-				
-				AppLogger.Debug("First position: " + first.ToString());
-				AppLogger.Debug("Last position: " + last.ToString());
-				
-				match = i >= first
-					&& i <= last;
-				
-				AppLogger.Debug("Match: " + match.ToString());
-			}
-			return match;
-		}
-		
-		
 		static public IEntity[] GetReferencedEntities(EntityReferenceCollection references, IEntity entity)
 		{
 			Collection<IEntity> collection = new Collection<IEntity>();
