@@ -459,6 +459,19 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 
 			return entities;
 		}
+		
+		public Collection<E> GetPage(int pageIndex, int pageSize)
+		{
+			Collection<E> page = new Collection<E>();
+			
+			for (int i = 0; i < Count; i++)
+			{
+				if (EntitiesUtilities.IsInPage(i, pageIndex, pageSize))
+					page.Add(this[i]);
+			}
+			
+			return page;
+		}
 
 		/// <summary>
 		/// Provides a way to dynamically create comparers for any property of any object.

@@ -67,6 +67,16 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			return Collection<U>.ConvertAll(DataStore.GetEntities<U>());
 		}
+		
+		/*/// <summary>
+		/// Retrieves all the users from the DB.
+		/// </summary>
+		/// <returns>A UserSet containing the retrieved users.</returns>
+		[DataObjectMethod(DataObjectMethodType.Select, true)]
+		public U[] GetPageOfUsers(PagingLocation location)
+		{
+			return Collection<U>.ConvertAll(DataStore.GetEntitiesPage<U>(location));
+		}*/
 
 		/// <summary>
 		/// Retrieves all the specified users from the DB.

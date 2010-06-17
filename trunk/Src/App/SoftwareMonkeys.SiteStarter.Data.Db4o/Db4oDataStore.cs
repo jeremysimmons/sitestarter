@@ -982,20 +982,27 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				ApplySorting(query, type, sortExpression);
 
 				IObjectSet os = query.Execute();
-
+				
 				int i = 0;
-				//        os.Reset();
-
-				while (os.HasNext())
+				
+				for (i = 0; i < os.Count; i++)
 				{
-					if (DataUtilities.IsInPage(i, location.PageIndex, location.PageSize))//(i >= pageIndex * pageSize) && (i < (pageIndex + 1) * pageSize))
+					if (EntitiesUtilities.IsInPage(i, location.PageIndex, location.PageSize))
 					{
-						entities.Add((IEntity)os.Next());
+						entities.Add((IEntity)os[i]);
 					}
-					else
-						os.Next();
-					i++;
 				}
+				
+				//while (os.HasNext())
+				//{
+				//	if (DataUtilities.IsInPage(i, location.PageIndex, location.PageSize))//(i >= pageIndex * pageSize) && (i < (pageIndex + 1) * pageSize))
+				//	{
+				//		entities.Add((IEntity)os.Next());
+				//	}
+				//	else
+				//		os.Next();
+				//	i++;
+				//}
 				location.AbsoluteTotal = i;
 				
 				AppLogger.Debug("Absolute count: " + location.AbsoluteTotal.ToString());

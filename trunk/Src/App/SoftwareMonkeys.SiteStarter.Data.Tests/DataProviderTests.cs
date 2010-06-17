@@ -578,7 +578,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				Assert.IsNotNull(results, "The results were null.");
 				
-				Assert.AreEqual(1, location.AbsoluteTotal, "The returned total count is incorrect.");
+				Assert.AreEqual(1, location.AbsoluteTotal, "The absolute total count is incorrect.");
 				
 				if (results != null)
 				{
