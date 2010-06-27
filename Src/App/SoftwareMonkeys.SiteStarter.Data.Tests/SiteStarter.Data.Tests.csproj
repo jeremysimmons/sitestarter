@@ -94,11 +94,13 @@
     <Compile Include="DataStoreTests.cs" />
     <Compile Include="Entities\ITestRole.cs" />
     <Compile Include="Entities\ITestUser.cs" />
+    <Compile Include="Entities\TestAccount.cs" />
     <Compile Include="Entities\TestAction.cs" />
     <Compile Include="Entities\TestRole.cs" />
     <Compile Include="Entities\TestUser.cs" />
     <Compile Include="Entities\ITestArticle.cs" />
     <Compile Include="ReferenceFilterTests.cs" />
+    <Compile Include="SchemaEditorTests.cs" />
     <Compile Include="TestUtilities.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -114,7 +116,7 @@
     <Compile Include="Entities\TestCategory.cs" />
     <Compile Include="Entities\TestSample.cs" />
     <Compile Include="TestConfig.cs" />
-    <Compile Include="XmlEntitySchemaTests.cs" />
+    <Compile Include="XmlEntitySchemaEditorTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

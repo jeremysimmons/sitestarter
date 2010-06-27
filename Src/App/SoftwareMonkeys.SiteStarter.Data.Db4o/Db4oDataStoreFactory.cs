@@ -11,6 +11,7 @@ using SoftwareMonkeys.SiteStarter;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Configuration;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using Db4objects.Db4o.Config;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 {
@@ -19,10 +20,15 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 	/// </summary>
 	public static class Db4oDataStoreFactory
 	{
+		static public Db4oDataStore InitializeDataStore(string dataStoreName)
+		{
+			return InitializeDataStore(dataStoreName, Db4oFactory.CloneConfiguration());
+		}
+		
 		/// <summary>
 		/// Loads the data from the .yap file.
 		/// </summary>
-		static public Db4oDataStore InitializeDataStore(string dataStoreName)
+		static public Db4oDataStore InitializeDataStore(string dataStoreName, IConfiguration db4oConfiguration)
 		{
 			Db4oDataStore store = null;
 			
@@ -32,7 +38,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					throw new InvalidOperationException("The application config file is not present. Run the setup process and try again.");
 				
 				// Create a new data store
-				store = new Db4oDataStore();
+				store = new Db4oDataStore(db4oConfiguration);
 				store.Name = dataStoreName;
 			}
 			return store;

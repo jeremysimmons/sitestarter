@@ -52,6 +52,7 @@
     <Compile Include="Db4oDataStoreFactory.cs" />
     <Compile Include="Db4oPropertyFilter.cs" />
     <Compile Include="Db4oReferenceFilter.cs" />
+    <Compile Include="Db4oSchemaEditor.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration\SiteStarter.Configuration.csproj">

@@ -54,11 +54,9 @@
 	    <fileset basedir="${Project.RootPath}">
 	        <exclude name="**/*.yap"/>
 	        <exclude name="**/*.local.config"/>
-	        <exclude name="_svn"/>
-	        <exclude name=".svn"/>
 	        <exclude name="**/obj/**"/>
 	        <exclude name="**/Logs/**"/>
-	        <exclude name="**/LogsArchive/**/*"/>
+	        <exclude name="**/LogsArchive/**"/>
 	        <exclude name="**/*.pdb"/>
 	        <exclude name="**/*._cs"/>
 	        <exclude name="**/*._*"/>
@@ -81,7 +79,7 @@
 	        <exclude name="**/App_Data/**.xml"/>
 	        <exclude name="**/App_Data/Testing/*"/>
 	        <exclude name="**/App_Data/*.yap"/>
-	        <exclude name="**/App_Data/Personalisation_Data"/>
+	        <exclude name="**/App_Data/Personalization_Data/**"/>
 	        <exclude name="**/App_Data/Logs"/>
 	        <exclude name="**/Releases/**"/>
 	        <exclude name="**/Backups/**"/>
@@ -109,7 +107,7 @@
 	        <exclude name=".svn"/>
 	        <exclude name="**/obj/**"/>
 	        <exclude name="**/Logs/**"/>
-	        <exclude name="**/LogsArchive/**/*"/>
+	        <exclude name="**/LogsArchive/**"/>
 	        <exclude name="**/*.pdb"/>
 	        <exclude name="**/*.cs"/>
 	        <exclude name="**/*._cs"/>
@@ -125,12 +123,12 @@
 	        <exclude name="**/App_Data/**.xml"/>
 	        <exclude name="**/App_Data/Testing/*"/>
 	        <exclude name="**/App_Data/*.yap"/>
-	        <exclude name="**/App_Data/Personalisation_Data"/>
+	        <exclude name="**/App_Data/Personalization_Data/**"/>
 	        <exclude name="**/App_Data/Logs"/>
 	        <exclude name="**/App_Data/LegacyDefault/**"/>
 	        <exclude name="**/App_Data/Legacy/**"/>
 	        <exclude name="**/App_Data/Imported/**"/>
-	        <exclude name="**/App_Data/Converted/**"/>
+	        <exclude name="**/App_Data/LegacyConverted/**"/>
 	        <exclude name="*.Import.nant"/>
 	        <exclude name="**/Releases/**"/>
 	        <exclude name="**/Backups/**"/>
@@ -141,6 +139,7 @@
 	        <exclude name="**/bin/Debug/**"/>
 	        <exclude name="**/bin/Release/**"/>
 	        <exclude name="**.refresh"/>
+	        <exclude name="**.nant"/>
 	        <include name="**/**" />
 	    </fileset>	   
 	</zip>

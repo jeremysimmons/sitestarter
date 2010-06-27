@@ -1,6 +1,7 @@
 using System;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Configuration;
+using System.Xml.Serialization;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Tests.Entities
 {
@@ -18,9 +19,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests.Entities
 			set { name = value; }
 		}
 		
+		[NonSerialized]
 		private IUserPermission[] permissions;
         /// <summary>
         /// Gets/sets the permissions available to the role.
+		[XmlIgnore]
         public IUserPermission[] Permissions
         {
             get
@@ -48,6 +51,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests.Entities
             }
         }
         
+		[XmlIgnore]
         ITestUser[] ITestRole.Users
         {
         	get { return (ITestUser[])users; }
