@@ -81,6 +81,9 @@
 	        <exclude name="**/App_Data/*.yap"/>
 	        <exclude name="**/App_Data/Personalization_Data/**"/>
 	        <exclude name="**/App_Data/Logs"/>
+	        <exclude name="**/App_Data/LogsArchive"/>
+	        <exclude name="**/App_Data/Version.number"/>
+	        <exclude name="**/Deployment/**"/>
 	        <exclude name="**/Releases/**"/>
 	        <exclude name="**/Backups/**"/>
 	        <exclude name="**.eqbak"/>
@@ -89,6 +92,7 @@
 	        <exclude name="**/bin/Debug/**"/>
 	        <exclude name="**/bin/Release/**"/>
 	        <exclude name="**.refresh"/>
+	        <exclude name="**/Docs/**"/>
 	        <include name="**/*" />
 	    </fileset>	   
 
@@ -129,6 +133,8 @@
 	        <exclude name="**/App_Data/Legacy/**"/>
 	        <exclude name="**/App_Data/Imported/**"/>
 	        <exclude name="**/App_Data/LegacyConverted/**"/>
+	        <exclude name="**/App_Data/Version.number"/>
+	        <exclude name="**/Deployment/**"/>
 	        <exclude name="*.Import.nant"/>
 	        <exclude name="**/Releases/**"/>
 	        <exclude name="**/Backups/**"/>
