@@ -130,6 +130,7 @@
 	        <exclude name="**/bin/Debug/**"/>
 	        <exclude name="**/bin/Release/**"/>
 	        <exclude name="**/Releases/**"/>
+	        <exclude name="**/Deployment/**"/>
 	        <exclude name="*.refresh"/>
 	        <include name="**/lib/**" />
 	        <include name="**/Src/**" />
