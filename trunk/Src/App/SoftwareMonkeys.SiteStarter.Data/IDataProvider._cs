@@ -1,0 +1,15 @@
+﻿using System;
+
+namespace SoftwareMonkeys.SiteStarter.Data
+{
+	/// <summary>
+	/// Description of IDataProvider.
+	/// </summary>
+	public interface IDataProvider
+	{
+		
+        #region Schema
+        ISchemaEditor Schema {get;}
+        #endregion
+	}
+}

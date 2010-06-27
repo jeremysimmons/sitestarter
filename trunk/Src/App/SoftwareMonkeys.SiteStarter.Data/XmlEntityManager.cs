@@ -243,8 +243,8 @@ namespace SoftwareMonkeys.SiteStarter.Data
                     Guid[] ids = new Guid[] {((EntityIDReference)entity).Entity1ID,
 					((EntityIDReference)entity).Entity2ID};
 
-                    fileName = XmlEntitySchema.CreateReferenceFilePath(Path.GetDirectoryName(ImportablesDirectory), typeNames[0], typeNames[1], ids[0], ids[1], propertyNames[0], propertyNames[1]);
-                    toFileName = XmlEntitySchema.CreateReferenceFilePath(Path.GetDirectoryName(ImportedDirectory), typeNames[0], typeNames[1], ids[0], ids[1], propertyNames[0], propertyNames[1]);
+                    fileName = XmlEntitySchemaEditor.CreateReferenceFilePath(Path.GetDirectoryName(ImportablesDirectory), typeNames[0], typeNames[1], ids[0], ids[1], propertyNames[0], propertyNames[1]);
+                    toFileName = XmlEntitySchemaEditor.CreateReferenceFilePath(Path.GetDirectoryName(ImportedDirectory), typeNames[0], typeNames[1], ids[0], ids[1], propertyNames[0], propertyNames[1]);
                 }
                 else
                 {
@@ -541,7 +541,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 
                 string fullPath = String.Empty;
                 if (EntitiesUtilities.IsReference(entity.GetType()))
-                    fullPath = XmlEntitySchema.CreateReferenceFilePath(ImportablesDirectory, (EntityIDReference)entity);
+                    fullPath = XmlEntitySchemaEditor.CreateReferenceFilePath(ImportablesDirectory, (EntityIDReference)entity);
                 else
                     fullPath = Path.Combine(this.ImportablesDirectory, entity.ID.ToString() + ".xml");
 
@@ -584,7 +584,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 
                 AppLogger.Debug("Parent directory: " + upPath);
 
-                string fullPath = XmlEntitySchema.CreateReferenceFilePath(upPath, reference);
+                string fullPath = XmlEntitySchemaEditor.CreateReferenceFilePath(upPath, reference);
 
                 AppLogger.Debug("Full path: " + fullPath);
 

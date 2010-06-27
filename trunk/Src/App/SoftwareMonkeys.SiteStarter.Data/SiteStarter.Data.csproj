@@ -60,12 +60,15 @@
     <Compile Include="DataStoreCollection.cs" />
     <Compile Include="FilterGroup.cs" />
     <Compile Include="FilterOperator.cs" />
+    <Compile Include="IDataProvider._cs" />
     <Compile Include="IDataStore.cs" />
+    <Compile Include="ISchemaEditor.cs" />
     <Compile Include="PropertyFilter.cs" />
     <Compile Include="ReferenceFilter.cs" />
+    <Compile Include="VersionUtilities.cs" />
     <Compile Include="XmlBackupManager.cs" />
     <Compile Include="XmlEntityManager.cs" />
-    <Compile Include="XmlEntitySchema.cs" />
+    <Compile Include="XmlEntitySchemaEditor.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration\SiteStarter.Configuration.csproj">

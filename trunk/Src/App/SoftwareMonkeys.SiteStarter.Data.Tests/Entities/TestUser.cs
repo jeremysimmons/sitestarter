@@ -1,6 +1,8 @@
 using System;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Configuration;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Tests.Entities
 {
@@ -29,6 +31,16 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests.Entities
 		{
 			get { return this.lastName; }
 			set { this.lastName = value; }
+		}
+		
+		private string surname;
+		/// <summary>
+		/// Gets/sets the surname of the user.
+		/// </summary>
+		public virtual string Surname
+		{
+			get { return this.surname; }
+			set { this.surname = value; }
 		}
 
 		/// <summary>
@@ -205,6 +217,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests.Entities
 			}
 		}
 
+		[XmlIgnore]
         ITestRole[] ITestUser.Roles
         {
         	get { return (ITestRole[])roles; }

@@ -4,23 +4,97 @@
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Business" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Configuration" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
+<%@ Import namespace="SoftwareMonkeys.SiteStarter.Data" %>
 <%@ Import namespace="System.IO" %>
 <script language="C#" runat="server">
+
+
 private void Page_Load(object sender, EventArgs e)
 {
 	using (LogGroup logGroup = AppLogger.StartGroup("Running setup script", NLog.LogLevel.Info))
 	{
  //   File.Delete(Config.Current.DatabasePath);
-    
 			User user = new User();
-            user.ID = Guid.NewGuid();
-            user.FirstName = "System";
-			user.LastName = "Administrator";
-			user.Username = "admin";
-            user.Password = SoftwareMonkeys.SiteStarter.Business.Crypter.EncryptPassword("pass");
-            user.IsApproved = true;
-            user.IsLockedOut = false;
-			user.Email = "default@softwaremonkeys.net";
+			
+    		if (!SetupUtilities.UseExistingData)
+	    	{
+	    
+	            user = CreateAdministrator();
+			}
+
+			AppConfig config = CreateConfig(user);
+
+            SetupMappings();
+
+			Initialize();
+
+			if (!SetupUtilities.UseExistingData)
+			{			
+	            UserRole role = CreateAdministratorRole(user);
+	            
+	            Save(user, role, config);
+	            
+				DataUtilities.InitializeDataVersion();
+            }
+            else
+            	Response.Redirect("Import.aspx");
+
+
+           //if(!Roles.RoleExists("Administrator"))
+           //     Roles.CreateRole("Administrator");
+
+           // if (!Roles.IsUserInRole(user.Username, "Administrator"))
+           //     Roles.AddUserToRole(user.Username, "Administrator");
+
+	}
+
+           // Response.Redirect("SetupDefaultData.aspx");
+}
+
+private User CreateAdministrator()
+{
+		User user = new User();
+		user.ID = Guid.NewGuid();
+        user.FirstName = "System";
+		user.LastName = "Administrator";
+		user.Username = "admin";
+        user.Password = SoftwareMonkeys.SiteStarter.Business.Crypter.EncryptPassword("pass");
+        user.IsApproved = true;
+        user.IsLockedOut = false;
+		user.Email = "default@softwaremonkeys.net";
+		
+		return user;
+}
+
+private UserRole CreateAdministratorRole(User user)
+{
+	UserRole administratorRole = new UserRole();
+    administratorRole.ID = Guid.NewGuid();
+    administratorRole.Name = Resources.Language.Administrator;
+    //administratorRole.Users = new User[] { user };
+    
+    user.Roles = new UserRole[] {administratorRole};
+    
+    return administratorRole;
+}
+
+private void Save(User user, UserRole administratorRole, AppConfig config)
+{
+
+    if (SoftwareMonkeys.SiteStarter.Business.UserFactory<User>.Current.SaveUser(user))
+    {
+        UserRoleFactory.Current.SaveUserRole(administratorRole);
+        
+    	//user = (User)UserFactory<User>.Current.GetUserByUsername(user.Username);
+    	
+    	config.PrimaryAdministratorID = user.ID;
+    	
+    	ConfigFactory<AppConfig>.SaveConfig(Request.MapPath(Request.ApplicationPath + "/App_Data"), config, WebUtilities.GetLocationVariation(Request.Url));
+    }
+}
+
+private AppConfig CreateConfig(User user)
+{
 
             AppConfig config = ConfigFactory<AppConfig>.NewConfig("Application");
 			config.ApplicationPath = Request.ApplicationPath;
@@ -30,7 +104,10 @@ private void Page_Load(object sender, EventArgs e)
             config.EnableVirtualServer = true;
             config.EnableVirtualServerRegistration = true;
             config.AutoApproveVirtualServerRegistration = true;
-            config.PrimaryAdministratorID = user.ID;
+            
+            if (!SetupUtilities.UseExistingData)
+            	config.PrimaryAdministratorID = user.ID;
+            	
             config.Settings["VirtualServerWelcomeEmailSubject"] = Resources.Language.DefaultVirtualServerWelcomeEmailSubject;
             config.Settings["VirtualServerWelcomeEmail"] = Resources.Language.DefaultVirtualServerWelcomeEmail;
             config.Settings["VirtualServerRegistrationAlertSubject"] = Resources.Language.DefaultVirtualServerRegistrationAlertSubject;
@@ -47,40 +124,16 @@ private void Page_Load(object sender, EventArgs e)
 
             ConfigFactory<AppConfig>.SaveConfig(Request.MapPath(Request.ApplicationPath + "/App_Data"), config, WebUtilities.GetLocationVariation(Request.Url));
             
-            SetupMappings();
+            return config;
+            
+}
+
+private void Initialize()
+{
 
             // Initialize everything now that the default config has been created
             Config.Initialize(Server.MapPath(Request.ApplicationPath), WebUtilities.GetLocationVariation(HttpContext.Current.Request.Url));
             SoftwareMonkeys.SiteStarter.Web.Providers.DataProviderManager.Initialize();
-
-            UserRole administratorRole = new UserRole();
-            administratorRole.ID = Guid.NewGuid();
-            administratorRole.Name = Resources.Language.Administrator;
-            //administratorRole.Users = new User[] { user };
-            
-            user.Roles = new UserRole[] {administratorRole};
-
-            if (SoftwareMonkeys.SiteStarter.Business.UserFactory<User>.Current.SaveUser(user))
-            {
-                UserRoleFactory.Current.SaveUserRole(administratorRole);
-                
-            	//user = (User)UserFactory<User>.Current.GetUserByUsername(user.Username);
-            	
-            	config.PrimaryAdministratorID = user.ID;
-            	
-            	ConfigFactory<AppConfig>.SaveConfig(Request.MapPath(Request.ApplicationPath + "/App_Data"), config, WebUtilities.GetLocationVariation(Request.Url));
-            }
-
-
-           //if(!Roles.RoleExists("Administrator"))
-           //     Roles.CreateRole("Administrator");
-
-           // if (!Roles.IsUserInRole(user.Username, "Administrator"))
-           //     Roles.AddUserToRole(user.Username, "Administrator");
-
-	}
-
-           // Response.Redirect("SetupDefaultData.aspx");
 }
 
 private void SetupMappings()

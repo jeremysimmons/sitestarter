@@ -11,11 +11,14 @@ using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Data;
 using SoftwareMonkeys.SiteStarter.State;
 using System.IO;
+using Db4objects.Db4o.Config;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 {
 	public class Db4oDataStore : IDataStore
 	{
+		private IConfiguration db4oConfiguration;
+		
 		private IQuery activeQuery;
 		/// <summary>
 		/// Gets/sets the active db4o query.
@@ -104,6 +107,16 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			get { return name; }
 			set { name = value; }
 		}
+		
+		public Db4oDataStore()
+		{
+			
+		}
+		
+		public Db4oDataStore(IConfiguration db4oConfiguration)
+		{
+			this.db4oConfiguration = db4oConfiguration;
+		}
 
 		public void OpenServer()
 		{
@@ -138,7 +151,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				if (!Directory.Exists(Path.GetDirectoryName(fullName)))
 					Directory.CreateDirectory(Path.GetDirectoryName(fullName));
 				
-				ObjectServer = Db4oFactory.OpenServer(fullName, 0);
+				ObjectServer = Db4oFactory.OpenServer(db4oConfiguration,
+				                                      fullName, 0);
 				
 				AppLogger.Debug("Server opened");
 				//objectContainer = ObjectServer.OpenClient();
@@ -189,6 +203,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			{
 				ObjectContainer.Commit();
 				ObjectContainer.Close();
+				ObjectContainer = null;
+				ObjectServer.Close();
+				ObjectServer.Dispose();
+				ObjectServer = null;
 			}
 			//ObjectServer.Close();
 		}

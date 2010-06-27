@@ -16,6 +16,8 @@ namespace SoftwareMonkeys.SiteStarter.Data
     {
         public abstract DataStoreCollection Stores
         { get; }
+     
+        public abstract void Dispose();
         
         public abstract bool IsStored(IEntity entity);
         
@@ -28,6 +30,16 @@ namespace SoftwareMonkeys.SiteStarter.Data
         public abstract string[] GetDataStoreNames();
 
         public abstract IDataFilter CreateFilter(Type baseType);
+        
+        
+        #region Schema
+        
+        public abstract ISchemaEditor Schema
+        {
+        	get;
+        }
+        #endregion
+        
 
 	#region Data access functions
         /// <summary>

@@ -23,7 +23,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			// TODO: Path MUST NOT be hard coded
 			//   get { return @"f:\SoftwareMonkeys\WorkHub\Application 2\Web\"; }
 			//     get { return System.Configuration.ConfigurationSettings.AppSettings["ApplicationPath"]; }
-			get { return SoftwareMonkeys.SiteStarter.Configuration.Config.Application.PhysicalPath.Trim('\\'); }
+			get { return TestUtilities.GetApplicationPath(); }
 		}
 
 		public XmlEntityManagerTests()
@@ -147,8 +147,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
                 + Path.DirectorySeparatorChar + "Imported";
 
             string articlesPath = importablesPath + Path.DirectorySeparatorChar + article.GetType().FullName;
-            string referencesPath = Path.GetDirectoryName(XmlEntitySchema.CreateReferenceFilePath(importablesPath, EntitiesUtilities.GetReferences(article)[0]));
-            string referencesImportedPath = Path.GetDirectoryName(XmlEntitySchema.CreateReferenceFilePath(importedPath, EntitiesUtilities.GetReferences(article)[0]));
+            string referencesPath = Path.GetDirectoryName(XmlEntitySchemaEditor.CreateReferenceFilePath(importablesPath, EntitiesUtilities.GetReferences(article)[0]));
+            string referencesImportedPath = Path.GetDirectoryName(XmlEntitySchemaEditor.CreateReferenceFilePath(importedPath, EntitiesUtilities.GetReferences(article)[0]));
 
 
             // Serialize objects to files in test folder
@@ -210,8 +210,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
             string articlesPath = importablesPath + Path.DirectorySeparatorChar + article.GetType().ToString();
             string articlesImportedPath = importedPath + Path.DirectorySeparatorChar + article.GetType().ToString();
             string pagesPath = importablesPath + Path.DirectorySeparatorChar + article.GetType().ToString();
-            string referencesPath = Path.GetDirectoryName(XmlEntitySchema.CreateReferenceFilePath(importablesPath, EntitiesUtilities.GetReferences(article)[0]));
-            string referencesImportedPath = Path.GetDirectoryName(XmlEntitySchema.CreateReferenceFilePath(importedPath, EntitiesUtilities.GetReferences(article)[0]));
+            string referencesPath = Path.GetDirectoryName(XmlEntitySchemaEditor.CreateReferenceFilePath(importablesPath, EntitiesUtilities.GetReferences(article)[0]));
+            string referencesImportedPath = Path.GetDirectoryName(XmlEntitySchemaEditor.CreateReferenceFilePath(importedPath, EntitiesUtilities.GetReferences(article)[0]));
             //string referencesPath = importablesPath + Path.DirectorySeparatorChar + DataUtilities.GetDataStoreName(new string[] { "TestArticle", "TestArticlePage" });
             
             //article.GetType().ToString();
@@ -313,8 +313,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
             string articlesPath = importablesPath + Path.DirectorySeparatorChar + article.GetType().ToString();
             string articlesImportedPath = importedPath + Path.DirectorySeparatorChar + article.GetType().ToString();
             string pagesPath = importablesPath + Path.DirectorySeparatorChar + article.GetType().ToString();
-            string referencesPath = Path.GetDirectoryName(XmlEntitySchema.CreateReferenceFilePath(importablesPath, EntitiesUtilities.GetReferences(article)[0]));
-            string referencesImportedPath = Path.GetDirectoryName(XmlEntitySchema.CreateReferenceFilePath(importedPath, EntitiesUtilities.GetReferences(article)[0]));
+            string referencesPath = Path.GetDirectoryName(XmlEntitySchemaEditor.CreateReferenceFilePath(importablesPath, EntitiesUtilities.GetReferences(article)[0]));
+            string referencesImportedPath = Path.GetDirectoryName(XmlEntitySchemaEditor.CreateReferenceFilePath(importedPath, EntitiesUtilities.GetReferences(article)[0]));
             //string referencesPath = importablesPath + Path.DirectorySeparatorChar + DataUtilities.GetDataStoreName(new string[] { "TestArticle", "TestArticlePage" });
 
             //article.GetType().ToString();
@@ -454,7 +454,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
                 string articlesPath = importablesPath + Path.DirectorySeparatorChar + article.GetType().ToString();
                 string pagesPath = importablesPath + Path.DirectorySeparatorChar + article.GetType().ToString();
-                string referencesPath = Path.GetDirectoryName(XmlEntitySchema.CreateReferenceFilePath(importablesPath, EntitiesUtilities.GetReferences(article)[0]));
+                string referencesPath = Path.GetDirectoryName(XmlEntitySchemaEditor.CreateReferenceFilePath(importablesPath, EntitiesUtilities.GetReferences(article)[0]));
 
                 // Create test directory
                 if (!Directory.Exists(articlesPath))
@@ -472,7 +472,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
                 Assert.AreEqual(1, referenceCount, "Incorrect number of reference files found.");
 
 
-                string expectedReferenceFileName = XmlEntitySchema.CreateReferenceFilePath(importablesPath,
+                string expectedReferenceFileName = XmlEntitySchemaEditor.CreateReferenceFilePath(importablesPath,
                     EntitiesUtilities.GetReferences(article)[0]);
 
 

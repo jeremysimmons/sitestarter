@@ -16,6 +16,32 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 {
 	public class Db4oDataProvider : DataProvider
 	{
+		private ISchemaEditor schema;
+		public override ISchemaEditor Schema {
+			get {
+				if (schema == null)
+					schema = new Db4oSchemaEditor();
+				return schema;
+			}
+		}
+		
+		/*public override ISchemaEditor Schema
+		{
+			get {
+				return Schema;
+			}
+		}*/
+		
+		/*private Db4oSchemaEditor schema;
+		public Db4oSchemaEditor Schema
+		{
+			get {
+				if (schema == null)
+					schema = new Db4oSchemaEditor();
+				return schema;
+			}
+		}*/
+		
 		private DataStoreCollection stores;
 		public override DataStoreCollection Stores
 		{
@@ -30,7 +56,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			throw new Exception("The method or operation is not implemented.");
 		}
 
-		public void Dispose()
+		public override void Dispose()
 		{
 
 
@@ -42,7 +68,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		}
 
 		public override void Initialize(string name, System.Collections.Specialized.NameValueCollection config)
-		{
+		{			
 			DataAccess.Data = this;
 
 			base.Initialize(name, config);

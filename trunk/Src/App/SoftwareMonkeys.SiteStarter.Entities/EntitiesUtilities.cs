@@ -529,6 +529,20 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			return type;
 		}
 		
+		static public string GetShortType(string longType)
+		{			
+			string tmpType = longType;
+			
+			if (tmpType.IndexOf(".") > -1)
+			{
+				string[] typeParts = tmpType.Split('.');
+				
+				tmpType = typeParts[typeParts.Length-1];
+			}
+			
+			return tmpType;
+		}
+		
 		static public Type GetType(string typeName)
 		{
 			Type returnType = null;

@@ -674,4 +674,7 @@ ${WebSite.Title}&lt;br /&gt;
   <data name="Administrator" xml:space="preserve">
     <value>Administrator</value>
   </data>
+  <data name="ImportComplete" xml:space="preserve">
+    <value>Import Complete</value>
+  </data>
 </root>
