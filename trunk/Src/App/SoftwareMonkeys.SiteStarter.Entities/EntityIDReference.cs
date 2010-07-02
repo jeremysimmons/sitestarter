@@ -23,14 +23,14 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			set { entityIDs = value; }
 		}*/
 		
-		private Guid entity1ID;
+		private Guid entity1ID = Guid.Empty;
 		public Guid Entity1ID
 		{
 			get { return entity1ID; }
 			set { entity1ID = value; }
 		}
 		
-		private Guid entity2ID;
+		private Guid entity2ID = Guid.Empty;
 		public Guid Entity2ID
 		{
 			get { return entity2ID; }
@@ -134,38 +134,38 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			
 			return flag;
 		}*/
-		
-		/// <summary>
-		/// Checks whether the reference includes an entity with the specified ID and a property with the specified name.
-		/// Note: The ID and property belong to the same entity. The property does not contain the provided ID.
-		/// </summary>
-		/// <param name="id"></param>
-		/// <param name="propertyName"></param>
-		/// <returns></returns>
-		public virtual bool Includes(Guid id, string propertyName)
+			
+			/// <summary>
+			/// Checks whether the reference includes an entity with the specified ID and a property with the specified name.
+			/// Note: The ID and property belong to the same entity. The property does not contain the provided ID.
+			/// </summary>
+			/// <param name="id"></param>
+			/// <param name="propertyName"></param>
+			/// <returns></returns>
+			public virtual bool Includes(Guid id, string propertyName)
 		{
 			bool flag = false;
 			
 			// Logging disabled to improve performance
 			//using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the provided entity is included in the reference.", NLog.LogLevel.Debug))
 			//{
-				if (id == Guid.Empty)
-					throw new ArgumentException("entity");
-				
-				//AppLogger.Debug("Provided entity ID: " + id.ToString());
-				//AppLogger.Debug("Provided property name: " + propertyName);
-				//AppLogger.Debug("Reference entity 1 ID: " + Entity1ID.ToString());
-				//AppLogger.Debug("Reference entity 2 ID: " + Entity2ID.ToString());
-				//AppLogger.Debug("Reference property 1: " + Property1Name.ToString());
-				//AppLogger.Debug("Reference property 2: " + Property2Name.ToString());
-				//AppLogger.Debug("Reference entity type name 1: " + Type1Name);
-				//AppLogger.Debug("Reference entity type name 2: " + Type2Name);
-				
-				
-				flag = (id.Equals(Entity1ID) && propertyName.Equals(Property1Name))
-					|| (id.Equals(Entity2ID) && propertyName.Equals(Property2Name));
-				
-				//AppLogger.Debug("Entity is included in reference: " + flag.ToString());
+			if (id == Guid.Empty)
+				throw new ArgumentException("entity");
+			
+			//AppLogger.Debug("Provided entity ID: " + id.ToString());
+			//AppLogger.Debug("Provided property name: " + propertyName);
+			//AppLogger.Debug("Reference entity 1 ID: " + Entity1ID.ToString());
+			//AppLogger.Debug("Reference entity 2 ID: " + Entity2ID.ToString());
+			//AppLogger.Debug("Reference property 1: " + Property1Name.ToString());
+			//AppLogger.Debug("Reference property 2: " + Property2Name.ToString());
+			//AppLogger.Debug("Reference entity type name 1: " + Type1Name);
+			//AppLogger.Debug("Reference entity type name 2: " + Type2Name);
+			
+			
+			flag = (id.Equals(Entity1ID) && propertyName.Equals(Property1Name))
+				|| (id.Equals(Entity2ID) && propertyName.Equals(Property2Name));
+			
+			//AppLogger.Debug("Entity is included in reference: " + flag.ToString());
 			//}
 			
 			return flag;
@@ -241,6 +241,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		
 		public EntityIDReference SwitchFor(string typeName, Guid id)
 		{
+			
 			using (LogGroup logGroup = AppLogger.StartGroup("Switching reference data to the perspective of a specific entity.", NLog.LogLevel.Debug))
 			{
 				if (typeName == null)
@@ -258,7 +259,6 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				{
 					AppLogger.Debug("The reference is already suited for the specified entity. No need to switch.");
 					
-					return this;
 				}
 				else
 				{
@@ -281,10 +281,10 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 					
 					this.Property1Name = property2Name;
 					this.Property2Name = property1Name;
-					
-					return this;
 				}
 			}
+			
+			return this;
 		}
 		
 	}

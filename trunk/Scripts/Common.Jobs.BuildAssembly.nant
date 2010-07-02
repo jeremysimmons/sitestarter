@@ -31,6 +31,8 @@
   		
 	<target name="Common.Jobs.BuildAssembly" description="Builds the current project">
 	
+		<property name="AssemblyProject.Target" value="library"/>
+	
 		<echo message="AssemblyProject.PropertiesPath: ${AssemblyProject.PropertiesPath}"/>
 		<property name="AssemblyProject.RootPath" value="${AssemblyProject::GetRootPath(AssemblyProject.PropertiesPath)}"/>
 	
@@ -80,6 +82,15 @@
     			</namespaces>
     	</xmlpeek>
     	
+	<xmlpeek
+		    file="${AssemblyProject.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Assembly.Target']/@value"
+		    property="AssemblyProject.Target"
+		    failonerror="false">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>    	
     	
     	
 		<!-- Including both Assembly.Name and AssemblyProject.Name to avoid mistakes -->
@@ -176,6 +187,7 @@
 	</target>
 	
 	<target name="Private.InitializeProject">
+	
 		<xmlpeek
 		    file="${AssemblyProject.PropertiesPath}"
 		    xpath="/x:project/x:property[@name = 'Assembly.BaseNamespace']/@value"
@@ -211,7 +223,8 @@
 		        <namespaces>
         			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
     			</namespaces>
-    	</xmlpeek>    	
+    	</xmlpeek>    
+    	
     	
     	
     	
@@ -243,7 +256,7 @@
   		<echo message="Resources path: ${resourcesFile}"/>
   		
   		
-    	<csc output="${AssemblyProject.AssemblyPath}" debug="${Build.Mode == 'Debug'}" verbose="true" target="library">
+    	<csc output="${AssemblyProject.AssemblyPath}" debug="${Build.Mode == 'Debug'}" verbose="true" target="${AssemblyProject.Target}">
     		<nowarn>
     			<warning number="0436"/>
     		</nowarn>
@@ -282,6 +295,7 @@
     	<copy todir="${path::combine(Project.BinariesPath, Build.Mode)}" flatten="true" verbose="true">
     		<fileset>
     			<include name="${path::combine(path::combine(path::combine(AssemblyProject.RootPath, 'bin'), Build.Mode), '*.dll')}"/>
+    			<include name="${path::combine(path::combine(path::combine(AssemblyProject.RootPath, 'bin'), Build.Mode), '*.exe')}"/>
     			<include name="${path::combine(path::combine(AssemblyProject.RootPath, 'Properties'), '*.resources')}"/>
     		</fileset>
     	</copy>

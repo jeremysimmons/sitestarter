@@ -239,6 +239,11 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 				reader.Close();
 			}
 			
+			
+			// Remove any duplicate <Log>...</Log> tags
+			logContents = new Regex("</Log>(.|\r\n)*?<Log>", RegexOptions.IgnoreCase | RegexOptions.Multiline)
+				.Replace(logContents, "");
+			
 			// Add the start <Log> tag if necessary
 			string startTag = "<Log>";
 			if (logContents.IndexOf(startTag) == -1)
@@ -253,6 +258,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			// Add the ending </Log> tag if necessary
 			if (logContents.IndexOf("</Log>") == -1)
 				logContents = logContents + "</Log>";
+			
 			
 			using (StreamWriter writer = File.CreateText(fixedLogPath))
 			{

@@ -170,6 +170,9 @@ namespace SoftwareMonkeys.SiteStarter.Web
 					case '\"':
 						sb.Append("\\\"");
 						break;
+					case '\'':
+						sb.Append("\\\'");
+						break;
 					case '\\':
 						sb.Append("\\\\");
 						break;

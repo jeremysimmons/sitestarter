@@ -4,6 +4,9 @@
 	<include buildfile="Common.Jobs.Reset.nant"/>
 	<include buildfile="Common.Actions.CleanSolution.nant"/>
 	
+	<include buildfile="Common.Jobs.ClearData.nant"/>
+	<include buildfile="Common.Jobs.Reset.nant"/>
+	
 <target name="Common.Jobs.CreateReleaseZips">
 		<call target="Common.Jobs.ResetAll"/>
 
@@ -42,6 +45,8 @@
 		<property name="Solution.SourceReleaseName" value="${string::replace(Solution.SourceReleaseName, '${Solution.ReleaseTimestamp}', string::replace(Solution.ReleaseTimestamp, '.', '-'))}"/>
     	<property name="Solution.InstallReleaseName" value="${string::replace(Solution.InstallReleaseName, '${Solution.ReleaseTimestamp}', string::replace(Solution.ReleaseTimestamp, '.', '-'))}"/>
 
+					<call target="Common.Jobs.ClearData"/>
+					<call target="Common.Jobs.ResetAll"/>
 
     			<call target="Common.Actions.ZipInstallRelease"/>
 	    		<call target="Common.Actions.ZipSourceRelease"/>
