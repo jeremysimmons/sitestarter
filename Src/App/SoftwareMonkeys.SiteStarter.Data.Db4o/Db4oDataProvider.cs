@@ -68,7 +68,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		}
 
 		public override void Initialize(string name, System.Collections.Specialized.NameValueCollection config)
-		{			
+		{
 			DataAccess.Data = this;
 
 			base.Initialize(name, config);
@@ -330,6 +330,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 							allTypes.AddRange(filter.Types);
 					}
 
+					// Loop through the types and load them
 					foreach (Type type in allTypes)
 					{
 
@@ -1050,8 +1051,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			//              	referenceType},
 			//              new object[] { entity });
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving references.", NLog.LogLevel.Debug))
-			{
+			//using (LogGroup logGroup = AppLogger.StartGroup("Retrieving references.", NLog.LogLevel.Debug))
+			//{
 				if (entityType == null)
 					throw new ArgumentNullException("entityType");
 				
@@ -1061,14 +1062,14 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				if (referenceType == null)
 					throw new ArgumentNullException("referenceType");
 				
-				AppLogger.Debug("Entity type: " + entityType.ToString());
-				AppLogger.Debug("Reference type: " + referenceType.ToString());
+			//	AppLogger.Debug("Entity type: " + entityType.ToString());
+			//	AppLogger.Debug("Reference type: " + referenceType.ToString());
 				
 				string storeName = DataUtilities.GetDataStoreName(
 					entityType.Name,
 					referenceType.Name);
 				
-				AppLogger.Debug("Data store name: " + storeName);
+			//	AppLogger.Debug("Data store name: " + storeName);
 				
 				Db4oDataStore dataStore = (Db4oDataStore)Data.DataAccess.Data.Stores[storeName];
 				
@@ -1078,16 +1079,17 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				                                                                                                              	return reference.Includes(entityID, propertyName);
 				                                                                                                              }));
 				
-				if (list.Count == 0)
-					AppLogger.Debug("No references loaded from the data store.");
+				if (list.Count == 0){
+			//		AppLogger.Debug("No references loaded from the data store.");
+				}
 				else
 				{
 					
 					foreach (EntityIDReference idReference in list)
 					{
-						using (LogGroup logGroup2 = AppLogger.StartGroup("Processing ID reference.", NLog.LogLevel.Debug))
-						{
-							AppLogger.Debug("Data store name: " + storeName);
+			//			using (LogGroup logGroup2 = AppLogger.StartGroup("Processing ID reference.", NLog.LogLevel.Debug))
+			//			{
+			//				AppLogger.Debug("Data store name: " + storeName);
 							
 							if (idReference is EntityReference)
 							{
@@ -1096,39 +1098,41 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 								//	AppLogger.Debug("Loaded reference - Entity IDs: [null]");
 								//else
 								//{
-								AppLogger.Debug("Loaded reference - Entity ID 1: " + reference.Entity1ID);
-								AppLogger.Debug("Loaded reference - Entity ID 2: " + reference.Entity2ID);
+			//					AppLogger.Debug("Loaded reference - Entity ID 1: " + reference.Entity1ID);
+			//					AppLogger.Debug("Loaded reference - Entity ID 2: " + reference.Entity2ID);
 								
-								AppLogger.Debug("Loaded reference - Property 1 name: " + reference.Property1Name);
-								AppLogger.Debug("Loaded reference - Property 2 name: " + reference.Property2Name);
+			//					AppLogger.Debug("Loaded reference - Property 1 name: " + reference.Property1Name);
+			//					AppLogger.Debug("Loaded reference - Property 2 name: " + reference.Property2Name);
 								//}
 								
 								
 								//if (idReference.TypeNames == null)
 								//	AppLogger.Debug("Loaded reference - Type names: [null]");
 								//{
-								AppLogger.Debug("Loaded reference - Type name 1: " + reference.Type1Name);
-								AppLogger.Debug("Loaded reference - Type name 2: " + reference.Type2Name);
+			//					AppLogger.Debug("Loaded reference - Type name 1: " + reference.Type1Name);
+			//					AppLogger.Debug("Loaded reference - Type name 2: " + reference.Type2Name);
 								//}
 								
 								if (activateAll)
 								{
-									AppLogger.Debug("Activating reference.");
+			//						AppLogger.Debug("Activating reference.");
 									ActivateReference(reference);
 								}
 								if (reference.Entity1ID != Guid.Empty
 								    && reference.Entity2ID != Guid.Empty)
 								{
-									AppLogger.Debug("Adding to the collection.");
+			//						AppLogger.Debug("Adding to the collection.");
 									collection.Add(reference);
 								}
 								else
-									AppLogger.Debug("Reference not added to the collection. IDs are empty.");
+								{
+			//						AppLogger.Debug("Reference not added to the collection. IDs are empty.");
+								}
 							}
-						}
+						//}
 					}
 				}
-			}
+			//}
 			return collection;
 		}
 		
@@ -1146,140 +1150,196 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			//              	referenceType},
 			//              new object[] { entity });
 			
+			// TODO: Comment out logging to improve performance
 			//using (LogGroup logGroup = AppLogger.StartGroup("Retrieving references.", NLog.LogLevel.Debug))
 			//{
-			
-			if (entityType == null)
-				throw new ArgumentNullException("entityType");
-			
-			if (referenceType == null)
-				throw new ArgumentNullException("referenceType");
-			
-			//AppLogger.Debug("Entity type: " + entityType.ToString());
-			//AppLogger.Debug("Reference type: " + referenceType.ToString());
-			
-			string storeName = DataUtilities.GetDataStoreName(
-				entityType.Name,
-				referenceType.Name);
-			
-			//AppLogger.Debug("Data store name: " + storeName);
-			
-			Db4oDataStore dataStore = (Db4oDataStore)Data.DataAccess.Data.Stores[storeName];
+				
+				if (entityType == null)
+					throw new ArgumentNullException("entityType");
+				
+				if (referenceType == null)
+					throw new ArgumentNullException("referenceType");
+				
+			//	AppLogger.Debug("Entity type: " + entityType.ToString());
+			//	AppLogger.Debug("Reference type: " + referenceType.ToString());
+				
+				string storeName = DataUtilities.GetDataStoreName(
+					entityType.Name,
+					referenceType.Name);
+				
+			//	AppLogger.Debug("Data store name: " + storeName);
+				
+				Db4oDataStore dataStore = (Db4oDataStore)Data.DataAccess.Data.Stores[storeName];
 
-			EntityIDReferenceCollection list = new EntityIDReferenceCollection();
-			
-			IQuery query1 = dataStore.ObjectContainer.Query();
-			query1.Constrain(typeof(EntityIDReference));
-			
-			query1.Descend("entity1ID").Constrain(entityID).And(
-				query1.Descend("property1Name").Constrain(propertyName).And(
-					query1.Descend("entity2ID").Constrain(referenceEntityID).And(
-						query1.Descend("property2Name").Constrain(mirrorPropertyName))));
-			
-			
-			IQuery query2 = dataStore.ObjectContainer.Query();
-			query2.Constrain(typeof(EntityIDReference));
-			
-			query2.Descend("entity2ID").Constrain(entityID).And(
-				query2.Descend("property2Name").Constrain(propertyName).And(
-					query2.Descend("entity1ID").Constrain(referenceEntityID).And(
-						query2.Descend("property1Name").Constrain(mirrorPropertyName))));
-			
-			
-			
-			
-			IObjectSet os1 = query1.Execute();
-			
-			while (os1.HasNext())
-			{
-				list.Add((EntityIDReference)os1.Next());
-			}
-			
-			IObjectSet os2 = query2.Execute();
-			
-			while (os2.HasNext())
-			{
-				list.Add((EntityIDReference)os2.Next());
-			}
-			
-			
-			// Load the references from the data store
-			/*List<EntityIDReference> list = new List<EntityIDReference>(dataStore.ObjectContainer.Query<EntityIDReference>(delegate(EntityIDReference reference)
+				EntityIDReferenceCollection list = new EntityIDReferenceCollection();
+				
+				IQuery query1 = dataStore.ObjectContainer.Query();
+				query1.Constrain(typeof(EntityIDReference));
+				//query1.Constrain(query1.Descend("entity1ID").Constrain(entityID).Equal());
+				
+				query1.Descend("entity1ID").Constrain(entityID).Equal().And(
+					query1.Descend("property1Name").Constrain(propertyName).Equal().And(
+						query1.Descend("type1Name").Constrain(EntitiesUtilities.GetShortType(entityType.Name)).Equal().And(
+							query1.Descend("entity2ID").Constrain(referenceEntityID).Equal().And(
+								query1.Descend("property2Name").Constrain(mirrorPropertyName).Equal().And(
+									query1.Descend("type2Name").Constrain(EntitiesUtilities.GetShortType(referenceType.Name)).Equal())))));
+				
+				
+				//query1.Descend("entity1ID").Constrain(entityID).Equal().And(
+				//	query1.Descend("entity2ID").Constrain(referenceEntityID).Equal());
+				
+				IQuery query2 = dataStore.ObjectContainer.Query();
+				query2.Constrain(typeof(EntityIDReference));
+				//query2.Constrain(query2.Descend("entity2ID").Constrain(entityID).Equal());
+				
+				query2.Descend("entity2ID").Constrain(entityID).Equal().And(
+					query2.Descend("property2Name").Constrain(propertyName).Equal().And(
+						query2.Descend("type2Name").Constrain(EntitiesUtilities.GetShortType(entityType.Name)).Equal().And(
+							query2.Descend("entity1ID").Constrain(referenceEntityID).Equal().And(
+								query2.Descend("property1Name").Constrain(mirrorPropertyName).Equal().And(
+									query2.Descend("type1Name").Constrain(EntitiesUtilities.GetShortType(referenceType.Name)).Equal())))));
+				
+				//IConstraint c2 = query2.Descend("entity2ID").Constrain(entityID).Equal().And(
+				//	query2.Descend("entity1ID").Constrain(referenceEntityID).Equal());
+				
+				//ssquery2.Constrain(c2);
+				
+				
+				
+				
+				
+				IObjectSet os1 = query1.Execute();
+				
+				while (os1.HasNext())
+				{
+					EntityIDReference reference = (EntityIDReference)os1.Next();
+					if (reference != null)
+					{
+						if (reference.Includes(entityID, propertyName) &&
+						    reference.Includes(referenceEntityID, mirrorPropertyName))
+						{
+			//				AppLogger.Debug("1 Reference matches expected. Adding to the list.");
+							list.Add(reference);
+						}
+						else
+						{
+			//				AppLogger.Debug("1 Reference failed match. Skipping. IMPORTANT!!! IT SHOULD NOT HAVE FAILED!!!");
+						}
+					}
+				}
+				
+				IObjectSet os2 = query2.Execute();
+				
+				while (os2.HasNext())
+				{
+					EntityIDReference reference = (EntityIDReference)os2.Next();
+					if (reference != null)
+					{
+						if (reference.Includes(entityID, propertyName) &&
+						    reference.Includes(referenceEntityID, mirrorPropertyName))
+						{
+			//				AppLogger.Debug("2 Reference matches expected. Adding to the list.");
+							list.Add(reference);
+						}
+						else
+						{
+			//				AppLogger.Debug("2 Reference failed match. Skipping. IMPORTANT!!! IT SHOULD NOT HAVE FAILED!!!");
+						}
+					}
+				}
+				
+				foreach (EntityIDReference reference in list)
+				{
+					if (!reference.Includes(entityID, propertyName))
+					{
+						throw new Exception("Retrieved invalid reference. Doesn't match expected entity with type '" + entityType.Name + "', ID '" + entityID.ToString() + "' and property name '" + propertyName + "'. Instead types are '" + reference.Type1Name + "' and '" + reference.Type2Name + "', IDs are '" + reference.Entity1ID + "' and '" + reference.Entity2ID + "' and property names are '" + reference.Property1Name + "' and '" + reference.Property2Name + "'.");
+					}
+					if (!reference.Includes(referenceEntityID, mirrorPropertyName))
+					{
+						throw new Exception("Retrieved invalid reference. Doesn't match expected reference with type '" + referenceType.Name + "', ID '" + referenceEntityID.ToString() + "' and property name '" + propertyName + "'. Instead types are '" + reference.Type1Name + "' and '" + reference.Type2Name + "', IDs are '" + reference.Entity1ID + "' and '" + reference.Entity2ID + "' and property names are '" + reference.Property1Name + "' and '" + reference.Property2Name + "'.");
+					}
+				}
+				
+				
+				// Load the references from the data store
+				/*List<EntityIDReference> list = new List<EntityIDReference>(dataStore.ObjectContainer.Query<EntityIDReference>(delegate(EntityIDReference reference)
 				                                                                                                              {
 				                                                                                                              	//return ((entityID.Equals(reference.Entity1ID) && propertyName.Equals(reference.Property1Name))
 				                                                                                                              	//        || (entityID.Equals(reference.Entity2ID) && propertyName.Equals(reference.Property2Name)));
 				                                                                                                              	return reference.Includes(entityID, propertyName) && reference.Includes(referenceEntityID, mirrorPropertyName);
 				                                                                                                              }));*/
-			
-			if (list.Count == 0)
-			{
-				//AppLogger.Debug("No references loaded from the data store.");
-			}
-			else
-			{
 				
-				
-				//AppLogger.Debug("# references loaded: " + list.Count.ToString());
-				
-				if (list.Count > 1)
-					throw new Exception("Multiple (" + list.Count.ToString() + ") references found when there should only be one.");
-				
-				int i = 0;
-				
-				foreach (EntityIDReference idReference in list)
+				if (list.Count == 0)
 				{
-					i++;
-					
-					//using (LogGroup logGroup2 = AppLogger.StartGroup("Processing ID reference.", NLog.LogLevel.Debug))
-					//{
-					//	AppLogger.Debug("Data store name: " + storeName);
-					
-					EntityReference reference = null;
-					
-					if (!(idReference is EntityReference))
-					{
-						reference = new EntityReference(idReference);
-					}
-					
-					reference = (EntityReference)idReference.SwitchFor(entityType, entityID);
-					
-					//if (idReference.EntityIDs == null)
-					//	AppLogger.Debug("Loaded reference - Entity IDs: [null]");
-					//else
-					//{
-					//	AppLogger.Debug("Loaded reference " + i + "/" + list.Count.ToString() + " - Entity ID 1: " + reference.Entity1ID);
-					//	AppLogger.Debug("Loaded reference " + i + "/" + list.Count.ToString() + " - Entity ID 2: " + reference.Entity2ID);
-					//}
-					
-					
-					//	AppLogger.Debug("Loaded reference " + i + "/" + list.Count.ToString() + " - Property name 1: " + reference.Property1Name);
-					//	AppLogger.Debug("Loaded reference " + i + "/" + list.Count.ToString() + " - Property name 2: " + reference.Property2Name);
-					
-					
-					//if (idReference.TypeNames == null)
-					//	AppLogger.Debug("Loaded reference - Type names: [null]");
-					//{
-					//	AppLogger.Debug("Loaded reference " + i + "/" + list.Count.ToString() + " - Type name 1: " + reference.Type1Name);
-					//	AppLogger.Debug("Loaded reference " + i + "/" + list.Count.ToString() + " - Type name 2: " + reference.Type2Name);
-					//}
-					
-					if (activateAll)
-					{
-						//		AppLogger.Debug("Activating reference.");
-						ActivateReference(reference);
-					}
-					if (reference.Entity1ID != Guid.Empty
-					    && reference.Entity2ID != Guid.Empty)
-					{
-						//		AppLogger.Debug("Adding to the collection.");
-						collection.Add(reference);
-					}
-					//else
-					//		AppLogger.Debug("Reference not added to the collection. IDs are empty.");
-					
-					//}
+			//		AppLogger.Debug("No references loaded from the data store.");
 				}
-			}
+				else
+				{
+					
+					
+			//		AppLogger.Debug("# references loaded: " + list.Count.ToString());
+					
+					if (list.Count > 1)
+						throw new Exception("Multiple (" + list.Count.ToString() + ") references found when there should only be one.");
+					
+					int i = 0;
+					
+					foreach (EntityIDReference idReference in list)
+					{
+						i++;
+						
+			//			using (LogGroup logGroup2 = AppLogger.StartGroup("Processing ID reference.", NLog.LogLevel.Debug))
+			//			{
+			//				AppLogger.Debug("Data store name: " + storeName);
+							
+							EntityReference reference = null;
+							
+							if (!(idReference is EntityReference))
+							{
+								reference = new EntityReference(idReference);
+							}
+							
+							reference = (EntityReference)idReference.SwitchFor(entityType, entityID);
+							
+							/*if (idReference.EntityIDs == null)
+						AppLogger.Debug("Loaded reference - Entity IDs: [null]");
+					else
+					{
+						AppLogger.Debug("Loaded reference " + i + "/" + list.Count.ToString() + " - Entity ID 1: " + reference.Entity1ID);
+						AppLogger.Debug("Loaded reference " + i + "/" + list.Count.ToString() + " - Entity ID 2: " + reference.Entity2ID);
+					}*/
+							
+							
+							//	AppLogger.Debug("Loaded reference " + i + "/" + list.Count.ToString() + " - Property name 1: " + reference.Property1Name);
+//					//	AppLogger.Debug("Loaded reference " + i + "/" + list.Count.ToString() + " - Property name 2: " + reference.Property2Name);
+							
+							
+							//if (idReference.TypeNames == null)
+							//{
+							//	AppLogger.Debug("Loaded reference - Type names: [null]");
+							
+							//	AppLogger.Debug("Loaded reference " + i + "/" + list.Count.ToString() + " - Type name 1: " + reference.Type1Name);
+							//	AppLogger.Debug("Loaded reference " + i + "/" + list.Count.ToString() + " - Type name 2: " + reference.Type2Name);
+							//}
+							
+							if (activateAll)
+							{
+			//					AppLogger.Debug("Activating reference.");
+								ActivateReference(reference);
+							}
+							if (reference.Entity1ID != Guid.Empty
+							    && reference.Entity2ID != Guid.Empty)
+							{
+			//					AppLogger.Debug("Adding to the collection.");
+								collection.Add(reference);
+							}
+							else
+							{
+			//					AppLogger.Debug("Reference not added to the collection. IDs are empty.");
+							}
+			//			//}
+					}
+				}
 			//}
 			if (collection != null && collection.Count > 0)
 				return collection[0];
@@ -1573,46 +1633,47 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			bool matches = false;
 			
-			//using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the provided entity and specified property matches the specified referenced entity ID.", NLog.LogLevel.Debug))
-			//{
-			if (entityType == null)
-				throw new ArgumentNullException("entityType");
-			
-			if (entityID == Guid.Empty)
-				throw new ArgumentException("entityID");
-			
-			if (referencedEntityType == null)
-				throw new ArgumentNullException("referencedEntityType");
-			
-			/*if (referencedEntityID == Guid.Empty)
-					throw new ArgumentException("referencedEntityID");*/
-
 			// Logging disabled to boost performance
 			
-			//AppLogger.Debug("Entity type: " + entityType);
-			//AppLogger.Debug("Entity ID: " + entityID);
-			//AppLogger.Debug("Property name: " + propertyName);
-			//AppLogger.Debug("Referenced entity type: " + referencedEntityType.ToString());
-			//AppLogger.Debug("Referenced entity ID: " + referencedEntityID.ToString());
+			// TODO: Comment out logging to improve performance
+			//using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the provided entity and specified property matches the specified referenced entity ID.", NLog.LogLevel.Debug))
+			//{
+				if (entityType == null)
+					throw new ArgumentNullException("entityType");
+				
+				if (entityID == Guid.Empty)
+					throw new ArgumentException("entityID");
+				
+				if (referencedEntityType == null)
+					throw new ArgumentNullException("referencedEntityType");
+				
+				/*if (referencedEntityID == Guid.Empty)
+					throw new ArgumentException("referencedEntityID");*/
 
-			string mirrorPropertyName = String.Empty;
-			if (propertyName == String.Empty)
-				mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyNameReverse(entityType, propertyName, referencedEntityType);
-			else
-				mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(entityType, propertyName);
-			
-			EntityReference reference = DataAccess.Data.GetReference(entityType, entityID, propertyName, referencedEntityType, referencedEntityID, mirrorPropertyName, false);
-			
-			//if (reference == null)
-			//	AppLogger.Debug("reference == null");
-			//else
-			//	AppLogger.Debug("reference != null");
-			
-			matches = (reference != null);
-			
-			//AppLogger.Debug("Matches: " + matches.ToString());
+				
+				/*AppLogger.Debug("Entity type: " + entityType);
+				AppLogger.Debug("Entity ID: " + entityID);
+				AppLogger.Debug("Property name: " + propertyName);
+				AppLogger.Debug("Referenced entity type: " + referencedEntityType.ToString());
+				AppLogger.Debug("Referenced entity ID: " + referencedEntityID.ToString());
+*/
+				string mirrorPropertyName = String.Empty;
+				if (propertyName == String.Empty)
+					mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyNameReverse(entityType, propertyName, referencedEntityType);
+				else
+					mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(entityType, propertyName);
+				
+				EntityReference reference = DataAccess.Data.GetReference(entityType, entityID, propertyName, referencedEntityType, referencedEntityID, mirrorPropertyName, false);
+				
+				//if (reference == null)
+				//	AppLogger.Debug("reference == null");
+				//else
+				//	AppLogger.Debug("reference != null");
+				
+				matches = (reference != null);
+				
+				//AppLogger.Debug("Matches: " + matches.ToString());
 			//}
-			
 			return matches;
 		}
 		
@@ -1640,38 +1701,19 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			bool isMatch = false;
 
-			using (LogGroup logGroup2 = AppLogger.StartGroup("Checking whether the provided entity and filter match.", NLog.LogLevel.Debug))
-			{
+			//using (LogGroup logGroup2 = AppLogger.StartGroup("Checking whether the provided entity and filter match.", NLog.LogLevel.Debug))
+			//{
 				isMatch = filter.IsMatch(entity);
 
-				AppLogger.Debug("Is match? " + isMatch.ToString());
-			}
+			//	AppLogger.Debug("Is match? " + isMatch.ToString());
+			//}
 			
 			return isMatch;
 		}
 
 		static public bool IsMatch(IEntity entity, FilterGroup filterGroup)
 		{
-
-			bool allMatch = true;
-			bool anyMatch = false;
-
-			foreach (IDataFilter filter in filterGroup.Filters)
-			{
-				if (filter.IsMatch(entity))
-				{
-					anyMatch = true;
-				}
-				else
-				{
-					allMatch = false;
-				}
-			}
-
-			if (filterGroup.Operator == FilterOperator.Or)
-				return anyMatch;
-			else
-				return allMatch;
+			return filterGroup.IsMatch(entity);
 		}
 		#endregion
 	}

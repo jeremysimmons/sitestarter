@@ -257,6 +257,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Saving entity.", NLog.LogLevel.Debug))
 			{
+				if (entity == null)
+					throw new ArgumentNullException("entity");
+				
+				if (entity.ID == Guid.Empty)
+					throw new ArgumentException("entity.ID must be set.");
+				
 				using (Batch batch = Batch.StartBatch())
 				{
 					if (EntitiesUtilities.IsReference(entity.GetType()) && DataAccess.Data.IsStored(entity))
@@ -396,6 +402,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			using (LogGroup logGroup = AppLogger.StartGroup("Updating the provided entity.", NLog.LogLevel.Debug))
 			{
+				if (entity == null)
+					throw new ArgumentNullException("entity");
+				
+				if (entity.ID == Guid.Empty)
+					throw new ArgumentException("entity.ID must be set.");
+				
 				using (Batch batch = Batch.StartBatch())
 				{
 					if (entity == null)
@@ -455,20 +467,44 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 
 		public void PreDelete(IEntity entity, out IEntity[] entitiesToUpdate, out IEntity[] entitiesToDelete)
 		{
+			if (entity == null)
+				throw new ArgumentNullException("entity");
+			
+			//if (entity.ID == Guid.Empty)
+			//	throw new ArgumentException("entity.ID must be set.");
 
 			List<IEntity> toUpdate = new List<IEntity>();
 			List<IEntity> toDelete = new List<IEntity>();
 
-			if (entity != null)
+			if (entity != null && entity.ID != Guid.Empty)
 			{
+				//DataAccess.Data.Activate(entity);
+				
 				EntityReferenceCollection latestReferences = EntitiesUtilities.GetReferences(entity);
 				
 				// Delete all references
-				foreach (EntityIDReference reference in DataAccess.Data.GetObsoleteReferences(entity, new Guid[]  {}))
+				foreach (PropertyInfo property in entity.GetType().GetProperties())
+				{
+					bool isReference = EntitiesUtilities.IsReference(entity.GetType(), property.Name, property.PropertyType);
+					
+					if (isReference)
+					{
+						Type referenceType = EntitiesUtilities.GetReferenceType(entity.GetType(), property.Name);
+					
+						foreach (EntityIDReference reference in DataAccess.Data.GetReferences(entity.GetType(),
+						                                                                      entity.ID,
+						                                                                      property.Name,
+						                                                                      referenceType,
+						                                                                      false))
+						{
+							toDelete.Add(reference);
+						}
+					}
+				}
+				/*foreach (EntityIDReference reference in DataAccess.Data.GetObsoleteReferences(entity, new Guid[]  {}))
 				{
 					toDelete.Add(reference);
-				}
-				
+				}*/
 			}
 			
 			entitiesToUpdate = toUpdate.ToArray();
@@ -481,6 +517,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <param name="entity"></param>
 		public void Delete(IEntity entity)
 		{
+			if (entity == null)
+				throw new ArgumentNullException("entity");
+			
+			//if (entity.ID == Guid.Empty)
+			//	throw new ArgumentException("entity.ID is set to Guid.Empty on type " + entity.GetType().ToString());
+			
 			using (Batch batch = Batch.StartBatch())
 			{
 				IEntity[] toUpdate = new IEntity[]{};
@@ -494,13 +536,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				// Update any entities that were modified (eg. references)
 				foreach (IEntity entityToUpdate in toUpdate)
 				{
-					DataAccess.Data.Stores[entityToUpdate].Update((IEntity)entityToUpdate);
+					DataAccess.Data.Update((IEntity)entityToUpdate);
 				}
 				
 				// Delete any entities that are obsolete (eg. references)
 				foreach (IEntity entityToDelete in toDelete)
 				{
-					DataAccess.Data.Stores[entityToDelete].Delete((IEntity)entityToDelete);
+					DataAccess.Data.Delete((IEntity)entityToDelete);
 				}
 
 				// Delete the entity
@@ -1186,7 +1228,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		
 		public void Commit()
 		{
-			Commit(false);
+			Commit(true);
 		}
 		
 		

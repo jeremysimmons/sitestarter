@@ -57,6 +57,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the ReferenceFilter.IsMatch function.", NLog.LogLevel.Debug))
 			{
+				ClearTestEntities();
+				
 				TestArticle.RegisterType();
 				TestCategory.RegisterType();
 				
@@ -82,6 +84,55 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				bool isMatch = filter.IsMatch(article);
 				Assert.IsTrue(isMatch, "The IsMatch function returned false when it should have been true.");
+				
+				ClearTestEntities();
+			}
+		}
+		
+		
+		[Test]
+		public void Test_IsMatch_Exclude()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing the ReferenceFilter.IsMatch function.", NLog.LogLevel.Debug))
+			{
+				ClearTestEntities();
+				
+				TestArticle.RegisterType();
+				TestCategory.RegisterType();
+				
+				TestArticle article = new TestArticle();
+				article.ID = Guid.NewGuid();
+				
+				TestCategory category = new TestCategory();
+				category.ID = Guid.NewGuid();
+				
+				TestArticle article2 = new TestArticle();
+				article2.ID = Guid.NewGuid();
+				
+				TestCategory category2 = new TestCategory();
+				category2.ID = Guid.NewGuid();
+				
+				
+				article.Categories = new TestCategory[] {category};
+				article2.Categories = new TestCategory[] {category2};
+				
+				DataAccess.Data.Save(article2);
+				DataAccess.Data.Save(category2);
+				DataAccess.Data.Save(article);
+				DataAccess.Data.Save(category);
+				
+				ReferenceFilter filter = (ReferenceFilter)DataAccess.Data.CreateFilter(typeof(ReferenceFilter));
+				filter.Operator = FilterOperator.Equal;
+				filter.PropertyName = "Categories";
+				filter.ReferencedEntityID = category.ID;
+				filter.ReferenceType = typeof(TestCategory);
+				filter.AddType(typeof(TestArticle));
+				
+				
+				bool isMatch = filter.IsMatch(article2);
+				Assert.IsFalse(isMatch, "The IsMatch function returned true when it should have been false.");
+				
+				ClearTestEntities();
 			}
 		}
 		#endregion

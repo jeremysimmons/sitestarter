@@ -894,6 +894,76 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		}
 		
 		[Test]
+		public void Test_Save_2References()
+		{
+			ClearTestEntities();
+			
+			
+			TestUser user = new TestUser();
+			user.ID = Guid.NewGuid();
+			Guid userID = user.ID;
+			user.FirstName = "Test";
+			user.LastName = "User";
+			
+			TestRole role = new TestRole();
+			role.ID = Guid.NewGuid();
+			Guid roleID = role.ID;
+			role.Name = "Test Role";
+			
+			TestUser user2 = new TestUser();
+			user.ID = Guid.NewGuid();
+			Guid user2ID = user.ID;
+			user2.FirstName = "Test2";
+			user2.LastName = "User2";
+			
+			TestRole role2 = new TestRole();
+			role2.ID = Guid.NewGuid();
+			Guid role2ID = role2.ID;
+			role2.Name = "Test Role2";
+			
+			user.Roles = new TestRole[] {role};
+			user2.Roles = new TestRole[] {role2};
+			
+			DataAccess.Data.Stores[typeof(TestUser)].Save(user2);
+			DataAccess.Data.Stores[typeof(TestUser)].Save(user);
+			DataAccess.Data.Stores[typeof(TestRole)].Save(role2);
+			DataAccess.Data.Stores[typeof(TestRole)].Save(role);
+			
+			IEntity[] references = DataAccess.Data.Stores[DataUtilities.GetDataStoreName("TestUser", "TestRole")].GetEntities<EntityIDReference>();
+			
+			Assert.AreEqual(2, references.Length, "Incorrect number of references found.");
+			
+			EntityIDReference reference1 = (EntityIDReference)references[0];
+			EntityIDReference reference2 = (EntityIDReference)references[1];
+			
+			// Switch the references around if necessary to match (so they can be found in any order)
+			if (!reference1.Includes(user2.ID, "Roles"))
+			{
+				EntityIDReference tmp = reference1;
+				reference1 = reference2;
+				reference2 = tmp;
+			}
+				
+			Assert.IsTrue(reference1.Includes(user2.ID, "Roles"), "First reference does not include expected user.");
+			Assert.IsTrue(reference1.Includes(role2.ID, "Users"), "First reference does not include expected role.");
+			Assert.IsTrue(reference2.Includes(user.ID, "Roles"), "Second reference does not include expected user.");
+			Assert.IsTrue(reference2.Includes(role.ID, "Users"), "Second reference does not include expected role.");
+			
+			Assert.IsFalse(reference1.Includes(user.ID, "Roles"), "First reference includes unexpected user.");
+			Assert.IsFalse(reference1.Includes(role.ID, "Users"), "First reference includes unexpected role.");
+			Assert.IsFalse(reference2.Includes(user2.ID, "Roles"), "Second reference includes unexpected user.");
+			Assert.IsFalse(reference2.Includes(role2.ID, "Users"), "Second reference includes unexpected role.");
+			
+			//Assert.AreEqual(role2.ID.ToString(), ((EntityIDReference)references[0]).Entity1ID.ToString(), "First reference has invalid entity 1 ID.");
+			//Assert.AreEqual(user2.ID.ToString(), ((EntityIDReference)references[0]).Entity2ID.ToString(), "First reference has invalid entity 2 ID.");
+			
+			//Assert.AreEqual(role1.ID.ToString(), ((EntityIDReference)references[1]).Entity1ID.ToString(), "Second reference has invalid entity 1 ID.");
+			//Assert.AreEqual(user1.ID.ToString(), ((EntityIDReference)references[1]).Entity2ID.ToString(), "Second reference has invalid entity 2 ID.");
+			
+			ClearTestEntities();
+		}
+		
+		[Test]
 		public void Test_PreSave()
 		{
 			
@@ -1075,6 +1145,47 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		ClearTestEntities();
 		}
 		
+		[Test]
+		public void Test_Delete_EntityAndReference()
+		{
+			ClearTestEntities();
+			
+			string storeName = DataUtilities.GetDataStoreName("TestUser", "TestRole");
+			
+			IEntity[] rs = DataAccess.Data.Stores[storeName].GetEntities<EntityIDReference>();
+			foreach (IEntity r in rs)
+			{
+				DataAccess.Data.Stores[storeName].Delete(r);
+			}
+			
+			TestUser user = new TestUser();
+			Guid userID = user.ID = Guid.NewGuid();
+			user.FirstName = "Test";
+			user.LastName = "User";
+			
+			TestRole role = new TestRole();
+			Guid roleID = role.ID = Guid.NewGuid();
+			role.Name = "Test Role";
+			
+			user.Roles = new TestRole[] {role};
+			
+			DataAccess.Data.Stores[typeof(TestUser)].Save(user);
+			
+			IEntity[] references = DataAccess.Data.Stores[storeName].GetEntities<EntityIDReference>();
+			
+			Assert.AreEqual(1, references.Length, "Incorrect number of references found.");
+			
+			DataAccess.Data.Delete(user);
+			
+			IEntity[] references2 = DataAccess.Data.Stores[storeName].GetEntities<EntityIDReference>();
+			
+			Assert.AreEqual(0, references2.Length, "Reference not deleted.");
+			
+			
+			ClearTestEntities();
+		}
+		
+		
 		
 		
 		[Test]
@@ -1152,6 +1263,14 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 		private void ClearTestEntities()
 		{
+			TestUser.RegisterType();
+			TestRole.RegisterType();
+			TestEntity.RegisterType();
+			EntityOne.RegisterType();
+			EntityTwo.RegisterType();
+			EntityThree.RegisterType();
+			EntityFour.RegisterType();
+			
 			Type[] types = new Type[] {
 				typeof(TestUser),
 				typeof(TestRole),
@@ -1168,6 +1287,14 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			foreach (IEntity entity in entities)
 			{
 				DataAccess.Data.Delete(entity);
+			}
+			
+			string storeName1 = DataUtilities.GetDataStoreName("TestUser", "TestRole");
+			
+			IEntity[] rs = DataAccess.Data.Stores[DataUtilities.GetDataStoreName("TestUser", "TestRole")].GetEntities<EntityIDReference>();
+			foreach (IEntity r in rs)
+			{
+				DataAccess.Data.Stores[storeName1].Delete(r);
 			}
 		}
 

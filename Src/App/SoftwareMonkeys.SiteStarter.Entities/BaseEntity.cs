@@ -12,7 +12,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
     [Serializable]
     public abstract class BaseEntity : IEntity
     {
-        private Guid id;
+    	private Guid id = Guid.NewGuid();
         /// <summary>
         /// Gets/sets the ID of the entity.
         /// </summary>
