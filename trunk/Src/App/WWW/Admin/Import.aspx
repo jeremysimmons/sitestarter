@@ -182,7 +182,6 @@
 
 <div class="Heading1"><%= Resources.Language.ImportComplete%></div>
 <b>General</b><br/>
-<%= XmlEntitySchema.GenerateExplanation(GetReferenceMappings()) %>
 <asp:Panel runat="server" id="ModuleUpdateScriptsHolder" cell-padding="3px"/>
 <p><%= Resources.Language.ImportCompleteMessage %></p>
 <ul><li><a href='../Members/LogIn.aspx'><%= Resources.Language.LogIn %></a></li></ul>
