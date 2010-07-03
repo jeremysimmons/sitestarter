@@ -58,6 +58,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Business\SiteStarter.Business.csproj">
+      <Project>{F294B839-0C1E-4187-AA58-6EA1C35E6B66}</Project>
+      <Name>SiteStarter.Business</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration\SiteStarter.Configuration.csproj">
       <Project>{4B83307F-8307-43EF-A176-8AB1CDA78264}</Project>
       <Name>SiteStarter.Configuration</Name>
@@ -70,14 +74,20 @@
       <Project>{C3626F0A-DFD4-4EF2-8755-3532DE3712A4}</Project>
       <Name>SiteStarter.Diagnostics</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Entities\SiteStarter.Entities.csproj">
+      <Project>{3609F512-9E15-41C7-95AF-D1B3E7F93562}</Project>
+      <Name>SiteStarter.Entities</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Web\SiteStarter.Web.csproj">
       <Project>{A5D49D94-D936-4123-BA9A-572AA7C7F426}</Project>
       <Name>SiteStarter.Web</Name>
     </ProjectReference>
     <None Include="WebControls\_svn\entries" />
     <Compile Include="Entities\TestEnum.cs" />
+    <Compile Include="Security\RoleProviderTests.cs" />
     <Compile Include="WebControls\EntityFormHelperTests.cs" />
     <Compile Include="WebUtilitiesTests.cs" />
+    <Folder Include="Security" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

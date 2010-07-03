@@ -11,7 +11,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 	/// Description of IDReference.
 	/// </summary>
 	[Serializable]
-	public class EntityIDReference : BaseEntity//, IXmlSerializable
+	public class EntityIDReference : BaseEntity, IEntity//, IXmlSerializable
 	{
 		/*private Guid[] entityIDs = new Guid[2];
 		/// <summary>

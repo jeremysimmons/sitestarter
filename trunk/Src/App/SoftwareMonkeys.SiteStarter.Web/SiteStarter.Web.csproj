@@ -62,6 +62,7 @@
       <DependentUpon>Language.resx</DependentUpon>
     </Compile>
     <Compile Include="Providers\DataProviderManager.cs" />
+    <Compile Include="Providers\DynamicPersonalizationProvider.cs" />
     <Compile Include="QueryStrings.cs" />
     <Compile Include="Security\Authorisation.cs" />
     <Compile Include="Security\Member.cs" />

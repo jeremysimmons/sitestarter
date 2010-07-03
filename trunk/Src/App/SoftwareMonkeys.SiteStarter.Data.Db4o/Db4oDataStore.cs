@@ -19,6 +19,20 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 	{
 		private IConfiguration db4oConfiguration;
 		
+		/// <summary>
+		/// Gets a flag indicating whether the actual data store file exists.
+		/// If it doesn't exist it should mean no data has been created.
+		/// </summary>
+		public bool DoesExist
+		{
+			get
+			{
+				string path = GetStoreFileName();
+				
+				return File.Exists(path);
+			}
+		}
+		
 		private IQuery activeQuery;
 		/// <summary>
 		/// Gets/sets the active db4o query.
@@ -118,6 +132,21 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			this.db4oConfiguration = db4oConfiguration;
 		}
 
+		private string GetStoreFileName()
+		{
+			string fileName = Name;
+			
+			AppLogger.Debug("Store name: " + Name);
+
+			string prefix = (string)StateAccess.State.GetSession("VirtualServerID");
+			if (prefix != null && prefix != String.Empty && prefix != Guid.Empty.ToString())
+			{
+				fileName = @"VS\" + prefix + @"\" + fileName;
+			}
+			
+			return Config.Application.PhysicalPath + @"\App_Data\" + fileName + ".yap";
+		}
+		
 		public void OpenServer()
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Opening data server.", NLog.LogLevel.Info))
@@ -133,17 +162,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				Db4oFactory.Configure().ObjectClass(typeof(EntityIDReference)).ObjectField("type2Name").Indexed(true);
 				Db4oFactory.Configure().ObjectClass(typeof(EntityIDReference)).ObjectField("entity2ID").Indexed(true);
 				
-				string fileName = Name;
-				
-				AppLogger.Debug("Store name: " + Name);
 
-				string prefix = (string)StateAccess.State.GetSession("VirtualServerID");
-				if (prefix != null && prefix != String.Empty && prefix != Guid.Empty.ToString())
-				{
-					fileName = @"VS\" + prefix + @"\" + fileName;
-				}
-
-				string fullName = Config.Application.PhysicalPath + @"\App_Data\" + fileName + ".yap";
+				string fullName = GetStoreFileName();
 				
 				
 				AppLogger.Debug("Full file name: " + fullName);
@@ -490,7 +510,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					if (isReference)
 					{
 						Type referenceType = EntitiesUtilities.GetReferenceType(entity.GetType(), property.Name);
-					
+						
 						foreach (EntityIDReference reference in DataAccess.Data.GetReferences(entity.GetType(),
 						                                                                      entity.ID,
 						                                                                      property.Name,
@@ -792,15 +812,39 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			                                                new Type[] {type}, // Generic types
 			                                                new object[] {parameters}); // Method arguments);*/
 			
-			List<IEntity> entities = null;
+			List<IEntity> entities = new List<IEntity>();
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Querying the data store based on the provided type and parameters.", NLog.LogLevel.Debug))
-			{
+			//using (LogGroup logGroup = AppLogger.StartGroup("Querying the data store based on the provided type and parameters.", NLog.LogLevel.Debug))
+			//{
 				
 				if (parameters == null)
 					throw new ArgumentNullException("parameters");
 
-				entities = new List<IEntity>(ObjectContainer.Query<IEntity>(delegate(IEntity e)
+				if (DoesExist)
+				{
+					
+					/*IQuery query = ObjectContainer.Query();
+					query.Constrain(type);
+					
+					foreach (string properyName in parameters.Keys)
+					{
+						query.Descend(EntitiesUtilities.GetFieldName(type, properyName))
+							.Constrain(parameters[properyName]).Equal();
+					}
+					
+					IObjectSet os = query.Execute();
+					
+					while (os.HasNext())
+					{
+						object o = os.Next();
+						
+						if (o is IEntity)
+							entities.Add((IEntity)o);
+						else
+							throw new Exception("Invalid type loaded: " + o.GetType().ToString());
+					}*/
+						
+						entities = new List<IEntity>(ObjectContainer.Query<IEntity>(delegate(IEntity e)
 				                                                            {
 				                                                            	AppLogger.Debug("Checking type " + e.GetType().ToString());
 				                                                            	
@@ -828,10 +872,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				                                                            	AppLogger.Debug("Matches: " + matches.ToString());
 				                                                            	return matches;
 				                                                            }));
+						
 
-
-				
-			}
+						
+				}
+			//}
 
 			return (IEntity[])entities.ToArray();
 		}
@@ -1228,7 +1273,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		
 		public void Commit()
 		{
-			Commit(true);
+			Commit(false);
 		}
 		
 		
