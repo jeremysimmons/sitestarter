@@ -889,6 +889,10 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 			if (type == null)
 				throw new ArgumentNullException("");
+			
+			if (propertyName == "ID")
+				return "id";
+			
 			string fieldName1 = ToCamelCase(propertyName);
 			
 			string fieldName2 = "_" + propertyName;

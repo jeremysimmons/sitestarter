@@ -358,11 +358,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		// RoleProvider.GetUsersInRole
 		//
 
+		
 		public override string[] GetUsersInRole(string rolename)
 		{
-			IUserRole role = UserRoleFactory<Entities.UserRole>.Current.GetUserRoleByName(rolename);
+			IUserRole role = UserRoleFactory.Current.GetUserRoleByName(rolename);
 
-			IUser[] users = UserFactory<Entities.User>.Current.GetUsers(Collection<IUser>.GetIDs(role.Users));
+			UserFactory.Current.Activate(role, "Users");
+			
+			IUser[] users = role.Users;
 
 			List<string> usernames = new List<string>();
 			foreach (User user in users)
@@ -374,6 +377,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		}
 
 
+
 		//
 		// RoleProvider.IsUserInRole
 		//
@@ -383,20 +387,26 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		{
 			IUser user = UserFactory<U>.Current.GetUserByUsername(username);
 
-			IUserRole role = UserRoleFactory<R>.Current.GetUserRoleByName(rolename);
+			//IUserRole role = UserRoleFactory<R>.Current.GetUserRoleByName(rolename);
 
             UserFactory<U>.Current.Activate(user, "Roles");
 
 			if (user == null)
 				throw new ProviderException("User not found with specified username.");
 			
-			if (role == null)
-				throw new ProviderException("Role not found with specified name.");
+			//if (role == null)
+			//	throw new ProviderException("Role not found with specified name.");
 			
 			if (user.Roles == null)
 				return false;
-
-			return Array.IndexOf(Collection<IUserRole>.GetIDs(user.Roles), role.ID) > -1;
+			
+			foreach (UserRole role in user.Roles)
+			{
+				if (role.Name.ToLower() == rolename.ToLower())
+					return true;
+			}
+			
+			return false;
 		}
 		
 		public override bool IsUserInRole(string username, string rolename)
