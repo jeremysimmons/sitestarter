@@ -612,6 +612,11 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			
 		}
 		
+		static public bool PropertyExists(IEntity entity, string propertyName)
+		{
+			PropertyInfo property = GetProperty(entity.GetType(), propertyName, null);
+			return property != null;
+		}
 		
 		static public object GetPropertyValue(IEntity entity, string propertyName)
 		{
