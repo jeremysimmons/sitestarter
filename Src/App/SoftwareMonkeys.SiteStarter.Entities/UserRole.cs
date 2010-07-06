@@ -13,6 +13,13 @@ namespace SoftwareMonkeys.SiteStarter.Entities
     [Serializable]
     public class UserRole : BaseEntity, IUserRole
     {
+    	public override string UniqueKey
+		{
+			get {
+				return Name;
+			}
+		}
+    	
         private string name;
         /// <summary>
         /// Gets/sets the name of the role.
@@ -193,5 +200,10 @@ namespace SoftwareMonkeys.SiteStarter.Entities
                 UserIDs = (Guid[])list.ToArray();
             }
         }*/
+        
+		public override string ToString()
+		{
+			return Name;
+		}
     }
 }

@@ -40,6 +40,7 @@
     <Compile Include="Admin\Tests\EntitySelectTests.aspx.cs">
       <DependentUpon>EntitySelectTests.aspx</DependentUpon>
     </Compile>
+    <None Include="Admin\Tests\EntityTreeTests.aspx" />
     <None Include="Admin\AutoBackup.aspx" />
     <None Include="Admin\AutoSetup.aspx" />
     <None Include="Admin\Backup.aspx" />
@@ -58,6 +59,7 @@
     <None Include="Admin\Tests\EntitySelectDelivererTests.aspx" />
     <None Include="Admin\Tests\EntitySelectRequesterTests.aspx" />
     <None Include="Admin\Tests\EntitySelectTests.aspx" />
+    <None Include="Admin\Tests\IndexGridTests.aspx" />
     <None Include="Admin\Tests\RefactorData.aspx" />
     <None Include="Admin\UnitTests.aspx" />
     <None Include="Admin\Update.aspx" />

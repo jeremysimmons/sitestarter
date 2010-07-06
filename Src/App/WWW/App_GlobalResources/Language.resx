@@ -677,4 +677,10 @@ ${WebSite.Title}&lt;br /&gt;
   <data name="ImportComplete" xml:space="preserve">
     <value>Import Complete</value>
   </data>
+  <data name="ImportCompleteMessage" xml:space="preserve">
+    <value>Data imported successfully.</value>
+  </data>
+  <data name="LogIn" xml:space="preserve">
+    <value>Log In</value>
+  </data>
 </root>

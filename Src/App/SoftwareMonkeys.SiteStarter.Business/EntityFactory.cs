@@ -127,11 +127,13 @@ namespace SoftwareMonkeys.SiteStarter.Business
         /// <returns>The value of the specified property on the provided entity.</returns>
         static public object GetPropertyValue(IEntity entity, string propertyName)
         {
-            // todo: add unit testing
+            /*// todo: add unit testing
             PropertyInfo property = entity.GetType().GetProperty(propertyName);
             if (property == null)
                 throw new ArgumentException("The provided property '" + propertyName + "' was not found on the entity type '" + entity.GetType().ToString() + "'.");
-            return property.GetValue(entity, null);
+            return property.GetValue(entity, null);*/
+            	
+            	return EntitiesUtilities.GetPropertyValue(entity, propertyName);
         }
 	}
 }

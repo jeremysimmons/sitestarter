@@ -27,7 +27,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			}
 			set { entityType = value; }
 		}
-
+		
+		[Bindable(true)]
+		[Browsable(true)]
 		public string NavigateUrl
 		{
 			get {
@@ -36,6 +38,22 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				return (string)ViewState["NavigateUrl"];
 			}
 			set { ViewState["NavigateUrl"] = value; }
+		}
+		
+		/// <summary>
+		/// Gets/sets the text displayed when there's no data.
+		/// </summary>
+		[Bindable(true)]
+		[Browsable(true)]
+		public string NoDataText
+		{
+			get
+			{
+				if (ViewState["NoDataText"] == null)
+					ViewState["NoDataText"] = String.Empty;
+				return (string)ViewState["NoDataText"];
+			}
+			set { ViewState["NoDataText"] = value; }
 		}
 	}
 
@@ -71,23 +89,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			}
 		}
 
-		/// <summary>
-		/// Gets/sets the text displayed when there's no data.
-		/// </summary>
-		public string NoDataText
-		{
-			get
-			{
-				if (ViewState["NoDataText"] == null)
-					ViewState["NoDataText"] = String.Empty;
-				return (string)ViewState["NoDataText"];
-			}
-			set
-			{
-				ViewState["NoDataText"] = value;
-			}
-		}
-
 		protected override void PerformDataBinding()
 		{
 			base.PerformDataBinding();
@@ -105,7 +106,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			Nodes.Clear();
 
 			if (entities == null || entities.Length == 0)
-				Nodes.Add(new TreeNode(NoDataText)); // This should be in the language file
+			{
+				TreeNode node = new TreeNode("<i>" + NoDataText + "</i>");
+				node.SelectAction = TreeNodeSelectAction.None;
+				Nodes.Add(node); // This should be in the language file
+			}
 			else
 			{
 				foreach (E subEntity in entities)
@@ -117,13 +122,18 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				}
 			}
 		}
+		
+		private void AddNode(TreeNode parentNode, IEntity entity)
+		{
+			AddNode(parentNode, entity, true);
+		}
 
 		/// <summary>
 		/// Adds a node for the provided entity to the tree.
 		/// </summary>
 		/// <param name="parentNode">The parent node to add the entity to.</param>
 		/// <param name="entity">The entity to add to the tree.</param>
-		private void AddNode(TreeNode parentNode, E entity)
+		private void AddNode(TreeNode parentNode, IEntity entity, bool enabled)
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Adding a node to the entity tree.", NLog.LogLevel.Debug))
 			{
@@ -136,6 +146,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				
 				// TODO: Should the text displayed on the tree be customisable?
 				TreeNode node = new TreeNode(entity.ToString(), entity.ID.ToString());
+				//node.
 
 				// Choose an appropriate space character (? or &)
 				string spaceCharacter = String.Empty;
@@ -147,20 +158,27 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				// Set the navigate URL on the tree node
 				//if (NavigateUrl != String.Empty)
 				//node.NavigateUrl = NavigateUrl + spaceCharacter + "a=View" + entity.GetType().Name + "&" + entity.GetType().Name + "ID=" + entity.ID;
-				if (NavigateUrl != String.Empty)
+				if (!enabled)
 				{
-					AppLogger.Debug("Node navigate url: " + NavigateUrl);
-					
-					AppLogger.Debug("Fixing node navigate url.");
-					
-					AppLogger.Debug("Checking for ID tag: " + HttpUtility.UrlEncode("${Entity.ID}"));
-					AppLogger.Debug("Checking for unique key tag: " + HttpUtility.UrlEncode("${Entity.UniqueKey}"));
-					
-					string fixedUrl = NavigateUrl;
-					fixedUrl = fixedUrl.Replace(HttpUtility.UrlEncode("${Entity.ID}"), entity.ID.ToString());
-					fixedUrl = fixedUrl.Replace(HttpUtility.UrlEncode("${Entity.UniqueKey}"), entity.UniqueKey);
-					node.NavigateUrl = fixedUrl;
-					
+					node.SelectAction = TreeNodeSelectAction.None;
+				}
+				else
+				{
+					if (NavigateUrl != String.Empty)
+					{
+						AppLogger.Debug("Node navigate url: " + NavigateUrl);
+						
+						AppLogger.Debug("Fixing node navigate url.");
+						
+						AppLogger.Debug("Checking for ID tag: " + HttpUtility.UrlEncode("${Entity.ID}"));
+						AppLogger.Debug("Checking for unique key tag: " + HttpUtility.UrlEncode("${Entity.UniqueKey}"));
+						
+						string fixedUrl = NavigateUrl;
+						fixedUrl = fixedUrl.Replace("${Entity.ID}", HttpUtility.UrlEncode(entity.ID.ToString()));
+						fixedUrl = fixedUrl.Replace("${Entity.UniqueKey}", HttpUtility.UrlEncode(entity.UniqueKey));
+						
+						node.NavigateUrl = fixedUrl;
+					}
 				}
 				
 				AppLogger.Debug("Node navigate url: " + NavigateUrl);
@@ -175,14 +193,21 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				{
 					AppLogger.Debug("Branches property specified: " + BranchesProperty);
 					
-					E[] branches = (E[])EntityFactory.GetPropertyValue(entity, BranchesProperty);
-					if (branches != null)
-					{	
-						foreach (E subEntity in branches)
+					if (EntitiesUtilities.PropertyExists(entity, BranchesProperty))
+					{
+						IEntity[] branches = Collection<IEntity>.ConvertAll(EntitiesUtilities.GetPropertyValue(entity, BranchesProperty));
+						if (branches != null)
 						{
-							AppLogger.Debug("Adding branch entity: " + subEntity.ToString());
-							AddNode(node, subEntity);
+							foreach (IEntity subEntity in branches)
+							{
+								AppLogger.Debug("Adding branch entity: " + subEntity.ToString());
+								AddNode(node, subEntity, true);
+							}
 						}
+					}
+					else
+					{
+						AppLogger.Debug("Branches property '" + BranchesProperty + "' not found on type '" + entity.GetType() + "'. Skipping branches for this entity.");
 					}
 				}
 			}

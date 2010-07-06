@@ -48,7 +48,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseFilter.cs" />
-    <Compile Include="Batch.cs" />
+    <Compile Include="Batch.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="BatchManager.cs" />
     <Compile Include="DataUtilities.cs" />
     <Compile Include="IDataFilterGroup.cs" />

@@ -29,7 +29,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
         
         public virtual string UniqueKey
         {
-        	get { throw new InvalidOperationException("This property must be overridden."); }
+        	get { throw new InvalidOperationException("This property must be overridden on type: " + this.GetType().ToString()); }
         }
 
         /// <summary>
