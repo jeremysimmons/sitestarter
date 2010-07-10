@@ -266,6 +266,8 @@
                                 PageSize="20" OnItemCommand="IndexGrid_ItemCommand" DataKeyField="ID">
                                 <Columns>
                                     <asp:BoundColumn DataField="Username" HeaderText="Username" SortExpression="Username" />
+                                    <asp:BoundColumn DataField="FirstName" HeaderText="FirstName" SortExpression="FirstName" />
+                                    <asp:BoundColumn DataField="LastName" HeaderText="LastName" SortExpression="LastName" />
                                     <asp:BoundColumn DataField="Email" HeaderText="Email" SortExpression="Email" />
                                     <asp:BoundColumn DataField="IsLockedOut" HeaderText="IsLockedOut" SortExpression="IsLockedOut" />
                                     <asp:BoundColumn DataField="IsApproved" HeaderText="IsApproved" SortExpression="IsApproved" />

@@ -199,9 +199,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				{
 					using (LogGroup logGroup2 = AppLogger.StartGroup("Selecting/deselecting item.", NLog.LogLevel.Debug))
 					{
+						Guid id = Guid.Empty;
+						
+						if (GuidValidator.IsValidGuid(item.Value))
+							id = GuidValidator.ParseGuid(item.Value);
+						
 						AppLogger.Debug("item.Text: " + item.Text);
 						AppLogger.Debug("item.Value: " + item.Value);
-						item.Selected = (Array.IndexOf(selectedEntityIDs, new Guid(item.Value)) > -1);
+						item.Selected = (Array.IndexOf(selectedEntityIDs, id) > -1);
 						AppLogger.Debug("item.Selected: " + item.Selected.ToString());
 					}
 				}
@@ -598,9 +603,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			
 			foreach (string stringID in value.Split(','))
 			{
-				Guid id = new Guid(stringID.Trim());
-				
-				list.Add(id);
+				if (GuidValidator.IsValidGuid(stringID))
+				{
+					Guid id = GuidValidator.ParseGuid(stringID);
+					list.Add(id);
+				}
 			}
 			
 			return list.ToArray();
@@ -702,7 +709,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				{
 					AppLogger.Debug("HideNoSelection == false");
 					AppLogger.Debug("Inserting the 'No Selection' item.");
-					this.Items.Insert(0, new ListItem(NoSelectionText, Guid.Empty.ToString()));
+					this.Items.Insert(0, new ListItem(NoSelectionText, String.Empty));
 				}
 				else
 				{

@@ -182,21 +182,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			if (entity == null)
 				throw new ArgumentNullException("entity");
-			/*
-            object[] attributes = (object[])type.GetCustomAttributes(true);
-		if (attributes != null)
-		{
-	            foreach (object attribute in attributes)
-	            {
-	                if (attribute is DataStoreAttribute)
-	                    return ((DataStoreAttribute)attribute).DataStoreName;
-	            }
-	            if (throwErrorIfNotFound)
-	            {
-	                throw new Exception("No data store name was found for the entity '" + type.ToString() + "'");
-	            }
-		}
-            return String.Empty;*/
+			
 			string dataStoreName = String.Empty;
 			Type type = entity.GetType();
 			

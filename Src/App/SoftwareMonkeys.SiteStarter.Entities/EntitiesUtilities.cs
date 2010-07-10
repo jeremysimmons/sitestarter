@@ -216,88 +216,29 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				{
 					if (IsReference(entityType, propertyName, returnType))
 					{
-						EntityReferenceCollection references = null;
-						
 						Type referencedEntityType = GetReferenceType(entityType, propertyName, returnType);
 						
 						string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(entity.GetType(), property);
 						
 						if (IsMultipleReference(entity.GetType(), property))
 						{
-							AppLogger.Debug("Multiple reference property.");
-							
-							object propertyValue = property.GetValue(entity, null);
-							
-							AppLogger.Debug("Property value: " + (propertyValue == null ? "[null]" : propertyValue.ToString()));
-							
-							Collection<IEntity> referencedEntities = new Collection<IEntity>();
-							
-							//if (propertyValue is Array)
-							//{
-							referencedEntities.AddRange(GetReferencedEntities(entity, property));
-							//}
-							//else
-							//{
-							//	foreach (IEntity entity in (Collection<IEntity>)propertyValue))
-							//	{
-							//		referencedEntities.Add(entity);
-							///	}
-							//}
-							
-							AppLogger.Debug("# of referenced entities found: " + referencedEntities.Count);
-							
-							references = new EntityReferenceCollection(entity, propertyName, referencedEntities.ToArray(), mirrorPropertyName);
-							
-							AppLogger.Debug("Reference objects created.");
-							
-							foreach (EntityIDReference reference in references)
+							foreach (EntityIDReference r in GetReferencesFromMultipleReferenceProperty(entity, property, mirrorPropertyName))
 							{
-								AppLogger.Debug("Adding reference with ID: " + reference.ID.ToString());
-
-								AppLogger.Debug("Source entity ID: " + reference.Entity1ID.ToString());
-								AppLogger.Debug("Referenced entity ID: " + reference.Entity2ID.ToString());
-								
-								AppLogger.Debug("Source entity name: " + reference.Type1Name);
-								AppLogger.Debug("Referenced entity name: " + reference.Type2Name);
-								
-								AppLogger.Debug("Source property name: " + reference.Property1Name);
-								AppLogger.Debug("Mirror property name: " + reference.Property2Name);
-								
-								
-								collection.Add(reference.ToData());
+								if (r != null)
+									collection.Add(r);
 							}
 						}
 						else if (IsSingleReference(entityType, property))
 						{
-							AppLogger.Debug("Single reference property.");
-							
-							IEntity[] referencedEntities = GetReferencedEntities(entity, property);
-							
-							if (referencedEntities != null && referencedEntities.Length > 0)
-							{
-								IEntity referencedEntity = referencedEntities[0];
-								
-								references = new EntityReferenceCollection(entity, propertyName, new IEntity[] {referencedEntity}, mirrorPropertyName);
-								
-								foreach (EntityIDReference reference in references)
-								{
-									AppLogger.Debug("Adding reference with ID: " + reference.ID.ToString());
-									
-									AppLogger.Debug("Source entity ID: " + reference.Entity1ID.ToString());
-									AppLogger.Debug("Referenced entity ID: " + reference.Entity2ID.ToString());
-									
-									AppLogger.Debug("Source entity name: " + reference.Type1Name);
-									AppLogger.Debug("Referenced entity name: " + reference.Type2Name);
-									
-									collection.Add(reference.ToData());
-								}
-							}
-							else
-								AppLogger.Debug("referencedEntities == null || referencedEntities.Length = 0");
+							EntityIDReference r = GetReferenceFromSingleReferenceProperty(entity, property, mirrorPropertyName);
+							if (r != null)
+								collection.Add(r);
 						}
 						else
 							throw new NotSupportedException("The property type '" + property.PropertyType.ToString() + "' is not supported.");
 					}
+					else
+						throw new ArgumentException("The specified property is not a reference.");
 					
 					AppLogger.Debug("References found: " + collection.Count.ToString());
 				}
@@ -310,6 +251,96 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			return collection;
 		}
 		
+		static private EntityIDReference GetReferenceFromSingleReferenceProperty(IEntity entity, PropertyInfo property, string mirrorPropertyName)
+		{
+			EntityIDReference reference = null;
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the reference from a single reference property.", NLog.LogLevel.Debug))
+			{
+				AppLogger.Debug("Single reference property.");
+				
+				IEntity[] referencedEntities = GetReferencedEntities(entity, property);
+				
+				if (referencedEntities != null && referencedEntities.Length > 0)
+				{
+					IEntity referencedEntity = referencedEntities[0];
+					
+					// TODO: Check if this can be simplified by skipping the collection part.
+					// It's only a single reference so the collection is unnecessary
+					EntityReferenceCollection references = new EntityReferenceCollection(entity, property.Name, new IEntity[] {referencedEntity}, mirrorPropertyName);
+					
+					foreach (EntityIDReference r in references)
+					{
+						AppLogger.Debug("Adding reference with ID: " + r.ID.ToString());
+						
+						AppLogger.Debug("Source entity ID: " + r.Entity1ID.ToString());
+						AppLogger.Debug("Referenced entity ID: " + r.Entity2ID.ToString());
+						
+						AppLogger.Debug("Source entity name: " + r.Type1Name);
+						AppLogger.Debug("Referenced entity name: " + r.Type2Name);
+						
+						reference = r.ToData();
+					}
+				}
+				else
+					AppLogger.Debug("referencedEntities == null || referencedEntities.Length = 0");
+				
+			}
+			return reference;
+		}
+		
+		static private EntityIDReference[] GetReferencesFromMultipleReferenceProperty(IEntity entity, PropertyInfo property, string mirrorPropertyName)
+		{
+			EntityReferenceCollection collection = new EntityReferenceCollection();
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the references from a multiple reference property.", NLog.LogLevel.Debug))
+			{
+				AppLogger.Debug("Multiple reference property.");
+				
+				object propertyValue = property.GetValue(entity, null);
+				
+				AppLogger.Debug("Property value: " + (propertyValue == null ? "[null]" : propertyValue.ToString()));
+				
+				Collection<IEntity> referencedEntities = new Collection<IEntity>();
+				
+				//if (propertyValue is Array)
+				//{
+				referencedEntities.AddRange(GetReferencedEntities(entity, property));
+				//}
+				//else
+				//{
+				//	foreach (IEntity entity in (Collection<IEntity>)propertyValue))
+				//	{
+				//		referencedEntities.Add(entity);
+				///	}
+				//}
+				
+				AppLogger.Debug("# of referenced entities found: " + referencedEntities.Count);
+				
+				EntityReferenceCollection references = new EntityReferenceCollection(entity, property.Name, referencedEntities.ToArray(), mirrorPropertyName);
+				
+				AppLogger.Debug("Reference objects created.");
+				
+				foreach (EntityIDReference reference in references)
+				{
+					AppLogger.Debug("Adding reference with ID: " + reference.ID.ToString());
+
+					AppLogger.Debug("Source entity ID: " + reference.Entity1ID.ToString());
+					AppLogger.Debug("Referenced entity ID: " + reference.Entity2ID.ToString());
+					
+					AppLogger.Debug("Source entity name: " + reference.Type1Name);
+					AppLogger.Debug("Referenced entity name: " + reference.Type2Name);
+					
+					AppLogger.Debug("Source property name: " + reference.Property1Name);
+					AppLogger.Debug("Mirror property name: " + reference.Property2Name);
+					
+					
+					collection.Add(reference.ToData());
+				}
+			}
+			
+			return collection.ToArray();
+		}
 		
 		static public bool IsReference(Type entityType, string propertyName, Type returnType)
 		{
@@ -530,7 +561,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		}
 		
 		static public string GetShortType(string longType)
-		{			
+		{
 			string tmpType = longType;
 			
 			if (tmpType.IndexOf(".") > -1)
@@ -883,7 +914,10 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				.Replace("/", "-")
 				.Replace("?", "-")
 				.Replace(":", "-")
-				.Replace(".", "_");
+				.Replace(".", "_")
+			 	.Replace("<", "-")
+				.Replace(">", "-");
+				
 			if (originalData.Length > 100)
 				return originalData.Substring(0, 100);
 			else

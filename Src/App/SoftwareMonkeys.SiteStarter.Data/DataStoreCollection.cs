@@ -85,5 +85,11 @@ namespace SoftwareMonkeys.SiteStarter.Data
                     return this[i];
             return null;
         }
+        
+        public new void Remove(IDataStore store)
+        {
+        	store.Dispose();
+        	base.Remove(store);
+        }
     }
 }

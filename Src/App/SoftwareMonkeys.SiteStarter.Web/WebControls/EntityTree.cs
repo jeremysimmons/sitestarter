@@ -55,6 +55,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			}
 			set { ViewState["NoDataText"] = value; }
 		}
+		
+		/*protected override void OnInit(EventArgs e)
+		{
+			base.OnInit(e);
+		}*/
 	}
 
 	/// <summary>
@@ -123,7 +128,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			}
 		}
 		
-		private void AddNode(TreeNode parentNode, IEntity entity)
+		public void AddNode(TreeNode parentNode, IEntity entity)
 		{
 			AddNode(parentNode, entity, true);
 		}
@@ -133,7 +138,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		/// </summary>
 		/// <param name="parentNode">The parent node to add the entity to.</param>
 		/// <param name="entity">The entity to add to the tree.</param>
-		private void AddNode(TreeNode parentNode, IEntity entity, bool enabled)
+		public void AddNode(TreeNode parentNode, IEntity entity, bool enabled)
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Adding a node to the entity tree.", NLog.LogLevel.Debug))
 			{
@@ -166,6 +171,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				{
 					if (NavigateUrl != String.Empty)
 					{
+						node.NavigateUrl = NavigateUrl;
+					}
+					
+					if (node.NavigateUrl != String.Empty)
+					{
 						AppLogger.Debug("Node navigate url: " + NavigateUrl);
 						
 						AppLogger.Debug("Fixing node navigate url.");
@@ -173,10 +183,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 						AppLogger.Debug("Checking for ID tag: " + HttpUtility.UrlEncode("${Entity.ID}"));
 						AppLogger.Debug("Checking for unique key tag: " + HttpUtility.UrlEncode("${Entity.UniqueKey}"));
 						
-						string fixedUrl = NavigateUrl;
-						fixedUrl = fixedUrl.Replace("${Entity.ID}", HttpUtility.UrlEncode(entity.ID.ToString()));
-						fixedUrl = fixedUrl.Replace("${Entity.UniqueKey}", HttpUtility.UrlEncode(entity.UniqueKey));
-						
+						string fixedUrl = node.NavigateUrl;
+						fixedUrl = fixedUrl.Replace(HttpUtility.UrlEncode("${Entity.ID}"), HttpUtility.UrlEncode(entity.ID.ToString()));
+						fixedUrl = fixedUrl.Replace(HttpUtility.UrlEncode("${Entity.UniqueKey}"), HttpUtility.UrlEncode(entity.UniqueKey));
+						// Quick fix below
+						// Resolves the issue of . character being converted into _ which is meant to prevent breaking, but also trips up the previous lines
+						fixedUrl = fixedUrl.Replace(HttpUtility.UrlEncode("${Entity_ID}"), HttpUtility.UrlEncode(entity.ID.ToString()));
+						fixedUrl = fixedUrl.Replace(HttpUtility.UrlEncode("${Entity_UniqueKey}"), HttpUtility.UrlEncode(entity.UniqueKey));
 						node.NavigateUrl = fixedUrl;
 					}
 				}

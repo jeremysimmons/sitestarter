@@ -5,6 +5,7 @@
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Business" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Web.Properties" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
+<%@ Import namespace="SoftwareMonkeys.SiteStarter.Web.Security" %>
 <%@ Import namespace="System.IO" %>
 <%@ Import namespace="System.Xml" %>
 
@@ -20,22 +21,26 @@
 
 	private void Page_Load(object sender, EventArgs e)
 	{
+        Authorisation.EnsureIsAuthenticated();
+
+        Authorisation.EnsureIsInRole("Administrator");
+        
 	    if (!IsPostBack)
 	    {
-		if (Request.QueryString["LogDate"] == null || Request.QueryString["LogDate"] == String.Empty)
-		{
-			ListLogs();	
-
-		}
-		else if (Request.QueryString["LogThread"] == null || Request.QueryString["LogThread"] == String.Empty)
-		{
-			ListThreads();	
-
-		}
-		else
-		{
-			PrepareLogContents();
-		}
+			if (Request.QueryString["LogDate"] == null || Request.QueryString["LogDate"] == String.Empty)
+			{
+				ListLogs();	
+	
+			}
+			else if (Request.QueryString["LogThread"] == null || Request.QueryString["LogThread"] == String.Empty)
+			{
+				ListThreads();	
+	
+			}
+			else
+			{
+				PrepareLogContents();
+			}
 		//ShowLog();
 	    }
 	    
