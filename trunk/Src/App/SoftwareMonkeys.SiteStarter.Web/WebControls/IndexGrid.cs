@@ -622,7 +622,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			
 			// Text cell
 			TableCell textCell = new TableCell();
-			textCell.Controls.Add(new LiteralControl("<i>[" + NoDataText + "]</i>"));
+			textCell.Controls.Add(new LiteralControl("<i>" + NoDataText + "</i>"));
 			
 			DataGridItem textRow = new DataGridItem(Items.Count, 0, ListItemType.Item);
 			textRow.Cells.Add(textCell);

@@ -47,7 +47,7 @@
 
         manager.ExecuteBackup();
 
-        Result.Display(Resources.Language.BackupComplete);
+        //Result.Display(Resources.Language.BackupComplete);
 
             Config.Application.Settings["LastAutoBackup"] = DateTime.Now;
 

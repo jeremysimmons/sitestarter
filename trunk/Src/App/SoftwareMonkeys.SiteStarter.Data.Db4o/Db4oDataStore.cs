@@ -152,6 +152,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			using (LogGroup logGroup = AppLogger.StartGroup("Opening data server.", NLog.LogLevel.Info))
 			{
 				Db4oFactory.Configure().ActivationDepth(2);
+				Db4oFactory.Configure().UpdateDepth(0);
 				
 				Db4oFactory.Configure().ObjectClass(typeof(IEntity)).ObjectField("id").Indexed(true);
 				
@@ -171,7 +172,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				if (!Directory.Exists(Path.GetDirectoryName(fullName)))
 					Directory.CreateDirectory(Path.GetDirectoryName(fullName));
 				
-				ObjectServer = Db4oFactory.OpenServer(db4oConfiguration,
+				ObjectServer = Db4oFactory.OpenServer(Db4oFactory.NewConfiguration(),
 				                                      fullName, 0);
 				
 				AppLogger.Debug("Server opened");
@@ -257,14 +258,15 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					toUpdate.Add(reference.ToData());
 				}
 				
+				// TODO: Reenable
 				//  Clear all the references from the entity once they're ready to be saved separately
-				foreach (PropertyInfo property in entityType.GetProperties())
-				{
-					if (EntitiesUtilities.IsReference(entityType, property.Name, property.PropertyType))
-					{
-						Reflector.SetPropertyValue(entity, property.Name, null);
-					}
-				}
+				//foreach (PropertyInfo property in entityType.GetProperties())
+				//{
+				//	if (EntitiesUtilities.IsReference(entityType, property.Name, property.PropertyType))
+				//	{
+				//		Reflector.SetPropertyValue(entity, property.Name, null);
+				//	}
+				//}
 				
 				DataUtilities.StripReferences(entity);
 			}
@@ -308,18 +310,14 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 						
 						PreSave(clonedEntity, out toUpdate, out toDelete);
 
-						// Update any entities that were modified (eg. references)
-						foreach (IEntity entityToUpdate in toUpdate)
-						{
-							DataAccess.Data.Stores[entityToUpdate].Update((IEntity)entityToUpdate);
-						}
+						HandleReferencedEntities(toUpdate);
 						
 						// Not necessary for saving
 						// Delete any entities that are obsolete (eg. references)
-						//foreach (IEntity entityToDelete in toDelete)
-						//{
-						//	DataAccess.Data.Stores[entityToDelete].Delete((IEntity)entityToDelete);
-						//}
+						/*foreach (IEntity entityToDelete in toDelete)
+						{
+							DataAccess.Data.Stores[entityToDelete].Delete((IEntity)entityToDelete);
+						}*/
 
 
 						if (clonedEntity != null)
@@ -339,13 +337,28 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				}
 			}
 		}
+		
+		private void HandleReferencedEntities(IEntity[] pendingEntities)
+		{
+			foreach (IEntity entity in pendingEntities)
+			{
+				if (!DataAccess.Data.IsStored(entity))
+				{
+					DataAccess.Data.Stores[entity].Save((IEntity)entity);
+				}
+				else
+				{
+					DataAccess.Data.Stores[entity].Update((IEntity)entity);
+				}
+			}
+		}
 
 		public void PreUpdate(IEntity entity, out IEntity[] entitiesToUpdate, out IEntity[] entitiesToDelete)
 		{
 			List<IEntity> toUpdate = new List<IEntity>();
 			List<IEntity> toDelete = new List<IEntity>();
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Preparting entity to be updated.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = AppLogger.StartGroup("Preparing entity to be updated.", NLog.LogLevel.Debug))
 			{
 				AppLogger.Debug("Entity type: " + entity.GetType().ToString());
 				AppLogger.Debug("Entity ID : " + entity.ID);
@@ -407,6 +420,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				AppLogger.Debug("# to update: " + toUpdate.Count);
 				
 				
+				// TODO: Reenable
 				DataUtilities.StripReferences(entity);
 				
 				
@@ -422,6 +436,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			using (LogGroup logGroup = AppLogger.StartGroup("Updating the provided entity.", NLog.LogLevel.Debug))
 			{
+				string storeName = DataUtilities.GetDataStoreName(entity);
+				
+				if (!IsStored(entity))
+					throw new ArgumentException("entity", "The provided entity of type '" + entity.GetType() + "' is not found in the store with name '" + storeName + "'.");
+				
 				if (entity == null)
 					throw new ArgumentNullException("entity");
 				
@@ -453,23 +472,18 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					// Preupdate must be called to ensure all references are correctly stored
 					PreUpdate(clonedEntity, out toUpdate, out toDelete);
 					
-					using (LogGroup logGroup2 = AppLogger.StartGroup("Deleting all entities that need to be deleted.", NLog.LogLevel.Debug))
-					{
-						// Delete any entities that are obsolete (eg. references)
-						foreach (IEntity entityToDelete in toDelete)
-						{
-							DataAccess.Data.Stores[entityToDelete].Delete((IEntity)entityToDelete);
-						}
-					}
+					HandleObsoleteReferences(toDelete);
 					
-					using (LogGroup logGroup2 = AppLogger.StartGroup("Updating all other entities that need updating.", NLog.LogLevel.Debug))
+					HandleReferencedEntities(toUpdate);
+					
+					/*using (LogGroup logGroup2 = AppLogger.StartGroup("Updating all other entities that need updating.", NLog.LogLevel.Debug))
 					{
 						// Update any entities that were modified (eg. references)
 						foreach (IEntity entityToUpdate in toUpdate)
 						{
 							DataAccess.Data.Stores[entityToUpdate].Save((IEntity)entityToUpdate);
 						}
-					}
+					}*/
 					
 					if (clonedEntity != null)
 					{
@@ -482,6 +496,17 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				}
 				
 				
+			}
+		}
+		
+		private void HandleObsoleteReferences(IEntity[] references)
+		{
+			using (LogGroup logGroup2 = AppLogger.StartGroup("Deleting all entities that need to be deleted.", NLog.LogLevel.Debug))
+			{
+				foreach (IEntity reference in references)
+				{
+					DataAccess.Data.Stores[reference].Delete((IEntity)reference);
+				}
 			}
 		}
 
@@ -816,14 +841,14 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			//using (LogGroup logGroup = AppLogger.StartGroup("Querying the data store based on the provided type and parameters.", NLog.LogLevel.Debug))
 			//{
-				
-				if (parameters == null)
-					throw new ArgumentNullException("parameters");
+			
+			if (parameters == null)
+				throw new ArgumentNullException("parameters");
 
-				if (DoesExist)
-				{
-					
-					/*IQuery query = ObjectContainer.Query();
+			if (DoesExist)
+			{
+				
+				/*IQuery query = ObjectContainer.Query();
 					query.Constrain(type);
 					
 					foreach (string properyName in parameters.Keys)
@@ -843,8 +868,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 						else
 							throw new Exception("Invalid type loaded: " + o.GetType().ToString());
 					}*/
-						
-						entities = new List<IEntity>(ObjectContainer.Query<IEntity>(delegate(IEntity e)
+				
+				entities = new List<IEntity>(ObjectContainer.Query<IEntity>(delegate(IEntity e)
 				                                                            {
 				                                                            	AppLogger.Debug("Checking type " + e.GetType().ToString());
 				                                                            	
@@ -872,10 +897,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				                                                            	AppLogger.Debug("Matches: " + matches.ToString());
 				                                                            	return matches;
 				                                                            }));
-						
+				
 
-						
-				}
+				
+			}
 			//}
 
 			return (IEntity[])entities.ToArray();
@@ -1273,7 +1298,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		
 		public void Commit()
 		{
-			Commit(false);
+			Commit(true);
 		}
 		
 		

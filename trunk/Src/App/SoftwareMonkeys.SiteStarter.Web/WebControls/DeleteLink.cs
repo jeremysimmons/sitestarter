@@ -10,6 +10,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 	public class DeleteLink : HyperLink
 	{
 		[Bindable(true)]
+		[Browsable(true)]
 		public string ConfirmMessage
 		{
 			get { return (string)ViewState["ConfirmMessage"]; }
@@ -20,13 +21,23 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		{
 		}
 		
-		protected override void OnLoad(EventArgs e)
+		/*protected override void OnLoad(EventArgs e)
 		{
-			string script = "return confirm('" + Escape(ConfirmMessage) + "');";
-			
-			Attributes.Add("onclick", script);
-			
 			base.OnLoad(e);
+			
+			
+		}*/
+		
+		public override void DataBind()
+		{
+			base.DataBind();
+			
+			if (Enabled)
+			{
+				string script = "return confirm('" + Escape(ConfirmMessage) + "');";
+				
+				Attributes.Add("onclick", script);
+			}
 		}
 		
 		private string Escape(string input)

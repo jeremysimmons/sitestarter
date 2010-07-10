@@ -71,9 +71,8 @@ private UserRole CreateAdministratorRole(User user)
 	UserRole administratorRole = new UserRole();
     administratorRole.ID = Guid.NewGuid();
     administratorRole.Name = Resources.Language.Administrator;
-    //administratorRole.Users = new User[] { user };
+    administratorRole.Users = new User[] { user };
     
-    user.Roles = new UserRole[] {administratorRole};
     
     return administratorRole;
 }
@@ -83,6 +82,7 @@ private void Save(User user, UserRole administratorRole, AppConfig config)
 
     if (SoftwareMonkeys.SiteStarter.Business.UserFactory<User>.Current.SaveUser(user))
     {
+    
         UserRoleFactory.Current.SaveUserRole(administratorRole);
         
     	//user = (User)UserFactory<User>.Current.GetUserByUsername(user.Username);

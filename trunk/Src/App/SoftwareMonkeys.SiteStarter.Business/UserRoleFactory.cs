@@ -15,24 +15,14 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// Provides an interface for interacting with roles.
 	/// </summary>
 	[DataObject(true)]
-	public class UserRoleFactory : UserRoleFactory<UserRole>
+	public class UserRoleFactory : BaseFactory
 	{
-		
-	}
-	
-	/// <summary>
-	/// Provides an interface for interacting with roles.
-	/// </summary>
-	[DataObject(true)]
-	public class UserRoleFactory<R> : BaseFactory
-		where R : IUserRole
-	{
-		static private UserRoleFactory<R> current;
-		static public UserRoleFactory<R> Current
+		static private UserRoleFactory current;
+		static public UserRoleFactory Current
 		{
 			get {
 				if (current == null)
-					current = new UserRoleFactory<R>();
+					current = new UserRoleFactory();
 				return current; }
 		}
 		
@@ -47,7 +37,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		public IDataStore DataStore
 		{
-			get { return DataAccess.Data.Stores[typeof(Entities.IUserRole)]; }
+			get { return DataAccess.Data.Stores[typeof(Entities.UserRole)]; }
 		}
 		
 		public UserRoleFactory()
@@ -62,9 +52,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <returns>A UserRoleSet containing the retrieved roles.</returns>
 		[DataObjectMethod(DataObjectMethodType.Select, true)]
-		public R[] GetUserRoles()
+		public Entities.UserRole[] GetUserRoles()
 		{
-			return Collection<R>.ConvertAll(DataStore.GetEntities<R>());
+			return DataAccess.Data.GetEntities<UserRole>();
 		}
 
 		/// <summary>
@@ -73,10 +63,10 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="roleIDs">An array of IDs of roles to retrieve.</param>
 		/// <returns>A UserRoleSet containing the retrieved roles.</returns>
 		[DataObjectMethod(DataObjectMethodType.Select, true)]
-		public R[] GetUserRoles(Guid[] roleIDs)
+		public Entities.UserRole[] GetUserRoles(Guid[] roleIDs)
 		{
 			// Create a new role collection
-			Collection<R> roles = new Collection<R>();
+			Collection<Entities.UserRole> roles = new Collection<Entities.UserRole>();
 
 			// Loop through the IDs and add each role to the collection
 			foreach (Guid roleID in roleIDs)
@@ -95,30 +85,30 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="roleID">The ID of the role to retrieve.</param>
 		/// <returns>A UserRole object containing the requested info.</returns>
 		[DataObjectMethod(DataObjectMethodType.Select, true)]
-		public R GetUserRole(Guid roleID)
+		public UserRole GetUserRole(Guid roleID)
 		{
 			// If the ID is empty return null
 			if (roleID == Guid.Empty)
-				return default(R);
+				return null;//default(UserRole);
 
-			return (R)DataAccess.Data.GetEntity<R>("ID", roleID);
+			return (UserRole)DataAccess.Data.GetEntity<UserRole>("ID", roleID);
 		}
 
 		/// <summary>
 		/// Retrieves the roles with the provided name.
 		/// </summary>
-		public R[] GetUserRolesByName(string name)
+		public Entities.UserRole[] GetUserRolesByName(string name)
 		{
-			return DataAccess.Data.GetEntities<R>("Name", name);
+			return DataAccess.Data.GetEntities<UserRole>("Name", name);
 		}
 
 
 		/// <summary>
 		/// Retrieves the role with the provided name.
 		/// </summary>
-		public R GetUserRoleByName(string name)
+		public UserRole GetUserRoleByName(string name)
 		{
-			return (R)DataAccess.Data.GetEntity<R>("Name", name);
+			return (UserRole)DataAccess.Data.GetEntity<UserRole>("Name", name);
 		}
 		#endregion
 
@@ -161,25 +151,30 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// Updates the provided role to the DB.
 		/// </summary>
 		/// <param name="role">The role to update.</param>
-		/// <returns>A boolean value indicating whether the rolename is taken.</returns>
+		/// <returns>A boolean value indicating whether the update succeeded.</returns>
 		[DataObjectMethod(DataObjectMethodType.Update, true)]
 		public bool UpdateUserRole(Entities.IUserRole role)
 		{
-			// Check if the rolename is already taken.
-			if (UserRoleNameTaken(role))
+			bool success = false;
+			using (LogGroup logGroup = AppLogger.StartGroup("Updating the provided user role.", NLog.LogLevel.Debug))
 			{
-				// Update unsuccessful.
-				return false;
-			}
-			// ... if the rolename is NOT taken.
-			else
-			{
-				// Update the object.
-				DataStore.Update(role);
+				// Check if the rolename is already taken.
+				if (UserRoleNameTaken(role))
+				{
+					// Update unsuccessful.
+					success = false;
+				}
+				// ... if the rolename is NOT taken.
+				else
+				{
+					// Update the object.
+					DataAccess.Data.Update(role);
 
-				// Update successful.
-				return true;
+					// Update successful.
+					success = true;
+				}
 			}
+			return success;
 		}
 		#endregion
 

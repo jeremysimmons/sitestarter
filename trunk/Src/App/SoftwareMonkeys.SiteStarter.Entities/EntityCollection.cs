@@ -129,8 +129,11 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			if (entities != null)
 			{
 				foreach (object obj in entities)
-					if (obj is E)
-					base.Add((E)obj);
+				{
+					if (obj != null)
+						if (obj is E)
+							base.Add((E)obj);
+				}
 			}
 		}
 
@@ -733,7 +736,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			else
 				throw new NotSupportedException("Type note supported:" + entities.GetType().ToString());
 			
-			return collection.ToArray();
+			return (E[])collection.ToArray();
 			//return (E[])Array.ConvertAll<object, E>((object[])entities, new Converter<object, E>(object_Convert));
 		}
 		

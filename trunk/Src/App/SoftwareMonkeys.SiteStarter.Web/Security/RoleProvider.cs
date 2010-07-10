@@ -197,7 +197,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 				{
 					IUser user = UserFactory<Entities.User>.Current.GetUserByUsername(username);
 
-					IUserRole role = UserRoleFactory<Entities.UserRole>.Current.GetUserRoleByName(rolename);
+					IUserRole role = UserRoleFactory.Current.GetUserRoleByName(rolename);
 
                     UserFactory.Current.Activate(user);
 
@@ -210,7 +210,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 					UserFactory<Entities.User>.Current.UpdateUser(user);
 					
 					// Not needed. Previous line does it all.
-					//                UserRoleFactory<Entities.UserRole>.Current.UpdateUserRole(role);
+					//                UserRoleFactory.Current.UpdateUserRole(role);
 				}
 			}
 
@@ -280,7 +280,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 				AppLogger.Debug("Role ID: " + role.ID);
 				role.Name = rolename;
 
-				UserRoleFactory<Entities.UserRole>.Current.SaveUserRole(role);
+				UserRoleFactory.Current.SaveUserRole(role);
 			}
 		}
 
@@ -301,13 +301,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 				throw new ProviderException("Cannot delete a populated role.");
 			}
 
-			IUserRole role = UserRoleFactory<Entities.UserRole>.Current.GetUserRoleByName(rolename);
+			IUserRole role = UserRoleFactory.Current.GetUserRoleByName(rolename);
 
 			bool roleDeleted = false;
 
 			if (role != null)
 			{
-				UserRoleFactory<Entities.UserRole>.Current.DeleteUserRole(role);
+				UserRoleFactory.Current.DeleteUserRole(role);
 
 				roleDeleted = true;
 			}
@@ -322,7 +322,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 
 		public override string[] GetAllRoles()
 		{
-			IUserRole[] roles = UserRoleFactory<Entities.UserRole>.Current.GetUserRoles();
+			IUserRole[] roles = UserRoleFactory.Current.GetUserRoles();
 
 			List<string> names = new List<string>();
 			foreach (IUserRole role in roles)
@@ -342,7 +342,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		{
 			IUser user = UserFactory<Entities.User>.Current.GetUserByUsername(username);
 
-			IUserRole[] roles = UserRoleFactory<UserRole>.Current.GetUserRoles(Collection<IUserRole>.GetIDs(user.Roles));
+			IUserRole[] roles = UserRoleFactory.Current.GetUserRoles(Collection<IUserRole>.GetIDs(user.Roles));
 
 			List<string> names = new List<string>();
 			foreach (IUserRole role in roles)
@@ -447,7 +447,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 				{
 					IUser user = UserFactory<Entities.User>.Current.GetUserByUsername(username);
 
-					IUserRole role = UserRoleFactory<Entities.UserRole>.Current.GetUserRoleByName(rolename);
+					IUserRole role = UserRoleFactory.Current.GetUserRoleByName(rolename);
 
 
 					user.Roles = Collection<IUserRole>.Remove(user.Roles, role);
@@ -457,7 +457,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 
 					UserFactory<Entities.User>.Current.UpdateUser(user);
 
-					UserRoleFactory<Entities.UserRole>.Current.UpdateUserRole(role);
+					UserRoleFactory.Current.UpdateUserRole(role);
 				}
 			}
 		}
@@ -469,7 +469,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 
 		public override bool RoleExists(string rolename)
 		{
-			IUserRole role = UserRoleFactory<Entities.UserRole>.Current.GetUserRoleByName(rolename);
+			IUserRole role = UserRoleFactory.Current.GetUserRoleByName(rolename);
 
 			return role != null;
 		}
@@ -488,7 +488,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		{
 			List<string> usernames = new List<string>();
 
-			IUserRole role = UserRoleFactory<R>.Current.GetUserRoleByName(rolename);
+			IUserRole role = UserRoleFactory.Current.GetUserRoleByName(rolename);
 
 			U[] allUsers = UserFactory<U>.Current.GetUsers(Collection<IUser>.GetIDs(role.Users));
 

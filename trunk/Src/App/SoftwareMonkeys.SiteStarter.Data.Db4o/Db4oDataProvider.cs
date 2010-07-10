@@ -224,7 +224,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				{
 					AppLogger.Debug("Is reference != true");
 					
-					isStored = Stores[entity.GetType()].IsStored(entity);
+					isStored = Stores[entity].IsStored(entity);
 				}
 			}
 			
@@ -1532,21 +1532,23 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					
 					object value = null;
 					
+					// TODO: Remove if not needed
+					// Should be obsolete
 					// If it's a collection reference then create a collection
-					if (EntitiesUtilities.IsCollectionReference(entity.GetType(), property))
-					{
-						value = Reflector.CreateGenericObject(typeof(Collection<>),
-						                                      new Type[] {referenceType},
-						                                      new Object[] {referencedEntities});
+					//if (EntitiesUtilities.IsCollectionReference(entity.GetType(), property))
+					//{
+					//	value = Reflector.CreateGenericObject(typeof(Collection<>),
+					//	                                      new Type[] {referenceType},
+					//	                                      new Object[] {referencedEntities});
 						
 						// If the activation depth is greater than 1
-						if (depth > 1)
-						{
-							Activate(((Collection<IEntity>)value).ToArray(), depth-1);
-						}
-					}
-					else // Otherwise cast the array to the referenced type
-					{
+					//	if (depth > 1)
+					//	{
+					//		Activate(((Collection<IEntity>)value).ToArray(), depth-1);
+					//	}
+					//}
+					//else // Otherwise cast the array to the referenced type
+					//{
 						value = Collection<IEntity>.ConvertAll(referencedEntities, referenceType);
 						
 						// If the activation depth is greater than 1
@@ -1554,7 +1556,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 						{
 							Activate((IEntity[])value, depth-1);
 						}
-					}
+					//}
 					
 					if (referencedEntities == null)
 						AppLogger.Debug("# of entities found: [null]");

@@ -48,7 +48,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		public IDataStore DataStore
 		{
-			get { return DataAccess.Data.Stores[FactoryManager.GetDefaultType(this, "IUser")]; }
+			get { return DataAccess.Data.Stores[typeof(Entities.User)]; }
 		}
 		
 		public UserFactory()
@@ -78,13 +78,13 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			return Collection<U>.ConvertAll(DataStore.GetEntitiesPage<U>(location));
 		}*/
 
-		/// <summary>
-		/// Retrieves all the specified users from the DB.
-		/// </summary>
-		/// <param name="userIDs">An array of IDs of users to retrieve.</param>
-		/// <returns>An array of the retrieved users.</returns>
-		[DataObjectMethod(DataObjectMethodType.Select, true)]
-		public U[] GetUsers(Guid[] userIDs)
+			/// <summary>
+			/// Retrieves all the specified users from the DB.
+			/// </summary>
+			/// <param name="userIDs">An array of IDs of users to retrieve.</param>
+			/// <returns>An array of the retrieved users.</returns>
+			[DataObjectMethod(DataObjectMethodType.Select, true)]
+			public U[] GetUsers(Guid[] userIDs)
 		{
 			// Create a new user collection
 			Collection<U> users = new Collection<U>();
@@ -118,12 +118,12 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <summary>
 		/// Retrieves the user with the provided username.
 		/// </summary>
-		public U GetUserByUsername(string username)
+		public Entities.User GetUserByUsername(string username)
 		{
-			U user = default(U);
+			Entities.User user = null;
 			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the user with the username: " + username, NLog.LogLevel.Debug))
 			{
-				user = (U)DataAccess.Data.GetEntity<U>("Username", username);
+				user = (Entities.User)DataAccess.Data.GetEntity<Entities.User>("Username", username);
 
 				if (user != null)
 					AppLogger.Debug("User ID: "+  user.ID);
@@ -165,9 +165,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="username">The username of the user to retrieve.</param>
 		/// <param name="password">The password of the user to retrieve.</param>
 		/// <returns>The user with the provided credentials.</returns>
-		public Entities.IUser AuthenticateUser(string username, string password)
+		public Entities.User AuthenticateUser(string username, string password)
 		{
-			Entities.IUser user = null;
+			Entities.User user = null;
 
 			using(LogGroup logGroup = AppLogger.StartGroup("Retrieves the user with the specified username and password.", NLog.LogLevel.Debug))
 			{
@@ -183,7 +183,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				parameters.Add("Password", password);
 
 				// Retrieve and return the user with the username and password.
-				user = (Entities.IUser)DataAccess.Data.GetEntity<Entities.IUser>(parameters);
+				user = (Entities.User)DataAccess.Data.GetEntity<Entities.User>(parameters);
 
 				if (user != null)
 				{
@@ -193,6 +193,11 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				}
 				else
 					AppLogger.Debug("User not found...credentials are invalid.");
+				
+				// If the account hasn't be approved or the user is locked out then return null
+				// This method is for validation. To retrieve a locked out user the Get functions should be used.
+				if (user != null && (!user.IsApproved || user.IsLockedOut))
+					user = null;
 			}
 
 			return user;
@@ -255,7 +260,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				{
 					// Update the object.
 					DataStore.Update(user);
-	
+					
 					// Update successful.
 					return true;
 				}
@@ -311,6 +316,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			/// <returns>A boolean value indicating whether the username is taken.</returns>
 			public bool UsernameTaken(Entities.IUser user)
 		{
+			bool isTaken = false;
+			
 			using (LogGroup logGroup = AppLogger.StartGroup("Verifying that the username is unique.", NLog.LogLevel.Debug))
 			{
 				AppLogger.Debug("User ID: " + user.ID.ToString());
@@ -318,29 +325,31 @@ namespace SoftwareMonkeys.SiteStarter.Business
 
 				// If no username was specified just skip this function
 				if (user.Username == null || user.Username == String.Empty)
-					return false;
-
-				// Retrieve any existing user with the username.
-				Entities.IUser existing = GetUserByUsername(user.Username);
-
-				if (existing != null)
+					isTaken = false;
+				else
 				{
-					AppLogger.Debug("Found user - User ID: " + existing.ID.ToString());
-					AppLogger.Debug("Found user - Username: " + existing.Username);
-				}
-				else
-					AppLogger.Debug("No existing user found with the username '" + user.Username + "'.");
 
-				bool isTaken = (existing != null && existing.ID != user.ID);
+					// Retrieve any existing user with the username.
+					Entities.IUser existing = GetUserByUsername(user.Username);
 
-				if (isTaken)
-					AppLogger.Debug("Username has already been taken.");
-				else
-					AppLogger.Debug("Username can be used.");
+					if (existing != null)
+					{
+						AppLogger.Debug("Found user - User ID: " + existing.ID.ToString());
+						AppLogger.Debug("Found user - Username: " + existing.Username);
+					}
+					else
+						AppLogger.Debug("No existing user found with the username '" + user.Username + "'.");
 
 				// If a user was found and the IDs are not the same then it's already taken.
-				return isTaken;
+					isTaken = (existing != null && existing.ID != user.ID);
+
+					if (isTaken)
+						AppLogger.Debug("Username has already been taken.");
+					else
+						AppLogger.Debug("Username can be used.");
+				}
 			}
+			return isTaken;
 		}
 		#endregion
 	}

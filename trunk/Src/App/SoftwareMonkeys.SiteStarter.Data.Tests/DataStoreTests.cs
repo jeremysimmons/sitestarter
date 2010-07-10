@@ -894,7 +894,109 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		}
 		
 		[Test]
-		public void Test_Save_2References()
+		public void Test_SaveAndUpdate_2References_CheckLocationOfReferencedEntities()
+		{
+			ClearTestEntities();
+			
+			
+			TestUser user = new TestUser();
+			user.ID = Guid.NewGuid();
+			Guid userID = user.ID;
+			user.FirstName = "Test";
+			user.LastName = "User";
+			
+			TestRole role = new TestRole();
+			role.ID = Guid.NewGuid();
+			Guid roleID = role.ID;
+			role.Name = "Test Role";
+			
+			TestUser user2 = new TestUser();
+			user.ID = Guid.NewGuid();
+			Guid user2ID = user.ID;
+			user2.FirstName = "Test2";
+			user2.LastName = "User2";
+			
+			TestRole role2 = new TestRole();
+			role2.ID = Guid.NewGuid();
+			Guid role2ID = role2.ID;
+			role2.Name = "Test Role2";
+			
+			user.Roles = new TestRole[] {role};
+			user2.Roles = new TestRole[] {role2};
+			
+			DataAccess.Data.Stores[typeof(TestUser)].Save(user2);
+			DataAccess.Data.Stores[typeof(TestUser)].Save(user);
+			DataAccess.Data.Stores[typeof(TestRole)].Save(role2);
+			DataAccess.Data.Stores[typeof(TestRole)].Save(role);
+			
+			IEntity[] references = DataAccess.Data.Stores[DataUtilities.GetDataStoreName("TestUser", "TestRole")].GetEntities<EntityIDReference>();
+			
+			Assert.AreEqual(2, references.Length, "Incorrect number of references found.");
+			
+			//EntityIDReference reference1 = (EntityIDReference)references[0];
+			//EntityIDReference reference2 = (EntityIDReference)references[1];
+			
+			// Switch the references around if necessary to match (so they can be found in any order)
+			/*if (!reference1.Includes(user2.ID, "Roles"))
+			{
+				EntityIDReference tmp = reference1;
+				reference1 = reference2;
+				reference2 = tmp;
+			}*/
+			
+			//Assert.IsTrue(reference1.Includes(user.ID, "Roles"), "First reference does not include expected user.");
+			//Assert.IsTrue(reference1.Includes(role.ID, "Users"), "First reference does not include expected role.");
+			//Assert.IsTrue(reference2.Includes(user.ID, "Roles"), "Second reference does not include expected user.");
+			//Assert.IsTrue(reference2.Includes(role.ID, "Users"), "Second reference does not include expected role.");
+			
+			//Assert.IsFalse(reference1.Includes(user.ID, "Roles"), "First reference includes unexpected user.");
+			//Assert.IsFalse(reference1.Includes(role.ID, "Users"), "First reference includes unexpected role.");
+			//Assert.IsFalse(reference2.Includes(user2.ID, "Roles"), "Second reference includes unexpected user.");
+			//Assert.IsFalse(reference2.Includes(role2.ID, "Users"), "Second reference includes unexpected role.");
+			
+			//Assert.AreEqual(role2.ID.ToString(), ((EntityIDReference)references[0]).Entity1ID.ToString(), "First reference has invalid entity 1 ID.");
+			//Assert.AreEqual(user2.ID.ToString(), ((EntityIDReference)references[0]).Entity2ID.ToString(), "First reference has invalid entity 2 ID.");
+			
+			//Assert.AreEqual(role1.ID.ToString(), ((EntityIDReference)references[1]).Entity1ID.ToString(), "Second reference has invalid entity 1 ID.");
+			//Assert.AreEqual(user1.ID.ToString(), ((EntityIDReference)references[1]).Entity2ID.ToString(), "Second reference has invalid entity 2 ID.");
+			
+			
+			// Load the roles out of the users store (there should be none)
+			IEntity[] rolesInUsersStore = DataAccess.Data.Stores[typeof(TestUser)].GetEntities<TestRole>();
+			
+			Assert.AreEqual(0, rolesInUsersStore.Length, "Role(s) found in users store after save.");
+			
+			
+			IEntity[] rolesInRolesStore = DataAccess.Data.Stores[typeof(TestRole)].GetEntities<TestRole>();
+			
+			Assert.AreEqual(2, rolesInRolesStore.Length, "Role(s) not found in roles store after save.");
+			
+			TestUser foundUser = DataAccess.Data.GetEntity<TestUser>("ID", user.ID);
+			
+			Assert.IsNotNull(foundUser, "The foundUser variable is null.");
+			
+			
+			foundUser.Username = user.Username + " 2";
+			
+			DataAccess.Data.Update(foundUser);
+			
+			
+			// Load the roles out of the users store (there should be none)
+			IEntity[] rolesInUsersStore2 = DataAccess.Data.Stores[typeof(TestUser)].GetEntities<TestRole>();
+			
+			Assert.AreEqual(0, rolesInUsersStore2.Length, "Role(s) found in users store after update.");
+			
+			
+			IEntity[] rolesInRolesStore2 = DataAccess.Data.Stores[typeof(TestRole)].GetEntities<TestRole>();
+			
+			Assert.AreEqual(2, rolesInRolesStore2.Length, "Role(s) not found in roles store after update.");
+			
+			
+			ClearTestEntities();
+		}
+		
+		[Test]
+		public void Test_Save_2ParallelReferences()
 		{
 			ClearTestEntities();
 			
@@ -943,7 +1045,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				reference1 = reference2;
 				reference2 = tmp;
 			}
-				
+			
 			Assert.IsTrue(reference1.Includes(user2.ID, "Roles"), "First reference does not include expected user.");
 			Assert.IsTrue(reference1.Includes(role2.ID, "Users"), "First reference does not include expected role.");
 			Assert.IsTrue(reference2.Includes(user.ID, "Roles"), "Second reference does not include expected user.");
@@ -959,6 +1061,70 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			//Assert.AreEqual(role1.ID.ToString(), ((EntityIDReference)references[1]).Entity1ID.ToString(), "Second reference has invalid entity 1 ID.");
 			//Assert.AreEqual(user1.ID.ToString(), ((EntityIDReference)references[1]).Entity2ID.ToString(), "Second reference has invalid entity 2 ID.");
+			
+			ClearTestEntities();
+		}
+		
+		[Test]
+		public void Test_Save_2ConvergingReferences()
+		{
+			ClearTestEntities();
+			
+			
+			TestUser user = new TestUser();
+			user.ID = Guid.NewGuid();
+			Guid userID = user.ID;
+			user.FirstName = "Test";
+			user.LastName = "User";
+			
+			TestRole role = new TestRole();
+			role.ID = Guid.NewGuid();
+			Guid roleID = role.ID;
+			role.Name = "Test Role";
+			
+			TestUser user2 = new TestUser();
+			user.ID = Guid.NewGuid();
+			Guid user2ID = user.ID;
+			user2.FirstName = "Test2";
+			user2.LastName = "User2";
+			
+			TestRole role2 = new TestRole();
+			role2.ID = Guid.NewGuid();
+			Guid role2ID = role2.ID;
+			role2.Name = "Test Role2";
+			
+			user.Roles = new TestRole[] {role, role2};
+			//user2.Roles = new TestRole[] {role2};
+			
+			//DataAccess.Data.Stores[typeof(TestUser)].Save(user2);
+			DataAccess.Data.Stores[typeof(TestUser)].Save(user);
+			DataAccess.Data.Stores[typeof(TestRole)].Save(role2);
+			DataAccess.Data.Stores[typeof(TestRole)].Save(role);
+			
+			IEntity[] references = DataAccess.Data.Stores[DataUtilities.GetDataStoreName("TestUser", "TestRole")].GetEntities<EntityIDReference>();
+			
+			Assert.AreEqual(2, references.Length, "Incorrect number of references found.");
+			
+			EntityIDReference reference1 = (EntityIDReference)references[0];
+			EntityIDReference reference2 = (EntityIDReference)references[1];
+			
+			// Switch the references around if necessary to match (so they can be found in any order)
+			if (!reference1.Includes(role.ID, "Users"))
+			{
+				EntityIDReference tmp = reference1;
+				reference1 = reference2;
+				reference2 = tmp;
+			}
+			
+			Assert.IsTrue(reference1.Includes(user.ID, "Roles"), "First reference does not include expected user.");
+			Assert.IsTrue(reference1.Includes(role.ID, "Users"), "First reference does not include expected role.");
+			
+			Assert.IsTrue(reference2.Includes(user.ID, "Roles"), "Second reference does not include expected user.");
+			Assert.IsTrue(reference2.Includes(role2.ID, "Users"), "Second reference does not include expected role.");
+			
+			Assert.IsFalse(reference1.Includes(role2.ID, "Users"), "First reference includes unexpected role.");
+			
+			Assert.IsFalse(reference2.Includes(role.ID, "Users"), "Second reference includes unexpected role.");
 			
 			ClearTestEntities();
 		}
@@ -1056,47 +1222,55 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_Update()
 		{
-			
-			TestUser.RegisterType();
-			TestRole.RegisterType();
-			
-			
-			TestUser user = new TestUser();
-			Guid userID = user.ID = Guid.NewGuid();
-			user.FirstName = "Test";
-			user.LastName = "User";
-			
-			TestRole role = new TestRole();
-			Guid roleID = role.ID = Guid.NewGuid();
-			role.Name = "Test Role";
-			
-			user.Roles = Collection<TestRole>.Add(user.Roles, role);
-			
-			DataAccess.Data.Save(role);
-			
-			DataAccess.Data.Save(user);
-			
-			TestUser user2 = (TestUser)DataAccess.Data.GetEntity(typeof(TestUser), "ID", user.ID);
-			
-			DataAccess.Data.Activate(user2);
-			
-			user2.FirstName = "Test-Updated";
-			
-			//user2.Roles.RemoveAt(0);
-			
-			
-			DataAccess.Data.Update(user2);
-			
-			
-			TestUser user3 = (TestUser)DataAccess.Data.GetEntity(typeof(TestUser), "ID", user2.ID);
-			
-			Assert.AreEqual("Test-Updated", user3.FirstName, "The name doesn't appear to have been updated.");
-			
-			//Assert.IsNotNull(toDelete, "The toDelete list is null.");
-			//if (toDelete != null)
-			//	Assert.AreEqual(1, toDelete.Length, "Incorrect number of entities in toDelete list. Expecting the obsolete reference to be in the list.");
-			
-			DataAccess.Data.Delete(user);
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing the DataStore.Update function.", NLog.LogLevel.Debug))
+			{
+				
+				ClearTestEntities();
+				
+				
+				TestUser user = new TestUser();
+				Guid userID = user.ID = Guid.NewGuid();
+				user.FirstName = "Test-Before";
+				user.LastName = "User";
+				
+				TestRole role = new TestRole();
+				Guid roleID = role.ID = Guid.NewGuid();
+				role.Name = "Test Role";
+				
+				user.Roles = Collection<TestRole>.Add(user.Roles, role);
+				
+				DataAccess.Data.Save(role);
+				
+				DataAccess.Data.Save(user);
+				
+				TestUser user2 = (TestUser)DataAccess.Data.GetEntity(typeof(TestUser), "ID", user.ID);
+				
+				Assert.AreEqual(user.FirstName, user2.FirstName, "The name doesn't appear to have been saved.");
+				
+				DataAccess.Data.Activate(user2);
+				
+				user2.FirstName = "Test-Updated";
+				
+				//user2.Roles.RemoveAt(0);
+				
+				
+				DataAccess.Data.Update(user2);
+				
+				//IDataStore store = DataAccess.Data.Stores[user2];
+				//store.Dispose();
+				DataAccess.Data.Stores.Remove(DataAccess.Data.Stores[user2]);
+				
+				
+				TestUser user3 = (TestUser)DataAccess.Data.GetEntity<TestUser>("ID", user2.ID);
+				
+				Assert.AreEqual(user2.FirstName, user3.FirstName, "The name doesn't appear to have been updated.");
+				
+				//Assert.IsNotNull(toDelete, "The toDelete list is null.");
+				//if (toDelete != null)
+				//	Assert.AreEqual(1, toDelete.Length, "Incorrect number of entities in toDelete list. Expecting the obsolete reference to be in the list.");
+				
+				ClearTestEntities();
+			}
 		}
 		
 		[Test]
@@ -1142,7 +1316,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			Assert.AreEqual("B", entities[1].FirstName, "Sorting failed #2.");
 			Assert.AreEqual("C", entities[2].FirstName, "Sorting failed #3.");
 			
-		ClearTestEntities();
+			ClearTestEntities();
 		}
 		
 		[Test]

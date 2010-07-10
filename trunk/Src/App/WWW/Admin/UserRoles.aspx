@@ -6,6 +6,7 @@
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Entities" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Security" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
 <script runat="server">
     #region Main functions
     /// <summary>
@@ -13,18 +14,21 @@
     /// </summary>
     private void ManageUserRoles()
     {
-        Authorisation.EnsureIsAuthenticated();
-
-        Authorisation.EnsureIsInRole("Administrator");
-        
-        OperationManager.StartOperation("ManageUserRoles", IndexView);
-
-        UserRole[] roles = UserRoleFactory.Current.GetUserRoles();
-        IndexGrid.DataSource = roles;
-
-        Authorisation.EnsureUserCan("View", roles);        
-        
-        IndexView.DataBind();
+   		using (LogGroup logGroup = AppLogger.StartGroup("Preparing the index of user roles.", NLog.LogLevel.Debug))
+   		{
+	        Authorisation.EnsureIsAuthenticated();
+	
+	        Authorisation.EnsureIsInRole("Administrator");
+	        
+	        OperationManager.StartOperation("ManageUserRoles", IndexView);
+	
+	        UserRole[] roles = UserRoleFactory.Current.GetUserRoles();
+	        IndexGrid.DataSource = roles;
+	
+	        Authorisation.EnsureUserCan("View", roles);        
+	        
+	        IndexView.DataBind();
+        }
     }
 
     /// <summary>
@@ -32,21 +36,22 @@
     /// </summary>
     private void CreateUserRole()
     {
-
-        Authorisation.EnsureIsAuthenticated();
-
-        Authorisation.EnsureIsInRole("Administrator");
-        
-        OperationManager.StartOperation("CreateUserRole", FormView);
-
-        UserRole role = new UserRole();
-        role.ID = Guid.NewGuid();
-        DataForm.DataSource = role;
-
-
-        Authorisation.EnsureUserCan("Create", role);        
-
-        FormView.DataBind();
+		using (LogGroup logGroup = AppLogger.StartGroup("Preparing the form to create a new user role.", NLog.LogLevel.Debug))
+		{
+	        Authorisation.EnsureIsAuthenticated();
+	
+	        Authorisation.EnsureIsInRole("Administrator");
+	        
+	        OperationManager.StartOperation("CreateUserRole", FormView);
+	
+	        UserRole role = new UserRole();
+	        role.ID = Guid.NewGuid();
+	        DataForm.DataSource = role;
+	
+	        Authorisation.EnsureUserCan("Create", role);        
+	
+	        FormView.DataBind();
+        }
     }
 
     /// <summary>
@@ -70,43 +75,52 @@
 
     private void EditUserRole(Guid roleID)
     {
-
-        Authorisation.EnsureIsAuthenticated();
-
-        Authorisation.EnsureIsInRole("Administrator");
-        
-        // Start the operation
-        OperationManager.StartOperation("EditUserRole", FormView);
-
-        // Load the specified role
-        UserRole role = null;
-        DataForm.DataSource = role = UserRoleFactory.Current.GetUserRole(roleID);
-        UserRoleFactory.Current.Activate((UserRole)DataForm.DataSource);
-
-        // Bind the form
-        FormView.DataBind();
+    	using (LogGroup logGroup = AppLogger.StartGroup("Editing the role with the provided ID.", NLog.LogLevel.Debug))
+    	{
+	        Authorisation.EnsureIsAuthenticated();
+	
+	        Authorisation.EnsureIsInRole("Administrator");
+	        
+	        // Start the operation
+	        OperationManager.StartOperation("EditUserRole", FormView);
+	
+	        // Load the specified role
+	        UserRole role = null;
+	        DataForm.DataSource = role = UserRoleFactory.Current.GetUserRole(roleID);
+	        UserRoleFactory.Current.Activate((UserRole)DataForm.DataSource);
+	
+	        // Bind the form
+	        FormView.DataBind();
+        }
     }
 
     private void UpdateUserRole()
     {
-        // Get a fresh copy of the role object
-        UserRole role = (UserRole)UserRoleFactory.Current.GetUserRole(((UserRole)DataForm.DataSource).ID);
-
-        // Transfer data from the form to the object
-        DataForm.ReverseBind(role);
-        
-        // Update the role
-        if (UserRoleFactory.Current.UpdateUserRole(role))
-        {
-            // Display the result to the role
-            Result.Display(Resources.Language.UserRoleUpdated);
-
-            // Show the index again
-            ManageUserRoles();
-        }
-        else
-        {
-            Result.DisplayError(Resources.Language.UserRoleNameTaken);
+    	using (LogGroup logGroup = AppLogger.StartGroup("Updating the user role on the form.", NLog.LogLevel.Debug))
+    	{
+	        // Get a fresh copy of the role object
+	        UserRole role = (UserRole)UserRoleFactory.Current.GetUserRole(((UserRole)DataForm.DataSource).ID);
+	
+	        // Transfer data from the form to the object
+	        DataForm.ReverseBind(role);
+	        
+	        // Update the role
+	        if (UserRoleFactory.Current.UpdateUserRole(role))
+	        {
+	        	AppLogger.Debug("Role name not in use. Updating.");
+	        
+	            // Display the result to the role
+	            Result.Display(Resources.Language.UserRoleUpdated);
+	
+	            // Show the index again
+	            ManageUserRoles();
+	        }
+	        else
+	        {
+	        	AppLogger.Debug("Role name in use. Showing error.");
+	        	
+	            Result.DisplayError(Resources.Language.UserRoleNameTaken);
+	        }
         }
     }
 
@@ -255,7 +269,7 @@
                             <cc:IndexGrid ID="IndexGrid" runat="server" AllowPaging="True" HeaderStyle-CssClass="Heading2" AllowSorting="True"
                                 AutoGenerateColumns="False" EmptyDataText='<%# Resources.Language.NoUserRolesFound %>'
                                 Width="100%"
-                                PageSize="2" OnItemCommand="IndexGrid_ItemCommand" DataKeyField="ID">
+                                PageSize="20" OnItemCommand="IndexGrid_ItemCommand" DataKeyField="ID">
                                 <Columns>
                                     <asp:BoundColumn DataField="Name" HeaderText="Name" SortExpression="Name" />
                                     <asp:TemplateColumn>

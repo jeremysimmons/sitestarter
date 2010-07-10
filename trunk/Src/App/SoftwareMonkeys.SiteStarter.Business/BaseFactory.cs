@@ -9,6 +9,7 @@ using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Configuration;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Data;
+using System.Reflection;
 
 namespace SoftwareMonkeys.SiteStarter.Business
 {
@@ -56,7 +57,14 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="entity">The entity to activate.</param>
 		public virtual void Activate(IEntity entity, int depth)
 		{
-			DataAccess.Data.Activate(entity, depth);
+			foreach (PropertyInfo property in entity.GetType().GetProperties())
+			{
+				if (EntitiesUtilities.IsReference(entity.GetType(), property))
+				{
+					Activate(entity, property.Name,
+					         depth-1); // We've stepped down one level so reduce the depth
+				}
+			}
 		}
 		
 		/// <summary>
@@ -101,14 +109,19 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			}
 		}
 		
+		public virtual void Activate(IEntity entity, string propertyName)
+		{
+			Activate(entity, propertyName, 1);
+		}
+		
 		/// <summary>
 		/// Activates the specified property of the provided entity by loading the references for the property.
 		/// </summary>
 		/// <param name="entity">The entity to activate.</param>
 		/// <param name="propertyName">The name of the property to activate.</param>
-		public virtual void Activate(IEntity entity, string propertyName)
+		public virtual void Activate(IEntity entity, string propertyName, int depth)
 		{
-			DataAccess.Data.Activate(entity, propertyName);
+			DataAccess.Data.Activate(entity, propertyName, depth);
 		}
 		
 		// TODO: Remove if not needed

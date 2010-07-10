@@ -27,7 +27,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		
 		public void Commit()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Committing data stores in batch.",NLog.LogLevel.Debug))
+			/*using (LogGroup logGroup = AppLogger.StartGroup("Committing data stores in batch.",NLog.LogLevel.Debug))
 			{
 				AppLogger.Debug("# of stores: " + DataStores.Count.ToString());
 				
@@ -47,7 +47,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				
 				AppLogger.Debug("Commit complete.");
 				
-			}
+			}*/
 		}
 		
 		/*public void Handle(IDataStore store)
