@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -682,5 +682,11 @@ ${WebSite.Title}&lt;br /&gt;
   </data>
   <data name="LogIn" xml:space="preserve">
     <value>Log In</value>
+  </data>
+  <data name="EnableNotifications" xml:space="preserve">
+    <value>EnableNotifications</value>
+  </data>
+  <data name="IsLockedOut" xml:space="preserve">
+    <value>Is Locked Out</value>
   </data>
 </root>

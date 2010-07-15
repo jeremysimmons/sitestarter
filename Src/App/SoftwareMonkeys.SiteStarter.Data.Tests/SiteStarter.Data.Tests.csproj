@@ -97,10 +97,12 @@
     <Compile Include="Entities\TestAccount.cs" />
     <Compile Include="Entities\TestAction.cs" />
     <Compile Include="Entities\TestRole.cs" />
+    <Compile Include="Entities\TestTask.cs" />
     <Compile Include="Entities\TestUser.cs" />
     <Compile Include="Entities\ITestArticle.cs" />
     <Compile Include="FilterGroupTests.cs" />
     <Compile Include="ReferenceFilterTests.cs" />
+    <Compile Include="ReferenceValidatorTests.cs" />
     <Compile Include="SchemaEditorTests.cs" />
     <Compile Include="TestUtilities.cs" />
   </ItemGroup>

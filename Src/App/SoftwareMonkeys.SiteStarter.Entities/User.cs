@@ -203,6 +203,13 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			set { roles = Collection<UserRole>.ConvertAll(roles); }
 		}
 
+		private bool enableNotifications;
+		public bool EnableNotifications
+		{
+			get { return enableNotifications; }
+			set { enableNotifications = value; }
+		}
+		
 		/// <summary>
 		/// Empty constructor.
 		/// </summary>

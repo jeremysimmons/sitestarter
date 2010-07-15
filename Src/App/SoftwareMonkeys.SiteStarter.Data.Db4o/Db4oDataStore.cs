@@ -285,6 +285,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				if (entity.ID == Guid.Empty)
 					throw new ArgumentException("entity.ID must be set.");
 				
+				//ReferenceValidator validator = new ReferenceValidator();
+				//validator.CheckForCircularReference(entity);
+				
 				using (Batch batch = Batch.StartBatch())
 				{
 					if (EntitiesUtilities.IsReference(entity.GetType()) && DataAccess.Data.IsStored(entity))
@@ -446,6 +449,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				
 				if (entity.ID == Guid.Empty)
 					throw new ArgumentException("entity.ID must be set.");
+				
+				
+				//ReferenceValidator validator = new ReferenceValidator();
+				//validator.CheckForCircularReference(entity);
 				
 				using (Batch batch = Batch.StartBatch())
 				{

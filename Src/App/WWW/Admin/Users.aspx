@@ -116,6 +116,8 @@
     	{
 	        // Get a fresh copy of the user object
 	        User user = (User)UserFactory.Current.GetUser(((User)DataForm.DataSource).ID);
+	        
+	        UserFactory.Current.Activate(user);
 	
 			string originalUsername = user.Username;
 	        string originalPassword = user.Password;
@@ -311,6 +313,7 @@
                                      <cc:EntityFormPasswordConfirmItem runat="server" AutoBind="false" TextBox-Width="400" FieldControlID="PasswordConfirm" IsRequired='<%# OperationManager.CurrentOperation == "CreateUser" %>' text='<%# Resources.Language.PasswordConfirm + ":" %>' CompareTo="Password" CompareToErrorMessage='<%# Resources.Language.PasswordsDontMatch %>'></cc:EntityFormPasswordConfirmItem>
                                      <cc:EntityFormCheckBoxItem runat="server" PropertyName="IsApproved" Text='<%# Resources.Language.IsApproved + ":" %>' FieldControlID="IsApproved" TextBox-Text='<%# Resources.Language.IsApprovedNote %>'></cc:EntityFormCheckBoxItem>
                                       <cc:EntityFormCheckBoxItem runat="server" PropertyName="IsLockedOut" Text='<%# Resources.Language.IsLockedOut + ":" %>' FieldControlID="IsLockedOut" TextBox-Text='<%# Resources.Language.IsLockedOutNote %>'></cc:EntityFormCheckBoxItem>
+                                      <cc:EntityFormCheckBoxItem runat="server" PropertyName="EnableNotifications" Text='<%# Resources.Language.EnableNotifications + ":" %>' FieldControlID="EnableNotifications" TextBox-Text='<%# Resources.Language.EnableNotifications %>'></cc:EntityFormCheckBoxItem>
                                       <cc:EntityFormItem runat="server" PropertyName="Roles" FieldControlID="UserRoles" ControlValuePropertyName="SelectedEntities"
                               text='<%# Resources.Language.Roles + ":" %>'>
                               <FieldTemplate>

@@ -603,9 +603,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			
 			foreach (string stringID in value.Split(','))
 			{
-				if (GuidValidator.IsValidGuid(stringID))
+				if (GuidValidator.IsValidGuid(stringID.Trim()))
 				{
-					Guid id = GuidValidator.ParseGuid(stringID);
+					Guid id = GuidValidator.ParseGuid(stringID.Trim());
 					list.Add(id);
 				}
 			}
@@ -709,7 +709,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				{
 					AppLogger.Debug("HideNoSelection == false");
 					AppLogger.Debug("Inserting the 'No Selection' item.");
-					this.Items.Insert(0, new ListItem(NoSelectionText, String.Empty));
+					this.Items.Insert(0, new ListItem(NoSelectionText, Guid.Empty.ToString()));
 				}
 				else
 				{
