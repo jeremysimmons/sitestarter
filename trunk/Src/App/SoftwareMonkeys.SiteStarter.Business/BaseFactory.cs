@@ -99,12 +99,23 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="propertyName">The name of the property to activate.</param>
 		public virtual void Activate(Array entities, string propertyName)
 		{
+			Activate(entities, propertyName, 1);
+		}
+		
+		
+		/// <summary>
+		/// Activates the specified property of all the entities provided, by loading all references for the specified property of each entity.
+		/// </summary>
+		/// <param name="entities">The array of entities to activate.</param>
+		/// <param name="propertyName">The name of the property to activate.</param>
+		public virtual void Activate(Array entities, string propertyName, int depth)
+		{
 			if (entities != null)
 			{
 				foreach (IEntity entity in entities)
 				{
 					if (entity != null)
-						Activate(entity, propertyName);
+						Activate(entity, propertyName, depth-1);
 				}
 			}
 		}

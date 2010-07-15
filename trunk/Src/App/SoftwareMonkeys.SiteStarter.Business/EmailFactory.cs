@@ -7,6 +7,7 @@ using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Data;
 using System.Reflection;
 using System.Net.Mail;
+using System.Configuration;
 
 namespace SoftwareMonkeys.SiteStarter.Business
 {
@@ -16,6 +17,14 @@ namespace SoftwareMonkeys.SiteStarter.Business
     [DataObject(true)]
 	public class EmailFactory
     {
+		static public string SmtpServer
+		{
+			get
+			{
+				return ConfigurationSettings.AppSettings["SmtpServer"];
+			}
+		}
+		
         static private EmailFactory current;
         static public EmailFactory Current
         {

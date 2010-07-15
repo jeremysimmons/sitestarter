@@ -134,6 +134,21 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		}
 
 		/// <summary>
+		/// Retrieves the user with the provided username.
+		/// </summary>
+		public Entities.User[] GetNotifiableUsers()
+		{
+			Entities.User[] users = new Entities.User[] {};
+			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the users who are selected to be notified of important events.", NLog.LogLevel.Debug))
+			{
+				users = DataAccess.Data.GetEntities<Entities.User>("EnableNotifications", true);
+			}
+			return users;
+		}
+
+		
+		
+		/// <summary>
 		/// Retrieves the user with the provided email.
 		/// </summary>
 		public U[] GetUsersByEmail(string email)
