@@ -8,15 +8,18 @@ namespace SoftwareMonkeys.SiteStarter.State
     /// <summary>
     /// Provides easy access to information relating to the projects module.
     /// </summary>
-    public class VirtualServerState
+    static public class VirtualServerState
     {
         /// <summary>
         /// Gets/sets a boolean value indicating whether a current project has been selected.
         /// </summary>
         static public bool VirtualServerSelected
         {
-            get { return VirtualServerName != null && VirtualServerName != String.Empty
-            	&& VirtualServerID != null && VirtualServerID != String.Empty && VirtualServerID != Guid.Empty.ToString();}
+            get
+            {
+            	return !String.IsNullOrEmpty(VirtualServerName)
+            		&& VirtualServerID != null && !String.IsNullOrEmpty(VirtualServerID) && VirtualServerID != Guid.Empty.ToString();
+        	}
         }
 
         /// <summary>
@@ -31,6 +34,7 @@ namespace SoftwareMonkeys.SiteStarter.State
         /// <summary>
         /// Gets/sets the ID of the current server.
         /// </summary>
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1706:ShortAcronymsShouldBeUppercase", MessageId = "Member")]
         static public string VirtualServerID
         {
             get { return (string)StateAccess.State.GetSession("VirtualServerID"); }

@@ -357,43 +357,6 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			return type;
 		}
 		
-		static public IEntity[] GetReferencedEntities(EntityReferenceCollection references, IEntity entity)
-		{
-			Collection<IEntity> collection = new Collection<IEntity>();
-			
-			using (LogGroup logGroup = AppLogger.StartGroup("Getting the referenced entities from the provided entity.", NLog.LogLevel.Debug))
-			{
-				if (entity == null)
-					throw new ArgumentNullException("entity");
-				
-				foreach (EntityReference reference in references)
-				{
-					AppLogger.Debug("Reference type #1: " + reference.Type1Name);
-					AppLogger.Debug("Reference ID #1: " + reference.Entity1ID.ToString());
-					AppLogger.Debug("Reference type #2: " + reference.Type2Name);
-					AppLogger.Debug("Reference ID #2: " + reference.Entity2ID.ToString());
-					
-					DataAccess.Data.ActivateReference(reference);
-					
-					IEntity otherEntity = reference.GetOtherEntity(entity);
-					
-					if (otherEntity != null)
-					{
-						AppLogger.Debug("Other entity type: " + otherEntity.GetType().ToString());
-						AppLogger.Debug("Other entity ID: " + otherEntity.ID.ToString());
-						
-						collection.Add(otherEntity);
-					}
-					else
-					{
-						AppLogger.Debug("Other entity == null");
-					}
-				}
-			}
-			
-			return collection.ToArray();
-		}
-		
 		static public void StripReferences(IEntity entity)
 		{
 			using (LogGroup logGroup2 = AppLogger.StartGroup("Clearing all the object references so that they don't cascade automatically.", NLog.LogLevel.Debug))

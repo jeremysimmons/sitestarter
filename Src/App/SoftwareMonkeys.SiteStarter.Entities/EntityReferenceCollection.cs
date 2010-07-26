@@ -32,6 +32,10 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			
 		}
 		
+		public EntityReferenceCollection(EntityIDReference[] references) : base(references)
+		{
+		}
+		
 		public EntityReferenceCollection(IEntity sourceEntity)
 		{
 			SourceEntity = sourceEntity;

@@ -104,7 +104,6 @@
     <Compile Include="Factories\TestRecordFactory.cs" />
     <Folder Include="Entities" />
     <Folder Include="Factories" />
-    <Folder Include="New Folder1" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExampleTests.cs" />

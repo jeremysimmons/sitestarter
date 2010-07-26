@@ -25,13 +25,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					current = new UserRoleFactory();
 				return current; }
 		}
-		
-		public override Dictionary<string, Type> DefaultTypes
-		{
-			get { return base.DefaultTypes; }
-			set { base.DefaultTypes = value; }
-		}
-		
+
 		/// <summary>
 		/// Gets the data store containing the objects that this factory interact with.
 		/// </summary>
@@ -42,8 +36,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		
 		public UserRoleFactory()
 		{
-			DefaultTypes = new Dictionary<string, Type>();
-			DefaultTypes.Add("IUser", typeof(Entities.User));
 		}
 
 		#region Retrieve functions
@@ -54,7 +46,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		[DataObjectMethod(DataObjectMethodType.Select, true)]
 		public Entities.UserRole[] GetUserRoles()
 		{
-			return DataAccess.Data.GetEntities<UserRole>();
+			return DataAccess.Data.Indexer.GetEntities<UserRole>();
 		}
 
 		/// <summary>
@@ -91,7 +83,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			if (roleID == Guid.Empty)
 				return null;//default(UserRole);
 
-			return (UserRole)DataAccess.Data.GetEntity<UserRole>("ID", roleID);
+			return (UserRole)DataAccess.Data.Reader.GetEntity<UserRole>("ID", roleID);
 		}
 
 		/// <summary>
@@ -99,7 +91,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		public Entities.UserRole[] GetUserRolesByName(string name)
 		{
-			return DataAccess.Data.GetEntities<UserRole>("Name", name);
+			return DataAccess.Data.Indexer.GetEntities<UserRole>("Name", name);
 		}
 
 
@@ -108,7 +100,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		public UserRole GetUserRoleByName(string name)
 		{
-			return (UserRole)DataAccess.Data.GetEntity<UserRole>("Name", name);
+			return (UserRole)DataAccess.Data.Reader.GetEntity<UserRole>("Name", name);
 		}
 		#endregion
 
@@ -135,7 +127,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				else
 				{
 					// Save the object.
-					DataStore.Save(role);
+					DataAccess.Data.Saver.Save(role);
 
 					// Save successful.
 					isComplete = true;
@@ -168,7 +160,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				else
 				{
 					// Update the object.
-					DataAccess.Data.Update(role);
+					DataAccess.Data.Updater.Update(role);
 
 					// Update successful.
 					success = true;
@@ -192,7 +184,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				if (!DataStore.IsStored(role))
 					role = GetUserRole(role.ID);
 
-				DataStore.Delete(role);
+				DataAccess.Data.Deleter.Delete(role);
 			}
 		}
 		#endregion

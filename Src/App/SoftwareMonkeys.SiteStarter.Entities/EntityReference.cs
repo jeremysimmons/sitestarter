@@ -158,10 +158,10 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				if (sourceEntity == null)
 					throw new InvalidOperationException("The source entity is null.");
 				
-				if (referenceEntity.ID != entity.ID)
-					otherEntity = referenceEntity;
-				else if (sourceEntity.ID != entity.ID)
+				if (referenceEntity.ID == entity.ID)
 					otherEntity = sourceEntity;
+				else if (sourceEntity.ID == entity.ID)
+					otherEntity = referenceEntity;
 				else
 					throw new InvalidOperationException("Can't get the other entity. Both entities match.");
 				

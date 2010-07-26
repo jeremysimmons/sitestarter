@@ -333,7 +333,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				CustomHolder = new PlaceHolder();
 				CustomHolder.ID = "CustomHolder";
 				
-				Page.RegisterStartupScript("IndexUtil", "<script language='javascript' src='/Scripts/IndexUtil.js'></script>");
+				Page.ClientScript.RegisterStartupScript(this.GetType(), "IndexUtil", "<script language='javascript' src='/Scripts/IndexUtil.js'></script>");
 				
 				
 			}
@@ -689,7 +689,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
 		if (EnableExpansion)
 		{
-			if (!Page.IsClientScriptBlockRegistered("SmartGrid"))
+			if (!Page.ClientScript.IsClientScriptBlockRegistered(this.GetType(), "SmartGrid"))
 			{
 				/*string script = @"<script language='JavaScript' defer>
 						function ExpandGridItem(gridID, itemIndex)
@@ -744,7 +744,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 						}
 						</script>";
 
-				Page.RegisterClientScriptBlock("SmartGrid", script);
+				Page.ClientScript.RegisterClientScriptBlock(this.GetType(), "SmartGrid", script);
 			}
 		}
 

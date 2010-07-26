@@ -37,7 +37,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			{
 				foreach (E entity in this)
 					if (entity.ID == id)
-					return entity;
+						return entity;
 				return default(E);
 			}
 			set
@@ -101,6 +101,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			}
 		}
 
+		// TODO: Removed if not needed
 		/*/// <summary>
 		/// Adds the provided data to the collection.
 		/// </summary>
@@ -110,7 +111,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			Add((object)obj);
 		}*/
 
-			/// <summary>
+		// TODO: Removed if not needed. Base function should be sufficient
+			/*/// <summary>
 			/// Adds the provided entity to the collection.
 			/// </summary>
 			/// <param name="entity">The entity to add to the collection.</param>
@@ -118,13 +120,13 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 			if (entity != null)
 				base.Add(entity);
-		}
+		}*/
 
-		/// <summary>
-		/// Adds the provided entities to the collection.
-		/// </summary>
-		/// <param name="entity">The entity to add to the collection.</param>
-		public void Add(IEnumerable<E> entities)
+			/// <summary>
+			/// Adds the provided entities to the collection.
+			/// </summary>
+			/// <param name="entity">The entity to add to the collection.</param>
+			public void Add(IEnumerable<E> entities)
 		{
 			if (entities != null)
 			{
@@ -184,7 +186,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 			foreach (E entity in this)
 				if (entity.ID == entityID)
-				return true;
+					return true;
 			return false;
 		}
 
@@ -740,22 +742,20 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			//return (E[])Array.ConvertAll<object, E>((object[])entities, new Converter<object, E>(object_Convert));
 		}
 		
-		static public E[] ConvertAll(object entities, Type type)
+		static public E[] ConvertAll(Array entities, Type type)
 		{
 			if (entities == null)
 				return new E[] {};
 			
 			ArrayList collection = new ArrayList();
 			
-			if (entities is IEnumerable)
+			foreach (object obj in entities)
 			{
-				foreach (object obj in (IEnumerable)entities)
-				{
+				if (type.IsAssignableFrom(obj.GetType()))
 					collection.Add((E)obj);
-				}
+				else
+					throw new InvalidCastException("Cannot cast type '" + obj.GetType().ToString() + "' to type '" + type.ToString() + "'.");
 			}
-			else
-				throw new NotSupportedException("Type note supported:" + entities.GetType().ToString());
 			
 			return (E[])collection.ToArray(type);
 			//return (E[])Array.ConvertAll<object, E>((object[])entities, new Converter<object, E>(object_Convert));

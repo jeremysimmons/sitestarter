@@ -132,6 +132,7 @@
 	        <exclude name="**/Releases/**"/>
 	        <exclude name="**/Deployment/**"/>
 	        <exclude name="*.refresh"/>
+	        <exclude name="**/Docs/Reference/**"/>
 	        <include name="**/lib/**" />
 	        <include name="**/Src/**" />
 	        <include name="**/Docs/**" />

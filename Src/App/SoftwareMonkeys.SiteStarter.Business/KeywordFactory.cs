@@ -28,14 +28,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	public class KeywordFactory<K>
 		where K : IKeyword
     {
-        /// <summary>
-        /// Gets the data store containing the objects that this factory interact with.
-        /// </summary>
-        static public IDataStore DataStore
-        {
-            get { return DataAccess.Data.Stores[typeof(K)]; }
-        }
-
 		#region Retrieve functions
 	    /// <summary>
 		/// Retrieves all the keywords from the DB.
@@ -44,7 +36,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
         [DataObjectMethod(DataObjectMethodType.Select, true)]
 		static public K[] GetKeywords()
 		{
-            return (K[])Collection<K>.ConvertAll(DataStore.GetEntities<K>());
+            return (K[])Collection<K>.ConvertAll(DataAccess.Data.Indexer.GetEntities<K>());
 		}
 
 		/// <summary>
@@ -81,7 +73,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
             if (keywordID == Guid.Empty)
             	return default(K);
 
-            return (K)DataAccess.Data.GetEntity<K>("ID", keywordID);
+            return (K)DataAccess.Data.Reader.GetEntity<K>("ID", keywordID);
 		}
 
         /// <summary>
@@ -89,7 +81,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
         /// </summary>
         static public K GetKeywordByName(string name)
         {
-            return (K)DataAccess.Data.GetEntity<K>("Name", name);
+            return (K)DataAccess.Data.Reader.GetEntity<K>("Name", name);
         }
 		#endregion
 
@@ -112,7 +104,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			else
 			{
 				// Save the object.
-				DataStore.Save(keyword);
+				DataAccess.Data.Saver.Save(keyword);
 
 				// Save successful.
 				return true;
@@ -139,7 +131,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			else
 			{
 				// Update the object.
-                		DataStore.Update(keyword);
+                		DataAccess.Data.Updater.Update(keyword);
 
 				// Update successful.
 				return true;
@@ -158,10 +150,10 @@ namespace SoftwareMonkeys.SiteStarter.Business
             if (keyword != null)
             {
                 // Check that the keyword is bound to the DB
-                if (!DataStore.IsStored(keyword))
+                if (!DataAccess.Data.IsStored(keyword))
                     keyword = GetKeyword(keyword.ID);
 
-                DataStore.Delete(keyword);
+                DataAccess.Data.Deleter.Delete(keyword);
             }
 		}
 		#endregion

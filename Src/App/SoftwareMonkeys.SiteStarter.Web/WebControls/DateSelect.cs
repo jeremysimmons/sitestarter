@@ -94,7 +94,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
 		protected override void OnPreRender(EventArgs e)
 		{
-			if (!Page.IsClientScriptBlockRegistered("DateSelect"))
+			if (!Page.ClientScript.IsClientScriptBlockRegistered(this.GetType(), "DateSelect"))
 			{
 				StringBuilder builder = new StringBuilder();
 				builder.Append("<script language='JavaScript'>" + CRLF);
@@ -216,7 +216,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				builder.Append("//  End -->" + CRLF);
 				builder.Append("</script>");
 
-				Page.RegisterClientScriptBlock("DateSelect", builder.ToString());
+				Page.ClientScript.RegisterClientScriptBlock(this.GetType(), "DateSelect", builder.ToString());
 			}
 
 			base.OnPreRender(e);

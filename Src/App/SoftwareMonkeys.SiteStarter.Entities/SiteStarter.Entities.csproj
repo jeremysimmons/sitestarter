@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="BaseEntityReferenceAttribute.cs" />
     <Compile Include="BaseEntity.cs" />
+    <Compile Include="CorrespondingFieldAttribute.cs" />
     <Compile Include="DataStoreAttribute.cs" />
     <Compile Include="EntitiesUtilities.cs" />
     <Compile Include="EntityEventArgs.cs" />

@@ -200,7 +200,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
                         {
                             AppLogger.Debug("New entity. Importing.");
                             BaseEntity entity = (BaseEntity)obj;
-                            DataAccess.Data.Save(entity);
+                            DataAccess.Data.Saver.Save(entity);
                         }
                         else
                         {
@@ -305,7 +305,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
                     if (!DataAccess.Data.IsStored((BaseEntity)obj))
                     {
                         BaseEntity entity = (BaseEntity)obj;
-                        DataAccess.Data.Stores[entity.GetType()].Save(entity);
+                        DataAccess.Data.Saver.Save(entity);
 
 
                         MarkAsImported(directoryPath, (BaseEntity)obj);

@@ -43,17 +43,20 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		}
 		#endregion
 
-
+// Was causing problems with entity deletion
+/*
 		[TearDown]
 		public void CleanUp()
 		{
 			ClearTestEntities();
 
 		}
-
+*/
 		[Test]
 		public void Test_ApplySchema_RenameType()
 		{
+			// The feature this is testing is not finished
+			throw new NotImplementedException();
 			TestUser.RegisterType();
 			TestAccount.RegisterType();
 			
@@ -62,11 +65,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			CreateTestRenameTypeSchema(TestUtilities.GetTestingPath());
 			TestUser user = CreateTestUser(TestUtilities.GetTestingPath());
 			
-			DataAccess.Data.Save(user);
+			DataAccess.Data.Saver.Save(user);
 			
 			DataAccess.Data.Schema.ApplySchema(TestUtilities.GetTestingPath());
 			
-			TestAccount account = DataAccess.Data.GetEntity<TestAccount>("ID", user.ID);
+			TestAccount account = DataAccess.Data.Reader.GetEntity<TestAccount>("ID", user.ID);
 			
 			Assert.IsNotNull(account, "account not loaded");
 			
@@ -79,6 +82,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_RenameProperty()
 		{
+			// The feature this is testing is not finished
+			throw new NotImplementedException();
 			TestUser.RegisterType();
 			//TestAccount.RegisterType();
 			
@@ -87,7 +92,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			CreateTestRenameTypeSchema(TestUtilities.GetTestingPath());
 			TestUser user = CreateTestUser(TestUtilities.GetTestingPath());
 			
-			DataAccess.Data.Save(user);
+			DataAccess.Data.Saver.Save(user);
 			
 			DataAccess.Data.Schema.Suspend();
 			
@@ -96,7 +101,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			DataAccess.Data.Schema.Resume();
 			
-			TestUser found = DataAccess.Data.GetEntity<TestUser>("ID", user.ID);
+			TestUser found = DataAccess.Data.Reader.GetEntity<TestUser>("ID", user.ID);
 			
 			Assert.IsNotNull(found, "user object not loaded");
 			
@@ -111,6 +116,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_ApplySchema_RenameProperty()
 		{
+			// The feature this is testing is not finished
+			throw new NotImplementedException();
 			TestUser.RegisterType();
 			TestAccount.RegisterType();
 			
@@ -119,11 +126,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			CreateTestRenameTypeSchema(TestUtilities.GetTestingPath());
 			TestUser user = CreateTestUser(TestUtilities.GetTestingPath());
 			
-			DataAccess.Data.Save(user);
+			DataAccess.Data.Saver.Save(user);
 			
 			DataAccess.Data.Schema.ApplySchema(TestUtilities.GetTestingPath());
 			
-			TestAccount account = DataAccess.Data.GetEntity<TestAccount>("ID", user.ID);
+			TestAccount account = DataAccess.Data.Reader.GetEntity<TestAccount>("ID", user.ID);
 			
 			Assert.IsNotNull(account, "account not loaded");
 			
@@ -238,11 +245,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 			Collection<IEntity> entities = new Collection<IEntity>();
 			foreach (Type type in types)
-				entities.Add((IEntity[])DataAccess.Data.GetEntities(type));
+				entities.Add((IEntity[])DataAccess.Data.Indexer.GetEntities(type));
 
 			foreach (IEntity entity in entities)
 			{
-				DataAccess.Data.Stores[entity.GetType()].Delete(entity);
+				DataAccess.Data.Deleter.Delete(entity);
 			}
 		}
 

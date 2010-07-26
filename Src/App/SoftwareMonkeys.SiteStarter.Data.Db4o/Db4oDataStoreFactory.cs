@@ -37,6 +37,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				if (!Config.IsInitialized)
 					throw new InvalidOperationException("The application config file is not present. Run the setup process and try again.");
 				
+				AppLogger.Debug("Data store name: " + dataStoreName);
+				
 				// Create a new data store
 				store = new Db4oDataStore(Db4oFactory.CloneConfiguration());
 				store.Name = dataStoreName;

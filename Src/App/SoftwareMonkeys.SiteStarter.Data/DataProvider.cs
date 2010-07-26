@@ -9,176 +9,205 @@ using System.Reflection;
 
 namespace SoftwareMonkeys.SiteStarter.Data
 {
-    /// <summary>
-    /// Defines the interface required for all data providers.
-    /// </summary>
-    public abstract class DataProvider : ProviderBase
-    {
-        public abstract DataStoreCollection Stores
-        { get; }
-     
-        public abstract void Dispose();
-        
-        public abstract bool IsStored(IEntity entity);
-        
-       // public abstract void Initialize(string name, NameValueCollection settings);
-
-       // void Dispose();
-
-        public abstract IDataStore InitializeDataStore(string dataStoreName);
-        //public abstract string GetDataStoreName(Type objectType);
-        public abstract string[] GetDataStoreNames();
-
-        public abstract IDataFilter CreateFilter(Type baseType);
-        
-        
-        #region Schema
-        
-        public abstract ISchemaEditor Schema
-        {
-        	get;
-        }
-        #endregion
-        
-
-	#region Data access functions
-        /// <summary>
-        /// Retrieves all the entities of the specified type from the data store.
-        /// </summary>
-	/// <param name="filter">The filter to apply to the query.</param>
-        /// <returns>The entities of the specified type found in the data store.</returns>
-        public abstract IEntity[] GetEntities(IDataFilter filter);
-
-        /// <summary>
-        /// Retrieves all the entities of the specified type from the data store.
-        /// </summary>
-	/// <param name="group">The group of filters to apply to the query.</param>
-        /// <returns>The entities of the specified type found in the data store.</returns>
-        public abstract IEntity[] GetEntities(FilterGroup group);
-        
-          
-        public abstract IEntity GetEntity(IDataFilter filter);
-
-        public abstract IEntity GetEntity(FilterGroup group);
-        
-        public abstract IEntity[] GetEntities(Type type);
-        
-        public abstract IEntity[] GetEntities(Type type, Guid[] ids);
-        public abstract T[] GetEntities<T>(Guid[] ids)
-        	where T : IEntity;
-        
-        public abstract T[] GetEntities<T>()
-        	where T : IEntity;
-
-        public abstract T[] GetEntities<T>(string propertyName, object propertyValue)
-        	where T : IEntity;
-        public abstract T GetEntity<T>(string propertyName, object propertyValue)
-        	where T : IEntity;
-        
-        public abstract IEntity[] GetEntities(Type type, string propertyName, object propertyValue);
-        public abstract IEntity GetEntity(Type type, string propertyName, object propertyValue);
-
-
-        public abstract T GetEntityMatchReference<T>(string propertyName, Type referencedEntityType, Guid referencedEntityID)
-            where T : IEntity;
-        public abstract T[] GetEntitiesMatchReference<T>(string propertyName, Type referencedEntityType, Guid referencedEntityID)
-        	where T : IEntity;
-
-        // TODO: Clean up
-       /* public abstract T[] GetEntitiesPage<T>(int pageIndex, int pageSize, string sortExpression, out int totalObjects)
-        	where T : IEntity;
-        public abstract T[] GetEntitiesPage<T>(string fieldName, object fieldValue, int pageIndex, int pageSize, string sortExpression, out int totalObjects)
-        	where T : IEntity;*/
-        
-        //public abstract IEntity[] GetEntitiesPage(Type type, int pageIndex, int pageSize, string sortExpression, out int totalObjects);
-        //public abstract IEntity[] GetEntitiesPage(Type type, string fieldName, object fieldValue, int pageIndex, int pageSize, string sortExpression, out int totalObjects);
-
-        public abstract T[] GetEntitiesPage<T>(PagingLocation location, string sortExpression)
-        	where T : IEntity;
-        
-        
-        public abstract T[] GetEntitiesPage<T>(string fieldName, object fieldValue, PagingLocation location, string sortExpression)
-        	where T : IEntity;
-        
-        
-        public abstract IEntity[] GetEntitiesPage(Type type, PagingLocation location, string sortExpression);
-        
-        public abstract IEntity[] GetEntitiesPage(Type type, string fieldName, object fieldValue, PagingLocation location, string sortExpression);
-
-        public abstract T[] GetEntitiesPageMatchReference<T>(string propertyName, Type referencedEntityType, Guid referencedEntityID, PagingLocation location, string sortExpression)
-        	where T : IEntity;
-        
-        /*public abstract T[] GetEntitiesPageMatchReference<T>(string propertyName, Type referencedEntityType, Guid referencedEntityID, int pageIndex, int pageSize, string sortExpression, out int totalObjects)
-        	where T : IEntity;*/
-        
-        /// <summary>
-		/// Retrieves all the entities of the specified type matching the specified values.
+	/// <summary>
+	/// Defines the interface required for all data providers.
+	/// </summary>
+	public abstract class DataProvider : ProviderBase
+	{
+		
+		#region Reader adapter
+		private IDataReader reader;
+		/// <summary>
+		/// Holds a JIT loaded instance of the data reader for the current data provider.
 		/// </summary>
-		/// <param name="type">The type of entity to retrieve.</param>
-		/// <param name="parameters">The parameters to query with.</param>
-		/// <returns></returns>
-		public abstract IEntity[] GetEntities(Type type, IDictionary<string, object> parameters);
+		public IDataReader Reader
+		{
+			get {
+				if (reader == null)
+					reader = InitializeDataReader();
+				return reader;  }
+		}
 		
 		/// <summary>
-		/// Retrieves the entity of the specified type matching the specified values.
+		/// Must be overridden. Initializes the data reader adapter held by the Reader property.
 		/// </summary>
-		/// <param name="type">The type of entity to retrieve.</param>
-		/// <param name="parameters">The parameters to query with.</param>
-		/// <returns></returns>
-		public abstract IEntity GetEntity(Type type, IDictionary<string, object> parameters);
-			
-        /// <summary>
-		/// Retrieves all the entities of the specified type matching the specified values.
+		/// <returns>The provider specific Reader adapter.</returns>
+		public virtual IDataReader InitializeDataReader()
+		{
+			throw new NotImplementedException("This method should be overridden.");
+		}
+		#endregion
+		
+		#region Indexer adapter
+		
+		private IDataIndexer indexer;
+		/// <summary>
+		/// Holds a JIT loaded instance of the data indexer for the current data provider.
 		/// </summary>
-		/// <param name="type">The type of entity to retrieve.</param>
-		/// <param name="parameters">The parameters to query with.</param>
-		/// <returns></returns>
-		public abstract T[] GetEntities<T>(IDictionary<string, object> parameters)
-			where T : IEntity;
+		public IDataIndexer Indexer
+		{
+			get {
+				if (indexer == null)
+					indexer = InitializeDataIndexer();
+				return indexer;  }
+		}
 		
 		/// <summary>
-		/// Retrieves the entity of the specified type matching the specified values.
+		/// Must be overridden. Initializes the data indexer adapter held by the Indexer property.
 		/// </summary>
-		/// <param name="type">The type of entity to retrieve.</param>
-		/// <param name="parameters">The parameters to query with.</param>
-		/// <returns></returns>
-		public abstract T GetEntity<T>(IDictionary<string, object> parameters)
-			where T : IEntity;
+		/// <returns>The provider specific Indexer adapter.</returns>
+		public virtual IDataIndexer InitializeDataIndexer()
+		{
+			throw new NotImplementedException("This method should be overridden.");
+		}
+		#endregion
+		
+		#region Referencer adapter
+		private IDataReferencer referencer;
+		/// <summary>
+		/// Holds a JIT loaded instance of the data referencer for the current data provider.
+		/// </summary>
+		public IDataReferencer Referencer
+		{
+			get {
+				if (referencer == null)
+					referencer = InitializeDataReferencer();
+				return referencer;  }
+		}
+		
+		/// <summary>
+		/// Must be overridden. Initializes the data referencer adapter held by the Referencer property.
+		/// </summary>
+		/// <returns>The provider specific Referencer adapter.</returns>
+		public virtual IDataReferencer InitializeDataReferencer()
+		{
+			throw new NotImplementedException("This method should be overridden.");
+		}
+		#endregion
+		
+		
+		#region Activator adapter
+		
+		private IDataActivator activator;
+		/// <summary>
+		/// Holds a JIT loaded instance of the data activator for the current data provider.
+		/// </summary>
+		public IDataActivator Activator
+		{
+			get {
+				if (activator == null)
+					activator = InitializeDataActivator();
+				return activator;  }
+		}
+		
+		/// <summary>
+		/// Must be overridden. Initializes the data activator adapter held by the Referencer property.
+		/// </summary>
+		/// <returns>The provider specific activator adapter.</returns>
+		public virtual IDataActivator InitializeDataActivator()
+		{
+			throw new NotImplementedException("This method should be overridden.");
+		}
+		#endregion
+		
+		#region Saver adapter
+		
+		private IDataSaver saver;
+		/// <summary>
+		/// Holds a JIT loaded instance of the data saver for the current data provider.
+		/// </summary>
+		public IDataSaver Saver
+		{
+			get {
+				if (saver == null)
+					saver = InitializeDataSaver();
+				return saver;  }
+		}
+		
+		/// <summary>
+		/// Must be overridden. Initializes the data saver adapter held by the Saver property.
+		/// </summary>
+		/// <returns>The provider specific Saver adapter.</returns>
+		public virtual IDataSaver InitializeDataSaver()
+		{
+			throw new NotImplementedException("This method should be overridden.");
+		}
+		#endregion
+		
+		
+		#region Updater adapter
+		
+		private IDataUpdater updater;
+		/// <summary>
+		/// Holds a JIT loaded instance of the data updater for the current data provider.
+		/// </summary>
+		public IDataUpdater Updater
+		{
+			get {
+				if (updater == null)
+					updater = InitializeDataUpdater();
+				return updater;  }
+		}
+		
+		/// <summary>
+		/// Must be overridden. Initializes the data updater adapter held by the Updater property.
+		/// </summary>
+		/// <returns>The provider specific Updater adapter.</returns>
+		public virtual IDataUpdater InitializeDataUpdater()
+		{
+			throw new NotImplementedException("This method should be overridden.");
+		}
+		#endregion
+		
+		#region Deleter adapter
+		
+		private IDataDeleter deleter;
+		/// <summary>
+		/// Holds a JIT loaded instance of the data deleter for the current data provider.
+		/// </summary>
+		public IDataDeleter Deleter
+		{
+			get {
+				if (deleter == null)
+					deleter = InitializeDataDeleter();
+				return deleter;  }
+		}
+		
+		/// <summary>
+		/// Must be overridden. Initializes the data deleter adapter held by the Deleter property.
+		/// </summary>
+		/// <returns>The provider specific Deleter adapter.</returns>
+		public virtual IDataDeleter InitializeDataDeleter()
+		{
+			throw new NotImplementedException("This method should be overridden.");
+		}
+		#endregion
+		
+		public abstract DataStoreCollection Stores
+		{ get; }
+		
+		public abstract void Dispose();
+		
+		public abstract bool IsStored(IEntity entity);
+		
+		// public abstract void Initialize(string name, NameValueCollection settings);
 
-        /// <summary>
-        /// Retrieves all the references to the entities provided.
-        /// </summary>
-        /// <returns>The references to the entities provided.</returns>
-        public abstract EntityReferenceCollection GetReferences(Type entityType, Guid entityID, string propertyName, Type referenceType, bool fullActivation);
-        
-        /// <summary>
-        /// Retrieves the reference from the specified entity to the entity matching the specified type and the specified ID.
-        /// </summary>
-        /// <returns>The reference matching the parameters.</returns>
-        public abstract EntityReference GetReference(Type entityType, Guid entityID, string propertyName, Type referenceType, Guid referenceEntityID, string mirrorPropertyName, bool activateAll);
-        
-        public abstract EntityReferenceCollection GetObsoleteReferences(IEntity entity, string propertyName, Type referenceType, Guid[] idsOfEntitiesToKeep);
-        	
-        public abstract EntityReferenceCollection GetObsoleteReferences(IEntity entity, Guid[] idsOfEntitiesToKeep);
-        	
+		// void Dispose();
 
-	public abstract void Save(IEntity entity);
-	public abstract void Update(IEntity entity);
-	public abstract void Delete(IEntity entity);
-	
-	
-	public abstract void Activate(IEntity[] entity);
-	public abstract void Activate(IEntity[] entity, int depth);
-	public abstract void Activate(IEntity entity);
-	public abstract void Activate(IEntity entity, int depth);
-	public abstract void Activate(IEntity entity, string propertyName);
-	public abstract void Activate(IEntity entity, string propertyName, int depth);
-	public abstract void Activate(IEntity entity, string propertyName, Type propertyType);
-	public abstract void Activate(IEntity entity, string propertyName, Type propertyType, int depth);
-	public abstract void ActivateReference(EntityReference reference);
-	
-	public abstract bool MatchReference(Type entityType, Guid entityID, string propertyName, Type referencedEntityType, Guid referencedEntityID, string mirrorPropertyName);
-	public abstract bool MatchReference(Type entityType, Guid entityID, string propertyName, Type referencedEntityType, Guid referencedEntityID);
-	#endregion
-    }
+		public abstract IDataStore InitializeDataStore(string dataStoreName);
+		//public abstract string GetDataStoreName(Type objectType);
+		public abstract string[] GetDataStoreNames();
+
+		public abstract IDataFilter CreateFilter(Type baseType);
+		
+		
+		#region Schema
+		
+		public abstract ISchemaEditor Schema
+		{
+			get;
+		}
+		#endregion
+		
+	}
 }

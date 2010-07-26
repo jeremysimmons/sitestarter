@@ -115,8 +115,8 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			object value = property.GetValue(entity, null);*/
 				
 				
-				referenceMatches = DataAccess.Data.MatchReference(entity.GetType(), entity.ID, propertyName, referenceType, referencedEntityID);
-				//bool referenceMatches = DataAccess.Data.MatchReference(entity.GetType(), entity.ID, propertyName, property.Type, referencedEntityType, referencedEntityID);
+				referenceMatches = DataAccess.Data.Referencer.MatchReference(entity.GetType(), entity.ID, propertyName, referenceType, referencedEntityID);
+				//bool referenceMatches = DataAccess.Data.Referencer.MatchReference(entity.GetType(), entity.ID, propertyName, property.Type, referencedEntityType, referencedEntityID);
 				
 				
 				AppLogger.Debug("Type matches: " + typeMatches.ToString());

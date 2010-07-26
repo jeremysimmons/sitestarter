@@ -10,11 +10,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// </summary>
 	public interface IFactory : IAppComponent
 	{
-		//string Name { get; }
-		//static IFactory Current {get;set;}
-		Dictionary<string,Type> DefaultTypes {get;set;}
-		//Dictionary<string,PropertyInfo> Properties {get;set;}
-		
 		IEntity[] GetPage(Type type, IPagingLocation location, string sortExpression);
 		IEntity[] GetPage(Type type, Dictionary<string, object> filterValues, IPagingLocation location, string sortExpression);
 		IEntity[] GetPage(Type type, string propertyName, object propertyValue, IPagingLocation location, string sortExpression);

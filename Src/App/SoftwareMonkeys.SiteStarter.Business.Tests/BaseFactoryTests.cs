@@ -33,7 +33,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 				record.ID = Guid.NewGuid();
 				record.Text = "Record " + i;
 				
-				DataAccess.Data.Save(record);
+				DataAccess.Data.Saver.Save(record);
 				
 				list.Add(record);
 			}
@@ -59,7 +59,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			Assert.AreEqual(30, pagingLocation.AbsoluteTotal, "Absolute count mismatch.");
 			
 			foreach (TestRecord record in list)
-				DataAccess.Data.Delete(record);
+				DataAccess.Data.Deleter.Delete(record);
 		}
 		
 		
@@ -77,7 +77,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 				record.ID = Guid.NewGuid();
 				record.Text = "Record " + i;
 				
-				DataAccess.Data.Save(record);
+				DataAccess.Data.Saver.Save(record);
 				
 				list.Add(record);
 			}
@@ -103,7 +103,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			Assert.AreEqual(30, pagingLocation.AbsoluteTotal, "Absolute count mismatch.");
 			
 			foreach (TestRecord record in list)
-				DataAccess.Data.Delete(record);
+				DataAccess.Data.Deleter.Delete(record);
 		}
 	}
 }

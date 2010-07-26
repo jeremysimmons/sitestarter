@@ -35,7 +35,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
         /// <summary>
         /// Empty constructor.
         /// </summary>
-        public BaseEntity()
+        protected BaseEntity()
         {
         }
 
@@ -43,7 +43,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
         /// Sets the ID of the entity.
         /// </summary>
         /// <param name="id">The ID of the entity.</param>
-        public BaseEntity(Guid id)
+        protected BaseEntity(Guid id)
         {
             ID = id;
         }

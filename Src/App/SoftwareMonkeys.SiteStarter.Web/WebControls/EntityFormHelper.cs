@@ -68,8 +68,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				}
 				catch (Exception ex)
 				{
+					// TODO: Check if error should be thrown or logged
 					throw ex;
-					AppLogger.Error(ex.ToString());
+					//AppLogger.Error(ex.ToString());
 				}
 			}
 		}

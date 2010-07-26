@@ -18,26 +18,40 @@ private void Page_Load(object sender, EventArgs e)
 			
     		if (!SetupUtilities.UseExistingData)
 	    	{
-	    
 	            user = CreateAdministrator();
+	            
+	    		AppLogger.Debug("No legacy data. Created new administrator.");
 			}
 
 			AppConfig config = CreateConfig(user);
+			
+			AppLogger.Debug("Created application configuration object.");
 
             SetupMappings();
+            
+            AppLogger.Debug("Finished setting up core mappings.");
 
 			Initialize();
+			
+			AppLogger.Debug("Initialized config and data.");
 
 			if (!SetupUtilities.UseExistingData)
 			{			
 	            UserRole role = CreateAdministratorRole(user);
 	            
+	            AppLogger.Debug("Created administrator role.");
+	            
 	            Save(user, role, config);
+	            
+	            AppLogger.Debug("Saved administrator user and administrator role.");
 	            
 				DataUtilities.InitializeDataVersion();
             }
             else
+            {
+            	AppLogger.Debug("Legacy data exists. Redirecting to import page.");
             	Response.Redirect("Import.aspx");
+            }
 
 
            //if(!Roles.RoleExists("Administrator"))

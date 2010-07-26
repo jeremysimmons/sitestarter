@@ -84,6 +84,7 @@
     <Compile Include="Entities\TestUser.cs" />
     <Compile Include="EntityCollectionTests.cs" />
     <Compile Include="EntityIDReferenceTests.cs" />
+    <Compile Include="EntityReferenceTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="TestConfig.cs" />

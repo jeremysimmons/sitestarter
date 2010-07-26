@@ -172,12 +172,17 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		}
 		
 		
-		static public EntityIDReferenceCollection GetRemovedReferenceIDs(IEntity entity)
+		/// <summary>
+		/// Gets the references that have been removed from the entity.
+		/// </summary>
+		/// <param name="entity">The entity that references have been removed from.</param>
+		/// <returns>A collection of the removed references.</returns>
+		static public EntityReferenceCollection GetRemovedReferences(IEntity entity)
 		{
 			if (entity == null)
 				throw new ArgumentNullException("entity");
 			
-			EntityIDReferenceCollection references = new EntityIDReferenceCollection();
+			EntityReferenceCollection references = new EntityReferenceCollection();
 			
 			// Loop through all the properties on the entity class
 			foreach (PropertyInfo property in entity.GetType().GetProperties())
@@ -659,6 +664,11 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			return property.GetValue(entity, null);
 		}
 		
+		static public PropertyInfo GetProperty(Type entityType, string propertyName)
+		{
+			return GetProperty(entityType, propertyName, null);
+		}
+		
 		static public PropertyInfo GetProperty(Type entityType, string propertyName, Type returnType)
 		{
 			PropertyInfo property = null;
@@ -924,29 +934,68 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				return originalData;
 		}
 		
+		/// <summary>
+		/// Retrieves the name of the private field that corresponds with the specified property.
+		/// </summary>
+		/// <param name="type">The type of entity that the field is located on.</param>
+		/// <param name="propertyName">The name of the property that corresponds with the desired field.</param>
+		/// <returns>The name of the field that corresponds with the provided property.</returns>
 		static public string GetFieldName(Type type, string propertyName)
 		{
 			if (type == null)
-				throw new ArgumentNullException("");
+				throw new ArgumentNullException("type");
 			
+			// The ID property needs to be handled differently because it's converted to lowercase rather than camel case
 			if (propertyName == "ID")
 				return "id";
 			
+			// Create a camel case field name
 			string fieldName1 = ToCamelCase(propertyName);
 			
+			// Create a field name with an underscore _ prefix
 			string fieldName2 = "_" + propertyName;
 			
+			// Try to find a camel case field
 			FieldInfo field = type.GetField(fieldName1, BindingFlags.NonPublic | BindingFlags.Instance);
 			
+			// If the camel case field can't be found then
 			if (field == null)
 			{
+				// Find the underscore _ prefixed field name
 				field = type.GetField(fieldName2, BindingFlags.NonPublic | BindingFlags.Instance);
 			}
 			
+			// TODO: Finish implementing and testing
+			/*// If both attempts fail then look for a "CorrespondingField" attribute
+			if (field == null)
+			{
+				CorrespondingFieldAttribute attribute = GetCorrespondingFieldAttribute(type,  propertyName);
+				if (attribute != null)
+					field = type.GetField(attribute.Name, BindingFlags.NonPublic | BindingFlags.Instance);
+			}*/
+			
+			// If neither field can be found then throw an exception.
+			// If the field doesn't follow a compatible naming convention then the developer should know as early as possible
 			if (field == null)
 				throw new InvalidOperationException("Cannot find field on type '" + type.ToString() + "' with name '" + fieldName1 + "' or '" + fieldName2 + "' corresponding with property '" + propertyName + "'.");
 			
+			// Return the name of the field that was found
 			return field.Name;
+		}
+		
+		static private CorrespondingFieldAttribute GetCorrespondingFieldAttribute(Type type, string propertyName)
+		{
+			CorrespondingFieldAttribute attribute = null;
+			
+			PropertyInfo property = EntitiesUtilities.GetProperty(type, propertyName);
+			
+			foreach (Attribute a in property.GetCustomAttributes(true))
+			{
+				if (a is CorrespondingFieldAttribute)
+					attribute = (CorrespondingFieldAttribute)a;
+			}
+			
+			return attribute;
 		}
 		
 		static public string ToCamelCase(string propertyName)
@@ -967,27 +1016,10 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <param name="pageIndex">The index of the page to retrieve.</param>
 		/// <param name="pageSize">The number of items on each page.</param>
 		/// <returns>A flag indicating whether the specified counter is within the specified page.</returns>
+		[Obsolete("Use PagingLocation.IsInPage function instead.")]
 		static public bool IsInPage(int i, int pageIndex, int pageSize)
 		{
-			bool match = false;
-			using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the specified position is within the specified page.", NLog.LogLevel.Debug))
-			{
-				AppLogger.Debug("Position (i): " + i.ToString());
-				AppLogger.Debug("Page index: " + pageIndex);
-				AppLogger.Debug("Page size: " + pageSize);
-				
-				int first = (pageIndex * pageSize); // 0 based
-				int last = ((pageIndex * pageSize) + pageSize) -1; // -1 to make it the last of the page, instead of first item on next page
-				
-				AppLogger.Debug("First position: " + first.ToString());
-				AppLogger.Debug("Last position: " + last.ToString());
-				
-				match = i >= first
-					&& i <= last;
-				
-				AppLogger.Debug("Match: " + match.ToString());
-			}
-			return match;
+			return new PagingLocation(pageIndex, pageSize).IsInPage(i);
 		}
 		
 	}

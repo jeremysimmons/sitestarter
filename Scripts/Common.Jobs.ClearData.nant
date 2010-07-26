@@ -13,10 +13,12 @@
 
 		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Logs/" />
 
-		<copy 
-		    file="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Menu.default.sitemap"
-		    tofile="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Menu.sitemap"
-		    overwrite="true" />
+		<if test="${file::exists(Solution.RootPath + '\WWW\App_Data\Menu.default.sitemap')}">
+			<copy 
+			    file="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Menu.default.sitemap"
+			    tofile="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Menu.sitemap"
+			    overwrite="true" />
+		</if>
 
 
   </target>

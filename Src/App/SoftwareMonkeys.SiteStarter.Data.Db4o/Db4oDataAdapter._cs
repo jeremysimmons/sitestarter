@@ -1,0 +1,11 @@
+﻿using System;
+
+namespace SoftwareMonkeys.SiteStarter.Data.Db4o
+{
+	/// <summary>
+	/// Description of Db4oDataAdapter.
+	/// </summary>
+	public class Db4oDataAdapter : IDataAdapter
+	{
+	}
+}

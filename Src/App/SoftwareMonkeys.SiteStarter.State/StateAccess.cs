@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SoftwareMonkeys.SiteStarter.State
 {
-    public class StateAccess
+    sealed public class StateAccess
     {
         private static StateProvider state;
         /// <summary>
@@ -20,5 +20,8 @@ namespace SoftwareMonkeys.SiteStarter.State
         {
             get { return state != null; }
         }
+        
+        private StateAccess()
+        {}
     }
 }

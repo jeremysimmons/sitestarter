@@ -176,9 +176,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
         {
             throw new NotImplementedException();
             // TODO: Validate
-            MembershipUser user = new MembershipUser(GetType().Name, username, providerUserKey, email, passwordQuestion, String.Empty, true, false, DateTime.Now, DateTime.MinValue, DateTime.Now, DateTime.Now, DateTime.MinValue);
+            /*MembershipUser user = new MembershipUser(GetType().Name, username, providerUserKey, email, passwordQuestion, String.Empty, true, false, DateTime.Now, DateTime.MinValue, DateTime.Now, DateTime.Now, DateTime.MinValue);
             status = MembershipCreateStatus.Success;
-            return user;
+            return user;*/
         /*    Member member = new Member();
             member.UserName = username;
             member..Password = password;*/
@@ -187,9 +187,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
         public override bool DeleteUser(string username, bool deleteAllRelatedData)
         {
             throw new NotImplementedException();
-            IUser user = UserFactory<Entities.User>.Current.GetUserByUsername(username);
+            /*IUser user = UserFactory<Entities.User>.Current.GetUserByUsername(username);
             UserFactory<Entities.User>.Current.DeleteUser(user);
-            return true;
+            return true;*/
         }
 
         public override MembershipUserCollection FindUsersByEmail(string emailToMatch, int pageIndex, int pageSize, out int totalRecords)

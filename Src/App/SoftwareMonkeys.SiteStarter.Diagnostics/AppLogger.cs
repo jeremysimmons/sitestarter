@@ -10,7 +10,7 @@ using SoftwareMonkeys.SiteStarter.State;
 
 namespace SoftwareMonkeys.SiteStarter.Diagnostics
 {
-	public class AppLogger
+	static public class AppLogger
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 		
@@ -28,9 +28,6 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 					return GroupStack.Count;
 			}
 		}
-
-		private AppLogger()
-		{ }
 
 		// public static void Info(string message, string componentName, string methodName)
 		//{

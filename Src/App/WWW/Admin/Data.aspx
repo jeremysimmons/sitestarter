@@ -1,6 +1,7 @@
 <%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/Site.master" %>
 <%@ Import Namespace="System.Reflection" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Data" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Entities" %>
 <%@ Import Namespace="Db4objects.Db4o" %>
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
@@ -27,7 +28,7 @@
     {        
         IDataStore dataStore = DataAccess.Data.Stores[dataStoreName];
 
-        object[] objects = dataStore.GetAllEntities();
+        object[] objects = dataStore.Indexer.GetEntities();
 
         if (objects != null)
         {

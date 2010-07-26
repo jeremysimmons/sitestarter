@@ -108,11 +108,9 @@ namespace SoftwareMonkeys.SiteStarter.Data
 
 		private void ExportObjects()
 		{
-			// PageViews.SetActiveView(Step2View);
-
 			foreach (string dataStoreName in DataAccess.Data.GetDataStoreNames())
 			{
-				object[] objects = DataAccess.Data.Stores[dataStoreName].GetAllEntities();
+				object[] objects = DataAccess.Data.Stores[dataStoreName].Indexer.GetEntities();
 
 
 				if (objects != null)

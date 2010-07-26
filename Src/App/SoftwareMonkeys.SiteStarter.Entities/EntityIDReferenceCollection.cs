@@ -34,6 +34,18 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 		}
 		
+		public EntityIDReferenceCollection(EntityIDReference[] references)
+		{
+			if (references != null)
+			{
+				foreach (EntityIDReference reference in references)
+				{
+					if (reference != null)
+						Add(reference);
+				}
+			}
+		}
+		
 		public new void Add(EntityIDReference reference)
 		{
 			if (reference == null)

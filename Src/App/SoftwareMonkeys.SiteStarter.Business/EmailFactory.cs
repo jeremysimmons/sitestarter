@@ -64,7 +64,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	
 					return true;
 				}
-				catch (Exception ex)
+				catch (Exception)
 				{
 					// TODO: Should a failed test email be logged?
 					//ErrorEngine.ReportLocalError(new Error(ex));
@@ -72,7 +72,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				}
 		//	}
 		//	else
-				return true;
+				//return true;
 		}
 	}
 }

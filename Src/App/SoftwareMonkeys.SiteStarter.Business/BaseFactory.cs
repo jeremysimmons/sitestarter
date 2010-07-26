@@ -34,13 +34,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			set { commands = value; }
 		}
 		
-		private Dictionary<string, Type> defaultTypes;
-		public virtual Dictionary<string, Type> DefaultTypes
-		{
-			get { return defaultTypes; }
-			set { defaultTypes = value; }
-		}
-		
 		#region Activate functions
 		/// <summary>
 		/// Activates the entity by loading all references.
@@ -57,12 +50,15 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="entity">The entity to activate.</param>
 		public virtual void Activate(IEntity entity, int depth)
 		{
-			foreach (PropertyInfo property in entity.GetType().GetProperties())
+			if (depth > 0)
 			{
-				if (EntitiesUtilities.IsReference(entity.GetType(), property))
+				foreach (PropertyInfo property in entity.GetType().GetProperties())
 				{
-					Activate(entity, property.Name,
-					         depth-1); // We've stepped down one level so reduce the depth
+					if (EntitiesUtilities.IsReference(entity.GetType(), property))
+					{
+						Activate(entity, property.Name,
+						         depth-1); // We've stepped down one level so reduce the depth
+					}
 				}
 			}
 		}
@@ -132,7 +128,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="propertyName">The name of the property to activate.</param>
 		public virtual void Activate(IEntity entity, string propertyName, int depth)
 		{
-			DataAccess.Data.Activate(entity, propertyName, depth);
+			DataAccess.Data.Activator.Activate(entity, propertyName, depth);
 		}
 		
 		// TODO: Remove if not needed
@@ -171,7 +167,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			if (uniqueKey == String.Empty)
 				return null;
 
-			return (IEntity)DataAccess.Data.GetEntity(type, "UniqueKey", uniqueKey);
+			return (IEntity)DataAccess.Data.Reader.GetEntity(type, "UniqueKey", uniqueKey);
 		}
 		
 		
@@ -180,7 +176,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			if (id == Guid.Empty)
 				return null;
 
-			return (IEntity)DataAccess.Data.GetEntity(type, "ID", id);
+			return (IEntity)DataAccess.Data.Reader.GetEntity(type, "ID", id);
 		}
 		public virtual IEntity Get(Type type, string uniqueKey)
 		{
@@ -239,7 +235,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				AppLogger.Debug("Page index: " + location.PageIndex);
 				AppLogger.Debug("Sort expression: " + sortExpression);
 				
-				entities = (IEntity[])DataAccess.Data.GetEntitiesPage(type, location, sortExpression);
+				entities = (IEntity[])DataAccess.Data.Indexer.GetPageOfEntities(type, location, sortExpression);
 				
 				AppLogger.Debug("Entities #: " + (entities == null ? "[null]" : entities.Length.ToString()));
 			}
@@ -320,9 +316,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				//if (!TryExecute("Index", type.Name, out data, parameters))
 				//{
 				//	AppLogger.Debug("Could not execute custom function. Using default instead.");
-					
-					// TODO: Check if parameters should be passed to default function
-					data = DefaultGetPage(type, location, sortExpression);
+				
+				// TODO: Check if parameters should be passed to default function
+				data = DefaultGetPage(type, location, sortExpression);
 				//}
 				
 				entities = Collection<IEntity>.ConvertAll(data);
@@ -343,7 +339,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			{
 				AppLogger.Debug("Type: " + type.ToString());
 				
-				entities = (IEntity[])DataAccess.Data.GetEntities(type);
+				entities = (IEntity[])DataAccess.Data.Indexer.GetEntities(type);
 				
 				AppLogger.Debug("Entities #: " + (entities == null ? "[null]" : entities.Length.ToString()));
 			}
@@ -371,7 +367,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			
 			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving an array of entities.", NLog.LogLevel.Debug))
-			{				
+			{
 				object data = null;
 				
 				AppLogger.Debug("Type: " + type.ToString());
@@ -380,7 +376,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				//if (!TryExecute("Index", type.Name, out data, new object[] {}))
 				//{
 				//	AppLogger.Debug("Could not execute custom function. Using default instead.");
-					data = DefaultGetEntities(type);
+				data = DefaultGetEntities(type);
 				//}
 				
 				entities = Collection<IEntity>.ConvertAll(data);
