@@ -90,8 +90,15 @@
       <Project>{F294B839-0C1E-4187-AA58-6EA1C35E6B66}</Project>
       <Name>SiteStarter.Business</Name>
     </ProjectReference>
+    <Compile Include="DataActivatorTests.cs" />
+    <Compile Include="DataDeleterTests.cs" />
+    <Compile Include="DataIndexerTests.cs" />
     <Compile Include="DataProviderTests.cs" />
+    <Compile Include="DataReaderTests.cs" />
+    <Compile Include="DataReferencerTests.cs" />
+    <Compile Include="DataSaverTests.cs" />
     <Compile Include="DataStoreTests.cs" />
+    <Compile Include="DataUpdaterTests.cs" />
     <Compile Include="Entities\ITestRole.cs" />
     <Compile Include="Entities\ITestUser.cs" />
     <Compile Include="Entities\TestAccount.cs" />
@@ -101,6 +108,7 @@
     <Compile Include="Entities\TestUser.cs" />
     <Compile Include="Entities\ITestArticle.cs" />
     <Compile Include="FilterGroupTests.cs" />
+    <Compile Include="FilterTests.cs" />
     <Compile Include="ReferenceFilterTests.cs" />
     <Compile Include="ReferenceValidatorTests.cs" />
     <Compile Include="SchemaEditorTests.cs" />

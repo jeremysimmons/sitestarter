@@ -4,7 +4,6 @@ using System.Text;
 using NUnit.Framework;
 //using SoftwareMonkeys.SiteStarter.Modules;
 using SoftwareMonkeys.SiteStarter.Entities;
-using System.Xml;
 using System.Collections.Specialized;
 using System.IO;
 using System.Xml;
@@ -73,7 +72,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
         	TestRole.RegisterType();
         	TestAccount.RegisterType();
         	
-        	string originalName = "TestUser";
+        	//string originalName = "TestUser";
         	string newName = "TestAccount";
         	
         	XmlEntitySchemaEditor editor = new XmlEntitySchemaEditor(TestUtilities.GetTestingPath());

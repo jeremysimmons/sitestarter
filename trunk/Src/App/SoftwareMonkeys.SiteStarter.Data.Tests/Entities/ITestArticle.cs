@@ -15,6 +15,5 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests.Entities
 	/// </summary>
 	public interface ITestArticle : SoftwareMonkeys.SiteStarter.Entities.IEntity
 	{
-		Guid ID {get;set;}
 	}
 }

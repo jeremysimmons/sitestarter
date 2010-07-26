@@ -15,15 +15,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 {
 	public class TestExecutor
 	{
-		private Assembly assembly;
-		/// <summary>
-		/// Gets the assembly in the current context.
-		/// </summary>
-		public Assembly Assembly
-		{
-			get { return assembly; }
-		}
-
+		public List<string> CompletedTests = new List<string>();
+		
 		private Type[] testFixtures = new Type[] { };
 		/// <summary>
 		/// Gets an array of the test fixtures in the current context.
@@ -118,7 +111,13 @@ namespace SoftwareMonkeys.SiteStarter.Business
 											{
 												// Add the test method to the list
 												ArrayList list = new ArrayList(testMethods);
-												if (!list.Contains(method))
+												bool found = false;
+												foreach (MethodInfo m in testMethods)
+													if (m.DeclaringType.FullName == method.DeclaringType.FullName
+													    && m.Name == method.Name)
+														found = true;
+												
+												if (!found)
 													list.Add(method);
 												testMethods = (MethodInfo[])list.ToArray(typeof(MethodInfo));
 											}
@@ -127,8 +126,15 @@ namespace SoftwareMonkeys.SiteStarter.Business
 											    && ShouldRunSetupOrTeardown(method, fixtureName, testName))
 											{
 												// Add the setup method to the list
+												
 												ArrayList list = new ArrayList(setUpMethods);
-												if (!list.Contains(method))
+												bool found = false;
+												foreach (MethodInfo m in setUpMethods)
+													if (m.DeclaringType.FullName == method.DeclaringType.FullName
+													    && m.Name == method.Name)
+														found = true;
+												
+												if (!found)
 													list.Add(method);
 												setUpMethods = (MethodInfo[])list.ToArray(typeof(MethodInfo));
 											}
@@ -137,9 +143,17 @@ namespace SoftwareMonkeys.SiteStarter.Business
 											    && ShouldRunSetupOrTeardown(method, fixtureName, testName))
 											{
 												// Add the teardown method to the list
+												
 												ArrayList list = new ArrayList(tearDownMethods);
-												if (!list.Contains(method))
+												bool found = false;
+												foreach (MethodInfo m in tearDownMethods)
+													if (m.DeclaringType.FullName == method.DeclaringType.FullName
+													    && m.Name == method.Name)
+														found = true;
+												
+												if (!found)
 													list.Add(method);
+												
 												tearDownMethods = (MethodInfo[])list.ToArray(typeof(MethodInfo));
 											}
 										}
@@ -246,12 +260,20 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			try
 			{
-				testMethod.Invoke(fixturesTable[testMethod.DeclaringType.FullName], null);
+				// TODO: Clean up
+				//string name = testMethod.DeclaringType.FullName + "." + testMethod.Name;
+				
+				//if (!CompletedTests.Contains(name))
+				//{
+				//	CompletedTests.Add(name);
+					
+					testMethod.Invoke(fixturesTable[testMethod.DeclaringType.FullName], null);
 
-				// Add the method to the list of successful
-				ArrayList list = new ArrayList(results);
-				list.Add(new SMTestResult(testMethod.Name, testMethod.DeclaringType.Namespace, testMethod.DeclaringType.Name, true, string.Empty));
-				results = (SMTestResult[])list.ToArray(typeof(SMTestResult));
+					// Add the method to the list of successful
+					ArrayList list = new ArrayList(results);
+					list.Add(new SMTestResult(testMethod.Name, testMethod.DeclaringType.Namespace, testMethod.DeclaringType.Name, true, string.Empty));
+					results = (SMTestResult[])list.ToArray(typeof(SMTestResult));
+				//}
 			}
 			catch (Exception ex)
 			{

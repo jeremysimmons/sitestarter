@@ -71,8 +71,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				article.Categories = new TestCategory[] {category};
 				
-				DataAccess.Data.Save(article);
-				DataAccess.Data.Save(category);
+				DataAccess.Data.Saver.Save(article);
+				DataAccess.Data.Saver.Save(category);
 				
 				ReferenceFilter filter = (ReferenceFilter)DataAccess.Data.CreateFilter(typeof(ReferenceFilter));
 				filter.Operator = FilterOperator.Equal;
@@ -116,10 +116,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				article.Categories = new TestCategory[] {category};
 				article2.Categories = new TestCategory[] {category2};
 				
-				DataAccess.Data.Save(article2);
-				DataAccess.Data.Save(category2);
-				DataAccess.Data.Save(article);
-				DataAccess.Data.Save(category);
+				DataAccess.Data.Saver.Save(article2);
+				DataAccess.Data.Saver.Save(category2);
+				DataAccess.Data.Saver.Save(article);
+				DataAccess.Data.Saver.Save(category);
 				
 				ReferenceFilter filter = (ReferenceFilter)DataAccess.Data.CreateFilter(typeof(ReferenceFilter));
 				filter.Operator = FilterOperator.Equal;
@@ -143,11 +143,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 			Collection<IEntity> entities = new Collection<IEntity>();
 			foreach (Type type in types)
-				entities.Add((IEntity[])DataAccess.Data.GetEntities(type));
+				entities.Add((IEntity[])DataAccess.Data.Indexer.GetEntities(type));
 
 			foreach (IEntity entity in entities)
 			{
-				DataAccess.Data.Stores[entity.GetType()].Delete(entity);
+				DataAccess.Data.Deleter.Delete(entity);
 			}
 		}
 

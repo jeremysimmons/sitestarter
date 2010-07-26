@@ -346,7 +346,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				base.SelectedEntityIDs = value;
 			}
 		}
-
+			
 		/// <summary>
 		/// Gets/sets the selected entity.
 		/// </summary>

@@ -43,21 +43,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
             }
         }
 
-        public override Dictionary<string, Type> DefaultTypes
-        {
-            get { return base.DefaultTypes; }
-            set { base.DefaultTypes = value; }
-        }
-	
-
-        /// <summary>
-        /// Gets the data store containing the objects that this factory interact with.
-        /// </summary>
-        public IDataStore DataStore
-        {
-            get { return DataAccess.Data.Stores[typeof(V)]; }
-        }
-
 		#region Retrieve functions
 	    /// <summary>
 		/// Retrieves all the servers from the DB.
@@ -68,7 +53,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 	        SiteStarter.State.VirtualServerState.SuspendVirtualServerState();
 	        
-			V[] servers = (V[])Collection<V>.ConvertAll(DataStore.GetEntities<V>());
+			V[] servers = (V[])Collection<V>.ConvertAll(DataAccess.Data.Indexer.GetEntities<V>());
 			
 	        SiteStarter.State.VirtualServerState.RestoreVirtualServerState();
 	        
@@ -115,7 +100,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
                 
 	        SiteStarter.State.VirtualServerState.SuspendVirtualServerState();
 
-            V server = (V)DataAccess.Data.GetEntity<V>("ID", serverID);
+            V server = (V)DataAccess.Data.Reader.GetEntity<V>("ID", serverID);
             
             
 	        SiteStarter.State.VirtualServerState.RestoreVirtualServerState();
@@ -130,7 +115,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
         {
 	        SiteStarter.State.VirtualServerState.SuspendVirtualServerState();
 	        
-            V[] servers = DataAccess.Data.GetEntities<V>("Name", name);
+            V[] servers = DataAccess.Data.Indexer.GetEntities<V>("Name", name);
             
 	        SiteStarter.State.VirtualServerState.RestoreVirtualServerState();
 	        
@@ -145,7 +130,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
         {
             SiteStarter.State.VirtualServerState.SuspendVirtualServerState();
             
-            V server = (V)DataAccess.Data.GetEntity<V>("Name", name);
+            V server = (V)DataAccess.Data.Reader.GetEntity<V>("Name", name);
             
 	        SiteStarter.State.VirtualServerState.RestoreVirtualServerState();
 	        
@@ -176,7 +161,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			else
 			{
 				// Save the object.
-				DataAccess.Data.Save(server);
+				DataAccess.Data.Saver.Save(server);
 				
 		        SaveConfig(Config.Application.PhysicalPath.TrimEnd('\\') + @"\App_Data\VS\" + server.ID.ToString(), server);
 		        
@@ -238,7 +223,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			else
 			{
 				// Update the object.
-           		DataStore.Update(server);
+           		DataAccess.Data.Updater.Update(server);
         
 		        SaveConfig(Config.Application.PhysicalPath.TrimEnd('\\') + @"\App_Data\VS\" + server.ID.ToString(), server);
 
@@ -265,10 +250,10 @@ namespace SoftwareMonkeys.SiteStarter.Business
             if (server != null)
             {
                 // Check that the server is bound to the DB
-                if (!DataStore.IsStored(server))
+                if (!DataAccess.Data.IsStored(server))
                     server = GetVirtualServer(server.ID);
 
-                DataStore.Delete(server);
+                DataAccess.Data.Deleter.Delete(server);
             }
             
 			SiteStarter.State.VirtualServerState.RestoreVirtualServerState();

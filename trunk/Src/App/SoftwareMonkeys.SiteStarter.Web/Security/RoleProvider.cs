@@ -160,13 +160,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		
 		public override void AddUsersToRoles(string[] usernames, string[] rolenames)
 		{
-			AddUsersToRoles<User, UserRole>(usernames, rolenames);
-		}
-
-		public void AddUsersToRoles<U, R>(string[] usernames, string[] rolenames)
-			where U : IUser
-			where R : IUserRole
-		{
 			foreach (string rolename in rolenames)
 			{
 				if (!RoleExists(rolename))

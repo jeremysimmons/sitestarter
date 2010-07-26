@@ -103,14 +103,14 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
             XmlEntityManager.ImportTypeFromDirectory(article.GetType().FullName, importablesPath, importedPath);
 
             // Load the imported objects
-            IEntity[] entities = DataAccess.Data.GetEntities<TestArticle>();
+            IEntity[] entities = DataAccess.Data.Indexer.GetEntities<TestArticle>();
 
             Assert.AreEqual(1, entities.Length, "Incorrect number of imported objects found.");
 
             Assert.AreEqual(0, Directory.GetFiles(articlesPath).Length, "Xml entity file hasn't been moved after being imported.");
 
-            DataAccess.Data.Delete(article);
-            DataAccess.Data.Delete(page);
+            DataAccess.Data.Deleter.Delete(article);
+            DataAccess.Data.Deleter.Delete(page);
 
             ClearAll(typeof(TestArticle));
             ClearAll(typeof(TestArticlePage));
@@ -162,14 +162,14 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
             XmlEntityManager.ImportTypeFromDirectory(type, importablesPath, importedPath);
 
             // Load the imported objects
-            EntityReferenceCollection references = DataAccess.Data.GetReferences(article.GetType(), article.ID, "Pages", page.GetType(), false);
+            EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences(article.GetType(), article.ID, "Pages", page.GetType(), false);
 
             Assert.AreEqual(1, references.Count, "Incorrect number of imported references found.");
 
             Assert.AreEqual(0, Directory.GetFiles(referencesPath).Length, "Xml reference file hasn't been moved after being imported.");
 
-            DataAccess.Data.Delete(article);
-            DataAccess.Data.Delete(page);
+            DataAccess.Data.Deleter.Delete(article);
+            DataAccess.Data.Deleter.Delete(page);
 
             ClearAll(typeof(TestArticle));
             ClearAll(typeof(TestArticlePage));
@@ -232,7 +232,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
             
             // Load the imported objects
-            IEntity[] articles = DataAccess.Data.GetEntities<TestArticle>();
+            IEntity[] articles = DataAccess.Data.Indexer.GetEntities<TestArticle>();
 
             Assert.AreEqual(1, articles.Length, "Incorrect number of imported objects found.");
 
@@ -240,7 +240,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 
             // Load the references
-            EntityReferenceCollection references = DataAccess.Data.GetReferences(article.GetType(), article.ID, "Pages", page.GetType(), false);
+            EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences(article.GetType(), article.ID, "Pages", page.GetType(), false);
            
 
             Assert.AreEqual(1, references.Count, "Incorrect number of references found.");
@@ -272,13 +272,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 
 
-            DataAccess.Data.Delete(article);
+            DataAccess.Data.Deleter.Delete(article);
 
-            DataAccess.Data.Delete(page);
+            DataAccess.Data.Deleter.Delete(page);
 
             foreach (EntityReference reference in references)
             {
-                DataAccess.Data.Delete(reference);
+                DataAccess.Data.Deleter.Delete(reference);
             }
 
             ClearAll(typeof(TestArticle));
@@ -410,14 +410,14 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
             XmlEntityManager.ImportAllFromDirectory(importablesPath, importedPath);
 
             // Load the imported objects
-            IEntity[] entities = DataAccess.Data.GetEntities<TestArticle>();
+            IEntity[] entities = DataAccess.Data.Indexer.GetEntities<TestArticle>();
 
             Assert.AreEqual(1, entities.Length, "Incorrect number of imported objects found.");
 
             Assert.AreEqual(0, Directory.GetFiles(articlesPath).Length, "Xml entity file hasn't been moved after being imported.");
 
-            DataAccess.Data.Delete(article);
-            DataAccess.Data.Delete(page);
+            DataAccess.Data.Deleter.Delete(article);
+            DataAccess.Data.Deleter.Delete(page);
 
             ClearAll(typeof(TestArticle));
             ClearAll(typeof(TestArticlePage));
@@ -507,9 +507,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
         public void ClearAll(Type type)
         {
-            foreach (IEntity entity in DataAccess.Data.GetEntities(type))
+            foreach (IEntity entity in DataAccess.Data.Indexer.GetEntities(type))
             {
-                DataAccess.Data.Delete(entity);
+                DataAccess.Data.Deleter.Delete(entity);
             }
         }
 

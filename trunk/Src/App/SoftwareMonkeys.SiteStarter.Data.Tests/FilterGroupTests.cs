@@ -215,10 +215,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				article2.Categories = new TestCategory[] {category2};
 				
-				DataAccess.Data.Save(article2);
-				DataAccess.Data.Save(category2);
-				DataAccess.Data.Save(article);
-				DataAccess.Data.Save(category);
+				DataAccess.Data.Saver.Save(article2);
+				DataAccess.Data.Saver.Save(category2);
+				DataAccess.Data.Saver.Save(article);
+				DataAccess.Data.Saver.Save(category);
 				
 				FilterGroup filterGroup = new FilterGroup();
 				filterGroup.Operator = FilterOperator.And;
@@ -248,7 +248,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				Assert.IsFalse(filter2.IsMatch(article2), "filter2 (reference filter) matches article2 when it shouldn't.");
 
 				
-				TestArticle foundArticle = (Entities.TestArticle)DataAccess.Data.GetEntity(filterGroup);
+				TestArticle foundArticle = (Entities.TestArticle)DataAccess.Data.Reader.GetEntity(filterGroup);
 				
 				
 				Assert.IsNotNull(foundArticle, "foundArticle == null");
@@ -294,10 +294,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				article2.Categories = new TestCategory[] {category2};
 				
-				DataAccess.Data.Save(article2);
-				DataAccess.Data.Save(category2);
-				DataAccess.Data.Save(article);
-				DataAccess.Data.Save(category);
+				DataAccess.Data.Saver.Save(article2);
+				DataAccess.Data.Saver.Save(category2);
+				DataAccess.Data.Saver.Save(article);
+				DataAccess.Data.Saver.Save(category);
 				
 				
 				
@@ -329,7 +329,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 				
 				// This next one SHOULD FAIL to return anything
-				TestArticle excludedArticle = (Entities.TestArticle)DataAccess.Data.GetEntity(failingFilterGroup);
+				TestArticle excludedArticle = (Entities.TestArticle)DataAccess.Data.Reader.GetEntity(failingFilterGroup);
 				
 				Assert.IsNull(excludedArticle, "The excludedArticle should be null because it should have failed to match.");
 				
@@ -364,11 +364,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 			Collection<IEntity> entities = new Collection<IEntity>();
 			foreach (Type type in types)
-				entities.Add((IEntity[])DataAccess.Data.GetEntities(type));
+				entities.Add((IEntity[])DataAccess.Data.Indexer.GetEntities(type));
 
 			foreach (IEntity entity in entities)
 			{
-				DataAccess.Data.Stores[entity.GetType()].Delete(entity);
+				DataAccess.Data.Deleter.Delete(entity);
 			}
 			
 			string[] referenceStoreNames = new String[]{
@@ -378,9 +378,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			foreach (string storeName in referenceStoreNames)
 			{
-				foreach (IEntity entity in DataAccess.Data.Stores[storeName].GetEntities<EntityIDReference>())
+				foreach (IEntity entity in DataAccess.Data.Stores[storeName].Indexer.GetEntities<EntityIDReference>())
 				{
-					DataAccess.Data.Stores[storeName].Delete(entity);
+					DataAccess.Data.Stores[storeName].Deleter.Delete(entity);
 				}
 			}
 		}

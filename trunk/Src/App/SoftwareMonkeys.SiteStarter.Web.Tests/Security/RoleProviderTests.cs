@@ -15,7 +15,6 @@ using SoftwareMonkeys.SiteStarter.Web.WebControls;
 using SoftwareMonkeys.SiteStarter.Configuration;
 using System.Reflection;
 using System.Web;
-using SoftwareMonkeys.SiteStarter.Business;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Tests
 {
@@ -60,6 +59,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
         	UserFactory.Current.Activate(foundUser);
         	
         	Assert.IsNotNull(foundUser.Roles, "No roles found for the loaded user.");
+        	
+        	Assert.AreEqual(1, foundUser.Roles.Length, "Roles not found for user.");
         	
         	Assert.AreEqual(role.Name, user.Roles[0].Name, "Invalid name on the role.");
         	Assert.AreEqual(role.ID.ToString(), user.Roles[0].ID.ToString(), "Invalid ID on the role.");

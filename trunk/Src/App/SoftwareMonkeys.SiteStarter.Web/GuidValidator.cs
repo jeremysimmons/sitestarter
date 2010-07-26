@@ -5,6 +5,9 @@ using System.Text.RegularExpressions;
 
 namespace SoftwareMonkeys.SiteStarter.Web
 {
+    /// <summary>
+    /// Assists in the validation and parsing of Guids from string values.
+    /// </summary>
     public class GuidValidator
     {
 

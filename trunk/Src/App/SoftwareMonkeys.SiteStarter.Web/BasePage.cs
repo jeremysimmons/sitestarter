@@ -6,6 +6,9 @@ using System.Web.UI.WebControls;
 
 namespace SoftwareMonkeys.SiteStarter.Web
 {
+    /// <summary>
+    /// Defines the base of all pages.
+    /// </summary>
     public class BasePage : UserControl
     {
         /// <summary>

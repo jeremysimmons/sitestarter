@@ -18,7 +18,7 @@
     <li><strong><a href='<%= Request.ApplicationPath + "/Admin/Users.aspx" %>'>Manage Users</a></strong> (/Admin/Users.aspx) - The manage users page (in the
         administration section) is used by authorised administrators to browse, create,
         edit, and delete user accounts.</li>
-    <li><strong><a href='<%= Request.ApplicationPath + "/UnitTests.aspx" %>'>Unit Tests</a></strong> (/Testing.aspx) - The testing page triggers the execution
+    <li><strong><a href='<%= Request.ApplicationPath + "/Admin/UnitTests.aspx" %>'>Unit Tests</a></strong> (/Admin/UnitTests.aspx) - The testing page triggers the execution
         of all unit tests found in assemblies within the /bin/ directory and displays the
         results of each. Each project and function within the solution should have a corresponding
         test project and test function to streamline the testing process and to aid in quickly

@@ -62,7 +62,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
             if (entityID == Guid.Empty)
             	return default(T);
 
-            return (T)DataAccess.Data.GetEntity<T>("ID", entityID);
+            return (T)DataAccess.Data.Reader.GetEntity<T>("ID", entityID);
 		}
 		#endregion
 
@@ -76,7 +76,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
         static public void SaveEntity(IEntity entity)
         {
             // Save the object.
-            DataAccess.Data.Stores[entity.GetType()].Save(entity);
+            DataAccess.Data.Saver.Save(entity);
         }
 		#endregion
 
@@ -90,7 +90,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
         static public void UpdateEntity(IEntity entity)
         {
             // Update the object.
-            DataAccess.Data.Stores[entity.GetType()].Update(entity);
+            DataAccess.Data.Updater.Update(entity);
         }
 		#endregion
 
@@ -104,7 +104,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
             if (entity != null)
             {
-                DataAccess.Data.Stores[entity.GetType()].Delete(entity);
+                DataAccess.Data.Deleter.Delete(entity);
             }
 		}
 		#endregion

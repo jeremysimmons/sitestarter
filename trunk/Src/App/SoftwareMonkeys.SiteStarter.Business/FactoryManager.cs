@@ -23,12 +23,14 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns>The default entity type for the specified interface.</returns>
 		static public Type GetDefaultType(IFactory factory, string interfaceName)
 		{
-			if (factory.DefaultTypes == null)
+			throw new NotImplementedException();
+			
+			/*if (factory.DefaultTypes == null)
 				throw new InvalidOperationException("No default types specified on the " + factory.GetType().ToString() + " factory type.");
 			if (!factory.DefaultTypes.ContainsKey(interfaceName))
 				throw new ArgumentException("The interface name '" + interfaceName + "' wasn't found in the default types list of the " + factory.GetType().ToString() + " factory.");
 			
-			return factory.DefaultTypes[interfaceName];
+			return factory.DefaultTypes[interfaceName];*/
 		}
 	}
 }

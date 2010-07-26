@@ -52,7 +52,19 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="BatchManager.cs" />
+    <Compile Include="DataActivator.cs" />
+    <Compile Include="DataAdapter.cs" />
+    <Compile Include="DataDeleter.cs" />
+    <Compile Include="DataIndexer.cs" />
+    <Compile Include="DataReader.cs" />
+    <Compile Include="DataReferencer.cs" />
+    <Compile Include="DataSaver.cs" />
+    <Compile Include="DataStore.cs" />
+    <Compile Include="DataUpdater.cs" />
     <Compile Include="DataUtilities.cs" />
+    <Compile Include="IDataActivator.cs" />
+    <Compile Include="IDataAdapter.cs" />
+    <Compile Include="IDataDeleter.cs" />
     <Compile Include="IDataFilterGroup.cs" />
     <Compile Include="IDataFilter.cs" />
     <Compile Include="DataAccess.cs" />
@@ -62,7 +74,12 @@
     <Compile Include="DataStoreCollection.cs" />
     <Compile Include="FilterGroup.cs" />
     <Compile Include="FilterOperator.cs" />
+    <Compile Include="IDataIndexer.cs" />
+    <Compile Include="IDataReader.cs" />
+    <Compile Include="IDataReferencer.cs" />
+    <Compile Include="IDataSaver.cs" />
     <Compile Include="IDataStore.cs" />
+    <Compile Include="IDataUpdater.cs" />
     <Compile Include="ISchemaEditor.cs" />
     <Compile Include="PropertyFilter.cs" />
     <Compile Include="ReferenceFilter.cs" />

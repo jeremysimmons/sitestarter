@@ -270,6 +270,13 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		}
 		
 		
+		/// <summary>
+		/// Retrieves the command with attributes configured to match the provided details.
+		/// </summary>
+		/// <param name="action"></param>
+		/// <param name="type"></param>
+		/// <param name="parameterTypes"></param>
+		/// <returns></returns>
 		public MethodInfo GetCommandMethodByAttributes(string action, string type, Type[] parameterTypes)
 		{
 			MethodInfo returnMethod = null;
@@ -285,7 +292,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				{
 					//AppLogger.Debug("Checking method: " + method.Name);
 					
-					bool matches = false;
 					object[] attributes = method.GetCustomAttributes(true);
 					foreach (object attribute in attributes)
 					{
@@ -321,7 +327,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 								    && ParametersMatch(GetTypes(method.GetParameters()), parameterTypes))
 								{
 									returnMethod = method;
-									matches = true;
 									continue;
 								}
 							}

@@ -37,12 +37,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				return current; }
 		}
 		
-		/*public override Dictionary<string, Type> DefaultTypes
-		{
-			get { return base.DefaultTypes; }
-			set { base.DefaultTypes = value; }
-		}*/
-		
 		/// <summary>
 		/// Gets the data store containing the objects that this factory interact with.
 		/// </summary>
@@ -53,8 +47,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		
 		public UserFactory()
 		{
-			DefaultTypes = new Dictionary<string, Type>();
-			DefaultTypes.Add("IUser", typeof(Entities.User));
 		}
 
 		#region Retrieve functions
@@ -65,7 +57,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		[DataObjectMethod(DataObjectMethodType.Select, true)]
 		public U[] GetUsers()
 		{
-			return Collection<U>.ConvertAll(DataStore.GetEntities<U>());
+			return Collection<U>.ConvertAll(DataAccess.Data.Indexer.GetEntities<U>());
 		}
 		
 		/*/// <summary>
@@ -75,7 +67,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		[DataObjectMethod(DataObjectMethodType.Select, true)]
 		public U[] GetPageOfUsers(PagingLocation location)
 		{
-			return Collection<U>.ConvertAll(DataStore.GetEntitiesPage<U>(location));
+			return Collection<U>.ConvertAll(DataAccess.Data.Indexer.GetEntitiesPage<U>(location));
 		}*/
 
 			/// <summary>
@@ -112,7 +104,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			if (userID == Guid.Empty)
 				return default(U);
 
-			return (U)DataAccess.Data.GetEntity<U>("ID", userID);
+			return (U)DataAccess.Data.Reader.GetEntity<U>("ID", userID);
 		}
 
 		/// <summary>
@@ -123,7 +115,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			Entities.User user = null;
 			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the user with the username: " + username, NLog.LogLevel.Debug))
 			{
-				user = (Entities.User)DataAccess.Data.GetEntity<Entities.User>("Username", username);
+				user = (Entities.User)DataAccess.Data.Reader.GetEntity<Entities.User>("Username", username);
 
 				if (user != null)
 					AppLogger.Debug("User ID: "+  user.ID);
@@ -141,7 +133,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			Entities.User[] users = new Entities.User[] {};
 			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the users who are selected to be notified of important events.", NLog.LogLevel.Debug))
 			{
-				users = DataAccess.Data.GetEntities<Entities.User>("EnableNotifications", true);
+				users = DataAccess.Data.Indexer.GetEntities<Entities.User>("EnableNotifications", true);
 			}
 			return users;
 		}
@@ -153,7 +145,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		public U[] GetUsersByEmail(string email)
 		{
-			return Collection<U>.ConvertAll(DataAccess.Data.GetEntities<U>("Email", email));
+			return Collection<U>.ConvertAll(DataAccess.Data.Indexer.GetEntities<U>("Email", email));
 		}
 
 		/// <summary>
@@ -161,7 +153,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		public U[] GetUsersByName(string name)
 		{
-			return Collection<U>.ConvertAll(DataAccess.Data.GetEntities<U>("Name", name));
+			return Collection<U>.ConvertAll(DataAccess.Data.Indexer.GetEntities<U>("Name", name));
 		}
 
 		/// <summary>
@@ -169,7 +161,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		public U GetUserByEmail(string email)
 		{
-			return (U)DataAccess.Data.GetEntity<U>("Email", email);
+			return (U)DataAccess.Data.Reader.GetEntity<U>("Email", email);
 		}
 		#endregion
 
@@ -198,7 +190,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				parameters.Add("Password", password);
 
 				// Retrieve and return the user with the username and password.
-				user = (Entities.User)DataAccess.Data.GetEntity<Entities.User>(parameters);
+				user = (Entities.User)DataAccess.Data.Reader.GetEntity<Entities.User>(parameters);
 
 				if (user != null)
 				{
@@ -242,7 +234,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				else
 				{
 					// Save the object.
-					DataStore.Save(user);
+					DataAccess.Data.Saver.Save(user);
 
 					// Save successful.
 					isComplete = true;
@@ -274,7 +266,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				else
 				{
 					// Update the object.
-					DataStore.Update(user);
+					DataAccess.Data.Updater.Update(user);
 					
 					// Update successful.
 					return true;
@@ -297,7 +289,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				if (!DataStore.IsStored(user))
 					user = GetUser(user.ID);
 
-				DataStore.Delete(user);
+				DataAccess.Data.Deleter.Delete(user);
 			}
 		}
 		#endregion

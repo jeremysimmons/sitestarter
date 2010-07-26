@@ -45,15 +45,16 @@
 		<property name="Solution.SourceReleaseName" value="${string::replace(Solution.SourceReleaseName, '${Solution.ReleaseTimestamp}', string::replace(Solution.ReleaseTimestamp, '.', '-'))}"/>
     	<property name="Solution.InstallReleaseName" value="${string::replace(Solution.InstallReleaseName, '${Solution.ReleaseTimestamp}', string::replace(Solution.ReleaseTimestamp, '.', '-'))}"/>
 
-					<call target="Common.Jobs.ClearData"/>
-					<call target="Common.Jobs.ResetAll"/>
+		<call target="Common.Jobs.ClearData"/>
+		<call target="Common.Jobs.ResetAll"/>
 
-    			<call target="Common.Actions.ZipInstallRelease"/>
-	    		<call target="Common.Actions.ZipSourceRelease"/>
+		<call target="Common.Actions.ZipInstallRelease"/>
+		<call target="Common.Actions.ZipSourceRelease"/>
 	</target>
 
   <!-- Actions.ZipSourceRelease -->
   <target name="Common.Actions.ZipSourceRelease">
+  	<property name="Solution.Alias" value="${path::get-file-name(Solution.RootPath)}"/>
   	<mkdir dir="${Solution.RootPath}\..\..\Releases\Source\"/>
   	<zip zipfile="${Solution.RootPath}\..\..\Releases\Source\${Solution.SourceReleaseName}.zip">
 	    <fileset basedir="${Project.RootPath}">
@@ -93,12 +94,19 @@
 	        <exclude name="**/Backups/**"/>
 	        <exclude name="**.eqbak"/>
 	        <exclude name="**/Backups"/>
-	        <exclude name="*disabled_nant"/>
+	        <exclude name="**disabled_nant"/>
 	        <exclude name="**/bin/Debug/**"/>
 	        <exclude name="**/bin/Release/**"/>
 	        <exclude name="**.refresh"/>
 	        <exclude name="**/Docs/**"/>
-	        <include name="**/*" />
+	        <include name="**/${Solution.Alias}/**" />
+	        <include name="bin/**" />
+	        <include name="lib/**" />
+	        <include name="Scripts/**" />
+	        <include name="*.exe" />
+	        <include name="*.Project.nant" />
+	        <include name="*.sh"/>
+	        <include name="Readme.txt" />
 	    </fileset>	   
 
 	</zip>
@@ -107,9 +115,23 @@
 
   <!-- Actions.ZipInstallRelease -->
   <target name="Common.Actions.ZipInstallRelease">
+  	<property name="WwwInstallablePath" value="${Solution.RootPath}\WWW"/>
+  	<property name="ExeInstallablePath" value="${Solution.RootPath}"/>
+  	
+  	<!-- Default to exe -->
+  	<property name="InstallablePath" value="${ExeInstallablePath}"/>
+  	<property name="IncludeKey" value="**/bin/Release/*.exe"/>
+  	
+  	<if test="${directory::exists(WwwInstallablePath) == true}">
+  		<property name="InstallablePath" value="${WwwInstallablePath}"/>
+  		<property name="IncludeKey" value="**"/>
+  	</if>
+  	
+  	<echo message="${InstallablePath}"/>
+  	
   	<mkdir dir="${Solution.RootPath}\..\..\Releases\Install\"/>
   	<zip zipfile="${Solution.RootPath}\..\..\Releases\Install\${Solution.InstallReleaseName}.zip">
-	    <fileset basedir="${Solution.RootPath}\WWW" prefix="WWW">
+	    <fileset basedir="${InstallablePath}">
 	        <exclude name="**/*.yap"/>
 	        <exclude name="**/*.local.config"/>
 	        <exclude name="_svn"/>
@@ -148,10 +170,9 @@
 	        <exclude name="**/*.csproj"/>
 	        <exclude name="*disabled*"/>
 	        <exclude name="**/bin/Debug/**"/>
-	        <exclude name="**/bin/Release/**"/>
 	        <exclude name="**.refresh"/>
 	        <exclude name="**.nant"/>
-	        <include name="**/**" />
+	        <include name="${IncludeKey}" />
 	    </fileset>	   
 	</zip>
   </target>
@@ -192,7 +213,7 @@
         projectname="${GoogleCode.ProjectName}" 
         filename="${Solution.RootPath}\..\..\Releases\Install\${Solution.InstallReleaseName}.zip" 
         targetfilename="${Solution.InstallReleaseName}.zip"
-        summary="${GoogleCode.ProjectName} ${Solution.Version} install files"/>
+        summary="${Solution.InstallReleaseName}"/>
 <!--        labels="Featured, Type-Package, OpSys-All" /-->
   
 	<gcupload 
@@ -201,7 +222,7 @@
         projectname="${GoogleCode.ProjectName}" 
         filename="${Solution.RootPath}\..\..\Releases\Source\${Solution.SourceReleaseName}.zip" 
         targetfilename="${Solution.SourceReleaseName}.zip"
-        summary="${GoogleCode.ProjectName} ${Solution.Version} source files"/>
+        summary="${Solution.SourceReleaseName}"/>
         <!--labels="Featured, Type-Source, OpSys-All" /-->
   </target>
 

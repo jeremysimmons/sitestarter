@@ -65,7 +65,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				if (EntitiesUtilities.IsReference(entity.GetType(), property))
 				{
 					if (EntitiesUtilities.GetReferencedEntities(entity, property).Length == 0)
-						DataAccess.Data.Activate(entity, property.Name);
+						DataAccess.Data.Activator.Activate(entity, property.Name);
 					
 					foreach (IEntity referencedEntity in EntitiesUtilities.GetReferencedEntities(entity, entity.GetType().GetProperty(property.Name)))
 					{
