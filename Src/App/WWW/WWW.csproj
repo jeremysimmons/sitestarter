@@ -42,7 +42,6 @@
     <None Include="Admin\AutoSetup.aspx" />
     <None Include="Admin\Backup.aspx" />
     <None Include="Admin\Data.aspx" />
-    <None Include="Admin\EmailSettings.aspx" />
     <None Include="Admin\Help.aspx" />
     <None Include="Admin\HelpDocumentTemplate.xsl" />
     <None Include="Admin\HelpRaw.aspx" />
@@ -96,6 +95,7 @@
     <None Include="Members\Register.aspx" />
     <None Include="ServerSelectPanel.ascx" />
     <None Include="Site.master" />
+    <None Include="Test.aspx" />
     <None Include="VirtualServer.aspx" />
     <None Include="Web.config" />
     <EmbeddedResource Include="App_GlobalResources\Language.resx" />

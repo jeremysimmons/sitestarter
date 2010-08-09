@@ -1,7 +1,7 @@
 ﻿using System;
 using Db4objects.Db4o;
 using SoftwareMonkeys.SiteStarter.Entities;
-using SoftwareMonkeys.SiteStarter.Data.Tests.Entities;
+using SoftwareMonkeys.SiteStarter.Tests.Entities;
 using NUnit.Framework;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Tests
@@ -10,7 +10,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 	/// Description of ReferenceValidatorTests.
 	/// </summary>
 	[TestFixture]
-	public class ReferenceValidatorTests
+	public class ReferenceValidatorTests : BaseDataTestFixture
 	{
 		[Test]
 		public void Test_CheckForCircularReferences_True()

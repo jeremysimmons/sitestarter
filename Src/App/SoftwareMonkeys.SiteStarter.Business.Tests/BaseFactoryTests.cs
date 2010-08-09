@@ -3,7 +3,7 @@ using NUnit;
 using NUnit.Framework;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Data;
-using SoftwareMonkeys.SiteStarter.Business.Tests.Entities;
+using SoftwareMonkeys.SiteStarter.Tests.Entities;
 using SoftwareMonkeys.SiteStarter.Business;
 using System.Collections.Generic;
 
@@ -13,7 +13,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 	/// Description of BaseFactoryTests.
 	/// </summary>
 	[TestFixture]
-	public class BaseFactoryTests
+	public class BaseFactoryTests : BaseBusinessTestFixture
 	{
 		public BaseFactoryTests()
 		{

@@ -54,6 +54,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Lib\Db4objects.Db4o.dll</HintPath>
     </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\..\..\lib\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
     <Reference Include="NLog, Version=1.0.0.505, Culture=neutral, PublicKeyToken=5120e14c03d0593c">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Lib\NLog.dll</HintPath>
@@ -68,12 +71,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationBackup.cs" />
+    <Compile Include="ApplicationRestorer.cs" />
+    <Compile Include="BaseStrategy.cs" />
     <Compile Include="BaseFactory.cs" />
     <Compile Include="CommandAttribute.cs" />
     <Compile Include="CommandManager.cs" />
     <Compile Include="Crypter.cs" />
+    <Compile Include="DirectoryZipper.cs" />
+    <Compile Include="RetrieverStrategy.cs" />
     <Compile Include="FactoryManager.cs" />
     <Compile Include="GetCommandAttribute.cs" />
+    <Compile Include="RetrieveUserStrategy.cs" />
+    <Compile Include="SaverStrategy.cs" />
+    <Compile Include="StrategyFactory.cs" />
     <Compile Include="TestExecutor.cs" />
     <Compile Include="UserFactory.cs" />
     <Compile Include="EmailFactory.cs" />
@@ -81,6 +92,7 @@
     <Compile Include="EntityFactory.cs" />
     <Compile Include="KeywordFactory.cs" />
     <Compile Include="UserRoleFactory.cs" />
+    <Compile Include="ZipAnalyzer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration\SiteStarter.Configuration.csproj">

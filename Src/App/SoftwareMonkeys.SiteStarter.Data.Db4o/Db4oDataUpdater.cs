@@ -38,7 +38,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				if (entity == null)
 					throw new ArgumentNullException("entity");
 				
-				EntityReferenceCollection latestReferences = EntitiesUtilities.GetReferences(entity);
+				EntityReferenceCollection latestReferences = Provider.Referencer.GetActiveReferences(entity);
 				
 				using (LogGroup logGroup2 = AppLogger.StartGroup("Creating list of deletable obsolete references.", NLog.LogLevel.Debug))
 				{

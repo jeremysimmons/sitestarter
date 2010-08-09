@@ -12,16 +12,29 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 		}
 		
+		public abstract string VirtualServerID { get;set; }
+		
+		public abstract bool IsClosed {get;}
+		
 		public abstract void Commit(bool forceCommit);
 		
 		public abstract void Commit();
 		
 		public abstract bool IsStored(IEntity entity);
 		
+		/// <summary>
+		/// Closes the data store.
+		/// </summary>
 		public abstract void Close();
 		
+		/// <summary>
+		/// Disposes the data store. Also closes the data store and clears it from state.
+		/// </summary>
 		public abstract void Dispose();
 		
+		/// <summary>
+		/// Opens the data store object. Doesn't necessarily have to open the actual underlying store yet, as it can possibly wait until it's needed.
+		/// </summary>
 		public abstract void Open();
 		
 		public abstract string Name {get;set;}

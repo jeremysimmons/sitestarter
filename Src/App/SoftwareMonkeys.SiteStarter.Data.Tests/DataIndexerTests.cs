@@ -2,42 +2,22 @@
 using NUnit.Framework;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Entities;
-using SoftwareMonkeys.SiteStarter.Data.Tests.Entities;
+using SoftwareMonkeys.SiteStarter.Tests.Entities;
 using System.Collections.Generic;
+using SoftwareMonkeys.SiteStarter.Tests;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Tests
 {
-	/// <summary>
-	/// Description of DataIndexerTests.
-	/// </summary>
 	[TestFixture]
-	public class DataIndexerTests
+	public class DataIndexerTests : BaseDataTestFixture
 	{
-		public DataIndexerTests()
-		{
-		}
-		
-		/*[SetUp]
-		public void SetUp()
-		{
-			
-			TestUtilities.ClearTestEntities();
-		}
-		
-		[TearDown]
-		public void TearDown()
-		{
-			TestUtilities.ClearTestEntities();
-		}*/
-	
 		
 		[Test]
 		public void Test_GetEntitiesByPropertyFilter()
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
 			{
-				TestUtilities.ClearTestEntities();
-
+				
 				TestEntity e1 = new TestEntity();
 				e1.Name = "Test E1";
 				
@@ -55,7 +35,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				if (found != null)
 					Assert.IsTrue(found.Length > 0, "No results found.");
 
-				TestUtilities.ClearTestEntities();
 			}
 		}
 		
@@ -64,11 +43,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
 			{
-				TestUtilities.ClearTestEntities();
-				
-				TestUser.RegisterType();
-				TestRole.RegisterType();
-
 				TestUser user = new TestUser();
 				user.ID = Guid.NewGuid();
 				user.FirstName = "Test";
@@ -101,15 +75,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 					{
 						TestUser foundUser = (TestUser)found[0];
 						
+						Assert.IsNotNull(foundUser, "foundUser == null");
+						
 						Assert.AreEqual(user.ID, foundUser.ID, "The IDs don't match.");
 					}
 				}
-				
-				
-				//TestUser.DeregisterType();
-				//TestRole.DeregisterType();
-
-				TestUtilities.ClearTestEntities();
 			}
 		}
 		
@@ -328,6 +298,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetEntities<T>(IDictionary<string, object>) function.", NLog.LogLevel.Debug))
 			{
+				EntityOne.RegisterType();
+				
 				EntityOne e1 = new EntityOne();
 				e1.Name = "Test E1";
 				
@@ -354,6 +326,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetEntities<T>(IDictionary<string, object>) function to ensure it excludes entities properly.", NLog.LogLevel.Debug))
 			{
+				EntityOne.RegisterType();
+				
 				EntityOne e1 = new EntityOne();
 				e1.Name = "Test E1";
 				
@@ -377,48 +351,49 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		
 		[Test]
 		public void Test_GetEntitiesPage_Page1_SortAscending()
-		{
-			TestUser.RegisterType();
-			TestRole.RegisterType();
+		{				
+			TestArticle article1 = new TestArticle();
+			article1.ID = Guid.NewGuid();
+			article1.Title = "Article C";
 			
-			TestUtilities.ClearTestEntities();
+			TestArticle article2 = new TestArticle();
+			article2.ID = Guid.NewGuid();
+			article2.Title = "Article B";
 			
-			// Create the dummy objects
-			TestUser user = new TestUser();
-			Guid userID = user.ID = Guid.NewGuid();
-			user.FirstName = "C";
-			user.LastName = "User 1";
+			TestArticle article3 = new TestArticle();
+			article3.ID = Guid.NewGuid();
+			article3.Title = "Article A";
 			
-			TestUser user2 = new TestUser();
-			Guid user2ID = user2.ID = Guid.NewGuid();
-			user2.FirstName = "B";
-			user2.LastName = "User 2";
+			DataAccess.Data.Saver.Save(article1);
+			DataAccess.Data.Saver.Save(article2);
+			DataAccess.Data.Saver.Save(article3);
 			
-			
-			TestUser user3 = new TestUser();
-			Guid user3ID = user3.ID = Guid.NewGuid();
-			user3.FirstName = "A";
-			user3.LastName = "User 3";
-			
-			DataAccess.Data.Saver.Save(user);
-			DataAccess.Data.Saver.Save(user2);
-			DataAccess.Data.Saver.Save(user3);
+			string[] titles = new String[]
+			{
+				article1.Title,
+				article2.Title,
+				article3.Title
+			};
 			
 			PagingLocation pagingLocation = new PagingLocation(0, 10);
 			
-			string sortExpression = "FirstNameAscending";
+			string sortExpression = "TitleAscending";
 			
-			TestUser[] entities = DataAccess.Data.Indexer.GetPageOfEntities<TestUser>(pagingLocation, sortExpression);
+			TestArticle[] entities = DataAccess.Data.Indexer.GetPageOfEntities<TestArticle>(pagingLocation, sortExpression);
 			
 			Assert.IsNotNull(entities);
 			
+			foreach (TestArticle a in entities)
+			{
+				Assert.Greater(Array.IndexOf(titles, a.Title), -1, "The title of one of the retrieved entities doesn't match any of those expected.");
+			}
+			
 			Assert.AreEqual(3, entities.Length, "Invalid number found.");
 			
-			Assert.AreEqual("A", entities[0].FirstName, "Sorting failed #1.");
-			Assert.AreEqual("B", entities[1].FirstName, "Sorting failed #2.");
-			Assert.AreEqual("C", entities[2].FirstName, "Sorting failed #3.");
+			Assert.AreEqual(article3.Title, entities[0].Title, "Sorting failed #1.");
+			Assert.AreEqual(article2.Title, entities[1].Title, "Sorting failed #2.");
+			Assert.AreEqual(article1.Title, entities[2].Title, "Sorting failed #3.");
 			
-			TestUtilities.ClearTestEntities();
 		}
 		
 		
@@ -427,47 +402,62 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_GetEntitiesPage_Page1_SortDescending()
 		{
-			TestUser.RegisterType();
-			TestRole.RegisterType();
+			TestArticle article1 = new TestArticle();
+			article1.ID = Guid.NewGuid();
+			article1.Title = "Article C";
 			
-			TestUtilities.ClearTestEntities();
+			TestArticle article2 = new TestArticle();
+			article2.ID = Guid.NewGuid();
+			article2.Title = "Article B";
 			
-			// Create the dummy objects
-			TestUser user = new TestUser();
-			Guid userID = user.ID = Guid.NewGuid();
-			user.FirstName = "A";
-			user.LastName = "User 1";
+			TestArticle article3 = new TestArticle();
+			article3.ID = Guid.NewGuid();
+			article3.Title = "Article A";
 			
-			TestUser user2 = new TestUser();
-			Guid user2ID = user2.ID = Guid.NewGuid();
-			user2.FirstName = "B";
-			user2.LastName = "User 2";
+			List<string> titles = new List<string>();
+			titles.Add(article1.Title);
+			titles.Add(article2.Title);
+			titles.Add(article3.Title);		
 			
+			List<Guid> ids = new List<Guid>();
+			ids.Add(article1.ID);
+			ids.Add(article2.ID);
+			ids.Add(article3.ID);			
 			
-			TestUser user3 = new TestUser();
-			Guid user3ID = user3.ID = Guid.NewGuid();
-			user3.FirstName = "C";
-			user3.LastName = "User 3";
-			
-			DataAccess.Data.Saver.Save(user);
-			DataAccess.Data.Saver.Save(user2);
-			DataAccess.Data.Saver.Save(user3);
+			DataAccess.Data.Saver.Save(article1);
+			DataAccess.Data.Saver.Save(article2);
+			DataAccess.Data.Saver.Save(article3);
 			
 			PagingLocation pagingLocation = new PagingLocation(0, 10);
 			
-			string sortExpression = "FirstNameDescending";
+			string sortExpression = "TitleDescending";
 			
-			TestUser[] entities = DataAccess.Data.Indexer.GetPageOfEntities<TestUser>(pagingLocation, sortExpression);
+			TestArticle[] entities = DataAccess.Data.Indexer.GetPageOfEntities<TestArticle>(pagingLocation, sortExpression);
 			
 			Assert.IsNotNull(entities);
 			
+			List<string> titlesFound = new List<string>();
+			List<Guid> idsFound = new List<Guid>();
+			
+			foreach (TestArticle a in entities)
+			{
+				Assert.IsFalse(idsFound.Contains(a.ID), "The returned entities list includes more than one entity with the same ID'.");
+				
+				Assert.IsFalse(titlesFound.Contains(a.Title), "The returned entities list includes more than one entity with the same title: '" + a.Title + "'.");
+				
+				Assert.IsTrue(titles.Contains(a.Title), "The title of one of the retrieved entities doesn't match any of those expected.");
+				
+				Assert.IsTrue(ids.Contains(a.ID), "The ID of one of the retrieved entities doesn't match any of those expected.");
+				
+				titlesFound.Add(a.Title);
+				idsFound.Add(a.ID);
+			}
+			
 			Assert.AreEqual(3, entities.Length, "Invalid number found.");
 			
-			Assert.AreEqual("C", entities[0].FirstName, "Sorting failed #1.");
-			Assert.AreEqual("B", entities[1].FirstName, "Sorting failed #2.");
-			Assert.AreEqual("A", entities[2].FirstName, "Sorting failed #3.");
-			
-			TestUtilities.ClearTestEntities();
+			Assert.AreEqual(article1.Title, entities[0].Title, "Sorting failed #1.");
+			Assert.AreEqual(article2.Title, entities[1].Title, "Sorting failed #2.");
+			Assert.AreEqual(article3.Title, entities[2].Title, "Sorting failed #3.");
 		}
 	}
 }

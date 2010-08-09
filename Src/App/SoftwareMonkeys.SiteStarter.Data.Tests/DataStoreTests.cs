@@ -8,10 +8,11 @@ using System.Collections;
 using System.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Configuration;
 using SoftwareMonkeys.SiteStarter.Data;
-using SoftwareMonkeys.SiteStarter.Data.Tests.Entities;
+using SoftwareMonkeys.SiteStarter.Tests.Entities;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using System.Reflection;
+using SoftwareMonkeys.SiteStarter.Tests;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Tests
 {

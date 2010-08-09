@@ -24,8 +24,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			{
 				try
 				{
+					// TODO: This check and message should occur earlier
 					if (field == null)
-						throw new ArgumentNullException("The provided field cannot be null.", "field");
+						throw new ArgumentNullException("field == null. Does the FieldControlID match the ID of the field inside the entity form item?", "field");
 
 					if (controlValuePropertyName != String.Empty)
 					{

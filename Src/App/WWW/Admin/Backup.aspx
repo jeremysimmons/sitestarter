@@ -13,7 +13,7 @@
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Data" %>
 <script runat="server">
 
-    XmlBackupManager manager;
+	ApplicationBackup appBackup;
 
     protected bool PrepareForUpdate
     {
@@ -28,11 +28,13 @@
 
     protected void Page_Init(object sender, EventArgs e)
     {
-        manager = new XmlBackupManager(Server.MapPath(Request.ApplicationPath),
+    	appBackup = new ApplicationBackup();
+    	
+        /*//manager = new XmlBackupManager(Server.MapPath(Request.ApplicationPath),
             "App_Data",
             "Backups",
             WebUtilities.GetLocationVariation(Request.Url),
-            false);
+            false);*/
     }
 	
     protected void Page_Load(object sender, EventArgs e)
@@ -63,7 +65,8 @@
 
     private void ClearBackups()
     {
-        manager.ClearBackups();
+    throw new NotImplementedException();
+        //appBackup.ClearBackups();
         
         Result.Display("The backups have been cleared.");
 
@@ -79,7 +82,7 @@
 
     protected void Step2()
     {
-        manager.ExecuteBackup();
+        appBackup.Backup();
 
         Result.Display(Resources.Language.BackupCompleted);
 
@@ -123,15 +126,8 @@
 <asp:View runat="server" ID="Step2View">
 <div class="Heading1"><%= Resources.Language.BackupComplete %></div>
 <ss:Result runat="server"></ss:Result><br />
-<%= Resources.Language.Found %>: <%= manager.TotalRecordsFound %><br/>
-<%= Resources.Language.Exported %>: <%= manager.TotalRecordsExported %><br/>
-<%= Resources.Language.Zipped %>: <%= manager.TotalRecordsZipped %><br/>
-<asp:PlaceHolder runat="server" Visible="false">
-<a href='<%= manager.GetBackupZipWebPath(Request.ApplicationPath) %>' target="_blank"><%= Resources.Language.DownloadBackup %></a>
-<br/><br/>
+<%= Resources.Language.TotalFilesBackedUp %>: <%= appBackup.TotalFilesZipped %><br/>
 
-<a href='?a=ClearBackups' target="_blank"><%= Resources.Language.DeleteBackups %></a> - <%= Resources.Language.DeleteBackupsInfo %>
-</asp:PlaceHolder>
 <asp:Panel id="OutputPanel" Runat="server"></asp:Panel>
 		</asp:View>
 		<asp:View runat="server" ID="Step3View">

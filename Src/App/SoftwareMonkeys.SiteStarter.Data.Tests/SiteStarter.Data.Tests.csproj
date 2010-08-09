@@ -66,6 +66,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration.Tests\SiteStarter.Configuration.Tests.csproj">
+      <Project>{5DFB85CA-D338-425A-B382-64EFBE19C65D}</Project>
+      <Name>SiteStarter.Configuration.Tests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration\SiteStarter.Configuration.csproj">
       <Project>{4B83307F-8307-43EF-A176-8AB1CDA78264}</Project>
       <Name>SiteStarter.Configuration</Name>
@@ -82,52 +86,46 @@
       <Project>{C3626F0A-DFD4-4EF2-8755-3532DE3712A4}</Project>
       <Name>SiteStarter.Diagnostics</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Entities.Tests\SiteStarter.Entities.Tests.csproj">
+      <Project>{C81C653C-6983-4401-A016-68586963DC9B}</Project>
+      <Name>SiteStarter.Entities.Tests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Entities\SiteStarter.Entities.csproj">
       <Project>{3609F512-9E15-41C7-95AF-D1B3E7F93562}</Project>
       <Name>SiteStarter.Entities</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Business\SiteStarter.Business.csproj">
-      <Project>{F294B839-0C1E-4187-AA58-6EA1C35E6B66}</Project>
-      <Name>SiteStarter.Business</Name>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.State\SiteStarter.State.csproj">
+      <Project>{34129651-3B9F-4A0D-AEBF-7DE2098DD98F}</Project>
+      <Name>SiteStarter.State</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Tests\SiteStarter.Tests.csproj">
+      <Project>3109EA47-5620-4C75-93E2-A552FC75EB8B</Project>
+      <Name>SiteStarter.Tests</Name>
+    </ProjectReference>
+    <Compile Include="BaseDataTestFixture.cs" />
     <Compile Include="DataActivatorTests.cs" />
     <Compile Include="DataDeleterTests.cs" />
+    <Compile Include="DataExporterTests.cs" />
+    <Compile Include="DataImporterTests.cs" />
     <Compile Include="DataIndexerTests.cs" />
     <Compile Include="DataProviderTests.cs" />
     <Compile Include="DataReaderTests.cs" />
     <Compile Include="DataReferencerTests.cs" />
     <Compile Include="DataSaverTests.cs" />
+    <Compile Include="DataStoreCollectionTests.cs" />
     <Compile Include="DataStoreTests.cs" />
     <Compile Include="DataUpdaterTests.cs" />
-    <Compile Include="Entities\ITestRole.cs" />
-    <Compile Include="Entities\ITestUser.cs" />
-    <Compile Include="Entities\TestAccount.cs" />
-    <Compile Include="Entities\TestAction.cs" />
-    <Compile Include="Entities\TestRole.cs" />
-    <Compile Include="Entities\TestTask.cs" />
-    <Compile Include="Entities\TestUser.cs" />
-    <Compile Include="Entities\ITestArticle.cs" />
     <Compile Include="FilterGroupTests.cs" />
     <Compile Include="FilterTests.cs" />
+    <Compile Include="MockDataProviderManager.cs" />
     <Compile Include="ReferenceFilterTests.cs" />
     <Compile Include="ReferenceValidatorTests.cs" />
-    <Compile Include="SchemaEditorTests.cs" />
-    <Compile Include="TestUtilities.cs" />
+    <Compile Include="DataSchemaTests.cs" />
+    <Compile Include="RenamePropertyCommandTests.cs" />
+    <Compile Include="RenameTypeCommandTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="XmlEntityManagerTests.cs" />
     <Compile Include="DataUtilitiesTests.cs" />
-    <Compile Include="Entities\EntityFour.cs" />
-    <Compile Include="Entities\EntityThree.cs" />
-    <Compile Include="Entities\TestEntity.cs" />
-    <Compile Include="Entities\EntityOne.cs" />
-    <Compile Include="Entities\EntityTwo.cs" />
-    <Compile Include="Entities\TestArticle.cs" />
-    <Compile Include="Entities\TestArticlePage.cs" />
-    <Compile Include="Entities\TestCategory.cs" />
-    <Compile Include="Entities\TestSample.cs" />
-    <Compile Include="TestConfig.cs" />
-    <Compile Include="XmlEntitySchemaEditorTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

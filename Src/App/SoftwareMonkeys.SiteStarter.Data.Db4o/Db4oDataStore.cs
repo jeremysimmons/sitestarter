@@ -17,8 +17,28 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 {
 	public class Db4oDataStore : DataStore
 	{
+		private string virtualServerID;
+		/// <summary>
+		/// Gets/sets the ID of the virtual server that the data store is attached to.
+		/// </summary>
+		public override string VirtualServerID
+		{
+			get { return virtualServerID; }
+			set { virtualServerID = value; }
+		}
+		
 		// TODO: Check if this is needed
 		private IConfiguration db4oConfiguration;
+		
+		public override bool IsClosed
+		{
+			get {
+				if (ObjectContainer == null || ObjectServer == null)
+					return true;
+				else
+					return ObjectContainer.Ext().IsClosed();
+			}
+		}
 		
 		/// <summary>
 		/// Gets a flag indicating whether the actual data store file exists.
@@ -56,39 +76,37 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			get
 			{
-				IObjectServer server = (IObjectServer)StateAccess.State.GetApplication(ObjectServerKey);
-				if (server == null)
+				if (!StateAccess.State.ContainsApplication(ObjectServerKey))
 					OpenServer();
+				
 				return (IObjectServer)StateAccess.State.GetApplication(ObjectServerKey);
 			}
 			set {
 				StateAccess.State.SetApplication(ObjectServerKey, value);}
 		}
 		
+		/// <summary>
+		/// Gets the key that represents the object server when held in the state store.
+		/// </summary>
 		public string ObjectServerKey
 		{
 			get
 			{
 				string key = "ObjectServer_" + this.Name;
-				string prefix = (string)StateAccess.State.GetSession("VirtualServerID");
-				if (prefix != null && prefix != String.Empty)
-				{
-					key = prefix + "_" + key;
-				}
+				
 				return key;
 			}
 		}
 
+		/// <summary>
+		/// Gets the key that represents the object container when held in the state store.
+		/// </summary>
 		public string ObjectContainerKey
 		{
 			get
 			{
 				string key = "ObjectContainer_" + this.Name;
-				string prefix = (string)StateAccess.State.GetSession("VirtualServerID");
-				if (prefix != null && prefix != String.Empty)
-				{
-					key = prefix + "_" + key;
-				}
+				
 				return key;
 			}
 		}
@@ -100,13 +118,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			get
 			{
-				IObjectContainer objectContainer = (IObjectContainer)StateAccess.State.GetApplication(ObjectContainerKey);
-				if (objectContainer == null)
+				if (!StateAccess.State.ContainsApplication(ObjectContainerKey))
 					OpenContainer();
 				
 				return (IObjectContainer)StateAccess.State.GetApplication(ObjectContainerKey);
-				//return (IObjectContainer)StateAccess.State.GetApplication(ObjectContainerKey);
-				//return ObjectServer.OpenClient();
 			}
 			set { StateAccess.State.SetApplication(ObjectContainerKey, value); }
 		}
@@ -123,6 +138,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			set { name = value; }
 		}
 		
+		/// <summary>
+		/// Empty constructor.
+		/// </summary>
 		public Db4oDataStore()
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Constructing a Db4oDataStore object.", NLog.LogLevel.Debug))
@@ -131,6 +149,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			}
 		}
 		
+		/// <summary>
+		/// Sets the db4o configuration to be used by the data store.
+		/// </summary>
+		/// <param name="db4oConfiguration"></param>
+		// TODO: See if this is necessary. If not, remove it
 		public Db4oDataStore(IConfiguration db4oConfiguration)
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Constructing a Db4oDataStore object.", NLog.LogLevel.Debug))
@@ -140,14 +163,20 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			}
 		}
 
+		/// <summary>
+		/// Retrieves the file name of the physical data store.
+		/// </summary>
+		/// <returns>The file name for the physical data store.</returns>
 		private string GetStoreFileName()
 		{
 			string fileName = Name;
 			
 			AppLogger.Debug("Store name: " + Name);
 
-			string prefix = (string)StateAccess.State.GetSession("VirtualServerID");
-			if (prefix != null && prefix != String.Empty && prefix != Guid.Empty.ToString())
+			string prefix = String.Empty;
+			if (StateAccess.State.ContainsSession("VirtualServerID"))
+				prefix = (string)StateAccess.State.GetSession("VirtualServerID");
+			if (prefix != String.Empty && prefix != Guid.Empty.ToString())
 			{
 				fileName = @"VS\" + prefix + @"\" + fileName;
 			}
@@ -155,6 +184,18 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			return Config.Application.PhysicalPath + @"\App_Data\" + fileName + ".yap";
 		}
 		
+		/// <summary>
+		/// Opens the data store object. This does not open the actual store as it's done when it's needed.
+		/// </summary>
+		public override void Open()
+		{
+			// Store is not opened here as it's not necessary.
+			// It's opened JIT
+		}
+		
+		/// <summary>
+		/// Opens the db4o server. 
+		/// </summary>
 		public void OpenServer()
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Opening data server.", NLog.LogLevel.Info))
@@ -188,12 +229,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			}
 		}
 		
-		public override void Open()
-		{
-			// Store is not opened here as it's not necessary.
-			// It's opened JIT
-		}
 		
+		/// <summary>
+		/// Opens the db4o object container.
+		/// </summary>
 		public void OpenContainer()
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Opening data container.", NLog.LogLevel.Info))
@@ -202,7 +241,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				
 				AppLogger.Debug("Name: " + Name);
 
-				string prefix = (string)StateAccess.State.GetSession("VirtualServerID");
+				string prefix = String.Empty;
+				if (StateAccess.State.ContainsSession("VirtualServerID"))
+					prefix = (string)StateAccess.State.GetSession("VirtualServerID");
+				
 				if (prefix != null && prefix != String.Empty && prefix != Guid.Empty.ToString())
 				{
 					fileName = @"VS\" + prefix + @"\" + fileName;
@@ -221,6 +263,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			}
 		}
 
+		/// <summary>
+		/// Disposes the data store. Also closes the data store and clears it from state.
+		/// </summary>
 		public override void Dispose()
 		{
 			Close();
@@ -228,6 +273,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			//objectServer = null;
 		}
 
+		/// <summary>
+		/// Closes the data store.
+		/// </summary>
 		public override void Close()
 		{
 			if (ObjectContainer != null && !ObjectContainer.Ext().IsClosed())

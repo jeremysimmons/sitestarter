@@ -25,6 +25,45 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			return InitializeDataStore(dataStoreName, Db4oFactory.CloneConfiguration());
 		}
 		
+		static public Db4oDataStore InitializeDataStore(string virtualServerID, string dataStoreName)
+		{
+			return InitializeDataStore(virtualServerID, dataStoreName, Db4oFactory.CloneConfiguration());
+		}
+		
+		/// <summary>
+		/// Loads the data from the .yap file.
+		/// </summary>
+		static public Db4oDataStore InitializeDataStore(string virtualServerID, string dataStoreName, IConfiguration db4oConfiguration)
+		{
+			Db4oDataStore store = null;
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Initializing data store.", NLog.LogLevel.Debug))
+			{
+				if (!Config.IsInitialized)
+					throw new InvalidOperationException("The application config file is not present. Run the setup process and try again.");
+				
+				AppLogger.Debug("Data store name: " + dataStoreName);
+				AppLogger.Debug("Virtual server ID: " + virtualServerID);
+				
+				string fullName = String.Empty;
+				
+				if (virtualServerID != String.Empty)
+				{
+					fullName = virtualServerID + "--" + dataStoreName;
+				}
+				else
+					fullName = dataStoreName;
+				
+				AppLogger.Debug("Full name: " + fullName);
+				
+				// Create a new data store
+				store = new Db4oDataStore(Db4oFactory.CloneConfiguration());
+				store.Name = fullName;
+			}
+			return store;
+			
+		}
+		
 		/// <summary>
 		/// Loads the data from the .yap file.
 		/// </summary>

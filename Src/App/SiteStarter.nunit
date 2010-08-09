@@ -1,7 +1,14 @@
 ﻿<NUnitProject>
   <Settings activeconfig="Debug" />
   <Config name="Debug" binpathtype="Auto">
-    <assembly path="WWW\bin\SoftwareMonkeys.SiteStarter.Data.Tests.dll" />
+    <assembly path="SoftwareMonkeys.SiteStarter.Data.Db4o.Tests\bin\Debug\SoftwareMonkeys.SiteStarter.Data.Db4o.Tests.dll" />
+    <assembly path="..\..\lib\Db4objects.Db4o.CS.dll" />
+    <assembly path="..\..\lib\Db4objects.Db4o.dll" />
+    <assembly path="SoftwareMonkeys.SiteStarter.Business.Tests\bin\Debug\SoftwareMonkeys.SiteStarter.Business.Tests.dll" />
+    <assembly path="SoftwareMonkeys.SiteStarter.Configuration.Tests\bin\Debug\SoftwareMonkeys.SiteStarter.Configuration.Tests.dll" />
+    <assembly path="SoftwareMonkeys.SiteStarter.Web.Tests\bin\Debug\SoftwareMonkeys.SiteStarter.Web.Tests.dll" />
+    <assembly path="SoftwareMonkeys.SiteStarter.Diagnostics.Tests\bin\Debug\SoftwareMonkeys.SiteStarter.Diagnostics.Tests.dll" />
+    <assembly path="SoftwareMonkeys.SiteStarter.Data.Tests\bin\Debug\SoftwareMonkeys.SiteStarter.Data.Tests.dll" />
   </Config>
   <Config name="Release" binpathtype="Auto" />
 </NUnitProject>

@@ -16,33 +16,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 {
 	public class Db4oDataProvider : DataProvider
 	{
-		private ISchemaEditor schema;
-		public override ISchemaEditor Schema {
-			get {
-				if (schema == null)
-					schema = new Db4oSchemaEditor();
-				return schema;
-			}
-		}
-		
-		/*public override ISchemaEditor Schema
-		{
-			get {
-				return Schema;
-			}
-		}*/
-		
-		/*private Db4oSchemaEditor schema;
-		public Db4oSchemaEditor Schema
-		{
-			get {
-				if (schema == null)
-					schema = new Db4oSchemaEditor();
-				return schema;
-			}
-		}*/
-		
 		private DataStoreCollection stores;
+		/// <summary>
+		/// Gets/sets a collection of the available data stores.
+		/// </summary>
 		public override DataStoreCollection Stores
 		{
 			get {
@@ -52,10 +29,15 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		}
 		
 		#region Adapter functions
+		
+		/// <summary>
+		/// Initializes the data reader adapter for this provider.
+		/// </summary>
+		/// <returns>The data reader adapter for this provider.</returns>
 		public override IDataReader InitializeDataReader()
 		{
 			Db4oDataReader reader = null;
-		
+			
 			using (LogGroup logGroup = AppLogger.StartGroup("Initializing a new data reader adapter.", NLog.LogLevel.Debug))
 			{
 				reader = new Db4oDataReader(this, null);
@@ -64,137 +46,141 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			return reader;
 		}
 		
+		/// <summary>
+		/// Initializes the data indexer adapter for this provider.
+		/// </summary>
+		/// <returns>The data indexer adapter for this provider.</returns>
 		public override IDataIndexer InitializeDataIndexer()
 		{
 			return new Db4oDataIndexer(this, null);
 		}
 		
+		/// <summary>
+		/// Initializes the data referencer adapter for this provider.
+		/// </summary>
+		/// <returns>The data referencer adapter for this provider.</returns>
 		public override IDataReferencer InitializeDataReferencer()
 		{
 			return new Db4oDataReferencer(this, null);
 		}
 		
+		/// <summary>
+		/// Initializes the data activator adapter for this provider.
+		/// </summary>
+		/// <returns>The data activator adapter for this provider.</returns>
 		public override IDataActivator InitializeDataActivator()
 		{
 			return new Db4oDataActivator(this, null);
 		}
+		
+		/// <summary>
+		/// Initializes the data saver adapter for this provider.
+		/// </summary>
+		/// <returns>The data saver adapter for this provider.</returns>
 		public override IDataSaver InitializeDataSaver()
 		{
 			return new Db4oDataSaver(this, null);
 		}
+		
+		/// <summary>
+		/// Initializes the data deleter adapter for this provider.
+		/// </summary>
+		/// <returns>The data deleter adapter for this provider.</returns>
 		public override IDataDeleter InitializeDataDeleter()
 		{
 			return new Db4oDataDeleter(this, null);
 		}
+		
+		/// <summary>
+		/// Initializes the data deleter adapter for this provider.
+		/// </summary>
+		/// <returns>The data deleter adapter for this provider.</returns>
 		public override IDataUpdater InitializeDataUpdater()
 		{
 			return new Db4oDataUpdater(this, null);
 		}
 		
+		/// <summary>
+		/// Initializes the data exporter adapter for this provider.
+		/// </summary>
+		/// <returns>The data exporter adapter for this provider.</returns>
+		public override IDataExporter InitializeDataExporter()
+		{
+			return new Db4oDataExporter(this, null);
+		}
+		
+		/// <summary>
+		/// Initializes the data schema adapter for this provider.
+		/// </summary>
+		/// <returns>The data schema adapter for this provider.</returns>
+		public override IDataSchema InitializeDataSchema()
+		{
+			return new Db4oDataSchema(this, null);
+		}
+		
+		/// <summary>
+		/// Initializes the data importer adapter for this provider.
+		/// </summary>
+		/// <returns>The data importer adapter for this provider.</returns>
+		public override IDataImporter InitializeDataImporter()
+		{
+			return new Db4oDataImporter(this, null);
+		}
+		
+		
 		#endregion
 
-		public void Initialize()
-		{
-			throw new Exception("The method or operation is not implemented.");
-		}
-
-		public override void Dispose()
-		{
-
-
-			foreach (Db4oDataStore store in Stores)
-			{
-				// Includes commit and close
-				store.Dispose();
-			}
-		}
-
+		/// <summary>
+		/// Initializes the provided with the provided details.
+		/// </summary>
+		/// <param name="name">The name of the provider.</param>
+		/// <param name="config">The configuration settings that apply to the provider.</param>
 		public override void Initialize(string name, System.Collections.Specialized.NameValueCollection config)
 		{
 			DataAccess.Data = this;
 
 			base.Initialize(name, config);
-
-			/*if ((config == null) || (config.Count == 0))
-                throw new ArgumentNullException("You must supply a valid configuration dictionary.");
-
-            if (string.IsNullOrEmpty(config["description"]))
-            {
-                config.Remove("description");
-                config.Add("description", "Put a localized description here.");
-            }
-
-            //Let ProviderBase perform the basic initialization
-            base.Initialize(name, config);
-
-            //Perform feature-specific provider initialization here
-
-            //Get the connection string
-            string connectionStringName = config["connectionStringName"];
-            if (String.IsNullOrEmpty(connectionStringName))
-                throw new ProviderException("You must specify a connectionStringName attribute.");
-
-            ConnectionStringsSection cs =
-                (ConnectionStringsSection)ConfigurationManager.GetSection("connectionStrings");
-            if (cs == null)
-                throw new ProviderException("An error occurred retrieving the connection strings section.");
-
-            if (cs.ConnectionStrings[connectionStringName] == null)
-                throw new ProviderException("The connection string could not be found in the connection strings section.");
-            else
-                connectionString = cs.ConnectionStrings[connectionStringName].ConnectionString;
-
-            if (String.IsNullOrEmpty(connectionString))
-                throw new ProviderException("The connection string is invalid.");
-            config.Remove("connectionStringName");
-
-            //Check to see if unexpected attributes were set in configuration
-            if (config.Count > 0)
-            {
-                string extraAttribute = config.GetKey(0);
-                if (!String.IsNullOrEmpty(extraAttribute))
-                    throw new ProviderException("The following unrecognized attribute was found in " + Name + "'s configuration: '" +
-                                                extraAttribute + "'");
-                else
-                    throw new ProviderException("An unrecognized attribute was found in the provider's configuration.");
-            }*/
 		}
 
+		/// <summary>
+		/// Creates and initilizes the data store with the provided name.
+		/// </summary>
+		/// <param name="dataStoreName">The name of the data store to initialize.</param>
+		/// <returns>The newly initialized data store.</returns>
 		public override IDataStore InitializeDataStore(string dataStoreName)
 		{
-			return Db4oDataStoreFactory.InitializeDataStore(dataStoreName);
+			IDataStore store = Db4oDataStoreFactory.InitializeDataStore(dataStoreName);
+			return store;
 		}
 
-		/*/// <summary>
-		/// Gets the name of the data store that the provided entity is stored in.
+		/// <summary>
+		/// Creates and initilizes the data store with the provided name.
 		/// </summary>
-		/// <param name="type">The type of entity to get the name of the data store for.</param>
-		/// <param name="entity">The entity to get the name of the data store for (in case it's not found for the type).</param>
-		/// <param name="throwErrorIfNotFound">A flag indicating whether an error should be thrown when no data store attribute is found.</param>
-		/// <returns>The data store that the provided entity is stored in.</returns>
-		public string GetDataStoreName(Type type, IEntity entity, bool throwErrorIfNotFound)
+		/// <param name="virtualServerID">The ID of the virtual server containing the data store.</param>
+		/// <param name="dataStoreName">The name of the data store to initialize.</param>
+		/// <returns>The newly initialized data store.</returns>
+		public override IDataStore InitializeDataStore(string virtualServerID, string dataStoreName)
 		{
-			string dataStoreName = GetDataStoreName(type, false);
-
-			if (dataStoreName == null || dataStoreName.Length == 0)
-				return GetDataStoreName(entity.GetType(), throwErrorIfNotFound);
-
-			return String.Empty;
-		}*/
-
-
-
-			/// <summary>
-			/// Gets the names of the data stores in the data directory.
-			/// </summary>
-			/// <returns>The names of the data stores found.</returns>
-			override public string[] GetDataStoreNames()
+			IDataStore store = Db4oDataStoreFactory.InitializeDataStore(virtualServerID, dataStoreName);
+			return store;
+		}
+		
+		/// <summary>
+		/// Gets the names of the data stores in the data directory.
+		/// </summary>
+		/// <returns>The names of the data stores found.</returns>
+		override public string[] GetDataStoreNames()
 		{
 			List<String> names = new List<String>();
 
-			foreach (string file in Directory.GetFiles(Config.Application.PhysicalPath + @"\App_Data\", "*.yap"))
+			string path = Config.Application.PhysicalPath + Path.DirectorySeparatorChar + "App_Data";
+			
+			if (Directory.Exists(path))
 			{
-				names.Add(Path.GetFileNameWithoutExtension(file));
+				foreach (string file in Directory.GetFiles(path, "*.yap"))
+				{
+					names.Add(Path.GetFileNameWithoutExtension(file));
+				}
 			}
 
 			return names.ToArray();
@@ -230,6 +216,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			}
 		}
 		
+		/// <summary>
+		/// Checks whether the provided entity is stored in the corresponding data store.
+		/// </summary>
+		/// <param name="entity">The entity to look for in the corresponding data store.</param>
+		/// <returns>A boolean value indicating whether the entity was found.</returns>
 		public override bool IsStored(IEntity entity)
 		{
 			bool isStored = false;
@@ -275,5 +266,17 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			return isStored;
 		}
 
+		/// <summary>
+		/// Disposes the data provider and all data stores within it.
+		/// </summary>
+		public override void Dispose()
+		{
+			foreach (Db4oDataStore store in Stores)
+			{
+				// Includes commit and close
+				store.Dispose();
+			}
+		}
+		
 	}
 }

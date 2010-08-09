@@ -1,26 +1,18 @@
 ﻿using System;
 using NUnit.Framework;
 using SoftwareMonkeys.SiteStarter.Entities;
-using SoftwareMonkeys.SiteStarter.Data.Tests.Entities;
+using SoftwareMonkeys.SiteStarter.Tests.Entities;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using SoftwareMonkeys.SiteStarter.Tests;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Tests
 {
-	/// <summary>
-	/// Description of DataSaverTests.
-	/// </summary>
 	[TestFixture]
-	public class DataSaverTests
-	{
-		public DataSaverTests()
-		{
-		}
-		
+	public class DataSaverTests : BaseDataTestFixture
+	{		
 		[Test]
 		public void Test_Save_2ParallelReferences()
-		{
-			TestUtilities.ClearTestEntities();
-			
+		{		
 			
 			TestUser user = new TestUser();
 			user.ID = Guid.NewGuid();
@@ -83,15 +75,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			//Assert.AreEqual(role1.ID.ToString(), ((EntityIDReference)references[1]).Entity1ID.ToString(), "Second reference has invalid entity 1 ID.");
 			//Assert.AreEqual(user1.ID.ToString(), ((EntityIDReference)references[1]).Entity2ID.ToString(), "Second reference has invalid entity 2 ID.");
 			
-			TestUtilities.ClearTestEntities();
 		}
 		
 		
 		[Test]
 		public void Test_Save_2ConvergingReferences()
 		{
-			TestUtilities.ClearTestEntities();
-			
 			
 			TestUser user = new TestUser();
 			user.ID = Guid.NewGuid();
@@ -148,7 +137,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			Assert.IsFalse(reference2.Includes(role.ID, "Users"), "Second reference includes unexpected role.");
 			
-			TestUtilities.ClearTestEntities();
 		}
 		/*
 		[Test]
@@ -189,8 +177,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the Save function and checking that the references are created successfully.", NLog.LogLevel.Debug))
 			{
-				TestUtilities.ClearTestEntities();
-				
 				
 				TestUser user = new TestUser();
 				user.ID = Guid.NewGuid();
@@ -284,7 +270,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				Assert.AreEqual(2, rolesInRolesStore2.Length, "Role(s) not found in roles store after update.");
 				
 				
-				TestUtilities.ClearTestEntities();
 			}
 		}
 		

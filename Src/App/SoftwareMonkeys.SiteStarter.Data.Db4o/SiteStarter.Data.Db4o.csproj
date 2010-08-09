@@ -49,6 +49,8 @@
   <ItemGroup>
     <Compile Include="Db4oDataActivator.cs" />
     <Compile Include="Db4oDataDeleter.cs" />
+    <Compile Include="Db4oDataExporter.cs" />
+    <Compile Include="Db4oDataImporter.cs" />
     <Compile Include="Db4oDataIndexer.cs" />
     <Compile Include="Db4oDataReader.cs" />
     <Compile Include="Db4oDataReferencer.cs" />
@@ -59,7 +61,7 @@
     <Compile Include="Db4oDataUpdater.cs" />
     <Compile Include="Db4oPropertyFilter.cs" />
     <Compile Include="Db4oReferenceFilter.cs" />
-    <Compile Include="Db4oSchemaEditor.cs" />
+    <Compile Include="Db4oDataSchema.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration\SiteStarter.Configuration.csproj">

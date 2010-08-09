@@ -52,6 +52,25 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			get { return tearDownMethods; }
 		}
+		
+		private MethodInfo[] fixtureSetUpMethods = new MethodInfo[] { };
+		/// <summary>
+		/// Gets an array of the fixture setup methods in the current context.
+		/// </summary>
+		public MethodInfo[] FixtureSetUpMethods
+		{
+			get { return fixtureSetUpMethods; }
+		}
+
+		private MethodInfo[] fixtureTearDownMethods = new MethodInfo[] { };
+		/// <summary>
+		/// Gets an array of the fixture tear down methods in the current context.
+		/// </summary>
+		public MethodInfo[] FixtureTearDownMethods
+		{
+			get { return fixtureTearDownMethods; }
+		}
+
 
 		private SMTestResult[] results = new SMTestResult[] { };
 		/// <summary>
@@ -156,6 +175,41 @@ namespace SoftwareMonkeys.SiteStarter.Business
 												
 												tearDownMethods = (MethodInfo[])list.ToArray(typeof(MethodInfo));
 											}
+											
+											if (methodAttribute is TestFixtureSetUpAttribute
+											    && ShouldRunSetupOrTeardown(method, fixtureName, testName))
+											{
+												// Add the fixtureSetup method to the list
+												
+												ArrayList list = new ArrayList(fixtureSetUpMethods);
+												bool found = false;
+												foreach (MethodInfo m in fixtureSetUpMethods)
+													if (m.DeclaringType.FullName == method.DeclaringType.FullName
+													    && m.Name == method.Name)
+														found = true;
+												
+												if (!found)
+													list.Add(method);
+												fixtureSetUpMethods = (MethodInfo[])list.ToArray(typeof(MethodInfo));
+											}
+
+											if (methodAttribute is TestFixtureTearDownAttribute
+											    && ShouldRunSetupOrTeardown(method, fixtureName, testName))
+											{
+												// Add the teardown method to the list
+												
+												ArrayList list = new ArrayList(fixtureTearDownMethods);
+												bool found = false;
+												foreach (MethodInfo m in fixtureTearDownMethods)
+													if (m.DeclaringType.FullName == method.DeclaringType.FullName
+													    && m.Name == method.Name)
+														found = true;
+												
+												if (!found)
+													list.Add(method);
+												
+												fixtureTearDownMethods = (MethodInfo[])list.ToArray(typeof(MethodInfo));
+											}
 										}
 									}
 								}
@@ -194,11 +248,11 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					// Create a table to hold instances of all fixtures
 					Hashtable table = GetRelevantFixtures(fixtureName, testName);
 
-					RunSetupMethods(table, fixtureName);
+					RunFixtureSetupMethods(table, fixtureName);
 
 					RunTestMethods(table, fixtureName, testName);
 					
-					RunTearDownMethods(table, fixtureName);
+					RunFixtureTearDownMethods(table, fixtureName);
 
 				}
 			}
@@ -243,6 +297,29 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			}
 		}
 		
+		
+		protected void RunFixtureSetupMethods(Hashtable fixturesTable, string fixtureName)
+		{
+			
+			// Loop through the fixture setup methods and run them
+			foreach (MethodInfo fixtureSetupMethod in setUpMethods)
+			{
+				if (fixtureName == String.Empty || fixtureSetupMethod.DeclaringType.FullName == fixtureName)
+					fixtureSetupMethod.Invoke(fixturesTable[fixtureSetupMethod.DeclaringType.FullName], null);
+			}
+		}
+		
+		protected void RunFixtureTearDownMethods(Hashtable fixturesTable, string fixtureName)
+		{
+			// Loop through the fixture teardown methods and run them
+			foreach (MethodInfo fixtureTearDownMethod in fixtureTearDownMethods)
+			{
+				if (fixtureName == String.Empty || fixtureTearDownMethod.DeclaringType.FullName == fixtureName)
+					fixtureTearDownMethod.Invoke(fixturesTable[fixtureTearDownMethod.DeclaringType.FullName], null);
+			}
+		}
+		
+		
 		protected void RunTestMethods(Hashtable fixturesTable, string fixtureName, string testName)
 		{
 			// Loop through the test methods and run them
@@ -251,7 +328,11 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				
 				if (ShouldRunTest(testMethod, fixtureName, testName))
 				{
+					RunSetupMethods(fixturesTable, fixtureName);
+					
 					RunTestMethod(fixturesTable, testMethod, fixtureName, testName);
+					
+					RunTearDownMethods(fixturesTable, fixtureName);
 				}
 			}
 		}

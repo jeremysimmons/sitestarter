@@ -2,7 +2,7 @@
 using SoftwareMonkeys.SiteStarter.Data;
 using NUnit.Framework;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
-using SoftwareMonkeys.SiteStarter.Data.Tests.Entities;
+using SoftwareMonkeys.SiteStarter.Tests.Entities;
 using SoftwareMonkeys.SiteStarter.Entities;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Tests
@@ -11,7 +11,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 	/// Description of FilterTests.
 	/// </summary>
 	[TestFixture]
-	public class FilterTests
+	public class FilterTests : BaseDataTestFixture
 	{
 		public FilterTests()
 		{

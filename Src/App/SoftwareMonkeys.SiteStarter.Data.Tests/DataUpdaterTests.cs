@@ -1,21 +1,17 @@
 ﻿using System;
 using NUnit.Framework;
-using SoftwareMonkeys.SiteStarter.Data.Tests.Entities;
+using SoftwareMonkeys.SiteStarter.Tests.Entities;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using SoftwareMonkeys.SiteStarter.Tests;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Tests
 {
 	/// <summary>
 	/// Description of DataUpdaterTests.
 	/// </summary>
-	[TestFixture]
-	public class DataUpdaterTests
-	{
-		public DataUpdaterTests()
-		{
-		}
-		
+	public class DataUpdaterTests : BaseDataTestFixture
+	{		
 		
 		[Test]
 		public void Test_PreUpdate()
@@ -35,7 +31,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			role.Name = "Test Role";
 			
 			// Add the role to the User.Roles collection
-			user.Roles = Collection<TestRole>.Add(user.Roles, role);
+			user.Roles = new TestRole[] { role };
 			
 			// Save both objects
 			DataAccess.Data.Saver.Save(role);
@@ -70,26 +66,29 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the DataAccess.Data.Updater.Update function.", NLog.LogLevel.Debug))
 			{
-				
-				TestUtilities.ClearTestEntities();
-				
+				TestUser.RegisterType();
+				TestRole.RegisterType();
 				
 				TestUser user = new TestUser();
-				Guid userID = user.ID = Guid.NewGuid();
+				user.ID = Guid.NewGuid();
+				Guid userID = user.ID;
 				user.FirstName = "Test-Before";
 				user.LastName = "User";
 				
 				TestRole role = new TestRole();
-				Guid roleID = role.ID = Guid.NewGuid();
+				role.ID = Guid.NewGuid();
+				Guid roleID = role.ID;
 				role.Name = "Test Role";
 				
-				user.Roles = Collection<TestRole>.Add(user.Roles, role);
+				user.Roles = new TestRole[] { role };
 				
 				DataAccess.Data.Saver.Save(role);
 				
 				DataAccess.Data.Saver.Save(user);
 				
 				TestUser user2 = (TestUser)DataAccess.Data.Reader.GetEntity(typeof(TestUser), "ID", user.ID);
+				
+				Assert.IsNotNull(user2, "user2 == null");
 				
 				Assert.AreEqual(user.FirstName, user2.FirstName, "The name doesn't appear to have been saved.");
 				
@@ -104,10 +103,22 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				//IDataStore store = DataAccess.Data.Stores[user2];
 				//store.Dispose();
-				DataAccess.Data.Stores.Remove(DataAccess.Data.Stores[user2]);
+				// Dispose the store to ensure it was committed properly
+				if (DataAccess.Data.Stores == null)
+					Assert.Fail("DataAccess.Data.Stores == null");
+				IDataStore store = DataAccess.Data.Stores[user2];
+				if (store == null)
+				{
+					Assert.Fail("Can't find store.");
+				}
 				
+				// TODO: Check if its possible to remove and dispose the store, then have it automatically reload when needed
+				//store.Dispose();
+				//DataAccess.Data.Stores.Remove(store);
 				
 				TestUser user3 = (TestUser)DataAccess.Data.Reader.GetEntity<TestUser>("ID", user2.ID);
+				
+				Assert.IsNotNull(user3, "user3 == null");
 				
 				Assert.AreEqual(user2.FirstName, user3.FirstName, "The name doesn't appear to have been updated.");
 				
@@ -115,15 +126,14 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				//if (toDelete != null)
 				//	Assert.AreEqual(1, toDelete.Length, "Incorrect number of entities in toDelete list. Expecting the obsolete reference to be in the list.");
 				
-				TestUtilities.ClearTestEntities();
 			}
 		}
 		
 		[Test]
 		public void Test_Update_2References_CheckLocationOfReferencedEntities()
 		{
-			TestUtilities.ClearTestEntities();
-			
+			TestUser.RegisterType();
+			TestRole.RegisterType();
 			
 			TestUser user = new TestUser();
 			user.ID = Guid.NewGuid();
@@ -155,9 +165,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			DataAccess.Data.Saver.Save(role2);
 			DataAccess.Data.Saver.Save(role);
 			
-			IEntity[] references = DataAccess.Data.Stores[DataUtilities.GetDataStoreName("TestUser", "TestRole")].Indexer.GetEntities<EntityIDReference>();
+			EntityReferenceCollection references = (EntityReferenceCollection)DataAccess.Data.Referencer.GetReferences("TestUser", "TestRole");
 			
-			Assert.AreEqual(2, references.Length, "Incorrect number of references found.");
+			Assert.AreEqual(2, references.Count, "Incorrect number of references found.");
 			
 			//EntityIDReference reference1 = (EntityIDReference)references[0];
 			//EntityIDReference reference2 = (EntityIDReference)references[1];
@@ -190,12 +200,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			// Load the roles out of the users store (there should be none)
 			IEntity[] rolesInUsersStore = DataAccess.Data.Stores[typeof(TestUser)].Indexer.GetEntities<TestRole>();
 			
-			Assert.AreEqual(0, rolesInUsersStore.Length, "Role(s) found in users store after save.");
+			Assert.AreEqual(0, rolesInUsersStore.Length, "Invalid number of roles found in users store after save.");
 			
 			
 			IEntity[] rolesInRolesStore = DataAccess.Data.Stores[typeof(TestRole)].Indexer.GetEntities<TestRole>();
 			
-			Assert.AreEqual(2, rolesInRolesStore.Length, "Role(s) not found in roles store after save.");
+			Assert.AreEqual(2, rolesInRolesStore.Length, "Invalid number of roles found in roles store after save.");
 			
 			TestUser foundUser = DataAccess.Data.Reader.GetEntity<TestUser>("ID", user.ID);
 			

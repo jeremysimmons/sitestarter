@@ -8,15 +8,16 @@ using System.Collections;
 using System.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Configuration;
 using SoftwareMonkeys.SiteStarter.Data;
-using SoftwareMonkeys.SiteStarter.Data.Tests.Entities;
+using SoftwareMonkeys.SiteStarter.Tests.Entities;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using System.Reflection;
+using SoftwareMonkeys.SiteStarter.Tests;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Tests
 {
 	[TestFixture]
-	public class FilterGroupTests
+	public class FilterGroupTests : BaseDataTestFixture
 	{
 		public string ApplicationPath
 		{
@@ -24,12 +25,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			//   get { return @"f:\SoftwareMonkeys\WorkHub\Application 2\Web\"; }
 			//     get { return System.Configuration.ConfigurationSettings.AppSettings["ApplicationPath"]; }
 			get { return SoftwareMonkeys.SiteStarter.Configuration.Config.Application.PhysicalPath; }
-		}
-		
-		public FilterGroupTests()
-		{
-			
-			TestUtilities.RegisterTestEntities();
 		}
 
 		#region Singleton tests
@@ -248,7 +243,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				Assert.IsFalse(filter2.IsMatch(article2), "filter2 (reference filter) matches article2 when it shouldn't.");
 
 				
-				TestArticle foundArticle = (Entities.TestArticle)DataAccess.Data.Reader.GetEntity(filterGroup);
+				TestArticle foundArticle = (TestArticle)DataAccess.Data.Reader.GetEntity(filterGroup);
 				
 				
 				Assert.IsNotNull(foundArticle, "foundArticle == null");
@@ -329,7 +324,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 				
 				// This next one SHOULD FAIL to return anything
-				TestArticle excludedArticle = (Entities.TestArticle)DataAccess.Data.Reader.GetEntity(failingFilterGroup);
+				TestArticle excludedArticle = (TestArticle)DataAccess.Data.Reader.GetEntity(failingFilterGroup);
 				
 				Assert.IsNull(excludedArticle, "The excludedArticle should be null because it should have failed to match.");
 				

@@ -8,15 +8,16 @@ using System.Collections;
 using System.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Configuration;
 using SoftwareMonkeys.SiteStarter.Data;
-using SoftwareMonkeys.SiteStarter.Data.Tests.Entities;
+using SoftwareMonkeys.SiteStarter.Tests.Entities;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using System.Reflection;
+using SoftwareMonkeys.SiteStarter.Tests;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Tests
 {
 	[TestFixture]
-	public class ReferenceFilterTests
+	public class ReferenceFilterTests : BaseDataTestFixture
 	{
 		public string ApplicationPath
 		{
@@ -26,11 +27,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			get { return SoftwareMonkeys.SiteStarter.Configuration.Config.Application.PhysicalPath; }
 		}
 		
-		public ReferenceFilterTests()
-		{
-			
-			TestUtilities.RegisterTestEntities();
-		}
 
 		#region Singleton tests
 		[Test]

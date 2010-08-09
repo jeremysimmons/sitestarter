@@ -68,26 +68,14 @@
       <Project>{34129651-3B9F-4A0D-AEBF-7DE2098DD98F}</Project>
       <Name>SiteStarter.State</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Tests\SiteStarter.Tests.csproj">
+      <Project>3109EA47-5620-4C75-93E2-A552FC75EB8B</Project>
+      <Name>SiteStarter.Tests</Name>
+    </ProjectReference>
     <None Include="EntitiesUtilitiesTests.cs" />
-    <None Include="Entities\EntityOne.cs" />
-    <None Include="Entities\EntityTwo.cs" />
-    <None Include="Entities\TestArticle.cs" />
-    <None Include="Entities\TestArticlePage.cs" />
-    <None Include="Entities\TestCategory.cs" />
-    <None Include="Entities\TestEntity.cs" />
-    <None Include="Entities\TestSample.cs" />
-    <Compile Include="Entities\TestEnum.cs" />
-    <Compile Include="Entities\TestGoal.cs" />
-    <Compile Include="Entities\ITestRole.cs" />
-    <Compile Include="Entities\ITestUser.cs" />
-    <Compile Include="Entities\TestRole.cs" />
-    <Compile Include="Entities\TestUser.cs" />
     <Compile Include="EntityCollectionTests.cs" />
     <Compile Include="EntityIDReferenceTests.cs" />
     <Compile Include="EntityReferenceTests.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="TestConfig.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

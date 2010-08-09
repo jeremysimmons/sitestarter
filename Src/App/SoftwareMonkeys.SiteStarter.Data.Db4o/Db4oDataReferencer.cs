@@ -493,13 +493,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				EntityReferenceCollection deleteList = new EntityReferenceCollection();
 				
 				// Get the removed references
-				foreach (EntityIDReference reference in EntitiesUtilities.GetRemovedReferences(entity))
+				foreach (EntityIDReference reference in GetRemovedReferences(entity))
 				{
 					deleteList.Add(reference);
 				}
 				
-				// Get the current references
-				foreach (EntityIDReference reference in EntitiesUtilities.GetReferences(entity))
+				// Get the current/actives references
+				foreach (EntityIDReference reference in GetActiveReferences(entity))
 				{
 					updateList.Add(reference);
 				}
@@ -583,8 +583,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					if (EntitiesUtilities.IsReference(entity.GetType(), property))
 					{
 						Type referenceType = EntitiesUtilities.GetReferenceType(entity.GetType(),
-						                                                       property.Name,
-						                                                      property.PropertyType);
+						                                                        property.Name,
+						                                                        property.PropertyType);
 						
 						references.AddRange(
 							GetReferences(entity.GetType(),
@@ -598,5 +598,295 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			return references;
 		}
+		
+		#region Latest references functions
+		
+		/// <summary>
+		/// Retrieves the active references from the provided entity. This only includes those references currently active and not those in the data store.
+		/// </summary>
+		/// <param name="entity">The entity containing that the references are assigned to.</param>
+		/// <returns>A collection of the active entity references.</returns>
+		public override EntityReferenceCollection GetActiveReferences(IEntity entity)
+		{
+			if (entity == null)
+				throw new ArgumentNullException("entity");
+			
+			EntityReferenceCollection collection = new EntityReferenceCollection();
+			
+			// Loop through all the properties on the entity class
+			foreach (PropertyInfo property in entity.GetType().GetProperties())
+			{
+				AppLogger.Debug("Checking property: " + property.Name);
+				
+				if (EntitiesUtilities.IsReference(entity.GetType(), property.Name, property.PropertyType))
+				{
+					AppLogger.Debug("Property is a reference.");
+					
+					foreach (EntityIDReference reference in GetActiveReferences(entity, property.Name, property.PropertyType))
+					{
+						
+						AppLogger.Debug("Saving reference.");
+						
+						collection.Add(reference);
+					}
+				}
+				else
+					AppLogger.Debug("Property is NOT a reference.");
+				
+			}
+			
+			return collection;
+		}
+		
+		
+		/// <summary>
+		/// Gets the references that have been removed from the entity.
+		/// </summary>
+		/// <param name="entity">The entity that references have been removed from.</param>
+		/// <returns>A collection of the removed references.</returns>
+		public override EntityReferenceCollection GetRemovedReferences(IEntity entity)
+		{
+			if (entity == null)
+				throw new ArgumentNullException("entity");
+			
+			EntityReferenceCollection references = new EntityReferenceCollection();
+			
+			// Loop through all the properties on the entity class
+			foreach (PropertyInfo property in entity.GetType().GetProperties())
+			{
+				AppLogger.Debug("Checking property: " + property.Name);
+				
+				
+				if (property.PropertyType.IsSubclassOf(typeof(EntityIDReferenceCollection)))
+				{
+					EntityIDReferenceCollection collection = (EntityIDReferenceCollection)property.GetValue(entity, null);
+					if (collection != null && collection.RemovedReferences != null)
+						references.AddRange(collection.RemovedReferences);
+				}
+				
+			}
+			
+			return references;
+		}
+		
+		/// <summary>
+		/// Retrieves the active references from the provided property. This only includes those references currently active and not those in the data store.
+		/// </summary>
+		/// <param name="entity">The entity containing the property that the references are assigned to.</param>
+		/// <param name="propertyName">The name of the property that the references are assigned to.</param>
+		/// <param name="returnType">The type of the property that the references are assigned to.</param>
+		/// <returns>A collection of the entity references.</returns>
+		public override EntityReferenceCollection GetActiveReferences(IEntity entity, string propertyName, Type returnType)
+		{
+			EntityReferenceCollection collection = new EntityReferenceCollection();
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the reference entities from the specified property on the provided entity.", NLog.LogLevel.Debug))
+			{
+				Type entityType = entity.GetType();
+				
+				PropertyInfo property = EntitiesUtilities.GetProperty(entityType, propertyName, returnType);
+				
+				if (property == null)
+					AppLogger.Debug("Property: [null]");
+				else
+					AppLogger.Debug("Property name: " + property.Name);
+				
+				if (property != null)
+				{
+					if (EntitiesUtilities.IsReference(entityType, propertyName, returnType))
+					{
+						Type referencedEntityType = EntitiesUtilities.GetReferenceType(entityType, propertyName, returnType);
+						
+						string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(entity.GetType(), property);
+						
+						if (EntitiesUtilities.IsMultipleReference(entity.GetType(), property))
+						{
+							foreach (EntityIDReference r in GetActiveReferencesFromMultipleReferenceProperty(entity, property, mirrorPropertyName))
+							{
+								if (r != null)
+									collection.Add(r);
+							}
+						}
+						else if (EntitiesUtilities.IsSingleReference(entityType, property))
+						{
+							EntityIDReference r = GetActiveReferenceFromSingleReferenceProperty(entity, property, mirrorPropertyName);
+							if (r != null)
+								collection.Add(r);
+						}
+						else
+							throw new NotSupportedException("The property type '" + property.PropertyType.ToString() + "' is not supported.");
+					}
+					else
+						throw new ArgumentException("The specified property is not a reference.");
+					
+					AppLogger.Debug("References found: " + collection.Count.ToString());
+				}
+				else
+				{
+					throw new Exception("Cannot find property '" + propertyName + "' on type '" + entity.GetType().ToString() + "'.");
+				}
+			}
+			
+			return collection;
+		}
+		
+		/// <summary>
+		/// Retrieves the active references from the provided property. This only includes those references currently active and not those in the data store.
+		/// </summary>
+		/// <param name="entity">The entity containing the property that the references are assigned to.</param>
+		/// <param name="property">The property that the references are assigned to.</param>
+		/// <param name="mirrorPropertyName">The name of the mirror property.</param>
+		/// <returns>The active entity reference.</returns>
+		private EntityIDReference GetActiveReferenceFromSingleReferenceProperty(IEntity entity, PropertyInfo property, string mirrorPropertyName)
+		{
+			EntityReferenceCollection collection = new EntityReferenceCollection();
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the reference from a single reference property.", NLog.LogLevel.Debug))
+			{
+				AppLogger.Debug("Single reference property.");
+				
+				IEntity[] referencedEntities = EntitiesUtilities.GetReferencedEntities(entity, property);
+				
+				if (referencedEntities != null && referencedEntities.Length > 0)
+				{
+					IEntity referencedEntity = referencedEntities[0];
+					
+					// TODO: Check if this can be simplified by skipping the collection part.
+					// It's only a single reference so the collection is unnecessary
+					collection = new EntityReferenceCollection(entity, property.Name, new IEntity[] {referencedEntity}, mirrorPropertyName);
+					
+					//foreach (EntityIDReference r in references)
+					//{
+					//AppLogger.Debug("Adding reference with ID: " + r.ID.ToString());
+					
+					//AppLogger.Debug("Source entity ID: " + r.Entity1ID.ToString());
+					//AppLogger.Debug("Referenced entity ID: " + r.Entity2ID.ToString());
+					
+					//AppLogger.Debug("Source entity name: " + r.Type1Name);
+					//AppLogger.Debug("Referenced entity name: " + r.Type2Name);
+					
+					//}
+				}
+				else
+					AppLogger.Debug("referencedEntities == null || referencedEntities.Length = 0");
+				
+				// Ensure the references are bound with those stored
+				BindReferences(collection);
+			}
+			
+			if (collection.Count > 0)
+				return collection[0].ToData();
+			else
+				return null;
+		}
+		
+		/// <summary>
+		/// Retrieves the active references from the provided entity property. This only includes those references currently active and not those in the data store.
+		/// </summary>
+		/// <param name="entity">The entity containing the property that the references are assigned to.</param>
+		/// <param name="property">The property that the references are assigned to.</param>
+		/// <param name="mirrorPropertyName">The name of the mirror property.</param>
+		/// <returns>An array of the entity references.</returns>
+		private EntityIDReference[] GetActiveReferencesFromMultipleReferenceProperty(IEntity entity, PropertyInfo property, string mirrorPropertyName)
+		{
+			EntityReferenceCollection collection = new EntityReferenceCollection();
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the references from a multiple reference property.", NLog.LogLevel.Debug))
+			{
+				AppLogger.Debug("Multiple reference property.");
+				
+				object propertyValue = property.GetValue(entity, null);
+				
+				AppLogger.Debug("Property value: " + (propertyValue == null ? "[null]" : propertyValue.ToString()));
+				
+				Collection<IEntity> referencedEntities = new Collection<IEntity>();
+				
+				//if (propertyValue is Array)
+				//{
+				referencedEntities.AddRange(EntitiesUtilities.GetReferencedEntities(entity, property));
+				//}
+				//else
+				//{
+				//	foreach (IEntity entity in (Collection<IEntity>)propertyValue))
+				//	{
+				//		referencedEntities.Add(entity);
+				///	}
+				//}
+				
+				AppLogger.Debug("# of referenced entities found: " + referencedEntities.Count);
+				
+				EntityReferenceCollection references = new EntityReferenceCollection(entity, property.Name, referencedEntities.ToArray(), mirrorPropertyName);
+
+				
+				AppLogger.Debug("Reference objects created.");
+				
+				foreach (EntityIDReference reference in references)
+				{
+					AppLogger.Debug("Adding reference with ID: " + reference.ID.ToString());
+
+					AppLogger.Debug("Source entity ID: " + reference.Entity1ID.ToString());
+					AppLogger.Debug("Referenced entity ID: " + reference.Entity2ID.ToString());
+					
+					AppLogger.Debug("Source entity name: " + reference.Type1Name);
+					AppLogger.Debug("Referenced entity name: " + reference.Type2Name);
+					
+					AppLogger.Debug("Source property name: " + reference.Property1Name);
+					AppLogger.Debug("Mirror property name: " + reference.Property2Name);
+					
+					
+					collection.Add(reference.ToData());
+				}
+				
+				// Ensure the references are bound with those stored
+				BindReferences(collection);
+			}
+			
+			return collection.ToArray();
+		}
+		
+		/// <summary>
+		/// Binds the references to those already in the data store (or skips those which are new).
+		/// </summary>
+		/// <param name="references">The collection of references to be bound.</param>
+		public void BindReferences(EntityReferenceCollection references)
+		{
+			// Logging commented out to boost performance
+			//using (LogGroup logGroup = AppLogger.StartGroup("Binding the provided references with those in the data storer.", NLog.LogLevel.Debug))
+			//{
+			if (references == null)
+				throw new ArgumentNullException("references");
+			
+			for (int i = 0; i < references.Count; i++)
+			{
+				EntityReference reference = references[i];
+				
+				bool exists = DataAccess.Data.IsStored(reference);
+				
+				if (exists)
+				{
+					//AppLogger.Debug("Already exists: " + exists.ToString());
+					
+					Type type1 = EntitiesUtilities.GetType(reference.Type1Name);
+					Type type2 = EntitiesUtilities.GetType(reference.Type2Name);
+					
+					EntityReference foundReference = DataAccess.Data.Referencer
+						.GetReference(type1,
+						              reference.Entity1ID,
+						              reference.Property1Name,
+						              type2,
+						              reference.Entity2ID,
+						              reference.Property2Name,
+						              false);
+					
+					if (foundReference != null)
+						references[i] = foundReference;
+					else
+						throw new Exception("Reference matched IsStored check but failed to load.");
+				}
+			}
+			//}
+		}
+		
+		#endregion
 	}
 }

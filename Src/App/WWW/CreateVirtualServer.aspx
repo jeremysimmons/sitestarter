@@ -64,55 +64,61 @@
     /// </summary>
     private void SubmitRegister()
     {
-    	VirtualServer server = (VirtualServer)VirtualServerDataForm.DataSource;
-    	User administrator = (User)AdministratorDataForm.DataSource;
-    	
-    	User systemAdministrator = UserFactory.Current.GetUser(Config.Application.PrimaryAdministratorID);
-    	
-    	server.PrimaryAdministrator = administrator;
-        
-        VirtualServerDataForm.ReverseBind(server);
-        AdministratorDataForm.ReverseBind(administrator);
-        
-        administrator.Password = Crypter.EncryptPassword(administrator.Password);
-        
-        server.Keywords = Config.Application.DefaultVirtualServerKeywords;
-        
-        // Reset the current server state temporarily
-        if (VirtualServerFactory.Current.SaveVirtualServer(server))
-        {
-	            if (Config.Application.AutoApproveVirtualServerRegistration)
-	            {                    
-		            VirtualServerState.Switch(server.Name, server.ID);
-
-
-                    if (!Roles.RoleExists("Administrator"))
-                        Roles.CreateRole("Administrator");
-
-                    administrator.Roles = new UserRole[] { UserRoleFactory.Current.GetUserRoleByName("Administrator") };
-                    
-		            UserFactory.Current.SaveUser(administrator);
-			            
-		            FormsAuthentication.SetAuthCookie(administrator.Username, false);
-		            My.User = administrator;
-                    
-		            server.PrimaryAdministrator = administrator;
-
-                    VirtualServerFactory.Current.SendWelcomeEmail(server, TextParser.ParseSetting("VirtualServerWelcomeEmailSubject"), TextParser.ParseSetting("VirtualServerWelcomeEmail"), systemAdministrator);
-                    VirtualServerFactory.Current.SendRegistrationAlert(server, TextParser.ParseSetting("VirtualServerRegistrationAlertSubject"), TextParser.ParseSetting("VirtualServerRegistrationAlert"), systemAdministrator);
-                    
-	    	        // Display the result to the server
-		            Result.Display(Resources.Language.VirtualServerCreated);
-		            
-		            Response.Redirect("Admin/Users.aspx");
+    	using (LogGroup logGroup = AppLogger.StartGroup("Submitting the registration to create a new virtual server.", NLog.LogLevel.Debug))
+    	{
+	    	VirtualServer server = (VirtualServer)VirtualServerDataForm.DataSource;
+	    	User administrator = (User)AdministratorDataForm.DataSource;
+	    	
+	    	RetrieveUserStrategy administratorRetriever = new RetrieveUserStrategy();
+	    	administratorRetriever.VirtualServerID = String.Empty;
+	    	
+	    	User systemAdministrator = administratorRetriever.Retrieve(Config.Application.PrimaryAdministratorID);
+	    	
+	    	server.PrimaryAdministrator = administrator;
+	        
+	        VirtualServerDataForm.ReverseBind(server);
+	        AdministratorDataForm.ReverseBind(administrator);
+	        
+	        administrator.Password = Crypter.EncryptPassword(administrator.Password);
+	        
+	        server.Keywords = Config.Application.DefaultVirtualServerKeywords;
+	        
+	        // Reset the current server state temporarily
+	        if (VirtualServerFactory.Current.SaveVirtualServer(server))
+	        {
+		            if (Config.Application.AutoApproveVirtualServerRegistration)
+		            {                    
+			            VirtualServerState.Switch(server.Name, server.ID);
 	
-		            //Response.Redirect(Request.ApplicationPath + "/Admin/SetupVS.aspx");
-		        }
-		        else
-		        	WaitForApproval();
+	
+	                    if (!Roles.RoleExists("Administrator"))
+	                        Roles.CreateRole("Administrator");
+	
+	                    administrator.Roles = new UserRole[] { UserRoleFactory.Current.GetUserRoleByName("Administrator") };
+	                    
+			            UserFactory.Current.SaveUser(administrator);
+				            
+			            FormsAuthentication.SetAuthCookie(administrator.Username, false);
+			            My.User = administrator;
+	                    
+			            server.PrimaryAdministrator = administrator;
+	
+	                    VirtualServerFactory.Current.SendWelcomeEmail(server, TextParser.ParseSetting("VirtualServerWelcomeEmailSubject"), TextParser.ParseSetting("VirtualServerWelcomeEmail"), systemAdministrator);
+	                    VirtualServerFactory.Current.SendRegistrationAlert(server, TextParser.ParseSetting("VirtualServerRegistrationAlertSubject"), TextParser.ParseSetting("VirtualServerRegistrationAlert"), systemAdministrator);
+	                    
+		    	        // Display the result to the server
+			            Result.Display(Resources.Language.VirtualServerCreated);
+			            
+			            Response.Redirect("Admin/Users.aspx");
+		
+			            //Response.Redirect(Request.ApplicationPath + "/Admin/SetupVS.aspx");
+			        }
+			        else
+			        	WaitForApproval();
+	        }
+	        else
+	            Result.DisplayError(Resources.Language.VirtualServerNameTaken);
         }
-        else
-            Result.DisplayError(Resources.Language.VirtualServerNameTaken);
     }
     #endregion
 

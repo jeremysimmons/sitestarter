@@ -668,8 +668,8 @@ ${WebSite.Title}&lt;br /&gt;
   <data name="Seconds" xml:space="preserve">
     <value>Second(s)</value>
   </data>
-  <data name="Zipped" xml:space="preserve">
-    <value>Zipped</value>
+  <data name="TotalFilesBackedUp" xml:space="preserve">
+    <value>Total files backed up</value>
   </data>
   <data name="Administrator" xml:space="preserve">
     <value>Administrator</value>

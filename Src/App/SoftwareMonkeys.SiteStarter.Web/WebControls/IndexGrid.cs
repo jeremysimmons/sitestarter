@@ -333,7 +333,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				CustomHolder = new PlaceHolder();
 				CustomHolder.ID = "CustomHolder";
 				
-				Page.ClientScript.RegisterStartupScript(this.GetType(), "IndexUtil", "<script language='javascript' src='/Scripts/IndexUtil.js'></script>");
+				Page.ClientScript.RegisterStartupScript(this.GetType(), "IndexUtil", "<script language='javascript' src='" + HttpContext.Current.Request.ApplicationPath + "/Scripts/IndexUtil.js'></script>");
 				
 				
 			}
@@ -356,12 +356,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			}
 		}
 
-		protected override void DataBind(bool raiseOnDataBinding)
+		/*protected override void DataBind(bool raiseOnDataBinding)
 		{
 			
 			base.DataBind(raiseOnDataBinding);
 
-		}
+		}*/
 
 		void Sort_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -898,8 +898,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
 			SelectSortItem();
 			
-			if (Page == null)
-				throw new InvalidOperationException("Page == null");
+			if (this.Parent == null)
+				throw new InvalidOperationException("Parent == null");
 			
 			if (Items == null)
 				throw new InvalidOperationException("Items == null");

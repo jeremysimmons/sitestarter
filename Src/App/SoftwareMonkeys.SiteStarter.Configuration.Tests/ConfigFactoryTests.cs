@@ -7,55 +7,103 @@ using System.IO;
 using System.Collections;
 using System.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Configuration;
+using SoftwareMonkeys.SiteStarter.Tests;
 
 namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
 {
     [TestFixture]
-    public class ConfigFactoryTests
-    {
-        public string ApplicationPath
-        {
-            // TODO: Path MUST NOT be hard coded
-         //   get { return @"f:\SoftwareMonkeys\WorkHub\Application 2\Web\"; }
-       //     get { return System.Configuration.ConfigurationSettings.AppSettings["ApplicationPath"]; }
-            get { return SoftwareMonkeys.SiteStarter.Configuration.Config.Application.PhysicalPath; }
-        }
-        
+    public class ConfigFactoryTests : BaseConfigurationTestFixture
+    {        
         public ConfigFactoryTests()
         {
             //Config.Initialize(ApplicationPath, "");
         }
+        
+        
+		[SetUp]
+		public void Start()
+		{
+			TestUtilities.ClearTestingDirectory();
+			InitializeMockState();
+			InitializeMockConfiguration();
+		}
+		
+		[TearDown]
+		public void End()
+		{
+			DisposeMockConfiguration();
+			DisposeMockState();
+			TestUtilities.ClearTestingDirectory();
+		}
 
 
         #region Save tests
         [Test]
         public void Test_SaveConfig_And_LoadConfig()
         {
-        	string fullPath = ApplicationPath + @"\App_Data\Testing";
+        	string directory = TestUtilities.GetTestingPath();
         	
-        	if (!Directory.Exists(fullPath))
-        		Directory.CreateDirectory(fullPath);
+        	if (!Directory.Exists(directory))
+        		Directory.CreateDirectory(directory);
         	
-        	AppConfig config = (AppConfig)Configuration.Config.Application;
+        	
+        	IAppConfig config = (IAppConfig)Configuration.Config.Application;
+        	
+        	Assert.IsNotNull(config, "config == null");
             
             string title = config.Title = "Test1";
-            config.Settings["TestSetting"] = "TestValue";
-            config.Settings["TestSetting2"] = true;
+            config.Settings.Add("TestSetting", "TestValue");
+            config.Settings.Add("TestSetting2", true);
             
-            ConfigFactory<AppConfig>.SaveConfig(fullPath, config, "");
+            ConfigFactory<IAppConfig>.SaveConfig(directory, config, "");
+            
+            string configPath = directory + Path.DirectorySeparatorChar + "Application.config";
+            
+            Assert.IsTrue(File.Exists(configPath), "The configuration file wasn't found.");
 
             config = null;
             
-            IAppConfig config2 = ConfigFactory<AppConfig>.LoadConfig(fullPath, "Application", "");
+            IAppConfig config2 = ConfigFactory<MockAppConfig>.LoadConfig(directory, "Application", "");
             
             
-            Assert.IsNotNull(config2);
+            Assert.IsNotNull(config2, "Configuration object wasn't re-loaded.");
             
             Assert.AreEqual("Test1", config2.Title, "Titles don't match.");
             Assert.AreEqual("TestValue", config2.Settings["TestSetting"], "Test setting 1 doesn't match.");
             Assert.AreEqual(true, config2.Settings["TestSetting2"], "Test setting 2 doesn't don't match.");
         }
+        
+        [Test]
+        public void CreateConfigPath_Variation()
+        {
+        	string directory = TestUtilities.GetTestingPath();
+        	
+        	string variation = "local";
+        	
+        	string configName = "Application";
+        	
+        	string path = ConfigFactory<MockAppConfig>.CreateConfigPath(directory, configName, variation);
+        	
+        	string expected = directory + Path.DirectorySeparatorChar + configName + "." + variation + ".config";
+        	
+        	Assert.AreEqual(expected, path, "The paths don't match.");
+        }
+        
+        
+        [Test]
+        public void CreateConfigPath_NoVariation()
+        {
+        	string directory = TestUtilities.GetTestingPath();
+        	
+        	string configName = "Application";
+        	string variation = String.Empty;
+        	
+        	string path = ConfigFactory<MockAppConfig>.CreateConfigPath(directory, configName, variation);
+        	
+        	string expected = directory + Path.DirectorySeparatorChar + configName + ".config";
+        	
+        	Assert.AreEqual(expected, path, "The paths don't match.");
+        }
         #endregion
-
     }
 }

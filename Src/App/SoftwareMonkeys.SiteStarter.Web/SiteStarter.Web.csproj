@@ -64,9 +64,7 @@
     <Compile Include="Security\MemberProvider.cs" />
     <Compile Include="Security\RoleProvider.cs" />
     <Compile Include="SetupUtilities.cs" />
-    <Compile Include="State\StateProviderManager.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="State\StateProviderManager.cs" />
     <Compile Include="State\WebStateProvider.cs">
       <SubType>Code</SubType>
     </Compile>

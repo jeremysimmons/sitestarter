@@ -90,6 +90,9 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					AppLogger.Debug("Using the data store tied to the adapter.");
 				}
 				
+				if (store.IsClosed)
+					store = DataAccess.Data.InitializeDataStore(DataUtilities.GetDataStoreName(entity));
+				
 				AppLogger.Debug("Data store name: " + store.Name);
 			}
 			return store;

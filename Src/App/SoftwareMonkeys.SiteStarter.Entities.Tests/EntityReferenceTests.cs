@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftwareMonkeys.SiteStarter.Entities.Tests.Entities;
+using SoftwareMonkeys.SiteStarter.Tests.Entities;
 using NUnit.Framework;
 
 namespace SoftwareMonkeys.SiteStarter.Entities.Tests
