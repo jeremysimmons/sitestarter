@@ -9,7 +9,7 @@ using System.Diagnostics;
 using System.Xml;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Entities;
-using SoftwareMonkeys.SiteStarter.Entities.Tests.Entities;
+using SoftwareMonkeys.SiteStarter.Tests.Entities;
 using SoftwareMonkeys.SiteStarter.Configuration;
 using System.Reflection;
 
@@ -191,82 +191,6 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 			string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(sample.GetType(), sample.GetType().GetProperty("Articles"));
 			
 			Assert.AreEqual("Samples", mirrorPropertyName, "The mirror property name wasn't determined correctly.");
-		}
-		
-		[Test]
-		public void Test_GetReferences_Multiple_Async()
-		{
-			TestGoal goal = new TestGoal();
-			goal.ID = Guid.NewGuid();
-			
-			TestGoal goal2 = new TestGoal();
-			goal2.ID = Guid.NewGuid();
-			
-			goal.Prerequisites = new TestGoal[] {goal2};
-			
-			EntityReferenceCollection references = EntitiesUtilities.GetReferences(goal);
-			
-			Assert.IsNotNull(references, "The reference collection is null.");
-			
-			Assert.AreEqual(1, references.Count, "Incorrect number of references returned.");
-			
-			if (references != null)
-			{
-				Assert.AreEqual(goal.ID, references[0].Entity1ID, "The entity 1 ID wasn't set correctly.");
-				Assert.AreEqual(goal2.ID, references[0].Entity2ID, "The entity 2 ID wasn't set correctly.");
-				
-				Assert.AreEqual("TestGoal", references[0].Type1Name, "The type name 1 wasn't set correctly.");
-				Assert.AreEqual("TestGoal", references[0].Type2Name, "The type name 2 wasn't set correctly.");
-				
-				Assert.AreEqual("Prerequisites", references[0].Property1Name, "The property 1 name wasn't set correctly.");
-				Assert.AreEqual(String.Empty, references[0].Property2Name, "The property 2 name wasn't set correctly.");
-			}
-		}
-		
-		[Test]
-		public void Test_GetReferences_Multiple_Sync()
-		{
-			TestUser user = new TestUser();
-			user.ID = Guid.NewGuid();
-			
-			TestRole role = new TestRole();
-			role.ID = Guid.NewGuid();
-			
-			TestRole role2 = new TestRole();
-			role2.ID = Guid.NewGuid();
-			
-			user.Roles = new TestRole[] {role, role2};
-			
-			EntityReferenceCollection references = EntitiesUtilities.GetReferences(user);
-			
-			Assert.IsNotNull(references, "The reference collection is null.");
-			
-			Assert.AreEqual(2, references.Count, "Incorrect number of references returned.");
-			
-			if (references != null && references.Count == 2)
-			{
-				EntityReference reference = references[0];
-				
-				Assert.AreEqual(user.ID, references[0].Entity1ID, "The entity 1 ID wasn't set correctly.");
-				Assert.AreEqual(role.ID, references[0].Entity2ID, "The entity 2 ID wasn't set correctly.");
-				
-				Assert.AreEqual("TestUser", references[0].Type1Name, "The type name 1 wasn't set correctly.");
-				Assert.AreEqual("TestRole", references[0].Type2Name, "The type name 2 wasn't set correctly.");
-				
-				Assert.AreEqual("Roles", references[0].Property1Name, "The property 1 name wasn't set correctly.");
-				Assert.AreEqual("Users", references[0].Property2Name, "The property 2 name wasn't set correctly.");
-				
-				EntityReference reference2 = references[1];
-				
-				Assert.AreEqual(user.ID, reference2.Entity1ID, "The entity 1 ID wasn't set correctly.");
-				Assert.AreEqual(role2.ID, reference2.Entity2ID, "The entity 2 ID wasn't set correctly.");
-				
-				Assert.AreEqual("TestUser", reference2.Type1Name, "The type name 1 wasn't set correctly.");
-				Assert.AreEqual("TestRole", reference2.Type2Name, "The type name 2 wasn't set correctly.");
-				
-				Assert.AreEqual("Roles", reference2.Property1Name, "The property 1 name wasn't set correctly.");
-				Assert.AreEqual("Users", reference2.Property2Name, "The property 2 name wasn't set correctly.");
-			}
 		}
 		
 		[Test]

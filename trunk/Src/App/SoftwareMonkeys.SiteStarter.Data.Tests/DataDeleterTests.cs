@@ -1,18 +1,16 @@
 ﻿using System;
 using SoftwareMonkeys.SiteStarter.Data;
 using SoftwareMonkeys.SiteStarter.Entities;
-using SoftwareMonkeys.SiteStarter.Data.Tests.Entities;
+using SoftwareMonkeys.SiteStarter.Tests.Entities;
 using NUnit.Framework;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using SoftwareMonkeys.SiteStarter.Tests;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Tests
 {
-	/// <summary>
-	/// Description of DataDeleterTests.
-	/// </summary>
 	[TestFixture]
-	public class DataDeleterTests
-	{
+	public class DataDeleterTests : BaseDataTestFixture
+	{		
 		public DataDeleterTests()
 		{
 		}
@@ -20,7 +18,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_Delete_EntityAndReference()
 		{
-			TestUtilities.ClearTestEntities();
 			
 			TestUser user = new TestUser();
 			Guid userID = user.ID = Guid.NewGuid();
@@ -44,9 +41,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			EntityReferenceCollection references2 = DataAccess.Data.Referencer.GetReferences(typeof(TestUser).Name, typeof(TestRole).Name);
 			
 			Assert.AreEqual(0, references2.Count, "Reference not deleted.");
-			
-			
-			TestUtilities.ClearTestEntities();
 		}
 		
 		

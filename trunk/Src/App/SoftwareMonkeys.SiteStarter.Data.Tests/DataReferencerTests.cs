@@ -1,22 +1,15 @@
 ﻿using System;
 using NUnit.Framework;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
-using SoftwareMonkeys.SiteStarter.Data.Tests.Entities;
+using SoftwareMonkeys.SiteStarter.Tests.Entities;
 using SoftwareMonkeys.SiteStarter.Entities;
+using SoftwareMonkeys.SiteStarter.Tests;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Tests
 {
-	/// <summary>
-	/// Description of DataReferencerTests.
-	/// </summary>
 	[TestFixture]
-	public class DataReferencerTests
+	public class DataReferencerTests : BaseDataTestFixture
 	{
-		public DataReferencerTests()
-		{
-		}
-		
-		
 		[Test]
 		public void Test_GetReferences_Basic()
 		{
@@ -190,6 +183,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetReference function with an asynchronous reference to ensure it retrieves the correct reference.", NLog.LogLevel.Debug))
 			{
+				TestArticle.RegisterType();
 				TestAction.RegisterType();
 				TestCategory.RegisterType();
 				
@@ -258,7 +252,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				role2.Users = new TestUser[] {user, user2};
 				
-				EntityReference originalReference = EntitiesUtilities.GetReferences(user)[0];
+				EntityReference originalReference = DataAccess.Data.Referencer.GetActiveReferences(user)[0];
 				
 				AppLogger.Debug("Original reference - Entity 1 ID: " + originalReference.Entity1ID.ToString());
 				AppLogger.Debug("Original reference - Entity 2 ID: " + originalReference.Entity2ID.ToString());
@@ -267,10 +261,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				AppLogger.Debug("Original reference - Type 1 name: " + originalReference.Type1Name);
 				AppLogger.Debug("Original reference - Type 2 name: " + originalReference.Type2Name);
 				
-				foreach (EntityIDReference r in EntitiesUtilities.GetReferences(user))
+				foreach (EntityIDReference r in DataAccess.Data.Referencer.GetActiveReferences(user))
 					DataAccess.Data.Saver.Save(r);
 				
-				foreach (EntityIDReference r in EntitiesUtilities.GetReferences(role2))
+				foreach (EntityIDReference r in DataAccess.Data.Referencer.GetActiveReferences(role2))
 					DataAccess.Data.Saver.Save(r);
 				
 				//DataAccess.Data.Saver.Save(user);
@@ -365,8 +359,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				AppLogger.Debug("Role 1 ID: " + role.ID.ToString());
 				AppLogger.Debug("Role 2 ID: " + role2.ID.ToString());
 				
-				EntityReferenceCollection userReferences = EntitiesUtilities.GetReferences(user);
-				EntityReferenceCollection user2References = EntitiesUtilities.GetReferences(user2);
+				EntityReferenceCollection userReferences = DataAccess.Data.Referencer.GetActiveReferences(user);
+				EntityReferenceCollection user2References = DataAccess.Data.Referencer.GetActiveReferences(user2);
 				
 				Assert.AreEqual(1, userReferences.Count, "userReferences.Length is incorrect");
 				Assert.AreEqual(1, user2References.Count, "user2References.Length is incorrect");
@@ -503,7 +497,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				//category2.Articles = new TestArticle[] {article, article2};
 				
-				EntityReference originalReference = EntitiesUtilities.GetReferences(article)[0];
+				EntityReference originalReference = DataAccess.Data.Referencer.GetActiveReferences(article)[0];
 				
 				AppLogger.Debug("Original reference - Entity 1 ID: " + originalReference.Entity1ID.ToString());
 				AppLogger.Debug("Original reference - Entity 2 ID: " + originalReference.Entity2ID.ToString());
@@ -512,7 +506,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				AppLogger.Debug("Original reference - Type 1 name: " + originalReference.Type1Name);
 				AppLogger.Debug("Original reference - Type 2 name: " + originalReference.Type2Name);
 				
-				foreach (EntityIDReference r in EntitiesUtilities.GetReferences(article))
+				foreach (EntityIDReference r in DataAccess.Data.Referencer.GetActiveReferences(article))
 					DataAccess.Data.Saver.Save(r);
 				
 				//foreach (EntityIDReference r in EntitiesUtilities.GetReferences(category2))
@@ -544,6 +538,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the MatchReference function to ensure matches properly.", NLog.LogLevel.Debug))
 			{
+				TestArticle.RegisterType();
+				TestUser.RegisterType();
+				TestSample.RegisterType();
+				TestArticlePage.RegisterType();
+				TestCategory.RegisterType();
+				
 				TestArticle article = new TestArticle();
 				article.ID = Guid.NewGuid();
 				article.Title = "Test Article";
@@ -579,6 +579,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the MatchReference function to ensure excludes properly.", NLog.LogLevel.Debug))
 			{
+				TestArticle.RegisterType();
+				TestUser.RegisterType();
+				TestSample.RegisterType();
+				TestArticlePage.RegisterType();
+				TestCategory.RegisterType();
+				
 				TestArticle article = new TestArticle();
 				article.ID = Guid.NewGuid();
 				article.Title = "Test Article";
@@ -620,6 +626,85 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				DataAccess.Data.Deleter.Delete(article);
 				DataAccess.Data.Deleter.Delete(category);
+			}
+		}
+
+		
+		[Test]
+		public void Test_GetActiveReferences_Multiple_Async()
+		{
+			TestGoal.RegisterType();
+			
+			TestGoal goal = new TestGoal();
+			goal.ID = Guid.NewGuid();
+			
+			TestGoal goal2 = new TestGoal();
+			goal2.ID = Guid.NewGuid();
+			
+			goal.Prerequisites = new TestGoal[] {goal2};
+			
+			EntityReferenceCollection references = DataAccess.Data.Referencer.GetActiveReferences(goal);
+			
+			Assert.IsNotNull(references, "The reference collection is null.");
+			
+			Assert.AreEqual(1, references.Count, "Incorrect number of references returned.");
+			
+			if (references != null)
+			{
+				Assert.AreEqual(goal.ID, references[0].Entity1ID, "The entity 1 ID wasn't set correctly.");
+				Assert.AreEqual(goal2.ID, references[0].Entity2ID, "The entity 2 ID wasn't set correctly.");
+				
+				Assert.AreEqual("TestGoal", references[0].Type1Name, "The type name 1 wasn't set correctly.");
+				Assert.AreEqual("TestGoal", references[0].Type2Name, "The type name 2 wasn't set correctly.");
+				
+				Assert.AreEqual("Prerequisites", references[0].Property1Name, "The property 1 name wasn't set correctly.");
+				Assert.AreEqual(String.Empty, references[0].Property2Name, "The property 2 name wasn't set correctly.");
+			}
+		}
+		
+		[Test]
+		public void Test_GetActiveReferences_Multiple_Sync()
+		{
+			TestUser user = new TestUser();
+			user.ID = Guid.NewGuid();
+			
+			TestRole role = new TestRole();
+			role.ID = Guid.NewGuid();
+			
+			TestRole role2 = new TestRole();
+			role2.ID = Guid.NewGuid();
+			
+			user.Roles = new TestRole[] {role, role2};
+			
+			EntityReferenceCollection references = DataAccess.Data.Referencer.GetActiveReferences(user);
+			
+			Assert.IsNotNull(references, "The reference collection is null.");
+			
+			Assert.AreEqual(2, references.Count, "Incorrect number of references returned.");
+			
+			if (references != null && references.Count == 2)
+			{
+				EntityReference reference = references[0];
+				
+				Assert.AreEqual(user.ID, references[0].Entity1ID, "The entity 1 ID wasn't set correctly.");
+				Assert.AreEqual(role.ID, references[0].Entity2ID, "The entity 2 ID wasn't set correctly.");
+				
+				Assert.AreEqual("TestUser", references[0].Type1Name, "The type name 1 wasn't set correctly.");
+				Assert.AreEqual("TestRole", references[0].Type2Name, "The type name 2 wasn't set correctly.");
+				
+				Assert.AreEqual("Roles", references[0].Property1Name, "The property 1 name wasn't set correctly.");
+				Assert.AreEqual("Users", references[0].Property2Name, "The property 2 name wasn't set correctly.");
+				
+				EntityReference reference2 = references[1];
+				
+				Assert.AreEqual(user.ID, reference2.Entity1ID, "The entity 1 ID wasn't set correctly.");
+				Assert.AreEqual(role2.ID, reference2.Entity2ID, "The entity 2 ID wasn't set correctly.");
+				
+				Assert.AreEqual("TestUser", reference2.Type1Name, "The type name 1 wasn't set correctly.");
+				Assert.AreEqual("TestRole", reference2.Type2Name, "The type name 2 wasn't set correctly.");
+				
+				Assert.AreEqual("Roles", reference2.Property1Name, "The property 1 name wasn't set correctly.");
+				Assert.AreEqual("Users", reference2.Property2Name, "The property 2 name wasn't set correctly.");
 			}
 		}
 		

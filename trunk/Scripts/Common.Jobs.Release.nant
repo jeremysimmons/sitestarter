@@ -99,6 +99,10 @@
 	        <exclude name="**/bin/Release/**"/>
 	        <exclude name="**.refresh"/>
 	        <exclude name="**/Docs/**"/>
+	        <exclude name="**/Screenshots/**"/>
+	        <exclude name="**.suo"/>
+	        <exclude name="**.pidb"/>
+	        <exclude name="**.cache"/>
 	        <include name="**/${Solution.Alias}/**" />
 	        <include name="bin/**" />
 	        <include name="lib/**" />

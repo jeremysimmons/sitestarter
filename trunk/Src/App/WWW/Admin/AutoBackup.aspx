@@ -13,7 +13,7 @@
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Data" %>
 <script runat="server">
 
-    XmlBackupManager manager;
+    ApplicationBackup appBackup;
 
     protected bool PrepareForUpdate
     {
@@ -28,11 +28,8 @@
 
     protected void Page_Init(object sender, EventArgs e)
     {
-        manager = new XmlBackupManager(Server.MapPath(Request.ApplicationPath),
-            "App_Data",
-            "Backups",
-            WebUtilities.GetLocationVariation(Request.Url),
-            false);
+        appBackup = new ApplicationBackup();
+        appBackup.KeepLegacy = false;
     }
 	
     protected void Page_Load(object sender, EventArgs e)
@@ -45,7 +42,7 @@
     private void AutoBackup()
     {
 
-        manager.ExecuteBackup();
+        appBackup.Backup();
 
         //Result.Display(Resources.Language.BackupComplete);
 

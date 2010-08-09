@@ -1,21 +1,15 @@
 ﻿using System;
 using SoftwareMonkeys.SiteStarter.Data;
 using SoftwareMonkeys.SiteStarter.Entities;
-using SoftwareMonkeys.SiteStarter.Data.Tests.Entities;
+using SoftwareMonkeys.SiteStarter.Tests.Entities;
 using NUnit.Framework;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Tests
 {
-	/// <summary>
-	/// Description of DataReaderTesets.
-	/// </summary>
 	[TestFixture]
-	public class DataReaderTests
+	public class DataReaderTests : BaseDataTestFixture
 	{
-		public DataReaderTests()
-		{
-		}
 		
 		
 		[Test]

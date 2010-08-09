@@ -19,7 +19,10 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
         static public ConfigCollection All
         {
             get {
-                if (State.StateAccess.State.GetApplication("Config.All") == null)
+        		if (!State.StateAccess.IsInitialized)
+        			throw new InvalidOperationException("The state provider has not been initialized.");
+        		
+                if (!StateAccess.State.ContainsApplication("Config.All"))
                     State.StateAccess.State.SetApplication("Config.All", new ConfigCollection());
                 return (ConfigCollection)State.StateAccess.State.GetApplication("Config.All"); }
             set { State.StateAccess.State.SetApplication("Config.All", value); }

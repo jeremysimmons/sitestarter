@@ -9,14 +9,15 @@ using System.Diagnostics;
 using System.Reflection;
 using SoftwareMonkeys.SiteStarter.Configuration;
 using SoftwareMonkeys.SiteStarter.Data;
-using SoftwareMonkeys.SiteStarter.Data.Tests.Entities;
+using SoftwareMonkeys.SiteStarter.Tests.Entities;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using SoftwareMonkeys.SiteStarter.Tests;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Tests
 {
 	[TestFixture]
-	public class DataUtilitiesTests
+	public class DataUtilitiesTests : BaseDataTestFixture
 	{
 		public string ApplicationPath
 		{
@@ -24,15 +25,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			//   get { return @"f:\SoftwareMonkeys\WorkHub\Application 2\Web\"; }
 			//     get { return System.Configuration.ConfigurationSettings.AppSettings["ApplicationPath"]; }
 			get { return SoftwareMonkeys.SiteStarter.Configuration.Config.Application.PhysicalPath; }
-		}
-
-		public DataUtilitiesTests()
-		{
-
-			// TODO: Check if needed for testing the DataUtilities class
-			//   Config.Initialize(ApplicationPath, "Testing");
-			
-			TestUtilities.RegisterTestEntities();
 		}
 		
 		

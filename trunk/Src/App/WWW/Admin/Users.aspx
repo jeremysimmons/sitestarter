@@ -327,9 +327,7 @@
                                                     Text='<%# Resources.Language.Save %>' Visible='<%# OperationManager.CurrentOperation == "CreateUser" %>'></asp:Button>
                                                     <asp:Button ID="UpdateButton" runat="server" CausesValidation="True" CommandName="Update"
                                                     Text='<%# Resources.Language.Update %>' Visible='<%# OperationManager.CurrentOperation == "EditUser" %>'></asp:Button>
-                                                <asp:Button ID="SaveCancelButton" runat="server" CausesValidation="False" CommandName="Cancel"
-                                                    Text='<%# Resources.Language.Cancel %>'>
-                                                </asp:Button></FieldTemplate></cc:EntityFormButtonsItem>
+                                                </FieldTemplate></cc:EntityFormButtonsItem>
 </cc:EntityForm> 
                     </td>
                 </tr>

@@ -5,6 +5,8 @@
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Entities" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Configuration" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Security" %>
 <script runat="server">
     #region Main functions
     /// <summary>
@@ -12,6 +14,9 @@
     /// </summary>
     private void ManageVirtualServers()
     {
+    	if (My.User.ID != Config.Application.PrimaryAdministratorID)
+    		Authorisation.InvalidPermissionsRedirect();
+    
         OperationManager.StartOperation("ManageVirtualServers", IndexView);
 
         

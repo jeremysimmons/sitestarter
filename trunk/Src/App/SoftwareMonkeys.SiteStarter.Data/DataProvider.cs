@@ -183,31 +183,133 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		}
 		#endregion
 		
-		public abstract DataStoreCollection Stores
-		{ get; }
+		#region Schema adapter
 		
-		public abstract void Dispose();
-		
-		public abstract bool IsStored(IEntity entity);
-		
-		// public abstract void Initialize(string name, NameValueCollection settings);
-
-		// void Dispose();
-
-		public abstract IDataStore InitializeDataStore(string dataStoreName);
-		//public abstract string GetDataStoreName(Type objectType);
-		public abstract string[] GetDataStoreNames();
-
-		public abstract IDataFilter CreateFilter(Type baseType);
-		
-		
-		#region Schema
-		
-		public abstract ISchemaEditor Schema
+		private IDataSchema schema;
+		/// <summary>
+		/// Holds a JIT loaded instance of the data schema editor for the current data provider.
+		/// </summary>
+		public IDataSchema Schema
 		{
-			get;
+			get {
+				if (schema == null)
+					schema = InitializeDataSchema();
+				return schema;  }
+		}
+		
+		/// <summary>
+		/// Must be overridden. Initializes the data schema adapter held by the Schema property.
+		/// </summary>
+		/// <returns>The provider specific Schema adapter.</returns>
+		public virtual IDataSchema InitializeDataSchema()
+		{
+			throw new NotImplementedException("This method should be overridden.");
 		}
 		#endregion
+		
+		
+		#region Export adapter
+		
+		private IDataExporter exporter;
+		/// <summary>
+		/// Holds a JIT loaded instance of the data exporter for the current data provider.
+		/// </summary>
+		public IDataExporter Exporter
+		{
+			get {
+				if (exporter == null)
+					exporter = InitializeDataExporter();
+				return exporter;  }
+		}
+		
+		/// <summary>
+		/// Must be overridden. Initializes the data exporter adapter held by the Exporter property.
+		/// </summary>
+		/// <returns>The provider specific Exporter adapter.</returns>
+		public virtual IDataExporter InitializeDataExporter()
+		{
+			throw new NotImplementedException("This method should be overridden.");
+		}
+		#endregion
+		
+		
+		#region Import adapter
+		
+		private IDataImporter importer;
+		/// <summary>
+		/// Holds a JIT loaded instance of the data importer for the current data provider.
+		/// </summary>
+		public IDataImporter Importer
+		{
+			get {
+				if (importer == null)
+					importer = InitializeDataImporter();
+				return importer;  }
+		}
+		
+		/// <summary>
+		/// Must be overridden. Initializes the data importer adapter held by the Importer property.
+		/// </summary>
+		/// <returns>The provider specific Importer adapter.</returns>
+		public virtual IDataImporter InitializeDataImporter()
+		{
+			throw new NotImplementedException("This method should be overridden.");
+		}
+		#endregion
+		
+		
+		
+		private DataStoreCollection stores;
+		/// <summary>
+		/// Gets/sets a collection of the available data stores.
+		/// </summary>
+		public virtual DataStoreCollection Stores
+		{
+			get {
+				if (stores == null)
+					stores = new DataStoreCollection();
+				return stores; }
+		}
+		
+		/// <summary>
+		/// Disposes the data provider.
+		/// </summary>
+		public abstract void Dispose();
+		
+		/// <summary>
+		/// Checks whether the provided entity or entity reference is currently found in the corresponding data store.
+		/// </summary>
+		/// <param name="entity">The entity to look for.</param>
+		/// <returns>A bool value indicating whether the entity can be found.</returns>
+		public abstract bool IsStored(IEntity entity);
+
+		/// <summary>
+		/// Initializes the data store with the provided name.
+		/// </summary>
+		/// <param name="dataStoreName">The name of the data store to initialize.</param>
+		/// <returns>The initialized data store.</returns>
+		public abstract IDataStore InitializeDataStore(string dataStoreName);
+		
+		/// <summary>
+		/// Initializes the data store with the provided name in the specified virtual server.
+		/// </summary>
+		/// <param name="virtualServerID">The ID of the virtual server containing the data store.</param>
+		/// <param name="dataStoreName">The name of the data store to initialize.</param>
+		/// <returns>The initialized data store.</returns>
+		public abstract IDataStore InitializeDataStore(string virtualServerID, string dataStoreName);
+		
+		/// <summary>
+		/// Retrieves the names of all the data stores that can be found.
+		/// </summary>
+		/// <returns>An array containing the names of the data stores.</returns>
+		public abstract string[] GetDataStoreNames();
+
+		/// <summary>
+		/// Creates a data filter object derived from the specified base type but specific to the data access provider currently configured.
+		/// </summary>
+		/// <param name="baseType">The base filter type that is inherited by the provider specific filter being created.</param>
+		/// <returns>A data access provider specific data filter determined by the specified based type.</returns>
+		public abstract IDataFilter CreateFilter(Type baseType);
 		
 	}
 }

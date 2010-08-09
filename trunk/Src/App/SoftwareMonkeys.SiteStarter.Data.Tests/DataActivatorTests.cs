@@ -1,17 +1,15 @@
 ﻿using System;
 using NUnit.Framework;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
-using SoftwareMonkeys.SiteStarter.Data.Tests.Entities;
 using SoftwareMonkeys.SiteStarter.Entities;
+using SoftwareMonkeys.SiteStarter.Tests;
+using SoftwareMonkeys.SiteStarter.Tests.Entities;
 using NUnit.Framework;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Tests
 {
-	/// <summary>
-	/// Description of DataActivatorTests.
-	/// </summary>
 	[TestFixture]
-	public class DataActivatorTests
+	public class DataActivatorTests : BaseDataTestFixture
 	{
 		public DataActivatorTests()
 		{
@@ -113,11 +111,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		public void Test_Activate_2References()
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
-			{
-				
-				TestUtilities.ClearTestEntities();
-				
-				
+			{				
 				TestArticle article = new TestArticle();
 				article.ID = Guid.NewGuid();
 				Guid articleID = article.ID;
@@ -185,6 +179,90 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 					//Assert.AreEqual(pageID.ToString() + "---" + page2ID.ToString(), foundPage1.ID.ToString() + "---" + foundPage2.ID.ToString(), "IDs of the reference don't match.");
 					
 				}
+			}
+			
+			
+		}
+		
+		
+		[Test]
+		public void Test_Activate_2References_Async_Converging()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
+			{
+				
+				
+				TestArticle article = new TestArticle();
+				article.ID = Guid.NewGuid();
+				Guid articleID = article.ID;
+				article.Title = "Test";
+				
+				TestUser user = new TestUser();
+				user.ID = Guid.NewGuid();
+				Guid userID = user.ID;
+				user.FirstName = "First";
+				user.LastName = "Last";
+				user.Username ="Username";
+				user.Password = "pass";
+				
+				/*TestArticlePage page = new TestArticlePage();
+				page.ID = Guid.NewGuid();
+				Guid pageID = page.ID;
+				page.Title = "Test Page";
+				
+				TestArticlePage page2 = new TestArticlePage();
+				page2.ID = Guid.NewGuid();
+				Guid page2ID = page2.ID;
+				page2.Title = "Test Page 2";
+				*/
+				//article.Pages = new TestArticlePage[] {page, page2};
+				//user.Roles = Collection<TestRole>.Add(user.Roles, role);
+				
+				article.Editors = new TestUser[] {user};
+				
+				//DataAccess.Data.Saver.Save(page);
+				//DataAccess.Data.Saver.Save(page2);
+				
+				DataAccess.Data.Saver.Save(user);
+				DataAccess.Data.Saver.Save(article);
+				
+				//  TODO: Check if needed
+				//page = null;
+				//page2 = null;
+				//article = null;
+				
+				EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences(article.GetType().Name, user.GetType().Name);
+				
+				Assert.IsNotNull(references, "references == null");
+				
+				Assert.AreEqual(1, references.Count, "Invalid number of references found.");
+				
+				
+				TestArticle foundArticle = DataAccess.Data.Reader.GetEntity<TestArticle>("ID", articleID);
+				
+				Assert.IsNotNull(foundArticle, "The foundArticle variable is null.");
+				
+				DataAccess.Data.Activator.Activate(foundArticle, "Editors");
+				DataAccess.Data.Activator.Activate(foundArticle, "Authors");
+				
+				
+				
+				Assert.IsNotNull(foundArticle.Editors, "The article.Editors property is null.");
+				Assert.AreEqual(1, foundArticle.Editors.Length, "article.Editors.Length != 1.");
+				
+				if (foundArticle.Editors != null && foundArticle.Editors.Length == 1)
+				{
+					TestUser foundUser1 = foundArticle.Editors[0];
+					
+					// Use an array and IndexOf function so the match will work in any order
+					Guid[] userIDs = new Guid[] {userID};
+					
+					Assert.AreEqual(userID.ToString(), foundUser1.ID.ToString(), "The IDs of the user in Editors property doesn't match expected.");
+					
+				}
+				
+				Assert.AreEqual(0, foundArticle.Authors.Length, "Authors found when they shouldn't be. The two properties must be getting mixed up.");
+				
 				TestUtilities.ClearTestEntities();
 			}
 			

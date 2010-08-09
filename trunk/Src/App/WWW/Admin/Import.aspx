@@ -73,9 +73,13 @@
             
             AppLogger.Debug("Converting and importing core data.");
 
-            ConvertData();
+           
+            string dataDirectoryPath = Server.MapPath(Request.ApplicationPath) + Path.DirectorySeparatorChar + "App_Data";
             
-            ImportData();
+            ApplicationRestorer restorer = new ApplicationRestorer();
+            restorer.LegacyDirectoryPath = dataDirectoryPath + Path.DirectorySeparatorChar + "Legacy";
+            restorer.PersonalizationDirectoryPath = dataDirectoryPath + Path.DirectorySeparatorChar + "Personalization_Data";
+            restorer.Restore();
 
 
 
@@ -83,98 +87,6 @@
 		}
     }
 	
-	/*private void RunModuleUpdates()
-	{
-        using (LogGroup logGroup = AppLogger.StartGroup("Running the module update scripts.", NLog.LogLevel.Debug))
-        {
-            foreach (UserControl userControl in ModuleFacade.GetModuleUpdateScripts(this))
-            {
-                AppLogger.Debug("Found/added script control: " + userControl.ID);
-                
-                ModuleUpdateScriptsHolder.Controls.Add(userControl);
-            }
-        }
-	}*/
-	
-	private void ConvertData()
-    {
-        using (LogGroup logGroup = AppLogger.StartGroup("Converting data schema.", NLog.LogLevel.Debug))
-        {
-            //XmlEntitySchemaEditor schema = new XmlEntitySchemaEditor(Server.MapPath(Request.ApplicationPath));
-            //schema.Execute();
-            //schema.ConvertReferences(GetReferenceMappings());
-            //schema.Finished();
-            
-            
-            string importsDirectory = XmlEntitySchemaEditor.GetImportsDirectory(Config.Application.PhysicalPath);
-            string convertedDirectory = XmlEntitySchemaEditor.GetConvertedDirectory(Config.Application.PhysicalPath);
-            
-            
-            Directory.Move(importsDirectory, convertedDirectory);
-            
-        }
-	}
-/*
-    protected string[] EntityTypes;
-
-    protected string[] GetImportableTypes()
-    {
-        if (EntityTypes == null)
-        {
-            List<string> list = new List<string>();
-
-            list.Add("User");
-            list.Add("UserRole");
-            list.Add("Keyword");
-
-
-            // Add references
-            list.AddRange(XmlEntitySchema.GetReferenceTypes(GetReferenceMappings()));
-
-            EntityTypes = list.ToArray();
-        }
-
-        return EntityTypes;
-    }*/
-	
-	private void ImportData()
-	{
-        using (LogGroup logGroup = AppLogger.StartGroup("Importing all data.", NLog.LogLevel.Debug))
-        {
-            string convertedDirectory = XmlEntitySchemaEditor.GetConvertedDirectory(Server.MapPath(Request.ApplicationPath));
-            string importedDirectory = XmlEntitySchemaEditor.GetImportedDirectory(Server.MapPath(Request.ApplicationPath));
-
-            foreach (string entityType in XmlEntityManager.GetImportableTypes(Server.MapPath(Request.ApplicationPath)))
-            {
-                string fixedType = entityType;
-                Type type = null;
-                if (entityType.IndexOf("-") == -1
-                    && entityType.IndexOf(".") == -1)
-                {
-                    type = EntitiesUtilities.GetType(entityType);
-                    fixedType = type.ToString();
-                }
-
-                AppLogger.Debug("Type: " + fixedType.ToString());
-
-                XmlEntityManager.ImportTypeFromDirectory(fixedType, convertedDirectory, importedDirectory);
-            }
-        }
-	}
-
-    /*static public void EnableLegacyModules(string applicationPath)
-    {
-        using (LogGroup logGroup = AppLogger.StartGroup("Enabling the original set of modules.", NLog.LogLevel.Debug))
-        {
-            foreach (string moduleID in ModuleUtilities.GetLegacyModules(XmlEntitySchema.GetImportsDirectory(applicationPath)))
-            {
-                AppLogger.Debug("Enabling module: " + moduleID);
-                IModuleInfo module = ModuleFactory.LoadModule(moduleID);
-                ModuleFacade.EnableModule((ModuleInfo)module);
-            }
-        }
-    }*/
-
 </script>
 <asp:Content ContentPlaceHolderID="Body" runat="Server" ID="Body">
 <asp:MultiView runat="server" ID="PageViews">

@@ -27,7 +27,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		
 		static public bool LegacyDataExists()
 		{
-			return Directory.Exists(XmlEntitySchemaEditor.GetImportsDirectory(HttpContext.Current.Server.MapPath(HttpContext.Current.Request.ApplicationPath)));
+			return Directory.Exists(DataAccess.Data.Importer.ImportableDirectoryPath);
 		}
 	}
 }

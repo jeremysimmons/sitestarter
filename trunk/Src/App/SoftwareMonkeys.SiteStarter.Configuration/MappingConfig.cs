@@ -20,14 +20,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 		{
 			get
 			{
-				foreach (MappingItem item in Items)
-				{
-					if (item.TypeName == name)
-					{
-						return item;
-					}
-				}
-				return null;
+				return GetItem(name, true);
 			}
 		}
 		
@@ -70,8 +63,8 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 			get { return new List<IMappingItem>(items).ToArray(); }
 			//set { items = new List(value).ToArray(typeof(MappingItem)); }
 		}*/
-		
-		public MappingConfig()
+			
+			public MappingConfig()
 		{}
 		
 		public void AddItem(MappingItem item)
@@ -99,15 +92,15 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 
 				foreach (MappingItem i in list)
 				{
-						if (i.TypeName == item.TypeName)
-						{
-							exists = true;
-							//					AppLogger.Debug("Item already exists.");
-						}
-						else
-						{
-							exists = false;
-						}
+					if (i.TypeName == item.TypeName)
+					{
+						exists = true;
+						//					AppLogger.Debug("Item already exists.");
+					}
+					else
+					{
+						exists = false;
+					}
 				}
 			}
 			if (!exists)
@@ -139,11 +132,11 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 				{
 					//if (item is I)
 					//{
-						// Match either type name or full name
-						if (MatchesType(item, type, includeInterfaces))
-						{
-							returnValue = item;
-						}
+					// Match either type name or full name
+					if (MatchesType(item, type, includeInterfaces))
+					{
+						returnValue = item;
+					}
 					//}
 				}
 			}
@@ -162,21 +155,21 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 			//{
 			if (name == null || name == String.Empty || items == null)
 				returnValue = null;//default(I);
-			
-			foreach (MappingItem item in Items)
+			else
 			{
-				//if (item is I)
-				//{
+				foreach (MappingItem item in Items)
+				{
+					//if (item is I)
+					//{
 					// Match either type name or full name
 					if (MatchesType(item, name, includeInterfaces))
 					{
 						//				AppLogger.Debug("Found item with type name: " + ((I)item).TypeName);
 						returnValue = item;
 					}
-				//}
+					//}
+				}
 			}
-			//	AppLogger.Debug("No item found.");
-			//}
 			return returnValue;
 		}
 		
@@ -212,20 +205,20 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 			//using (LogGroup logGroup = AppLogger.StartGroup("Matching mapping item with name: " + name, NLog.LogLevel.Debug))
 			//{
 			//	AppLogger.Debug("Item type name: " + item.TypeName);
-				
-				if (item == null)
-					throw new ArgumentNullException("item");
-				
-				if (item.TypeName == name)
-				{
-			//		AppLogger.Debug("Matches");
-					flag = true;
-				}
-				else
-				{
-			//		AppLogger.Debug("No match");
-					flag = false;
-				}
+			
+			if (item == null)
+				throw new ArgumentNullException("item");
+			
+			if (item.TypeName == name)
+			{
+				//		AppLogger.Debug("Matches");
+				flag = true;
+			}
+			else
+			{
+				//		AppLogger.Debug("No match");
+				flag = false;
+			}
 			//}
 			
 			return flag;
@@ -258,15 +251,15 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 				{
 					//if (t is I)
 					//{
-						if (t.TypeName == item.TypeName)
-						{
-							exists = true;
-							//					AppLogger.Debug("Item already exists.");
-						}
-						else
-						{
-							exists = false;
-						}
+					if (t.TypeName == item.TypeName)
+					{
+						exists = true;
+						//					AppLogger.Debug("Item already exists.");
+					}
+					else
+					{
+						exists = false;
+					}
 					//}
 				}
 			}

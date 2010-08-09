@@ -1,0 +1,170 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0BBD2A6C-9955-4BB6-9DCA-6AA57715C3F2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SoftwareMonkeys.SiteStarter.Data.Db4o.Tests</RootNamespace>
+    <AssemblyName>SoftwareMonkeys.SiteStarter.Data.Db4o.Tests</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <PublishUrl>http://localhost/SoftwareMonkeys.SiteStarter.Data.Tests/</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Db4objects.Db4o, Version=7.2.44.10827, Culture=neutral, PublicKeyToken=6199cd4f203aa8eb, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Lib\Db4objects.Db4o.dll</HintPath>
+    </Reference>
+    <Reference Include="Db4objects.Db4o.CS">
+      <HintPath>..\..\..\lib\Db4objects.Db4o.CS.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=1.0.0.505, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Lib\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.2.9.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration.Tests\SiteStarter.Configuration.Tests.csproj">
+      <Project>{5DFB85CA-D338-425A-B382-64EFBE19C65D}</Project>
+      <Name>SiteStarter.Configuration.Tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration\SiteStarter.Configuration.csproj">
+      <Project>{4B83307F-8307-43EF-A176-8AB1CDA78264}</Project>
+      <Name>SiteStarter.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Contracts\SiteStarter.Contracts.csproj">
+      <Project>{518735AC-EFA2-4205-AE47-CF4664EE3061}</Project>
+      <Name>SiteStarter.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Data.Db4o\SiteStarter.Data.Db4o.csproj">
+      <Project>{61DF6782-15A0-4056-AA02-7C18F0A19B0F}</Project>
+      <Name>SiteStarter.Data.Db4o</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Data.Tests\SiteStarter.Data.Tests.csproj">
+      <Project>{0BBD2A6C-9955-4BB6-9DCA-6AA57715C3F2}</Project>
+      <Name>SiteStarter.Data.Tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Data\SiteStarter.Data.csproj">
+      <Project>{0D77AB54-E3BE-4B29-8750-91F16BC3DEDB}</Project>
+      <Name>SiteStarter.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Diagnostics\SiteStarter.Diagnostics.csproj">
+      <Project>{C3626F0A-DFD4-4EF2-8755-3532DE3712A4}</Project>
+      <Name>SiteStarter.Diagnostics</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Entities\SiteStarter.Entities.csproj">
+      <Project>{3609F512-9E15-41C7-95AF-D1B3E7F93562}</Project>
+      <Name>SiteStarter.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Business\SiteStarter.Business.csproj">
+      <Project>{F294B839-0C1E-4187-AA58-6EA1C35E6B66}</Project>
+      <Name>SiteStarter.Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Tests\SiteStarter.Tests.csproj">
+      <Project>3109EA47-5620-4C75-93E2-A552FC75EB8B</Project>
+      <Name>SiteStarter.Tests</Name>
+    </ProjectReference>
+    <Compile Include="Db4oDataActivatorTests.cs" />
+    <Compile Include="Db4oDataStoreCollectionTests.cs" />
+    <Compile Include="Db4oDataDeleterTests.cs" />
+    <Compile Include="Db4oDataExporterTests.cs" />
+    <Compile Include="Db4oDataImporterTests.cs" />
+    <Compile Include="Db4oDataIndexerTests.cs" />
+    <Compile Include="Db4oDataProviderTests.cs" />
+    <Compile Include="Db4oDataReaderTests.cs" />
+    <Compile Include="Db4oDataUtilitiesTests.cs" />
+    <Compile Include="Db4oReferenceFilterTests.cs" />
+    <Compile Include="Db4oDataReferencerTests.cs" />
+    <Compile Include="Db4oDataSaverTests.cs" />
+    <Compile Include="Db4oDataSchemaTests.cs" />
+    <Compile Include="Db4oDataUpdaterTest.cs" />
+    <Compile Include="Db4oFilterGroupTests.cs" />
+    <Compile Include="Db4oFilterTests.cs" />
+    <Compile Include="Db4oRenamePropertyCommandTests.cs" />
+    <Compile Include="Db4oRenameTypeCommandTests.cs" />
+    <Compile Include="MockDb4oDataProviderManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

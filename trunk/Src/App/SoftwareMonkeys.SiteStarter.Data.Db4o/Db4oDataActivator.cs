@@ -141,19 +141,20 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				PropertyInfo property = EntitiesUtilities.GetProperty(entity.GetType(), propertyName, propertyType);
 				
 				if (property == null)
-					throw new Exception("Cannot find property with name '" + propertyName + "' and type '" + propertyType.ToString() + "'.");
+					throw new Exception("Cannot find property with name '" + propertyName + "' and type '" + (propertyType == null ? "[null]" : propertyType.ToString()) + "'.");
+				
+				
+				Type referenceType = DataUtilities.GetEntityType(entity, property);
+				
+				if (referenceType == null)
+					throw new Exception("referenceType == null");
+				
+				AppLogger.Debug("Reference entity type: " + referenceType.ToString());
 				
 				// Multiple references.
-				if (property.PropertyType.GetInterface("IList") != null)
+				if (EntitiesUtilities.IsMultipleReference(entity.GetType(), property))
 				{
 					AppLogger.Debug("Multiple reference property");
-					
-					Type referenceType = DataUtilities.GetEntityType(entity, property);
-					
-					if (referenceType == null)
-						throw new Exception("referenceType == null");
-					
-					AppLogger.Debug("Reference entity type: " + referenceType.ToString());
 					
 					using (LogGroup logGroup2 = AppLogger.StartGroup("Retrieving the references.", NLog.LogLevel.Debug))
 					{
@@ -196,7 +197,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				{
 					AppLogger.Debug("Single reference property");
 					
-					Type referenceType = DataUtilities.GetEntityType(entity, property);
 					
 					AppLogger.Debug("Reference entity type: " + referenceType.ToString());
 					

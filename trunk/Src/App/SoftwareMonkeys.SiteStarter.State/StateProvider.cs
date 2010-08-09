@@ -9,7 +9,7 @@ namespace SoftwareMonkeys.SiteStarter.State
     /// <summary>
     /// Defines the interface required for all data providers.
     /// </summary>
-    public abstract class StateProvider : ProviderBase
+    public abstract class StateProvider : ProviderBase, IStateProvider
     {
         public abstract bool ContainsApplication(string key);
         public abstract void SetApplication(string key, object value);

@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Business\ICommandManager.cs" />
     <Compile Include="Business\IFactory.cs" />
+    <Compile Include="Business\IRetrieverStrategy.cs" />
     <Compile Include="Configuration\IAppConfig.cs" />
     <Compile Include="Configuration\IConfig.cs" />
     <Compile Include="Configuration\IConfigurationDictionary.cs" />
@@ -58,6 +59,11 @@
     <Compile Include="Entities\IUserRole.cs" />
     <Compile Include="Entities\IVirtualServer.cs" />
     <Compile Include="IAppComponent.cs" />
+    <Compile Include="IDataProviderManager.cs" />
+    <Compile Include="State\IStateProvider.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="State" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

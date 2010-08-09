@@ -43,5 +43,22 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		EntityReferenceCollection GetReferences(IEntity entity);
 		
 		EntityReferenceCollection GetReferences(IEntity entity, bool activateAll);
+		
+		
+		/// <summary>
+		/// Gets the references that have been removed from the entity.
+		/// </summary>
+		/// <param name="entity">The entity that references have been removed from.</param>
+		/// <returns>A collection of the removed references.</returns>
+		EntityReferenceCollection GetRemovedReferences(IEntity entity);
+		
+		
+		/// <summary>
+		/// Retrieves the active references from the provided entity. This only includes those references currently active and not those in the data store.
+		/// </summary>
+		/// <param name="entity">The entity containing that the references are assigned to.</param>
+		/// <returns>A collection of the active entity references.</returns>
+		EntityReferenceCollection GetActiveReferences(IEntity entity);
+		
 	}
 }

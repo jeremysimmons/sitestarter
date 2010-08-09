@@ -68,6 +68,10 @@
       <Project>{F294B839-0C1E-4187-AA58-6EA1C35E6B66}</Project>
       <Name>SiteStarter.Business</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration.Tests\SiteStarter.Configuration.Tests.csproj">
+      <Project>{5DFB85CA-D338-425A-B382-64EFBE19C65D}</Project>
+      <Name>SiteStarter.Configuration.Tests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration\SiteStarter.Configuration.csproj">
       <Project>{4B83307F-8307-43EF-A176-8AB1CDA78264}</Project>
       <Name>SiteStarter.Configuration</Name>
@@ -75,6 +79,10 @@
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Contracts\SiteStarter.Contracts.csproj">
       <Project>{518735AC-EFA2-4205-AE47-CF4664EE3061}</Project>
       <Name>SiteStarter.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Data.Db4o.Tests\SiteStarter.Data.Db4o.Tests.csproj">
+      <Project>4ADB5F1E-B2C2-4EF3-9B46-6755C2D2663E</Project>
+      <Name>SiteStarter.Data.Db4o.Tests</Name>
     </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Data.Tests\SiteStarter.Data.Tests.csproj">
       <Project>{0BBD2A6C-9955-4BB6-9DCA-6AA57715C3F2}</Project>
@@ -92,22 +100,20 @@
       <Project>{3609F512-9E15-41C7-95AF-D1B3E7F93562}</Project>
       <Name>SiteStarter.Entities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Tests\SiteStarter.Tests.csproj">
+      <Project>3109EA47-5620-4C75-93E2-A552FC75EB8B</Project>
+      <Name>SiteStarter.Tests</Name>
+    </ProjectReference>
+    <Compile Include="ApplicationBackupTests.cs" />
+    <Compile Include="BaseBusinessTestFixture.cs" />
     <Compile Include="BaseFactoryTests.cs" />
-    <Compile Include="Entities\EntityOne.cs" />
-    <Compile Include="Entities\EntityTwo.cs" />
-    <Compile Include="Entities\TestArticle.cs" />
-    <Compile Include="Entities\TestArticlePage.cs" />
-    <Compile Include="Entities\TestCategory.cs" />
-    <Compile Include="Entities\TestEntity.cs" />
-    <Compile Include="Entities\TestRecord.cs" />
-    <Compile Include="Entities\TestSample.cs" />
+    <Compile Include="DirectoryZipperTests.cs" />
     <Compile Include="Factories\TestRecordFactory.cs" />
-    <Folder Include="Entities" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RetrieverStrategyTests.cs" />
+    <Compile Include="ZipAnalyzerTests.cs" />
     <Folder Include="Factories" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="ExampleTests.cs" />
-    <Compile Include="TestConfig.cs" />
+    <Folder Include="Properties" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

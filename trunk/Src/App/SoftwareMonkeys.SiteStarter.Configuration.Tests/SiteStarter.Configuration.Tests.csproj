@@ -80,11 +80,19 @@
       <Project>{34129651-3B9F-4A0D-AEBF-7DE2098DD98F}</Project>
       <Name>SiteStarter.State</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Tests\SiteStarter.Tests.csproj">
+      <Project>3109EA47-5620-4C75-93E2-A552FC75EB8B</Project>
+      <Name>SiteStarter.Tests</Name>
+    </ProjectReference>
+    <Compile Include="BaseConfigurationTestFixture.cs" />
     <Compile Include="ConfigFactoryTests.cs" />
+    <Compile Include="MockAppConfig.cs" />
+    <Compile Include="MockMappingConfig.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Folder Include="Properties" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConfigTests.cs" />
-    <Compile Include="TestConfig.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

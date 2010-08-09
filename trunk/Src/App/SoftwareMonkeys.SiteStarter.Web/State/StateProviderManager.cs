@@ -4,95 +4,105 @@ using System.Configuration.Provider;
 using System.Web.Configuration;
 using SoftwareMonkeys.SiteStarter.State;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using SoftwareMonkeys.SiteStarter.Business;
+using SoftwareMonkeys.SiteStarter.Entities;
 using NLog;
 
 namespace SoftwareMonkeys.SiteStarter.Web.State
 {
-    public class StateProviderManager
-    {
-        //Initialization related variables and logic
-        private static bool isInitialized = false;
-        private static Exception initializationException;
+	public class StateProviderManager
+	{
+		//Initialization related variables and logic
+		private static bool isInitialized = false;
+		private static Exception initializationException;
 
-        private static object initializationLock = new object();
+		private static object initializationLock = new object();
 
-        static StateProviderManager()
-        {
-                Initialize();
-        }
+		static StateProviderManager()
+		{
+			Initialize();
+		}
 
-        public static void Initialize()
-        {
-            if (!isInitialized)
-            {
-                // TODO: Clean up
-                //Logger logger = LogManager.GetLogger("StateProviderManager");
-                //logger.Info("StateProviderManager.Initialize()");
+		/// <summary>
+		/// Initializes the application state provider, including virtual server state.
+		/// </summary>
+		public static void Initialize()
+		{
+			if (!isInitialized)
+			{
 
-                using (LogGroup logGroup = AppLogger.StartGroup("Initializes the state provider manager to hold all application data while in memory."))
-                {
-                    if (!isInitialized)
-                    {
+				using (LogGroup logGroup = AppLogger.StartGroup("Initializes the state provider manager to hold all application data while in memory."))
+				{
+					if (!isInitialized)
+					{
+						InitializeApplicationState();
 
-                        try
-                        {
-                            //Get the feature's configuration info
-                            StateProviderConfiguration qc =
-                                (StateProviderConfiguration)ConfigurationManager.GetSection("StateProvider");
+						isInitialized = true; //error-free initialization
 
-                            if (qc.DefaultProvider == null || qc.Providers == null || qc.Providers.Count < 1)
-                                throw new ProviderException("You must specify a valid default provider.");
+					}
+				}
+			}
+		}
+		
+		/// <summary>
+		/// Initializes the managed application and session state.
+		/// </summary>
+		private static void InitializeApplicationState()
+		{
+			
+			try
+			{
+				//Get the feature's configuration info
+				StateProviderConfiguration qc =
+					(StateProviderConfiguration)ConfigurationManager.GetSection("StateProvider");
 
-                            //Instantiate the providers
-                            providerCollection = new StateProviderCollection();
-                            ProvidersHelper.InstantiateProviders(qc.Providers, providerCollection, typeof(StateProvider));
-                            providerCollection.SetReadOnly();
-                            defaultProvider = providerCollection[qc.DefaultProvider];
-                            if (defaultProvider == null)
-                            {
-                                throw new ConfigurationErrorsException(
-                                    "You must specify a default provider for the feature.",
-                                    qc.ElementInformation.Properties["defaultProvider"].Source,
-                                    qc.ElementInformation.Properties["defaultProvider"].LineNumber);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            initializationException = ex;
-                            isInitialized = true;
-                            throw ex;
-                        }
+				if (qc.DefaultProvider == null || qc.Providers == null || qc.Providers.Count < 1)
+					throw new ProviderException("You must specify a valid default provider.");
 
-                        isInitialized = true; //error-free initialization
+				//Instantiate the providers
+				providerCollection = new StateProviderCollection();
+				ProvidersHelper.InstantiateProviders(qc.Providers, providerCollection, typeof(StateProvider));
+				providerCollection.SetReadOnly();
+				defaultProvider = providerCollection[qc.DefaultProvider];
+				if (defaultProvider == null)
+				{
+					throw new ConfigurationErrorsException(
+						"You must specify a default provider for the feature.",
+						qc.ElementInformation.Properties["defaultProvider"].Source,
+						qc.ElementInformation.Properties["defaultProvider"].LineNumber);
+				}
+			}
+			catch (Exception ex)
+			{
+				initializationException = ex;
+				isInitialized = true;
+				throw ex;
+			}
+		}
 
-                    }
-                }
-            }
-        }
+		//Public feature API
+		private static StateProvider defaultProvider;
+		private static StateProviderCollection providerCollection;
 
-        //Public feature API
-        private static StateProvider defaultProvider;
-        private static StateProviderCollection providerCollection;
+		public static StateProvider Provider
+		{
+			get
+			{
+				return defaultProvider;
+			}
+		}
 
-        public static StateProvider Provider
-        {
-            get
-            {
-                return defaultProvider;
-            }
-        }
+		public static StateProviderCollection Providers
+		{
+			get
+			{
+				return providerCollection;
+			}
+		}
 
-        public static StateProviderCollection Providers
-        {
-            get
-            {
-                return providerCollection;
-            }
-        }
-
-       /* public static string DoWork()
+		/* public static string DoWork()
         {
             return Provider.DoWork();
         }*/
-    }
+	}
 }

@@ -15,7 +15,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
     [Serializable]
     public class VirtualServer : BaseEntity, IVirtualServer, IVirtualServerConfig
     {
-        private string name;
+    	private string name;
         /// <summary>
         /// Gets/sets the name of the server.
         /// </summary>
@@ -45,7 +45,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
         /// Gets/sets the name of the primaryAdministrator that the feature is part of.
         /// </summary>
         [XmlIgnore]
-        IUser IVirtualServer.PrimaryAdministrator
+        IUser IVirtualServerConfig.PrimaryAdministrator
         {
             get { return (IUser)PrimaryAdministrator; }
             set
@@ -59,7 +59,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities
         /// <summary>
         /// Gets/sets the name of the primaryAdministrator that the feature is part of.
         /// </summary>
-        [Reference(TypeName = "User")]
+        [XmlIgnore]
+        [Reference]
         public virtual User PrimaryAdministrator
         {
             get { return primaryAdministrator; }
@@ -68,28 +69,23 @@ namespace SoftwareMonkeys.SiteStarter.Entities
                 primaryAdministrator = value;
             }
         }
-
+        
+        
         private Guid primaryAdministratorID;
-        public Guid PrimaryAdministratorID
+        /// <summary>
+        /// Gets/sets the ID of the primaryAdministrator that the feature is part of.
+        /// </summary>
+        public virtual Guid PrimaryAdministratorID
         {
-            get
-            {
-                if (primaryAdministratorID == Guid.Empty)
-                {
-
-                    if (PrimaryAdministrator != null)
-                        primaryAdministratorID = PrimaryAdministrator.ID;
-                }
-                return primaryAdministratorID;
-            }
+            get {
+                if (primaryAdministrator != null)
+                    return primaryAdministrator.ID;
+                return primaryAdministratorID; }
             set
             {
                 primaryAdministratorID = value;
-                if (primaryAdministrator != null &&
-                    primaryAdministrator.ID != value)
-                {
+                if (primaryAdministrator != null && primaryAdministrator.ID != primaryAdministratorID)
                     primaryAdministrator = null;
-                }
             }
         }
         

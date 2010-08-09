@@ -50,6 +50,10 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Contracts\SiteStarter.Contracts.csproj">
+      <Project>{518735AC-EFA2-4205-AE47-CF4664EE3061}</Project>
+      <Name>SiteStarter.Contracts</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

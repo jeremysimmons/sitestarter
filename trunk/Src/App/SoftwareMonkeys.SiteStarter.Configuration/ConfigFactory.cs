@@ -19,13 +19,15 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 		/// <summary>
 		/// Loads the config file at the specified path.
 		/// </summary>
-		/// <param name="configPath">The physical path to the config file.</param>
+		/// <param name="dataDirectoryPath">The physical path to the data directory.</param>
 		/// <param name="type">The type of configuration object to load.</param>
 		/// <returns>The config from the specified path.</returns>
-		static public T LoadConfig(string configPath, string name, string variation)
+		static public T LoadConfig(string directory, string name, string variation)
 		{
-			if (configPath.ToLower().IndexOf(".config") == -1)
-				configPath = CreateConfigPath(configPath, name, variation);
+			if (directory.ToLower().IndexOf(".config") > -1)
+				throw new ArgumentException("The specified directory should not include the file name.");
+			
+			string configPath = CreateConfigPath(directory, name, variation);
 			
 			T config = default(T);
 			
@@ -34,7 +36,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 
 				if (!File.Exists(configPath))
 				{
-					// Exception not needed
+					// Exception not needed. Just return a default config to allow the setup page to run
 					//throw new Exception("Configuration file not found: " + configPath);
 					AppLogger.Debug("Configuration file not found.");
 					config = default(T);
@@ -95,36 +97,13 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 			SaveConfig(physicalDataDirectoryPath, config, String.Empty);
 		}
 		
-		/*/// <summary>
-		/// Saves the provided configuration object to file.
-		/// </summary>
-		/// <param name="physicalDataDirectoryPath">The physical path to the data directory.</param>
-		/// <param name="config">The configuration object to save.</param>
-		static public void SaveConfig<T>(string physicalDataDirectoryPath, IConfig config)
-			where T : IConfig
-		{
-			SaveConfig<T>(physicalDataDirectoryPath, config, String.Empty);
-		}
-		
 		/// <summary>
 		/// Saves the provided configuration object to file.
 		/// </summary>
 		/// <param name="physicalDataDirectoryPath">The physical path to the data directory.</param>
 		/// <param name="config">The configuration object to save.</param>
 		/// <param name="variation">The variation to be applied to the configuration file (ie. local, staging, etc.).</param>
-		static public void SaveConfig<T>(string physicalDataDirectoryPath, IConfig config, string variation)
-			where T : IConfig
-		{
-			SaveConfig(physicalDataDirectoryPath, typeof(T), config, variation);
-		}*/
-			
-			/// <summary>
-			/// Saves the provided configuration object to file.
-			/// </summary>
-			/// <param name="physicalDataDirectoryPath">The physical path to the data directory.</param>
-			/// <param name="config">The configuration object to save.</param>
-			/// <param name="variation">The variation to be applied to the configuration file (ie. local, staging, etc.).</param>
-			static public void SaveConfig(string physicalDataDirectoryPath, T config, string variation)
+		static public void SaveConfig(string physicalDataDirectoryPath, T config, string variation)
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Saving configuration file.", NLog.LogLevel.Debug))
 			{
@@ -140,6 +119,9 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 					Config.Application = (IAppConfig)config;
 				}
 
+				if (config.Name == String.Empty)
+					throw new ArgumentException("The config.Name property must be set.");
+				
 				string name = config.Name;
 				config.PathVariation = variation;
 				
@@ -161,7 +143,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 				using (FileStream stream = File.Create(configPath))
 				{
 					AppLogger.Debug("Created configuration file stream");
-					XmlSerializer serializer = new XmlSerializer(typeof(T));
+					XmlSerializer serializer = new XmlSerializer(config.GetType());
 					serializer.Serialize(stream, config);
 					AppLogger.Debug("Serialized config to file");
 					stream.Close();
@@ -184,16 +166,6 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 		/// <returns>The full physical path to the specified configuration file.</returns>
 		static public string CreateConfigPath(string physicalDataDirectoryPath, string configName, string variation)
 		{
-			// TODO: Remove commented code
-			/*string fileName;
-            if (HttpContext.Current.Request.Url.Host == "localhost" || HttpContext.Current.Request.Url.Host == "127.0.0.1")
-                fileName = "WorkHub.local.config";
-            else if (HttpContext.Current.Request.Url.Host.ToLower().IndexOf("staging") > -1)
-                fileName = "WorkHub.staging.config";
-            else
-                fileName = "WorkHub.config";
-            physicalConfigPath = HttpContext.Current.Server.MapPath(HttpContext.Current.Request.ApplicationPath + "/Data/" + fileName);*/
-
 			// Start with the physical data directory path (and trim the slash off the end)
 			string path = physicalDataDirectoryPath.TrimEnd('\\');
 
@@ -202,14 +174,14 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 			//    path += @"\" + virtualServerName;
 
 			// Add the config name
-			path += @"\" + configName;
+			path = path + Path.DirectorySeparatorChar + configName;
 
 			// If a variation was specified then add it
 			if (variation != null && variation != String.Empty)
-				path += "." + variation;
+				path = path + "." + variation;
 
 			// Add the file extension to the end
-			path += ".config";
+			path = path + ".config";
 			
 			// Return the file path
 			return path;

@@ -46,27 +46,18 @@
 <asp:Content ID="Body" ContentPlaceHolderID="Body" runat="Server">
     <asp:MultiView ID="PageView" runat="server">
         <asp:View ID="IndexView" runat="server">
-            <table class="OuterPanel">
-                <tr>
-                    <td class="Heading1">
-                        <%# Resources.Language.Settings %></td>
-                </tr>
-                <tr>
-                    <td>
+            <h1>
+                        <%# Resources.Language.Settings %></h1>
+
                         <cc:Result runat="server" ID="IndexResult">
                         </cc:Result>
                         <p>
                             <%# Resources.Language.SettingsIntro %></p>
-                        </td>
-                        </tr>
-                        <tr>
-                        <td>
-                            <a href="WebSiteSettings.aspx"><%# Resources.Language.WebSiteSettings %></a><br/>
-                            <a href="VirtualServerSettings.aspx"><%# Resources.Language.VirtualServerSettings %></a><br/>
-                            <a href="EmailSettings.aspx"><%# Resources.Language.EmailSettings %></a><br/>
-                    </td>
-                </tr>
-            </table>
+			<ul>
+				<li>
+		                         <a href="WebSiteSettings.aspx"><%# Resources.Language.WebSiteSettings %></a>
+				</li>
+			</ul>
         </asp:View>
     </asp:MultiView>
 </asp:Content>

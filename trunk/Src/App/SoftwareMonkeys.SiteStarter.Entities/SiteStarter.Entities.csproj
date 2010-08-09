@@ -45,7 +45,6 @@
     <Compile Include="BaseEntityReferenceAttribute.cs" />
     <Compile Include="BaseEntity.cs" />
     <Compile Include="CorrespondingFieldAttribute.cs" />
-    <Compile Include="DataStoreAttribute.cs" />
     <Compile Include="EntitiesUtilities.cs" />
     <Compile Include="EntityEventArgs.cs" />
     <Compile Include="EntityIDReferenceCollection.cs" />
@@ -65,6 +64,7 @@
     <Compile Include="User.cs" />
     <Compile Include="UserPermission.cs" />
     <Compile Include="UserRole.cs" />
+    <Compile Include="VirtualServerCollection.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration\SiteStarter.Configuration.csproj">

@@ -168,16 +168,22 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving entities of the specified type.", NLog.LogLevel.Debug))
 			{
-				IQuery query = ((Db4oDataStore)GetDataStore(type)).ObjectContainer.Query();
-				query.Constrain(type);
-
-				IObjectSet os = query.Execute();
-				while (os.HasNext())
-				{
-					list.Add(os.Next());
-				}
+				IObjectContainer objectContainer = ((Db4oDataStore)GetDataStore(type)).ObjectContainer;
 				
-				AppLogger.Debug("Total: " + list.Count.ToString());
+				// If the object container is closed then skip the query
+				if (!objectContainer.Ext().IsClosed())
+				{
+					IQuery query = objectContainer.Query();
+					query.Constrain(type);
+
+					IObjectSet os = query.Execute();
+					while (os.HasNext())
+					{
+						list.Add(os.Next());
+					}
+					
+					AppLogger.Debug("Total: " + list.Count.ToString());
+				}
 			}
 
 			return (IEntity[])list.ToArray(type);
@@ -597,17 +603,25 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				AppLogger.Debug("Property name: " + propertyName);
 				AppLogger.Debug("Property value: " + (propertyValue == null ? "[null]" : propertyValue.ToString()));
 				
-				results.AddRange(((Db4oDataStore)GetDataStore(type)).ObjectContainer.Query<T>(
-						delegate(T e)
-						{
-							object value = EntitiesUtilities.GetPropertyValue(e, propertyName);
-							
-							if (value == propertyValue || (value != null && value.Equals(propertyValue)))
-								return true;
-							else
-								return false;
-						}
-					));
+				Db4oDataStore store = ((Db4oDataStore)GetDataStore(type));
+				
+				if (store != null)
+				{
+					if (store.ObjectContainer != null)
+					{
+						results.AddRange(store.ObjectContainer.Query<T>(
+							delegate(T e)
+							{
+								object value = EntitiesUtilities.GetPropertyValue(e, propertyName);
+								
+								if (value == propertyValue || (value != null && value.Equals(propertyValue)))
+									return true;
+								else
+									return false;
+							}
+						));
+					}
+				}
 				
 				AppLogger.Debug("Entities #: " + results.Count.ToString());
 				

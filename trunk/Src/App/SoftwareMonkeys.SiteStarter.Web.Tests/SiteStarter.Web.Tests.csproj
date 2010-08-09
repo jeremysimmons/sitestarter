@@ -78,12 +78,15 @@
       <Project>{3609F512-9E15-41C7-95AF-D1B3E7F93562}</Project>
       <Name>SiteStarter.Entities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Tests\SiteStarter.Tests.csproj">
+      <Project>3109EA47-5620-4C75-93E2-A552FC75EB8B</Project>
+      <Name>SiteStarter.Tests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Web\SiteStarter.Web.csproj">
       <Project>{A5D49D94-D936-4123-BA9A-572AA7C7F426}</Project>
       <Name>SiteStarter.Web</Name>
     </ProjectReference>
     <None Include="WebControls\_svn\entries" />
-    <Compile Include="Entities\TestEnum.cs" />
     <Compile Include="Security\RoleProviderTests.cs" />
     <Compile Include="WebControls\EntityFormHelperTests.cs" />
     <Compile Include="WebUtilitiesTests.cs" />
