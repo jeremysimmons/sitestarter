@@ -88,11 +88,12 @@
     <Compile Include="TestExecutor.cs" />
     <Compile Include="UserFactory.cs" />
     <Compile Include="EmailFactory.cs" />
-    <Compile Include="VirtualServerFactory.cs" />
     <Compile Include="EntityFactory.cs" />
     <Compile Include="KeywordFactory.cs" />
     <Compile Include="UserRoleFactory.cs" />
-    <Compile Include="ZipAnalyzer.cs" />
+    <Compile Include="ZipAnalyzer.cs">
+      <SubType>Component</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration\SiteStarter.Configuration.csproj">

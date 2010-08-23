@@ -1,0 +1,105 @@
+﻿using System;
+using System.Collections.Generic;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
+
+namespace SoftwareMonkeys.SiteStarter.Data
+{
+	/// <summary>
+	/// Holds the batch state.
+	/// </summary>
+	public class BatchState
+	{
+		/// <summary>
+		/// Handles the provided data store as part of the batch.
+		/// </summary>
+		/// <param name="store">The data store being handled as part of the batch.</param>
+		public static void Handle(IDataStore store)
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Adding a data store to the batch.", NLog.LogLevel.Debug))
+			{
+				AppLogger.Debug("Batch stack: " + BatchState.Batches.Count.ToString());
+				
+				if (BatchState.IsRunning)
+				{
+					Stack<Batch> batches = BatchState.Batches;
+					
+					// Get the position of the outermost batch
+					// The stack is reversed so the last position is the outermost batch
+					int outerPosition = batches.Count-1;
+					
+					// Get the outermost batch and add the data store to it					
+					Batch batch = batches.ToArray()[outerPosition];
+					
+					if (!batch.DataStores.Contains(store))
+					{
+						AppLogger.Debug("Data store added.");
+						batch.DataStores.Add(store);
+						
+						// Commit the batch stack to state
+						Batches = batches;
+					}
+					else
+					{
+						AppLogger.Debug("Data store already found. Not added.");
+					}
+				}
+				else
+					throw new InvalidOperationException("No batch running. Use Batch.IsRunning to check before calling this method.");
+			}
+			
+		}
+			
+		/// <summary>
+		/// Gets a boolean value indicating whether a batch is currently running.
+		/// </summary>
+		static public bool IsRunning
+		{
+			get
+			{
+				return Batches.Count > 0;
+			}
+		}
+		
+		#region Batches
+        
+		/// <summary>
+		/// Starts a new batch.
+		/// </summary>
+		/// <returns>The newly started batch.</returns>
+		static public Batch StartBatch()
+		{
+			Batch batch = null;
+			using (LogGroup logGroup = AppLogger.StartGroup("Starting a batch of data operations.", NLog.LogLevel.Debug))
+			{
+				batch = new Batch();
+				
+				AppLogger.Debug("New batch added to the stack.");
+				
+				Batches.Push(batch);
+			}
+			
+			return batch;
+		}
+		
+		static public string BatchesKey = "BatchState.Batches";
+		
+		/// <summary>
+		/// A stack of all the batches currently in operation.
+		/// </summary>
+		static public Stack<Batch> Batches
+		{
+			get {
+				if (!State.StateAccess.State.ContainsRequest(BatchesKey)
+				   || State.StateAccess.State.GetRequest(BatchesKey) == null)
+					State.StateAccess.State.SetRequest(BatchesKey, new Stack<Batch>());
+				return (Stack<Batch>)State.StateAccess.State.GetRequest(BatchesKey); }
+			set { State.StateAccess.State.SetRequest(BatchesKey, value); }
+		}
+        #endregion
+        
+		
+		public BatchState()
+		{
+		}
+	}
+}

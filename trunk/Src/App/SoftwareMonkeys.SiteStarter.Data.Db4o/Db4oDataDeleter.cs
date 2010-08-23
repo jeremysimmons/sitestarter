@@ -89,7 +89,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			//if (entity.ID == Guid.Empty)
 			//	throw new ArgumentException("entity.ID is set to Guid.Empty on type " + entity.GetType().ToString());
 			
-			using (Batch batch = Batch.StartBatch())
+			using (Batch batch = BatchState.StartBatch())
 			{
 				IEntity[] toUpdate = new IEntity[]{};
 				IEntity[] toDelete = new IEntity[]{};

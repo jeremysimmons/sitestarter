@@ -52,14 +52,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		/// </summary>
 		public virtual void DisposeMockData()
 		{
-			foreach (string dataStoreName in DataAccess.Data.GetDataStoreNames())
+			/*foreach (string dataStoreName in DataAccess.Data.GetDataStoreNames())
 			{
-				foreach (IEntity entity in DataAccess.Data.Stores[dataStoreName].Indexer.GetEntities())
-				{
-					DataAccess.Data.Stores[dataStoreName].Deleter.Delete(entity);
-				}
-				
-			}
+				DataAccess.Data.Stores[dataStoreName].Dispose();
+				DataAccess.Data.Stores.Remove(DataAccess.Data.Stores[dataStoreName]);
+			}*/
 			
 			DataAccess.Data.Dispose();
 		}

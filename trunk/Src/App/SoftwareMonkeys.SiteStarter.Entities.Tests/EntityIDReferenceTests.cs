@@ -16,15 +16,8 @@ using System.Reflection;
 namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 {
 	[TestFixture]
-	public class EntityIDReferenceTests
+	public class EntityIDReferenceTests : BaseEntityTestFixture
 	{
-		/*public string ApplicationPath
-		{
-			// TODO: Path MUST NOT be hard coded
-			//   get { return @"f:\SoftwareMonkeys\WorkHub\Application 2\Web\"; }
-			//     get { return System.Configuration.ConfigurationSettings.AppSettings["ApplicationPath"]; }
-			get { return SoftwareMonkeys.SiteStarter.Configuration.Config.Application.PhysicalPath; }
-		}*/
 		
 		[Test]
 		public void Test_Includes_Match()

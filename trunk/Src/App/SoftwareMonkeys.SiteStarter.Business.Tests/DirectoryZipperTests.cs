@@ -15,20 +15,6 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 	[TestFixture]
 	public class DirectoryZipperTests : BaseBusinessTestFixture
 	{
-		[SetUp]
-		public void Initialize()
-		{
-			TestUtilities.ClearTestingDirectory();
-			TestUtilities.ClearTestEntities();
-		}
-		
-		[TearDown]
-		public void Dispose()
-		{
-			TestUtilities.ClearTestingDirectory();
-			TestUtilities.ClearTestEntities();
-		}
-		
 		/// <summary>
 		/// Tests the ZipToFile function.
 		/// </summary>
@@ -91,7 +77,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			
 			string zipFileName = @"Backup--" + DateTime.Now.Year + "-" + DateTime.Now.Month + "-" + DateTime.Now.Day + "--" + DateTime.Now.Hour + "-" + DateTime.Now.Minute + "-" + DateTime.Now.Second + ".zip";
 			string zipFilePath = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar + "Backups" + Path.DirectorySeparatorChar + zipFileName;
-			//zipShortPath;//Config.Application.PhysicalPath + zipShortPath;
+			//zipShortPath;//Config.Application.PhysicalApplicationPath + zipShortPath;
 
 
 			

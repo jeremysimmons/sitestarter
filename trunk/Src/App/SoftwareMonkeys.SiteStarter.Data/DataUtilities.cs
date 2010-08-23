@@ -391,10 +391,10 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// </summary>
 		static public void InitializeDataVersion()
 		{
-			string originalPath = Config.Application.PhysicalPath + Path.DirectorySeparatorChar
+			string originalPath = Config.Application.PhysicalApplicationPath + Path.DirectorySeparatorChar
 				+ "Version.Number";
 			
-			string newPath = Config.Application.PhysicalPath + Path.DirectorySeparatorChar
+			string newPath = Config.Application.PhysicalApplicationPath + Path.DirectorySeparatorChar
 				+ "App_Data" + Path.DirectorySeparatorChar
 				+ "Version.Number";
 			

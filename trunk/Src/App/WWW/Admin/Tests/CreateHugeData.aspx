@@ -15,7 +15,7 @@
 
 private void Page_Load(object sender, EventArgs e)
 {
-	using (Batch batch = Batch.StartBatch())
+	using (Batch batch = BatchState.StartBatch())
 	{
 		CreateTestUsers(1000);
 	}

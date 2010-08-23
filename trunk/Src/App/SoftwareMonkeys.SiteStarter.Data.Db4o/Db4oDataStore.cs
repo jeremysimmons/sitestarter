@@ -76,7 +76,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			get
 			{
-				if (!StateAccess.State.ContainsApplication(ObjectServerKey))
+				if (!StateAccess.State.ContainsApplication(ObjectServerKey)
+				    || StateAccess.State.GetApplication(ObjectContainerKey) == null)
 					OpenServer();
 				
 				return (IObjectServer)StateAccess.State.GetApplication(ObjectServerKey);
@@ -118,7 +119,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			get
 			{
-				if (!StateAccess.State.ContainsApplication(ObjectContainerKey))
+				if (!StateAccess.State.ContainsApplication(ObjectContainerKey)
+				    || StateAccess.State.GetApplication(ObjectContainerKey) == null)
 					OpenContainer();
 				
 				return (IObjectContainer)StateAccess.State.GetApplication(ObjectContainerKey);
@@ -181,7 +183,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				fileName = @"VS\" + prefix + @"\" + fileName;
 			}
 			
-			return Config.Application.PhysicalPath + @"\App_Data\" + fileName + ".yap";
+			return Config.Application.PhysicalApplicationPath + @"\App_Data\" + fileName + ".yap";
 		}
 		
 		/// <summary>
@@ -250,7 +252,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					fileName = @"VS\" + prefix + @"\" + fileName;
 				}
 
-				string fullName = Config.Application.PhysicalPath + @"\App_Data\" + fileName + ".yap";
+				string fullName = Config.Application.PhysicalApplicationPath + @"\App_Data\" + fileName + ".yap";
 				
 				AppLogger.Debug("Full file name: " + fullName);
 				
@@ -268,9 +270,20 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// </summary>
 		public override void Dispose()
 		{
-			Close();
+			// Don't commit/close here. Commit must be explicit.
+			//Close();
+			
+			// Roll back to the last commit
+			// This roll back is important. The data store must not commit the latest data unless explicit.
+			// If rollback is not called then the latest data will be automatically committed
+			// The ability to dispose without committing is necessary for unit testing
+			ObjectContainer.Rollback();
+			
+			ObjectContainer.Dispose();
+			ObjectServer.Dispose();
+			
 			StateAccess.State.SetApplication(ObjectContainerKey, null);
-			//objectServer = null;
+			StateAccess.State.SetApplication(ObjectServerKey, null);
 		}
 
 		/// <summary>
@@ -284,7 +297,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				ObjectContainer.Close();
 				ObjectContainer = null;
 				ObjectServer.Close();
-				ObjectServer.Dispose();
 				ObjectServer = null;
 			}
 			//ObjectServer.Close();
@@ -294,10 +306,20 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 
 
 
-
-
+		
+		/// <summary>
+		/// Checks whether the provided entity is current in the data store.
+		/// </summary>
+		/// <param name="entity">The entity to look for in the data store.</param>
+		/// <returns>A boolean value indicating whether the provided entity was found in the data store.</returns>
 		public override bool IsStored(IEntity entity)
 		{
+			if (entity == null)
+				throw new ArgumentNullException("entity");
+			
+			if (ObjectContainer == null)
+				throw new InvalidOperationException("The ObjectContainer has not been initialized.");
+			
 			return ObjectContainer.Ext().IsStored(entity);
 		}
 		
@@ -366,7 +388,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		
 		public override void Commit()
 		{
-			Commit(true);
+			Commit(false);
 		}
 		
 		
@@ -375,12 +397,15 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			using (LogGroup logGroup = AppLogger.StartGroup("Committing the data store (or adding to batch for later).", NLog.LogLevel.Debug))
 			{
 				// Only commit if there's no batch running
-				if (forceCommit || !Batch.IsRunning)
+				if (forceCommit || !BatchState.IsRunning)
 				{
 					AppLogger.Debug("No batch running. Committing immediately.");
 					
 					if (ObjectContainer != null)
+					{
 						ObjectContainer.Commit();
+						RaiseCommitted();
+					}
 					else
 						throw new InvalidOperationException("ObjectContainer == null");
 				}
@@ -389,7 +414,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				{
 					AppLogger.Debug("Batch running. Adding data source to batch. It will be committed when the batch is over.");
 					
-					Batch.Handle(this);
+					BatchState.Handle(this);
 				}
 			}
 		}

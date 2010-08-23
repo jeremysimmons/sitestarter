@@ -105,7 +105,7 @@
                          </p>
                                                
                             <table class="BodyPanel" width="100%">
-                                <tr class="Heading2">
+                                <tr>
                                     <td colspan="2" class="Heading2"><%# Resources.Language.WebSiteSettings %></td>
                                 </tr>
                                  <tr>

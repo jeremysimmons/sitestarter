@@ -82,6 +82,10 @@
       <Project>{0D77AB54-E3BE-4B29-8750-91F16BC3DEDB}</Project>
       <Name>SiteStarter.Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Diagnostics.Tests\SiteStarter.Diagnostics.Tests.csproj">
+      <Project>{7869F9C1-61D7-4C16-9577-CA85BDD3E01F}</Project>
+      <Name>SiteStarter.Diagnostics.Tests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Diagnostics\SiteStarter.Diagnostics.csproj">
       <Project>{C3626F0A-DFD4-4EF2-8755-3532DE3712A4}</Project>
       <Name>SiteStarter.Diagnostics</Name>
@@ -94,6 +98,14 @@
       <Project>{3609F512-9E15-41C7-95AF-D1B3E7F93562}</Project>
       <Name>SiteStarter.Entities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.State.Tests\SiteStarter.State.Tests.csproj">
+      <Project>AD977DB1-879A-476C-A74A-FC2E0EC98F0A</Project>
+      <Name>SiteStarter.State.Tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.State.Tests\SiteStarter.State.Tests.csproj">
+      <Project>{91C362DD-993D-4BF9-A90A-FFE18AB17434}</Project>
+      <Name>SiteStarter.State.Tests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.State\SiteStarter.State.csproj">
       <Project>{34129651-3B9F-4A0D-AEBF-7DE2098DD98F}</Project>
       <Name>SiteStarter.State</Name>
@@ -103,6 +115,7 @@
       <Name>SiteStarter.Tests</Name>
     </ProjectReference>
     <Compile Include="BaseDataTestFixture.cs" />
+    <Compile Include="BatchTests.cs" />
     <Compile Include="DataActivatorTests.cs" />
     <Compile Include="DataDeleterTests.cs" />
     <Compile Include="DataExporterTests.cs" />

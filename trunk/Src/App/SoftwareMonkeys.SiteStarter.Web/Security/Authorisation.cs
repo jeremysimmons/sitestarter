@@ -49,6 +49,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
                 return false;
         }
 
+
         public static void EnsureUserCan(string action, Type type)
         {
             if (!UserCan(action, type))
@@ -57,6 +58,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
             // TODO: Add redirect to friendly page
         }
 
+        
         public static void EnsureUserCan(string action, IEntity entity)
         {
             if (!UserCan(action, entity))
@@ -72,7 +74,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
             //    throw new Exception("Invalid permissions.");
             // TODO: Add redirect to friendly page
         }
-
+        
         public static void InvalidPermissionsRedirect()
         {
             // TODO: This shouldn't be hard coded

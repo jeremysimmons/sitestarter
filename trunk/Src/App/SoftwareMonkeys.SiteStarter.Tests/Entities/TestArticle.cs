@@ -56,7 +56,7 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
         }*/
 
         private TestSample[] samples;
-        [Reference]
+        [Reference(MirrorPropertyName="Articles")]
         public TestSample[] Samples
         {
             get { return samples; }

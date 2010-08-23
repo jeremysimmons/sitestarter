@@ -12,19 +12,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 	[TestFixture]
 	public class DataExporterTests : BaseDataTestFixture
 	{
-		[SetUp]
-		public void Initialize()
-		{
-			TestUtilities.ClearTestingDirectory();
-			TestUtilities.ClearTestEntities();
-		}
-		
-		[TearDown]
-		public void Dispose()
-		{
-			TestUtilities.ClearTestingDirectory();
-			TestUtilities.ClearTestEntities();
-		}
 		
 		/// <summary>
 		/// Tests the DataExporter.ExportToXml function while exporting all data.

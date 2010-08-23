@@ -43,7 +43,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			if (Configuration.Config.IsInitialized && ConfigurationSettings.AppSettings != null)
 			{
-				string physicalPath = Configuration.Config.Application.PhysicalPath;
+				string physicalPath = Configuration.Config.Application.PhysicalApplicationPath;
 				
 				LegacyDirectoryPath = physicalPath + Path.DirectorySeparatorChar +
 					ConfigurationSettings.AppSettings["Legacy.Directory"];
@@ -62,6 +62,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			ImportData();
 			
 			ImportPersonalization();
+			
+			DeleteEmptyLegacyDirectory();
 		}
 		
 		/// <summary>
@@ -93,6 +95,19 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					File.Copy(file, toPath, true);
 				}
 			}
+		}
+		
+		/// <summary>
+		/// Deletes the legacy directory and all sub directories, which should be empty.
+		/// </summary>
+		public void DeleteEmptyLegacyDirectory()
+		{
+			foreach (string dir in Directory.GetDirectories(LegacyDirectoryPath))
+			{
+				Directory.Delete(dir); // Don't do recursive delete. Directory must be empty otherwise the import may not have succeeded.
+			}
+			
+			Directory.Delete(LegacyDirectoryPath); // Don't do recursive delete. Directory must be empty otherwise the import may not have succeeded.
 		}
 	}
 }

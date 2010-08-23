@@ -82,3 +82,13 @@ TR.Heading2 TD
 {
 	color: Green;
 }
+
+.AutoBackup
+{
+	text-align:right;
+}
+
+.AutoBackupSummary
+{
+	font-size: x-small;
+}

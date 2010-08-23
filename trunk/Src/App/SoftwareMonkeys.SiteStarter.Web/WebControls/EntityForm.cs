@@ -253,7 +253,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 							EntityFormItem item = (EntityFormItem)row;
 							string propertyName = ((EntityFormItem)item).PropertyName;
 							
-							if (item.AutoBind && item.PropertyName != String.Empty && item.PropertyName != null)
+							if (item.AutoBind && propertyName != String.Empty)
 							{
 								using (LogGroup logGroup2 = AppLogger.StartGroup("Property: " + propertyName, NLog.LogLevel.Debug))
 								{

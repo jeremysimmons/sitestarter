@@ -4,13 +4,14 @@ using NUnit.Framework;
 using SoftwareMonkeys.SiteStarter.State;
 using System.Reflection;
 using System.IO;
+using SoftwareMonkeys.SiteStarter.Diagnostics.Tests;
 
 namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
 {
 	/// <summary>
 	/// Provides a base implementation for all configuration test fixtures and other test fixtures that require a mock configuration environment to run.
 	/// </summary>
-	public abstract class BaseConfigurationTestFixture : BaseTestFixture
+	public abstract class BaseConfigurationTestFixture : BaseDiagnosticsTestFixture
 	{
 		/// <summary>
 		/// Creates a mock AppConfig object for use while testing.
@@ -18,11 +19,14 @@ namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
 		/// <returns>The mock AppConfig object ready for use.</returns>
 		public IAppConfig CreateMockAppConfig()
         {
-			string assemblyPath = Assembly.GetExecutingAssembly().Location;
-			string path = Path.GetDirectoryName(assemblyPath);
+			string applicationPath = TestUtilities.GetTestingPath();
+			string configPath = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar + "Application.testing.config";
 			
         	IAppConfig config = new MockAppConfig();
-        	config.PhysicalPath = path;
+        	config.FilePath = configPath;
+        	config.PhysicalApplicationPath = applicationPath;
+        	config.PathVariation = "testing";
+        	config.Saver = new MockConfigSaver();
         	
         	return config;
         }

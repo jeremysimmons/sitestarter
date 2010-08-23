@@ -207,5 +207,20 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			throw new NotImplementedException("This method should be overridden.");
 		}
 		#endregion
+		
+		
+		/// <summary>
+		/// Fired when the batch gets committed.
+		/// </summary>
+		public event EventHandler Committed;
+		
+		/// <summary>
+		/// Raises the committed event.
+		/// </summary>
+		public virtual void RaiseCommitted()
+		{
+			if (Committed != null)
+				Committed(this, EventArgs.Empty);
+		}
 	}
 }

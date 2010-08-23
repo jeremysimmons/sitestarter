@@ -53,7 +53,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			if (Configuration.Config.IsInitialized)
 			{
-				string basePath = Configuration.Config.Application.PhysicalPath + Path.DirectorySeparatorChar +
+				string basePath = Configuration.Config.Application.PhysicalApplicationPath + Path.DirectorySeparatorChar +
 					"App_Data" + Path.DirectorySeparatorChar;
 				
 				// Importable directory
@@ -72,25 +72,27 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Importing all objects in the working directory.", NLog.LogLevel.Debug))
 			{
-				foreach (string file in LoadEntitiesFileList())
+				using (Batch batch = BatchState.StartBatch())
 				{
-
-					IEntity entity = LoadEntityFromFile(file);
-					
-					AppLogger.Debug("Entity type: " + entity.GetType().ToString());
-
-					if (!DataAccess.Data.IsStored((IEntity)entity))
+					foreach (string file in LoadEntitiesFileList())
 					{
-						AppLogger.Debug("New entity. Importing.");
+						IEntity entity = LoadEntityFromFile(file);
 						
-						DataAccess.Data.Saver.Save(entity);
-					}
-					else
-					{
-						AppLogger.Debug("Entity already exists in store. Skipping.");
-					}
+						AppLogger.Debug("Entity type: " + entity.GetType().ToString());
 
-					MoveToImported(entity);
+						if (!DataAccess.Data.IsStored((IEntity)entity))
+						{
+							AppLogger.Debug("New entity. Importing.");
+							
+							DataAccess.Data.Saver.Save(entity);
+						}
+						else
+						{
+							AppLogger.Debug("Entity already exists in store. Skipping.");
+						}
+
+						MoveToImported(entity, file);
+					}
 				}
 			}
 		}
@@ -167,7 +169,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// Moves the provided entity from the importable directory to the imported directory.
 		/// </summary>
 		/// <param name="entity">The entity to move.</param>
-		public void MoveToImported(IEntity entity)
+		public void MoveToImported(IEntity entity, string filePath)
 		{
 			
 			using (LogGroup logGroup = AppLogger.StartGroup("Marking the provided entity as imported by moving it to the imported directory.", NLog.LogLevel.Debug))
@@ -186,7 +188,8 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				DataExporter exporter = (DataExporter)Provider.InitializeDataExporter();
 				exporter.ExportDirectoryPath = Path.GetDirectoryName(exporter.ExportDirectoryPath);
 
-				fileName = CreateImportableEntityPath(entity);
+				//fileName = CreateImportableEntityPath(entity);
+				fileName = filePath;
 				toFileName = CreateImportedEntityPath(entity);
 				
 				AppLogger.Debug("Imported directory specified. Continuing.");
@@ -210,7 +213,8 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				}
 				else
 				{
-					AppLogger.Debug("File not found. Not moved.");
+					throw new Exception("File not found: " + fileName);
+					//AppLogger.Debug("File not found. Not moved.");
 				}
 			}
 		}

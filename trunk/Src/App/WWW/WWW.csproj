@@ -39,7 +39,6 @@
     </Compile>
     <None Include="Admin\Tests\EntityTreeTests.aspx" />
     <None Include="Admin\AutoBackup.aspx" />
-    <None Include="Admin\AutoSetup.aspx" />
     <None Include="Admin\Backup.aspx" />
     <None Include="Admin\Data.aspx" />
     <None Include="Admin\Help.aspx" />
@@ -61,8 +60,6 @@
     <None Include="Admin\Update.aspx" />
     <None Include="Admin\UserRoles.aspx" />
     <None Include="Admin\Users.aspx" />
-    <None Include="Admin\VirtualServers.aspx" />
-    <None Include="Admin\VirtualServerSettings.aspx" />
     <None Include="Admin\WebSiteSettings.aspx" />
     <None Include="App_GlobalResources\_svn\all-wcprops" />
     <None Include="App_GlobalResources\_svn\entries" />
@@ -85,7 +82,6 @@
     <None Include="Controls\_svn\format" />
     <None Include="Controls\_svn\text-base\Guide.ascx.svn-base" />
     <None Include="Controls\_svn\text-base\Testing.ascx.svn-base" />
-    <None Include="CreateVirtualServer.aspx" />
     <None Include="Default.aspx" />
     <None Include="Global.asax" />
     <None Include="Help\VirtualServersInfo.xml" />
@@ -93,10 +89,7 @@
     <None Include="Members\Login.aspx" />
     <None Include="Members\Logout.aspx" />
     <None Include="Members\Register.aspx" />
-    <None Include="ServerSelectPanel.ascx" />
     <None Include="Site.master" />
-    <None Include="Test.aspx" />
-    <None Include="VirtualServer.aspx" />
     <None Include="Web.config" />
     <EmbeddedResource Include="App_GlobalResources\Language.resx" />
   </ItemGroup>

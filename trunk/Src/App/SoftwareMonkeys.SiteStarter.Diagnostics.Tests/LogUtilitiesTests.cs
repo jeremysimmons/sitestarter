@@ -9,18 +9,16 @@ using System.Diagnostics;
 using System.Xml;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Configuration;
+using SoftwareMonkeys.SiteStarter.Tests;
 
 namespace SoftwareMonkeys.SiteStarter.Diagnostics.Tests
 {
 	[TestFixture]
-	public class LogUtilitiesTests
+	public class LogUtilitiesTests : BaseDiagnosticsTestFixture
 	{
 		public string ApplicationPath
 		{
-			// TODO: Path MUST NOT be hard coded
-			//   get { return @"f:\SoftwareMonkeys\WorkHub\Application 2\Web\"; }
-			//     get { return System.Configuration.ConfigurationSettings.AppSettings["ApplicationPath"]; }
-			get { return SoftwareMonkeys.SiteStarter.Configuration.Config.Application.PhysicalPath; }
+			get { return TestUtilities.GetTestingPath(); }
 		}
 		
 		public LogUtilitiesTests()
@@ -28,16 +26,6 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics.Tests
 			//Config.Initialize(ApplicationPath, "");
 		}
 
-		#region Singleton tests
-		[Test]
-		public void Test_Current()
-		{
-			IAppConfig config = Configuration.Config.Application;
-
-			Assert.IsNotNull(config);
-		}
-		#endregion
-		
 		#region Tests
 		[Test]
 		public void Test_AnalyzeLog()
@@ -156,7 +144,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics.Tests
 			
 			//string testLogFile = ApplicationPath + @"\App_Data\Testing\Log.xml";
 			//string testIndexFile = ApplicationPath + @"\App_Data\Testing\Detail\Index.xml";
-			string rootDir = ApplicationPath + @"\App_Data\Testing\";
+			string rootDir = Path.Combine(ApplicationPath, @"App_Data\Testing");
 			
 			Guid threadID = Guid.NewGuid();
 			string title = "Test Title";
@@ -167,9 +155,12 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics.Tests
 			
 			LogUtilities.AddThreadToIndex(indexDoc, threadID, title);
 			
-			string indexFile = rootDir + @"\Detail\Index.xml";
+			Assert.AreEqual(1, indexDoc.DocumentElement.ChildNodes.Count, "Invalid number of threads found.");
 			
-			Assert.IsTrue(File.Exists(indexFile), "The thread document wasn't saved.");
+			XmlNode node = indexDoc.DocumentElement.ChildNodes[0];
+			
+			Assert.AreEqual(threadID.ToString(), node.Attributes["ID"].Value, "The thread doesn't have the expected ID.");
+			Assert.AreEqual(title, node.Attributes["Title"].Value, "The thread doesn't have the expected title.");
 		}
 		#endregion
 		

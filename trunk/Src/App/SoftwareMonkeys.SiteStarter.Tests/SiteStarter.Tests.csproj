@@ -4,7 +4,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{34129651-3B9F-4A0D-AEBF-7DE2098DD98F}</ProjectGuid>
+    <ProjectGuid>{ADED32A2-F28E-4C49-85A1-E79BC5B6FC6F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SoftwareMonkeys.SiteStarter.Tests</RootNamespace>
@@ -45,10 +45,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Entities" />
-    <Folder Include="Configuration" />
-    <Folder Include="State" />
-    <Folder Include="Properties\" />
     <Compile Include="BaseTestFixture.cs" />
     <Compile Include="Entities\BaseTestEntity.cs" />
     <Compile Include="Entities\EntityFour.cs" />
@@ -71,7 +67,6 @@
     <Compile Include="Entities\TestSample.cs" />
     <Compile Include="Entities\TestTask.cs" />
     <Compile Include="Entities\TestUser.cs" />
-    <Compile Include="State\MockStateProvider.cs" />
     <Compile Include="TestUtilities.cs" />
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration\SiteStarter.Configuration.csproj">
       <Project>{4B83307F-8307-43EF-A176-8AB1CDA78264}</Project>
@@ -85,10 +80,9 @@
       <Project>{3609F512-9E15-41C7-95AF-D1B3E7F93562}</Project>
       <Name>SiteStarter.Entities</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.State\SiteStarter.State.csproj">
-      <Project>{34129651-3B9F-4A0D-AEBF-7DE2098DD98F}</Project>
-      <Name>SiteStarter.State</Name>
-    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

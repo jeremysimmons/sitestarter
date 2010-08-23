@@ -38,6 +38,12 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			string newPath = String.Empty;
 			using (LogGroup logGroup = AppLogger.StartGroup("Converting the provided absolute URL to one that's relative to the one provided.", NLog.LogLevel.Debug))
 			{
+				if (originalUrl == null)
+					throw new ArgumentNullException("originalUrl");
+				
+				if (relatedPath == null)
+					throw new ArgumentNullException("relatedPath");
+				
 				AppLogger.Debug("Original URL: " + originalUrl);
 				AppLogger.Debug("Related path: " + relatedPath);
 				
@@ -69,67 +75,35 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				}
 				
 				newPath = "/" + String.Join("/", keptItems.ToArray());
-				/*
-				Uri uri = null;
-				try
-				{
-					uri = new Uri(relatedPath.TrimEnd('/'));
-				}
-				catch (UriFormatException ex)
-				{
-					throw new ArgumentException("Invalid relatedPath: " + relatedPath);
-				}
-				
-				Uri uri2 = null;
-				try
-				{
-					uri2 = new Uri(originalUrl);
-				}
-				catch (UriFormatException ex)
-				{
-					throw new ArgumentException("Invalid original url: " + originalUrl);
-				}
-				newPath = "/" + uri.MakeRelativeUri(uri2).ToString().TrimStart('/');//.Replace(ResolveUrl(HttpContext.Current.Request.ApplicationPath), "");
-				*/
-				/*string start = String.Empty;
-				if (HttpContext.Current.Request.IsSecureConnection)
-					start = "https://";
-				else
-					start = "http://";
-				
-				AppLogger.Debug("Start section: " + start);
-				
-				AppLogger.Debug("Port: " + HttpContext.Current.Request.Url.Port.ToString());
 
-				string removable = start + HttpContext.Current.Request.Url.Host.TrimEnd('/');
-				
-				// If there are two instances of ":" character in the URL then a port must be specified
-				// To detect if there are two instances we can compare the first and last instance. If one instance then it returns the same position. If two it returns two different positions.
-				if (HttpContext.Current.Request.Url.ToString().IndexOf(":") != HttpContext.Current.Request.Url.ToString().LastIndexOf(":"))
-					removable = removable + ":" + HttpContext.Current.Request.Url.Port;
-				
-				// TODO: Remove and clean up
-				//.Port != 0
-				   //&& HttpContext.Current.Request.Url.Port != 80)
-				   
-				removable = removable + relatedPath.TrimEnd('/') + "/";
-				
-				AppLogger.Debug("Removable: " + removable);
-				
-				newPath = "/" + absoluteUrl.Replace(removable, String.Empty).Trim('/');
-				 */
 				AppLogger.Debug("New path: " + newPath);
 				
 			}
 			return newPath;
 		}
 		
+		/// <summary>
+		/// Converts the provided relative URL to an absolute URL.
+		/// </summary>
+		/// <param name="relativeUrl">The relative URL to convert.</param>
+		/// <returns>An absolute version of the provided URL.</returns>
 		static public string ConvertRelativeUrlToAbsoluteUrl(string relativeUrl)
 		{
-			if (HttpContext.Current.Request.IsSecureConnection)
-				return string.Format("https://{0}{1}", HttpContext.Current.Request.Url.Host, "/" + ResolveUrl(relativeUrl).Trim('/'));
-			else
-				return string.Format("http://{0}{1}", HttpContext.Current.Request.Url.Host, "/" + ResolveUrl(relativeUrl).Trim('/'));
+			return ConvertRelativeUrlToAbsoluteUrl(relativeUrl, HttpContext.Current.Request.Url.Host, HttpContext.Current.Request.IsSecureConnection);
+		}
+		
+		/// <summary>
+		/// Converts the provided relative URL to an absolute URL.
+		/// </summary>
+		/// <param name="relativeUrl">The relative URL to convert.</param>
+		/// <param name="host">The base URL host.</param>
+		/// <param name="isSecure">A boolean value indicating whether the URL is a secure path.</param>
+		/// <returns></returns>
+		static public string ConvertRelativeUrlToAbsoluteUrl(string relativeUrl, string host, bool isSecure)
+		{
+			string protocol = (isSecure ? "https" : "http");
+			
+			return string.Format("{0}://{1}/{2}", protocol, host, ResolveUrl(relativeUrl).Trim('/'));
 		}
 		
 		/// <summary>

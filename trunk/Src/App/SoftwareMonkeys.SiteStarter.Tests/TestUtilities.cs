@@ -37,7 +37,7 @@ namespace SoftwareMonkeys.SiteStarter.Tests
 		static public void RegisterTestEntities()
 		{
 			if (Config.Mappings == null)
-				Config.Mappings = ConfigFactory<MappingConfig>.NewConfig("Mappings");
+				Config.Mappings = ConfigFactory<MappingConfig>.NewConfig(GetTestingPath(), "Mappings", "Testing");
 			
 			TestArticle.RegisterType();
 			TestArticlePage.RegisterType();

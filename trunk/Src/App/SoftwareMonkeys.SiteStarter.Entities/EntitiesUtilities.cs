@@ -29,7 +29,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 					method.Invoke(null, null);
 				
 				// Save the mappings config
-				string path = Config.Application.PhysicalPath.TrimEnd('\\') + @"\App_Data\";
+				string path = Config.Application.PhysicalApplicationPath.TrimEnd('\\') + @"\App_Data\";
 				ConfigFactory<MappingConfig>.SaveConfig(path, (MappingConfig)Config.Mappings, Config.Mappings.PathVariation);
 				
 				//AddMappings(type, dataStoreName);
@@ -49,7 +49,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 					method.Invoke(null, null);
 				
 				// Save the mappings config
-				string path = Config.Application.PhysicalPath.TrimEnd('\\') + @"\App_Data\";
+				string path = Config.Application.PhysicalApplicationPath.TrimEnd('\\') + @"\App_Data\";
 				ConfigFactory<MappingConfig>.SaveConfig(path, (MappingConfig)Config.Mappings, Config.Mappings.PathVariation);
 				
 				//RemoveMappings(type);
@@ -63,7 +63,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			{
 				AddDataStoreMapping(type, dataStoreName);
 				
-				string path = Config.Application.PhysicalPath.TrimEnd('\\') + @"\App_Data\";
+				string path = Config.Application.PhysicalApplicationPath.TrimEnd('\\') + @"\App_Data\";
 				
 				ConfigFactory<MappingConfig>.SaveConfig(path, (MappingConfig)Config.Mappings);
 			}
@@ -459,6 +459,9 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		
 		static public object GetPropertyValue(IEntity entity, string propertyName)
 		{
+			if (entity == null)
+				throw new ArgumentNullException("entity");
+			
 			PropertyInfo property = GetProperty(entity.GetType(), propertyName, null);
 			
 			if (property == null)
@@ -734,6 +737,9 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 
 		static public string FormatUniqueKey(string originalData)
 		{
+			if (originalData == null || originalData == String.Empty)
+				return String.Empty;
+			
 			originalData = originalData.Trim()
 				.Replace(" ", "-")
 				.Replace("'", "")
@@ -801,6 +807,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			return field.Name;
 		}
 		
+		// TODO: Remove if not needed
+		/*
 		static private CorrespondingFieldAttribute GetCorrespondingFieldAttribute(Type type, string propertyName)
 		{
 			CorrespondingFieldAttribute attribute = null;
@@ -815,7 +823,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			
 			return attribute;
 		}
-		
+		*/
 		static public string ToCamelCase(string propertyName)
 		{
 			string firstLetter = propertyName.Substring(0, 1);

@@ -96,5 +96,16 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// Holds a JIT loaded instance of the data deleter for the current data provider.
 		/// </summary>
 		IDataDeleter Deleter {get;}
+		
+		
+		/// <summary>
+		/// Fired when the batch gets committed.
+		/// </summary>
+		event EventHandler Committed;
+		
+		/// <summary>
+		/// Raises the committed event.
+		/// </summary>
+		void RaiseCommitted();
     }
 }

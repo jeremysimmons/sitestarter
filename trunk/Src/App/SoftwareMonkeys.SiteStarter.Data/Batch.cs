@@ -11,43 +11,84 @@ namespace SoftwareMonkeys.SiteStarter.Data
 	/// </summary>
 	public class Batch : Component
 	{
-		public List<IDataStore> DataStores = new List<IDataStore>();
-		
-		static public bool IsRunning
+		private List<IDataStore> dataStores;
+		/// <summary>
+		/// The data stores affected during the batch.
+		/// </summary>
+		public List<IDataStore> DataStores
 		{
-			get
-			{
-				return BatchStack.Count > 0;
-			}
+			get {
+				if (dataStores == null)
+					dataStores = new List<IDataStore>();
+				return dataStores; }
+			set { dataStores = value; }
 		}
 		
+		private bool isCommitted;
+		/// <summary>
+		/// Gets/sets a boolean value indicating whether the batch has been committed.
+		/// </summary>
+		public bool IsCommitted
+		{
+			get { return isCommitted; }
+			set { isCommitted = value; }
+		}
+		
+		/// <summary>
+		/// Fired when the batch gets committed.
+		/// </summary>
+		public event EventHandler Committed;
+		
+		/// <summary>
+		/// Raises the committed event.
+		/// </summary>
+		public virtual void RaiseCommitted()
+		{
+			if (Committed != null)
+				Committed(this, EventArgs.Empty);
+		}
+		
+		/// <summary>
+		/// Empty constructor.
+		/// </summary>
 		public Batch()
 		{
 		}
 		
+		/// <summary>
+		/// Commits the batch and all data stores within it.
+		/// </summary>
 		public void Commit()
 		{
-			/*using (LogGroup logGroup = AppLogger.StartGroup("Committing data stores in batch.",NLog.LogLevel.Debug))
+			using (LogGroup logGroup = AppLogger.StartGroup("Committing data stores in batch.",NLog.LogLevel.Debug))
 			{
 				AppLogger.Debug("# of stores: " + DataStores.Count.ToString());
 				
-				foreach (IDataStore dataStore in DataStores)
+				// If the batch has ended then commit
+				if (!BatchState.IsRunning)
 				{
-					AppLogger.Debug("Committing store: " + dataStore.Name);
-					dataStore.Commit(true);
-				}
-				
-				// Get rid of this batch and all others within it from the stack
-				while (BatchStack.Contains(this))
-				{
-					AppLogger.Debug("This batch is in the stack. Removing top item.");
+					foreach (IDataStore dataStore in DataStores)
+					{
+						AppLogger.Debug("Committing store: " + dataStore.Name);
+						dataStore.Commit(true);
+					}
 					
-					BatchStack.Pop();
+					// Mark the batch as committed
+					IsCommitted = true;
+					
+					// Raise the committed event
+					RaiseCommitted();
+					
+					AppLogger.Debug("Commit complete.");
+					
+				}
+				else
+				{
+					AppLogger.Debug("Outer batch still running. Skipping commit.");
+					
 				}
 				
-				AppLogger.Debug("Commit complete.");
-				
-			}*/
+			}
 		}
 		
 		/*public void Handle(IDataStore store)
@@ -56,55 +97,27 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				DataStores.Add(store);
 		}*/
 		
-		public static void Handle(IDataStore store)
-		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Adding a data store to the batch.", NLog.LogLevel.Debug))
-			{
-				AppLogger.Debug("Batch stack: " + BatchStack.Count.ToString());
-				
-				if (BatchStack.Count > 0)
-				{
-					// Get the outermost batch and add the data store to it
-					Batch batch = BatchStack.ToArray()[0];
-					
-					if (!batch.DataStores.Contains(store))
-					{
-						AppLogger.Debug("Data store added.");
-						batch.DataStores.Add(store);
-					}
-					else
-						AppLogger.Debug("Data store already found. Not added.");
-				}
-				else
-					throw new InvalidOperationException("No batch running. Use Batch.IsRunning to check before calling this method.");
-			}
-		}
-		
+		/// <summary>
+		/// Commits and disposes the batch.
+		/// </summary>
+		/// <param name="disposing">A value indicating whether the component is actually disposing.</param>
 		protected override void Dispose(bool disposing)
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Disposing the batch and finishing operations.", NLog.LogLevel.Debug))
 			{
+				
+				// Get rid of this batch and all others within it from the stack
+				while (BatchState.Batches.Contains(this))
+				{
+					AppLogger.Debug("This batch is in the stack. Removing top item.");
+					
+					BatchState.Batches.Pop();
+				}
+				
 				Commit();
 			}
 			
 			base.Dispose(disposing);
 		}
-		
-		static public Batch StartBatch()
-		{
-			Batch batch = null;
-			using (LogGroup logGroup = AppLogger.StartGroup("Starting a batch of data operations.", NLog.LogLevel.Debug))
-			{
-				batch = new Batch();
-				
-				AppLogger.Debug("New batch added to the stack.");
-				
-				BatchStack.Push(batch);
-			}
-			
-			return batch;
-		}
-		
-		static public Stack<Batch> BatchStack = new Stack<Batch>();
 	}
 }

@@ -43,9 +43,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppConfig.cs" />
+    <Compile Include="BaseConfig.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="ConfigCollection.cs" />
     <Compile Include="ConfigFactory.cs" />
+    <Compile Include="ConfigSaver.cs" />
     <Compile Include="ConfigurationDictionary.cs" />
     <Compile Include="MappingConfig.cs" />
     <Compile Include="MappingItem.cs" />

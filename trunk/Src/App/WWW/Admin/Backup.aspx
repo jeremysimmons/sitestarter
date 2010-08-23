@@ -125,8 +125,10 @@
 </asp:View>
 <asp:View runat="server" ID="Step2View">
 <div class="Heading1"><%= Resources.Language.BackupComplete %></div>
-<ss:Result runat="server"></ss:Result><br />
-<%= Resources.Language.TotalFilesBackedUp %>: <%= appBackup.TotalFilesZipped %><br/>
+<ss:Result runat="server"></ss:Result>
+<p>
+<%= Resources.Language.TotalFilesBackedUp %>: <%= appBackup.TotalFilesZipped %>
+</p>
 
 <asp:Panel id="OutputPanel" Runat="server"></asp:Panel>
 		</asp:View>

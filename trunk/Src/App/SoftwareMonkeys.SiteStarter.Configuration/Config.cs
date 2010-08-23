@@ -2,6 +2,7 @@ using System;
 using System.Xml.Serialization;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.State;
+using System.IO;
 
 namespace SoftwareMonkeys.SiteStarter.Configuration
 {
@@ -161,23 +162,18 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
             {
                 AppLogger.Debug("Looking for configs in: " + physicalApplicationPath);
                 
-                string fullPath = physicalApplicationPath.TrimEnd('\\') + @"\App_Data\";
+                string fullPath = physicalApplicationPath.TrimEnd('\\') + Path.DirectorySeparatorChar + "App_Data";
                 
-                /*string virtualServerName = String.Empty;
-                
-                if (StateAccess.IsInitialized && StateAccess.State != null)
-                	virtualServerName = (string)StateAccess.State.GetSession("VirtualServerName");
-                
-                if (virtualServerName != null && virtualServerName != String.Empty)
-                	fullPath += virtualServerName + @"\";*/
-                	
+                // TODO: Remove if virtual server feature is removed
+                /*
             	string virtualServerID = String.Empty;
                 
                 if (StateAccess.IsInitialized && StateAccess.State != null)
                 	virtualServerID = (string)StateAccess.State.GetSession("VirtualServerID");
                 
                 if (virtualServerID != null && virtualServerID != String.Empty && virtualServerID != Guid.Empty.ToString())
-                	fullPath += virtualServerID + @"\";
+                	fullPath += virtualServerID + @"\";*/
+                
                 All.Add(ConfigFactory<AppConfig>.LoadConfig(fullPath, "Application", variation));
                 All.Add(ConfigFactory<MappingConfig>.LoadConfig(fullPath, "Mappings", variation));
             }
@@ -187,7 +183,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
         {
         	using (LogGroup logGroup = AppLogger.StartGroup("Loading the current virtual server config.", NLog.LogLevel.Debug))
         	{
-        		string path = Config.Application.PhysicalPath + @"\App_Data\VS\" + StateAccess.State.GetSession("VirtualServerID") + @"\VirtualServer.config";
+        		string path = Config.Application.PhysicalApplicationPath + @"\App_Data\VS\" + StateAccess.State.GetSession("VirtualServerID") + @"\VirtualServer.config";
         		
         		AppLogger.Debug("Path: " + path);
         		AppLogger.Debug("Virtual server name: " + VirtualServerState.VirtualServerName);

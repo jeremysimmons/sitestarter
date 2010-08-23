@@ -93,7 +93,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			if (Configuration.Config.IsInitialized && ConfigurationSettings.AppSettings != null)
 			{
 				
-				string physicalPath = Configuration.Config.Application.PhysicalPath;
+				string physicalPath = Configuration.Config.Application.PhysicalApplicationPath;
 				
 				DataDirectoryPath = physicalPath + Path.DirectorySeparatorChar +
 					"App_Data";
@@ -181,6 +181,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		private void BackupConfigs()
 		{
+			if (!Directory.Exists(ExportDirectoryPath))
+				Directory.CreateDirectory(ExportDirectoryPath);
+			
 			foreach (string file in Directory.GetFiles(DataDirectoryPath, "*.config"))
 			{
 				string toFile = ExportDirectoryPath + Path.DirectorySeparatorChar +

@@ -120,7 +120,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				//ReferenceValidator validator = new ReferenceValidator();
 				//validator.CheckForCircularReference(entity);
 				
-				using (Batch batch = Batch.StartBatch())
+				using (Batch batch = BatchState.StartBatch())
 				{
 					if (entity == null)
 						throw new ArgumentNullException("entity");

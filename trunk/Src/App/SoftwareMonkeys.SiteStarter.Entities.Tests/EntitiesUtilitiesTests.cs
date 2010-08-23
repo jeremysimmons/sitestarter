@@ -12,35 +12,13 @@ using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Tests.Entities;
 using SoftwareMonkeys.SiteStarter.Configuration;
 using System.Reflection;
+using SoftwareMonkeys.SiteStarter.Tests;
 
 namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 {
 	[TestFixture]
-	public class EntitiesUtilitiesTests
-	{
-		public string ApplicationPath
-		{
-			// TODO: Path MUST NOT be hard coded
-			//   get { return @"f:\SoftwareMonkeys\WorkHub\Application 2\Web\"; }
-			//     get { return System.Configuration.ConfigurationSettings.AppSettings["ApplicationPath"]; }
-			get { return SoftwareMonkeys.SiteStarter.Configuration.Config.Application.PhysicalPath; }
-		}
-		
-		public EntitiesUtilitiesTests()
-		{
-			//Config.Initialize(ApplicationPath, "");
-		}
-
-		#region Singleton tests
-		[Test]
-		public void Test_Current()
-		{
-			IAppConfig config = Configuration.Config.Application;
-
-			Assert.IsNotNull(config);
-		}
-		#endregion
-		
+	public class EntitiesUtilitiesTests : BaseEntityTestFixture
+	{		
 		#region Tests
 		[Test]
 		public void Test_IsReference_True()
@@ -101,46 +79,6 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 			Assert.IsFalse(EntitiesUtilities.IsMultipleReference(e1.GetType(), property), "Returned true when it should have returned false.");
 		}
 		
-						
-		[Test]
-		public void Test_IsCollectionReference_False()
-		{
-			TestArticle article = new TestArticle();
-			
-			PropertyInfo property = article.GetType().GetProperty("Categories");
-			
-			Assert.IsFalse(EntitiesUtilities.IsCollectionReference(article.GetType(), property), "Returned true when it should have returned false.");
-		}
-		
-		[Test]
-		public void Test_IsCollectionReference_True()
-		{
-			TestArticle article = new TestArticle();
-			
-			PropertyInfo property = article.GetType().GetProperty("Samples");
-			
-			Assert.IsTrue(EntitiesUtilities.IsCollectionReference(article.GetType(), property), "Returned false when it should have returned true.");
-		}
-						
-		[Test]
-		public void Test_IsArrayReference_False()
-		{
-			TestArticle article = new TestArticle();
-			
-			PropertyInfo property = article.GetType().GetProperty("Samples");
-			
-			Assert.IsFalse(EntitiesUtilities.IsArrayReference(article.GetType(), property), "Returned true when it should have returned false.");
-		}
-		
-		[Test]
-		public void Test_IsArrayReference_True()
-		{
-			TestArticle article = new TestArticle();
-			
-			PropertyInfo property = article.GetType().GetProperty("Categories");
-			
-			Assert.IsTrue(EntitiesUtilities.IsArrayReference(article.GetType(), property), "Returned false when it should have returned true.");
-		}
 		
 		[Test]
 		public void Test_GetMirrorPropertyName_Multiple_Implicit_Async_SameEntity()
@@ -312,9 +250,5 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 	
 			
 			#endregion
-
-
-		
-
 	}
 }

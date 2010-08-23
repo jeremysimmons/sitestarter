@@ -9,17 +9,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// </summary>
 	public class BaseStrategy<T>
 		where T : IEntity
-	{
-		private string virtualServerID;
-		/// <summary>
-		/// Gets/sets the ID of the virtual server that the strategy applies to.
-		/// </summary>
-		public string VirtualServerID
-		{
-			get { return virtualServerID; }
-			set { virtualServerID = value; }
-		}
-		
+	{		
 		/// <summary>
 		/// Gets the data store that corresponds with the specified type and virtual server.
 		/// </summary>
@@ -29,7 +19,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			{
 				return DataAccess.Data.Stores
 				[
-					VirtualServerID,
 					typeof(T)
 				];
 			}

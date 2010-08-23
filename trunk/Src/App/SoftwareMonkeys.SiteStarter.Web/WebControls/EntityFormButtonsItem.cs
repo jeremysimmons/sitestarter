@@ -8,26 +8,40 @@ using System.Web.UI;
 namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 {
     /// <summary>
-    /// Represents an item in the entity form.
+    /// Represents a buttons item in the entity form.
     /// </summary>
     public class EntityFormButtonsItem : EntityFormSpecificItem
-    {
-        /*private TextBox textBox = new TextBox();
-        public TextBox TextBox
-        {
-            get { return textBox; }
-            set { textBox = value; }
-        }*/
-        
+    {        
+    	public string ButtonCssClass
+    	{
+    		get {
+    			if (ViewState["ButtonCssClass"] == null)
+    				ViewState["ButtonCssClass"] = "FormButton";
+    			return (string)ViewState["ButtonCssClass"]; }
+    		set { ViewState["ButtonCssClass"] = value; }
+    	}
+    	
         public EntityFormButtonsItem()
         {
         	AutoBind = false;
         }
-
-        protected override void CreateFieldControls()
-        {
-           /* TextBox.ID = FieldControlID;
-            FieldCell.Controls.Add(TextBox);*/
-        }
+        
+		protected override void OnLoad(EventArgs e)
+		{
+			ApplyCssClass(Controls);
+			
+			base.OnLoad(e);
+		}
+		
+		private void ApplyCssClass(ControlCollection controls)
+		{
+			foreach (Control control in controls)
+			{
+				if (control is Button)
+					((Button)control).CssClass = ButtonCssClass;
+				
+				ApplyCssClass(control.Controls);
+			}
+		}
     }
 }

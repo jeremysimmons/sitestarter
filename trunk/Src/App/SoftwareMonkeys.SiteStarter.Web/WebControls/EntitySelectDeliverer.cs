@@ -1,15 +1,17 @@
-	
+
 using System;
 using System.Web.UI.WebControls;
 using System.Web.UI;
 using System.Web;
 using System.ComponentModel;
 using System.Text;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 
 namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 {
 	/// <summary>
-	/// Description of EntitySelectRequester.
+	/// A control used to deliver a new entity from a sub form into an EntitySelect on the parent form. 
+	/// This control is used in conjunction with the EntitySelectDeliverer.
 	/// </summary>
 	public class EntitySelectDeliverer : WebControl
 	{
@@ -87,54 +89,48 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		{
 		}
 		
-		protected override void OnInit(EventArgs e)
-		{
-			
-			/*if (Page.Request.QueryString[SourceEntityType + "ID"] != null
-			    && Page.Request.QueryString[SourceEntityType + "ID"] != String.Empty)
-			{
-				try{
-				RequesterEntityID = new Guid(Page.Request.QueryString[SourceEntityType + "ID"]);
-				}
-				catch (Exception ex)
-				{
-					AppLogger.Debug(ex.ToString());
-				}
-			}*/
-			
-			// TODO: Remove: obsolete
-			// Get the Entity ID from the query string
-			/*if (EntityIDKey != String.Empty
-			    && EntityID == Guid.Empty)
-			{
-				EntityID = new Guid(Page.Request.QueryString[EntityIDKey]);
-			}*/
-			
-			base.OnInit(e);
-		}
-		
 		protected override void OnLoad(EventArgs e)
 		{
-			// Script is always registered on OnInit so that it transfers values to the form even when not loaded on the same PageView
-			if (!Page.IsPostBack
-			    && Page.Request.QueryString["RequesterID"] != null)
-				RegisterScript();
+			using (LogGroup logGroup = AppLogger.StartGroup("Loading an EntitySelectDeliverer control with the ID: " + ID, NLog.LogLevel.Debug))
+			{
+				// Script is always registered in OnLoad so that it transfers values to the form even when not loaded on the same PageView
+				if (!Page.IsPostBack
+				    && Page.Request.QueryString["RequesterID"] != null)
+				{
+					AppLogger.Debug(@"!Page.IsPostBack && Page.Request.QueryString[""RequesterID""] != null");
+					RegisterScript();
+				}
+				else
+				{
+					AppLogger.Debug("Skipping register script.");
+				}
 				
+				base.OnLoad(e);
+			}
 			
-			base.OnLoad(e);
 		}
 		
 		protected override void OnPreRender(EventArgs e)
 		{
-			
-			if (Page.IsPostBack)
+			using (LogGroup logGroup = AppLogger.StartGroup("Pre rendering the EntitySelectDeliverer with the ID: " + ID, NLog.LogLevel.Debug))
 			{
-				if (Page.Request.QueryString["AutoReturn"] != null
-				    && Page.Request.QueryString["AutoReturn"].ToLower() == "true")
+				if (Page.IsPostBack)
 				{
-					RegisterReturnScript();
+					AppLogger.Debug("Page.IsPostBack.");
+					
+					if (Page.Request.QueryString["AutoReturn"] != null
+					    && Page.Request.QueryString["AutoReturn"].ToLower() == "true")
+					{
+						AppLogger.Debug("AutoReturn query string == true. Pre rendering.");
+						
+						RegisterReturnScript();
+					}
+					else
+						AppLogger.Debug("AutoReturn query string != true. Skipping.");
+					
 				}
-				
+				else
+					AppLogger.Debug("!Page.IsPostBack. Skipping.");
 			}
 			//else
 			
@@ -145,83 +141,103 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		
 		private void RegisterScript()
 		{
-			//string url = CreateNavigateUrl();
-			
-			StringBuilder builder = new StringBuilder();
-			
-			builder.Append("<script language='javascript' defer>\n");
-			builder.Append("function AcceptTransfer_" + ClientID + "(){\n");
-			
-			if (TransferFields != String.Empty)
+			using (LogGroup logGroup = AppLogger.StartGroup("Registering EntitySelectDeliverer script.", NLog.LogLevel.Debug))
 			{
-				foreach (string fieldID in TransferFields.Split(','))
+				//string url = CreateNavigateUrl();
+				
+				StringBuilder builder = new StringBuilder();
+				
+				builder.Append("<script language='javascript' defer>\n");
+				builder.Append("function AcceptTransfer_" + ClientID + "(){\n");
+				
+				if (TransferFields != String.Empty)
 				{
-					if (fieldID != String.Empty)
+					AppLogger.Debug("Transfer fields: " + TransferFields);
+					
+					foreach (string fieldID in TransferFields.Split(','))
 					{
-						Control control = WebControlUtilities.FindControlRecursive(Page, fieldID);
-						if (control == null)
-							throw new Exception("No control found with ID of '" + fieldID + "'.");
-						string clientID = control.ClientID;
-						
-						builder.Append("var field = document.getElementById('" + clientID + "');\n");
-						builder.Append("if (field == null)\n");
-						builder.Append("alert('Field not found: " + clientID + "');\n");
-						
-						builder.Append("field.value = GetTransferValue_" + ClientID + "('" + fieldID + "');\n");
-						
-						builder.Append("\n");
+						if (fieldID != String.Empty)
+						{
+							
+							AppLogger.Debug("Transfer fields include: " + fieldID);
+							
+							Control control = WebControlUtilities.FindControlRecursive(Page, fieldID);
+							if (control == null)
+								throw new Exception("No control found with ID of '" + fieldID + "'.");
+							string clientID = control.ClientID;
+							
+							builder.Append("var field = document.getElementById('" + clientID + "');\n");
+							builder.Append("if (field == null)\n");
+							builder.Append("alert('Field not found: " + clientID + "');\n");
+							
+							builder.Append("field.value = GetTransferValue_" + ClientID + "('" + fieldID + "');\n");
+							
+							builder.Append("\n");
+						}
 					}
 				}
-			}
-			
-			builder.Append("}\n");
-			
-			
-			builder.Append("\n");
-			builder.Append("function GetTransferValue_" + ClientID + "(id){\n");
-			builder.Append("	return window.opener.GetData_" + GetRequesterID() + "(id);\n");
-			builder.Append("}\n");
-			
-			builder.Append("</script>\n");
+				else
+					AppLogger.Debug("No transfer fields specified.");
+				
+				builder.Append("}\n");
+				
+				
+				builder.Append("\n");
+				builder.Append("function GetTransferValue_" + ClientID + "(id){\n");
+				builder.Append("	return window.opener.GetData_" + GetRequesterID() + "(id);\n");
+				builder.Append("}\n");
+				
+				builder.Append("</script>\n");
 
-			
-			//if (!Page.ClientScript.IsClientScriptBlockRegistered("EntitySelectDelivererScript"))
+				
+				//if (!Page.ClientScript.IsClientScriptBlockRegistered("EntitySelectDelivererScript"))
 				Page.ClientScript.RegisterClientScriptBlock(typeof(EntitySelectDeliverer), "EntitySelectDelivererScript", builder.ToString());
 
 
-			// Start up script
+				// Start up script
 
-			StringBuilder startUpBuilder = new StringBuilder();
-			startUpBuilder.Append("AcceptTransfer_" + ClientID + "();");
-			Page.ClientScript.RegisterStartupScript(typeof(EntitySelectDeliverer), "EntitySelectDelivererStartUpScript", startUpBuilder.ToString(), true);
+				StringBuilder startUpBuilder = new StringBuilder();
+				startUpBuilder.Append("AcceptTransfer_" + ClientID + "();");
+				Page.ClientScript.RegisterStartupScript(typeof(EntitySelectDeliverer), "EntitySelectDelivererStartUpScript", startUpBuilder.ToString(), true);
 
-			
+			}
 			
 		}
 		
 		private void RegisterReturnScript()
 		{
-			//string url = CreateNavigateUrl();
-			
-			string text = (string)WebControlUtilities.GetFieldValue(WebControlUtilities.FindControlRecursive(Page,TextControlID), "Text", typeof(String));
-			
-			StringBuilder builder = new StringBuilder();
-			
-			builder.Append("<script language='javascript' defer>\n");
-			builder.Append("window.opener.AddItem_" + GetRequesterID() + "('" + EntityID + "', '" + WebUtilities.EncodeJsString(text) + "');\n");
-			builder.Append("window.close();\n");
-			
-			
-			builder.Append("</script>\n");
+			using (LogGroup logGroup = AppLogger.StartGroup("Registering EntitySelectDeliverer return script.", NLog.LogLevel.Debug))
+			{				
+				string text = (string)WebControlUtilities.GetFieldValue(WebControlUtilities.FindControlRecursive(Page,TextControlID), "Text", typeof(String));
+				
+				StringBuilder builder = new StringBuilder();
+				
+				builder.Append("<script language='javascript' defer>\n");
+				builder.Append("window.opener.AddItem_" + GetRequesterID() + "('" + EntityID + "', '" + WebUtilities.EncodeJsString(text) + "');\n");
+				builder.Append("window.close();\n");
+				
+				
+				builder.Append("</script>\n");
 
-			
-			if (!Page.ClientScript.IsClientScriptBlockRegistered("EntitySelectDelivererReturnScript"))
-				Page.ClientScript.RegisterClientScriptBlock(typeof(EntitySelectDeliverer), "EntitySelectDelivererReturnScript", builder.ToString());
+				
+				if (!Page.ClientScript.IsClientScriptBlockRegistered("EntitySelectDelivererReturnScript"))
+					Page.ClientScript.RegisterClientScriptBlock(typeof(EntitySelectDeliverer), "EntitySelectDelivererReturnScript", builder.ToString());
+				else
+					AppLogger.Debug("Return script already registered.");
+			}
 		}
 		
 		private string GetRequesterID()
 		{
-			return Page.Request.QueryString["RequesterID"];
+			string requesterID = string.Empty;
+			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the ID of the requester control from the query string.", NLog.LogLevel.Debug))
+			{
+				requesterID = Page.Request.QueryString["RequesterID"];
+				
+				AppLogger.Debug("Requester ID: " + requesterID);
+			}
+			
+			return requesterID;
 		}
 	}
 }

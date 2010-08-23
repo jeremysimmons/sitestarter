@@ -10,7 +10,8 @@ using System.Collections.Specialized;
 namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 {
 	/// <summary>
-	/// Description of EntitySelectRequester.
+	/// Used to request an entity from a sub form to be delivered into an EntitySelect on the parent form.
+	/// This control is used in conjunction with the EntitySelectDeliverer.
 	/// </summary>
 	public class EntitySelectRequester : WebControl
 	{
@@ -114,7 +115,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			get
 			{
 				if (ViewState["WindowHeight"] == null)
-					ViewState["WindowHeight"] = Unit.Pixel(400);
+					ViewState["WindowHeight"] = Unit.Pixel(650);
 				return (Unit)ViewState["WindowHeight"];
 			}
 			set { ViewState["WindowHeight"] = value; }
@@ -126,7 +127,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			get
 			{
 				if (ViewState["WindowWidth"] == null)
-					ViewState["WindowWidth"] = Unit.Pixel(400);
+					ViewState["WindowWidth"] = Unit.Pixel(650);
 				return (Unit)ViewState["WindowWidth"];
 			}
 			set { ViewState["WindowWidth"] = value; }

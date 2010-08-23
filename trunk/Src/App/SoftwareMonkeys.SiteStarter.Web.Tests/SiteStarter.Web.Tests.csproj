@@ -58,9 +58,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Business.Tests\SiteStarter.Business.Tests.csproj">
+      <Project>{F6AA1DC2-1E10-43FF-97AB-D6679A854D51}</Project>
+      <Name>SiteStarter.Business.Tests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Business\SiteStarter.Business.csproj">
       <Project>{F294B839-0C1E-4187-AA58-6EA1C35E6B66}</Project>
       <Name>SiteStarter.Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration.Tests\SiteStarter.Configuration.Tests.csproj">
+      <Project>{5DFB85CA-D338-425A-B382-64EFBE19C65D}</Project>
+      <Name>SiteStarter.Configuration.Tests</Name>
     </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration\SiteStarter.Configuration.csproj">
       <Project>{4B83307F-8307-43EF-A176-8AB1CDA78264}</Project>
@@ -70,13 +78,37 @@
       <Project>{518735AC-EFA2-4205-AE47-CF4664EE3061}</Project>
       <Name>SiteStarter.Contracts</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Data.Db4o.Tests\SiteStarter.Data.Db4o.Tests.csproj">
+      <Project>4ADB5F1E-B2C2-4EF3-9B46-6755C2D2663E</Project>
+      <Name>SiteStarter.Data.Db4o.Tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Data.Tests\SiteStarter.Data.Tests.csproj">
+      <Project>{0BBD2A6C-9955-4BB6-9DCA-6AA57715C3F2}</Project>
+      <Name>SiteStarter.Data.Tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Diagnostics.Tests\SiteStarter.Diagnostics.Tests.csproj">
+      <Project>{7869F9C1-61D7-4C16-9577-CA85BDD3E01F}</Project>
+      <Name>SiteStarter.Diagnostics.Tests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Diagnostics\SiteStarter.Diagnostics.csproj">
       <Project>{C3626F0A-DFD4-4EF2-8755-3532DE3712A4}</Project>
       <Name>SiteStarter.Diagnostics</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Entities.Tests\SiteStarter.Entities.Tests.csproj">
+      <Project>{C81C653C-6983-4401-A016-68586963DC9B}</Project>
+      <Name>SiteStarter.Entities.Tests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Entities\SiteStarter.Entities.csproj">
       <Project>{3609F512-9E15-41C7-95AF-D1B3E7F93562}</Project>
       <Name>SiteStarter.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.State.Tests\SiteStarter.State.Tests.csproj">
+      <Project>AD977DB1-879A-476C-A74A-FC2E0EC98F0A</Project>
+      <Name>SiteStarter.State.Tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Tests\SiteStarter.Tests.csproj">
+      <Project>3109EA47-5620-4C75-93E2-A552FC75EB8B</Project>
+      <Name>SiteStarter.Tests</Name>
     </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Tests\SiteStarter.Tests.csproj">
       <Project>3109EA47-5620-4C75-93E2-A552FC75EB8B</Project>
@@ -87,6 +119,7 @@
       <Name>SiteStarter.Web</Name>
     </ProjectReference>
     <None Include="WebControls\_svn\entries" />
+    <Compile Include="BaseWebTestFixture.cs" />
     <Compile Include="Security\RoleProviderTests.cs" />
     <Compile Include="WebControls\EntityFormHelperTests.cs" />
     <Compile Include="WebUtilitiesTests.cs" />

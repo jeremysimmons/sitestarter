@@ -18,5 +18,9 @@ namespace SoftwareMonkeys.SiteStarter.State
         public abstract bool ContainsSession(string key);
         public abstract void SetSession(string key, object value);
         public abstract object GetSession(string key);
+        
+        public abstract bool ContainsRequest(string key);
+        public abstract void SetRequest(string key, object value);
+        public abstract object GetRequest(string key);
     }
 }

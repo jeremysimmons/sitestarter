@@ -65,11 +65,11 @@
 		}
 </script>
 <asp:Content ID="Content1" ContentPlaceHolderID="Body" Runat="Server">
-<div align="right" style="padding: 5px; margin:0px;">
-<span style="font-size: smaller;">
+<asp:panel runat="server" visible="false">
+<div style="padding: 5px; margin:0px;" class="AutoBackup">
 <span style="color:Green;"><%= Resources.Language.BackupComplete %></span><br />
 <%= DateTime.Now.ToString() %>
-</span>
 </div>
+</asp:panel>
 </asp:Content>
 

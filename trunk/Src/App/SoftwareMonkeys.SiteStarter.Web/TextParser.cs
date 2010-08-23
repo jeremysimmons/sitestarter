@@ -24,7 +24,6 @@ namespace SoftwareMonkeys.SiteStarter.Web
 
 			string settingValue = Config.Application.Settings[key].ToString();
 
-			VirtualServer server = VirtualServerFactory.Current.GetVirtualServerByName(SiteStarter.State.VirtualServerState.VirtualServerName);
 			IUser user = null;
 			if (HttpContext.Current.Request.IsAuthenticated && My.User != null)
 				user = UserFactory<Entities.User>.Current.GetUser(My.User.ID);
@@ -34,8 +33,6 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			if (settingValue != null)
 			{
 				output = settingValue;
-				if (server != null)
-					output = Parse(output, server);
 				if (user != null)
 					output = Parse(output, user);
 
@@ -50,34 +47,12 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			if (text == null || text == String.Empty)
 				return String.Empty;
 
-			SiteStarter.State.VirtualServerState.SuspendVirtualServerState();
-
 			Entities.IUser systemAdministrator = UserFactory<Entities.User>.Current.GetUser(Config.Application.PrimaryAdministratorID);
-
-			SiteStarter.State.VirtualServerState.RestoreVirtualServerState();
 
 			string newText = text;
 			newText = newText.Replace("${WebSite.Title}", Config.Application.Title);
 			newText = newText.Replace("${SystemAdministrator.Name}", systemAdministrator.Name);
 			return newText;
-		}
-
-		static public string Parse(string text, VirtualServer server)
-		{
-			if (text == null || text == String.Empty)
-				return String.Empty;
-
-			UriBuilder builder = new UriBuilder();
-			builder.Host = HttpContext.Current.Request.Url.Host;
-			builder.Path = HttpContext.Current.Request.ApplicationPath;
-			if (server != null)
-				builder.Query = "VS=" + server.Name;
-			
-			string newText = text;
-			newText = newText.Replace("${VirtualServer.Url}", builder.Uri.ToString());// TODO: Fix
-
-			return newText;
-			
 		}
 
 

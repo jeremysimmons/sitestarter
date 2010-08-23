@@ -50,18 +50,18 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Saving entity.", NLog.LogLevel.Debug))
 			{
-				Db4oDataStore store = (Db4oDataStore)GetDataStore(entity);
-				
 				if (entity == null)
 					throw new ArgumentNullException("entity");
 				
 				if (entity.ID == Guid.Empty)
 					throw new ArgumentException("entity.ID must be set.");
 				
-				//ReferenceValidator validator = new ReferenceValidator();
-				//validator.CheckForCircularReference(entity);
+				Db4oDataStore store = (Db4oDataStore)GetDataStore(entity);
 				
-				using (Batch batch = Batch.StartBatch())
+				if (store.ObjectContainer == null)
+					throw new InvalidOperationException("The ObjectContainer has not been initialized on the '" + store.Name + "' data store.");
+				
+				using (Batch batch = BatchState.StartBatch())
 				{
 					if (EntitiesUtilities.IsReference(entity.GetType()) && DataAccess.Data.IsStored(entity))
 					{

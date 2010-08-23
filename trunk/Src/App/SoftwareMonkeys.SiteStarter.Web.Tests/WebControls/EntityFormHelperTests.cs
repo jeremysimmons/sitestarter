@@ -24,7 +24,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.WebControls
 			// TODO: Path MUST NOT be hard coded
 			//   get { return @"f:\SoftwareMonkeys\WorkHub\Application 2\Web\"; }
 			//     get { return System.Configuration.ConfigurationSettings.AppSettings["ApplicationPath"]; }
-			get { return SoftwareMonkeys.SiteStarter.Configuration.Config.Application.PhysicalPath; }
+			get { return SoftwareMonkeys.SiteStarter.Configuration.Config.Application.PhysicalApplicationPath; }
 		}
 		
 		public EntityFormHelperTests()

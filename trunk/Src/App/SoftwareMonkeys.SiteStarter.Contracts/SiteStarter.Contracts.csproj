@@ -48,8 +48,10 @@
     <Compile Include="Business\IRetrieverStrategy.cs" />
     <Compile Include="Configuration\IAppConfig.cs" />
     <Compile Include="Configuration\IConfig.cs" />
+    <Compile Include="Configuration\IConfigSaver.cs" />
     <Compile Include="Configuration\IConfigurationDictionary.cs" />
     <Compile Include="Configuration\IVirtualServerConfig.cs" />
+    <Compile Include="Entities\ICollection.cs" />
     <Compile Include="Entities\ICollection[E].cs" />
     <Compile Include="Entities\IEntity.cs" />
     <Compile Include="Entities\IKeyword.cs" />
@@ -57,9 +59,7 @@
     <Compile Include="Entities\IUser.cs" />
     <Compile Include="Entities\IUserPermission.cs" />
     <Compile Include="Entities\IUserRole.cs" />
-    <Compile Include="Entities\IVirtualServer.cs" />
     <Compile Include="IAppComponent.cs" />
-    <Compile Include="IDataProviderManager.cs" />
     <Compile Include="State\IStateProvider.cs" />
   </ItemGroup>
   <ItemGroup>

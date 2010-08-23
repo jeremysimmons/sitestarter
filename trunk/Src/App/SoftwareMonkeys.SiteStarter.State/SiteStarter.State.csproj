@@ -46,7 +46,6 @@
     <Compile Include="StateProvider.cs" />
     <Compile Include="StateProviderCollection.cs" />
     <Compile Include="StateProviderConfiguration.cs" />
-    <Compile Include="VirtualServerState.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

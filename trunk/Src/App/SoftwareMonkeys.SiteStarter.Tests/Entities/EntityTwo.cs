@@ -23,6 +23,13 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
             set { oneIDs = value; }
         }
         
+        private EntityOne singleReferenceProperty;
+        [Reference]
+        public EntityOne SingleReferenceProperty
+        {
+        	get { return singleReferenceProperty; }
+        	set { singleReferenceProperty = value; }
+        }
         
         /// <summary>
         /// Registers the entity in the system.

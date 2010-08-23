@@ -23,6 +23,13 @@ namespace SoftwareMonkeys.SiteStarter.Data
 
         IEntity GetEntity(FilterGroup group);
         
+        
+        T GetEntity<T>(IDataFilter filter)
+        	where T : IEntity;
+
+        T GetEntity<T>(FilterGroup group)
+        	where T : IEntity;
+        
         T GetEntity<T>(string propertyName, object propertyValue)
         	where T : IEntity;
         
