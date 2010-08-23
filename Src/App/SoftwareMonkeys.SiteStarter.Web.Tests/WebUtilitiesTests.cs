@@ -15,23 +15,16 @@ using SoftwareMonkeys.SiteStarter.Web.WebControls;
 using SoftwareMonkeys.SiteStarter.Configuration;
 using System.Reflection;
 using System.Web;
+using SoftwareMonkeys.SiteStarter.Tests;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Tests
 {
 	[TestFixture]
-	public class WebUtilitiesTests
+	public class WebUtilitiesTests : BaseWebTestFixture
 	{
 		public string ApplicationPath
 		{
-			// TODO: Path MUST NOT be hard coded
-			//   get { return @"f:\SoftwareMonkeys\WorkHub\Application 2\Web\"; }
-			//     get { return System.Configuration.ConfigurationSettings.AppSettings["ApplicationPath"]; }
-			get { return SoftwareMonkeys.SiteStarter.Configuration.Config.Application.PhysicalPath; }
-		}
-		
-		public WebUtilitiesTests()
-		{
-			//Config.Initialize(ApplicationPath, "");
+			get { return TestUtilities.GetTestingPath(); }
 		}
 
         [Test]
@@ -56,8 +49,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
 
             string expected = "http://localhost/Folder1/folder2/file.html";
             
-
-            string result = WebUtilities.ConvertRelativeUrlToAbsoluteUrl(url);
+			bool isSecure = false;
+			
+			string host = "localhost";
+            
+            string result = WebUtilities.ConvertRelativeUrlToAbsoluteUrl(url, host, isSecure);
 
             Assert.AreEqual(expected, result, "Doesn't match.");
         }
@@ -69,8 +65,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
 
             string expected = "http://localhost/Folder1/folder2/file.html";
             
-
-            string result = WebUtilities.ConvertRelativeUrlToAbsoluteUrl(url);
+			bool isSecure = false;
+			
+			string host = "localhost";
+            
+            string result = WebUtilities.ConvertRelativeUrlToAbsoluteUrl(url, host, isSecure);
 
             Assert.AreEqual(expected, result, "Doesn't match.");
         }

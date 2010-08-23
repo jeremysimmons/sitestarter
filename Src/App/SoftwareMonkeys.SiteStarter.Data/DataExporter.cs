@@ -31,7 +31,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			if (Configuration.Config.IsInitialized)
 			{
-				ExportDirectoryPath = Configuration.Config.Application.PhysicalPath + Path.DirectorySeparatorChar +
+				ExportDirectoryPath = Configuration.Config.Application.PhysicalApplicationPath + Path.DirectorySeparatorChar +
 					"App_Data" + Path.DirectorySeparatorChar + "Exported";
 			}
 		}

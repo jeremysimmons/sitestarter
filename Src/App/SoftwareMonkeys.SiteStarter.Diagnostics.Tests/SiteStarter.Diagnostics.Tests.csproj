@@ -76,14 +76,28 @@
       <Project>{C3626F0A-DFD4-4EF2-8755-3532DE3712A4}</Project>
       <Name>SiteStarter.Diagnostics</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.State.Tests\SiteStarter.State.Tests.csproj">
+      <Project>AD977DB1-879A-476C-A74A-FC2E0EC98F0A</Project>
+      <Name>SiteStarter.State.Tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.State.Tests\SiteStarter.State.Tests.csproj">
+      <Project>{91C362DD-993D-4BF9-A90A-FFE18AB17434}</Project>
+      <Name>SiteStarter.State.Tests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.State\SiteStarter.State.csproj">
       <Project>{34129651-3B9F-4A0D-AEBF-7DE2098DD98F}</Project>
       <Name>SiteStarter.State</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Tests\SiteStarter.Tests.csproj">
+      <Project>3109EA47-5620-4C75-93E2-A552FC75EB8B</Project>
+      <Name>SiteStarter.Tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Tests\SiteStarter.Tests.csproj">
+      <Project>3109EA47-5620-4C75-93E2-A552FC75EB8B</Project>
+      <Name>SiteStarter.Tests</Name>
+    </ProjectReference>
+    <Compile Include="BaseDiagnosticsTestFixture.cs" />
     <Compile Include="LogUtilitiesTests.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -111,6 +125,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

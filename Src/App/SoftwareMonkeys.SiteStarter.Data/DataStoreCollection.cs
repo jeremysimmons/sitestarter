@@ -29,21 +29,10 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			get
 			{
-				return this[VirtualServerState.VirtualServerID, dataStoreName];
-			}
-		}
-		
-		/// <summary>
-		/// Gets the data store with the specified name and virtual server.
-		/// </summary>
-		public IDataStore this[string virtualServerID, string dataStoreName]
-		{
-			get
-			{
-				IDataStore store = GetByName(virtualServerID, dataStoreName);
+				IDataStore store = GetByName(dataStoreName);
 				if (store == null || store.IsClosed)
 				{
-					store = DataAccess.Data.InitializeDataStore(virtualServerID, dataStoreName);
+					store = DataAccess.Data.InitializeDataStore(dataStoreName);
 					Add(store);
 				}
 				return store;
@@ -73,18 +62,6 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				return this[dataStoreName];
 			}
 		}
-		
-		/// <summary>
-		/// Gets the data store corresponding with the provided type and in the specified virtual server.
-		/// </summary>
-		public IDataStore this[string virtualServerID, Type type]
-		{
-			get
-			{
-				string dataStoreName = DataUtilities.GetDataStoreName(type);
-				return this[virtualServerID, dataStoreName];
-			}
-		}
 
 
 		public DataStoreCollection()
@@ -98,29 +75,13 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <returns>The data store with the specified name.</returns>
 		public IDataStore GetByName(string dataStoreName)
 		{
-			return GetByName(VirtualServerState.VirtualServerID, dataStoreName);
-		}
-
-		/// <summary>
-		/// Retrieves the data store with the specified name and, if virtual servers are enabled, from within the current virtual server.
-		/// </summary>
-		/// <param name="virtualServerID">The ID of the virtual server to get the data store for.</param>
-		/// <param name="dataStoreName">The name of the data store to retrieve.</param>
-		/// <returns>The data store with the specified name.</returns>
-		public IDataStore GetByName(string virtualServerID, string dataStoreName)
-		{
 			IDataStore store = null;
 			
 			for (int i = 0; i < Count; i++)
-			{
-				string fullName = virtualServerID + "--" + dataStoreName;
-				
+			{				
 				bool nameMatches = dataStoreName.Equals(this[i].Name);
-				bool fullNameMatches = fullName.Equals(this[i].Name);
 				
-				// If either version of the
-				if (nameMatches ||
-				    (fullNameMatches && EnableVirtualServers))
+				if (nameMatches)
 				{
 					store = this[i];
 				}

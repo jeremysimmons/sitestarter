@@ -25,6 +25,8 @@ private void Page_Load(object sender, EventArgs e)
 
 			AppConfig config = CreateConfig(user);
 			
+			config.Save(); // Needs to be saved here but will be updated again during setup
+			
 			AppLogger.Debug("Created application configuration object.");
 
             SetupMappings();
@@ -103,17 +105,16 @@ private void Save(User user, UserRole administratorRole, AppConfig config)
     	
     	config.PrimaryAdministratorID = user.ID;
     	
-    	ConfigFactory<AppConfig>.SaveConfig(Request.MapPath(Request.ApplicationPath + "/App_Data"), config, WebUtilities.GetLocationVariation(Request.Url));
+    	config.Save();
     }
 }
 
 private AppConfig CreateConfig(User user)
 {
 
-            AppConfig config = ConfigFactory<AppConfig>.NewConfig("Application");
+            AppConfig config = ConfigFactory<AppConfig>.NewConfig(Server.MapPath(Request.ApplicationPath + "/App_Data"), "Application", WebUtilities.GetLocationVariation(Request.Url));
 			config.ApplicationPath = Request.ApplicationPath;
-			//config.ApplicationUrl = Request.Url.ToString().ToLower().Replace("/setup.aspx", "");
-			config.PhysicalPath = Request.PhysicalApplicationPath;
+			config.PhysicalApplicationPath = Request.PhysicalApplicationPath;
 
             config.EnableVirtualServer = true;
             config.EnableVirtualServerRegistration = true;
@@ -122,21 +123,14 @@ private AppConfig CreateConfig(User user)
             if (!SetupUtilities.UseExistingData)
             	config.PrimaryAdministratorID = user.ID;
             	
+            	// TODO: Remove if not needed
+            	/*
             config.Settings["VirtualServerWelcomeEmailSubject"] = Resources.Language.DefaultVirtualServerWelcomeEmailSubject;
             config.Settings["VirtualServerWelcomeEmail"] = Resources.Language.DefaultVirtualServerWelcomeEmail;
             config.Settings["VirtualServerRegistrationAlertSubject"] = Resources.Language.DefaultVirtualServerRegistrationAlertSubject;
             config.Settings["VirtualServerRegistrationAlert"] = Resources.Language.DefaultVirtualServerRegistrationAlert;
-	
+	*/
             config.Settings["ApplicationVersion"] = Utilities.GetVersion();
-
-			//SoftwareMonkeys.SiteStarter.Web.Config.Current = config;
-
-			//config.Save();
-
-            //Config.Application = config;
-            
-
-            ConfigFactory<AppConfig>.SaveConfig(Request.MapPath(Request.ApplicationPath + "/App_Data"), config, WebUtilities.GetLocationVariation(Request.Url));
             
             return config;
             
@@ -152,32 +146,15 @@ private void Initialize()
 
 private void SetupMappings()
 {
-			if (Config.Mappings == null)
-				Config.Mappings = ConfigFactory<MappingConfig>.NewConfig("Mappings");
-	
+	if (Config.Mappings == null)
+		Config.Mappings = ConfigFactory<MappingConfig>.NewConfig(Server.MapPath(Request.ApplicationPath + "/App_Data"), "Mappings", WebUtilities.GetLocationVariation(Request.Url));
+
 	SoftwareMonkeys.SiteStarter.Entities.User.RegisterType();
     UserRole.RegisterType();
     Keyword.RegisterType();
     VirtualServer.RegisterType();
-/*	MappingItem userEntityItem = new MappingItem("IUser");
-	userEntityItem.Settings.Add("DataStoreName", "Users");
-	
-	config.AddItem(userEntityItem);
-	
-	MappingItem userRoleEntityItem = new MappingItem("IUserRole");
-	userRoleEntityItem.Settings.Add("DataStoreName", "UserRoles");
-	
-	config.AddItem(userRoleEntityItem);
-	
-	MappingItem keywordItem = new MappingItem("Keyword");
-	keywordItem.Settings.Add("DataStoreName", "Keywords");
-	
-	config.AddItem(keywordItem);
-	*/
-	
-	string path = Server.MapPath(Request.ApplicationPath + "/App_Data");
-	
-	ConfigFactory<MappingConfig>.SaveConfig(path, (MappingConfig)Config.Mappings, WebUtilities.GetLocationVariation(Request.Url));
+
+	Config.Mappings.Save();
 }
 </script>
 <asp:Content runat="server" ContentPlaceHolderID="Body">

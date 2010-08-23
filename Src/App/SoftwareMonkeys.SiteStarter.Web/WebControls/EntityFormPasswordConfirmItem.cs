@@ -12,6 +12,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
     /// </summary>
     public class EntityFormPasswordConfirmItem : EntityFormSpecificItem
     {
+    	
+    	public string TextBoxCssClass
+    	{
+    		get {
+    			if (ViewState["TextBoxCssClass"] == null)
+    				ViewState["TextBoxCssClass"] = "Field";
+    			return (string)ViewState["TextBoxCssClass"]; }
+    		set { ViewState["TextBoxCssClass"] = value; }
+    	}
+    	
         private TextBox textBox = new TextBox();
         public TextBox TextBox
         {
@@ -58,5 +68,23 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
             FieldCell.Controls.Add(new LiteralControl("&nbsp;"));
             FieldCell.Controls.Add(CompareValidator);
         }
+        
+		protected override void OnLoad(EventArgs e)
+		{
+			ApplyCssClass(Controls);
+			
+			base.OnLoad(e);
+		}
+        
+		private void ApplyCssClass(ControlCollection controls)
+		{
+			foreach (Control control in controls)
+			{
+				if (control is TextBox)
+					((TextBox)control).CssClass = TextBoxCssClass;
+				
+				ApplyCssClass(control.Controls);
+			}
+		}
     }
 }

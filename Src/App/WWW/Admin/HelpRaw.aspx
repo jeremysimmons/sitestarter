@@ -1,4 +1,4 @@
-<%@ Page language="c#" AutoEventWireup="true" theme=""%>
+s<%@ Page language="c#" AutoEventWireup="true" theme=""%>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Web" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Entities" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Business" %>

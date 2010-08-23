@@ -62,6 +62,12 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 						// TODO: Add error handling
 					}
 				}
+				
+				if (config != null)
+				{
+					config.FilePath = configPath;
+					config.Saver = new ConfigSaver();
+				}
 			}
 
 
@@ -73,14 +79,19 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 		/// <summary>
 		/// Creates a new instance of the specified configuration object.
 		/// </summary>
+		/// <param name="physicalDataDirectoryPath">The physical path to the directory containing application data.</param>
 		/// <param name="name">The name of the configuration file or module (excluding the file extension).</param>
-		/// <param name="configType">The type of configuration object to instantiate.</param>
+		/// <param name="variation">The variation in the configuration file name.</param>
 		/// <returns>An instance of the specified configuration type.</returns>
-		static public T NewConfig(string name)
+		static public T NewConfig(string physicalDataDirectoryPath, string name, string variation)
 		{
 			T config = (T)Activator.CreateInstance(typeof(T));
 
 			config.Name = name;
+			
+			config.Saver = new ConfigSaver();
+			config.FilePath = CreateConfigPath(physicalDataDirectoryPath, name, variation);
+			config.PathVariation = variation;
 
 			return config;
 		}
@@ -139,7 +150,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 
 				if (!Directory.Exists(physicalDataDirectoryPath))
 					Directory.CreateDirectory(physicalDataDirectoryPath);
-
+				
 				using (FileStream stream = File.Create(configPath))
 				{
 					AppLogger.Debug("Created configuration file stream");

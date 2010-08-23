@@ -173,7 +173,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			List<String> names = new List<String>();
 
-			string path = Config.Application.PhysicalPath + Path.DirectorySeparatorChar + "App_Data";
+			string path = Config.Application.PhysicalApplicationPath + Path.DirectorySeparatorChar + "App_Data";
 			
 			if (Directory.Exists(path))
 			{

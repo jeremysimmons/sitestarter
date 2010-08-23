@@ -10,13 +10,13 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 	/// </summary>
     //[XmlType(Namespace = "SoftwareMonkeys.SiteStarter.Configuration")]
     //[XmlRoot(Namespace = "SoftwareMonkeys.SiteStarter.Configuration")]
-	public class AppConfig : IAppConfig, IConfig
+	public class AppConfig : BaseConfig, IAppConfig, IConfig
 	{
         private string name = "Application";
         /// <summary>
         /// Gets/sets the name of the configuration object/file.
         /// </summary>
-        public string Name
+        public new string Name
         {
             get { return name; }
             set { name = value; }
@@ -31,7 +31,6 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
             get { return title; }
             set { title = value; }
         }
-
 
         #region IAppConfig Members
         private int sessionTimeout;
@@ -54,26 +53,16 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
             set { applicationPath = value; }
         }
 
-        private string physicalPath;
+        private string physicalApplicationPath;
         /// <summary>
         /// Gets/sets the physical path of the application.
         /// </summary>
-        public string PhysicalPath
+        public string PhysicalApplicationPath
         {
-            get { return physicalPath.TrimEnd(Path.DirectorySeparatorChar); }
-            set { physicalPath = value; }
+            get { return physicalApplicationPath.TrimEnd(Path.DirectorySeparatorChar); }
+            set { physicalApplicationPath = value; }
         }
 
-        /*private Guid universalProjectID;
-        /// <summary>
-        /// Gets/sets the universal ID of the project.
-        /// </summary>
-        public Guid UniversalProjectID
-        {
-            get { return universalProjectID; }
-            set { universalProjectID = value; }
-        }*/
-        
         private Guid primaryAdministratorID;
         /// <summary>
         /// Gets/sets the universal ID of the project.
@@ -168,5 +157,6 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
         	get { return defaultVirtualServerKeywords; }
         	set { defaultVirtualServerKeywords = value; }
         }
+        
     }
 }

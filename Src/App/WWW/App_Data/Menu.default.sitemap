@@ -6,7 +6,6 @@
       <siteMapNode title="Roles" url="~/Admin/UserRoles.aspx" description="" />
       <siteMapNode title="Settings" url="~/Admin/Settings.aspx" description="" />
       <siteMapNode title="Backup" url="~/Admin/Backup.aspx" description="" />
-      <siteMapNode title="Unit Tests" url="~/Admin/UnitTests.aspx" description="" />
       <siteMapNode title="Log" url="~/Admin/Log.aspx" description="" />
     </siteMapNode>
   </siteMapNode>

@@ -32,7 +32,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			get {
 				if (schemaCommandDirectoryPath == String.Empty)
-					schemaCommandDirectoryPath = Configuration.Config.Application.PhysicalPath + Path.DirectorySeparatorChar + "App_Data" + Path.DirectorySeparatorChar + "Schema";
+					schemaCommandDirectoryPath = Configuration.Config.Application.PhysicalApplicationPath + Path.DirectorySeparatorChar + "App_Data" + Path.DirectorySeparatorChar + "Schema";
 				return schemaCommandDirectoryPath; }
 			set { schemaCommandDirectoryPath = value; }
 		}
@@ -128,7 +128,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <returns>The version of the legacy data.</returns>
 		public Version GetLegacyVersion()
 		{
-			return VersionUtilities.GetLegacyVersion(Configuration.Config.Application.PhysicalPath);
+			return VersionUtilities.GetLegacyVersion(Configuration.Config.Application.PhysicalApplicationPath);
 		}
 		
 		/// <summary>
@@ -137,7 +137,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <returns>The current version of the application.</returns>
 		public Version GetApplicationVersion()
 		{
-			return VersionUtilities.GetCurrentVersion(Configuration.Config.Application.PhysicalPath);
+			return VersionUtilities.GetCurrentVersion(Configuration.Config.Application.PhysicalApplicationPath);
 		}
 		
 		
@@ -258,7 +258,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="version">The version of data schema that the command corresponds with. (This is used in the file name.)</param>
 		public void SaveCommands(DataSchemaCommandCollection commands, string groupName, Version version)
 		{
-			string path = Configuration.Config.Application.PhysicalPath + Path.DirectorySeparatorChar + SchemaDirectory;
+			string path = Configuration.Config.Application.PhysicalApplicationPath + Path.DirectorySeparatorChar + SchemaDirectory;
 			
 			SaveCommands(path, commands, groupName, version);
 		}

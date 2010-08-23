@@ -14,12 +14,13 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		{
 			throw new NotImplementedException();
 		}
+		
 		[Test]
 		public void Test_Retrieve_ByUniqueKey()
 		{
-			
 			throw new NotImplementedException();
 		}
+		
 		[Test]
 		public void Test_Retrieve_ByCustomProperty()
 		{

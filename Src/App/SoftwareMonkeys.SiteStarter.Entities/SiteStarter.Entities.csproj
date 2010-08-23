@@ -44,10 +44,10 @@
   <ItemGroup>
     <Compile Include="BaseEntityReferenceAttribute.cs" />
     <Compile Include="BaseEntity.cs" />
-    <Compile Include="CorrespondingFieldAttribute.cs" />
     <Compile Include="EntitiesUtilities.cs" />
     <Compile Include="EntityEventArgs.cs" />
     <Compile Include="EntityIDReferenceCollection.cs" />
+    <Compile Include="EntityMapper.cs" />
     <Compile Include="EntityPointer.cs" />
     <Compile Include="EntityReference.cs" />
     <Compile Include="EntityReferenceCollection.cs" />
@@ -56,7 +56,6 @@
     <Compile Include="PagingLocation.cs" />
     <Compile Include="ReferenceAttribute.cs" />
     <Compile Include="TestClass.cs" />
-    <Compile Include="VirtualServer.cs" />
     <Compile Include="EntityCollection.cs" />
     <Compile Include="EntityEventHandler.cs" />
     <Compile Include="Keyword.cs" />
@@ -64,7 +63,6 @@
     <Compile Include="User.cs" />
     <Compile Include="UserPermission.cs" />
     <Compile Include="UserRole.cs" />
-    <Compile Include="VirtualServerCollection.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration\SiteStarter.Configuration.csproj">

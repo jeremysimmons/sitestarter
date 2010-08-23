@@ -27,6 +27,16 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// </summary>
 		/// <param name="filter">The filter to apply to the query.</param>
 		/// <returns>The matching entity.</returns>
+		public override T GetEntity<T>(IDataFilter filter)
+		{
+			return (T)GetEntity(filter);
+		}
+		
+		/// <summary>
+		/// Retrieves the entity matching the filter .
+		/// </summary>
+		/// <param name="filter">The filter to apply to the query.</param>
+		/// <returns>The matching entity.</returns>
 		public override IEntity GetEntity(IDataFilter filter)
 		{
 			IEntity[] entities = Provider.Indexer.GetEntities(filter);
@@ -35,6 +45,16 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				return entities[0];
 			else
 				return null;
+		}
+		
+		/// <summary>
+		/// Retrieves the entity matching the filter group.
+		/// </summary>
+		/// <param name="group">The group of filters to apply to the query.</param>
+		/// <returns>The matching entity.</returns>
+		public override T GetEntity<T>(FilterGroup group)
+		{
+			return (T)GetEntity(group);
 		}
 		
 		/// <summary>

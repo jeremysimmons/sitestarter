@@ -93,6 +93,46 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
 	        	return null;
         }
         #endregion
+        
+        #region Request state
+        public override bool ContainsRequest(string key)
+        {
+        	if (key == String.Empty)
+        		throw new ArgumentException("The provided key cannot be null or String.Empty.");
+        	
+       		if (key != String.Empty
+        	    && HttpContext.Current != null
+                && HttpContext.Current.Items != null
+        	    && HttpContext.Current.Items[key] != null)
+	            return true;
+	        else
+	        	return false;
+        }
+        
+        public override void SetRequest(string key, object value)
+        {
+        	if (key == String.Empty)
+        		throw new ArgumentException("The provided key cannot be null or String.Empty.");
+        	
+            if (key != String.Empty
+                && HttpContext.Current != null
+                && HttpContext.Current.Request != null)
+            {
+                HttpContext.Current.Items[key] = value;
+            }
+        }
+
+        public override object GetRequest(string key)
+        {
+        	if (key == String.Empty)
+        		throw new ArgumentException("The provided key cannot be null or String.Empty.");
+        	
+        	if (key != String.Empty && HttpContext.Current != null && HttpContext.Current.Items != null)
+	            return HttpContext.Current.Items[key];
+	        else
+	        	return null;
+        }
+        #endregion
 
         public override void Initialize(string name, System.Collections.Specialized.NameValueCollection config)
         {

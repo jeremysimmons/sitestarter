@@ -157,6 +157,10 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			if (threadDoc != null)
 			{
 				string threadFile = rootDir.TrimEnd('\\') + @"\Detail\" + threadID + ".xml";
+				
+				if (!Directory.Exists(Path.GetDirectoryName(threadFile)))
+					Directory.CreateDirectory(Path.GetDirectoryName(threadFile));
+				
 				threadDoc.Save(threadFile);
 			}
 		}

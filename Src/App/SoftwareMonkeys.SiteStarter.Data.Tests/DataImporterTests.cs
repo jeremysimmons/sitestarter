@@ -13,24 +13,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 	[TestFixture]
 	public class DataImporterTests : BaseDataTestFixture
 	{
-		public DataImporterTests()
-		{
-		}
-		
-		[SetUp]
-		public void Initialize()
-		{
-			TestUtilities.ClearTestingDirectory();
-			TestUtilities.ClearTestEntities();
-		}
-		
-		[TearDown]
-		public void Dispose()
-		{
-			TestUtilities.ClearTestingDirectory();
-			TestUtilities.ClearTestEntities();
-		}
-		
 		[Test]
 		public void Test_ImportFromXml()
 		{
@@ -282,7 +264,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			importer.ImportedDirectoryPath = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar + "Imported";
 			
 			// Test the move to imported function
-			importer.MoveToImported(user);
+			importer.MoveToImported(user, importer.CreateImportableEntityPath(user));
 			
 			
 			int importableCount = 0;

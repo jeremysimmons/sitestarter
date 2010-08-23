@@ -14,7 +14,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 	//[XmlRoot(Namespace = "urn:SoftwareMonkeys.SiteStarter.Configuration")]
 	[Serializable]
 	//[XmlType("SiteStarter.MappingConfig")]
-	public class MappingConfig : IConfig//IMappingConfig//, IXmlSerializable
+	public class MappingConfig : BaseConfig, IConfig
 	{
 		public MappingItem this[string name]
 		{
@@ -28,7 +28,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 		/// <summary>
 		/// Gets/sets the name of the configuration file.
 		/// </summary>
-		public string Name
+		public new string Name
 		{
 			get { return name; }
 			set { name = value; }
@@ -316,5 +316,6 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 		{
 			return(null);
 		}*/
+		
 	}
 }

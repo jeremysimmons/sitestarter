@@ -47,7 +47,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
         		Directory.CreateDirectory(directory);
         	
         	
-        	IAppConfig config = (IAppConfig)Configuration.Config.Application;
+        	MockAppConfig config = (MockAppConfig)Configuration.Config.Application;
         	
         	Assert.IsNotNull(config, "config == null");
             
@@ -55,7 +55,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
             config.Settings.Add("TestSetting", "TestValue");
             config.Settings.Add("TestSetting2", true);
             
-            ConfigFactory<IAppConfig>.SaveConfig(directory, config, "");
+            ConfigFactory<MockAppConfig>.SaveConfig(directory, config, "");
             
             string configPath = directory + Path.DirectorySeparatorChar + "Application.config";
             
@@ -72,6 +72,9 @@ namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
             Assert.AreEqual("TestValue", config2.Settings["TestSetting"], "Test setting 1 doesn't match.");
             Assert.AreEqual(true, config2.Settings["TestSetting2"], "Test setting 2 doesn't don't match.");
         }
+        #endregion
+        
+        #region Path tests
         
         [Test]
         public void CreateConfigPath_Variation()

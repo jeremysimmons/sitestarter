@@ -48,6 +48,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration.Tests\SiteStarter.Configuration.Tests.csproj">
+      <Project>{5DFB85CA-D338-425A-B382-64EFBE19C65D}</Project>
+      <Name>SiteStarter.Configuration.Tests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration\SiteStarter.Configuration.csproj">
       <Project>{4B83307F-8307-43EF-A176-8AB1CDA78264}</Project>
       <Name>SiteStarter.Configuration</Name>
@@ -55,6 +59,10 @@
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Contracts\SiteStarter.Contracts.csproj">
       <Project>{518735AC-EFA2-4205-AE47-CF4664EE3061}</Project>
       <Name>SiteStarter.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Diagnostics.Tests\SiteStarter.Diagnostics.Tests.csproj">
+      <Project>{7869F9C1-61D7-4C16-9577-CA85BDD3E01F}</Project>
+      <Name>SiteStarter.Diagnostics.Tests</Name>
     </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Diagnostics\SiteStarter.Diagnostics.csproj">
       <Project>{C3626F0A-DFD4-4EF2-8755-3532DE3712A4}</Project>
@@ -64,6 +72,10 @@
       <Project>{3609F512-9E15-41C7-95AF-D1B3E7F93562}</Project>
       <Name>SiteStarter.Entities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.State.Tests\SiteStarter.State.Tests.csproj">
+      <Project>AD977DB1-879A-476C-A74A-FC2E0EC98F0A</Project>
+      <Name>SiteStarter.State.Tests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.State\SiteStarter.State.csproj">
       <Project>{34129651-3B9F-4A0D-AEBF-7DE2098DD98F}</Project>
       <Name>SiteStarter.State</Name>
@@ -72,7 +84,8 @@
       <Project>3109EA47-5620-4C75-93E2-A552FC75EB8B</Project>
       <Name>SiteStarter.Tests</Name>
     </ProjectReference>
-    <None Include="EntitiesUtilitiesTests.cs" />
+    <Compile Include="EntitiesUtilitiesTests.cs" />
+    <Compile Include="BaseEntityTestFixture.cs" />
     <Compile Include="EntityCollectionTests.cs" />
     <Compile Include="EntityIDReferenceTests.cs" />
     <Compile Include="EntityReferenceTests.cs" />

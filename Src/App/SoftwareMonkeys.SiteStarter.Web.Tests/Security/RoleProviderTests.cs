@@ -15,18 +15,16 @@ using SoftwareMonkeys.SiteStarter.Web.WebControls;
 using SoftwareMonkeys.SiteStarter.Configuration;
 using System.Reflection;
 using System.Web;
+using SoftwareMonkeys.SiteStarter.Tests;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Tests
 {
 	[TestFixture]
-	public class RoleProviderTests
+	public class RoleProviderTests : BaseWebTestFixture
 	{
 		public string ApplicationPath
 		{
-			// TODO: Path MUST NOT be hard coded
-			//   get { return @"f:\SoftwareMonkeys\WorkHub\Application 2\Web\"; }
-			//     get { return System.Configuration.ConfigurationSettings.AppSettings["ApplicationPath"]; }
-			get { return SoftwareMonkeys.SiteStarter.Configuration.Config.Application.PhysicalPath; }
+			get { return TestUtilities.GetTestingPath(); }
 		}
 		
 		public RoleProviderTests()
@@ -37,6 +35,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
         [Test]
         public void Test_IsUserInRole_True()
         {
+        	User.RegisterType();
+        	UserRole.RegisterType();
+        	
         	User user = new User();
         	user.ID = Guid.NewGuid();
         	user.FirstName = "Test";
@@ -72,6 +73,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
         [Test]
         public void Test_IsUserInRole_False()
         {
+        	User.RegisterType();
+        	UserRole.RegisterType();
+        	
         	User user = new User();
         	user.ID = Guid.NewGuid();
         	user.FirstName = "Test";

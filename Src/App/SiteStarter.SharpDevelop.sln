@@ -38,6 +38,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiteStarter.Tests", "Softwa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiteStarter.Data.Db4o.Tests", "SoftwareMonkeys.SiteStarter.Data.Db4o.Tests\SiteStarter.Data.Db4o.Tests.csproj", "4ADB5F1E-B2C2-4EF3-9B46-6755C2D2663E"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiteStarter.State.Tests", "SoftwareMonkeys.SiteStarter.State.Tests\SiteStarter.State.Tests.csproj", "AD977DB1-879A-476C-A74A-FC2E0EC98F0A"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
@@ -264,6 +266,18 @@ Global
 		4ADB5F1E-B2C2-4EF3-9B46-6755C2D2663E.Release|Any CPU.ActiveCfg = Release|Any CPU
 		4ADB5F1E-B2C2-4EF3-9B46-6755C2D2663E.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		4ADB5F1E-B2C2-4EF3-9B46-6755C2D2663E.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		AD977DB1-879A-476C-A74A-FC2E0EC98F0A.Debug|.NET.Build.0 = Debug|Any CPU
+		AD977DB1-879A-476C-A74A-FC2E0EC98F0A.Debug|.NET.ActiveCfg = Debug|Any CPU
+		AD977DB1-879A-476C-A74A-FC2E0EC98F0A.Debug|Any CPU.Build.0 = Debug|Any CPU
+		AD977DB1-879A-476C-A74A-FC2E0EC98F0A.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		AD977DB1-879A-476C-A74A-FC2E0EC98F0A.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		AD977DB1-879A-476C-A74A-FC2E0EC98F0A.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		AD977DB1-879A-476C-A74A-FC2E0EC98F0A.Release|.NET.Build.0 = Release|Any CPU
+		AD977DB1-879A-476C-A74A-FC2E0EC98F0A.Release|.NET.ActiveCfg = Release|Any CPU
+		AD977DB1-879A-476C-A74A-FC2E0EC98F0A.Release|Any CPU.Build.0 = Release|Any CPU
+		AD977DB1-879A-476C-A74A-FC2E0EC98F0A.Release|Any CPU.ActiveCfg = Release|Any CPU
+		AD977DB1-879A-476C-A74A-FC2E0EC98F0A.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		AD977DB1-879A-476C-A74A-FC2E0EC98F0A.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

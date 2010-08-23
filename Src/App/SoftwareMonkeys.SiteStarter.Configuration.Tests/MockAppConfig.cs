@@ -11,7 +11,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
 	/// </summary
 	[XmlType(Namespace = "urn:SoftwareMonkeys.SiteStarter.Config")]
 	[XmlRoot(Namespace = "urn:SoftwareMonkeys.SiteStarter.Config")]
-	public class MockAppConfig : IAppConfig
+	public class MockAppConfig : BaseConfig, IAppConfig
 	{
 		#region Installation settings
 		private bool isDownForMaintenance;
@@ -54,14 +54,14 @@ namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
 			set { applicationUrl = value; }
 		}
 
-		private string physicalPath = String.Empty;
+		private string physicalApplicationPath = String.Empty;
 		/// <summary>
 		/// Gets/sets the physical path of the application.
 		/// </summary>
-		public string PhysicalPath
+		public string PhysicalApplicationPath
 		{
-			get { return physicalPath; }
-			set { physicalPath = value; }
+			get { return physicalApplicationPath; }
+			set { physicalApplicationPath = value; }
 		}
 		#endregion
 
@@ -122,7 +122,8 @@ namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
 			set { primaryAdministratorID = value; }
 		}
 		#endregion
-		
+		// TODO: Remove if not needed
+		/*
 		private bool enableVirtualServer;
 		/// <summary>
 		/// Gets/sets a flag indicating whether application sharing is enabled.
@@ -161,7 +162,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
 		{
 			get { return defaultVirtualServerKeywords; }
 			set { defaultVirtualServerKeywords = value; }
-		}
+		}*/
 
 		/// <summary>
 		/// Gets/sets the flexible settings collection.
@@ -191,7 +192,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
 		/// <summary>
 		/// Gets/sets the name of the config.
 		/// </summary>
-		public string Name
+		public new string Name
 		{
 			get { return name; }
 			set { name = value; }

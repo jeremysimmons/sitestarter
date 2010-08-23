@@ -14,12 +14,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
         /// <summary>
         /// The full physical path to the root of the application.
         /// </summary>
-        string PhysicalPath { get;set; }
-
-		/*/// <summary>
-		/// The universal ID of the current project.
-		/// </summary>
-		Guid UniversalProjectID { get; }*/
+        string PhysicalApplicationPath { get;set; }
 		
 		/// <summary>
 		/// The primary administrator ID.
@@ -31,14 +26,13 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 
         string ApplicationPath { get; set; }
         
+        // TODO: Remove if not needed
+        /*
         bool EnableVirtualServer {get;set;}
         bool EnableVirtualServerRegistration {get;set;}
         bool AutoApproveVirtualServerRegistration {get;set;}
         string[] DefaultVirtualServerKeywords {get;set;}
-        
-       // string PathVariation {get;}
-
-
+        */
 		string SmtpServer { get; }
 
         IConfigurationDictionary Settings { get;set; }

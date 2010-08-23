@@ -11,7 +11,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
     /// Represents an item in the entity form.
     /// </summary>
     public class EntityFormTextBoxItem : EntityFormSpecificItem
-    {
+    {    
+    	public string TextBoxCssClass
+    	{
+    		get {
+    			if (ViewState["TextBoxCssClass"] == null)
+    				ViewState["TextBoxCssClass"] = "Field";
+    			return (string)ViewState["TextBoxCssClass"]; }
+    		set { ViewState["TextBoxCssClass"] = value; }
+    	}
+    	
         private TextBox textBox = new TextBox();
         public TextBox TextBox
         {
@@ -24,5 +33,23 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
             TextBox.ID = FieldControlID;
             FieldCell.Controls.Add(TextBox);
         }
+        
+		protected override void OnLoad(EventArgs e)
+		{
+			ApplyCssClass(Controls);
+			
+			base.OnLoad(e);
+		}
+        
+		private void ApplyCssClass(ControlCollection controls)
+		{
+			foreach (Control control in controls)
+			{
+				if (control is TextBox)
+					((TextBox)control).CssClass = TextBoxCssClass;
+				
+				ApplyCssClass(control.Controls);
+			}
+		}
     }
 }
