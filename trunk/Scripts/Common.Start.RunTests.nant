@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<project name="Common.Start.RunTests" default="Common.Start.RunTests" xmlns="http://nant.sf.net/schemas/nant.xsd">
+  		
+  		
+		<property name="Argument.ProjectPath" value=""/>
+		<property name="Argument.SolutionPath" value=""/>
+  		
+  		<nant buildfile="Common.Functions.Initialize.nant"/>
+  		
+
+		
+		
+		<!--include buildfile="${Project.PropertiesPath}"/-->
+  		
+  		<!--property name="Solution.LibPath" value=""/-->
+  		<property name="Project.RelativePath" value=""/>
+  		<!--property name="Project.VersionFile" value=""/-->
+  		
+		
+		
+  		<property name="Project.PropertiesPath" value="${Argument.ProjectPath}"/>
+  		<property name="Project.RootPath" value="${path::get-directory-name(Project.PropertiesPath)}"/>
+  		
+  		
+		
+  		<property name="Solution.PropertiesPath" value="${Argument.SolutionPath}"/>
+  		<property name="Solution.RootPath" value="${path::get-directory-name(Solution.PropertiesPath)}"/>
+  		
+  		
+	<include buildfile="Common.Jobs.RunTests.nant"/>
+
+  		
+	<target name="Common.Start.RunTests" description="Runs the NUnit tests.">		
+		<call target="Common.Jobs.RunTests"/>
+	</target>
+</project>
+  	

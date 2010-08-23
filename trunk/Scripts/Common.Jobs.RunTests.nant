@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<project name="Common.Jobs.RunTests" default="Common.Jobs.RunTests" xmlns="http://nant.sf.net/schemas/nant.xsd">
+	
+	<property name="Project.TestResultsDirectory" value="${Project.RootPath}/TestResults"/>
+	<property name="Project.LibDirectory" value="${Project.RootPath}/lib"/>
+	
+	
+	<loadtasks>
+	
+	            <fileset>
+	
+	                        <include name="../lib/nant/bin/tasks/nunit2report/NAnt.NUnit2ReportTasks.dll" />
+	
+	            </fileset>
+	
+	</loadtasks> 
+	
+		<xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.TestOrder']/@value"
+		    property="Solution.TestOrder">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+	
+  	<target name="Common.Jobs.RunTests"> 	
+  		<if test="${directory::exists(path::combine(Project.TestResultsDirectory, 'xml')) == false}">
+  			<mkdir dir="${path::combine(Project.TestResultsDirectory, 'xml')}"/>
+  		</if>
+  		<if test="${directory::exists(path::combine(Project.TestResultsDirectory, 'html')) == false}">
+  			<mkdir dir="${path::combine(Project.TestResultsDirectory, 'html')}"/>
+  		</if>
+  		
+  		
+		<foreach item="String" in="${Solution.TestOrder}" delim="," property="testName">
+  			
+	  		<exec program="nunit-console" basedir="${Project.LibDirectory}" failonerror="false">
+	    		<arg value="../bin/Debug/SoftwareMonkeys.SiteStarter.${testName}.Tests.dll" />
+	    		<arg value="/xml:${Project.TestResultsDirectory}/xml/${testName}.Tests.Results.xml" />
+			</exec>
+			
+		</foreach>
+
+		<nunit2report todir="${Project.TestResultsDirectory}/html">
+		  <fileset basedir="${Project.TestResultsDirectory}/xml">
+		    <include name="*.xml" />
+		  </fileset>
+		</nunit2report>
+
+
+  	</target>  
+
+</project>
+  	
