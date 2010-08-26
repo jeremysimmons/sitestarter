@@ -11,7 +11,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
 		[SetUp]
 		public void Start()
 		{
-			TestUtilities.ClearTestingDirectory();
+			TestUtilities.ClearTestingDirectory(this);
 			InitializeMockState();
 			InitializeMockConfiguration();
 		}
@@ -21,13 +21,13 @@ namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
 		{
 			DisposeMockConfiguration();
 			DisposeMockState();
-			TestUtilities.ClearTestingDirectory();
+			TestUtilities.ClearTestingDirectory(this);
 		}
 		
 		[Test]
 		public void Test_Save()
 		{
-			string path = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar + "TestConfig.xml";
+			string path = TestUtilities.GetTestingPath(this) + Path.DirectorySeparatorChar + "TestConfig.xml";
 			
 			MockAppConfig config = new MockAppConfig();
 			config.FilePath = path;

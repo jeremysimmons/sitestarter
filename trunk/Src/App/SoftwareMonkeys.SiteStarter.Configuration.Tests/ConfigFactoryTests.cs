@@ -23,7 +23,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
 		[SetUp]
 		public void Start()
 		{
-			TestUtilities.ClearTestingDirectory();
+			TestUtilities.ClearTestingDirectory(this);
 			InitializeMockState();
 			InitializeMockConfiguration();
 		}
@@ -33,7 +33,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
 		{
 			DisposeMockConfiguration();
 			DisposeMockState();
-			TestUtilities.ClearTestingDirectory();
+			TestUtilities.ClearTestingDirectory(this);
 		}
 
 
@@ -41,7 +41,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
         [Test]
         public void Test_SaveConfig_And_LoadConfig()
         {
-        	string directory = TestUtilities.GetTestingPath();
+        	string directory = TestUtilities.GetTestingPath(this);
         	
         	if (!Directory.Exists(directory))
         		Directory.CreateDirectory(directory);
@@ -79,7 +79,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
         [Test]
         public void CreateConfigPath_Variation()
         {
-        	string directory = TestUtilities.GetTestingPath();
+        	string directory = TestUtilities.GetTestingPath(this);
         	
         	string variation = "local";
         	
@@ -96,7 +96,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
         [Test]
         public void CreateConfigPath_NoVariation()
         {
-        	string directory = TestUtilities.GetTestingPath();
+        	string directory = TestUtilities.GetTestingPath(this);
         	
         	string configName = "Application";
         	string variation = String.Empty;

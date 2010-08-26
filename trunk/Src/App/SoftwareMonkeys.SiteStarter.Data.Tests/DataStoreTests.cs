@@ -17,11 +17,11 @@ using SoftwareMonkeys.SiteStarter.Tests;
 namespace SoftwareMonkeys.SiteStarter.Data.Tests
 {
 	[TestFixture]
-	public class DataStoreTests
+	public class DataStoreTests : BaseDataTestFixture
 	{
 		public string ApplicationPath
 		{
-			get { return TestUtilities.GetTestingPath(); }
+			get { return TestUtilities.GetTestingPath(this); }
 		}
 
 		#region Singleton tests
@@ -46,7 +46,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			// Config.Initialize(ApplicationPath, "");
 			
-			TestUtilities.RegisterTestEntities();
+			TestUtilities.RegisterTestEntities(this);
 		}
 		
 

@@ -169,33 +169,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			Assert.AreEqual(2, references.Count, "Incorrect number of references found.");
 			
-			//EntityIDReference reference1 = (EntityIDReference)references[0];
-			//EntityIDReference reference2 = (EntityIDReference)references[1];
-			
-			// Switch the references around if necessary to match (so they can be found in any order)
-			/*if (!reference1.Includes(user2.ID, "Roles"))
-			{
-				EntityIDReference tmp = reference1;
-				reference1 = reference2;
-				reference2 = tmp;
-			}*/
-			
-			//Assert.IsTrue(reference1.Includes(user.ID, "Roles"), "First reference does not include expected user.");
-			//Assert.IsTrue(reference1.Includes(role.ID, "Users"), "First reference does not include expected role.");
-			//Assert.IsTrue(reference2.Includes(user.ID, "Roles"), "Second reference does not include expected user.");
-			//Assert.IsTrue(reference2.Includes(role.ID, "Users"), "Second reference does not include expected role.");
-			
-			//Assert.IsFalse(reference1.Includes(user.ID, "Roles"), "First reference includes unexpected user.");
-			//Assert.IsFalse(reference1.Includes(role.ID, "Users"), "First reference includes unexpected role.");
-			//Assert.IsFalse(reference2.Includes(user2.ID, "Roles"), "Second reference includes unexpected user.");
-			//Assert.IsFalse(reference2.Includes(role2.ID, "Users"), "Second reference includes unexpected role.");
-			
-			//Assert.AreEqual(role2.ID.ToString(), ((EntityIDReference)references[0]).Entity1ID.ToString(), "First reference has invalid entity 1 ID.");
-			//Assert.AreEqual(user2.ID.ToString(), ((EntityIDReference)references[0]).Entity2ID.ToString(), "First reference has invalid entity 2 ID.");
-			
-			//Assert.AreEqual(role1.ID.ToString(), ((EntityIDReference)references[1]).Entity1ID.ToString(), "Second reference has invalid entity 1 ID.");
-			//Assert.AreEqual(user1.ID.ToString(), ((EntityIDReference)references[1]).Entity2ID.ToString(), "Second reference has invalid entity 2 ID.");
-			
 			
 			// Load the roles out of the users store (there should be none)
 			IEntity[] rolesInUsersStore = DataAccess.Data.Stores[typeof(TestUser)].Indexer.GetEntities<TestRole>();
@@ -228,7 +201,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			Assert.AreEqual(2, rolesInRolesStore2.Length, "Role(s) not found in roles store after update.");
 			
 			
-			TestUtilities.ClearTestEntities();
 		}
 	
 		

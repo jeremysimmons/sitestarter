@@ -1,5 +1,4 @@
 ﻿using System;
-using Db4objects.Db4o;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Tests.Entities;
 using NUnit.Framework;

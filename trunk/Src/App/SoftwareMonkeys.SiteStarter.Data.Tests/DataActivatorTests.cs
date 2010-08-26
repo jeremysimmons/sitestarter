@@ -263,7 +263,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				Assert.AreEqual(0, foundArticle.Authors.Length, "Authors found when they shouldn't be. The two properties must be getting mixed up.");
 				
-				TestUtilities.ClearTestEntities();
 			}
 			
 			

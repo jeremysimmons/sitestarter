@@ -12,10 +12,14 @@
 <%@ Import namespace="System.Xml.Serialization" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Data" %>
 <%@ Import namespace="ICSharpCode.SharpZipLib.Zip" %>
+<%@ Import namespace="SoftwareMonkeys.SiteStarter.Web.Security" %>
 <script runat="server">
 	
     protected void Page_Load(object sender, EventArgs e)
     {
+    	Authorisation.EnsureIsAuthenticated();
+    	Authorisation.EnsureIsInRole("Administrator");
+    
         if (Request.QueryString["BackupComplete"] == "true")
             Finish();
         else
@@ -31,11 +35,6 @@
     {
         PageViews.SetActiveView(Step2View);
     }
-
-    protected void NextButton_Click(object sender, EventArgs e)
-    {
-        Response.Redirect("Backup.aspx?PrepareForUpdate=true");
-    }
     
 
 </script>
@@ -43,30 +42,27 @@
 <asp:MultiView runat="server" ID="PageViews">
 <asp:View runat="server" id="Step1View">
 		<h1>Application Update</H1>
+			<p>The current application version is: <%= DataAccess.Data.Schema.ApplicationVersion.ToString() %></p>
 			<p>
-			    This page prepares the application for an update.
+			    This wizard will guide you through the process of updating the application.
 			</p>
 			<p>
-			    The following procedure ensures data is backed up and prepared so that it works in the new version.
+			<i>Note: Your data will be backed up before the update begins. The backup zip files can be accessed at:<br/>
+			<%= new ApplicationBackup().BackupDirectoryPath %></i>
+			</p>
+			
+				<p>
 			    <ol><li>
-			    Download a project release via HTTP or SVN (see <a href="http://www.softwaremonkeys.net">www.softwaremonkeys.net</a>).
+			    Download a project release via HTTP or SVN (see <a href="http://www.softwaremonkeys.net" target="_blank">www.softwaremonkeys.net</a>).
 			    </li>
 			    <li>
-			    Click the button below to prepare the installation and backup your data.
+			    When you are ready... <input type="button" value='Begin &raquo;' onclick="location.href='Backup.aspx?PrepareForUpdate=true'"/>
 			    </li>
 			    <li>
-			    Upload the new release via FTP.
-			    </li>
-			    <li>
-			    Launch the project via the browser to complete the process.
+			    Follow the instructions provided on the next page.
 			    </li>
 			    </ol>
 			</p>
-			<p>When you're ready for step 2...</p>
-				<P>
-			
-					<asp:Button id="NextButton" onclick="NextButton_Click" Runat="server" Text="Start Preparation"></asp:Button><BR/>
-				</P>
 </asp:View>
 <asp:View runat="server" id="Step2View">
 		<h1>Preparation Complete</H1>
@@ -75,7 +71,7 @@
 			</p>
 			<p>
 			    A zip file of your data can be found in the following folder:<br />
-			    <i><%= Server.MapPath(Request.ApplicationPath + Path.DirectorySeparatorChar + ConfigurationSettings.AppSettings["BackupDirectory"]) %></i>
+			    <i><%= new ApplicationBackup().BackupDirectoryPath %></i>
 			</p>
 			<p>You can now upload the files via FTP.</p>
 			<p><a href="Admin/Setup.aspx">Click here when you're done.</a></p>

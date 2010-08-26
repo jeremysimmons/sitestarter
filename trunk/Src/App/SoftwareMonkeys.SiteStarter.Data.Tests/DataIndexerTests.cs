@@ -88,7 +88,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
 			{
-				TestUtilities.ClearTestEntities();
 
 				TestUser user = new TestUser();
 				user.ID = Guid.NewGuid();
@@ -128,7 +127,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 					}*/
 				}
 
-				TestUtilities.ClearTestEntities();
 			}
 		}
 		
@@ -138,8 +136,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetEntitiesMatchReference function to ensure it finds entities properly.", NLog.LogLevel.Debug))
 			{
-				TestUtilities.ClearTestEntities();
-				
 				TestArticle article = new TestArticle();
 				article.ID = Guid.NewGuid();
 				article.Title = "Test Article";
@@ -180,8 +176,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetEntitiesPageMatchReference function to ensure it finds entities properly.", NLog.LogLevel.Debug))
 			{
-				TestUtilities.ClearTestEntities();
-				
 				
 				TestArticle article = new TestArticle();
 				article.ID = Guid.NewGuid();
@@ -239,7 +233,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing data retrieval with the GetEntities by property value function.", NLog.LogLevel.Debug))
 			{
-				TestUtilities.ClearTestEntities();
 				
 				EntityOne e1 = new EntityOne();
 				e1.Name = "Test E1";
@@ -254,7 +247,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 					Assert.AreEqual(1, found.Length, "No results found.");
 				
 				
-				TestUtilities.ClearTestEntities();
 			}
 		}
 
@@ -264,8 +256,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing exclusion with the GetEntities by property value function.", NLog.LogLevel.Debug))
 			{
-				
-				TestUtilities.ClearTestEntities();
 				
 				EntityOne e1 = new EntityOne();
 				e1.Name = "Test E1";
@@ -287,8 +277,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				if (found != null)
 					Assert.AreEqual(0, found.Length, "Entities weren't properly excluded.");
 				
-				
-				TestUtilities.ClearTestEntities();
 			}
 		}
 

@@ -29,7 +29,7 @@
     protected void Page_Init(object sender, EventArgs e)
     {
         appBackup = new ApplicationBackup();
-        appBackup.KeepLegacy = false;
+        appBackup.PrepareForUpdate = false;
     }
 	
     protected void Page_Load(object sender, EventArgs e)

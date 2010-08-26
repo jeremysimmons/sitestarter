@@ -44,7 +44,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			DataAccess.Data.Saver.Save(category);
 			
-			string outputDirectory = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar + "Exported";
+			string outputDirectory = TestUtilities.GetTestingPath(this) + Path.DirectorySeparatorChar + "Exported";
 			
 			int expectedCount = 0;
 			
@@ -58,6 +58,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			exporter.ExportDirectoryPath = outputDirectory;
 						
 			exporter.ExportToXml();
+			
+			Assert.IsTrue(Directory.Exists(outputDirectory), "The output directory doesn't exist.");
 			
 			int fileCount = 0;
 			foreach (string directory in Directory.GetDirectories(outputDirectory))
