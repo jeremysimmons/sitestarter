@@ -4,6 +4,7 @@
   		
 		<property name="Argument.ProjectPath" value=""/>
 		<property name="Argument.SolutionPath" value=""/>
+		<property name="Argument.BuildMode" value=""/>
   		
   		<nant buildfile="Common.Functions.Initialize.nant"/>
   		
@@ -25,6 +26,9 @@
 		
   		<property name="Solution.PropertiesPath" value="${Argument.SolutionPath}"/>
   		<property name="Solution.RootPath" value="${path::get-directory-name(Solution.PropertiesPath)}"/>
+  		
+  		
+  		<property name="Build.Mode" value="${Argument.BuildMode}"/>
   		
   		
 	<include buildfile="Common.Jobs.RunTests.nant"/>

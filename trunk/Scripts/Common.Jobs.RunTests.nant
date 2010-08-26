@@ -23,8 +23,26 @@
         			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
     			</namespaces>
     	</xmlpeek>
+    	
+		<xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.BaseNamespace']/@value"
+		    property="Solution.BaseNamespace">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
 	
   	<target name="Common.Jobs.RunTests"> 	
+  		<!-- Delete the output directories to start from scratch -->
+  		<if test="${directory::exists(path::combine(Project.TestResultsDirectory, 'xml'))}">
+  			<delete dir="${path::combine(Project.TestResultsDirectory, 'xml')}"/>
+  		</if>
+  		<if test="${directory::exists(path::combine(Project.TestResultsDirectory, 'html'))}">
+  			<delete dir="${path::combine(Project.TestResultsDirectory, 'html')}"/>
+  		</if>
+  	
+  		<!-- Create the output directories -->
   		<if test="${directory::exists(path::combine(Project.TestResultsDirectory, 'xml')) == false}">
   			<mkdir dir="${path::combine(Project.TestResultsDirectory, 'xml')}"/>
   		</if>
@@ -35,8 +53,8 @@
   		
 		<foreach item="String" in="${Solution.TestOrder}" delim="," property="testName">
   			
-	  		<exec program="nunit-console" basedir="${Project.LibDirectory}" failonerror="false">
-	    		<arg value="../bin/Debug/SoftwareMonkeys.SiteStarter.${testName}.Tests.dll" />
+	  		<exec program="nunit-console" basedir="${Project.LibDirectory}" failonerror="true">
+	    		<arg value="../bin/${Build.Mode}/${Solution.BaseNamespace}.${testName}.Tests.dll" />
 	    		<arg value="/xml:${Project.TestResultsDirectory}/xml/${testName}.Tests.Results.xml" />
 			</exec>
 			
