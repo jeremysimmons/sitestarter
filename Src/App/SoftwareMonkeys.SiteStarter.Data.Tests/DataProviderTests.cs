@@ -117,7 +117,45 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			}
 		}
 
+		[Test]
+		public void Test_Suspend()
+		{
+			TestUser user = new TestUser();
+			user.ID = Guid.NewGuid();
+			user.FirstName = "First";
+			user.LastName = "Last";
+			user.Email = "Email";
+			user.Username = "TestUser";
+			
+			DataAccess.Data.Saver.Save(user);
+			
+			DataAccess.Data.Suspend();
+			
+			TestUser foundUser = DataAccess.Data.Reader.GetEntity<TestUser>("ID", user.ID);
+			
+			Assert.IsNull(foundUser, "The user wasn't suspended when it should have been.");
+		}
 		
+		[Test]
+		public void Test_GetDataStoreNames()
+		{
+			TestUser user = new TestUser();
+			user.ID = Guid.NewGuid();
+			user.FirstName = "First";
+			user.LastName = "Last";
+			user.Email = "Email";
+			user.Username = "TestUser";
+			
+			DataAccess.Data.Saver.Save(user);
+			
+			string[] names = DataAccess.Data.GetDataStoreNames();
+			
+			string expected = DataUtilities.GetDataStoreName(user.GetType());
+			
+			Assert.AreEqual(1, names.Length, "Invalid number of data store names returned.");
+			
+			Assert.AreEqual(expected, names[0], "The data store name doesn't match what's expected.");
+		}
 		#endregion
 	}
 }

@@ -19,8 +19,8 @@ namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
 		/// <returns>The mock AppConfig object ready for use.</returns>
 		public IAppConfig CreateMockAppConfig()
         {
-			string applicationPath = TestUtilities.GetTestingPath();
-			string configPath = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar + "Application.testing.config";
+			string applicationPath = TestUtilities.GetTestingPath(this);
+			string configPath = TestUtilities.GetTestingPath(this) + Path.DirectorySeparatorChar + "Application.testing.config";
 			
         	IAppConfig config = new MockAppConfig();
         	config.FilePath = configPath;

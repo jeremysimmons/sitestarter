@@ -92,7 +92,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			string groupName = "TestGroup";
 			
-			string commandsPath = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar + DataAccess.Data.Schema.SchemaDirectory;
+			string commandsPath = TestUtilities.GetTestingPath(this) + Path.DirectorySeparatorChar + DataAccess.Data.Schema.SchemaDirectory;
 			
 			
 			DataSchema schema = (DataSchema)DataAccess.Data.InitializeDataSchema();
@@ -130,7 +130,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			string groupName = "TestGroup";
 			
-			string commandsPath = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar + DataAccess.Data.Schema.SchemaDirectory;
+			string commandsPath = TestUtilities.GetTestingPath(this) + Path.DirectorySeparatorChar + DataAccess.Data.Schema.SchemaDirectory;
 			
 			
 			DataSchema schema = (DataSchema)DataAccess.Data.InitializeDataSchema();
@@ -153,11 +153,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			DataSchema schema = (DataSchema)DataAccess.Data.InitializeDataSchema();
 			
-			string schemaDirectoryPath = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar + schema.SchemaDirectory;
+			string schemaDirectoryPath = TestUtilities.GetTestingPath(this) + Path.DirectorySeparatorChar + schema.SchemaDirectory;
 			
 			string path = schema.CreateCommandFilePath(schemaDirectoryPath, groupName, version);
 			
-			string expectedPath = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar +
+			string expectedPath = TestUtilities.GetTestingPath(this) + Path.DirectorySeparatorChar +
 				schema.SchemaDirectory + Path.DirectorySeparatorChar +
 				groupName + "--" + version.ToString().Replace(".", "-") + ".schema";
 				
@@ -201,7 +201,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			string groupName = "TestGroup";
 			
-			string commandsPath = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar + DataAccess.Data.Schema.SchemaDirectory;
+			string commandsPath = TestUtilities.GetTestingPath(this) + Path.DirectorySeparatorChar + DataAccess.Data.Schema.SchemaDirectory;
 			
 			DataAccess.Data.Schema.SaveCommands(commandsPath, commands, groupName, commandVersion);
 			
@@ -232,7 +232,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			string groupName = "TestGroup";
 			
-			string commandsPath = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar + DataAccess.Data.Schema.SchemaDirectory;
+			string commandsPath = TestUtilities.GetTestingPath(this) + Path.DirectorySeparatorChar + DataAccess.Data.Schema.SchemaDirectory;
 			
 			DataSchema schema = (DataSchema)DataAccess.Data.InitializeDataSchema();
 			

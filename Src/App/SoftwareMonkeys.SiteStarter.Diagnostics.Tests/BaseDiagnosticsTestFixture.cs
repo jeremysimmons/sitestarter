@@ -13,7 +13,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics.Tests
 		[SetUp]
 		public void Start()
 		{
-			TestUtilities.ClearTestingDirectory();
+			TestUtilities.ClearTestingDirectory(this);
 			InitializeMockDiagnostics();
 		}
 		
@@ -24,7 +24,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics.Tests
 		public void End()
 		{
 			DisposeMockDiagnostics();
-			TestUtilities.ClearTestingDirectory();
+			TestUtilities.ClearTestingDirectory(this);
 		}
 		
 		

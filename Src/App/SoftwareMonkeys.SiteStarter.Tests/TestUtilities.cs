@@ -22,7 +22,7 @@ namespace SoftwareMonkeys.SiteStarter.Tests
 			return Path.GetDirectoryName(location);
 		}*/
 		
-		static public string GetTestingPath()
+		static public string GetTestingPath(BaseTestFixture executingFixture)
 		{
 			Assembly assembly = Assembly.GetExecutingAssembly();
 			string location = assembly.Location;
@@ -31,13 +31,25 @@ namespace SoftwareMonkeys.SiteStarter.Tests
 			
 			string path = parts[0] + Path.DirectorySeparatorChar + "_testing";
 			
+			path = path + Path.DirectorySeparatorChar + executingFixture.TestID.ToString();
+			
 			return path;
 		}
 		
-		static public void RegisterTestEntities()
+		static public string GetTestApplicationPath(BaseTestFixture executingTestFixture, string applicationName)
+		{
+			return GetTestingPath(executingTestFixture) + Path.DirectorySeparatorChar + applicationName;
+		}
+		
+		static public string GetTestDataPath(BaseTestFixture executingTestFixture, string applicationName)
+		{
+			return GetTestApplicationPath(executingTestFixture, applicationName) + Path.DirectorySeparatorChar + "App_Data";
+		}
+		
+		static public void RegisterTestEntities(BaseTestFixture executingTestFixture)
 		{
 			if (Config.Mappings == null)
-				Config.Mappings = ConfigFactory<MappingConfig>.NewConfig(GetTestingPath(), "Mappings", "Testing");
+				Config.Mappings = ConfigFactory<MappingConfig>.NewConfig(GetTestingPath(executingTestFixture), "Mappings", "Testing");
 			
 			TestArticle.RegisterType();
 			TestArticlePage.RegisterType();
@@ -55,9 +67,9 @@ namespace SoftwareMonkeys.SiteStarter.Tests
 		}
 		
 
-		static public void ClearTestEntities()
+		static public void ClearTestEntities(BaseTestFixture executingTestFixture)
 		{
-			
+			// The whole testing directory gets deleted so this is skipped
 		}
 
 		/*static public void ClearTestEntities()
@@ -147,9 +159,9 @@ namespace SoftwareMonkeys.SiteStarter.Tests
 		/// <summary>
 		/// Clears all folders and files from the testing directory.
 		/// </summary>
-		static public void ClearTestingDirectory()
+		static public void ClearTestingDirectory(BaseTestFixture executingTestFixture)
 		{
-			ClearDirectory(GetTestingPath());
+			ClearDirectory(GetTestingPath(executingTestFixture));
 		}
 		
 	}

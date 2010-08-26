@@ -2,6 +2,7 @@
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.State" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Data" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Providers" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Data" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Configuration" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
@@ -12,16 +13,8 @@
 
     void Application_Start(object sender, EventArgs e) 
     {
-        // TODO: Clean up
-	//SoftwareMonkeys.SiteStarter.Diagnostics.Tracer.Initialize();
-	//logger = LogManager.GetLogger("Test");
-
-	//logger.Info("test worked");
-	////System.Diagnostics.Trace.Listeners.Add(new LogWriter());
-
         using (LogGroup logGroup = AppLogger.StartGroup("Preparing to start application.", LogLevel.Debug))
         {
-            //log4net.Config.XmlConfigurator.Configure();
             // Attempt to initialize the config
             Initialize();
         }
@@ -37,23 +30,14 @@
     void Application_Error(object sender, EventArgs e) 
     { 
         // Code that runs when an unhandled error occurs
-	    Exception lastException = Server.GetLastError();
-   	    AppLogger.Error(lastException.ToString());
+	   // Exception lastException = Server.GetLastError();
+   	   // AppLogger.Error(lastException.ToString());
     }
 
     void Session_Start(object sender, EventArgs e) 
     {
         using (LogGroup logGroup = AppLogger.StartGroup("Preparing to start session.", LogLevel.Debug))
-        {
-	        if (Request.QueryString["VS"] != null && Request.QueryString["VS"] != String.Empty)
-	        {
-	            VirtualServer server = VirtualServerFactory.Current.GetVirtualServerByName(Request.QueryString["VS"]);
-	
-	            if (server != null)
-	                VirtualServerState.Switch(server.Name, server.ID);
-	            
-	        }
-	        
+        {	        
 	        // Code that runs when a new session is started
 	        if (!StateAccess.IsInitialized || !Config.IsInitialized || !DataAccess.IsInitialized)
 	            Initialize();
@@ -78,7 +62,7 @@
 	        {
 	            SoftwareMonkeys.SiteStarter.Web.State.StateProviderManager.Initialize();   
 	            Config.Initialize(Server.MapPath(HttpContext.Current.Request.ApplicationPath), WebUtilities.GetLocationVariation(HttpContext.Current.Request.Url));
-	            DataProviderManager.Initialize();
+	            new DataProviderInitializer().Initialize();
 	        }
 		}
     }

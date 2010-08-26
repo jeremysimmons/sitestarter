@@ -45,7 +45,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			DataExporter exporter = (DataExporter)DataAccess.Data.InitializeDataExporter();
 			
-			exporter.ExportDirectoryPath = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar + "Exported";
+			exporter.ExportDirectoryPath = TestUtilities.GetTestingPath(this) + Path.DirectorySeparatorChar + "Exported";
 			
 			exporter.ExportEntity(user);
 			exporter.ExportEntity(role);
@@ -63,7 +63,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			DataImporter importer = (DataImporter)DataAccess.Data.InitializeDataImporter();
 			
 			importer.ImportableDirectoryPath = exporter.ExportDirectoryPath;
-			importer.ImportedDirectoryPath = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar + "Imported";
+			importer.ImportedDirectoryPath = TestUtilities.GetTestingPath(this) + Path.DirectorySeparatorChar + "Imported";
 			
 			importer.ImportFromXml();
 			
@@ -127,7 +127,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			DataExporter exporter = (DataExporter)DataAccess.Data.InitializeDataExporter();
 			
-			exporter.ExportDirectoryPath = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar + "Exported";
+			exporter.ExportDirectoryPath = TestUtilities.GetTestingPath(this) + Path.DirectorySeparatorChar + "Exported";
 			
 			exporter.ExportEntity(user);
 			exporter.ExportEntity(role);
@@ -141,7 +141,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			schema.LegacyVersion = legacyVersion;
 			schema.ApplicationVersion = currentVersion;
 			
-			schema.SchemaCommandDirectoryPath = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar + "Schema";
+			schema.SchemaCommandDirectoryPath = TestUtilities.GetTestingPath(this) + Path.DirectorySeparatorChar + "Schema";
 			
 			RenamePropertyCommand command1 = new RenamePropertyCommand();
 			command1.TypeName = user.ShortTypeName;
@@ -161,7 +161,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			DataImporter importer = (DataImporter)DataAccess.Data.Importer;
 			
 			importer.ImportableDirectoryPath = exporter.ExportDirectoryPath;
-			importer.ImportedDirectoryPath = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar + "Imported";
+			importer.ImportedDirectoryPath = TestUtilities.GetTestingPath(this) + Path.DirectorySeparatorChar + "Imported";
 			
 			importer.ImportFromXml();
 			
@@ -222,7 +222,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			DataExporter exporter = (DataExporter)DataAccess.Data.InitializeDataExporter();
 			
-			exporter.ExportDirectoryPath = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar + "Exported";
+			exporter.ExportDirectoryPath = TestUtilities.GetTestingPath(this) + Path.DirectorySeparatorChar + "Exported";
 			
 			exporter.ExportEntity(user);
 			exporter.ExportEntity(role);
@@ -253,7 +253,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			DataExporter exporter = (DataExporter)DataAccess.Data.InitializeDataExporter();
 			
-			exporter.ExportDirectoryPath = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar + "Exported";
+			exporter.ExportDirectoryPath = TestUtilities.GetTestingPath(this) + Path.DirectorySeparatorChar + "Exported";
 			
 			// Export the user to XML
 			exporter.ExportEntity(user);
@@ -261,11 +261,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			DataImporter importer = (DataImporter)DataAccess.Data.InitializeDataImporter();
 			
 			importer.ImportableDirectoryPath = exporter.ExportDirectoryPath;
-			importer.ImportedDirectoryPath = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar + "Imported";
+			importer.ImportedDirectoryPath = TestUtilities.GetTestingPath(this) + Path.DirectorySeparatorChar + "Imported";
 			
 			// Test the move to imported function
 			importer.MoveToImported(user, importer.CreateImportableEntityPath(user));
 			
+			string importedPath = importer.CreateImportedEntityPath(user);
 			
 			int importableCount = 0;
 			
@@ -276,13 +277,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			Assert.AreEqual(0, importableCount, "Incorrect number of files found in importable folder.");
 			
-			int importedCount = 0;
-			foreach (string dir in Directory.GetDirectories(importer.ImportedDirectoryPath))
-			{
-				importedCount += Directory.GetFiles(dir, "*.xml").Length;
-			}
+			bool foundImported = File.Exists(importedPath);
 			
-			Assert.AreEqual(1, importedCount, "Incorrect number of files found in imported folder.");
+			Assert.IsTrue(foundImported, "Imported file not found.");
 		}
 		
 		
@@ -297,7 +294,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			DataExporter exporter = (DataExporter)DataAccess.Data.InitializeDataExporter();
 			
-			exporter.ExportDirectoryPath = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar + "Exported";
+			exporter.ExportDirectoryPath = TestUtilities.GetTestingPath(this) + Path.DirectorySeparatorChar + "Exported";
 			
 			// Export the user to XML
 			exporter.ExportEntity(user);
@@ -306,7 +303,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			DataImporter importer = (DataImporter)DataAccess.Data.InitializeDataImporter();
 			
-			importer.ImportedDirectoryPath = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar + "Imported";
+			importer.ImportedDirectoryPath = TestUtilities.GetTestingPath(this) + Path.DirectorySeparatorChar + "Imported";
 			
 			TestUser foundUser = (TestUser)importer.LoadEntityFromFile(filePath);
 			

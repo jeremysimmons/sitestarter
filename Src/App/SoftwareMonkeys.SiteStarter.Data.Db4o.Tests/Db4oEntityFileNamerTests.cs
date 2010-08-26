@@ -3,10 +3,7 @@ using SoftwareMonkeys.SiteStarter.Data.Tests;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Db4o.Tests
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	public class Db4oFilterTests : FilterTests
+	public class Db4oEntityFileNamerTests : EntityFileNamerTests
 	{
 		public override void InitializeMockData()
 		{

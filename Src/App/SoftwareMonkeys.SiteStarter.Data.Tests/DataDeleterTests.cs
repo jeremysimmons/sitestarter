@@ -50,7 +50,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing saving of an EntityIDReference.", NLog.LogLevel.Debug))
 			{
-				TestUtilities.ClearTestEntities();
 				
 				TestUser user = new TestUser();
 				user.ID = Guid.NewGuid();
@@ -83,7 +82,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				//Assert.IsNotNull(store, "The data store wasn't created/initialized.");
 				
-				TestUtilities.ClearTestEntities();
 			}
 		}
 		

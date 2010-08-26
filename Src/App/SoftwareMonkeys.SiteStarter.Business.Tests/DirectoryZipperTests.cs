@@ -46,7 +46,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			
 			DataAccess.Data.Saver.Save(category);
 			
-			string outputDirectory = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar + "Exported";
+			string outputDirectory = TestUtilities.GetTestingPath(this) + Path.DirectorySeparatorChar + "Exported";
 			
 			int expectedCount = 0;
 			
@@ -76,7 +76,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			DirectoryZipper zipper = new DirectoryZipper(exporter.ExportDirectoryPath);
 			
 			string zipFileName = @"Backup--" + DateTime.Now.Year + "-" + DateTime.Now.Month + "-" + DateTime.Now.Day + "--" + DateTime.Now.Hour + "-" + DateTime.Now.Minute + "-" + DateTime.Now.Second + ".zip";
-			string zipFilePath = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar + "Backups" + Path.DirectorySeparatorChar + zipFileName;
+			string zipFilePath = TestUtilities.GetTestingPath(this) + Path.DirectorySeparatorChar + "Backups" + Path.DirectorySeparatorChar + zipFileName;
 			//zipShortPath;//Config.Application.PhysicalApplicationPath + zipShortPath;
 
 

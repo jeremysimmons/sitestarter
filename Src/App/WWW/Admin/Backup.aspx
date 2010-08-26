@@ -11,6 +11,7 @@
 <%@ Import namespace="System.Xml" %>
 <%@ Import namespace="System.Xml.Serialization" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Data" %>
+<%@ Import namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
 <script runat="server">
 
 	ApplicationBackup appBackup;
@@ -30,11 +31,15 @@
     {
     	appBackup = new ApplicationBackup();
     	
-        /*//manager = new XmlBackupManager(Server.MapPath(Request.ApplicationPath),
-            "App_Data",
-            "Backups",
-            WebUtilities.GetLocationVariation(Request.Url),
-            false);*/
+    	try
+    	{
+    	appBackup.PrepareForUpdate = Convert.ToBoolean(Request.QueryString["PrepareForUpdate"]);
+    	}
+    	catch (FormatException ex)
+    	{
+    		AppLogger.Error(ex.ToString());
+    		// Don't throw exception. An error here can be ignored and a standard backup will be performed
+    	}
     }
 	
     protected void Page_Load(object sender, EventArgs e)
@@ -88,7 +93,7 @@
 
         if (PrepareForUpdate)
         {
-            Response.Redirect("Update.aspx?BackupComplete=true");
+            Response.Redirect("UpdateReady.html");
         }
         else
         {

@@ -17,21 +17,21 @@ private void Page_Load(object sender, EventArgs e)
 
 private void EnsureSetup()
 {
-	if (!Config.IsInitialized
-		&& Request.Url.ToString().ToLower().IndexOf("/setup.aspx") == -1)
-		HttpContext.Current.Response.Redirect(Request.ApplicationPath + "/Admin/Setup.aspx");
+	SetupChecker setupChecker = new SetupChecker();
+	setupChecker.Check();
 }
 
 private string GetMenuDataFile()
 {
-	if (VirtualServerState.VirtualServerSelected)
-	{
-		return @"~\App_Data\VS\" + VirtualServerState.VirtualServerID + @"\Menu.sitemap";
-	}
-	else
-	{
-		return @"~\App_Data\Menu.sitemap";
-	}
+
+	string pathVariation = WebUtilities.GetLocationVariation(Request.Url);
+
+	string siteMapFile = "Menu.sitemap";
+	if (pathVariation != String.Empty)
+		siteMapFile = "Menu." + pathVariation + ".sitemap";
+
+		return @"~\App_Data\" + siteMapFile;
+	
 }
 </script>
 
@@ -73,7 +73,7 @@ private string GetMenuDataFile()
            { %>
         </td></tr></table>
         <table border="0" width="100%"><tr><td width="50%" style="vertical-align:top;">
-        <asp:placeholder runat="server" visible="false">Current Server: <%= VirtualServerState.VirtualServerName == null || VirtualServerState.VirtualServerName == String.Empty ? "[Default]" : VirtualServerState.VirtualServerName%></asp:placeholder>
+        
         </td><td align="right">
     <uc1:BackupLauncher id="BackupLauncher" runat="server">
     </uc1:BackupLauncher></td></tr></table>

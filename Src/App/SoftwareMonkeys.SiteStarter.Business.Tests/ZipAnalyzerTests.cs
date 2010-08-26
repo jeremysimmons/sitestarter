@@ -17,17 +17,23 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		[Test]
 		public void Test_CountFiles()
 		{
-			string backupDirectoryPath = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar +
-				"Backup";
 			
-			string exportDirectoryPath = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar +
-				"Export";
+			string applicationName = "TestApplication";
 			
-			string legacyDirectoryPath = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar +
-				"Legacy";
 			
-			string dataDirectoryPath = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar +
-				"App_Data";
+			string applicationPath = TestUtilities.GetTestApplicationPath(this, applicationName);
+			
+			string dataDirectoryPath = TestUtilities.GetTestDataPath(this, applicationName);
+			
+			string backupDirectoryPath = dataDirectoryPath + Path.DirectorySeparatorChar + "Backup";
+			
+			string exportDirectoryPath = dataDirectoryPath + Path.DirectorySeparatorChar + "Export";
+			
+			string legacyDirectoryPath = dataDirectoryPath + Path.DirectorySeparatorChar + "Legacy";
+			
+			
+			VersionTestUtilities.CreateDummyVersion(dataDirectoryPath, "testing");
+			
 			
 			CreateDummyFiles(dataDirectoryPath);
 			

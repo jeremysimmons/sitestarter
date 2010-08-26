@@ -18,11 +18,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[SetUp]
 		public void Start()
 		{
-			TestUtilities.ClearTestingDirectory();
+			TestUtilities.ClearTestingDirectory(this);
 			InitializeMockState();
 			InitializeMockConfiguration();
 			InitializeMockData();
-			TestUtilities.RegisterTestEntities();
+			TestUtilities.RegisterTestEntities(this);
 		}
 		
 		/// <summary>
@@ -34,8 +34,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			DisposeMockData();
 			DisposeMockConfiguration();
 			DisposeMockState();
-			TestUtilities.ClearTestingDirectory();
-			TestUtilities.ClearTestEntities();
+			TestUtilities.ClearTestingDirectory(this);
+			TestUtilities.ClearTestEntities(this);
 		}
 		
 		

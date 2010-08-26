@@ -17,72 +17,72 @@
 
 <script language="C#" runat="server">
 
-
     private void Page_Init(object sender, EventArgs e)
     {
         using (LogGroup logGroup = AppLogger.StartGroup("Initializing the import page.", NLog.LogLevel.Debug))
         {
             if (!IsPostBack)
             {
-                Import();
+                Update();
             }
         }
         
     }
 
-    private void Import()
+    private void Update()
     {
         using (LogGroup logGroup = AppLogger.StartGroup("Starting the import.", NLog.LogLevel.Debug))
         {
         	ExecuteSetup();
-        	
-            ExecuteImport();
-
-            PageViews.SetActiveView(SetupCompleteView);
-            
+        
+            ExecuteUpdate();
         }
     }
-
+    
     private void ExecuteSetup()
     {
     
-        string dataDirectoryPath = Server.MapPath(Request.ApplicationPath) + Path.DirectorySeparatorChar + "App_Data";
-            
 		ApplicationInstaller installer = new ApplicationInstaller();
 		installer.UseLegacyData = true;
 		installer.ApplicationPath = Request.ApplicationPath;
 		installer.FileMapper = new FileMapper();
 		installer.PathVariation = WebUtilities.GetLocationVariation(Request.Url);
 		installer.DataProviderInitializer = new DataProviderInitializer();
+		installer.AdministratorRoleName = Resources.Language.Administrator;
 		
 		installer.Setup();
     }
-    
-    private void ExecuteImport()
+
+    private void ExecuteUpdate()
     {
 		using (LogGroup logGroup = AppLogger.StartGroup("Running the import process.", NLog.LogLevel.Debug))
         {
+            
+            AppLogger.Debug("Converting and importing core data.");
+
+           
             string dataDirectoryPath = Server.MapPath(Request.ApplicationPath) + Path.DirectorySeparatorChar + "App_Data";
             
             ApplicationRestorer restorer = new ApplicationRestorer(new FileMapper());
-            restorer.LegacyDirectoryPath = dataDirectoryPath + Path.DirectorySeparatorChar + "Import";
-            
+            restorer.LegacyDirectoryPath = dataDirectoryPath + Path.DirectorySeparatorChar + "Legacy";
             restorer.PersonalizationDirectoryPath = dataDirectoryPath + Path.DirectorySeparatorChar + "Personalization_Data";
             
-            restorer.Restore();
+            if (restorer.RequiresRestore)
+	            restorer.Restore();
+	        else
+	        	Response.Redirect(Request.ApplicationPath + "/Default.aspx");
+
+
+
             
 		}
     }
 	
 </script>
 <asp:Content ContentPlaceHolderID="Body" runat="Server" ID="Body">
-<asp:MultiView runat="server" ID="PageViews">
-<asp:View runat="server" ID="SetupCompleteView">
+<div class="Heading1"><%= Resources.Language.UpdateComplete%></div>
+<p><%= Resources.Language.UpdateCompleteMessage %></p>
+<p><%= Resources.Language.PreviousVersion %>: <%= DataAccess.Data.Schema.LegacyVersion %></p>
+<p><%= Resources.Language.CurrentVersion %>: <%= DataAccess.Data.Schema.ApplicationVersion %></p>
 
-<div class="Heading1"><%= Resources.Language.ImportComplete%></div>
-<p><%= Resources.Language.ImportCompleteMessage %></p>
-<ul><li><a href='../Members/LogIn.aspx'><%= Resources.Language.LogIn %></a></li></ul>
-
-</asp:View>
-</asp:MultiView>
 </asp:Content>

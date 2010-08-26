@@ -15,10 +15,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the retrieval of references for an entity.", NLog.LogLevel.Debug))
 			{
-				
-				TestUtilities.ClearTestEntities();
-				
-				
+								
 				TestUser user = new TestUser();
 				Guid userID = user.ID = Guid.NewGuid();
 				user.FirstName = "Test";
@@ -53,7 +50,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				}
 				
 				
-				TestUtilities.ClearTestEntities();
 			}
 		}
 		
@@ -62,8 +58,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the retrieval of references for an entity.", NLog.LogLevel.Debug))
 			{
-				TestUtilities.ClearTestEntities();
-				
 				
 				TestUser user = new TestUser();
 				Guid userID = user.ID = Guid.NewGuid();
@@ -121,8 +115,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 					Assert.IsTrue(reference2.Includes(userID, "Roles"), "The user ID wasn't found on the second reference.");
 					Assert.IsTrue(reference2.Includes(role2ID, "Users"), "The role2 ID wasn't found on the second reference.");
 				}
-				
-				TestUtilities.ClearTestEntities();
 			}
 			
 		}
@@ -133,10 +125,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the retrieval of references for an entity with the entities activated as well.", NLog.LogLevel.Debug))
 			{
-				
-				TestUtilities.ClearTestEntities();
-				
-				
 				TestUser user = new TestUser();
 				Guid userID = user.ID = Guid.NewGuid();
 				user.FirstName = "Test";
@@ -172,8 +160,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 					Assert.IsNotNull(references[0].SourceEntity, "The source entity wasn't activated on the reference.");
 					Assert.IsNotNull(references[0].ReferenceEntity, "The source entity wasn't activated on the reference.");
 				}
-				
-				TestUtilities.ClearTestEntities();
 			}
 		}
 
@@ -224,7 +210,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetReference function with a synchronous reference to ensure it retrieves the correct reference.", NLog.LogLevel.Debug))
 			{
-				TestUtilities.ClearTestEntities();
 				
 				TestUtilities.CreateDummyReferences(100);
 				
@@ -323,7 +308,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetReference function with a synchronous reference to ensure it retrieves the correct reference.", NLog.LogLevel.Debug))
 			{
-				TestUtilities.ClearTestEntities();
 				
 				TestUtilities.CreateDummyReferences(100);
 				
@@ -460,8 +444,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 					     reference.Entity2ID == user.ID))
 						Assert.Fail("Somehow a reference was created between two non reference entities.");*/
 				
-				
-				TestUtilities.ClearTestEntities();
 			}
 		}
 		
@@ -471,7 +453,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the MatchReference function to ensure matches properly.", NLog.LogLevel.Debug))
 			{
-				TestUtilities.ClearTestEntities();
 				
 				TestArticle article = new TestArticle();
 				article.ID = Guid.NewGuid();

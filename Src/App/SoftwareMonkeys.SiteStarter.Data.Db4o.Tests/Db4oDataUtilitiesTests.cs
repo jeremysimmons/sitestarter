@@ -11,7 +11,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o.Tests
 		
 		public override void InitializeMockData()
 		{
-			MockDb4oDataProviderManager.Initialize();
+			new MockDb4oDataProviderInitializer(this).Initialize();
 		}
 	}
 }
