@@ -5,7 +5,9 @@ using System.Collections.Specialized;
 using System.Configuration.Provider;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using SoftwareMonkeys.SiteStarter.Configuration;
 using System.Reflection;
+using System.IO;
 
 namespace SoftwareMonkeys.SiteStarter.Data
 {
@@ -14,6 +16,21 @@ namespace SoftwareMonkeys.SiteStarter.Data
 	/// </summary>
 	public abstract class DataProvider : ProviderBase
 	{
+		/// <summary>
+		/// Gets the path to the data directory.
+		/// </summary>
+		public string DataDirectoryPath
+		{
+			get { return Config.Application.PhysicalApplicationPath + Path.DirectorySeparatorChar + "App_Data"; }
+		}
+		
+		/// <summary>
+		/// Gets the path to the data directory.
+		/// </summary>
+		public string SuspendedDirectoryPath
+		{
+			get { return DataDirectoryPath + Path.DirectorySeparatorChar + "Suspended"; }
+		}
 		
 		#region Reader adapter
 		private IDataReader reader;
@@ -310,6 +327,12 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="baseType">The base filter type that is inherited by the provider specific filter being created.</param>
 		/// <returns>A data access provider specific data filter determined by the specified based type.</returns>
 		public abstract IDataFilter CreateFilter(Type baseType);
+		
+		/// <summary>
+		/// Disposes the data provider and suspends the data stores by moving them to a save location outside the application.
+		/// Note: This is used during an update to safely clear the data stores and allow the updated data to be imported without conflicts.
+		/// </summary>
+		public abstract void Suspend();
 		
 	}
 }

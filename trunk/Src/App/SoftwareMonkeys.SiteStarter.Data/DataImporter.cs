@@ -185,8 +185,6 @@ namespace SoftwareMonkeys.SiteStarter.Data
 
 				string typeName = entity.GetType().ToString();
 				
-				DataExporter exporter = (DataExporter)Provider.InitializeDataExporter();
-				exporter.ExportDirectoryPath = Path.GetDirectoryName(exporter.ExportDirectoryPath);
 
 				//fileName = CreateImportableEntityPath(entity);
 				fileName = filePath;
@@ -238,12 +236,12 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="entity">The entity to create the file path for.</param>
 		/// <returns>The file path for the provided entity.</returns>
 		public string CreateImportedEntityPath(IEntity entity)
-		{
-			// This function is passed through to the exporter adapter, but with the ImportedDirectoryPath
+		{	
+			string basePath = ImportedDirectoryPath + Path.DirectorySeparatorChar + Provider.Schema.LegacyVersion.ToString().Replace(".", "-");
 
-			DataExporter exporter = (DataExporter)Provider.InitializeDataExporter();
-			exporter.ExportDirectoryPath = ImportedDirectoryPath;
-			return exporter.CreateEntityPath(entity);
+			string fullPath = new EntityFileNamer(entity, basePath).CreateFilePath();
+			
+			return fullPath;
 		}
 		/// <summary>
 		/// Creates the file path for the provided entity in the folder specified by the ImportableDirectoryPath property.
@@ -252,11 +250,13 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <returns>The file path for the provided entity.</returns>
 		public string CreateImportableEntityPath(IEntity entity)
 		{
-			// This function is passed through to the exporter adapter, but using the ImportableDirectoryPath
+			Guid id = entity.ID;
+			
+			string basePath = ImportableDirectoryPath;
 
-			DataExporter exporter = (DataExporter)Provider.InitializeDataExporter();
-			exporter.ExportDirectoryPath = ImportableDirectoryPath;
-			return exporter.CreateEntityPath(entity);
+			string fullPath = new EntityFileNamer(entity, basePath).CreateFilePath();
+			
+			return fullPath;
 		}
 	}
 }

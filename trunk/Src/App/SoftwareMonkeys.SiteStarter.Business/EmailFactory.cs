@@ -40,7 +40,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
         {
             MailMessage mm = new MailMessage(fromUser.Email, email, subject, message);
 
-            new SmtpClient(Configuration.Config.Application.SmtpServer).Send(mm);
+            new SmtpClient(SmtpServer).Send(mm);
         }
 
         /// <summary>

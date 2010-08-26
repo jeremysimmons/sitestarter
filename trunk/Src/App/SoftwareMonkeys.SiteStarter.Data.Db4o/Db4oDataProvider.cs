@@ -173,13 +173,15 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			List<String> names = new List<String>();
 
-			string path = Config.Application.PhysicalApplicationPath + Path.DirectorySeparatorChar + "App_Data";
+			string path = DataDirectoryPath;
 			
 			if (Directory.Exists(path))
 			{
 				foreach (string file in Directory.GetFiles(path, "*.yap"))
 				{
-					names.Add(Path.GetFileNameWithoutExtension(file));
+					string[] nameParts = Path.GetFileName(file).Split('.');
+					string shortName = nameParts[0];
+					names.Add(shortName);
 				}
 			}
 
@@ -271,10 +273,53 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// </summary>
 		public override void Dispose()
 		{
-			foreach (Db4oDataStore store in Stores)
+			using (LogGroup logGroup = AppLogger.StartGroup("Disposing the data provider and data stores.", NLog.LogLevel.Debug))
 			{
-				// Includes commit and close
-				store.Dispose();
+				foreach (Db4oDataStore store in Stores)
+				{
+					AppLogger.Debug("Suspending store: " + store.Name);
+					
+					store.Dispose();
+				}
+			}
+		}
+		
+		/// <summary>
+		/// Disposes the data provider and suspends the data stores by moving them to a save location outside the application.
+		/// Note: This is used during an update to safely clear the data stores and allow the updated data to be imported without conflicts.
+		/// </summary>
+		public override void Suspend()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Suspending the data provider and data stores.", NLog.LogLevel.Debug))
+			{
+				// Dispose the data access system to unlock the files
+				Dispose();
+				
+				// Create the path to the suspended directory
+				string toDirectory = SuspendedDirectoryPath + Path.DirectorySeparatorChar
+					+ DataAccess.Data.Schema.ApplicationVersion.ToString().Replace(".", "-");
+				
+				AppLogger.Debug("To directory: " + toDirectory);
+				
+				// Move each .yap file to the suspended directory.
+				foreach (string file in Directory.GetFiles(DataDirectoryPath, "*.yap"))
+				{
+					AppLogger.Debug("Moving data store: " + file);
+					
+					string toFile = toDirectory + Path.DirectorySeparatorChar + Path.GetFileName(file);
+					
+					AppLogger.Debug("To: " + toFile);
+					
+					if (!Directory.Exists(Path.GetDirectoryName(toFile)))
+						Directory.CreateDirectory(Path.GetDirectoryName(toFile));
+					
+					// If the to file already exists then delete it.
+					// This should never actually occur in production but can occur during debugging
+					if (File.Exists(toFile))
+						File.Delete(toFile);
+					
+					File.Move(file, toFile);
+				}
 			}
 		}
 		

@@ -21,20 +21,19 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 		/// </summary>
         Guid PrimaryAdministratorID { get;set; }
 
-        // TODO: Clean up
+        /// <summary>
+        /// The session timeout period.
+        /// </summary>
         int SessionTimeout { get;set; }
 
+        /// <summary>
+        /// The virtul path to the application.
+        /// </summary>
         string ApplicationPath { get; set; }
         
-        // TODO: Remove if not needed
-        /*
-        bool EnableVirtualServer {get;set;}
-        bool EnableVirtualServerRegistration {get;set;}
-        bool AutoApproveVirtualServerRegistration {get;set;}
-        string[] DefaultVirtualServerKeywords {get;set;}
-        */
-		string SmtpServer { get; }
-
+        /// <summary>
+        /// The various application settings.
+        /// </summary>
         IConfigurationDictionary Settings { get;set; }
 
     }

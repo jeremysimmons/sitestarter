@@ -384,24 +384,5 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				}
 			}
 		}
-		
-		
-		/// <summary>
-		/// Copies the Version.number file into the App_Data directory so the next update knows what schema version is being used.
-		/// </summary>
-		static public void InitializeDataVersion()
-		{
-			string originalPath = Config.Application.PhysicalApplicationPath + Path.DirectorySeparatorChar
-				+ "Version.Number";
-			
-			string newPath = Config.Application.PhysicalApplicationPath + Path.DirectorySeparatorChar
-				+ "App_Data" + Path.DirectorySeparatorChar
-				+ "Version.Number";
-			
-			if (!File.Exists(originalPath))
-				throw new Exception("Cannot find version file: " + originalPath);
-			
-			File.Copy(originalPath, newPath, true);
-		}
 	}
 }

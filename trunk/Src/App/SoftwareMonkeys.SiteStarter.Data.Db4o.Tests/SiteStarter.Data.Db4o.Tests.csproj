@@ -52,9 +52,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Lib\Db4objects.Db4o.dll</HintPath>
     </Reference>
-    <Reference Include="Db4objects.Db4o.CS">
-      <HintPath>..\..\..\lib\Db4objects.Db4o.CS.dll</HintPath>
-    </Reference>
     <Reference Include="NLog, Version=1.0.0.505, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Lib\NLog.dll</HintPath>
@@ -127,6 +124,7 @@
     <Compile Include="Db4oDataProviderTests.cs" />
     <Compile Include="Db4oDataReaderTests.cs" />
     <Compile Include="Db4oDataUtilitiesTests.cs" />
+    <Compile Include="Db4oEntityFileNamerTests.cs" />
     <Compile Include="Db4oReferenceFilterTests.cs" />
     <Compile Include="Db4oDataReferencerTests.cs" />
     <Compile Include="Db4oDataSaverTests.cs" />
@@ -136,7 +134,7 @@
     <Compile Include="Db4oFilterTests.cs" />
     <Compile Include="Db4oRenamePropertyCommandTests.cs" />
     <Compile Include="Db4oRenameTypeCommandTests.cs" />
-    <Compile Include="MockDb4oDataProviderManager.cs" />
+    <Compile Include="MockDb4oDataProviderInitializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

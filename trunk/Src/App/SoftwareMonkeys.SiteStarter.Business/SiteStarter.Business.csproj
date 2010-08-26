@@ -72,6 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationBackup.cs" />
+    <Compile Include="ApplicationInstaller.cs" />
     <Compile Include="ApplicationRestorer.cs" />
     <Compile Include="BaseStrategy.cs" />
     <Compile Include="BaseFactory.cs" />

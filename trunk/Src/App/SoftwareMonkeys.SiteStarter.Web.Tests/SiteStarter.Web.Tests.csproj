@@ -121,6 +121,7 @@
     <None Include="WebControls\_svn\entries" />
     <Compile Include="BaseWebTestFixture.cs" />
     <Compile Include="Security\RoleProviderTests.cs" />
+    <Compile Include="SetupCheckerTests.cs" />
     <Compile Include="WebControls\EntityFormHelperTests.cs" />
     <Compile Include="WebUtilitiesTests.cs" />
     <Folder Include="Security" />

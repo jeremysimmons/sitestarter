@@ -48,10 +48,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Db4objects.Db4o, Version=7.2.44.10827, Culture=neutral, PublicKeyToken=6199cd4f203aa8eb, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Lib\Db4objects.Db4o.dll</HintPath>
-    </Reference>
     <Reference Include="NLog, Version=1.0.0.505, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Lib\NLog.dll</HintPath>
@@ -102,10 +98,6 @@
       <Project>AD977DB1-879A-476C-A74A-FC2E0EC98F0A</Project>
       <Name>SiteStarter.State.Tests</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.State.Tests\SiteStarter.State.Tests.csproj">
-      <Project>{91C362DD-993D-4BF9-A90A-FFE18AB17434}</Project>
-      <Name>SiteStarter.State.Tests</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.State\SiteStarter.State.csproj">
       <Project>{34129651-3B9F-4A0D-AEBF-7DE2098DD98F}</Project>
       <Name>SiteStarter.State</Name>
@@ -128,6 +120,7 @@
     <Compile Include="DataStoreCollectionTests.cs" />
     <Compile Include="DataStoreTests.cs" />
     <Compile Include="DataUpdaterTests.cs" />
+    <Compile Include="EntityFileNamerTests.cs" />
     <Compile Include="FilterGroupTests.cs" />
     <Compile Include="FilterTests.cs" />
     <Compile Include="MockDataProviderManager.cs" />

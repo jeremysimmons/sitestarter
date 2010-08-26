@@ -1,19 +1,36 @@
 ﻿using System;
 using System.IO;
+using SoftwareMonkeys.SiteStarter.Configuration;
 
 namespace SoftwareMonkeys.SiteStarter.Data
 {
-	/// <summary>
-	/// Description of VersionUtilities.
-	/// </summary>
 	public class VersionUtilities
 	{
-		public static Version GetLegacyVersion(string applicationPath)
+		public static string GetVersionFileName(string pathVariation)
+		{		
+			string versionFile = "Version.number";
+			if (pathVariation != null && pathVariation != String.Empty)
+				versionFile = "Version." + pathVariation + ".number";
+			
+			return versionFile;
+		}
+		
+		public static string GetVersionFileName()
 		{
+			if (!Config.IsInitialized)
+				throw new InvalidOperationException("Configuration is not initialized. Use the other overload and pass the path variation.");
+			
+			string pathVariation = Config.Application.PathVariation;
+		
+			return GetVersionFileName(pathVariation);
+		}
+		
+		public static Version GetLegacyVersion(string applicationPath)
+		{			
 			string versionFilePath = applicationPath + Path.DirectorySeparatorChar
 				+ "App_Data" + Path.DirectorySeparatorChar
 				+ "Legacy" + Path.DirectorySeparatorChar
-				+ "Version.Number";
+				+ GetVersionFileName();
 			
 			if (!File.Exists(versionFilePath))
 				return new Version("0.0.0.0");
@@ -24,7 +41,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		public static Version GetCurrentVersion(string applicationPath)
 		{
 			string versionFilePath = applicationPath + Path.DirectorySeparatorChar
-				+ "Version.Number";
+				+ "Version.number"; // Don't use path variation here
 			
 			return LoadVersionFromFile(versionFilePath);
 		}

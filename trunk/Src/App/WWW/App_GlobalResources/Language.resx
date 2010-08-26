@@ -686,7 +686,16 @@ ${WebSite.Title}&lt;br /&gt;
   <data name="EnableNotifications" xml:space="preserve">
     <value>EnableNotifications</value>
   </data>
-  <data name="IsLockedOut" xml:space="preserve">
-    <value>Is Locked Out</value>
+  <data name="UpdateComplete" xml:space="preserve">
+    <value>Update Complete</value>
+  </data>
+  <data name="UpdateCompleteMessage" xml:space="preserve">
+    <value>The application update has been completed successfully.</value>
+  </data>
+  <data name="CurrentVersion" xml:space="preserve">
+    <value>Current version</value>
+  </data>
+  <data name="PreviousVersion" xml:space="preserve">
+    <value>Previous version</value>
   </data>
 </root>

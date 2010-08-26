@@ -84,10 +84,6 @@
       <Project>AD977DB1-879A-476C-A74A-FC2E0EC98F0A</Project>
       <Name>SiteStarter.State.Tests</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.State.Tests\SiteStarter.State.Tests.csproj">
-      <Project>{91C362DD-993D-4BF9-A90A-FFE18AB17434}</Project>
-      <Name>SiteStarter.State.Tests</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.State\SiteStarter.State.csproj">
       <Project>{34129651-3B9F-4A0D-AEBF-7DE2098DD98F}</Project>
       <Name>SiteStarter.State</Name>
