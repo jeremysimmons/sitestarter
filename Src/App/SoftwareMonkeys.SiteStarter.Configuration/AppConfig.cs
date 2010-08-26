@@ -73,16 +73,6 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
             set { primaryAdministratorID = value; }
         }
         
-        private string smtpServer;
-        /// <summary>
-        /// Gets/sets the SMTP server to use for sending emails.
-        /// </summary>
-        public string SmtpServer
-        {
-        	get { return smtpServer; }
-        	set { smtpServer = value; }
-        }
-        
     	private string pathVariation;
         /// <summary>
         /// Gets/sets the variation applied to the config file path (eg. staging, local, etc.).
@@ -117,46 +107,6 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
             set { settings = value; }
         }
         #endregion
-        
-        private bool enableVirtualServer;
-        /// <summary>
-        /// Gets/sets a flag indicating whether application sharing is enabled.
-        /// </summary>
-        public bool EnableVirtualServer
-        {
-        	get { return enableVirtualServer; }
-        	set { enableVirtualServer = value; }
-        }
-        
-        private bool enableVirtualServerRegistration;
-        /// <summary>
-        /// Gets/sets a flag indicating whether application sharing users can register their own account.
-        /// </summary>
-        public bool EnableVirtualServerRegistration
-        {
-        	get { return enableVirtualServerRegistration; }
-        	set { enableVirtualServerRegistration = value; }
-        }
-        
-        private bool autoApproveVirtualServerRegistration;
-        /// <summary>
-        /// Gets/sets a flag indicating whether application sharing registrations are automatically approved or not.
-        /// </summary>
-        public bool AutoApproveVirtualServerRegistration
-        {
-        	get { return autoApproveVirtualServerRegistration; }
-        	set { autoApproveVirtualServerRegistration = value; }
-        }
-              
-        private string[] defaultVirtualServerKeywords;
-        /// <summary>
-        /// Gets/sets a list of the default keywords given to new virtual servers.
-        /// </summary>
-        public string[] DefaultVirtualServerKeywords
-        {
-        	get { return defaultVirtualServerKeywords; }
-        	set { defaultVirtualServerKeywords = value; }
-        }
         
     }
 }

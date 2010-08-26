@@ -49,6 +49,7 @@
     <Compile Include="ConfigFactory.cs" />
     <Compile Include="ConfigSaver.cs" />
     <Compile Include="ConfigurationDictionary.cs" />
+    <Compile Include="ConfigurationUtilities.cs" />
     <Compile Include="MappingConfig.cs" />
     <Compile Include="MappingItem.cs" />
     <Compile Include="SerializableDictionary.cs" />

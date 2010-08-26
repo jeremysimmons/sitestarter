@@ -20,14 +20,15 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 		/// Loads the config file at the specified path.
 		/// </summary>
 		/// <param name="dataDirectoryPath">The physical path to the data directory.</param>
-		/// <param name="type">The type of configuration object to load.</param>
+		/// <param name="name">The short name of the configuration file (excluding variation and extension).</param>
+		/// <param name="variation">The variation applied to the configuration file name (eg. local or staging).</param>
 		/// <returns>The config from the specified path.</returns>
-		static public T LoadConfig(string directory, string name, string variation)
+		static public T LoadConfig(string dataDirectoryPath, string name, string variation)
 		{
-			if (directory.ToLower().IndexOf(".config") > -1)
+			if (dataDirectoryPath.ToLower().IndexOf(".config") > -1)
 				throw new ArgumentException("The specified directory should not include the file name.");
 			
-			string configPath = CreateConfigPath(directory, name, variation);
+			string configPath = CreateConfigPath(dataDirectoryPath, name, variation);
 			
 			T config = default(T);
 			

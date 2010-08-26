@@ -1,7 +1,7 @@
 ﻿body 
 {
 	font-family: Verdana;
-	font-size: 12px;
+	font-size: x-small;
 }
 
 /* Template */
@@ -35,7 +35,7 @@
 }
 
 /* Headings */
-.Heading1
+.Heading1, h1
 {
 	font-size: 16px;
 	font-weight: bold;
@@ -91,4 +91,16 @@ TR.Heading2 TD
 .AutoBackupSummary
 {
 	font-size: x-small;
+}
+
+Input
+{
+	font-family: verdana;
+	font-size: x-small;
+}
+
+OL LI
+{
+	margin-top: 8px;
+	margin-bottom: 8px;
 }

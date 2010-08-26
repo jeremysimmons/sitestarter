@@ -171,19 +171,28 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <returns>The file name for the physical data store.</returns>
 		private string GetStoreFileName()
 		{
-			string fileName = Name;
+			string path = String.Empty;
 			
-			AppLogger.Debug("Store name: " + Name);
-
-			string prefix = String.Empty;
-			if (StateAccess.State.ContainsSession("VirtualServerID"))
-				prefix = (string)StateAccess.State.GetSession("VirtualServerID");
-			if (prefix != String.Empty && prefix != Guid.Empty.ToString())
+			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the file name for the data store.", NLog.LogLevel.Debug))
 			{
-				fileName = @"VS\" + prefix + @"\" + fileName;
+				string fileName = Name;
+				
+				AppLogger.Debug("Store name: " + Name);
+				
+				// Add the path variation
+				if (Config.Application.PathVariation != String.Empty)
+					fileName = fileName + "." + Config.Application.PathVariation;
+				
+				// Add the extension
+				fileName = fileName +  ".yap";
+				
+				path = DataAccess.Data.DataDirectoryPath + Path.DirectorySeparatorChar
+					+ fileName;
+				
+				AppLogger.Debug("Path: " + path);
+				
 			}
-			
-			return Config.Application.PhysicalApplicationPath + @"\App_Data\" + fileName + ".yap";
+			return path;
 		}
 		
 		/// <summary>
@@ -196,7 +205,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		}
 		
 		/// <summary>
-		/// Opens the db4o server. 
+		/// Opens the db4o server.
 		/// </summary>
 		public void OpenServer()
 		{
@@ -243,16 +252,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				
 				AppLogger.Debug("Name: " + Name);
 
-				string prefix = String.Empty;
-				if (StateAccess.State.ContainsSession("VirtualServerID"))
-					prefix = (string)StateAccess.State.GetSession("VirtualServerID");
-				
-				if (prefix != null && prefix != String.Empty && prefix != Guid.Empty.ToString())
-				{
-					fileName = @"VS\" + prefix + @"\" + fileName;
-				}
 
-				string fullName = Config.Application.PhysicalApplicationPath + @"\App_Data\" + fileName + ".yap";
+				string fullName = GetStoreFileName();
 				
 				AppLogger.Debug("Full file name: " + fullName);
 				
@@ -274,13 +275,14 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			//Close();
 			
 			// Roll back to the last commit
-			// This roll back is important. The data store must not commit the latest data unless explicit.
+			// This roll back is important. The data store must not commit the latest data unless commit call is explicit.
 			// If rollback is not called then the latest data will be automatically committed
-			// The ability to dispose without committing is necessary for unit testing
+			// The ability to dispose without committing is necessary for unit testing and/or transactions
 			ObjectContainer.Rollback();
 			
-			ObjectContainer.Dispose();
-			ObjectServer.Dispose();
+			ObjectContainer.Dispose(); 
+			ObjectServer.Close(); // ObjectServer must be closed to unlock files.
+			ObjectServer = null;
 			
 			StateAccess.State.SetApplication(ObjectContainerKey, null);
 			StateAccess.State.SetApplication(ObjectServerKey, null);

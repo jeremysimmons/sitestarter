@@ -47,6 +47,8 @@
     <Compile Include="BasePage.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="Data\DataProviderInitializer.cs" />
+    <Compile Include="FileMapper.cs" />
     <Compile Include="GuidValidator.cs" />
     <Compile Include="LogWriter.cs" />
     <Compile Include="My.cs" />
@@ -56,13 +58,13 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Language.resx</DependentUpon>
     </Compile>
-    <Compile Include="Providers\DataProviderManager.cs" />
     <Compile Include="Providers\DynamicPersonalizationProvider.cs" />
     <Compile Include="QueryStrings.cs" />
     <Compile Include="Security\Authorisation.cs" />
     <Compile Include="Security\Member.cs" />
     <Compile Include="Security\MemberProvider.cs" />
     <Compile Include="Security\RoleProvider.cs" />
+    <Compile Include="SetupChecker.cs" />
     <Compile Include="SetupUtilities.cs" />
     <Compile Include="State\StateProviderManager.cs" />
     <Compile Include="State\WebStateProvider.cs">
@@ -151,6 +153,7 @@
       <Project>{3609F512-9E15-41C7-95AF-D1B3E7F93562}</Project>
       <Name>SiteStarter.Entities</Name>
     </ProjectReference>
+    <Folder Include="Data" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

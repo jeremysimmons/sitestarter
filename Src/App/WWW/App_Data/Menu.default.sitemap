@@ -7,6 +7,7 @@
       <siteMapNode title="Settings" url="~/Admin/Settings.aspx" description="" />
       <siteMapNode title="Backup" url="~/Admin/Backup.aspx" description="" />
       <siteMapNode title="Log" url="~/Admin/Log.aspx" description="" />
+      <siteMapNode title="Update" url="~/Admin/Update.aspx" description="" />
     </siteMapNode>
   </siteMapNode>
 </siteMap>

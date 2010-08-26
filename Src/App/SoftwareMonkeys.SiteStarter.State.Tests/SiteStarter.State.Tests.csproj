@@ -33,9 +33,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Db4objects.Db4o">
-      <HintPath>..\..\..\Lib\Db4objects.Db4o.dll</HintPath>
-    </Reference>
     <Reference Include="NLog">
       <HintPath>..\..\..\Lib\NLog.dll</HintPath>
     </Reference>
@@ -67,14 +64,6 @@
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.State\SiteStarter.State.csproj">
       <Project>{34129651-3B9F-4A0D-AEBF-7DE2098DD98F}</Project>
       <Name>SiteStarter.State</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Tests\SiteStarter.Tests.csproj">
-      <Project>3109EA47-5620-4C75-93E2-A552FC75EB8B</Project>
-      <Name>SiteStarter.Tests</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Tests\SiteStarter.Tests.csproj">
-      <Project>3109EA47-5620-4C75-93E2-A552FC75EB8B</Project>
-      <Name>SiteStarter.Tests</Name>
     </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Tests\SiteStarter.Tests.csproj">
       <Project>3109EA47-5620-4C75-93E2-A552FC75EB8B</Project>

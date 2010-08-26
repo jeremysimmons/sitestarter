@@ -33,9 +33,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Db4objects.Db4o">
-      <HintPath>..\..\..\Lib\Db4objects.Db4o.dll</HintPath>
-    </Reference>
     <Reference Include="NLog">
       <HintPath>..\..\..\Lib\NLog.dll</HintPath>
     </Reference>

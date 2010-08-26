@@ -68,6 +68,7 @@
     <Compile Include="DataStore.cs" />
     <Compile Include="DataUpdater.cs" />
     <Compile Include="DataUtilities.cs" />
+    <Compile Include="EntityFileNamer.cs" />
     <Compile Include="IDataActivator.cs" />
     <Compile Include="IDataAdapter.cs" />
     <Compile Include="IDataExporter.cs" />
@@ -83,6 +84,7 @@
     <Compile Include="FilterOperator.cs" />
     <Compile Include="IDataImporter.cs" />
     <Compile Include="IDataIndexer.cs" />
+    <Compile Include="IDataProviderInitializer.cs" />
     <Compile Include="IDataReader.cs" />
     <Compile Include="IDataReferencer.cs" />
     <Compile Include="IDataSaver.cs" />

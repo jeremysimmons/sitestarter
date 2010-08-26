@@ -37,6 +37,7 @@
     <Compile Include="Admin\Tests\EntitySelectTests.aspx.cs">
       <DependentUpon>EntitySelectTests.aspx</DependentUpon>
     </Compile>
+    <None Include="Admin\Restore.aspx" />
     <None Include="Admin\Tests\EntityTreeTests.aspx" />
     <None Include="Admin\AutoBackup.aspx" />
     <None Include="Admin\Backup.aspx" />
@@ -58,6 +59,7 @@
     <None Include="Admin\Tests\RefactorData.aspx" />
     <None Include="Admin\UnitTests.aspx" />
     <None Include="Admin\Update.aspx" />
+    <None Include="Admin\UpdateReady.html" />
     <None Include="Admin\UserRoles.aspx" />
     <None Include="Admin\Users.aspx" />
     <None Include="Admin\WebSiteSettings.aspx" />
@@ -85,11 +87,13 @@
     <None Include="Default.aspx" />
     <None Include="Global.asax" />
     <None Include="Help\VirtualServersInfo.xml" />
+    <None Include="Maintenance.html" />
     <None Include="Members\Default.aspx" />
     <None Include="Members\Login.aspx" />
     <None Include="Members\Logout.aspx" />
     <None Include="Members\Register.aspx" />
     <None Include="Site.master" />
+    <None Include="Styles\Simple.css" />
     <None Include="Web.config" />
     <EmbeddedResource Include="App_GlobalResources\Language.resx" />
   </ItemGroup>
@@ -143,6 +147,7 @@
     <Folder Include="Controls\_svn\tmp\text-base" />
     <Folder Include="Help" />
     <Folder Include="Members" />
+    <Folder Include="Styles" />
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Business.Tests\SiteStarter.Business.Tests.csproj">
       <Project>{F6AA1DC2-1E10-43FF-97AB-D6679A854D51}</Project>
       <Name>SiteStarter.Business.Tests</Name>

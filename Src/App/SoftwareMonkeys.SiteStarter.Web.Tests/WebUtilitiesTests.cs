@@ -24,7 +24,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
 	{
 		public string ApplicationPath
 		{
-			get { return TestUtilities.GetTestingPath(); }
+			get { return TestUtilities.GetTestingPath(this); }
 		}
 
         [Test]
