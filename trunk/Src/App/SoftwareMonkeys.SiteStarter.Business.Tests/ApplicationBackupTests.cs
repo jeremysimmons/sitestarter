@@ -18,17 +18,23 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		[Test]
 		public void Test_Backup_SkipLegacy()
 		{
-			string backupDirectoryPath = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar +
-				"Backup";
 			
-			string exportDirectoryPath = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar +
-				"Export";
+			string applicationName = "TestApplication";
 			
-			string legacyDirectoryPath = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar +
-				"Legacy";
 			
-			string dataDirectoryPath = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar +
-				"App_Data";
+			string applicationPath = TestUtilities.GetTestApplicationPath(this, applicationName);
+			
+			string dataDirectoryPath = TestUtilities.GetTestDataPath(this, applicationName);
+			
+			string backupDirectoryPath = dataDirectoryPath + Path.DirectorySeparatorChar + "Backup";
+			
+			string exportDirectoryPath = dataDirectoryPath + Path.DirectorySeparatorChar + "Export";
+			
+			string legacyDirectoryPath = dataDirectoryPath + Path.DirectorySeparatorChar + "Legacy";
+			
+			
+			VersionTestUtilities.CreateDummyVersion(dataDirectoryPath, "testing");
+		
 			
 			CreateDummyFiles(dataDirectoryPath);
 			
@@ -66,7 +72,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			backup.DataDirectoryPath = dataDirectoryPath;
 			backup.LegacyDirectoryPath = legacyDirectoryPath;
 			
-			backup.KeepLegacy = false;
+			backup.PrepareForUpdate = false;
 			
 			string zipFilePath = backup.Backup();
 			
@@ -88,22 +94,26 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		
 		
 		[Test]
-		public void Test_Backup_KeepLegacy()
+		public void Test_Backup_PrepareForUpdate()
 		{
-			string backupDirectoryPath = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar +
-				"Backup";
 			
-			string exportDirectoryPath = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar +
-				"Export";
+			string applicationName = "TestApplication";
 			
-			string legacyDirectoryPath = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar +
-				"Legacy";
 			
-			string dataDirectoryPath = TestUtilities.GetTestingPath() + Path.DirectorySeparatorChar +
-				"App_Data";
+			string applicationPath = TestUtilities.GetTestApplicationPath(this, applicationName);
+			
+			string dataDirectoryPath = TestUtilities.GetTestDataPath(this, applicationName);
+			
+			string backupDirectoryPath = dataDirectoryPath + Path.DirectorySeparatorChar + "Backup";
+			
+			string exportDirectoryPath = dataDirectoryPath + Path.DirectorySeparatorChar + "Export";
+			
+			string legacyDirectoryPath = dataDirectoryPath + Path.DirectorySeparatorChar + "Legacy";
+			
+			
+			VersionTestUtilities.CreateDummyVersion(dataDirectoryPath, "testing");
 			
 			CreateDummyFiles(dataDirectoryPath);
-			
 			
 			
 			TestUser user = new TestUser();
@@ -137,7 +147,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			backup.ExportDirectoryPath = exportDirectoryPath;
 			backup.DataDirectoryPath = dataDirectoryPath;
 			backup.LegacyDirectoryPath = legacyDirectoryPath;
-			backup.KeepLegacy = true;
+			backup.PrepareForUpdate = true;
 			
 			string zipFilePath = backup.Backup();
 			
@@ -155,6 +165,38 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			Assert.IsFalse(Directory.Exists(backup.ExportDirectoryPath), "The export directory is still there. It should be removed after export.");
 						
 			Assert.IsTrue(Directory.Exists(backup.LegacyDirectoryPath), "The legacy directory wasn't found when it should have been.");
+		}
+		
+		[Test]
+		public void Test_Suspend()
+		{
+			string dataDirectoryPath = TestUtilities.GetTestingPath(this) + Path.DirectorySeparatorChar + "App_Data";
+			
+			CreateDummyFiles(dataDirectoryPath);
+			
+			int configFileCount = Directory.GetFiles(dataDirectoryPath, "*.config").Length;
+			
+			// Check that the files were created
+			Assert.AreEqual(2, configFileCount, "Config files weren't created.");			
+			
+			int versionFileCount = Directory.GetFiles(dataDirectoryPath, "*.number").Length;
+			
+			// Check that the version file was created
+			Assert.AreEqual(1, versionFileCount, "Version file wasn't created.");			
+			
+			ApplicationBackup backup = new ApplicationBackup();
+			
+			backup.Suspend();
+			
+			// Check that the files were suspended
+			configFileCount = Directory.GetFiles(dataDirectoryPath, "*.config").Length;
+			
+			Assert.AreEqual(0, configFileCount, "Config files weren't suspended.");
+			
+			versionFileCount = Directory.GetFiles(dataDirectoryPath, "*.number").Length;
+			
+			// Check that the version file was created
+			Assert.AreEqual(0, versionFileCount, "Version file wasn't suspended.");	
 		}
 		
 		private void CreateDummyFiles(string dataDirectoryPath)

@@ -2,6 +2,8 @@
 using System.IO;
 using System.Configuration;
 using SoftwareMonkeys.SiteStarter.Data;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
+using SoftwareMonkeys.SiteStarter.Configuration;
 
 namespace SoftwareMonkeys.SiteStarter.Business
 {
@@ -70,14 +72,15 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			set { dataDirectoryPath = value; }
 		}
 		
-		private bool keepLegacy;
+		private bool prepareForUpdate;
 		/// <summary>
-		/// Gets/sets a boolean flag indicating whether the backed up data should be copied into the legacy directory.
+		/// Gets/sets a value indicating whether the application and data should be prepared for an application update.
+		/// Note: Setting this to true means the data will be suspended and the exported data copied to the Legacy directory so it can be reimported (with schema modifications applied if applicable).
 		/// </summary>
-		public bool KeepLegacy
+		public bool PrepareForUpdate
 		{
-			get { return keepLegacy; }
-			set { keepLegacy = value; }
+			get { return prepareForUpdate; }
+			set { prepareForUpdate = value; }
 		}
 		
 		/// <summary>
@@ -98,18 +101,11 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				DataDirectoryPath = physicalPath + Path.DirectorySeparatorChar +
 					"App_Data";
 				
-				string exportDirectory = physicalPath + Path.DirectorySeparatorChar + ConfigurationSettings.AppSettings["Export.Directory"];
-				if (exportDirectory == String.Empty)
-					exportDirectory = DataDirectoryPath + Path.DirectorySeparatorChar + "Export";
+				string exportDirectory = physicalPath + Path.DirectorySeparatorChar + ConfigurationUtilities.GetSetting("Export.Directory", "Export").Replace("/", @"\");
 				
-				string backupDirectory = physicalPath + Path.DirectorySeparatorChar + ConfigurationSettings.AppSettings["Backup.Directory"];
-				if (backupDirectory == String.Empty)
-					backupDirectory = DataDirectoryPath + Path.DirectorySeparatorChar + "Backup";
+				string backupDirectory = physicalPath + Path.DirectorySeparatorChar + ConfigurationUtilities.GetSetting("Backup.Directory", "Backup").Replace("/", @"\");
 				
-				string legacyDirectory = physicalPath + Path.DirectorySeparatorChar + ConfigurationSettings.AppSettings["Legacy.Directory"];
-				if (legacyDirectory == String.Empty)
-					legacyDirectory = DataDirectoryPath + Path.DirectorySeparatorChar + "Legacy";
-				
+				string legacyDirectory = physicalPath + Path.DirectorySeparatorChar + ConfigurationUtilities.GetSetting("Legacy.Directory", "Legacy").Replace("/", @"\");
 				
 				ExportDirectoryPath = exportDirectory;
 				
@@ -119,30 +115,46 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				
 			}
 		}
+		
 		/// <summary>
 		/// Backs up all application data to the directory secified by the BackupDirectory property.
 		/// </summary>
 		/// <returns>The full path to the zipped backup file.</returns>
 		public string Backup()
 		{
-			// Export data to XML
-			Export();
+			string outputFile = String.Empty;
 			
-			// Copy configuration files into export folder
-			BackupConfigs();
-			
-			// Copy version file to export folder
-			BackupVersion();
-			
-			// Zip up files
-			string outputFile = ZipFiles();			
-			
-			// Copy data to legacy
-			if (KeepLegacy)
-				MoveToLegacy();
-			// Delete the exported files (now that they've been zipped up)
-			else
-				DeleteExportFiles();
+			using (LogGroup logGroup = AppLogger.StartGroup("Backing up the application.", NLog.LogLevel.Debug))
+			{
+				// Export data to XML
+				Export();
+				
+				// Copy configuration files into export folder
+				BackupConfigs();
+				
+				// Copy version file to export folder
+				BackupVersion();
+				
+				// Zip up files
+				outputFile = ZipFiles();
+				
+				// Prepare for application update
+				if (PrepareForUpdate)
+				{
+					AppLogger.Debug("Prepare for update");
+					
+					MoveToLegacy();
+					
+					Suspend();
+				}
+				// Delete the exported files (now that they've been zipped up)
+				else
+				{
+					AppLogger.Debug("Prepare for update == false");
+					
+					DeleteExportFiles();
+				}
+			}
 			
 			return outputFile;
 		}
@@ -198,20 +210,18 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		private void BackupVersion()
 		{
-			string file = DataDirectoryPath + Path.DirectorySeparatorChar +
-				"Version.number";
+			string filePath = DataDirectoryPath + Path.DirectorySeparatorChar +
+				VersionUtilities.GetVersionFileName();
 			
-			if (!File.Exists(file))
+			if (!File.Exists(filePath))
 			{
-				// Get the file from the application directory
-				file = DataDirectoryPath + Path.DirectorySeparatorChar +
-					".." + Path.DirectorySeparatorChar + "Version.number";
+				throw new InvalidOperationException("Version.number file not found at: " + filePath);
 			}
 			
 			string toFile = ExportDirectoryPath + Path.DirectorySeparatorChar +
-				Path.GetFileName(file);
+				Path.GetFileName(filePath);
 			
-			File.Copy(file, toFile, true);
+			File.Copy(filePath, toFile, true);
 		}
 		
 		/// <summary>
@@ -231,6 +241,51 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			
 			return zipFilePath;
+		}
+		
+		/// <summary>
+		/// Suspends the data stores and moves them to a safe location outside the application.
+		/// Note: This is for use during an update, as the data will be imported again.
+		/// The export/suspend/import mechanism is used to allow for schema modifications from one version of the application to another.
+		/// </summary>
+		public void Suspend()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Suspending the application (ready for update).", NLog.LogLevel.Debug))
+			{
+				DataAccess.Data.Suspend();
+				
+				string[] suspendableTypes = new String[] {"config", "number"};
+				
+				string toDirectory = DataAccess.Data.SuspendedDirectoryPath + Path.DirectorySeparatorChar
+					+ DataAccess.Data.Schema.ApplicationVersion.ToString().Replace(".", "-");
+				
+				AppLogger.Debug("To directory: " + toDirectory);
+				
+				foreach (string file in Directory.GetFiles(DataAccess.Data.DataDirectoryPath))
+				{
+					string ext = Path.GetExtension(file).Trim('.').ToLower();
+					
+					// If the file extension is in the suspendable types array then suspend it
+					if (Array.IndexOf(suspendableTypes, ext) > -1)
+					{
+						AppLogger.Debug("Suspending file: " + file);
+						
+						string toFile = toDirectory + Path.DirectorySeparatorChar + Path.GetFileName(file);
+						
+						AppLogger.Debug("To: " + toFile);
+						
+						if (!Directory.Exists(Path.GetDirectoryName(toFile)))
+							Directory.CreateDirectory(Path.GetDirectoryName(toFile));
+						
+						// If the to file already exists then delete it
+						// This shouldn't occur in production but can during debugging
+						if (File.Exists(toFile))
+							File.Delete(toFile);
+						
+						File.Move(file, toFile);
+					}
+				}
+			}
 		}
 	}
 }
