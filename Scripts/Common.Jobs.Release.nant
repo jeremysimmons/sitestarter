@@ -89,6 +89,7 @@
 	        <exclude name="**/App_Data/Logs"/>
 	        <exclude name="**/App_Data/LogsArchive"/>
 	        <exclude name="**/App_Data/Version.number"/>
+	        <exclude name="**/App_Data/Suspended/**"/>
 	        <exclude name="**/Deployment/**"/>
 	        <exclude name="**/Releases/**"/>
 	        <exclude name="**/Backups/**"/>
@@ -99,10 +100,15 @@
 	        <exclude name="**/bin/Release/**"/>
 	        <exclude name="**.refresh"/>
 	        <exclude name="**/Docs/**"/>
+	        <exclude name="**/doxy/**"/>
+	        <exclude name="*.doxy"/>
+	        <exclude name="*.sh"/>
 	        <exclude name="**/Screenshots/**"/>
 	        <exclude name="**.suo"/>
 	        <exclude name="**.pidb"/>
 	        <exclude name="**.cache"/>
+	        <exclude name="**.nunit"/>
+	        <exclude name="**/TestResults/**"/>
 	        <include name="**/${Solution.Alias}/**" />
 	        <include name="bin/**" />
 	        <include name="lib/**" />

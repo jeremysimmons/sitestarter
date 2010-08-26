@@ -120,7 +120,18 @@
 	        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
 	    			</namespaces>
 	    		</xmlpeek>
-
+	    		
+	    		<property name="Import.Adapt" value="false"/>
+	    		
+				<xmlpeek
+				    file="${filename}"
+				    xpath="/x:project/x:property[@name = 'Import.Adapt']/@value"
+				    property="Import.Adapt"
+				    failonerror="false">
+			        <namespaces>
+	        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+	    			</namespaces>
+	    		</xmlpeek>
 
 	    		<xmlpeek
 				    file="${Solution.PropertiesPath}"
@@ -130,7 +141,7 @@
 	        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
 	    			</namespaces>
 	    		</xmlpeek>	
-	    		
+
 	    		<property name="Import.To" value="${string::replace(Import.To, '${Project.RootPath}', Project.RootPath)}"/>
 	    		<property name="Import.To" if="${bool::parse(Import.ReplaceBaseNamespace) == true}" value="${string::replace(Import.To, '${Project.BaseNamespace}', Project.BaseNamespace)}"/>
 				<property name="Import.To" if="${bool::parse(Import.ReplaceBaseNamespace) == true}" value="${string::replace(Import.To, '${Solution.BaseNamespace}', Solution.BaseNamespace)}"/>
@@ -164,7 +175,7 @@
 				        <namespaces>
 		        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
 		    			</namespaces>
-		    		</xmlpeek>		    		
+		    		</xmlpeek>
 
 	    			<property name="Import.FromSolution.BaseNamespace" value="${Import.FromProject.BaseNamespace}"/>	
 
@@ -241,11 +252,16 @@
 						
 						<call target="Actions.Import.InsertHeader"/>
 						
-						<nant
-							buildfile="${filename}"
-							target="Actions.Import.Adapt"
-							>
-						</nant>
+						<!-- If the adapt option is set to true then execute the custom adapt function -->
+						<if test="${bool::parse(Import.Adapt) == true}">
+							
+							<nant
+								buildfile="${filename}"
+								target="Actions.Import.Adapt"
+								>
+							</nant>
+							
+						</if>
 
 						<if test="${Import.ReplaceName or Import.ReplaceBaseNamespace}">
 					        	<call target="Common.Actions.ImportRenameFiles"/>
@@ -347,6 +363,10 @@
 				{
 					header = GetAspxHeader(fileName, sourceFile);
 				}
+				else if (ext.ToLower() == ".html")
+				{
+					header = GetHtmlHeader(fileName, sourceFile);
+				}
 				else if (ext.ToLower() == ".cs")
 				{
 					header = GetCsHeader(fileName, sourceFile);
@@ -368,6 +388,13 @@
 					throw new Exception("Files such as '" + sourceFile + "' with extension '" + ext + "' are not yet supported. Cannot add header.");
 				
 				return header;
+			}
+			
+			static public string GetHtmlHeader(string fileName, string sourceFile)
+			{
+				return "<!--\r\n" +
+						GetHeaderMessage(fileName, sourceFile)
+						+ "\r\n-->\r\n\r\n";
 			}
 			
 			static public string GetCsProjHeader(string fileName, string sourceFile)
