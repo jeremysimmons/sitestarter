@@ -6,14 +6,11 @@
 	
 	
 	<loadtasks>
-	
 	            <fileset>
-	
-	                        <include name="../lib/nant/bin/tasks/nunit2report/NAnt.NUnit2ReportTasks.dll" />
-	
+	                        <include name="${Project.RootPath}/lib/nant/bin/tasks/nunit2report/NAnt.NUnit2ReportTasks.dll" />
 	            </fileset>
-	
 	</loadtasks> 
+	
 	
 		<xmlpeek
 		    file="${Solution.PropertiesPath}"
@@ -53,8 +50,8 @@
   		
 		<foreach item="String" in="${Solution.TestOrder}" delim="," property="testName">
   			
-	  		<exec program="nunit-console" basedir="${Project.LibDirectory}" failonerror="true">
-	    		<arg value="../bin/${Build.Mode}/${Solution.BaseNamespace}.${testName}.Tests.dll" />
+	  		<exec program="${Project.LibDirectory}\nunit-console" basedir="${Project.LibDirectory}" failonerror="false">
+	    		<arg value="${Project.RootPath}\bin\${Build.Mode}\${Solution.BaseNamespace}.${testName}.Tests.dll" />
 	    		<arg value="/xml:${Project.TestResultsDirectory}/xml/${testName}.Tests.Results.xml" />
 			</exec>
 			
