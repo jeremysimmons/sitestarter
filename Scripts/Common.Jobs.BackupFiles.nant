@@ -4,6 +4,11 @@
 	
 <target name="Common.Jobs.BackupFiles">
 
+   		<loadtasks>		
+		            <fileset>
+		                        <include name="../lib/ICSharpCode.SharpZipLib.dll" />
+		            </fileset>
+		</loadtasks> 
     	
     	<xmlpeek
 		    file="${Project.PropertiesPath}"

@@ -61,7 +61,7 @@
 		    	<!--property name="CaptureProgram" value="CutyCapt.exe"/-->
 
 				<!-- Capture the screenshot -->
-				<exec program="${Project.RootPath}\lib\nant\lib\${CaptureProgram}">
+				<exec program="${Project.RootPath}\lib\nant\bin\${CaptureProgram}">
 				    <arg value="--url=http://localhost/${Solution.VirtualDirectoryName + Screenshot.InitializationPath}?SendTo=${Screenshot.Path}" />
 				    <arg value="--out=${Solution.RootPath}\Screenshots\${Screenshot.FileName}.png" />
 				</exec>
