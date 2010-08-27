@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="Common.Start.ResetLegacyData" default="Common.Start.ResetLegacyData" xmlns="http://nant.sf.net/schemas/nant.xsd">
+<project name="Common.Start.ResetImportData" default="Common.Start.ResetImportData" xmlns="http://nant.sf.net/schemas/nant.xsd">
   		
   		  				
   		<property name="Argument.SolutionPath" value=""/>
@@ -15,11 +15,11 @@
   		
   		
   		
-	<include buildfile="Common.Jobs.ResetLegacyData.nant"/>
+	<include buildfile="Common.Jobs.ResetImportData.nant"/>
 	<!--include buildfile="Common.Actions.Compile.nant"/-->
   		
-	<target name="Common.Start.ResetLegacyData" description="Resets the legacy data (from .../App_Data/LegacyDefault/)">		
-		<call target="Common.Jobs.ResetLegacyData"/>
+	<target name="Common.Start.ResetImportData" description="Resets the import data (from /ImportDefault/ to /Import/)">		
+		<call target="Common.Jobs.ResetImportData"/>
 	</target>
 </project>
   	
