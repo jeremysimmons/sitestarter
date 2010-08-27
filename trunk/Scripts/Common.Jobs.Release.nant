@@ -5,7 +5,13 @@
 	<include buildfile="Common.Actions.CleanSolution.nant"/>
 	
 	<include buildfile="Common.Jobs.ClearData.nant"/>
-	<include buildfile="Common.Jobs.Reset.nant"/>
+
+	<!-- Add a reference to the sharpziplib library even though it doesn't have tasks in it. -->
+<loadtasks>
+            <fileset>
+                        <include name="../Lib/ICSharpCode.SharpZipLib.dll" />
+            </fileset>
+</loadtasks> 
 	
 <target name="Common.Jobs.CreateReleaseZips">
 		<call target="Common.Jobs.ResetAll"/>
@@ -76,6 +82,8 @@
 	        <exclude name="**/*.dll.r*"/>
 	        <exclude name="**/*.exe.r*"/>
 	        <exclude name="**/App_Data/VS/**"/>
+	        <exclude name="**/App_Data/Import/**"/>
+	        <exclude name="**/App_Data/ImportDefault/**"/>
 	        <exclude name="**/App_Data/LegacyDefault/**"/>
 	        <exclude name="**/App_Data/Legacy/**"/>
 	        <exclude name="**/App_Data/Imported/**"/>
@@ -180,6 +188,8 @@
 	        <exclude name="**/*.csproj"/>
 	        <exclude name="*disabled*"/>
 	        <exclude name="**/bin/Debug/**"/>
+	        <exclude name="**/bin/nunit**"/>
+	        <exclude name="RestartApp.bat"/>
 	        <exclude name="**.refresh"/>
 	        <exclude name="**.nant"/>
 	        <include name="${IncludeKey}" />
