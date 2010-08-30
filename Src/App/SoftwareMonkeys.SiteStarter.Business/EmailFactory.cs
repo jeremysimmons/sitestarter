@@ -1,6 +1,4 @@
 using System;
-using Db4objects.Db4o;
-using Db4objects.Db4o.Query;
 using System.Collections;
 using System.ComponentModel;
 using SoftwareMonkeys.SiteStarter.Entities;
