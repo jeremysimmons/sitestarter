@@ -3,6 +3,7 @@ using System.Data;
 using System.Configuration;
 using System.Web;
 using SoftwareMonkeys.SiteStarter.Configuration;
+using System.Reflection;
 
 namespace SoftwareMonkeys.SiteStarter.Entities
 {
@@ -57,5 +58,20 @@ namespace SoftwareMonkeys.SiteStarter.Entities
         {
         	return (IEntity)this.Clone();
         }
+        
+		
+		/// <summary>
+		/// Strips all the referenced entities.
+		/// </summary>
+		public virtual void Strip()
+		{
+			foreach (PropertyInfo property in GetType().GetProperties())
+			{
+				if (EntitiesUtilities.IsReference(GetType(), property))
+				{
+					property.SetValue(this, null, null);
+				}
+			}
+		}
     }
 }
