@@ -17,7 +17,7 @@ using System.Reflection;
 namespace SoftwareMonkeys.SiteStarter.Web.Tests.WebControls
 {
 	[TestFixture]
-	public class EntityFormHelperTests
+	public class EntityFormHelperTests : BaseWebTestFixture
 	{
 		public string ApplicationPath
 		{
