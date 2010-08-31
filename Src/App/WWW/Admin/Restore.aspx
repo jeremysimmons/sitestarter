@@ -21,12 +21,22 @@
     {
         using (LogGroup logGroup = AppLogger.StartGroup("Initializing the import page.", NLog.LogLevel.Debug))
         {
+		        
+        	EnsureRequiresRestore();
+        
             if (!IsPostBack)
             {
                 Update();
             }
         }
         
+    }
+    
+    private void EnsureRequiresRestore()
+    {
+			SetupChecker setupChecker = new SetupChecker();
+			if (!setupChecker.RequiresRestore())
+				Response.Redirect(Request.ApplicationPath);
     }
 
     private void Update()
@@ -84,5 +94,7 @@
 <p><%= Resources.Language.UpdateCompleteMessage %></p>
 <p><%= Resources.Language.PreviousVersion %>: <%= DataAccess.Data.Schema.LegacyVersion %></p>
 <p><%= Resources.Language.CurrentVersion %>: <%= DataAccess.Data.Schema.ApplicationVersion %></p>
-
+<p>
+<a href='<%= Request.ApplicationPath %>'><%= Resourcecs.Language.Continue %> &raquo;</a>
+</p>
 </asp:Content>
