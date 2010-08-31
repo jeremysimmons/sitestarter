@@ -43,12 +43,10 @@
     <None Include="Admin\Backup.aspx" />
     <None Include="Admin\Data.aspx" />
     <None Include="Admin\Help.aspx" />
-    <None Include="Admin\HelpDocumentTemplate.xsl" />
     <None Include="Admin\HelpRaw.aspx" />
     <None Include="Admin\Import.aspx" />
     <None Include="Admin\Keywords.aspx" />
     <None Include="Admin\Log.aspx" />
-    <None Include="Admin\Log2.aspx" />
     <None Include="Admin\Settings.aspx" />
     <None Include="Admin\Setup.aspx" />
     <None Include="Admin\Tests\CreateHugeData.aspx" />
@@ -86,7 +84,6 @@
     <None Include="Controls\_svn\text-base\Testing.ascx.svn-base" />
     <None Include="Default.aspx" />
     <None Include="Global.asax" />
-    <None Include="Help\VirtualServersInfo.xml" />
     <None Include="Maintenance.html" />
     <None Include="Members\Default.aspx" />
     <None Include="Members\Login.aspx" />
@@ -145,7 +142,6 @@
     <Folder Include="Controls\_svn\tmp\prop-base" />
     <Folder Include="Controls\_svn\tmp\props" />
     <Folder Include="Controls\_svn\tmp\text-base" />
-    <Folder Include="Help" />
     <Folder Include="Members" />
     <Folder Include="Styles" />
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Business.Tests\SiteStarter.Business.Tests.csproj">
