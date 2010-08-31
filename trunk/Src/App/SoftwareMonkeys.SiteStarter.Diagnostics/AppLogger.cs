@@ -177,14 +177,13 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			set { currentGroup = value; }
 		}
 
-		static private Stack<LogGroup> groupStack = new Stack<LogGroup>();
 		/// <summary>
 		/// The current stack of groups.
 		/// </summary>
-		static public Stack<LogGroup> GroupStack
+		static public StateStack<LogGroup> GroupStack
 		{
-			get { return groupStack; }
-			set { groupStack = value; }
+			get { return DiagnosticState.GroupStack; }
+			set { DiagnosticState.GroupStack = value; }
 		}
 
 		/*static public void Write(string message)
