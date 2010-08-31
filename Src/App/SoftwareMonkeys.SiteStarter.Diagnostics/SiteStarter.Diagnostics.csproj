@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppLogger.cs" />
+    <Compile Include="DiagnosticState.cs" />
     <Compile Include="HeadingLayoutRenderer.cs" />
     <Compile Include="LogGroup.cs" />
     <Compile Include="LogGroupMode.cs" />

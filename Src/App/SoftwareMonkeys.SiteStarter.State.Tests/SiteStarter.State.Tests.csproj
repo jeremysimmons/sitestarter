@@ -71,6 +71,8 @@
     </ProjectReference>
     <Compile Include="BaseStateTestFixture.cs" />
     <Compile Include="MockStateProvider.cs" />
+    <Compile Include="StateCollectionTests.cs" />
+    <Compile Include="StateNameValueCollectionTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

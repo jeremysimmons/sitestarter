@@ -43,9 +43,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="StateAccess.cs" />
+    <Compile Include="StateCollection.cs" />
+    <Compile Include="StateNameValueCollection.cs" />
     <Compile Include="StateProvider.cs" />
     <Compile Include="StateProviderCollection.cs" />
     <Compile Include="StateProviderConfiguration.cs" />
+    <Compile Include="StateScope.cs" />
+    <Compile Include="StateStack.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
