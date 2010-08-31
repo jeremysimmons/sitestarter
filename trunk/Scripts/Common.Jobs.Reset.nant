@@ -6,7 +6,6 @@
 	<include buildfile="Common.Jobs.Modules.nant"/>
 	
   	<target name="Common.Jobs.ResetAll">
-		<call target="Common.Jobs.ResetSiteMap"/>
 		<call target="Common.Jobs.ArchiveLogs"/>
 		<call target="Common.Jobs.ResetModules"/>
   	</target>  

@@ -101,12 +101,16 @@
 	        <exclude name="**/Backups/**"/>
 	        <exclude name="**/Backups"/>
 	        <exclude name="**.eqbak"/>
+	        <exclude name="**.eqconfig"/>
 	        <exclude name="**/*.csproj"/>
 	        <exclude name="*disabled*"/>
 	        <exclude name="**/bin/Debug/**"/>
 	        <exclude name="**/bin/Release/**"/>
+	        <exclude name="**.Tests.dll"/>
 	        <exclude name="**.refresh"/>
 	        <exclude name="**.nant"/>
+	        <exclude name="**/nunit**"/>
+	        <exclude name="**/tests/**"/>
 	        <include name="**/**" />
 	    </fileset>	   
 
