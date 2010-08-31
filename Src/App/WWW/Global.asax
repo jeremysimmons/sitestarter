@@ -13,11 +13,12 @@
 
     void Application_Start(object sender, EventArgs e) 
     {
-        using (LogGroup logGroup = AppLogger.StartGroup("Preparing to start application.", LogLevel.Debug))
-        {
+    
+       // using (LogGroup logGroup = AppLogger.StartGroup("Preparing to start application.", LogLevel.Debug))
+       // {
             // Attempt to initialize the config
             Initialize();
-        }
+       // }
 
     }
     
@@ -36,12 +37,12 @@
 
     void Session_Start(object sender, EventArgs e) 
     {
-        using (LogGroup logGroup = AppLogger.StartGroup("Preparing to start session.", LogLevel.Debug))
-        {	        
+       // using (LogGroup logGroup = AppLogger.StartGroup("Preparing to start session.", LogLevel.Debug))
+       // {	        
 	        // Code that runs when a new session is started
 	        if (!StateAccess.IsInitialized || !Config.IsInitialized || !DataAccess.IsInitialized)
 	            Initialize();
-		}
+		//}
 
     }
 
@@ -56,15 +57,15 @@
 
     private void Initialize()
     {
-        using (LogGroup logGroup = AppLogger.StartGroup("Initializing the state management, config, modules, and data.", LogLevel.Debug))
-        {
+        //using (LogGroup logGroup = AppLogger.StartGroup("Initializing the state management, config, modules, and data.", LogLevel.Debug))
+        //{
 	        if (!StateAccess.IsInitialized || !Config.IsInitialized)
 	        {
-	            SoftwareMonkeys.SiteStarter.Web.State.StateProviderManager.Initialize();   
+	        	InitializeState();
 	            Config.Initialize(Server.MapPath(HttpContext.Current.Request.ApplicationPath), WebUtilities.GetLocationVariation(HttpContext.Current.Request.Url));
 	            new DataProviderInitializer().Initialize();
 	        }
-		}
+		//}
     }
 
     public override void Dispose()
@@ -73,6 +74,11 @@
         DataAccess.Dispose();
 
         base.Dispose();
+    }
+    
+    private void InitializeState()
+    {
+    	SoftwareMonkeys.SiteStarter.Web.State.StateProviderManager.Initialize();
     }
        
 </script>
