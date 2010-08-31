@@ -140,7 +140,7 @@
 	            // If the user changed their own username they need to sign in again
 	            if (editingSelf
 	            	&& !originalUsername.Equals(user.Username))
-	            	Response.Redirect("../Members/Logout.aspx");
+	            	FormsAuthentication.SetAuthCookie(user.Username, false);
 	
 	            // Show the index again
 	            ManageUsers();
@@ -246,13 +246,9 @@
 <asp:Content ID="Body" ContentPlaceHolderID="Body" runat="Server">
     <asp:MultiView ID="PageView" runat="server">
         <asp:View ID="IndexView" runat="server">
-            <table class="OuterPanel">
-                <tr>
-                    <td class="Heading1">
+            <h1>
                         <%# Resources.Language.ManageUsers %></td>
-                </tr>
-                <tr>
-                    <td width="100%">
+                </h1>
                         <cc:Result runat="server" ID="IndexResult">
                         </cc:Result>
                         <p>
@@ -262,7 +258,7 @@
                                 CommandName="New" />&nbsp;</p>
                         <p>
                             <cc:IndexGrid ID="IndexGrid" runat="server" AllowPaging="True" DefaultSort="UsernameAscending" HeaderStyle-CssClass="Heading2" AllowSorting="True"
-                                AutoGenerateColumns="False" EmptyDataText='<%# Resources.Language.NoUsersFound %>'
+                                AutoGenerateColumns="False"  HeaderText='<%# Language.Users %>' EmptyDataText='<%# Resources.Language.NoUsersFound %>'
                                 OnPageIndexChanged="IndexGrid_PageIndexChanged" OnSortChanged="IndexGrid_SortChanged"
                                 Width="100%"
                                 PageSize="20" OnItemCommand="IndexGrid_ItemCommand" DataKeyField="ID">
@@ -287,19 +283,11 @@
                                 <AlternatingItemStyle CssClass="ListItem" />
                             </cc:IndexGrid>
                         </p>
-                    </td>
-                </tr>
-            </table>
         </asp:View>
         <asp:View ID="FormView" runat="server">
-            <table class="OuterPanel">
-                <tr>
-                    <td class="Heading1">
+            <h1>
                         <%# OperationManager.CurrentOperation == "CreateUser" ? Resources.Language.CreateUser : Resources.Language.EditUser %>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
+             </h1>
                         <p>
                           <cc:Result runat="server"></cc:Result>
                              <%# OperationManager.CurrentOperation == "CreateUser" ? Resources.Language.CreateUserIntro : Resources.Language.EditUserIntro %>
@@ -329,9 +317,7 @@
                                                     Text='<%# Resources.Language.Update %>' Visible='<%# OperationManager.CurrentOperation == "EditUser" %>'></asp:Button>
                                                 </FieldTemplate></cc:EntityFormButtonsItem>
 </cc:EntityForm> 
-                    </td>
-                </tr>
-            </table>
+                   </p>
         </asp:View>
     </asp:MultiView>
 </asp:Content>

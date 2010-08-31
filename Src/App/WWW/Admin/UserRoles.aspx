@@ -100,6 +100,8 @@
     	{
 	        // Get a fresh copy of the role object
 	        UserRole role = (UserRole)UserRoleFactory.Current.GetUserRole(((UserRole)DataForm.DataSource).ID);
+	        
+	        UserRoleFactory.Current.Activate(role);
 	
 	        // Transfer data from the form to the object
 	        DataForm.ReverseBind(role);
@@ -171,51 +173,6 @@
         CreateUserRole();
     }
 
-    // todo: remove
-    /*protected void UserRoleSource_Inserted(object sender, ObjectDataSourceStatusEventArgs e)
-    {
-
-    }
-
-    protected void UserRoleSource_Updated(object sender, ObjectDataSourceStatusEventArgs e)
-    {
-        // Display the result to the role
-        Result.Display("The role was updated successfully.");
-
-        // Show the index again
-        ManageUserRoles();
-    }*/
-
-    //  TODO: Remove
-    /*protected void IndexGrid_RowEditing(object sender, GridViewEditEventArgs e)
-    {
-        // Begin editing the selected object
-        EditUserRole(new Guid(IndexGrid.DataKeys[e.NewEditIndex].ToString()));
-        e.NewEditIndex = -1;
-    }*/
-    // TODO: remove
-   /* protected void UserRoleSource_Updating(object sender, ObjectDataSourceMethodEventArgs e)
-    {
-        // Make sure the object has the correct ID
-        if (((UserRole)e.InputParameters[0]).ID == Guid.Empty)
-            ((UserRole)e.InputParameters[0]).ID = new Guid(UserRoleSource.SelectParameters[0].DefaultValue);
-    }*/
-    /*protected void IndexGrid_RowDeleted(object sender, GridViewDeleteEventArgs e)
-    {
-        // Display the result
-        Result.Display("The selected role was deleted.");
-
-        // Go back to the index
-        ManageUserRoles();
-    }*/
-   /* protected void UserRoleSource_Inserting(object sender, ObjectDataSourceMethodEventArgs e)
-    {
-        // Generate a new ID for any new objects
-        UserRole role = (UserRole)e.InputParameters[0];
-        if (role.ID == Guid.Empty)
-            role.ID = Guid.NewGuid();
-    }*/
-
     private void DataForm_EntityCommand(object sender, EntityFormEventArgs e)
     {
         if (e.CommandName == "Save")
@@ -251,13 +208,9 @@
 <asp:Content ID="Body" ContentPlaceHolderID="Body" runat="Server">
     <asp:MultiView ID="PageView" runat="server">
         <asp:View ID="IndexView" runat="server">
-            <table class="OuterPanel">
-                <tr>
-                    <td class="Heading1">
+            <h1>
                         <%# Resources.Language.ManageUserRoles %></td>
-                </tr>
-                <tr>
-                    <td>
+                </h1>
                         <cc:Result runat="server" ID="IndexResult">
                         </cc:Result>
                         <p>
@@ -266,7 +219,7 @@
                             <asp:Button ID="CreateButton" runat="server" OnClick="CreateButton_Click" Text='<%# Resources.Language.CreateUserRole %>'
                                 CommandName="New" />&nbsp;</p>
                         <p>
-                            <cc:IndexGrid ID="IndexGrid" runat="server" AllowPaging="True" HeaderStyle-CssClass="Heading2" AllowSorting="True"
+                            <cc:IndexGrid ID="IndexGrid" runat="server" HeaderText='<%# Resources.Language.Roles %>' AllowPaging="True" HeaderStyle-CssClass="Heading2" AllowSorting="True"
                                 AutoGenerateColumns="False" EmptyDataText='<%# Resources.Language.NoUserRolesFound %>'
                                 Width="100%"
                                 PageSize="20" OnItemCommand="IndexGrid_ItemCommand" DataKeyField="ID">
@@ -275,7 +228,7 @@
                                     <asp:TemplateColumn>
                                         <itemtemplate>
 <asp:LinkButton ID="LinkButton1" runat="server" text='<%# Resources.Language.Edit %>' ToolTip='<%# Resources.Language.EditUserRoleToolTip %>' CommandName="Edit"></asp:LinkButton>
-<asp:LinkButton ID="LinkButton2" ToolTip='<%# Resources.Language.DeleteUserRoleToolTip %>' runat="server" text='<%# Resources.Language.Delete %>' CommandName="Delete"></asp:LinkButton>
+<asp:LinkButton ID="LinkButton2" ToolTip='<%# Resources.Language.DeleteUserRoleToolTip %>' runat="server" text='<%# Resources.Language.Delete %>' CommandName="Delete" onclientclick='<%# "return confirm(\"" + Resources.Language.ConfirmDeleteRole + "\");" %>'></asp:LinkButton>
                                       
 </itemtemplate>
                                     </asp:TemplateColumn>
@@ -286,25 +239,17 @@
                                 <AlternatingItemStyle CssClass="ListItem" />
                             </cc:IndexGrid>
                         </p>
-                    </td>
-                </tr>
-            </table>
         </asp:View>
         <asp:View ID="FormView" runat="server">
-            <table class="OuterPanel">
-                <tr>
-                    <td class="Heading1">
+            <h1>
                         <%# OperationManager.CurrentOperation == "CreateUserRole" ? Resources.Language.CreateUserRole : Resources.Language.EditUserRole %>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
+                    </h1>
                         <p>
                           <cc:Result runat="server"></cc:Result>
                              <%# OperationManager.CurrentOperation == "CreateUserRole" ? Resources.Language.CreateUserRoleIntro : Resources.Language.EditUserRoleIntro %>
                          </p>
                            <cc:EntityForm runat="server" id="DataForm" OnEntityCommand="DataForm_EntityCommand" CssClass="Panel" headingtext='<%# OperationManager.CurrentOperation == "CreateUserRole" ? Resources.Language.NewUserRoleDetails : Resources.Language.UserRoleDetails %>' headingcssclass="Heading2" width="100%">
-                             <cc:EntityFormTextBoxItem runat="server" PropertyName="Name" TextBox-Width="400" FieldControlID="Name" IsRequired="true" text='<%# Resources.Language.Name + ":" %>' RequiredErrorMessage='<%# Resources.Language.UserRoleNameRequired %>'></cc:EntityFormTextBoxItem>
+                             <cc:EntityFormTextBoxItem runat="server" PropertyName="Name" TextBox-Width="400" TextBox-Enabled='<%# ((UserRole)DataForm.DataSource).Name != Resources.Language.Administrator %>' FieldControlID="Name" IsRequired="true" text='<%# Resources.Language.Name + ":" %>' RequiredErrorMessage='<%# Resources.Language.UserRoleNameRequired %>'></cc:EntityFormTextBoxItem>
 				<cc:EntityFormItem runat="server" PropertyName="Users" FieldControlID="Users" ControlValuePropertyName="SelectedEntities" text='<%# Resources.Language.Users + ":" %>'><FieldTemplate><cc:EntitySelect width="400px" EntityType="SoftwareMonkeys.SiteStarter.Entities.User, SoftwareMonkeys.SiteStarter.Entities" runat="server" ValuePropertyName='Name' id="Users" displaymode="multiple" selectionmode="multiple" NoDataText='<%# "-- " + Resources.Language.NoUsers + " --" %>' OnDataLoading='UsersSelect_DataLoading'></cc:EntitySelect></FieldTemplate></cc:EntityFormItem>
                                   <cc:EntityFormButtonsItem ID="EntityFormButtonsItem1" runat="server"><FieldTemplate><asp:Button ID="SaveButton" runat="server" CausesValidation="True" CommandName="Save"
                                                     Text='<%# Resources.Language.Save %>' Visible='<%# OperationManager.CurrentOperation == "CreateUserRole" %>'></asp:Button>
@@ -312,9 +257,7 @@
                                                     Text='<%# Resources.Language.Update %>' Visible='<%# OperationManager.CurrentOperation == "EditUserRole" %>'></asp:Button>
                                                 </FieldTemplate></cc:EntityFormButtonsItem>
 </cc:EntityForm> 
-                    </td>
-                </tr>
-            </table>
+                    </p>
         </asp:View>
     </asp:MultiView>
 </asp:Content>
