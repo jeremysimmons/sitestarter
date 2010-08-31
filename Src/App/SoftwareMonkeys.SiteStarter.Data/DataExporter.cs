@@ -51,31 +51,14 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			}
 		}
 		
-		// TODO: Remove if not needed
-		/*/// <summary>
-		/// Exports data of the specified types to XML files in the specified directory.
+		#endregion
+		
+		#region Utility functions
+		/// <summary>
+		/// Exports the provided entity to the specified exports directory.
 		/// </summary>
-		/// <param name="directoryPath">The directory path to export the files to.</param>
-		/// <param name="typeNames">The short names of the types to export.</param>
-		public virtual void ExportToXml(string directoryPath, string[] typeNames)
-		{
-			foreach (string typeName in typeNames)
-			{
-				foreach (IEntity entity in DataAccess.Data.Stores[EntitiesUtilities.GetType(typeName)].Indexer.GetEntities())
-				{
-					ExportEntity(entity, directoryPath);
-				}
-			}
-		}*/
-			
-			#endregion
-			
-			#region Utility functions
-			/// <summary>
-			/// Exports the provided entity to the specified exports directory.
-			/// </summary>
-			/// <param name="entity">The entity to export to file.</param>
-			public void ExportEntity(IEntity entity)
+		/// <param name="entity">The entity to export to file.</param>
+		public void ExportEntity(IEntity entity)
 		{
 			string filePath = CreateEntityPath(entity);
 			
@@ -84,12 +67,14 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		
 		
 		/// <summary>
-		/// Serializes the provided entity to the provided file path.
+		/// Serializes the provided entity to the provided file path. Note: Deactivates the provided entity by stripping off the referenced properties to avoid circular reference error.
 		/// </summary>
 		/// <param name="entity">The entity to serialize.</param>
 		/// <param name="filePath">The path to save the serialized file to.</param>
 		public void SerializeToFile(IEntity entity, string filePath)
 		{
+			entity.Strip();
+			
 			if (!Directory.Exists(Path.GetDirectoryName(filePath)))
 				Directory.CreateDirectory(Path.GetDirectoryName(filePath));
 			
