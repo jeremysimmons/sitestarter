@@ -160,6 +160,8 @@ namespace SoftwareMonkeys.SiteStarter.Data
 
 				entity = (IEntity)XmlUtilities.DeserializeFromDocument(doc, type);
 				
+				// Dispose the XML document
+				doc = null;
 			}
 			
 			return entity;
