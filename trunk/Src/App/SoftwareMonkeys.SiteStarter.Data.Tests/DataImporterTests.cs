@@ -42,19 +42,25 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			user.Roles = new TestRole[] {role};
 			
+			// IMPORTANT: Export the references before the entities, because the references are stripped from the entities upon export
+			// Alternative is to reactivate the entities and their references using DataAccess.Data.Activator.
+			EntityReferenceCollection references = DataAccess.Data.Referencer.GetActiveReferences(user);
+			
+			if (references.Count <= 0)
+				Assert.Fail("No active references found.");
 			
 			DataExporter exporter = (DataExporter)DataAccess.Data.InitializeDataExporter();
 			
 			exporter.ExportDirectoryPath = TestUtilities.GetTestingPath(this) + Path.DirectorySeparatorChar + "Exported";
+			
+			exporter.ExportEntity(references[0]);
 			
 			exporter.ExportEntity(user);
 			exporter.ExportEntity(role);
 			exporter.ExportEntity(article);
 			exporter.ExportEntity(category);
 			
-			EntityReferenceCollection references = DataAccess.Data.Referencer.GetActiveReferences(user);
 			
-			exporter.ExportEntity(references[0]);
 			
 			DataAccess.Data.Schema.LegacyVersion = legacyVersion;
 			DataAccess.Data.Schema.ApplicationVersion = currentVersion;
@@ -77,7 +83,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			Assert.IsNotNull(foundUser.Roles, "user.Roles == null");
 			
-			Assert.AreEqual(user.Roles.Length, foundUser.Roles.Length, "Invalid number of roles found.");
+			Assert.AreEqual(1, foundUser.Roles.Length, "Invalid number of roles found.");
 			
 			
 			
@@ -129,12 +135,15 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			exporter.ExportDirectoryPath = TestUtilities.GetTestingPath(this) + Path.DirectorySeparatorChar + "Exported";
 			
-			exporter.ExportEntity(user);
-			exporter.ExportEntity(role);
-			
+			// IMPORTANT: Export the references before the entities, because the references are stripped from the entities upon export
+			// Alternative is to reactivate the entities and their references using DataAccess.Data.Activator.
 			EntityReferenceCollection references = DataAccess.Data.Referencer.GetActiveReferences(user);
 			
 			exporter.ExportEntity(references[0]);
+			
+			exporter.ExportEntity(user);
+			exporter.ExportEntity(role);
+			
 			
 			DataSchema schema = (DataSchema)DataAccess.Data.Schema;
 			
@@ -177,7 +186,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			Assert.IsNotNull(foundAccount.GrantedRoles, "user.GrantedRoles == null");
 			
-			Assert.AreEqual(user.Roles.Length, foundAccount.GrantedRoles.Length, "Invalid number of roles found.");
+			Assert.AreEqual(1, foundAccount.GrantedRoles.Length, "Invalid number of roles found.");
 			
 			
 			
@@ -224,14 +233,17 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			exporter.ExportDirectoryPath = TestUtilities.GetTestingPath(this) + Path.DirectorySeparatorChar + "Exported";
 			
+			// IMPORTANT: Export the references before the entities, because the references are stripped from the entities upon export
+			// Alternative is to reactivate the entities and their references using DataAccess.Data.Activator.
+			EntityReferenceCollection references = DataAccess.Data.Referencer.GetActiveReferences(user);
+			
+			exporter.ExportEntity(references[0]);
+			
 			exporter.ExportEntity(user);
 			exporter.ExportEntity(role);
 			exporter.ExportEntity(article);
 			exporter.ExportEntity(category);
 			
-			EntityReferenceCollection references = DataAccess.Data.Referencer.GetActiveReferences(user);
-			
-			exporter.ExportEntity(references[0]);
 			
 			DataImporter importer = (DataImporter)DataAccess.Data.InitializeDataImporter();
 			importer.ImportableDirectoryPath = exporter.ExportDirectoryPath;
