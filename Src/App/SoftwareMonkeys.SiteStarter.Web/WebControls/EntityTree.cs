@@ -185,11 +185,17 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 						
 						string fixedUrl = node.NavigateUrl;
 						fixedUrl = fixedUrl.Replace(HttpUtility.UrlEncode("${Entity.ID}"), HttpUtility.UrlEncode(entity.ID.ToString()));
-						fixedUrl = fixedUrl.Replace(HttpUtility.UrlEncode("${Entity.UniqueKey}"), HttpUtility.UrlEncode(entity.UniqueKey));
+						if (entity is IUniqueEntity)
+						{
+							fixedUrl = fixedUrl.Replace(HttpUtility.UrlEncode("${Entity.UniqueKey}"), HttpUtility.UrlEncode(((IUniqueEntity)entity).UniqueKey));
+						}
 						// Quick fix below
 						// Resolves the issue of . character being converted into _ which is meant to prevent breaking, but also trips up the previous lines
 						fixedUrl = fixedUrl.Replace(HttpUtility.UrlEncode("${Entity_ID}"), HttpUtility.UrlEncode(entity.ID.ToString()));
-						fixedUrl = fixedUrl.Replace(HttpUtility.UrlEncode("${Entity_UniqueKey}"), HttpUtility.UrlEncode(entity.UniqueKey));
+						if (entity is IUniqueEntity)
+						{
+							fixedUrl = fixedUrl.Replace(HttpUtility.UrlEncode("${Entity_UniqueKey}"), HttpUtility.UrlEncode(((IUniqueEntity)entity).UniqueKey));
+						}
 						node.NavigateUrl = fixedUrl;
 					}
 				}

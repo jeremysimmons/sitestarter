@@ -134,6 +134,30 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
         }
         #endregion
 
+        
+		public override string[] GetKeys(StateScope scope)
+		{
+			List<string> keys = new List<string>();
+			
+			switch (scope)
+			{
+				case StateScope.Application:
+					foreach (string key in HttpContext.Current.Application.AllKeys)
+						keys.Add(key);
+					break;
+				case StateScope.Session:
+					foreach (string key in HttpContext.Current.Session.Keys)
+						keys.Add(key);
+					break;
+				case StateScope.Operation:
+					foreach (string key in HttpContext.Current.Items.Keys)
+						keys.Add(key);
+					break;
+			}
+			
+			return keys.ToArray();
+		}
+        
         public override void Initialize(string name, System.Collections.Specialized.NameValueCollection config)
         {
             StateAccess.State = this;
