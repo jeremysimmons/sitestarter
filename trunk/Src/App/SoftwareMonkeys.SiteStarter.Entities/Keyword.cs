@@ -11,8 +11,13 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 	/// Defines a keyword in the application.
 	/// </summary>
 	[Serializable]
-	public class Keyword : BaseEntity, IKeyword
+	public class Keyword : BaseUniqueEntity, IKeyword
 	{
+		public override string UniqueKey
+		{
+			get { return EntitiesUtilities.FormatUniqueKey(Name); }
+		}
+		
 		private string name;
 		/// <summary>
 		/// Gets/sets the name of the role.

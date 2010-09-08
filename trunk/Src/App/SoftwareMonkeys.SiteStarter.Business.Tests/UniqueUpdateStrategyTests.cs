@@ -13,7 +13,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		[Test]
 		public void Test_Found_ForIEntityInterface()
 		{
-			StrategyInfo strategy = StrategyState.Strategies["Update", "IEntity"];
+			StrategyInfo strategy = StrategyState.Strategies["Update", "IUniqueEntity"];
 			
 			Assert.IsNotNull(strategy);
 		}
