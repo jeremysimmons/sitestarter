@@ -385,6 +385,9 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			if (typeName == null || typeName == String.Empty)
 				throw new ArgumentNullException("typeName");
 			
+			if (typeName == "IEntity")
+				return typeof(IEntity);
+			
 			//AppLogger.Debug("Type name: " + typeName);
 			
 			// If a short type name was provided (eg. User)
