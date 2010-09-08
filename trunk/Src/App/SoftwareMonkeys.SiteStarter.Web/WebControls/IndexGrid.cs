@@ -124,6 +124,27 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			}
 		}
 		#endregion
+
+		
+		public string ItemMouseOverCssClass
+		{
+			get {
+				if (ViewState["ItemMouseOverCssClass"] == null)
+					ViewState["ItemMouseOverCssClass"] = "ListItemOver";
+				return (string)ViewState["ItemMouseOverCssClass"];
+			}
+			set { ViewState["ItemMouseOverCssClass"] = value; }
+		}
+		
+		public string ItemMouseOutCssClass
+		{
+			get {
+				if (ViewState["ItemMouseOutCssClass"] == null)
+					ViewState["ItemMouseOutCssClass"] = "ListItem";
+				return (string)ViewState["ItemMouseOutCssClass"];
+			}
+			set { ViewState["ItemMouseOutCssClass"] = value; }
+		}
 		
 		public string NavigateUrl
 		{
@@ -553,8 +574,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			
 			using (LogGroup logGroup = AppLogger.StartGroup("Customizing a general or alternating item.", NLog.LogLevel.Debug))
 			{
-				e.Item.Attributes.Add("onmouseover", "this.className='ListItemOver';");
-				e.Item.Attributes.Add("onmouseout", "this.className='ListItem';");
+				e.Item.Attributes.Add("onmouseover", "this.className='" + ItemMouseOverCssClass + "';");
+				e.Item.Attributes.Add("onmouseout", "this.className='" + ItemMouseOutCssClass + "';");
 				e.Item.Attributes.Add("onclick", (EnableExpansion ? "ToggleExpansion('" + ClientID + "', " + e.Item.ItemIndex + ")" : String.Empty));
 			}
 		}

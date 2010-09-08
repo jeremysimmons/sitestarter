@@ -31,8 +31,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
 			if (!isInitialized)
 			{
 
-				using (LogGroup logGroup = AppLogger.StartGroup("Initializes the state provider manager to hold all application data while in memory."))
-				{
 					if (!isInitialized)
 					{
 						InitializeApplicationState();
@@ -40,7 +38,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
 						isInitialized = true; //error-free initialization
 
 					}
-				}
 			}
 		}
 		
