@@ -1,6 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 using SoftwareMonkeys.SiteStarter.Configuration.Tests;
+using SoftwareMonkeys.SiteStarter.Tests.Entities;
 
 namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 {
@@ -12,5 +13,6 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 		public BaseEntityTestFixture()
 		{
 		}
+		
 	}
 }
