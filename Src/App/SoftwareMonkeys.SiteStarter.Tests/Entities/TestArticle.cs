@@ -8,8 +8,12 @@ using SoftwareMonkeys.SiteStarter.Configuration;
 namespace SoftwareMonkeys.SiteStarter.Tests.Entities
 {
 	[Serializable]
-    public class TestArticle : BaseTestEntity, ITestArticle
+    public class TestArticle : BaseUniqueTestEntity, ITestArticle
     {
+		public override string UniqueKey {
+    		get { return EntitiesUtilities.FormatUniqueKey(Title); }
+		}
+    	
         private string title;
         public string Title
         {
@@ -78,6 +82,7 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
             get { return editors; }
             set { editors = value; }
         }
+        
         
         /// <summary>
         /// Registers the entity in the system.
