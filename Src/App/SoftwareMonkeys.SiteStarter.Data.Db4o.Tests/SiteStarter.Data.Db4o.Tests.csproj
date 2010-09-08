@@ -129,7 +129,7 @@
     <Compile Include="Db4oDataReferencerTests.cs" />
     <Compile Include="Db4oDataSaverTests.cs" />
     <Compile Include="Db4oDataSchemaTests.cs" />
-    <Compile Include="Db4oDataUpdaterTest.cs" />
+    <Compile Include="Db4oDataUpdaterTests.cs" />
     <Compile Include="Db4oFilterGroupTests.cs" />
     <Compile Include="Db4oFilterTests.cs" />
     <Compile Include="Db4oRenamePropertyCommandTests.cs" />
