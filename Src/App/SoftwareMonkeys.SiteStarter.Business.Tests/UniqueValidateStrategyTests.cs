@@ -11,7 +11,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		[Test]
 		public void Test_Found_ForIEntityInterface()
 		{
-			StrategyInfo strategy = StrategyState.Strategies["ValidateUnique", "IEntity"];
+			StrategyInfo strategy = StrategyState.Strategies["Validate", "IUniqueEntity"];
 			
 			Assert.IsNotNull(strategy);
 		}

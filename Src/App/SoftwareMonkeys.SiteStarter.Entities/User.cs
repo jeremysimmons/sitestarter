@@ -11,7 +11,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 	/// Represents a user in the application.
 	/// </summary>
 	[Serializable]
-	public class User : BaseEntity, IUser
+	public class User : BaseUniqueEntity, IUser
 	{
 		public override string UniqueKey
 		{

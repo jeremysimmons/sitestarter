@@ -11,7 +11,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
     /// Defines the interface for a user role in the application.
     /// </summary>
     [Serializable]
-    public class UserRole : BaseEntity, IUserRole
+    public class UserRole : BaseUniqueEntity, IUserRole
     {
     	public override string UniqueKey
 		{

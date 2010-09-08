@@ -7,7 +7,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// <summary>
 	/// Used to save entities while enforcing a strict unique field/property rule.
 	/// </summary>
-	[Strategy("SaveUnique", "IEntity")]
+	[Strategy("Save", "IUniqueEntity")]
 	public class UniqueSaveStrategy : SaveStrategy, IUniqueSaveStrategy
 	{
 		private string uniquePropertyName;

@@ -7,7 +7,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// <summary>
 	/// Used to update entities while enforcing a strict unique field/property rule.
 	/// </summary>
-	[Strategy("UpdateUnique", "IEntity")]
+	[Strategy("Update", "IUniqueEntity")]
 	public class UniqueUpdateStrategy : UpdateStrategy, IUniqueUpdateStrategy
 	{
 		private string uniquePropertyName;
@@ -36,7 +36,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			get {
 				if (uniqueValidator == null)
-					uniqueValidator = StrategyState.Strategies["ValidateUnique", "IEntity"].New<UniqueValidateStrategy>();
+					uniqueValidator = StrategyState.Strategies["Validate", "IUniqueEntity"].New<UniqueValidateStrategy>();
 				return uniqueValidator; }
 			set { uniqueValidator = value; }
 		}
