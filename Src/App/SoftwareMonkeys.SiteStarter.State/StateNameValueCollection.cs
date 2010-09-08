@@ -50,6 +50,72 @@ namespace SoftwareMonkeys.SiteStarter.State
 		}
 		
 		/// <summary>
+		/// Counts the number of items in the collection.
+		/// </summary>
+		/// <returns>The total number of items in the collection.</returns>
+		public int GetCount()
+		{
+			bool doContinue = true;
+			int i = 0;
+			int count = 0;
+			
+			foreach (string key in StateAccess.State.GetKeys(Scope))
+			{
+				// If it starts with the group key
+				if (key.IndexOf(GroupKey + "_") == 0)
+				{
+					i++;
+				}
+			}
+			
+			count = i;
+			
+			return count;
+		}
+		
+		
+		/// <summary>
+		/// The total number of items in the collection.
+		/// </summary>
+		public int Count {
+			get {
+				return GetCount();
+			}
+		}
+		
+		/// <summary>
+		/// Checks whether a state value exists at the specified index.
+		/// </summary>
+		/// <param name="key">The key of the item.</param>
+		public bool StateValueExists(string key)
+		{
+			if (!StateAccess.IsInitialized || StateAccess.State == null)
+				throw new InvalidOperationException("The state hasn't been initialized.");
+			
+			string fullKey = GetStateKey(groupKey, key);
+			
+			bool exists = false;
+			
+			switch (Scope)
+			{
+				case StateScope.Application:
+					exists = StateAccess.State.ContainsApplication(fullKey) &&
+						StateAccess.State.GetApplication(fullKey) != null;
+					break;
+				case StateScope.Session:
+					exists = StateAccess.State.ContainsSession(fullKey) &&
+						StateAccess.State.GetSession(fullKey) != null;
+					break;
+				case StateScope.Operation:
+					exists = StateAccess.State.ContainsRequest(fullKey) &&
+						StateAccess.State.GetRequest(fullKey) != null;
+					break;
+			}
+			
+			return exists;
+		}
+		
+		/// <summary>
 		/// Retrieves the value of the state variable with the provided key, in the scope indicated by the Scope property, and in the group indicated by the GroupKey property.
 		/// </summary>
 		/// <param name="key">The key to retrieve the value for.</param>
