@@ -9,6 +9,20 @@ namespace SoftwareMonkeys.SiteStarter.Data
 	/// </summary>
 	public abstract class DataAdapter : IDataAdapter
 	{
+		
+		private bool autoRelease = true;
+		/// <summary>
+		/// Gets/sets a value indicating whether to release entities by removing binding between them and data store.
+		/// </summary>
+		public bool AutoRelease {
+			get{
+				return autoRelease;
+			}
+			set {
+				autoRelease = value;
+			}
+		}
+		
 		private DataProvider provider;
 		/// <summary>
 		/// The data provider for the data adapter to use.
@@ -153,6 +167,61 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				AppLogger.Debug("Data store name: " + store.Name);
 			}
 			return store;
+		}
+		
+		/// <summary>
+		/// Releases the entity from the data access tier by detaching/cloning it to release all bindings.
+		/// </summary>
+		/// <param name="entity"></param>
+		/// <returns></returns>
+		public IEntity Release(IEntity entity)
+		{
+			if (!AutoRelease)
+				return entity;
+			else
+				return entity.Clone();
+		}
+		
+		/// <summary>
+		/// Releases the entity from the data access tier by detaching/cloning it to release all bindings.
+		/// </summary>
+		/// <param name="entity"></param>
+		/// <returns></returns>
+		public T Release<T>(T entity)
+		{
+			return (T)Release(entity);
+		}
+		
+		/// <summary>
+		/// Releases the entities from the data access tier by detaching/cloning them to release all bindings.
+		/// </summary>
+		/// <param name="entities"></param>
+		/// <returns></returns>
+		public IEntity[] Release(IEntity[] entities)
+		{
+			Collection<IEntity> collection = new Collection<IEntity>();
+			foreach (IEntity e in entities)
+			{
+				if (AutoRelease)
+					collection.Add(e.Clone());
+				else
+					collection.Add(e);
+			}
+			return collection.ToArray();
+		}
+		
+		/// <summary>
+		/// Releases the entities from the data access tier by detaching/cloning them to release all bindings.
+		/// </summary>
+		/// <param name="entities"></param>
+		/// <returns></returns>
+		public T[] Release<T>(T[] entities)
+			where T : IEntity
+		{
+			return Collection<T>.ConvertAll(
+				Release(
+					Collection<IEntity>.ConvertAll(entities)));
+			
 		}
 	}
 }

@@ -63,7 +63,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					AppLogger.Debug("No entities retrieved.");
 			}
 
-			return (IEntity[])entities.ToArray();
+			return Release((IEntity[])entities.ToArray());
 		}
 		
 		
@@ -123,7 +123,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				}
 			}
 
-			return (IEntity[])entities.ToArray();
+			return Release((IEntity[])entities.ToArray());
 		}
 		
 		/// <summary>
@@ -140,7 +140,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 						return Array.IndexOf(entityIDs, e.ID) > -1;
 					}));
 			
-			return (T[])list.ToArray();
+			return Release((T[])list.ToArray());
 		}
 		
 		/// <summary>
@@ -186,7 +186,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				}
 			}
 
-			return (IEntity[])list.ToArray(type);
+			return Release((IEntity[])list.ToArray(type));
 		}
 		
 		/// <summary>
@@ -217,7 +217,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				list.Add((IEntity)os.Next());
 			}
 
-			return (IEntity[])list.ToArray();
+			return Release((IEntity[])list.ToArray());
 		}
 		
 		/// <summary>
@@ -291,7 +291,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				AppLogger.Debug("Absolute total objects: " + location.AbsoluteTotal);
 			}
 
-			return (T[])page.ToArray();
+			return Release((T[])page.ToArray());
 		}
 		
 		/// <summary>
@@ -354,7 +354,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				AppLogger.Debug("Total objects: " + entities.Count);
 			}
 
-			return (T[])entities.ToArray();
+			return Release((T[])entities.ToArray());
 		}
 		
 		/// <summary>
@@ -420,7 +420,97 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				i++;
 			}
 			location.AbsoluteTotal = i;
-			return (IEntity[])page.ToArray(type);
+			return Release((IEntity[])page.ToArray(type));
+		}
+		
+		/// <summary>
+		/// Retrieves the specified page of objects from the provided IObjectSet.
+		/// </summary>
+		/// <param name="type">The type of entities to retrieve.</param>
+		/// <param name="filterGroup">The group to filter the query by.</param>
+		/// <param name="sortExpression">The sort expression to apply before retrieving the page.</param>
+		/// <returns>An array of the objects retrieved.</returns>
+		public override T[] GetEntities<T>(FilterGroup filterGroup, string sortExpression)
+		{
+			return Collection<T>.ConvertAll(GetEntities(typeof(T), filterGroup, sortExpression));
+		}
+		
+		/// <summary>
+		/// Retrieves the specified page of objects from the provided IObjectSet.
+		/// </summary>
+		/// <param name="type">The type of entities to retrieve.</param>
+		/// <param name="filterGroup">The group to filter the query by.</param>
+		/// <param name="sortExpression">The sort expression to apply before retrieving the page.</param>
+		/// <returns>An array of the objects retrieved.</returns>
+		public override IEntity[] GetEntities(Type type, FilterGroup filterGroup, string sortExpression)
+		{
+			Db4oDataStore store = (Db4oDataStore)GetDataStore(type);
+			
+			Collection<IEntity> list = new Collection<IEntity>();
+			
+			int i = 0;
+			
+			if (store.DoesExist)
+			{
+				
+				list = new Collection<IEntity>(store.ObjectContainer.Query<IEntity>(delegate(IEntity e)
+				                                                                  {
+				                                                                  	bool matches = filterGroup.IsMatch(e);
+				                                                                  	i++;
+				                                                                  	return matches;
+				                                                                  }));
+				
+
+				
+			}
+			return Release((IEntity[])list.ToArray(type));
+		}
+		
+		/// <summary>
+		/// Retrieves the specified page of objects from the provided IObjectSet.
+		/// </summary>
+		/// <param name="type">The type of entities to retrieve.</param>
+		/// <param name="filterGroup">The group to filter the query by.</param>
+		/// <param name="location">The paging location to filter the query by.</param>
+		/// <param name="sortExpression">The sort expression to apply before retrieving the page.</param>
+		/// <returns>An array of the objects retrieved.</returns>
+		public override T[] GetPageOfEntities<T>(FilterGroup filterGroup, PagingLocation location, string sortExpression)
+		{
+			return Collection<T>.ConvertAll(GetPageOfEntities(typeof(T), filterGroup, location, sortExpression));
+		}
+		
+		/// <summary>
+		/// Retrieves the specified page of objects from the provided IObjectSet.
+		/// </summary>
+		/// <param name="type">The type of entities to retrieve.</param>
+		/// <param name="filterGroup">The group to filter the query by.</param>
+		/// <param name="location">The paging location to filter the query by.</param>
+		/// <param name="sortExpression">The sort expression to apply before retrieving the page.</param>
+		/// <returns>An array of the objects retrieved.</returns>
+		public override IEntity[] GetPageOfEntities(Type type, FilterGroup filterGroup, PagingLocation location, string sortExpression)
+		{
+			Db4oDataStore store = (Db4oDataStore)GetDataStore(type);
+			
+			Collection<IEntity> list = new Collection<IEntity>();
+			
+			int i = 0;
+			
+			if (store.DoesExist)
+			{
+				
+				list = new Collection<IEntity>(store.ObjectContainer.Query<IEntity>(delegate(IEntity e)
+				                                                                  {
+				                                                                  	bool matches = filterGroup.IsMatch(e);
+				                                                                  	bool isInPage = location.IsInPage(i);
+				                                                                  	i++;
+				                                                                  	return matches && isInPage;
+				                                                                  }));
+				
+
+				
+			}
+			location.AbsoluteTotal = i;
+			return Release((IEntity[])list.ToArray(type));
 		}
 		
 		/// <summary>
@@ -443,7 +533,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <param name="type">The type of entity to retrieve.</param>
 		/// <param name="parameters">The parameters to query with.</param>
 		/// <returns></returns>
-		public override IEntity[] GetEntities(Type type, IDictionary<string, object> parameters)
+		public override IEntity[] GetEntities(Type type, Dictionary<string, object> parameters)
 		{
 			List<IEntity> entities = new List<IEntity>();
 			
@@ -494,7 +584,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				AppLogger.Debug("Total: " + entities.Count.ToString());
 
 			}
-			return (IEntity[])entities.ToArray();
+			return Release((IEntity[])entities.ToArray());
 		}
 
 		
@@ -503,7 +593,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// </summary>
 		/// <param name="parameters">The parameters to query with.</param>
 		/// <returns></returns>
-		public override T[] GetEntities<T>(IDictionary<string, object> parameters)
+		public override T[] GetEntities<T>(Dictionary<string, object> parameters)
 		{
 			Collection<T> list = new Collection<T>();
 			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving entities of the specified type matching the provided parameters.", NLog.LogLevel.Debug))
@@ -518,7 +608,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				
 				AppLogger.Debug("Total: " + list.Count);
 			}
-			return list.ToArray();
+			return Release(list.ToArray());
 		}
 		
 		/// <summary>
@@ -582,7 +672,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			}
 			
 			// Return the entities
-			return entities.ToArray();
+			return Release(entities.ToArray());
 		}
 		
 		/// <summary>
@@ -658,7 +748,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				 */
 				AppLogger.Debug("Results: " + results.Count.ToString());
 			}
-			return (T[])results.ToArray();
+			return Release<T>((T[])results.ToArray());
 		}
 		
 		

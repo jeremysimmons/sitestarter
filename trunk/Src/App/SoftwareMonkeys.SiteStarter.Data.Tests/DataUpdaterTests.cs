@@ -101,16 +101,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				DataAccess.Data.Updater.Update(user2);
 				
-				//IDataStore store = DataAccess.Data.Stores[user2];
-				//store.Dispose();
-				// Dispose the store to ensure it was committed properly
-				if (DataAccess.Data.Stores == null)
-					Assert.Fail("DataAccess.Data.Stores == null");
-				IDataStore store = DataAccess.Data.Stores[user2];
-				if (store == null)
-				{
-					Assert.Fail("Can't find store.");
-				}
+				
 				
 				// TODO: Check if its possible to remove and dispose the store, then have it automatically reload when needed
 				//store.Dispose();
@@ -120,6 +111,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				Assert.IsNotNull(user3, "user3 == null");
 				
+				Assert.AreEqual(user2.ID, user3.ID, "The IDs don't match.");
 				Assert.AreEqual(user2.FirstName, user3.FirstName, "The name doesn't appear to have been updated.");
 				
 				//Assert.IsNotNull(toDelete, "The toDelete list is null.");

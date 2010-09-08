@@ -16,7 +16,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="type">The type of entity to retrieve.</param>
 		/// <param name="parameters">The parameters to query with.</param>
 		/// <returns></returns>
-		IEntity GetEntity(Type type, IDictionary<string, object> parameters);
+		IEntity GetEntity(Type type, Dictionary<string, object> parameters);
 			
 		
         IEntity GetEntity(IDataFilter filter);
@@ -34,12 +34,14 @@ namespace SoftwareMonkeys.SiteStarter.Data
         	where T : IEntity;
         
         
-		T GetEntity<T>(IDictionary<string, object> parameters)
+		T GetEntity<T>(Dictionary<string, object> parameters)
 			where T : IEntity;
 		
         IEntity GetEntity(Type type, string propertyName, object propertyValue);
 		
 		T GetEntityWithReference<T>(string propertyName, Type referencedEntityType, Guid referencedEntityID)
             where T : IEntity;
+		
+		bool AutoRelease {get;set;}
 	}
 }

@@ -102,7 +102,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// </summary>
 		/// <param name="entity">The entity to update.</param>
 		public override void Update(IEntity entity)
-		{			
+		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Updating the provided entity.", NLog.LogLevel.Debug))
 			{
 				Db4oDataStore store = (Db4oDataStore)GetDataStore(entity);
@@ -125,37 +125,41 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					if (entity == null)
 						throw new ArgumentNullException("entity");
 					
-					//DataAccess.Data.Activator.Activate(entity);
-					
 					AppLogger.Debug("Entity type: " + entity.GetType().ToString());
 					AppLogger.Debug("Entity ID: " + entity.ID);
 					
-					// Clone the entity, but do it in reverse so the data store is dealing with the bound instance/
-					// The entity needs to be cloned so that the one currently in memory doesn't reflect the preparations applied before saving/updating.
-					IEntity clonedEntity = entity;
-					// TODO: See if entity needs to be cloned
-					//entity = clonedEntity.Clone();
-					
-					AppLogger.Debug("Entity cloned");
-					
-					if (clonedEntity == entity)
-						AppLogger.Debug("Cloned entity == original entity.");
-					else
-						AppLogger.Debug("Cloned entity == separate instance.");
+					if (entity == null)
+						throw new ArgumentException("The provided entity hasn't been saved so it cannot be updated.");
 					
 					// Preupdate must be called to ensure all references are correctly stored
-					PreUpdate(clonedEntity);
+					PreUpdate(entity);
 					
-					if (clonedEntity != null)
+					// Get a bound copy of the entity
+					IDataReader reader = DataAccess.Data.InitializeDataReader();
+					reader.AutoRelease = false; // Tell the reader not to unbind the entity from the store because it's still within the data access system
+					
+					IEntity existingEntity = reader.GetEntity(entity.GetType(), "ID", entity.ID);
+					
+					
+					if (existingEntity != null)
 					{
+						// Activate the found entity
+						Provider.Activator.Activate(existingEntity);
 						
-						DataUtilities.StripReferences(clonedEntity);
+						// Copy the provided data to the bound entity
+						entity.CopyTo(existingEntity);
 						
-						store.ObjectContainer.Store(clonedEntity);
+						DataUtilities.StripReferences(existingEntity);
+						
+						// TODO: Check if needed. The entity is already bound when it's retrieved
+						// so the Store call shouldn't be necessary
+						// The entity in the store should already reflect the changes
+						store.ObjectContainer.Store(existingEntity);
 						AppLogger.Debug("Entity updated.");
 						
 						store.Commit();
 						AppLogger.Debug("ObjectContainer committed.");
+						
 					}
 				}
 				

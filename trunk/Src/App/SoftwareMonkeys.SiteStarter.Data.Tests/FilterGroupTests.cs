@@ -331,6 +331,23 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				ClearTestEntities();
 			}
 		}
+		
+		[Test]
+		[ExpectedException("InvalidOperationException")]
+		public void Test_IsMatch_EmptyGroup()
+		{
+			
+			TestArticle.RegisterType();
+			
+			TestArticle article = new TestArticle();
+			article.ID = Guid.NewGuid();
+			article.Title = "Article1";
+			
+			FilterGroup group = new FilterGroup();
+						
+			Assert.IsTrue(group.IsMatch(article), "group failed to match when it should match");
+		}
+		
 		#endregion
 
 		private void ClearTestEntities()
