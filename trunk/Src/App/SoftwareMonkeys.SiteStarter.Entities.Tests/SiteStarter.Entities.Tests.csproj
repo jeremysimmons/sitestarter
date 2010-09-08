@@ -81,6 +81,7 @@
       <Project>3109EA47-5620-4C75-93E2-A552FC75EB8B</Project>
       <Name>SiteStarter.Tests</Name>
     </ProjectReference>
+    <Compile Include="BaseEntityTests.cs" />
     <Compile Include="EntitiesUtilitiesTests.cs" />
     <Compile Include="BaseEntityTestFixture.cs" />
     <Compile Include="EntityCollectionTests.cs" />
