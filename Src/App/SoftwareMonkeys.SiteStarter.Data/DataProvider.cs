@@ -329,6 +329,24 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		public abstract IDataFilter CreateFilter(Type baseType);
 		
 		/// <summary>
+		/// Creates a filter object used to match entities by checking that a specified property matches a specified value.
+		/// </summary>
+		/// <returns></returns>
+		public virtual IDataFilter CreatePropertyFilter()
+		{
+			return CreateFilter(typeof(PropertyFilter));
+		}
+		
+		/// <summary>
+		/// Creates a filter object used to match entities by checking that a specified reference property is associated with a specified referenced entity.
+		/// </summary>
+		/// <returns></returns>
+		public virtual IDataFilter CreateReferenceFilter()
+		{
+			return CreateFilter(typeof(ReferenceFilter));
+		}
+		
+		/// <summary>
 		/// Disposes the data provider and suspends the data stores by moving them to a save location outside the application.
 		/// Note: This is used during an update to safely clear the data stores and allow the updated data to be imported without conflicts.
 		/// </summary>

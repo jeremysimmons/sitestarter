@@ -8,6 +8,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 	/// </summary>
 	public interface IDataAdapter
 	{
+		bool AutoRelease {get;set;}
 		IDataStore GetDataStore(IEntity entity);
 		IDataStore GetDataStore(Type type);
 		DataProvider Provider {get;}

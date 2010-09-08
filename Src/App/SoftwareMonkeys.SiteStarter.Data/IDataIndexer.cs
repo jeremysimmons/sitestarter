@@ -24,7 +24,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 
 		IEntity[] GetEntities(Type type);
 
-		IEntity[] GetEntities(Type type, IDictionary<string, object> parameters);
+		IEntity[] GetEntities(Type type, Dictionary<string, object> parameters);
 
 		/// <summary>
 		/// Retrieves all the entities of the specified type matching the specified values.
@@ -32,7 +32,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="type">The type of entity to retrieve.</param>
 		/// <param name="parameters">The parameters to query with.</param>
 		/// <returns></returns>
-		T[] GetEntities<T>(IDictionary<string, object> parameters)
+		T[] GetEntities<T>(Dictionary<string, object> parameters)
 			where T : IEntity;
 		
 		/// <summary>
@@ -54,11 +54,21 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		IEntity[] GetPageOfEntities(Type type, PagingLocation location, string sortExpression);
 		
 		IEntity[] GetPageOfEntities(Type type, string propertyName, object fieldValue, PagingLocation location, string sortExpression);
+		
+		IEntity[] GetPageOfEntities(Type type, FilterGroup filterGroup, PagingLocation location, string sortExpression);
+		
+		T[] GetPageOfEntities<T>(FilterGroup filterGroup, PagingLocation location, string sortExpression)
+			where T : IEntity;
 
 		T[] GetEntitiesWithReference<T>(string propertyName, Type referencedEntityType, Guid referencedEntityID)
 			where T : IEntity;
 		
 		IEntity[] GetEntities(Type type, string propertyName, object propertyValue);
+		
+		IEntity[] GetEntities(Type type, FilterGroup filterGroup, string sortExpression);
+		
+		T[] GetEntities<T>(FilterGroup filterGroup, string sortExpression)
+			where T : IEntity;
 		
 		/// <summary>
 		/// Retrieves all the entities of the specified type from the data store.

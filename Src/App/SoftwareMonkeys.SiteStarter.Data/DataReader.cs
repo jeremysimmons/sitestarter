@@ -9,13 +9,14 @@ namespace SoftwareMonkeys.SiteStarter.Data
 	/// </summary>
 	public abstract class DataReader : DataAdapter, IDataReader
 	{
+		
 		/// <summary>
 		/// Retrieves the entity of the specified type matching the specified values.
 		/// </summary>
 		/// <param name="type">The type of entity to retrieve.</param>
 		/// <param name="parameters">The parameters to query with.</param>
 		/// <returns></returns>
-		public abstract IEntity GetEntity(Type type, IDictionary<string, object> parameters);
+		public abstract IEntity GetEntity(Type type, Dictionary<string, object> parameters);
 			
 		
         public abstract IEntity GetEntity(IDataFilter filter);
@@ -38,7 +39,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
             where T : IEntity;
 		
 		
-		public abstract T GetEntity<T>(IDictionary<string, object> parameters)
+		public abstract T GetEntity<T>(Dictionary<string, object> parameters)
 			where T : IEntity;
 		
 	}

@@ -21,7 +21,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		
 		public abstract IEntity[] GetEntities(Type type);
 
-		public abstract IEntity[] GetEntities(Type type, IDictionary<string, object> parameters);
+		public abstract IEntity[] GetEntities(Type type, Dictionary<string, object> parameters);
 
 		/// <summary>
 		/// Retrieves all the entities of the specified type matching the specified values.
@@ -29,7 +29,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="type">The type of entity to retrieve.</param>
 		/// <param name="parameters">The parameters to query with.</param>
 		/// <returns></returns>
-		public abstract T[] GetEntities<T>(IDictionary<string, object> parameters)
+		public abstract T[] GetEntities<T>(Dictionary<string, object> parameters)
 			where T : IEntity;
 		
 		/// <summary>
@@ -49,6 +49,16 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			where T : IEntity;
 		
 		public abstract IEntity[] GetPageOfEntities(Type type, PagingLocation location, string sortExpression);
+		
+		public abstract IEntity[] GetPageOfEntities(Type type, FilterGroup filterGroup, PagingLocation location, string sortExpression);
+		
+		public abstract T[] GetPageOfEntities<T>(FilterGroup filterGroup, PagingLocation location, string sortExpression)
+			where T : IEntity;
+		
+		public abstract IEntity[] GetEntities(Type type, FilterGroup filterGroup, string sortExpression);
+		
+		public abstract T[] GetEntities<T>(FilterGroup filterGroup, string sortExpression)
+			where T : IEntity;
 		
 		public abstract IEntity[] GetPageOfEntities(Type type, string fieldName, object fieldValue, PagingLocation location, string sortExpression);
 

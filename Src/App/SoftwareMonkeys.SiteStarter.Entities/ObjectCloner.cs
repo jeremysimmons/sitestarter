@@ -7,6 +7,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 {
 	public static class ObjectCloner
 	{
+		
+		
 		/// <summary>
 		/// Perform a deep Copy of the object.
 		/// </summary>

@@ -322,7 +322,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			if (ObjectContainer == null)
 				throw new InvalidOperationException("The ObjectContainer has not been initialized.");
 			
-			return ObjectContainer.Ext().IsStored(entity);
+			bool foundBound = ObjectContainer.Ext().IsStored(entity);
+			
+			bool foundByID = (Reader.GetEntity(entity.GetType(), "ID", entity.ID) != null);
+			
+			return foundBound
+				|| foundByID;
 		}
 		
 

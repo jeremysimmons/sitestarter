@@ -132,6 +132,118 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		
 		
 		[Test]
+		public void Test_GetEntitiesByFilterGroup_ReferenceFilterAndPropertyFilter()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
+			{
+				TestUser user = new TestUser();
+				user.ID = Guid.NewGuid();
+				user.FirstName = "Test";
+				user.LastName = "User";
+				user.Username = "Username";
+				
+				TestRole role = new TestRole();
+				role.ID = Guid.NewGuid();
+				role.Name = "Test role";
+				
+				user.Roles = new TestRole[]{role};
+				
+				DataAccess.Data.Saver.Save(user);
+				DataAccess.Data.Saver.Save(role);
+				
+				ReferenceFilter filter = (ReferenceFilter)DataAccess.Data.CreateReferenceFilter();
+				filter.PropertyName = "Roles";
+				filter.ReferencedEntityID = role.ID;
+				filter.ReferenceType = role.GetType();
+				filter.AddType(typeof(TestUser));
+				
+				PropertyFilter filter2 = (PropertyFilter)DataAccess.Data.CreatePropertyFilter();
+				filter2.PropertyName = "Username";
+				filter2.PropertyValue = user.Username;
+				filter2.AddType(typeof(TestUser));
+				
+				FilterGroup filterGroup = new FilterGroup();
+				filterGroup.Add(filter);
+				filterGroup.Add(filter2);
+				
+				IEntity[] found = (IEntity[])DataAccess.Data.Indexer.GetEntities(filterGroup);
+				
+				Assert.IsNotNull(found, "Null value returned");
+				
+				if (found != null)
+				{
+					Assert.IsTrue(found.Length > 0, "No results found.");
+					
+					if (found.Length > 0)
+					{
+						TestUser foundUser = (TestUser)found[0];
+						
+						Assert.IsNotNull(foundUser, "foundUser == null");
+						
+						Assert.AreEqual(user.ID, foundUser.ID, "The IDs don't match.");
+					}
+				}
+			}
+		}
+		
+		[Test]
+		[ExpectedException("InvalidOperationException")]
+		public void Test_GetEntitiesByFilterGroup_EmptyGroup()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
+			{
+				TestUser user = new TestUser();
+				user.ID = Guid.NewGuid();
+				user.FirstName = "Test";
+				user.LastName = "User";
+				user.Username = "Username";
+				
+				TestRole role = new TestRole();
+				role.ID = Guid.NewGuid();
+				role.Name = "Test role";
+				
+				user.Roles = new TestRole[]{role};
+				
+				DataAccess.Data.Saver.Save(user);
+				DataAccess.Data.Saver.Save(role);
+				
+				ReferenceFilter filter = (ReferenceFilter)DataAccess.Data.CreateReferenceFilter();
+				filter.PropertyName = "Roles";
+				filter.ReferencedEntityID = role.ID;
+				filter.ReferenceType = role.GetType();
+				filter.AddType(typeof(TestUser));
+				
+				PropertyFilter filter2 = (PropertyFilter)DataAccess.Data.CreatePropertyFilter();
+				filter2.PropertyName = "Username";
+				filter2.PropertyValue = user.Username;
+				filter2.AddType(typeof(TestUser));
+				
+				FilterGroup filterGroup = new FilterGroup();
+				// Leave empty by not adding filters
+				//filterGroup.Add(filter);
+				//filterGroup.Add(filter2);
+				
+				IEntity[] found = (IEntity[])DataAccess.Data.Indexer.GetEntities(filterGroup);
+				
+				Assert.IsNotNull(found, "Null value returned");
+				
+				if (found != null)
+				{
+					Assert.IsTrue(found.Length > 0, "No results found.");
+					
+					if (found.Length > 0)
+					{
+						TestUser foundUser = (TestUser)found[0];
+						
+						Assert.IsNotNull(foundUser, "foundUser == null");
+						
+						Assert.AreEqual(user.ID, foundUser.ID, "The IDs don't match.");
+					}
+				}
+			}
+		}
+		
+		[Test]
 		public void Test_GetEntitiesMatchReference()
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetEntitiesMatchReference function to ensure it finds entities properly.", NLog.LogLevel.Debug))

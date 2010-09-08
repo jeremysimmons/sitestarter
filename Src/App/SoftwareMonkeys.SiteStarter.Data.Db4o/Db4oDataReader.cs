@@ -39,7 +39,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <returns>The matching entity.</returns>
 		public override IEntity GetEntity(IDataFilter filter)
 		{
-			IEntity[] entities = Provider.Indexer.GetEntities(filter);
+			IDataIndexer indexer = Provider.InitializeDataIndexer();
+			indexer.AutoRelease = AutoRelease;
+			
+			IEntity[] entities = indexer.GetEntities(filter);
 			
 			if (entities != null && entities.Length > 0)
 				return entities[0];
@@ -64,7 +67,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <returns>The matching entity.</returns>
 		public override IEntity GetEntity(FilterGroup group)
 		{
-			IEntity[] entities = Provider.Indexer.GetEntities(group);
+			IDataIndexer indexer = Provider.InitializeDataIndexer();
+			indexer.AutoRelease = AutoRelease;
+			
+			IEntity[] entities = indexer.GetEntities(group);
 			
 			if (entities != null && entities.Length > 0)
 				return entities[0];
@@ -78,7 +84,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <param name="type">The type of entity to retrieve.</param>
 		/// <param name="parameters">The parameters to query with.</param>
 		/// <returns></returns>
-		public override IEntity GetEntity(Type type, IDictionary<string, object> parameters)
+		public override IEntity GetEntity(Type type, Dictionary<string, object> parameters)
 		{
 			IEntity entity = null;
 			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the entity of the specified type matching the provided parameters.", NLog.LogLevel.Debug))
@@ -88,7 +94,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					AppLogger.Debug("Parameter: " + key + " = " + parameters[key].ToString());
 				}
 				
-				IEntity[] entities = Provider.Stores[type].Indexer.GetEntities(type, parameters);
+				IDataIndexer indexer = Provider.InitializeDataIndexer();
+				indexer.AutoRelease = AutoRelease;
+				
+				IEntity[] entities = indexer.GetEntities(type, parameters);
 				
 				// TODO: Check if this should be ignored.
 				if (entities.Length > 1)
@@ -114,7 +123,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			IEntity entity = null;
 			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the entity of the specified type with a property matching the provided property name and value.", NLog.LogLevel.Debug))
 			{
-				IEntity[] entities = Provider.Indexer.GetEntities(type, propertyName, propertyValue);
+				IDataIndexer indexer = Provider.InitializeDataIndexer();
+				indexer.AutoRelease = AutoRelease;
+				
+				IEntity[] entities = indexer.GetEntities(type, propertyName, propertyValue);
 
 				if (entities != null && entities.Length > 0)
 					entity = entities[0];
@@ -139,7 +151,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			T entity = default(T);
 			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the entity of the specified type matching the provided property value.", NLog.LogLevel.Debug))
 			{
-				T[] entities = Provider.Stores[typeof(T)].Indexer.GetEntities<T>(propertyName, propertyValue);
+				
+				IDataIndexer indexer = Provider.InitializeDataIndexer();
+				indexer.AutoRelease = AutoRelease;
+				
+				T[] entities = indexer.GetEntities<T>(propertyName, propertyValue);
 
 				if (entities == null || entities.Length == 0)
 					entity = default(T);
@@ -158,7 +174,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <returns>An array of the objects retrieved.</returns>
 		public override T GetEntityWithReference<T>(string propertyName, Type referencedEntityType, Guid referencedEntityID)
 		{
-			T[] entities = Provider.Indexer.GetEntitiesWithReference<T>(propertyName, referencedEntityType, referencedEntityID);
+			IDataIndexer indexer = Provider.InitializeDataIndexer();
+			indexer.AutoRelease = AutoRelease;
+			
+			T[] entities = indexer.GetEntitiesWithReference<T>(propertyName, referencedEntityType, referencedEntityID);
 
 			if (entities.Length == 0)
 				return default(T);
@@ -172,12 +191,16 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// </summary>
 		/// <param name="parameters">The parameters to query with.</param>
 		/// <returns></returns>
-		public override T GetEntity<T>(IDictionary<string, object> parameters)
+		public override T GetEntity<T>(Dictionary<string, object> parameters)
 		{
 			T entity = default(T);
 			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the entity of the specified type matching the provided entities.", NLog.LogLevel.Debug))
 			{
-				T[] entities = Provider.Indexer.GetEntities<T>(parameters);
+				
+				IDataIndexer indexer = Provider.InitializeDataIndexer();
+				indexer.AutoRelease = AutoRelease;
+				
+				T[] entities = indexer.GetEntities<T>(parameters);
 				if (entities == null || entities.Length == 0)
 					entity = default(T);
 				else
