@@ -53,7 +53,7 @@
 			
 				<p>
 			    <ol><li>
-			    Download a project release via HTTP or SVN (see <a href="http://www.softwaremonkeys.net" target="_blank">www.softwaremonkeys.net</a>).
+			    Download the latest release via HTTP or SVN; go to <a href="http://www.softwaremonkeys.net" target="_blank">www.softwaremonkeys.net</a>.
 			    </li>
 			    <li>
 			    When you are ready... <input type="button" value='Begin &raquo;' onclick="location.href='Backup.aspx?PrepareForUpdate=true'"/>
