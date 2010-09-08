@@ -6,6 +6,7 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
 	/// <summary>
 	/// Description of BaseTestEntity.
 	/// </summary>
+	[Serializable]
 	public class BaseTestEntity  : BaseEntity
 	{
 		public BaseTestEntity()
