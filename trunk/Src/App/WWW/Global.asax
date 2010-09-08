@@ -64,8 +64,15 @@
 	        	InitializeState();
 	            Config.Initialize(Server.MapPath(HttpContext.Current.Request.ApplicationPath), WebUtilities.GetLocationVariation(HttpContext.Current.Request.Url));
 	            new DataProviderInitializer().Initialize();
+	        	InitializeBusiness();
 	        }
 		//}
+    }
+    
+    private void InitializeBusiness()
+    {
+    	if (Config.IsInitialized)
+	    	new StrategyInitializer().Initialize();
     }
 
     public override void Dispose()
@@ -80,5 +87,6 @@
     {
     	SoftwareMonkeys.SiteStarter.Web.State.StateProviderManager.Initialize();
     }
+   
        
 </script>
