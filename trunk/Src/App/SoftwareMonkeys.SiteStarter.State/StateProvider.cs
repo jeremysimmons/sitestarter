@@ -22,5 +22,7 @@ namespace SoftwareMonkeys.SiteStarter.State
         public abstract bool ContainsRequest(string key);
         public abstract void SetRequest(string key, object value);
         public abstract object GetRequest(string key);
+        
+        public abstract string[] GetKeys(StateScope scope);
     }
 }
