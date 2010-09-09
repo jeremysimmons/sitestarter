@@ -26,6 +26,22 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			set { SetStrategy(action, type.Name, value); }
 		}
 		
+		private StrategyCreator creator;
+		/// <summary>
+		/// Gets/sets the strategy creator used to instantiate new strategies for specific types based on the info in the collection.
+		/// </summary>
+		public StrategyCreator Creator
+		{
+			get {
+				if (creator == null)
+				{
+					creator = new StrategyCreator();
+					creator.Strategies = this;
+				}
+				return creator; }
+			set { creator = value; }
+		}
+		
 		public StrategyStateNameValueCollection() : base(StateScope.Application, "Business.Strategies")
 		{
 		}
@@ -202,118 +218,5 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			return fullKey;
 		}
-		
-		#region New indexer strategy functions
-		/// <summary>
-		/// Creates a new indexer strategy for the specified type.
-		/// </summary>
-		/// <param name="typeName"></param>
-		/// <returns></returns>
-		public IIndexStrategy NewIndexer(string typeName)
-		{
-			return this["Index", typeName]
-				.New<IIndexStrategy>();
-		}
-		
-		/// <summary>
-		/// Creates a new indexer strategy for the specified type.
-		/// </summary>
-		/// <param name="type"></param>
-		/// <returns></returns>
-		public IIndexStrategy NewIndexer(Type type)
-		{
-			return NewIndexer(type.Name);
-		}
-		#endregion
-		
-		#region New saver strategy functions
-		/// <summary>
-		/// Creates a new saver strategy for the specified type.
-		/// </summary>
-		/// <param name="typeName"></param>
-		/// <returns></returns>
-		public ISaveStrategy NewSaver(string typeName)
-		{
-			return this["Save", typeName]
-				.New<ISaveStrategy>();
-		}
-		
-		/// <summary>
-		/// Creates a new saver strategy for the specified type.
-		/// </summary>
-		/// <param name="type"></param>
-		/// <returns></returns>
-		public ISaveStrategy NewSaver(Type type)
-		{
-			return NewSaver(type.Name);
-		}
-		
-		/// <summary>
-		/// Creates a new saver strategy for the specified type.
-		/// </summary>
-		/// <param name="typeName"></param>
-		/// <returns></returns>
-		public IUniqueSaveStrategy NewUniqueSaver(string typeName)
-		{
-			return this["SaveUnique", typeName]
-				.New<IUniqueSaveStrategy>();
-		}
-		
-		/// <summary>
-		/// Creates a new saver strategy for the specified type.
-		/// </summary>
-		/// <param name="type"></param>
-		/// <returns></returns>
-		public IUniqueSaveStrategy NewUniqueSaver(Type type)
-		{
-			return NewUniqueSaver(type.Name);
-		}
-		#endregion
-		
-		#region New deleter strategy functions
-		/// <summary>
-		/// Creates a new deleter strategy for the specified type.
-		/// </summary>
-		/// <param name="typeName"></param>
-		/// <returns></returns>
-		public IDeleteStrategy NewDeleter(string typeName)
-		{
-			return this["Delete", typeName]
-				.New<IDeleteStrategy>();
-		}
-		
-		/// <summary>
-		/// Creates a new deleter strategy for the specified type.
-		/// </summary>
-		/// <param name="type"></param>
-		/// <returns></returns>
-		public IDeleteStrategy NewDeleter(Type type)
-		{
-			return NewDeleter(type.Name);
-		}
-		#endregion
-		
-		#region New retriever strategy functions
-		/// <summary>
-		/// Creates a new retriever strategy for the specified type.
-		/// </summary>
-		/// <param name="typeName"></param>
-		/// <returns></returns>
-		public IRetrieveStrategy NewRetriever(string typeName)
-		{
-			return this["Retrieve", typeName]
-				.New<IRetrieveStrategy>();
-		}
-		
-		/// <summary>
-		/// Creates a new deleter strategy for the specified type.
-		/// </summary>
-		/// <param name="type"></param>
-		/// <returns></returns>
-		public IRetrieveStrategy NewRetriever(Type type)
-		{
-			return NewRetriever(type.Name);
-		}
-		#endregion
 	}
 }

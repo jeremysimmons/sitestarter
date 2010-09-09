@@ -15,7 +15,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// Retrieves the entities of the specified type.
 		/// </summary>
 		/// <returns></returns>
-		public T[] Get<T>()
+		public T[] Index<T>()
 			where T : IEntity
 		{
 			Collection<T> entities = new Collection<T>(Data.DataAccess.Data.Indexer.GetEntities<T>());
@@ -29,9 +29,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="sortExpression"></param>
 		/// <returns></returns>
-		public IEntity[] Get(Type type, string sortExpression)
+		public IEntity[] Index(Type type, string sortExpression)
 		{
-			Collection<IEntity> entities = new Collection<IEntity>(Get(type));
+			Collection<IEntity> entities = new Collection<IEntity>(Index(type));
 			
 			entities.Sort(sortExpression);
 			
@@ -43,10 +43,10 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="sortExpression"></param>
 		/// <returns></returns>
-		public T[] Get<T>(string sortExpression)
+		public T[] Index<T>(string sortExpression)
 			where T : IEntity
 		{
-			Collection<T> entities = new Collection<T>(Get<T>());
+			Collection<T> entities = new Collection<T>(Index<T>());
 			
 			entities.Sort(sortExpression);
 			
@@ -59,7 +59,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="location"></param>
 		/// <param name="sortExpression"></param>
 		/// <returns></returns>
-		public T[] Get<T>(PagingLocation location, string sortExpression)
+		public T[] Index<T>(PagingLocation location, string sortExpression)
 			where T : IEntity
 		{
 			Collection<T> entities = new Collection<T>(Data.DataAccess.Data.Indexer.GetPageOfEntities<T>(location, sortExpression));
@@ -68,63 +68,63 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			return entities.ToArray();
 		}
-		
-		T[] IIndexStrategy.Get<T>(IPagingLocation location, string sortExpression)
+	
+		T[] IIndexStrategy.Index<T>(IPagingLocation location, string sortExpression)
 		{
-			return Get<T>((PagingLocation)location, sortExpression);
+			return Index<T>((PagingLocation)location, sortExpression);
 		}
 		
-		IEntity[] IIndexStrategy.Get(string sortExpression)
+		IEntity[] IIndexStrategy.Index(string sortExpression)
 		{
-			return (IEntity[])Get<IEntity>(sortExpression);
+			return (IEntity[])Index<IEntity>(sortExpression);
 		}
 		
-		public IEntity[] Get(Type type)
+		public IEntity[] Index(Type type)
 		{
-			return Get(type);
+			return Index(type);
 		}
 		
-		public IEntity[] Get(Type type, PagingLocation location, string sortExpression)
+		public IEntity[] Index(Type type, PagingLocation location, string sortExpression)
 		{
 			return DataAccess.Data.Indexer.GetPageOfEntities(type, location, sortExpression);
 		}
 		
-		public IEntity[] Get(Type type, System.Collections.Generic.IDictionary<string, object> filterValues, string sortExpression)
+		public IEntity[] Index(Type type, System.Collections.Generic.IDictionary<string, object> filterValues, string sortExpression)
 		{
 			return DataAccess.Data.Indexer.GetEntities(type, new FilterGroup(type, filterValues), sortExpression);
 		}
 		
-		public T[] Get<T>(System.Collections.Generic.IDictionary<string, object> filterValues, string sortExpression) where T : IEntity
+		public T[] Index<T>(System.Collections.Generic.IDictionary<string, object> filterValues, string sortExpression) where T : IEntity
 		{
 			return (T[])DataAccess.Data.Indexer.GetEntities<T>(new FilterGroup(typeof(T), filterValues), sortExpression);
 		}
 		
-		public IEntity[] Get(Type type, System.Collections.Generic.IDictionary<string, object> filterValues, IPagingLocation location, string sortExpression)
+		public IEntity[] Index(Type type, System.Collections.Generic.IDictionary<string, object> filterValues, IPagingLocation location, string sortExpression)
 		{
 			return DataAccess.Data.Indexer.GetPageOfEntities(type, new FilterGroup(type, filterValues), (PagingLocation)location, sortExpression);
 		}
 		
-		public T[] Get<T>(System.Collections.Generic.IDictionary<string, object> filterValues, PagingLocation location, string sortExpression) where T : IEntity
+		public T[] Index<T>(System.Collections.Generic.IDictionary<string, object> filterValues, PagingLocation location, string sortExpression) where T : IEntity
 		{
 			return (T[])DataAccess.Data.Indexer.GetPageOfEntities<T>(new FilterGroup(typeof(T), filterValues), location, sortExpression);
 		}
 		
-		IEntity[] IIndexStrategy.Get(Type type, IPagingLocation location, string sortExpression)
+		IEntity[] IIndexStrategy.Index(Type type, IPagingLocation location, string sortExpression)
 		{
-			return Get(type, (PagingLocation)location, sortExpression);
+			return Index(type, (PagingLocation)location, sortExpression);
 		}
 		
-		IEntity[] IIndexStrategy.Get(Type type, System.Collections.Generic.Dictionary<string, object> filterValues, IPagingLocation location, string sortExpression)
+		IEntity[] IIndexStrategy.Index(Type type, System.Collections.Generic.Dictionary<string, object> filterValues, IPagingLocation location, string sortExpression)
 		{
-			return Get(type, filterValues, (PagingLocation)location, sortExpression);
+			return Index(type, filterValues, (PagingLocation)location, sortExpression);
 		}
 		
-		T[] IIndexStrategy.Get<T>(System.Collections.Generic.IDictionary<string, object> filterValues, IPagingLocation location, string sortExpression)
+		T[] IIndexStrategy.Index<T>(System.Collections.Generic.IDictionary<string, object> filterValues, IPagingLocation location, string sortExpression)
 		{
-			return Get<T>(filterValues, (PagingLocation)location, sortExpression);
+			return Index<T>(filterValues, (PagingLocation)location, sortExpression);
 		}
 		
-		public IEntity[] Get(Type type, System.Collections.Generic.Dictionary<string, object> filterValues, string sortExpression)
+		public IEntity[] Index(Type type, System.Collections.Generic.Dictionary<string, object> filterValues, string sortExpression)
 		{
 			Collection<IEntity> entities = new Collection<IEntity>(DataAccess.Data.Indexer.GetEntities(type, filterValues));
 			entities.Sort(sortExpression);

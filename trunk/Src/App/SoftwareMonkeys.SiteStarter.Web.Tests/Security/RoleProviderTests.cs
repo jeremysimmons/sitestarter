@@ -61,10 +61,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
         	
         	Assert.IsNotNull(foundUser.Roles, "No roles found for the loaded user.");
         	
-        	Assert.AreEqual(1, foundUser.Roles.Length, "Roles not found for user.");
+        	Assert.Greater(foundUser.Roles.Length, 0, "Roles not found for user.");
         	
-        	Assert.AreEqual(role.Name, user.Roles[0].Name, "Invalid name on the role.");
-        	Assert.AreEqual(role.ID.ToString(), user.Roles[0].ID.ToString(), "Invalid ID on the role.");
+        	Assert.AreEqual(role.Name, foundUser.Roles[0].Name, "Invalid name on the role.");
+        	Assert.AreEqual(role.ID.ToString(), foundUser.Roles[0].ID.ToString(), "Invalid ID on the role.");
         	
         	UserFactory.Current.Delete(UserFactory.Current.GetUserByUsername(user.Username));
         	UserRoleFactory.Current.Delete(UserRoleFactory.Current.GetUserRoleByName(role.Name));

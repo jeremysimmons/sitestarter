@@ -1,6 +1,7 @@
 ﻿using System;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Data;
+using SoftwareMonkeys.SiteStarter.Business;
 
 namespace SoftwareMonkeys.SiteStarter.Business
 {
@@ -10,6 +11,19 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	[Strategy("Save", "IEntity")]
 	public class SaveStrategy : BaseStrategy, ISaveStrategy
 	{
+		private IValidateStrategy validator;
+		/// <summary>
+		/// Gets/sets the strategy used to ensure entities are valid.
+		/// </summary>
+		public IValidateStrategy Validator
+		{
+			get {
+				if (validator == null)
+					validator = StrategyState.Strategies.Creator.NewValidator(typeof(IEntity).Name);
+				return validator; }
+			set { validator = value; }
+		}
+		
 		public SaveStrategy()
 		{
 		}
@@ -18,12 +32,16 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// Saves the provided strategy.
 		/// </summary>
 		/// <param name="entity">The entity to save.</param>
-		public void Save(IEntity entity)
+		/// <returns>A value indicating whether the entity was valid and was therefore saved.</returns>
+		public bool Save(IEntity entity)
 		{
 			if (Validate(entity))
 			{
 				DataAccess.Data.Saver.Save(entity);
+				return true;
 			}
+			else
+				return false;
 		}
 		
 		/// <summary>
@@ -33,7 +51,14 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns></returns>
 		public virtual bool Validate(IEntity entity)
 		{
-			return true;
+			bool valid = false;
+			
+			if (Validator == null)
+				throw new InvalidOperationException("The validation strategy can't be found.");
+			
+			valid = Validator.Validate(entity);
+			
+			return valid;
 		}
 	}
 }

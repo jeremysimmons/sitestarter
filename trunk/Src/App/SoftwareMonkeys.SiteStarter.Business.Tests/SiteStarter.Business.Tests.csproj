@@ -121,6 +121,7 @@
       <Project>3109EA47-5620-4C75-93E2-A552FC75EB8B</Project>
       <Name>SiteStarter.Tests</Name>
     </ProjectReference>
+    <Compile Include="ActivateStrategyTests.cs" />
     <Compile Include="ApplicationBackupTests.cs" />
     <Compile Include="ApplicationInstallerTests.cs" />
     <Compile Include="ApplicationRestorerTests.cs" />

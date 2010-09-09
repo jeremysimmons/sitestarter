@@ -42,22 +42,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		}
 		
 		/// <summary>
-		/// Updates the provided entity if it's unique.
-		/// </summary>
-		/// <param name="entity">The entity to update if it's unique.</param>
-		/// <returns>A value indicating whether the provided entity was update, and therefore must have been unique.</returns>
-		public bool Update(IEntity entity)
-		{
-			if (Validate(entity))
-			{
-				base.Update(entity);
-				return true;
-			}
-			else
-				return false;
-		}
-		
-		/// <summary>
 		/// Validates the provided entity by checking to see if the specified property of the provided entity is unique.
 		/// </summary>
 		/// <param name="entity"></param>

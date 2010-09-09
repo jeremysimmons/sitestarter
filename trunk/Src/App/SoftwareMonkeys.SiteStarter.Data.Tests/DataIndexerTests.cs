@@ -187,7 +187,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		}
 		
 		[Test]
-		[ExpectedException("InvalidOperationException")]
+		[ExpectedException("System.ArgumentException")]
 		public void Test_GetEntitiesByFilterGroup_EmptyGroup()
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))

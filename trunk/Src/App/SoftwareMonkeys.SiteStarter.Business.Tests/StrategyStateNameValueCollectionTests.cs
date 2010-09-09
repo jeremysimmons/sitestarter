@@ -21,10 +21,23 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			collection[action, type] = testStrategy;
 			
 			StrategyInfo foundStrategy = collection[action, type];
-			StrategyInfo notFoundStrategy = collection[action + "Mismatch", type];
 			
-			Assert.IsNotNull(foundStrategy);
-			Assert.IsNull(notFoundStrategy);
+			Assert.IsNotNull(foundStrategy, "Strategy not found.");
+			
+		}
+		
+		[Test]
+		[ExpectedException("SoftwareMonkeys.SiteStarter.Business.StrategyNotFoundException")]
+		public void Test_this_StrategyNotFound()
+		{
+			StrategyInfo testStrategy = new StrategyInfo(new RetrieveStrategy());
+			
+			StrategyStateNameValueCollection collection = new StrategyStateNameValueCollection();
+			
+			string type = "TestUser";
+			string action = "TestAction";
+			
+			StrategyInfo notFoundStrategy = collection[action + "Mismatch", type];
 		}
 		
 		[Test]
@@ -41,9 +54,26 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			collection[action, type] = testStrategy;
 			
 			StrategyInfo foundStrategy = collection[action, type];
-			StrategyInfo notFoundStrategy = collection[action + "Mismatch", type];
 			
 			Assert.IsNotNull(foundStrategy);
+		}
+		
+		[Test]
+		[ExpectedException("SoftwareMonkeys.SiteStarter.Business.StrategyNotFoundException")]
+		public void Test_this_Interface_StrategyNotFound()
+		{
+			StrategyInfo testStrategy = new StrategyInfo(new RetrieveStrategy());
+			
+			StrategyStateNameValueCollection collection = new StrategyStateNameValueCollection();
+			
+			string interfaceType = "IEntity";
+			string type = "TestArticle";
+			string action = "TestAction";
+			
+			collection[action, type] = testStrategy;
+			
+			StrategyInfo notFoundStrategy = collection[action + "Mismatch", type];
+			
 			Assert.IsNull(notFoundStrategy);
 		}
 		

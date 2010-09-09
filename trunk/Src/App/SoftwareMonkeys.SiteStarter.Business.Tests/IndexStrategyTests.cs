@@ -26,7 +26,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			
 			IndexStrategy strategy = new IndexStrategy();
 			
-			TestArticle[] foundArticles = strategy.Get<TestArticle>();
+			TestArticle[] foundArticles = strategy.Index<TestArticle>();
 			
 			Assert.IsNotNull(foundArticles);
 			

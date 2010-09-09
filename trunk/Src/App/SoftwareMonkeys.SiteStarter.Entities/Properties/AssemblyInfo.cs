@@ -11,15 +11,15 @@ using System.Runtime.InteropServices;
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: AssemblyTitleAttribute("SiteStarter.Web.Tests")]
+[assembly: AssemblyTitleAttribute("SiteStarter.Entities")]
 [assembly: AssemblyDescriptionAttribute("")]
 [assembly: AssemblyConfigurationAttribute("")]
 [assembly: AssemblyCompanyAttribute("SoftwareMonkeys")]
-[assembly: AssemblyProductAttribute("SiteStarter.Web.Tests")]
+[assembly: AssemblyProductAttribute("SiteStarter.Entities")]
 [assembly: AssemblyCopyrightAttribute("Copyright SoftwareMonkeys (c) 2010")]
 [assembly: AssemblyTrademarkAttribute("")]
 [assembly: AssemblyCultureAttribute("")]
 [assembly: ComVisibleAttribute(false)]
-[assembly: AssemblyVersionAttribute("2.4.1.24")]
-[assembly: AssemblyFileVersionAttribute("2.4.1.24")]
+[assembly: AssemblyVersionAttribute("2.4.1.29")]
+[assembly: AssemblyFileVersionAttribute("2.4.1.29")]
 

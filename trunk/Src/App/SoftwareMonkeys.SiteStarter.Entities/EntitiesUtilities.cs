@@ -387,6 +387,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			
 			if (typeName == "IEntity")
 				return typeof(IEntity);
+			if (typeName == "IUniqueEntity")
+				return typeof(IUniqueEntity);
 			
 			//AppLogger.Debug("Type name: " + typeName);
 			

@@ -22,7 +22,8 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			article.ID = Guid.NewGuid();
 			
 			StrategyInfo info = StrategyState.Strategies["Save", "IEntity"];
-			ISaveStrategy strategy = (ISaveStrategy)info.New();
+			ISaveStrategy strategy = new SaveStrategy();
+			strategy.Validator = new ValidateStrategy();
 			
 			strategy.Save(article);
 			
