@@ -333,7 +333,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		}
 		
 		[Test]
-		[ExpectedException("InvalidOperationException")]
+		[ExpectedException("System.InvalidOperationException")]
 		public void Test_IsMatch_EmptyGroup()
 		{
 			

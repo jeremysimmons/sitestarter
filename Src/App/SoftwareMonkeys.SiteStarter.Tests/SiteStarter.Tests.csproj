@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="BaseTestFixture.cs" />
     <Compile Include="Entities\BaseTestEntity.cs" />
+    <Compile Include="Entities\BaseUniqueTestEntity.cs" />
     <Compile Include="Entities\EntityFour.cs" />
     <Compile Include="Entities\EntityOne.cs" />
     <Compile Include="Entities\EntityThree.cs" />

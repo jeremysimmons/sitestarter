@@ -32,7 +32,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns>A value to indicate whether the provided value is unique to the provided property.</returns>
 		public bool Validate(IEntity entity, string propertyName)
 		{
-			IRetrieveStrategy strategy = StrategyState.Strategies.NewRetriever(entity.ShortTypeName);
+			IRetrieveStrategy strategy = StrategyState.Strategies.Creator.NewRetriever(entity.ShortTypeName);
 			
 			object propertyValue = EntitiesUtilities.GetPropertyValue(entity, propertyName);
 			

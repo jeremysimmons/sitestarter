@@ -23,7 +23,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns>The entity with the provided unique key.</returns>
 		public IEntity Retrieve(Type type, string uniqueKey)
 		{
-			return Retrieve(type, uniqueKey);
+			return Retrieve(type, "UniqueKey", uniqueKey);
 		}
 		
 		/// <summary>
@@ -34,7 +34,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public T Retrieve<T>(string uniqueKey)
 			where T : IEntity
 		{
-			return (T)Retrieve(typeof(T), "UniqueKey", EntitiesUtilities.FormatUniqueKey(uniqueKey));
+			return (T)Retrieve(typeof(T), "UniqueKey", uniqueKey);
 		}
 		
 		/// <summary>

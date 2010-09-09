@@ -10,6 +10,19 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	[Strategy("Update", "IEntity")]
 	public class UpdateStrategy : BaseStrategy, IUpdateStrategy
 	{
+		private IValidateStrategy validator;
+		/// <summary>
+		/// Gets/sets the strategy used to ensure entities are valid.
+		/// </summary>
+		public IValidateStrategy Validator
+		{
+			get {
+				if (validator == null)
+					validator = StrategyState.Strategies.Creator.NewValidator(typeof(IEntity).Name);
+				return validator; }
+			set { validator = value; }
+		}
+		
 		public UpdateStrategy()
 		{
 		}
@@ -18,12 +31,16 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// Updates the provided strategy.
 		/// </summary>
 		/// <param name="entity">The entity to update.</param>
-		public void Update(IEntity entity)
+		/// <returns>A value indicating whether the entity was valid and was therefore saved.</returns>
+		public bool Update(IEntity entity)
 		{
 			if (Validate(entity))
 			{
 				DataAccess.Data.Updater.Update(entity);
+				return true;
 			}
+			else
+				return false;
 		}
 		
 		/// <summary>
@@ -33,7 +50,14 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns></returns>
 		public virtual bool Validate(IEntity entity)
 		{
-			return true;
+			bool valid = false;
+			
+			if (Validator == null)
+				throw new InvalidOperationException("The validation strategy can't be found.");
+			
+			valid = Validator.Validate(entity);
+			
+			return valid;
 		}
 	}
 }

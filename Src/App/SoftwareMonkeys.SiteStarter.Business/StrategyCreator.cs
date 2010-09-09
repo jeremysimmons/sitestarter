@@ -7,6 +7,20 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// </summary>
 	public class StrategyCreator
 	{
+		private StrategyStateNameValueCollection strategies;
+		/// <summary>
+		/// Gets/sets the strategy info collection that the creator uses as a reference to instantiate new strategies.
+		/// Note: Defaults to StrategyState.Strategies if not set.
+		/// </summary>
+		public StrategyStateNameValueCollection Strategies
+		{
+			get {
+				if (strategies == null)
+					strategies = StrategyState.Strategies;
+				return strategies; }
+			set { strategies = value; }
+		}
+		
 		public StrategyCreator()
 		{
 		}
@@ -53,5 +67,209 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			return strategy;
 		}
+		
+		
+		#region New indexer strategy functions
+		/// <summary>
+		/// Creates a new indexer strategy for the specified type.
+		/// </summary>
+		/// <param name="typeName"></param>
+		/// <returns></returns>
+		public IIndexStrategy NewIndexer(string typeName)
+		{
+			return Strategies["Index", typeName]
+				.New<IIndexStrategy>();
+		}
+		
+		/// <summary>
+		/// Creates a new indexer strategy for the specified type.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public IIndexStrategy NewIndexer(Type type)
+		{
+			return NewIndexer(type.Name);
+		}
+		#endregion
+		
+		#region New saver strategy functions
+		/// <summary>
+		/// Creates a new saver strategy for the specified type.
+		/// </summary>
+		/// <param name="typeName"></param>
+		/// <returns></returns>
+		public ISaveStrategy NewSaver(string typeName)
+		{
+			return Strategies["Save", typeName]
+				.New<ISaveStrategy>();
+		}
+		
+		/// <summary>
+		/// Creates a new saver strategy for the specified type.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public ISaveStrategy NewSaver(Type type)
+		{
+			return NewSaver(type.Name);
+		}
+		
+		/// <summary>
+		/// Creates a new saver strategy for the specified type.
+		/// </summary>
+		/// <param name="typeName"></param>
+		/// <returns></returns>
+		public IUniqueSaveStrategy NewUniqueSaver(string typeName)
+		{
+			return Strategies["SaveUnique", typeName]
+				.New<IUniqueSaveStrategy>();
+		}
+		
+		/// <summary>
+		/// Creates a new saver strategy for the specified type.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public IUniqueSaveStrategy NewUniqueSaver(Type type)
+		{
+			return NewUniqueSaver(type.Name);
+		}
+		#endregion
+		
+		#region New updater strategy functions
+		/// <summary>
+		/// Creates a new updater strategy for the specified type.
+		/// </summary>
+		/// <param name="typeName"></param>
+		/// <returns></returns>
+		public IUpdateStrategy NewUpdater(string typeName)
+		{
+			return Strategies["Update", typeName]
+				.New<IUpdateStrategy>();
+		}
+		
+		/// <summary>
+		/// Creates a new updater strategy for the specified type.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public IUpdateStrategy NewUpdater(Type type)
+		{
+			return NewUpdater(type.Name);
+		}
+		
+		/// <summary>
+		/// Creates a new updater strategy for the specified type.
+		/// </summary>
+		/// <param name="typeName"></param>
+		/// <returns></returns>
+		public IUniqueUpdateStrategy NewUniqueUpdater(string typeName)
+		{
+			return Strategies["UpdateUnique", typeName]
+				.New<IUniqueUpdateStrategy>();
+		}
+		
+		/// <summary>
+		/// Creates a new updater strategy for the specified type.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public IUniqueUpdateStrategy NewUniqueUpdater(Type type)
+		{
+			return NewUniqueUpdater(type.Name);
+		}
+		#endregion
+		
+		#region New deleter strategy functions
+		/// <summary>
+		/// Creates a new deleter strategy for the specified type.
+		/// </summary>
+		/// <param name="typeName"></param>
+		/// <returns></returns>
+		public IDeleteStrategy NewDeleter(string typeName)
+		{
+			return Strategies["Delete", typeName]
+				.New<IDeleteStrategy>();
+		}
+		
+		/// <summary>
+		/// Creates a new deleter strategy for the specified type.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public IDeleteStrategy NewDeleter(Type type)
+		{
+			return NewDeleter(type.Name);
+		}
+		#endregion
+		
+		#region New retriever strategy functions
+		/// <summary>
+		/// Creates a new retriever strategy for the specified type.
+		/// </summary>
+		/// <param name="typeName"></param>
+		/// <returns></returns>
+		public IRetrieveStrategy NewRetriever(string typeName)
+		{
+			return Strategies["Retrieve", typeName]
+				.New<IRetrieveStrategy>();
+		}
+		
+		/// <summary>
+		/// Creates a new retrieve strategy for the specified type.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public IRetrieveStrategy NewRetriever(Type type)
+		{
+			return NewRetriever(type.Name);
+		}
+		#endregion
+		
+		#region New validater strategy functions
+		/// <summary>
+		/// Creates a new validator strategy for the specified type.
+		/// </summary>
+		/// <param name="typeName"></param>
+		/// <returns></returns>
+		public IValidateStrategy NewValidator(string typeName)
+		{
+			return Strategies["Validate", typeName]
+				.New<IValidateStrategy>();
+		}
+		
+		/// <summary>
+		/// Creates a new validator strategy for the specified type.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public IValidateStrategy NewValidator(Type type)
+		{
+			return NewValidator(type.Name);
+		}
+		#endregion
+		
+		#region New activator strategy functions
+		/// <summary>
+		/// Creates a new activator strategy for the specified type.
+		/// </summary>
+		/// <param name="typeName"></param>
+		/// <returns></returns>
+		public IActivateStrategy NewActivator(string typeName)
+		{
+			return Strategies["Activate", typeName]
+				.New<IActivateStrategy>();
+		}
+		
+		/// <summary>
+		/// Creates a new activator strategy for the specified type.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public IActivateStrategy NewActivator(Type type)
+		{
+			return NewActivator(type.Name);
+		}
+		#endregion
 	}
 }

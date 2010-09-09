@@ -5,6 +5,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 	/// <summary>
 	/// Derived by most (but not necessarily all) unique entities.
 	/// </summary>
+	[Serializable]
 	public class BaseUniqueEntity : BaseEntity, IUniqueEntity
 	{
 		/// <summary>

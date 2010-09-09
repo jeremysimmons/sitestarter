@@ -79,7 +79,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving entities by type and filter.", NLog.LogLevel.Debug))
 			{
 
-				if (group != null && group.Filters != null)
+				if (group != null && group.Filters != null && group.Filters.Length > 0)
 				{
 
 					AppLogger.Debug("Group operator: " + group.Operator.ToString());
@@ -121,6 +121,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					if (entities.Count == 0)
 						AppLogger.Debug("No entities retrieved.");
 				}
+				else
+					throw new ArgumentException("The provided filter group is empty.", "group");
 			}
 
 			return Release((IEntity[])entities.ToArray());
