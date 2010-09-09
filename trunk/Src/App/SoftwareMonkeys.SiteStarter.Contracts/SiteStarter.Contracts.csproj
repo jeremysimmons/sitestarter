@@ -43,9 +43,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Business\IActivateStrategy.cs" />
     <Compile Include="Business\ICommandManager.cs" />
+    <Compile Include="Business\IDeleteStrategy.cs" />
     <Compile Include="Business\IFactory.cs" />
-    <Compile Include="Business\IRetrieverStrategy.cs" />
+    <Compile Include="Business\IIndexStrategy.cs" />
+    <Compile Include="Business\IRetrieveStrategy.cs" />
+    <Compile Include="Business\IStrategy.cs" />
+    <Compile Include="Business\ISaveStrategy.cs" />
+    <Compile Include="Business\IUniqueSaveStrategy.cs" />
+    <Compile Include="Business\IUniqueUpdateStrategy.cs" />
+    <Compile Include="Business\IUniqueValidateStrategy.cs" />
+    <Compile Include="Business\IUpdateStrategy.cs" />
+    <Compile Include="Business\IValidateStrategy.cs" />
     <Compile Include="Configuration\IAppConfig.cs" />
     <Compile Include="Configuration\IConfig.cs" />
     <Compile Include="Configuration\IConfigSaver.cs" />
@@ -56,6 +66,7 @@
     <Compile Include="Entities\IEntity.cs" />
     <Compile Include="Entities\IKeyword.cs" />
     <Compile Include="Entities\IPagingLocation.cs" />
+    <Compile Include="Entities\IUniqueEntity.cs" />
     <Compile Include="Entities\IUser.cs" />
     <Compile Include="Entities\IUserPermission.cs" />
     <Compile Include="Entities\IUserRole.cs" />
