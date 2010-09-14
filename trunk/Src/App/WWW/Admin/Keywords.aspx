@@ -14,8 +14,10 @@
     {
         OperationManager.StartOperation("ManageKeywords", IndexView);
 
+		PagingLocation location = new PagingLocation(IndexGrid.CurrentPageIndex, IndexGrid.PageSize);
         
-        IndexGrid.DataSource = KeywordFactory.GetKeywords();
+        IndexGrid.DataSource = StrategyState.Strategies.NewIndexer(typeof(Keyword))
+        	.Get<Keyword>(location, IndexGrid.CurrentSort);
 
         IndexView.DataBind();
     }
@@ -41,7 +43,8 @@
     {
         // Save the new keyword
         DataForm.ReverseBind();
-        if (KeywordFactory.SaveKeyword((Keyword)DataForm.DataSource))
+        if (StrategyState.Strategies.NewUniqueSaver(typeof(Keyword))
+        	.Save((Keyword)DataForm.DataSource))
         {
             // Display the result to the keyword
             Result.Display(Resources.Language.KeywordSaved);
