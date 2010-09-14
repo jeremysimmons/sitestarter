@@ -224,7 +224,10 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				
 				foreach (IEntity reference in references)
 				{
-					DataAccess.Data.Stores[reference].Deleter.Delete((IEntity)reference);
+					if (DataAccess.Data.IsStored(reference))
+					{
+						DataAccess.Data.Stores[reference].Deleter.Delete((IEntity)reference);
+					}
 				}
 			}
 		}

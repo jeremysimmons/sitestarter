@@ -42,5 +42,8 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		public abstract T GetEntity<T>(Dictionary<string, object> parameters)
 			where T : IEntity;
 		
+		
+		public abstract IEntity GetEntity(IEntity entity);
+		
 	}
 }

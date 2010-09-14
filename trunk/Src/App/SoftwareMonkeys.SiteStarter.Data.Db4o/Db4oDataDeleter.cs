@@ -89,20 +89,28 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			//if (entity.ID == Guid.Empty)
 			//	throw new ArgumentException("entity.ID is set to Guid.Empty on type " + entity.GetType().ToString());
 			
-			using (Batch batch = BatchState.StartBatch())
+			if (DataAccess.Data.IsStored(entity))
 			{
-				IEntity[] toUpdate = new IEntity[]{};
-				IEntity[] toDelete = new IEntity[]{};
-				
-				// Preupdate must be called to ensure all references are correctly managed
-				PreDelete(entity);
-
-				// Delete the entity
-				if (entity != null)
+				using (Batch batch = BatchState.StartBatch())
 				{
-					store.ObjectContainer.Delete(entity);
+					IDataReader reader = Provider.InitializeDataReader();
+					reader.AutoRelease = false;
 					
-					store.Commit();
+					entity = reader.GetEntity(entity);
+					
+					if (entity == null)
+						throw new Exception("The entity wasn't found.");
+					
+					// PreDelete must be called to ensure all references are correctly managed
+					PreDelete(entity);
+
+					// Delete the entity
+					if (entity != null)
+					{
+						store.ObjectContainer.Delete(entity);
+						
+						store.Commit();
+					}
 				}
 			}
 		}

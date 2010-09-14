@@ -42,6 +42,6 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		T GetEntityWithReference<T>(string propertyName, Type referencedEntityType, Guid referencedEntityID)
             where T : IEntity;
 		
-		bool AutoRelease {get;set;}
+		IEntity GetEntity(IEntity entity);
 	}
 }

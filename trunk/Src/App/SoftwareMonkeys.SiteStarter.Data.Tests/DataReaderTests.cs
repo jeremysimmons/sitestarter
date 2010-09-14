@@ -93,5 +93,32 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			}
 		}
 		
+		
+		[Test]
+		public void Test_GetEntity_Bound()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
+			{
+				TestUser.RegisterType();
+				TestRole.RegisterType();
+				
+				
+				TestUser user = new TestUser();
+				Guid userID = user.ID = Guid.NewGuid();
+				user.FirstName = "Test";
+				user.LastName = "User";
+				
+				
+				DataAccess.Data.Saver.Save(user);
+				
+				
+				IEntity user2 = DataAccess.Data.Reader.GetEntity(user);
+				
+				
+				Assert.IsNotNull(user2, "The user object is null.");
+				
+			}
+		}
+		
 	}
 }
