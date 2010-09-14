@@ -26,7 +26,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			
 			article.Title = "Updated";
 			
-			IUpdateStrategy strategy = new UpdateStrategy();
+			IUpdateStrategy strategy = new UpdateStrategy(article.GetType().Name);
 			
 			strategy.Update(article);
 			

@@ -14,12 +14,22 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 	public class IndexGrid : DataGrid
 	{
 		#region Sorting
+		[Obsolete("Use SortCommand event.")]
 		public event EventHandler SortChanged;
 
+		[Obsolete("Use RaiseSortCommand event.")]
 		protected void RaiseSortChanged()
 		{
 			if (SortChanged != null)
 				SortChanged(this, EventArgs.Empty);
+		}
+		
+		protected override void OnSortCommand(DataGridSortCommandEventArgs e)
+		{
+			// Raise the obsolete event in case it's still in use
+			RaiseSortChanged();
+			
+			base.OnSortCommand(e);
 		}
 
 		/// <summary>

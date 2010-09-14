@@ -1,6 +1,7 @@
 ﻿using System;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Business;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 
 namespace SoftwareMonkeys.SiteStarter.Business
 {
@@ -50,14 +51,21 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			bool valid = false;
 			
-			if (UniqueValidator == null)
-				throw new InvalidOperationException("The validation strategy can't be found. Check the Strategy attribute on the validation strategy class.");
-			
-			if (UniquePropertyName == null || UniquePropertyName == String.Empty)
-				throw new InvalidOperationException("The UniquePropertyName property hasn't been set.");
-			
-			valid = UniqueValidator.Validate(entity, UniquePropertyName);
-			
+			using (LogGroup logGroup = AppLogger.StartGroup("Validating the provided entity.", NLog.LogLevel.Debug))
+			{				
+				if (UniqueValidator == null)
+					throw new InvalidOperationException("The validation strategy can't be found. Check the Strategy attribute on the validation strategy class.");
+				
+				if (UniquePropertyName == null || UniquePropertyName == String.Empty)
+					throw new InvalidOperationException("The UniquePropertyName property hasn't been set.");
+				
+				AppLogger.Debug("Entity type: " + entity.GetType().FullName);
+				
+				AppLogger.Debug("Unique property name: " + UniquePropertyName);
+				
+				valid = UniqueValidator.Validate(entity, UniquePropertyName);
+				
+			}
 			return valid;
 		}
 	}

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Xml;
 using System.Xml.Serialization;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 
 namespace SoftwareMonkeys.SiteStarter.Business
 {
@@ -81,10 +82,10 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="key">The key used to distingish the strategy from others that are similar.</param>
 		public StrategyInfo(string action, string typeName, string strategyType, string key)
 		{
-			 Action = action;
-			 TypeName = typeName;
-			 StrategyType = strategyType;
-			 Key = key;
+			Action = action;
+			TypeName = typeName;
+			StrategyType = strategyType;
+			Key = key;
 		}
 		
 		/// <summary>
@@ -135,7 +136,29 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public T New<T>()
 			where T : IStrategy
 		{
-			return (T)New();
+			return New<T>(TypeName);
+		}
+		
+		/// <summary>
+		/// Creates a new instance of the corresponding strategy for use by the system.
+		/// </summary>
+		/// <returns>An instance of the corresponding strategy, cast to the specified type.</returns>
+		public T New<T>(string entityTypeName)
+			where T : IStrategy
+		{
+			T strategy = default(T);
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Creating a new strategy for the type: " + entityTypeName, NLog.LogLevel.Debug))
+			{
+				AppLogger.Debug("Entity type name: " + entityTypeName);
+				
+				AppLogger.Debug("Strategy type: " + typeof(T).FullName);
+				
+				strategy = (T)New();
+				strategy.TypeName = entityTypeName;
+			}
+			
+			return strategy;
 		}
 	}
 }

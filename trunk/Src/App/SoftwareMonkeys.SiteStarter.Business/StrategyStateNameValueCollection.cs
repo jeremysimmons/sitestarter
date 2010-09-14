@@ -1,5 +1,6 @@
 ﻿using System;
 using SoftwareMonkeys.SiteStarter.State;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 
 namespace SoftwareMonkeys.SiteStarter.Business
 {
@@ -55,6 +56,44 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		}
 		
 		/// <summary>
+		/// Adds the provided strategy info to the collection.
+		/// </summary>
+		/// <param name="strategy">The strategy info to add to the collection.</param>
+		public void Add(StrategyInfo strategy)
+		{
+			if (strategy == null)
+				throw new ArgumentNullException("strategy");
+			
+			string key = GetStrategyKey(strategy.Action, strategy.TypeName);
+			
+			this[key] = strategy;
+		}
+		
+		
+		/// <summary>
+		/// Adds the info of the provided strategy to the collection.
+		/// </summary>
+		/// <param name="strategy">The strategy info to add to the collection.</param>
+		public void Add(IStrategy strategy)
+		{
+			if (strategy == null)
+				throw new ArgumentNullException("strategy");
+			
+			Add(new StrategyInfo(strategy));
+		}
+		
+		
+		/// <summary>
+		/// Checks whether a strategy exists with the provided key.
+		/// </summary>
+		/// <param name="key">The key of the strategy to check for.</param>
+		/// <returns>A value indicating whether the strategy exists.</returns>
+		public bool StrategyExists(string key)
+		{
+			return StateValueExists(key);
+		}
+		
+		/// <summary>
 		/// Retrieves the strategy with the provided action and type.
 		/// </summary>
 		/// <param name="action">The action that the strategy performs.</param>
@@ -62,139 +101,16 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns>The strategy matching the provided action and type.</returns>
 		public StrategyInfo GetStrategy(string action, string typeName)
 		{
+			StrategyLocator locator = new StrategyLocator(this);
 			
-			Type type = Entities.EntitiesUtilities.GetType(typeName);
-			
-			StrategyInfo foundStrategy = (StrategyInfo)this[GetStrategyKey(action, typeName)];
-			
-			// If no strategy is found for the specific type then look through the base types and interfaces
-			if (foundStrategy == null)
-			{
-				foundStrategy = GetStrategyFromBaseTypes(action, typeName);
-				
-				if (foundStrategy == null)
-					foundStrategy = GetStrategyFromInterfaces(type, action, typeName);
-			}
+			StrategyInfo foundStrategy = locator.Locate(action, typeName);
 			
 			if (foundStrategy == null)
 				throw new StrategyNotFoundException(action, typeName);
-			/*
-			
-			StrategyInfo directStrategy = (StrategyInfo)this[GetStrategyKey(action, typeName, key)];
-			
-			if (directStrategy == null)
-			{
-				StrategyInfo inheritedStrategy = (StrategyInfo)this[GetStrategyKey(action, type.BaseType.Name, key)];
-				
-				if (inheritedStrategy == null)
-				{
-					Type interf = type.GetInterfaces()[0];
-					
-					
-					StrategyInfo interfaceStrategy = (StrategyInfo)this[GetStrategyKey(action, interf.Name, key)];
-					
-					foundStrategy = interfaceStrategy;
-				}
-				else
-					foundStrategy = inheritedStrategy;
-			}
-			else
-				foundStrategy = directStrategy;*/
 			
 			return foundStrategy;
 		}
-		
-		/// <summary>
-		/// Retrieves the strategy for the specified type and action by analyzing the base types.
-		/// </summary>
-		/// <param name="action"></param>
-		/// <param name="typeName"></param>
-		/// <returns></returns>
-		public StrategyInfo GetStrategyFromBaseTypes(string action, string typeName)
-		{
-			Type type = Entities.EntitiesUtilities.GetType(typeName);
-			
-			
-			StrategyInfo foundStrategy = (StrategyInfo)this[GetStrategyKey(action, type.Name)];
-			
-			if (foundStrategy == null)
-			{
-				Type t = type.BaseType;
-				
-				// Keep looping until the top of the inheritance chain OR
-				// until a strategy is found
-				while (t != null
-				       && !(t == typeof(object))
-				       && foundStrategy == null)
-				{
-					t = t.BaseType;
-					
-					// Get the strategy for the base type
-					foundStrategy = (StrategyInfo)this[GetStrategyKey(action, t.Name)];
-					
-					// If still none then check the interfaces for this type
-					if (foundStrategy == null)
-					{
-						foundStrategy = GetStrategyFromInterfaces(t, action, typeName);
-					}
-					
-				}
-			}
-			return foundStrategy;
-		}
-		
-		/// <summary>
-		/// Retrieves the strategy for the specified type and action by analyzing the interfaces.
-		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="action"></param>
-		/// <param name="typeName"></param>
-		/// <param name="key"></param>
-		/// <returns></returns>
-		public StrategyInfo GetStrategyFromInterfaces(Type type, string action, string typeName)
-		{
-			StrategyInfo foundStrategy = (StrategyInfo)this[GetStrategyKey(action, type.Name)];
-			
-			if (foundStrategy == null)
-			{
-				foreach (Type interfaceType in type.GetInterfaces())
-				{
-					foundStrategy = GetStrategyFromInterface(interfaceType, action, typeName);
-				}
-			}
-			
-			return foundStrategy;
-		}
-		
-		/// <summary>
-		/// Retrieves the strategy for the specified type and action by analyzing the base types.
-		/// </summary>
-		/// <param name="interfaceType"></param>
-		/// <param name="action"></param>
-		/// <param name="typeName"></param>
-		/// <returns></returns>
-		public StrategyInfo GetStrategyFromInterface(Type interfaceType, string action, string typeName)
-		{
-			
-			StrategyInfo foundStrategy = (StrategyInfo)this[GetStrategyKey(action, interfaceType.Name)];
-			
-			if (foundStrategy == null)
-			{
-				foreach (Type baseInterfaceType in interfaceType.GetInterfaces())
-				{
-					StrategyInfo s = GetStrategyFromInterface(baseInterfaceType, action, typeName);
-					
-					if (foundStrategy == null && s != null)
-						foundStrategy = s;
-				}
-			}
-			
-			return foundStrategy;
-			
-			
-		}
-		
-		
+
 		/// <summary>
 		/// Sets the strategy with the provided action and type.
 		/// </summary>
@@ -205,7 +121,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			this[GetStrategyKey(action, type)] = strategy;
 		}
-		
+
 		/// <summary>
 		/// Retrieves the key for the specifid action and type.
 		/// </summary>

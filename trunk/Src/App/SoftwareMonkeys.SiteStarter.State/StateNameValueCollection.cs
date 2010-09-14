@@ -55,7 +55,6 @@ namespace SoftwareMonkeys.SiteStarter.State
 		/// <returns>The total number of items in the collection.</returns>
 		public int GetCount()
 		{
-			bool doContinue = true;
 			int i = 0;
 			int count = 0;
 			

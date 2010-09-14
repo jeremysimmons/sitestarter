@@ -24,6 +24,9 @@ namespace SoftwareMonkeys.SiteStarter.Tests
 		
 		static public string GetTestingPath(BaseTestFixture executingFixture)
 		{
+			if (executingFixture == null)
+				throw new ArgumentNullException("executingFixture");
+			
 			Assembly assembly = Assembly.GetExecutingAssembly();
 			string location = assembly.Location;
 			

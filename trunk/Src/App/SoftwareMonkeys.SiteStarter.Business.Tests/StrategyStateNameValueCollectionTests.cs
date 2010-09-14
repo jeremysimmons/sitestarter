@@ -47,15 +47,39 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			
 			StrategyStateNameValueCollection collection = new StrategyStateNameValueCollection();
 			
-			string interfaceType = "IEntity";
 			string type = "TestArticle";
-			string action = "TestAction";
+			string action = "Retrieve";
 			
-			collection[action, type] = testStrategy;
+			string key = collection.GetStrategyKey(testStrategy.Action, testStrategy.TypeName);
+			
+			collection.Add(testStrategy);
 			
 			StrategyInfo foundStrategy = collection[action, type];
 			
 			Assert.IsNotNull(foundStrategy);
+		}
+		
+		[Test]
+		public void Test_this_IUniqueEntityInterface()
+		{
+			StrategyInfo uniqueSaveStrategy = new StrategyInfo(new UniqueSaveStrategy());
+			StrategyInfo saveStrategy = new StrategyInfo(new SaveStrategy());
+			
+			StrategyStateNameValueCollection collection = new StrategyStateNameValueCollection();
+			
+			string interfaceType = "IEntity";
+			string uniqueInterfaceType = "IUniqueEntity";
+			string type = "TestArticle";
+			string action = "Save";
+			
+			collection.Add(saveStrategy);
+			collection.Add(uniqueSaveStrategy);
+			
+			StrategyInfo foundStrategy = collection[action, type];
+			
+			Assert.IsNotNull(foundStrategy);
+			
+			Assert.AreEqual("UniqueSaveStrategy", foundStrategy.New().GetType().Name, "Loaded the wrong type.");
 		}
 		
 		[Test]
@@ -75,8 +99,11 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			StrategyInfo notFoundStrategy = collection[action + "Mismatch", type];
 			
 			Assert.IsNull(notFoundStrategy);
+		
 		}
 		
+		// TODO: Remove if not needed
+		/*
 		[Test]
 		public void Test_GetStrategyFromInterfaces()
 		{
@@ -122,7 +149,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			Assert.IsNotNull(foundStrategy);
 			Assert.IsNull(notFoundStrategy);
 		}
-		
+		*/
 		
 	}
 }

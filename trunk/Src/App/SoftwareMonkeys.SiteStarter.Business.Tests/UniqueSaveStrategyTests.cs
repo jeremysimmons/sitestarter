@@ -12,9 +12,18 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		[Test]
 		public void Test_Found_ForIEntityInterface()
 		{
-			StrategyInfo strategy = StrategyState.Strategies["Save", "IUniqueEntity"];
+			TestRecord.RegisterType();
 			
-			Assert.IsNotNull(strategy);
+			StrategyStateNameValueCollection strategies = new StrategyStateNameValueCollection();
+			strategies["Save", "IUniqueEntity"] = new StrategyInfo(new UniqueSaveStrategy());
+			
+			StrategyInfo strategyInfo = strategies["Save", typeof(TestArticle).Name];
+			
+			Assert.IsNotNull(strategyInfo, "No strategy found.");
+			
+			IStrategy strategy = strategyInfo.New();
+			
+			Assert.AreEqual("UniqueSaveStrategy", strategy.GetType().Name, "Loaded the wrong type.");
 		}
 		
 		[Test]

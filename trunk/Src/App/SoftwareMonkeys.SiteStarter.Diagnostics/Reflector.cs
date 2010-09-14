@@ -173,14 +173,203 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		/// <returns>The return value of the generic method.</returns>
 		static public object InvokeGenericMethod(object obj, string methodName, Type[] typeArguments, object[] parameters)
 		{
-			MethodInfo method = obj.GetType().GetMethod(methodName, Reflector.GetTypes(parameters, false));
+			MethodInfo method = GetMethod(obj, methodName, typeArguments, GetTypes(parameters, false));
+			
+			if (method.IsGenericMethodDefinition)
+				method = method.MakeGenericMethod(typeArguments);
+			
+			return method.Invoke(obj, parameters);
+		}
+		
+		static public MethodInfo GetMethod(object obj, string methodName, Type[] typeArguments, Type[] parameterTypes)
+		{
+			MethodInfo method = null;
+			
+			foreach (MethodInfo m in obj.GetType().GetMethods())
+			{
+				if (m.IsGenericMethodDefinition)
+				{
+					MethodInfo cm = m.MakeGenericMethod(typeArguments);
+					
+					if (cm.Name == methodName)
+					{
+						
+						bool argumentsMatch = ArgumentsMatch(cm, typeArguments);
+						
+						if (argumentsMatch)
+						{
+							bool parametersMatch = ParametersMatch(cm, typeArguments, parameterTypes);
+							
+							if (argumentsMatch && parametersMatch)
+							{
+								method = cm;
+								break;
+							}
+						}
+					}
+				}
+			}
 			
 			if (method == null)
-				throw new ArgumentException("The method '" + methodName + "' wasn't found on the type '" + obj.GetType().ToString() + "' with " + typeArguments.Length + " type arguments and " + parameters.Length + " parameters.");
+			{
+				FailToInvokeMethod(obj, methodName, typeArguments, parameterTypes);
+				
+			}
 			
-			MethodInfo constructedMethod = method.MakeGenericMethod(typeArguments);
+			return method;
+		}
+		
+		/// <summary>
+		/// Throws an exception when the reflector fails to invoke a generic method.
+		/// </summary>
+		/// <param name="obj"></param>
+		/// <param name="methodName"></param>
+		/// <param name="typeArguments"></param>
+		/// <param name="parameterTypes"></param>
+		static public void FailToInvokeMethod(object obj, string methodName, Type[] typeArguments, Type[] parameterTypes)
+		{
+			string expectedArgumentsString = String.Empty;
+			foreach (Type t in typeArguments)
+			{
+				expectedArgumentsString = expectedArgumentsString + t.Name + ",";
+			}
 			
-			return constructedMethod.Invoke(obj, parameters);
+			expectedArgumentsString = expectedArgumentsString.Trim(',');
+			
+			string expectedParametersString = String.Empty;
+			foreach (Type t in parameterTypes)
+			{
+				expectedParametersString = expectedParametersString + t.Name + ",";
+			}
+			
+			expectedParametersString = expectedParametersString.Trim(',');
+			
+			throw new ArgumentException("The method '" + methodName + "' wasn't found on the type '" + obj.GetType().ToString() + "' with " + typeArguments.Length + " type arguments and " + parameterTypes.Length + " parameters. Expected argument types are '" + expectedArgumentsString + "' and expected property types are '" + expectedParametersString + "'.");
+		}
+		
+		/// <summary>
+		/// Checks whether the provided method matches the expected generic argument types.
+		/// </summary>
+		/// <param name="method"></param>
+		/// <param name="expectedArgumentTypes"></param>
+		/// <returns></returns>
+		static public bool ArgumentsMatch(MethodInfo method, Type[] expectedArgumentTypes)
+		{
+			bool argumentsMatch = true;
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the provided arguments match those on the provided method.", NLog.LogLevel.Debug))
+			{
+				
+				if (method == null)
+					throw new ArgumentNullException("method");
+				
+				if (expectedArgumentTypes == null)
+					throw new ArgumentNullException("expectedArgumentTypes");
+				
+				AppLogger.Debug("Method name: " + method.Name);
+				AppLogger.Debug("Method parent object: " + method.DeclaringType.FullName);
+				
+				
+				Type[] argumentTypes = method.GetGenericArguments();
+				
+				AppLogger.Debug("Arguments on method: " + argumentTypes.Length);
+				AppLogger.Debug("Arguments expected: " + expectedArgumentTypes);
+				
+				if (argumentTypes.Length == expectedArgumentTypes.Length)
+				{
+					for (int i = 0; i < expectedArgumentTypes.Length; i++)
+					{
+						// Get the actual type of the argument
+						Type actualType = argumentTypes[i];
+						
+						if (actualType == null)
+							throw new Exception("actualType == null");
+						
+						if (actualType.FullName == string.Empty)
+							throw new Exception("actualType.FullName == String.Empty");
+						
+						AppLogger.Debug("Comparing expected argument type '" + expectedArgumentTypes[i].FullName + "' with actual type '" + actualType.FullName + "'.");
+						
+						bool match = actualType.FullName == expectedArgumentTypes[i].FullName;
+						bool isAssignable = actualType.IsAssignableFrom(expectedArgumentTypes[i]);
+						
+						AppLogger.Debug("Match: " + match);
+						AppLogger.Debug("Is assignable: " + isAssignable);
+						
+						if (!(match || isAssignable))
+							argumentsMatch = false;
+					}
+				}
+				else
+					argumentsMatch = false;
+				
+				AppLogger.Debug("Parameters match: " + argumentsMatch.ToString());
+			}
+			return argumentsMatch;
+		}
+		
+		/// <summary>
+		/// Checks whether the provided method matches the expected parameter types.
+		/// </summary>
+		/// <param name="method"></param>
+		/// <param name="expectedParameters"></param>
+		/// <returns></returns>
+		static public bool ParametersMatch(MethodInfo method, Type[] expectedArgumentTypes, Type[] expectedParameters)
+		{
+			bool parametersMatch = true;
+			using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the provide parameter types match those on the provided method.", NLog.LogLevel.Debug))
+			{
+				if (method == null)
+					throw new ArgumentNullException("method");
+				
+				if (expectedParameters == null)
+					throw new ArgumentNullException("expectedParameters");
+				
+				if (!method.IsGenericMethod)
+					throw new ArgumentException("The provided method is not a constructed generic method.");
+				
+				AppLogger.Debug("Method name: " + method.Name);
+				AppLogger.Debug("Method parent object: " + method.DeclaringType.FullName);
+				
+				ParameterInfo[] parameters = method.GetParameters();
+				
+				AppLogger.Debug("Parameters on method: " + parameters.Length);
+				AppLogger.Debug("Parameters expected: " + expectedParameters);
+				
+				if (parameters.Length == expectedParameters.Length)
+				{
+					for (int i = 0; i < expectedParameters.Length; i++)
+					{
+						AppLogger.Debug("Parameter: " + parameters[i].ToString());
+						
+						Type parameter = parameters[i].ParameterType;
+						
+						if (parameter == null)
+							throw new Exception("parameter == null");
+						
+						if (parameter.FullName == null)
+							throw new ArgumentException("The provided method is not a constructed generic method. Call MakeGenericMethod and pass the return value to this function.");
+						
+						Type expectedParameter = expectedParameters[i];
+						
+						AppLogger.Debug("Comparing expected parameter type '" + expectedParameter.FullName + "' with actual type '" + parameter.FullName + "'.");
+						
+						bool match = expectedParameter.FullName == parameter.FullName;
+						bool isAssignable = parameter.IsAssignableFrom(expectedParameter);
+						
+						AppLogger.Debug("Match: " + match);
+						AppLogger.Debug("Is assignable: " + isAssignable);
+						
+						if (!(match || isAssignable))
+							parametersMatch = false;
+					}
+				}
+				else
+					parametersMatch = false;
+				
+				AppLogger.Debug("Parameters match: " + parametersMatch.ToString());
+			}
+			return parametersMatch;
 		}
 		
 		static public object CreateGenericObject(Type objectType, Type[] typeArgs, object[] parameters)

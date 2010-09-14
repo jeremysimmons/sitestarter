@@ -6,7 +6,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// <summary>
 	/// Defines the interface of all "unique validation" (ie. ensuring a specific property of an entity is unique) strategies.
 	/// </summary>
-	public interface IUniqueValidateStrategy : IStrategy
+	public interface IUniqueValidateStrategy : IValidateStrategy
 	{
 		/// <summary>
 		/// Validates the provided entity by ensuring that the value of the specified property is unique.

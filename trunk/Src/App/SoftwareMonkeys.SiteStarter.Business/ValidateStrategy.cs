@@ -1,5 +1,6 @@
 ﻿using System;
 using SoftwareMonkeys.SiteStarter.Entities;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 
 namespace SoftwareMonkeys.SiteStarter.Business
 {
@@ -7,7 +8,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// Used to validate entities before storing or updating them.
 	/// </summary>
 	[Strategy("Validate", "IEntity")]
-	public class ValidateStrategy : IValidateStrategy
+	public class ValidateStrategy : BaseStrategy, IValidateStrategy
 	{
 		public ValidateStrategy()
 		{
@@ -20,7 +21,14 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns></returns>
 		public virtual bool Validate(IEntity entity)
 		{
-			return true;
+			bool isValid = true;
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Validating the provided entity.", NLog.LogLevel.Debug))
+			{
+				AppLogger.Debug("No validation rules applied.");
+			}
+			
+			return isValid;
 		}
 	}
 }

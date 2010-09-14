@@ -31,6 +31,12 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
         	set { singleReferenceProperty = value; }
         }
         
+        public T DoSomething<T>(T input)
+        	where T : IEntity
+        {
+        	return input;
+        }
+        
         
         /// <summary>
         /// Registers the entity in the system.
