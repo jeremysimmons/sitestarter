@@ -292,13 +292,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				Assert.IsTrue(originalReference.Property2Name.ToString() == reference.Property2Name.ToString()
 				              || originalReference.Property1Name.ToString() == reference.Property2Name.ToString(), "Property 2 name doesn't match expected.");
 				
-				//IsTrue(reference.Includes(user.ID, "Roles"), "The returned reference is invalid. (#1)");
-				
-//				Assert.IsTrue(reference.Includes(user.ID, "Roles"), "The returned reference is invalid. (#1)");
-//				Assert.IsTrue(reference.Includes(role.ID, "Users"), "The returned reference is invalid. (#2)");
-				
-				DataAccess.Data.Deleter.Delete(user);
-				DataAccess.Data.Deleter.Delete(role);
 			}
 		}
 		

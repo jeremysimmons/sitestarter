@@ -208,5 +208,40 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			}
 			return entity;
 		}
+		
+		/// <summary>
+		/// Retrieves a bound version of the provided entity.
+		/// </summary>
+		/// <param name="entity"></param>
+		/// <returns>A bound version of the provided entity.</returns>
+		public override IEntity GetEntity(IEntity entity)
+		{
+			IEntity found = null;
+			
+			// If it's a reference entity then use the referencer to retrieve a bound version
+			if (entity is EntityReference
+			    || entity is EntityIDReference)
+			{
+				IDataReferencer referencer = Provider.InitializeDataReferencer();
+				referencer.AutoRelease = AutoRelease;
+				
+				EntityIDReference reference = (EntityIDReference)entity;
+				
+				found = referencer.GetReference(EntitiesUtilities.GetType(reference.Type1Name),
+				                               reference.Entity1ID,
+				                               reference.Property1Name,
+				                               EntitiesUtilities.GetType(reference.Type2Name),
+				                               reference.Entity2ID,
+				                               reference.Property2Name,
+				                               false);
+			}
+			else
+				found = GetEntity(entity.GetType(), "ID", entity.ID);
+			
+			if (found == null)
+				throw new Exception("No entity found.");
+			
+			return found;
+		}
 	}
 }

@@ -199,8 +199,20 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			return Collection<T>.ConvertAll(GetEntities(typeof(T)));
 		}
-
-
+		
+		/// <summary>
+		/// Retrieves the entities of the specified type from the data store.
+		/// </summary>
+		/// <param name="sortExpression"></param>
+		/// <returns>The entities of the specified type found in the data store.</returns>
+		public override T[] GetEntities<T>(string sortExpression)
+		{
+			Collection<T> collection = new Collection<T>(Collection<T>.ConvertAll(GetEntities<T>()));
+			
+			collection.Sort(sortExpression);
+			
+			return collection.ToArray();
+		}
 
 		/// <summary>
 		/// Retrieves the entities from the data store.
@@ -694,6 +706,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				AppLogger.Debug("Type: " + type.ToString());
 				AppLogger.Debug("Property name: " + propertyName);
 				AppLogger.Debug("Property value: " + (propertyValue == null ? "[null]" : propertyValue.ToString()));
+				
+				if (type.Name == "EntityIDReference"
+				    || type.Name == "EntityReference")
+					throw new ArgumentException("The provided type cannot be EntityReference or EntityIDReference.");
 				
 				Db4oDataStore store = ((Db4oDataStore)GetDataStore(type));
 				

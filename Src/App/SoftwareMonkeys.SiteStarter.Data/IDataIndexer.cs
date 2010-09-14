@@ -9,6 +9,12 @@ namespace SoftwareMonkeys.SiteStarter.Data
 	/// </summary>
 	public interface IDataIndexer : IDataAdapter
 	{
+		T[] GetEntities<T>()
+			where T : IEntity;
+		
+		T[] GetEntities<T>(string sortExpression)
+			where T : IEntity;
+		
 		T[] GetEntities<T>(string propertyName, object value)
 			where T : IEntity;
 		
@@ -17,8 +23,6 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		T[] GetEntities<T>(Guid[] ids)
 			where T : IEntity;
 
-		T[] GetEntities<T>()
-			where T : IEntity;
 
         IEntity[] GetEntities();
 

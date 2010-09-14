@@ -144,7 +144,6 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			if (Config.Mappings == null)
 				throw new InvalidOperationException("No mappings have been initialized.");
 
-
 			Type actualType = EntitiesUtilities.GetType(type.Name);
 
 

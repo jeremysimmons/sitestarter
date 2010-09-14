@@ -16,6 +16,23 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		}
 		
 		[Test]
+		public void Test_Delete()
+		{
+			TestUser user = new TestUser();
+			Guid userID = user.ID = Guid.NewGuid();
+			user.FirstName = "Test";
+			user.LastName = "User";
+			
+			DataAccess.Data.Saver.Save(user);
+			
+			DataAccess.Data.Deleter.Delete(user);
+			
+			TestUser[] foundUsers = DataAccess.Data.Indexer.GetEntities<TestUser>();
+			
+			Assert.AreEqual(0, foundUsers.Length);
+		}
+		
+		[Test]
 		public void Test_Delete_EntityAndReference()
 		{
 			

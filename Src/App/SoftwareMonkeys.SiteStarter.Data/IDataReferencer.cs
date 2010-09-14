@@ -6,7 +6,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 	/// <summary>
 	/// Description of IDataReferencer.
 	/// </summary>
-	public interface IDataReferencer
+	public interface IDataReferencer : IDataAdapter
 	{
 		
 		bool MatchReference(Type entityType, Guid entityID, string propertyName, Type referencedEntityType, Guid referencedEntityID, string mirrorPropertyName);

@@ -19,7 +19,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_Activate()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing the Active function.", NLog.LogLevel.Debug))
 			{
 				TestUser.RegisterType();
 				TestRole.RegisterType();
@@ -65,7 +65,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_Activate_SingleReference()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing the activate function with a single reference.", NLog.LogLevel.Debug))
 			{
 				TestArticle.RegisterType();
 				TestArticlePage.RegisterType();
@@ -110,7 +110,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_Activate_2References()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing the Activate function with 2 references.", NLog.LogLevel.Debug))
 			{				
 				TestArticle article = new TestArticle();
 				article.ID = Guid.NewGuid();
@@ -188,7 +188,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_Activate_2References_Async_Converging()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing the Activate function with 2 asynchronous, converging references.", NLog.LogLevel.Debug))
 			{
 				
 				
@@ -272,7 +272,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_Activate_ReverseReference()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing the activate function with a reverse reference.", NLog.LogLevel.Debug))
 			{
 				TestUser.RegisterType();
 				TestRole.RegisterType();

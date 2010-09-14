@@ -9,6 +9,12 @@ namespace SoftwareMonkeys.SiteStarter.Data
 	/// </summary>
 	public abstract class DataIndexer : DataAdapter, IDataIndexer
 	{		
+		public abstract T[] GetEntities<T>()
+			where T : IEntity;
+		
+		public abstract T[] GetEntities<T>(string sortExpression)
+			where T : IEntity;
+		
 		public abstract IEntity[] GetEntities(Type type, Guid[] ids);
 
 		public abstract T[] GetEntities<T>(Guid[] ids)
@@ -16,9 +22,6 @@ namespace SoftwareMonkeys.SiteStarter.Data
 
         public abstract IEntity[] GetEntities();
 
-		public abstract T[] GetEntities<T>()
-			where T : IEntity;
-		
 		public abstract IEntity[] GetEntities(Type type);
 
 		public abstract IEntity[] GetEntities(Type type, Dictionary<string, object> parameters);
