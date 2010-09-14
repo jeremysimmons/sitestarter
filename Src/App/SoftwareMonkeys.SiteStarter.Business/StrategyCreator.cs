@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 
 namespace SoftwareMonkeys.SiteStarter.Business
 {
@@ -48,23 +49,34 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns>A strategy that is suitable to perform the specified action with the specified type.</returns>
 		public IStrategy CreateStrategy(StrategyInfo strategyInfo)
 		{
-			Type strategyType = Type.GetType(strategyInfo.StrategyType);
-			Type entityType = Entities.EntitiesUtilities.GetType(strategyInfo.TypeName);
-			
 			IStrategy strategy = null;
-			if (strategyType.IsGenericTypeDefinition)
+			using (LogGroup logGroup = AppLogger.StartGroup("Creating a new strategy based on the provided info.", NLog.LogLevel.Debug))
 			{
-				Type gType = strategyType.MakeGenericType(new Type[]{entityType});
-				strategy = (IStrategy)Activator.CreateInstance(gType);
+				Type strategyType = Type.GetType(strategyInfo.StrategyType);
+				Type entityType = Entities.EntitiesUtilities.GetType(strategyInfo.TypeName);
+				
+				AppLogger.Debug("Strategy type: " + strategyType.FullName);
+				AppLogger.Debug("Entity type: " + entityType.FullName);
+				
+				if (strategyType.IsGenericTypeDefinition)
+				{
+					AppLogger.Debug("Is generic type definition.");
+					
+					Type gType = strategyType.MakeGenericType(new Type[]{entityType});
+					strategy = (IStrategy)Activator.CreateInstance(gType);
+				}
+				else
+				{
+					AppLogger.Debug("Is not generic type definition.");
+					
+					strategy = (IStrategy)Activator.CreateInstance(strategyType);
+				}
+				
+				if (strategy == null)
+					throw new ArgumentException("Unable to create instance of strategy: " + entityType.ToString(), "strategyInfo");
+				
+				AppLogger.Debug("Strategy created.");
 			}
-			else
-			{
-				strategy = (IStrategy)Activator.CreateInstance(strategyType);
-			}
-			
-			if (strategy == null)
-				throw new ArgumentException("Unable to create instance of strategy: " + entityType.ToString(), "strategyInfo");
-			
 			return strategy;
 		}
 		
@@ -77,8 +89,10 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns></returns>
 		public IIndexStrategy NewIndexer(string typeName)
 		{
+			CheckType(typeName);
+			
 			return Strategies["Index", typeName]
-				.New<IIndexStrategy>();
+				.New<IIndexStrategy>(typeName);
 		}
 		
 		/// <summary>
@@ -100,8 +114,10 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns></returns>
 		public ISaveStrategy NewSaver(string typeName)
 		{
+			CheckType(typeName);
+			
 			return Strategies["Save", typeName]
-				.New<ISaveStrategy>();
+				.New<ISaveStrategy>(typeName);
 		}
 		
 		/// <summary>
@@ -121,8 +137,10 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns></returns>
 		public IUniqueSaveStrategy NewUniqueSaver(string typeName)
 		{
+			CheckType(typeName);
+			
 			return Strategies["SaveUnique", typeName]
-				.New<IUniqueSaveStrategy>();
+				.New<IUniqueSaveStrategy>(typeName);
 		}
 		
 		/// <summary>
@@ -144,8 +162,10 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns></returns>
 		public IUpdateStrategy NewUpdater(string typeName)
 		{
+			CheckType(typeName);
+			
 			return Strategies["Update", typeName]
-				.New<IUpdateStrategy>();
+				.New<IUpdateStrategy>(typeName);
 		}
 		
 		/// <summary>
@@ -165,8 +185,10 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns></returns>
 		public IUniqueUpdateStrategy NewUniqueUpdater(string typeName)
 		{
+			CheckType(typeName);
+			
 			return Strategies["UpdateUnique", typeName]
-				.New<IUniqueUpdateStrategy>();
+				.New<IUniqueUpdateStrategy>(typeName);
 		}
 		
 		/// <summary>
@@ -188,8 +210,10 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns></returns>
 		public IDeleteStrategy NewDeleter(string typeName)
 		{
+			CheckType(typeName);
+			
 			return Strategies["Delete", typeName]
-				.New<IDeleteStrategy>();
+				.New<IDeleteStrategy>(typeName);
 		}
 		
 		/// <summary>
@@ -211,8 +235,10 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns></returns>
 		public IRetrieveStrategy NewRetriever(string typeName)
 		{
+			CheckType(typeName);
+			
 			return Strategies["Retrieve", typeName]
-				.New<IRetrieveStrategy>();
+				.New<IRetrieveStrategy>(typeName);
 		}
 		
 		/// <summary>
@@ -234,8 +260,10 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns></returns>
 		public IValidateStrategy NewValidator(string typeName)
 		{
+			CheckType(typeName);
+			
 			return Strategies["Validate", typeName]
-				.New<IValidateStrategy>();
+				.New<IValidateStrategy>(typeName);
 		}
 		
 		/// <summary>
@@ -257,8 +285,10 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns></returns>
 		public IActivateStrategy NewActivator(string typeName)
 		{
+			CheckType(typeName);
+			
 			return Strategies["Activate", typeName]
-				.New<IActivateStrategy>();
+				.New<IActivateStrategy>(typeName);
 		}
 		
 		/// <summary>
@@ -271,5 +301,18 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			return NewActivator(type.Name);
 		}
 		#endregion
+		
+		
+		public void CheckType(string typeName)
+		{
+			if (typeName == null || typeName == String.Empty)
+				throw new ArgumentNullException("type");
+			
+			if (typeName == "IEntity")
+				throw new InvalidOperationException("The specified type cannot be 'IEntity'.");
+			
+			if (typeName == "IUniqueEntity")
+				throw new InvalidOperationException("The specified type cannot be 'IUniqueEntity'.");
+		}
 	}
 }

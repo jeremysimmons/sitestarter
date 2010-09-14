@@ -78,6 +78,7 @@
     <Compile Include="IndexStrategy.cs" />
     <Compile Include="SaveStrategy.cs" />
     <Compile Include="StrategyCreator.cs" />
+    <Compile Include="StrategyLocator.cs" />
     <Compile Include="StrategyNotFoundException.cs" />
     <Compile Include="StrategyState.cs" />
     <Compile Include="CommandAttribute.cs" />

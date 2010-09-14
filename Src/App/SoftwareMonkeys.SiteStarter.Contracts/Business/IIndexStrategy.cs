@@ -11,19 +11,29 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	public interface IIndexStrategy : IStrategy
 	{
 		/// <summary>
-		/// Retrieves the entities of the specified type with the provided sort expression applied.
+		/// Gets/sets the sort expression applied to the index.
 		/// </summary>
-		/// <param name="sortExpression"></param>
-		/// <returns></returns>
-		T[] Index<T>(string sortExpression)
-			where T : IEntity;
+		string SortExpression {get;set;}
 		
 		/// <summary>
-		/// Retrieves the entities of the specified type with the provided sort expression applied.
+		/// Gets/sets a value indicating whether paging is enabled.
 		/// </summary>
-		/// <param name="sortExpression"></param>
-		/// <returns></returns>
-		IEntity[] Index(string sortExpression);
+		bool EnablePaging {get;set;}
+		
+		/// <summary>
+		/// Gets/sets the index of the current page.
+		/// </summary>
+		int CurrentPageIndex {get;set;}
+		
+		/// <summary>
+		/// Gets/sets the number of entities on each page.
+		/// </summary>
+		int PageSize {get;set;}
+		
+		/// <summary>
+		/// Gets/sets the absolute total number of entities found (including those on other pages).
+		/// </summary>
+		int AbsoluteTotal {get;set;}
 		
 		/// <summary>
 		/// Retrieves the entities of the specified type.
@@ -33,65 +43,24 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			where T : IEntity;
 		
 		/// <summary>
-		/// Retrieves the entities of the specified type.
+		/// Retrieves the entities.
 		/// </summary>
 		/// <returns></returns>
-		IEntity[] Index(Type type);
+		IEntity[] Index();
 		
 		/// <summary>
 		/// Retrieves the page of entities at the specified location with the provided sort expression applied.
 		/// </summary>
-		/// <param name="location"></param>
-		/// <param name="sortExpression"></param>
+		/// <param name="filterValues"></param>
 		/// <returns></returns>
-		T[] Index<T>(IPagingLocation location, string sortExpression)
-			where T : IEntity;
-		
-		/// <summary>
-		/// Retrieves the page of entities at the specified location with the provided sort expression applied.
-		/// </summary>
-		/// <param name="location"></param>
-		/// <param name="sortExpression"></param>
-		/// <returns></returns>
-		IEntity[] Index(Type type, IPagingLocation location, string sortExpression);
+		IEntity[] Index(Dictionary<string, object> filterValues);
 		
 		/// <summary>
 		/// Retrieves the page of entities at the specified location with the provided sort expression applied.
 		/// </summary>
 		/// <param name="sortExpression"></param>
 		/// <returns></returns>
-		IEntity[] Index(Type type, string sortExpression);
-		
-		/// <summary>
-		/// Retrieves the page of entities at the specified location with the provided sort expression applied.
-		/// </summary>
-		/// <param name="location"></param>
-		/// <param name="sortExpression"></param>
-		/// <returns></returns>
-		IEntity[] Index(Type type, Dictionary<string, object> filterValues, IPagingLocation location, string sortExpression);
-		
-		/// <summary>
-		/// Retrieves the page of entities at the specified location with the provided sort expression applied.
-		/// </summary>
-		/// <param name="location"></param>
-		/// <param name="sortExpression"></param>
-		/// <returns></returns>
-		T[] Index<T>(IDictionary<string, object> filterValues, IPagingLocation location, string sortExpression)
-			where T : IEntity;
-		
-		/// <summary>
-		/// Retrieves the page of entities at the specified location with the provided sort expression applied.
-		/// </summary>
-		/// <param name="sortExpression"></param>
-		/// <returns></returns>
-		IEntity[] Index(Type type, Dictionary<string, object> filterValues, string sortExpression);
-		
-		/// <summary>
-		/// Retrieves the page of entities at the specified location with the provided sort expression applied.
-		/// </summary>
-		/// <param name="sortExpression"></param>
-		/// <returns></returns>
-		T[] Index<T>(IDictionary<string, object> filterValues, string sortExpression)
+		T[] Index<T>(Dictionary<string, object> filterValues)
 			where T : IEntity;
 	}
 }

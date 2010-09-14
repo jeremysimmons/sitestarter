@@ -9,7 +9,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// Used to delete an entity.
 	/// </summary>
 	[Strategy("Delete", "IEntity")]
-	public class DeleteStrategy : IDeleteStrategy
+	public class DeleteStrategy : BaseStrategy, IDeleteStrategy
 	{
 		public DeleteStrategy()
 		{

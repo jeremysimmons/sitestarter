@@ -2,6 +2,7 @@
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Data;
 using SoftwareMonkeys.SiteStarter.Business;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 
 namespace SoftwareMonkeys.SiteStarter.Business
 {
@@ -19,7 +20,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			get {
 				if (validator == null)
-					validator = StrategyState.Strategies.Creator.NewValidator(typeof(IEntity).Name);
+					validator = StrategyState.Strategies.Creator.NewValidator(TypeName);
 				return validator; }
 			set { validator = value; }
 		}
@@ -35,13 +36,31 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns>A value indicating whether the entity was valid and was therefore saved.</returns>
 		public bool Save(IEntity entity)
 		{
-			if (Validate(entity))
+			bool saved = false;
+			using (LogGroup logGroup = AppLogger.StartGroup("Saving the provided entity.", NLog.LogLevel.Debug))
 			{
-				DataAccess.Data.Saver.Save(entity);
-				return true;
+				if (entity == null)
+					throw new ArgumentNullException("entity");
+				
+				AppLogger.Debug("Entity type: " + entity.GetType().FullName);
+				
+				if (Validate(entity))
+				{
+					AppLogger.Debug("Is valid.");
+					
+					DataAccess.Data.Saver.Save(entity);
+					saved = true;
+				}
+				else
+				{
+					AppLogger.Debug("Is not valid.");
+					
+					saved = false;
+				}
+				
+				AppLogger.Debug("Saved: " + saved.ToString());
 			}
-			else
-				return false;
+			return saved;
 		}
 		
 		/// <summary>
@@ -53,11 +72,20 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			bool valid = false;
 			
-			if (Validator == null)
-				throw new InvalidOperationException("The validation strategy can't be found.");
-			
-			valid = Validator.Validate(entity);
-			
+			using (LogGroup logGroup = AppLogger.StartGroup("Validating the provided entity.", NLog.LogLevel.Debug))
+			{
+				if (Validator == null)
+					throw new InvalidOperationException("The validation strategy can't be found.");
+				
+				if (entity == null)
+					throw new ArgumentNullException("entity");
+				
+				AppLogger.Debug("Entity type: " + entity.GetType().FullName);
+				
+				valid = Validator.Validate(entity);
+				
+				AppLogger.Debug("Valid: " + valid.ToString());
+			}
 			return valid;
 		}
 	}

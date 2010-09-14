@@ -18,7 +18,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			get {
 				if (validator == null)
-					validator = StrategyState.Strategies.Creator.NewValidator(typeof(IEntity).Name);
+					validator = StrategyState.Strategies.Creator.NewValidator(TypeName);
 				return validator; }
 			set { validator = value; }
 		}
@@ -26,6 +26,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public UpdateStrategy()
 		{
 		}
+		
+		public UpdateStrategy(string typeName) : base(typeName)
+		{}
 		
 		/// <summary>
 		/// Updates the provided strategy.

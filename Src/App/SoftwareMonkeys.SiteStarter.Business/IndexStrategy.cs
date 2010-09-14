@@ -2,6 +2,8 @@
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Business;
 using SoftwareMonkeys.SiteStarter.Data;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
+using System.Collections.Generic;
 
 namespace SoftwareMonkeys.SiteStarter.Business
 {
@@ -10,7 +12,57 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// </summary>
 	[Strategy("Index", "IEntity")]
 	public class IndexStrategy : BaseStrategy, IIndexStrategy
-	{	
+	{
+		private int absoluteTotal;
+		/// <summary>
+		/// Gets/sets the absolute total number of entities found (including those on other pages).
+		/// </summary>
+		public int AbsoluteTotal
+		{
+			get { return absoluteTotal; }
+			set { absoluteTotal = value; }
+		}
+		
+		private bool enablePaging;
+		/// <summary>
+		/// Gets/sets a value indicating whether paging is enabled on the index.
+		/// </summary>
+		public bool EnablePaging
+		{
+			get { return enablePaging; }
+			set { enablePaging = value; }
+		}
+		
+		private string sortExpression;
+		/// <summary>
+		/// Gets/sets the sort expression applied to the index.
+		/// </summary>
+		public string SortExpression
+		{
+			get { return sortExpression; }
+			set { sortExpression = value; }
+		}
+		
+		private int currentPageIndex;
+		/// <summary>
+		/// Gets/sets the current page index.
+		/// </summary>
+		public int CurrentPageIndex
+		{
+			get { return currentPageIndex; }
+			set { currentPageIndex = value; }
+		}
+		
+		private int pageSize;
+		/// <summary>
+		/// Gets/sets the number of items on each page.
+		/// </summary>
+		public int PageSize
+		{
+			get { return pageSize; }
+			set { pageSize = value; }
+		}
+		
 		/// <summary>
 		/// Retrieves the entities of the specified type.
 		/// </summary>
@@ -18,117 +70,102 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public T[] Index<T>()
 			where T : IEntity
 		{
-			Collection<T> entities = new Collection<T>(Data.DataAccess.Data.Indexer.GetEntities<T>());
+			CheckPageSize();
 			
+			Collection<T> entities = new Collection<T>();
+						
+			if (EnablePaging)
+			{
+				PagingLocation location = new PagingLocation(CurrentPageIndex, PageSize);
+				
+				entities.AddRange(DataAccess.Data.Indexer.GetPageOfEntities<T>(location, SortExpression));
+				
+				AbsoluteTotal = location.AbsoluteTotal;
+			}
+			else
+			{
+				entities.AddRange(DataAccess.Data.Indexer.GetEntities<T>());
+				
+				AbsoluteTotal = entities.Count;
+			}
 			
-			return entities.ToArray();
-		}	
-		
-		/// <summary>
-		/// Retrieves the entities of the specified type with the provided sort expression applied.
-		/// </summary>
-		/// <param name="sortExpression"></param>
-		/// <returns></returns>
-		public IEntity[] Index(Type type, string sortExpression)
-		{
-			Collection<IEntity> entities = new Collection<IEntity>(Index(type));
-			
-			entities.Sort(sortExpression);
 			
 			return entities.ToArray();
 		}
 		
 		/// <summary>
-		/// Retrieves the entities of the specified type with the provided sort expression applied.
+		/// Retrieves the entities of the specified type with the sort expression applied.
 		/// </summary>
 		/// <param name="sortExpression"></param>
 		/// <returns></returns>
-		public T[] Index<T>(string sortExpression)
+		public IEntity[] Index()
+		{
+			CheckPageSize();
+			CheckTypeName();
+			
+			Type type = EntitiesUtilities.GetType(TypeName);
+			
+			return Collection<IEntity>.ConvertAll(Reflector.InvokeGenericMethod(this, // Source object
+			                                                                    "Index", // Method name
+			                                                                    new Type[] {type}, // Generic types
+			                                                                    new object[] {})); // Method arguments);
+		}
+		
+		/// <summary>
+		/// Retrieves the entities matching the provided filter values.
+		/// </summary>
+		/// <param name="filterValues"></param>
+		/// <returns></returns>
+		public IEntity[] Index(Dictionary<string, object> filterValues)
+		{
+			CheckPageSize();
+			
+			Type type = EntitiesUtilities.GetType(TypeName);
+			
+			if (type == null)
+				throw new InvalidOperationException("Type not found.");
+			
+			return Collection<IEntity>.ConvertAll(
+				Reflector.InvokeGenericMethod(this, // Source object
+				                              "Index", // Method name
+				                              new Type[] {type}, // Generic types
+				                              new object[] {filterValues})); // Method arguments);
+		}
+		
+		/// <summary>
+		/// Retrieves the entities matching the provided filter values.
+		/// </summary>
+		/// <param name="filterValues"></param>
+		/// <returns></returns>
+		public T[] Index<T>(Dictionary<string, object> filterValues)
 			where T : IEntity
 		{
-			Collection<T> entities = new Collection<T>(Index<T>());
+			CheckPageSize();
 			
-			entities.Sort(sortExpression);
+			T[] entities = new T[]{};
 			
-			return entities.ToArray();
-		}
-		
-		/// <summary>
-		/// Retrieves the page of entities at the specified location with the provided sort expression applied.
-		/// </summary>
-		/// <param name="location"></param>
-		/// <param name="sortExpression"></param>
-		/// <returns></returns>
-		public T[] Index<T>(PagingLocation location, string sortExpression)
-			where T : IEntity
-		{
-			Collection<T> entities = new Collection<T>(Data.DataAccess.Data.Indexer.GetPageOfEntities<T>(location, sortExpression));
+			if (EnablePaging)
+			{
+				PagingLocation location = new PagingLocation(CurrentPageIndex, PageSize);
+				
+				entities = Collection<T>.ConvertAll(DataAccess.Data.Indexer.GetPageOfEntities<T>(new FilterGroup(typeof(T), filterValues), location, SortExpression));
+				
+				AbsoluteTotal = location.AbsoluteTotal;
+			}
+			else
+			{
+				entities = Collection<T>.ConvertAll(DataAccess.Data.Indexer.GetEntities<T>(new FilterGroup(typeof(T), filterValues), SortExpression));
+				
+				AbsoluteTotal = entities.Length;
+			}
 			
-			entities.Sort(sortExpression);
-			
-			return entities.ToArray();
-		}
-	
-		T[] IIndexStrategy.Index<T>(IPagingLocation location, string sortExpression)
-		{
-			return Index<T>((PagingLocation)location, sortExpression);
+			return entities;
 		}
 		
-		IEntity[] IIndexStrategy.Index(string sortExpression)
+		public void CheckPageSize()
 		{
-			return (IEntity[])Index<IEntity>(sortExpression);
-		}
-		
-		public IEntity[] Index(Type type)
-		{
-			return Index(type);
-		}
-		
-		public IEntity[] Index(Type type, PagingLocation location, string sortExpression)
-		{
-			return DataAccess.Data.Indexer.GetPageOfEntities(type, location, sortExpression);
-		}
-		
-		public IEntity[] Index(Type type, System.Collections.Generic.IDictionary<string, object> filterValues, string sortExpression)
-		{
-			return DataAccess.Data.Indexer.GetEntities(type, new FilterGroup(type, filterValues), sortExpression);
-		}
-		
-		public T[] Index<T>(System.Collections.Generic.IDictionary<string, object> filterValues, string sortExpression) where T : IEntity
-		{
-			return (T[])DataAccess.Data.Indexer.GetEntities<T>(new FilterGroup(typeof(T), filterValues), sortExpression);
-		}
-		
-		public IEntity[] Index(Type type, System.Collections.Generic.IDictionary<string, object> filterValues, IPagingLocation location, string sortExpression)
-		{
-			return DataAccess.Data.Indexer.GetPageOfEntities(type, new FilterGroup(type, filterValues), (PagingLocation)location, sortExpression);
-		}
-		
-		public T[] Index<T>(System.Collections.Generic.IDictionary<string, object> filterValues, PagingLocation location, string sortExpression) where T : IEntity
-		{
-			return (T[])DataAccess.Data.Indexer.GetPageOfEntities<T>(new FilterGroup(typeof(T), filterValues), location, sortExpression);
-		}
-		
-		IEntity[] IIndexStrategy.Index(Type type, IPagingLocation location, string sortExpression)
-		{
-			return Index(type, (PagingLocation)location, sortExpression);
-		}
-		
-		IEntity[] IIndexStrategy.Index(Type type, System.Collections.Generic.Dictionary<string, object> filterValues, IPagingLocation location, string sortExpression)
-		{
-			return Index(type, filterValues, (PagingLocation)location, sortExpression);
-		}
-		
-		T[] IIndexStrategy.Index<T>(System.Collections.Generic.IDictionary<string, object> filterValues, IPagingLocation location, string sortExpression)
-		{
-			return Index<T>(filterValues, (PagingLocation)location, sortExpression);
-		}
-		
-		public IEntity[] Index(Type type, System.Collections.Generic.Dictionary<string, object> filterValues, string sortExpression)
-		{
-			Collection<IEntity> entities = new Collection<IEntity>(DataAccess.Data.Indexer.GetEntities(type, filterValues));
-			entities.Sort(sortExpression);
-			return entities.ToArray();
+			if (PageSize <= 0)
+				throw new InvalidOperationException("The page size must be greater than 0 but is " + PageSize);
 		}
 	}
 }

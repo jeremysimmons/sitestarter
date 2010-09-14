@@ -73,6 +73,10 @@
       <Project>{C3626F0A-DFD4-4EF2-8755-3532DE3712A4}</Project>
       <Name>SiteStarter.Diagnostics</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Entities\SiteStarter.Entities.csproj">
+      <Project>{3609F512-9E15-41C7-95AF-D1B3E7F93562}</Project>
+      <Name>SiteStarter.Entities</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.State.Tests\SiteStarter.State.Tests.csproj">
       <Project>AD977DB1-879A-476C-A74A-FC2E0EC98F0A</Project>
       <Name>SiteStarter.State.Tests</Name>
@@ -87,6 +91,8 @@
     </ProjectReference>
     <Compile Include="BaseDiagnosticsTestFixture.cs" />
     <Compile Include="LogUtilitiesTests.cs" />
+    <Compile Include="ReflectorTests.cs" />
+    <Compile Include="TypeNavigatorTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

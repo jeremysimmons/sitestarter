@@ -46,9 +46,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
         /// <param name="operation">The name of the operation.</param>
         static public void StartOperation(string operation)
         {
-            PreviousOperation = CurrentOperation;
-
-            CurrentOperation = operation;
+        	StartOperation(operation, null);
         }
 
         /// <summary>
@@ -61,7 +59,8 @@ namespace SoftwareMonkeys.SiteStarter.Web
             PreviousOperation = CurrentOperation;
 
             CurrentOperation = operation;
-            ((MultiView)view.Parent).ActiveViewIndex = ((MultiView)view.Parent).Views.IndexOf(view);
+            if (view != null)
+            	((MultiView)view.Parent).ActiveViewIndex = ((MultiView)view.Parent).Views.IndexOf(view);
         }
     }
 }

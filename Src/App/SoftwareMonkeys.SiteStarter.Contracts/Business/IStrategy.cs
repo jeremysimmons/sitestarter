@@ -7,5 +7,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// </summary>
 	public interface IStrategy
 	{
+		string TypeName {get;set;}
 	}
 }
