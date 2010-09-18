@@ -13,6 +13,6 @@
     <li><strong><a href='<%= Request.ApplicationPath + "/Admin/Users.aspx" %>'>Manage Users</a></strong> (/Admin/Users.aspx) - The manage users page (in the
         administration section) is used by authorised administrators to browse, create,
         edit, and delete user accounts.</li>
-    <li><strong><a href='<%= Request.ApplicationPath + "/Admin/UnitTests.aspx" %>'>Unit Tests</a></strong> (/Admin/UnitTests.aspx) - The unit tests page executes the project unit tests via the browser.</li>
+    <li><strong><a href='<%= Request.ApplicationPath + "/Admin/Log.aspx" %>'>Log</a></strong> (/Admin/Log.aspx) - The log includes application exceptions and other important information.</li>
     <li><strong><a href='<%= Request.ApplicationPath + "/Admin/Data.aspx" %>'>Data</a></strong> (/Admin/Data.aspx) - A simple raw data/object browser organized by data store.</li>
 </ul>
