@@ -70,11 +70,13 @@
 	
 	private void ListThreads()
 	{
-		string logRoot = LogsDir + "\\" + Request.QueryString["LogDate"];
+		string logRoot = LogsDir;
 
-		string indexFile = logRoot + @"\Detail\Index.xml";
+		LogThreader threader = new LogThreader(logRoot, Request.QueryString["LogDate"]);
 
-		LogUtilities.AnalyzeLog(logRoot);
+		threader.SplitThreads();
+		
+		string indexFile = threader.ThreadsIndexFilePath;
 
 		XmlDocument indexDoc = new XmlDocument();
 		indexDoc.Load(indexFile);
@@ -117,10 +119,14 @@
 
 	string logDate = Request.QueryString["LogDate"];
 	string logThread = Request.QueryString["LogThread"];
+	
+	string logRoot = Server.MapPath(Request.ApplicationPath + "/App_Data/Logs");
+	
+	LogThreader threader = new LogThreader(logRoot, logDate);
 
-	string logPath = Server.MapPath(Request.ApplicationPath + "/App_Data/Logs/" + logDate + "/Detail/" + logThread + ".xml");
+	string threadPath = threader.ThreadsDirectoryPath + Path.DirectorySeparatorChar + logThread + ".xml";
 
-	if (File.Exists(logPath))
+	if (File.Exists(threadPath))
 	{
 		string output = String.Empty;
 		string logContents = String.Empty;
@@ -145,7 +151,7 @@
 		}*/
 
 				XmlDocument doc = new XmlDocument();
-				doc.Load(logPath);
+				doc.Load(threadPath);
 
 				XmlNodeList nodeList;
 				XmlNode root = doc.DocumentElement;
@@ -177,7 +183,7 @@
 
 	}
 	else
-		throw new Exception("No log found: " + logPath);
+		throw new Exception("No log found: " + threadPath);
     }
 
 	private LiteralControl CreateLogItem(XmlNode node, int id)

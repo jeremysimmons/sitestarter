@@ -14,10 +14,10 @@
 	        		<include name="WWW/App_Data/Version.number" />
 	        		<include name="WWW/App_Data/Version.local.number" />
 	        		<include name="WWW/App_Data/Version.staging.number" />
-	        		<include name="WWW/App_Data/Suspended/**" />
 	    		</fileset>
 		</delete>
 
+		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Suspended" />
 		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Logs/" />
 		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Legacy" />
 		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Import" />
