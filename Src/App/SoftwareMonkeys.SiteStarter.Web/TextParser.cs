@@ -7,6 +7,7 @@ using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Data;
 using SoftwareMonkeys.SiteStarter.Business;
+using SoftwareMonkeys.SiteStarter.Business.Security;
 using SoftwareMonkeys.SiteStarter.Configuration;
 
 namespace SoftwareMonkeys.SiteStarter.Web
@@ -25,8 +26,8 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			string settingValue = Config.Application.Settings[key].ToString();
 
 			IUser user = null;
-			if (HttpContext.Current.Request.IsAuthenticated && My.User != null)
-				user = UserFactory<Entities.User>.Current.GetUser(My.User.ID);
+			if (HttpContext.Current.Request.IsAuthenticated && AuthenticationState.User != null)
+				user = RetrieveStrategy.New<User>().Retrieve<User>(AuthenticationState.User.ID);
 
 			string output = String.Empty;
 
@@ -47,7 +48,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			if (text == null || text == String.Empty)
 				return String.Empty;
 
-			Entities.IUser systemAdministrator = UserFactory<Entities.User>.Current.GetUser(Config.Application.PrimaryAdministratorID);
+			Entities.IUser systemAdministrator = RetrieveStrategy.New<User>().Retrieve<User>(Config.Application.PrimaryAdministratorID);
 
 			string newText = text;
 			newText = newText.Replace("${WebSite.Title}", Config.Application.Title);
