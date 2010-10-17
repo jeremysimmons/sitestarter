@@ -6,6 +6,7 @@
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Data" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Web.Data" %>
+<%@ Import namespace="SoftwareMonkeys.SiteStarter.Web.Projections" %>
 <%@ Import namespace="System.IO" %>
 <script language="C#" runat="server">
 
@@ -14,6 +15,14 @@ private void Page_Load(object sender, EventArgs e)
 {
 	using (LogGroup logGroup = AppLogger.StartGroup("Running setup script", NLog.LogLevel.Info))
 	{
+		Setup();
+		//	Response.Redirect("Restore.aspx");
+	}
+}
+
+private void Setup()
+{
+
 		ApplicationInstaller installer = new ApplicationInstaller();
 		
 			
@@ -31,12 +40,16 @@ private void Page_Load(object sender, EventArgs e)
 		
 		installer.Setup();
 		
+		InitializeWeb();
+		
 		if (!installer.UseLegacyData)
 			FormsAuthentication.SetAuthCookie(installer.Administrator.Username, true);
-		//else
-		//	Response.Redirect("Restore.aspx");
-	}
 }
+
+	private void InitializeWeb()
+	{
+		new ProjectionsInitializer().Initialize();
+	}
 
 
 		/// <summary>
