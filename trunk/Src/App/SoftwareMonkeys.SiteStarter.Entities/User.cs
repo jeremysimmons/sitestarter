@@ -16,7 +16,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		public override string UniqueKey
 		{
 			get {
-				return Username;
+				return EntitiesUtilities.FormatUniqueKey(Username);
 			}
 		}
 		
@@ -266,60 +266,16 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 			throw new NotImplementedException();
 		}
-
-		/*  public void AddRole(IUserRole role)
-        {
-            if (roles != null)
-            {
-                Collection<IUserRole> list = new Collection<IUserRole>();
-
-                list.Add(roles);
-
-                if (!list.Contains(role.ID))
-                    list.Add(role);
-
-                Roles = (IUserRole[])list.ToArray();
-            }
-            else
-            {
-                List<Guid> list = new List<Guid>();
-
-                if (roleIDs != null)
-                    list.AddRange(roleIDs);
-
-                if (!list.Contains(role.ID))
-                    list.Add(role.ID);
-
-                RoleIDs = (Guid[])list.ToArray();
-            }
-        }
-
-        public void RemoveRole(IUserRole role)
-        {
-            if (roles != null)
-            {
-                Collection<IUserRole> list = new Collection<IUserRole>();
-
-                list.Add(roles);
-
-                if (list.Contains(role.ID))
-                    list.Remove(role);
-
-                Roles = (IUserRole[])list.ToArray();
-            }
-            else
-            {
-                List<Guid> list = new List<Guid>();
-
-                if (roleIDs != null)
-                    list.AddRange(roleIDs);
-
-                if (list.Contains(role.ID))
-                    list.Remove(role.ID);
-
-                RoleIDs = (Guid[])list.ToArray();
-            }
-        }*/
+	
+		public bool IsInRole(string roleName)
+		{
+			foreach (UserRole role in Roles)
+			{
+				if (role.Name == roleName)
+					return true;
+			}
+			return false;
+		}
 		
 		public override string ToString()
 		{
