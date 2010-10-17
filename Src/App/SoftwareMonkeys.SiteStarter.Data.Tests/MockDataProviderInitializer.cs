@@ -6,7 +6,7 @@ using SoftwareMonkeys.SiteStarter.Diagnostics;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Tests
 {
-    public class MockDataProviderManager
+    public class MockDataProviderInitializer
     {
         //Initialization related variables and logic
         private static bool isInitialized = false;
@@ -14,7 +14,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
         private static object initializationLock = new object();
 
-        static MockDataProviderManager()
+        static MockDataProviderInitializer()
         {
                 //Initialize();
         }
