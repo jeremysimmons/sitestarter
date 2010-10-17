@@ -1,6 +1,7 @@
 <%@ Master Language="C#" AutoEventWireup="true" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.State" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business.Security" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Configuration" %>
 <%@ Register Src="BackupLauncher.ascx" TagName="BackupLauncher" TagPrefix="uc1" %>
 
@@ -10,6 +11,9 @@
 private void Page_Load(object sender, EventArgs e)
 {
 		MenuSource.DataBind();
+		
+		if (!QueryStrings.HideTemplate)
+				AuthenticationHolder.DataBind();
 		
         EnsureSetup();
 }
@@ -47,14 +51,16 @@ private string GetMenuDataFile()
        { %>
     <table width="100%">
     <tr><td colspan="2" style="padding: 0px;" class="PageHeader"><table width="100%"><tr><td></td><td class="PageHeaderText">SiteStarter</td><td class="PageHeaderIdentity">
-        &nbsp;<asp:LoginView ID="LoginView1" runat="server">
-            <LoggedInTemplate>
-                <%= Resources.Language.YouAreLoggedInAs %>: <%= Request.IsAuthenticated && My.User != null ? My.User.Username : String.Empty %>&nbsp;(<a href='<%= Request.ApplicationPath + "/Members/Logout.aspx" %>'><%= Resources.Language.Logout %></a>)
-            </LoggedInTemplate>
-            <AnonymousTemplate>
+        &nbsp;
+        <asp:placeholder runat="server" id="AuthenticationHolder">
+        	<asp:placeholder runat="server" visible='<%# AuthenticationState.IsAuthenticated %>'>
+                <%= Resources.Language.YouAreLoggedInAs %>: <%= AuthenticationState.IsAuthenticated ? AuthenticationState.Username : String.Empty %>&nbsp;(<a href='<%= Request.ApplicationPath + "/Members/Logout.aspx" %>'><%= Resources.Language.Logout %></a>)
+            </asp:placeholder>
+            <asp:placeholder runat="server" visible='<%# !AuthenticationState.IsAuthenticated %>'>
                 <a href='<%= Request.ApplicationPath + "/Members/Login.aspx" %>'>Login</a>
-            </AnonymousTemplate>
-        </asp:LoginView></td></tr></table>
+            </asp:placeholder>
+        </asp:placeholder>
+      </td></tr></table>
     </td></tr>
     <tr><td class="Column" nowrap="nowrap">
         
