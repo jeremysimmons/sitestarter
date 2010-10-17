@@ -552,7 +552,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				throw new Exception("EntityType isn't specified.");
 
 			//if (EntityType == null)
-			innerType = EntityFactory.GetType(EntityType);
+			innerType = EntitiesUtilities.GetType(EntityType);
 			//else
 			//    innerType = EntityType;
 			
@@ -784,7 +784,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
 			if (entityTypeName != null || entityTypeName != String.Empty)
 			{
-				Type entityType = EntityFactory.GetType(entityTypeName);
+				Type entityType = EntitiesUtilities.GetType(entityTypeName);
 				if (entityType == null)
 				{
 					throw new Exception(string.Format("The '{0}' type cannot be found or is invalid/incomplete.", entityTypeName));
