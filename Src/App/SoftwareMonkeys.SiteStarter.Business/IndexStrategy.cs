@@ -1,6 +1,7 @@
 ﻿using System;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Business;
+using SoftwareMonkeys.SiteStarter.Business.Security;
 using SoftwareMonkeys.SiteStarter.Data;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using System.Collections.Generic;
@@ -29,7 +30,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		public bool EnablePaging
 		{
-			get { return enablePaging; }
+			get {
+				return enablePaging && PageSize > 0; }
 			set { enablePaging = value; }
 		}
 		
@@ -64,33 +66,103 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		}
 		
 		/// <summary>
+		/// Index the entity with a references that matches the provided parameters.
+		/// </summary>
+		/// <param name="type">The type of entity containing the references.</param>
+		/// <param name="propertyName">The name of the property containing the references.</param>
+		/// <param name="referencedEntityType">The type of the entity being referenced.</param>
+		/// <param name="referencedEntityID">The ID of the entity being referenced.</param>
+		/// <returns>The entity matching the provided parameters.</returns>
+		public IEntity[] IndexWithReference(Type type, string propertyName, string referencedEntityType, Guid referencedEntityID)
+		{
+			IEntity[] entities = (IEntity[])Reflector.InvokeGenericMethod(this,
+			                                                              "IndexWithReference",
+			                                                              new Type[] {EntitiesUtilities.GetType(referencedEntityType)},
+			                                                              new object[] {propertyName, referencedEntityType, referencedEntityID});
+			
+			if (RequireAuthorisation)
+				AuthoriseIndexStrategy.New(type.Name).EnsureAuthorised(entities);
+			
+			return entities;
+		}
+		
+		/// <summary>
+		/// Indexes the entity with a references that matches the provided parameters.
+		/// </summary>
+		/// <param name="propertyName">The name of the property containing the references.</param>
+		/// <param name="referencedEntityType">The type of the entity being referenced.</param>
+		/// <param name="referencedEntityID">The ID of the entity being referenced.</param>
+		/// <returns>The entity matching the provided parameters.</returns>
+		public T[] IndexWithReference<T>(string propertyName, string referencedEntityType, Guid referencedEntityID)
+			where T : IEntity
+		{
+			T[] entities = (T[])DataAccess.Data.Indexer.GetEntitiesWithReference<T>(propertyName, EntitiesUtilities.GetType(referencedEntityType), referencedEntityID);
+			
+			if (RequireAuthorisation)
+				AuthoriseIndexStrategy.New<T>().EnsureAuthorised<T>(entities);
+			
+			return entities;
+		}
+		
+		
+		/// <summary>
+		/// Retrieves the entities with the specified IDs.
+		/// </summary>
+		/// <param name="ids">The IDs of the entities to retrieve.</param>
+		/// <returns>An array of the entities matching the provided IDs.</returns>
+		public T[] Index<T>(Guid[] ids)
+			where T : IEntity
+		{
+			Collection<T> list = new Collection<T>();
+			
+			IRetrieveStrategy retriever = RetrieveStrategy.New<T>();
+			
+			foreach (Guid id in ids)
+			{
+				T entity = retriever.Retrieve<T>(id);
+				
+				list.Add(entity);
+			}
+			
+			T[] entities = list.ToArray();
+			
+			if (RequireAuthorisation)
+				AuthoriseIndexStrategy.New<T>().EnsureAuthorised(entities);
+			
+			return entities;
+		}
+		
+		/// <summary>
 		/// Retrieves the entities of the specified type.
 		/// </summary>
 		/// <returns></returns>
 		public T[] Index<T>()
 			where T : IEntity
 		{
-			CheckPageSize();
+			Collection<T> collection = new Collection<T>();
 			
-			Collection<T> entities = new Collection<T>();
-						
 			if (EnablePaging)
 			{
 				PagingLocation location = new PagingLocation(CurrentPageIndex, PageSize);
 				
-				entities.AddRange(DataAccess.Data.Indexer.GetPageOfEntities<T>(location, SortExpression));
+				collection.AddRange(DataAccess.Data.Indexer.GetPageOfEntities<T>(location, SortExpression));
 				
 				AbsoluteTotal = location.AbsoluteTotal;
 			}
 			else
 			{
-				entities.AddRange(DataAccess.Data.Indexer.GetEntities<T>());
+				collection.AddRange(DataAccess.Data.Indexer.GetEntities<T>());
 				
-				AbsoluteTotal = entities.Count;
+				AbsoluteTotal = collection.Count;
 			}
 			
 			
-			return entities.ToArray();
+			T[] entities = collection.ToArray();
+			
+			if (RequireAuthorisation)
+				AuthoriseIndexStrategy.New<T>().EnsureAuthorised(entities);
+			
+			return entities;
 		}
 		
 		/// <summary>
@@ -100,15 +172,19 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns></returns>
 		public IEntity[] Index()
 		{
-			CheckPageSize();
 			CheckTypeName();
 			
 			Type type = EntitiesUtilities.GetType(TypeName);
 			
-			return Collection<IEntity>.ConvertAll(Reflector.InvokeGenericMethod(this, // Source object
-			                                                                    "Index", // Method name
-			                                                                    new Type[] {type}, // Generic types
-			                                                                    new object[] {})); // Method arguments);
+			IEntity[] entities = Collection<IEntity>.ConvertAll(Reflector.InvokeGenericMethod(this, // Source object
+			                                                                                  "Index", // Method name
+			                                                                                  new Type[] {type}, // Generic types
+			                                                                                  new object[] {})); // Method arguments);
+			
+			if (RequireAuthorisation)
+				AuthoriseIndexStrategy.New(TypeName).EnsureAuthorised(entities);
+			
+			return entities;
 		}
 		
 		/// <summary>
@@ -118,18 +194,21 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns></returns>
 		public IEntity[] Index(Dictionary<string, object> filterValues)
 		{
-			CheckPageSize();
-			
 			Type type = EntitiesUtilities.GetType(TypeName);
 			
 			if (type == null)
 				throw new InvalidOperationException("Type not found.");
 			
-			return Collection<IEntity>.ConvertAll(
+			IEntity[] entities = Collection<IEntity>.ConvertAll(
 				Reflector.InvokeGenericMethod(this, // Source object
 				                              "Index", // Method name
 				                              new Type[] {type}, // Generic types
 				                              new object[] {filterValues})); // Method arguments);
+			
+			if (RequireAuthorisation)
+				AuthoriseIndexStrategy.New(TypeName).EnsureAuthorised(entities);
+			
+			return entities;
 		}
 		
 		/// <summary>
@@ -140,8 +219,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public T[] Index<T>(Dictionary<string, object> filterValues)
 			where T : IEntity
 		{
-			CheckPageSize();
-			
 			T[] entities = new T[]{};
 			
 			if (EnablePaging)
@@ -159,13 +236,30 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				AbsoluteTotal = entities.Length;
 			}
 			
+			if (RequireAuthorisation)
+				AuthoriseIndexStrategy.New<T>().EnsureAuthorised(entities);
+			
 			return entities;
 		}
 		
-		public void CheckPageSize()
+		
+		#region New functions
+		/// <summary>
+		/// Creates a new strategy for retrieving the specified type.
+		/// </summary>
+		static public IIndexStrategy New<T>()
 		{
-			if (PageSize <= 0)
-				throw new InvalidOperationException("The page size must be greater than 0 but is " + PageSize);
+			return StrategyState.Strategies.Creator.NewIndexer(typeof(T).Name);
 		}
+		
+		/// <summary>
+		/// Creates a new strategy for indexing the specified type.
+		/// </summary>
+		/// <param name="typeName">The short name of the type involved in the strategy.</param>
+		static public IIndexStrategy New(string typeName)
+		{
+			return StrategyState.Strategies.Creator.NewIndexer(typeName);
+		}
+		#endregion
 	}
 }

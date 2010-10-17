@@ -80,6 +80,31 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			return strategy;
 		}
 		
+		#region Generic new function
+		/// <summary>
+		/// Creates a new instance of the specified strategy for the specified type.
+		/// </summary>
+		/// <param name="action">The action to be performed by the strategy.</param>
+		/// <param name="typeName">The short name of the type involved in the strategy.</param>
+		/// <returns>A new insteance of the specified strategy for the specified type.</returns>
+		public T New<T>(string action, string typeName)
+			where T : IStrategy
+		{
+			return Strategies[action, typeName].New<T>();
+		}
+		
+		/// <summary>
+		/// Creates a new instance of the specified strategy for the specified type.
+		/// </summary>
+		/// <param name="action">The action to be performed by the strategy.</param>
+		/// <param name="type">The type involved in the strategy.</param>
+		/// <returns>A new insteance of the specified strategy for the specified type.</returns>
+		public IStrategy New<T>(string action, Type type)
+			where T : IStrategy
+		{
+			return New<T>(action, type.Name);
+		}
+		#endregion
 		
 		#region New indexer strategy functions
 		/// <summary>
@@ -302,6 +327,30 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		}
 		#endregion
 		
+		#region New creator strategy functions
+		/// <summary>
+		/// Creates a new creator strategy for the specified type.
+		/// </summary>
+		/// <param name="typeName"></param>
+		/// <returns></returns>
+		public ICreateStrategy NewCreator(string typeName)
+		{
+			CheckType(typeName);
+			
+			return Strategies["Create", typeName]
+				.New<ICreateStrategy>(typeName);
+		}
+		
+		/// <summary>
+		/// Creates a new creator strategy for the specified type.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public ICreateStrategy NewCreator(Type type)
+		{
+			return NewCreator(type.Name);
+		}
+		#endregion
 		
 		public void CheckType(string typeName)
 		{

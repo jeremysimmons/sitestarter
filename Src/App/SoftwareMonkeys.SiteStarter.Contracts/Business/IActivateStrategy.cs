@@ -15,7 +15,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		void Activate(IEntity entity);
 		
 		/// <summary>
-		/// Activates the provided entity by retrieving the corresponding references.
+		/// Activates the specified property of the provided entity by retrieving the corresponding references.
 		/// </summary>
 		/// <param name="entity">The entity to activate.</param>
 		/// <param name="propertyName">The name of the property to activate.</param>
@@ -26,5 +26,13 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="entities">The entities to activate.</param>
 		void Activate(IEntity[] entities);
+		
+		/// <summary>
+		/// Activates the specified property of the provided entities by retrieving the corresponding references.
+		/// </summary>
+		/// <param name="entities">The entities to activate.</param>
+		/// <param name="propertyName">The name of the property to activate.</param>
+		void Activate(IEntity[] entities, string propertyName);
+		
 	}
 }

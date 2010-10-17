@@ -54,7 +54,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		
 		private StrategyCreator creator;
 		/// <summary>
-		/// Gets the full path to the directory containing strategy mappings.
+		/// Gets the strategy creator.
 		/// </summary>
 		[XmlIgnore]
 		public StrategyCreator Creator

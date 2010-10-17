@@ -20,6 +20,17 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			set { typeName = value; }
 		}
 		
+		private bool requireAuthorisation = true;
+		/// <summary>
+		/// Gets/sets a value indicating whether authorisation is required in order for the strategy to execute.
+		/// Note: Defaults to true, and should only be set to false when used internally.
+		/// </summary>
+		public bool RequireAuthorisation
+		{
+			get { return requireAuthorisation; }
+			set { requireAuthorisation = value; }
+		}
+		
 		/// <summary>
 		/// Empty constructor.
 		/// </summary>
