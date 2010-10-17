@@ -5,6 +5,8 @@ using SoftwareMonkeys.SiteStarter.Entities;
 using System.IO;
 using SoftwareMonkeys.SiteStarter.Data;
 using SoftwareMonkeys.SiteStarter.IO;
+using System.Collections.Generic;
+using SoftwareMonkeys.SiteStarter.Business.Security;
 
 namespace SoftwareMonkeys.SiteStarter.Business
 {
@@ -148,13 +150,22 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		public void Setup()
 		{
+			Setup(new Dictionary<string, object>());
+		}
+		
+		/// <summary>
+		/// Performs the setup and configures the application with the provided settings.
+		/// </summary>
+		/// <param name="settings">General and custom application settings.</param>
+		public void Setup(Dictionary<string, object> settings)
+		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Performing install/setup.", NLog.LogLevel.Debug))
 			{
 				CheckApplicationPath();
 				
 				CheckPathVariation();
 				
-				AppConfig config = CreateConfig();
+				AppConfig config = CreateConfig(settings);
 				
 				config.Save(); // Needs to be saved here but will be updated again during setup
 				
@@ -246,11 +257,16 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Saving the provided user, role, and config.", NLog.LogLevel.Debug))
 			{
-				if (SoftwareMonkeys.SiteStarter.Business.UserFactory<User>.Current.SaveUser(administrator))
+				AuthenticationState.Username = administrator.Username;
+				
+				
+				if (SaveStrategy.New<User>().Save(administrator))
 				{
 					administratorRole.Users = new User[]{administrator};
 					
-					UserRoleFactory.Current.SaveUserRole(administratorRole);
+					SaveStrategy.New<UserRole>().Save(administratorRole);
+					
+//					UserRoleFactory.Current.SaveUserRole(administratorRole);
 					
 					Config.Application.PrimaryAdministratorID = administrator.ID;
 					
@@ -264,8 +280,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <summary>
 		/// Creates the default application configuration and assigns the provided user as the primary administrator.
 		/// </summary>
+		/// <param name="settings">General and custom application settings.</param>
 		/// <returns>The application configuration component.</returns>
-		private AppConfig CreateConfig()
+		private AppConfig CreateConfig(Dictionary<string, object> settings)
 		{
 			AppConfig config = null;
 			
@@ -278,6 +295,12 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				config = ConfigFactory<AppConfig>.NewConfig(FileMapper.MapPath(ApplicationPath + "/" + DataDirectory), "Application", PathVariation);
 				config.ApplicationPath = ApplicationPath;
 				config.PhysicalApplicationPath = FileMapper.MapPath(ApplicationPath);
+				
+				// Add the provided settings to the configuration ifle.
+				foreach (string key in settings.Keys)
+				{
+					config.Settings[key] = settings[key];
+				}
 				
 				AppLogger.Debug("Application path: " + config.ApplicationPath);
 				AppLogger.Debug("Physical application path: " + config.PhysicalApplicationPath);
@@ -304,7 +327,15 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				CheckDataProviderInitializer();
 				
 				DataProviderInitializer.Initialize();
+				
+				InitializeBusiness();
 			}
+		}
+		
+		private void InitializeBusiness()
+		{
+			// TODO: Add the initializer to a property so it can be customized for specific cases
+	    	new StrategyInitializer().Initialize();
 		}
 
 		/// <summary>
