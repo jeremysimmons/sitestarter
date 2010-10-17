@@ -44,7 +44,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		/// </summary>
 		public virtual void InitializeMockData()
 		{
-			MockDataProviderManager.Initialize();
+			MockDataProviderInitializer.Initialize();
 		}
 		
 		/// <summary>
