@@ -28,6 +28,16 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			set {applicationPath = value; }
 		}
 		
+		public FileMapper()
+		{
+			
+		}
+		
+		public FileMapper(string applicationPath)
+		{
+			ApplicationPath = applicationPath;
+		}
+		
 		/// <summary>
 		/// Maps the provided relative URL to the full physical path of the resource.
 		/// </summary>
