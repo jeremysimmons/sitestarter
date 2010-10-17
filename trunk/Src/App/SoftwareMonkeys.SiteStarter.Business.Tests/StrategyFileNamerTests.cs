@@ -16,7 +16,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			
 			string name = namer.CreateFileName(strategy);
 			
-			string expected = "Retrieve_TestUser.strategy";
+			string expected = "TestUser-Retrieve.strategy";
 			
 			Assert.AreEqual(expected, name);
 		}
