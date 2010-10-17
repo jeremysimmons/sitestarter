@@ -16,7 +16,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
     	public override string UniqueKey
 		{
 			get {
-				return Name;
+    			return EntitiesUtilities.FormatUniqueKey(Name);
 			}
 		}
     	

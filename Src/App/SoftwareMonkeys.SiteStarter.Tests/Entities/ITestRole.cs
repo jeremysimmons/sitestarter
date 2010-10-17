@@ -9,7 +9,7 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
     public interface ITestRole : IEntity
     {
         string Name { get;set; }
-		IUserPermission[] Permissions { get;set; }
+		//IUserPermission[] Permissions { get;set; }
 		ITestUser[] Users {get;set;}
 		//Guid[] UserIDs {get;set;}
 		//void AddUser(IUser user);
