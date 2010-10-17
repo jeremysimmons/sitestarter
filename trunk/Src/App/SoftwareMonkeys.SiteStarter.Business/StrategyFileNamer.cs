@@ -43,7 +43,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			if (strategy.Action == null)
 				throw new ArgumentNullException("strategy.Action", "No action has been set to the Action property.");
 			
-			string name = strategy.Action + "_" + strategy.TypeName + ".strategy";
+			string name = strategy.TypeName + "-" + strategy.Action + ".strategy";
 			
 			return name;
 		}

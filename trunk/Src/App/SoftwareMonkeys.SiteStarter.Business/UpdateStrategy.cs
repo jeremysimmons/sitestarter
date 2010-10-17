@@ -1,6 +1,7 @@
 ﻿using System;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Data;
+using SoftwareMonkeys.SiteStarter.Business.Security;
 
 namespace SoftwareMonkeys.SiteStarter.Business
 {
@@ -37,6 +38,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns>A value indicating whether the entity was valid and was therefore saved.</returns>
 		public bool Update(IEntity entity)
 		{
+			if (RequireAuthorisation)
+				AuthoriseUpdateStrategy.New(entity.ShortTypeName).EnsureAuthorised(entity);
+			
 			if (Validate(entity))
 			{
 				DataAccess.Data.Updater.Update(entity);
@@ -62,5 +66,26 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			return valid;
 		}
+		
+		
+		
+		#region New functions
+		/// <summary>
+		/// Creates a new strategy for updating the specified type.
+		/// </summary>
+		static public IUpdateStrategy New<T>()
+		{
+			return StrategyState.Strategies.Creator.NewUpdater(typeof(T).Name);
+		}
+		
+		/// <summary>
+		/// Creates a new strategy for updating the specified type.
+		/// </summary>
+		/// <param name="typeName">The short name of the type involved in the strategy.</param>
+		static public IUpdateStrategy New(string typeName)
+		{
+			return StrategyState.Strategies.Creator.NewUpdater(typeName);
+		}
+		#endregion
 	}
 }

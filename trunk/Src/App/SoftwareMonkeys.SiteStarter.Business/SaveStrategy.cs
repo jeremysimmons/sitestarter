@@ -2,6 +2,7 @@
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Data;
 using SoftwareMonkeys.SiteStarter.Business;
+using SoftwareMonkeys.SiteStarter.Business.Security;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 
 namespace SoftwareMonkeys.SiteStarter.Business
@@ -43,6 +44,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					throw new ArgumentNullException("entity");
 				
 				AppLogger.Debug("Entity type: " + entity.GetType().FullName);
+				
+				if (RequireAuthorisation)
+					AuthoriseSaveStrategy.New(entity.ShortTypeName).EnsureAuthorised(entity);
 				
 				if (Validate(entity))
 				{
@@ -88,5 +92,47 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			}
 			return valid;
 		}
+		
+		#region New functions
+		/// <summary>
+		/// Creates a new strategy for saving the specified type.
+		/// </summary>
+		static public ISaveStrategy New<T>()
+		{
+			return StrategyState.Strategies.Creator.NewSaver(typeof(T).Name);
+		}
+		
+		/// <summary>
+		/// Creates a new strategy for saving the specified type.
+		/// </summary>
+		/// <param name="typeName">The short name of the type involved in the strategy.</param>
+		static public ISaveStrategy New(string typeName)
+		{
+			return StrategyState.Strategies.Creator.NewSaver(typeName);
+		}
+		
+		/// <summary>
+		/// Creates a new strategy for saving the specified type.
+		/// </summary>
+		/// <param name="requiresAuthorisation">A value indicating whether the strategy requires authorisation.</param>
+		static public ISaveStrategy New<T>(bool requiresAuthorisation)
+		{
+			ISaveStrategy strategy = StrategyState.Strategies.Creator.NewSaver(typeof(T).Name);
+			strategy.RequireAuthorisation = requiresAuthorisation;
+			return strategy;
+		}
+		
+		/// <summary>
+		/// Creates a new strategy for saving the specified type.
+		/// </summary>
+		/// <param name="typeName">The short name of the type involved in the strategy.</param>
+		/// <param name="requiresAuthorisation">A value indicating whether the strategy requires authorisation.</param>
+		static public ISaveStrategy New(string typeName, bool requiresAuthorisation)
+		{
+			ISaveStrategy strategy = StrategyState.Strategies.Creator.NewSaver(typeName);
+			strategy.RequireAuthorisation = requiresAuthorisation;
+			return strategy;
+		}
+		#endregion
 	}
 }

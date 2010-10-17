@@ -62,5 +62,34 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns></returns>
 		T[] Index<T>(Dictionary<string, object> filterValues)
 			where T : IEntity;
+
+		/// <summary>
+		/// Retrieves the entities with the specified IDs.
+		/// </summary>
+		/// <param name="ids">The IDs of the entities to retrieve.</param>
+		/// <returns>An array of the entities matching the provided IDs.</returns>
+		T[] Index<T>(Guid[] ids)
+			where T : IEntity;
+		
+		/// <summary>
+		/// Index the entity with a references that matches the provided parameters.
+		/// </summary>
+		/// <param name="type">The type of entity containing the references.</param>
+		/// <param name="propertyName">The name of the property containing the references.</param>
+		/// <param name="referencedEntityType">The type of the entity being referenced.</param>
+		/// <param name="referencedEntityID">The ID of the entity being referenced.</param>
+		/// <returns>The entity matching the provided parameters.</returns>
+		IEntity[] IndexWithReference(Type type, string propertyName, string referencedEntityType, Guid referencedEntityID);
+		
+		/// <summary>
+		/// Indexes the entity with a references that matches the provided parameters.
+		/// </summary>
+		/// <param name="propertyName">The name of the property containing the references.</param>
+		/// <param name="referencedEntityType">The type of the entity being referenced.</param>
+		/// <param name="referencedEntityID">The ID of the entity being referenced.</param>
+		/// <returns>The entity matching the provided parameters.</returns>
+		T[] IndexWithReference<T>(string propertyName, string referencedEntityType, Guid referencedEntityID)
+			where T : IEntity;
+		
 	}
 }

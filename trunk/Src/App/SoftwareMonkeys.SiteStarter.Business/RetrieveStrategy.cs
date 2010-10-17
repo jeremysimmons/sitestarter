@@ -1,6 +1,9 @@
 ﻿using System;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Data;
+using System.Collections.Generic;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
+using SoftwareMonkeys.SiteStarter.Business.Security;
 
 namespace SoftwareMonkeys.SiteStarter.Business
 {
@@ -23,7 +26,12 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns>The entity with the provided unique key.</returns>
 		public IEntity Retrieve(Type type, string uniqueKey)
 		{
-			return Retrieve(type, "UniqueKey", uniqueKey);
+			IEntity entity = Retrieve(type, "UniqueKey", uniqueKey);
+			
+			if (RequireAuthorisation && entity != null)
+				AuthoriseRetrieveStrategy.New(type.Name).EnsureAuthorised(entity);
+			
+			return entity;
 		}
 		
 		/// <summary>
@@ -34,7 +42,12 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public T Retrieve<T>(string uniqueKey)
 			where T : IEntity
 		{
-			return (T)Retrieve(typeof(T), "UniqueKey", uniqueKey);
+			T entity = (T)Retrieve(typeof(T), "UniqueKey", uniqueKey);
+			
+			if (RequireAuthorisation && entity != null)
+				AuthoriseRetrieveStrategy.New<T>().EnsureAuthorised(entity);
+			
+			return entity;
 		}
 		
 		/// <summary>
@@ -45,7 +58,12 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns>The entity with the provided ID.</returns>
 		public IEntity Retrieve(Type type, Guid entityID)
 		{
-			return Retrieve(type, "ID", entityID);
+			IEntity entity = Retrieve(type, "ID", entityID);
+			
+			if (RequireAuthorisation && entity != null)
+				AuthoriseRetrieveStrategy.New(type.Name).EnsureAuthorised(entity);
+			
+			return entity;
 		}
 		
 		/// <summary>
@@ -56,7 +74,12 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public T Retrieve<T>(Guid entityID)
 			where T : IEntity
 		{
-			return (T)Retrieve(typeof(T), "ID", entityID);
+			T entity = (T)Retrieve(typeof(T), "ID", entityID);
+			
+			if (RequireAuthorisation && entity != null)
+				AuthoriseRetrieveStrategy.New<T>().EnsureAuthorised(entity);
+			
+			return entity;
 		}
 		
 		/// <summary>
@@ -68,7 +91,12 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns>The entity with the specified property matching the provided value.</returns>
 		public IEntity Retrieve(Type type, string propertyName, object value)
 		{
-			return DataAccess.Data.Reader.GetEntity(type, propertyName, value);
+			IEntity entity = DataAccess.Data.Reader.GetEntity(type, propertyName, value);
+			
+			if (RequireAuthorisation && entity != null)
+				AuthoriseRetrieveStrategy.New(type.Name).EnsureAuthorised(entity);
+			
+			return entity;
 		}
 		
 		/// <summary>
@@ -80,7 +108,128 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public T Retrieve<T>(string propertyName, object value)
 			where T : IEntity
 		{
-			return (T)Retrieve(typeof(T), propertyName, value);
+			T entity = DataAccess.Data.Reader.GetEntity<T>(propertyName, value);
+			
+			if (RequireAuthorisation && entity != null)
+				AuthoriseRetrieveStrategy.New<T>().EnsureAuthorised(entity);
+			
+			return entity;
 		}
+		
+		
+		/// <summary>
+		/// Retrieves the entity of the specified type with the specified property matching the provided value.
+		/// </summary>
+		/// <param name="parameters">The parameters to use as filters when retrieving the entities. Corresponds with properties and their values.</param>
+		/// <returns>The entity with the specified property matching the provided value.</returns>
+		public T Retrieve<T>(Dictionary<string, object> parameters)
+			where T : IEntity
+		{
+			T entity = DataAccess.Data.Reader.GetEntity<T>(parameters);
+			
+			if (RequireAuthorisation && entity != null)
+				AuthoriseRetrieveStrategy.New<T>().EnsureAuthorised(entity);
+			
+			return entity;
+		}
+		
+		
+		/// <summary>
+		/// Retrieves the entity of the specified type with the specified property matching the provided value.
+		/// </summary>
+		/// <param name="type">The type of entity to retrieve.</param>
+		/// <param name="parameters">The parameters to use as filters when retrieving the entities. Corresponds with properties and their values.</param>
+		/// <returns>The entity with the specified property matching the provided value.</returns>
+		public IEntity Retrieve(Type type, Dictionary<string, object> parameters)
+		{
+			IEntity entity = DataAccess.Data.Reader.GetEntity(type, parameters);
+			
+			if (RequireAuthorisation && entity != null)
+				AuthoriseRetrieveStrategy.New(type.Name).EnsureAuthorised(entity);
+			
+			return entity;
+		}
+		
+		/// <summary>
+		/// Retrieves the entity with a references that matches the provided parameters.
+		/// </summary>
+		/// <param name="type">The type of entity containing the references.</param>
+		/// <param name="propertyName">The name of the property containing the references.</param>
+		/// <param name="referencedEntityType">The type of the entity being referenced.</param>
+		/// <param name="referencedEntityID">The ID of the entity being referenced.</param>
+		/// <returns>The entity matching the provided parameters.</returns>
+		public IEntity RetrieveWithReference(Type type, string propertyName, string referencedEntityType, Guid referencedEntityID)
+		{
+			IEntity entity = (IEntity)Reflector.InvokeGenericMethod(this,
+			                                                        "RetrieveWithReference",
+			                                                        new Type[] {EntitiesUtilities.GetType(referencedEntityType)},
+			                                                        new object[] {propertyName, referencedEntityType, referencedEntityID});
+			
+			if (RequireAuthorisation && entity != null)
+				AuthoriseRetrieveStrategy.New(type.Name).EnsureAuthorised(entity);
+			
+			return entity;
+		}
+		
+		/// <summary>
+		/// Retrieves the entity with a references that matches the provided parameters.
+		/// </summary>
+		/// <param name="propertyName">The name of the property containing the references.</param>
+		/// <param name="referencedEntityType">The type of the entity being referenced.</param>
+		/// <param name="referencedEntityID">The ID of the entity being referenced.</param>
+		/// <returns>The entity matching the provided parameters.</returns>
+		public T RetrieveWithReference<T>(string propertyName, string referencedEntityType, Guid referencedEntityID)
+			where T : IEntity
+		{
+			T entity = (T)DataAccess.Data.Reader.GetEntityWithReference<T>(propertyName, EntitiesUtilities.GetType(referencedEntityType), referencedEntityID);
+			
+			if (RequireAuthorisation && entity != null)
+				AuthoriseRetrieveStrategy.New<T>().EnsureAuthorised(entity);
+			
+			return entity;
+		}
+		
+		
+		#region New functions
+		/// <summary>
+		/// Creates a new strategy for retrieving the specified type.
+		/// </summary>
+		static public IRetrieveStrategy New<T>()
+		{
+			return StrategyState.Strategies.Creator.NewRetriever(typeof(T).Name);
+		}
+		
+		/// <summary>
+		/// Creates a new strategy for retrieving the specified type.
+		/// </summary>
+		/// <param name="typeName">The short name of the type involved in the strategy.</param>
+		static public IRetrieveStrategy New(string typeName)
+		{
+			return StrategyState.Strategies.Creator.NewRetriever(typeName);
+		}
+		
+		/// <summary>
+		/// Creates a new strategy for retrieving the specified type.
+		/// </summary>
+		/// <param name="requiresAuthorisation">A value indicating whether the strategy requires authorisation.</param>
+		static public IRetrieveStrategy New<T>(bool requiresAuthorisation)
+		{
+			IRetrieveStrategy strategy = StrategyState.Strategies.Creator.NewRetriever(typeof(T).Name);
+			strategy.RequireAuthorisation = requiresAuthorisation;
+			return strategy;
+		}
+		
+		/// <summary>
+		/// Creates a new strategy for retrieving the specified type.
+		/// </summary>
+		/// <param name="typeName">The short name of the type involved in the strategy.</param>
+		/// <param name="requiresAuthorisation">A value indicating whether the strategy requires authorisation.</param>
+		static public IRetrieveStrategy New(string typeName, bool requiresAuthorisation)
+		{
+			IRetrieveStrategy strategy = StrategyState.Strategies.Creator.NewRetriever(typeName);
+			strategy.RequireAuthorisation = requiresAuthorisation;
+			return strategy;
+		}
+		#endregion
 	}
 }
