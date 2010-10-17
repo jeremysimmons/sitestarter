@@ -71,7 +71,10 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		/// <returns></returns>
 		public string MapApplicationRelativePath(string applicationRelativePath)
 		{
-			if (ApplicationPath == String.Empty)
+			if (applicationRelativePath == null || applicationRelativePath == String.Empty)
+				throw new ArgumentNullException("applicationRelativePath");
+			
+			if (ApplicationPath == null || ApplicationPath == String.Empty)
 				throw new InvalidOperationException("The ApplicationPath property has not been set on the MockFileMapper.");
 			
 			string path = PhysicalRoot + Path.DirectorySeparatorChar + ApplicationPath.Replace("/", @"\").Trim('\\') + Path.DirectorySeparatorChar + applicationRelativePath.Replace("/", @"\").Trim('\\');
