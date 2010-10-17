@@ -245,7 +245,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			string entityTypeName = (string)attribs["EntityType"];
 			if (entityTypeName != null || entityTypeName != String.Empty)
 			{
-				Type entityType = EntityFactory.GetType(entityTypeName);
+				Type entityType = EntitiesUtilities.GetType(entityTypeName);
 				if (entityType == null)
 				{
 					throw new Exception(string.Format("The '{0}' type cannot be found or is invalid/incomplete.", entityTypeName));
