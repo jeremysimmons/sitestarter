@@ -1,6 +1,7 @@
 <%@ Page Language="C#" MasterPageFile="~/Site.master" Title="Untitled Page" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business.Security" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Entities" %>
 <%@ Register TagPrefix="cc" Namespace="SoftwareMonkeys.SiteStarter.Web.WebControls" Assembly="SoftwareMonkeys.SiteStarter.Web" %>
 <script runat="server">
@@ -13,7 +14,7 @@
     {
         OperationManager.StartOperation("ViewAccount", DetailsView);
 
-        DetailsForm.DataSource = My.User;
+        DetailsForm.DataSource = AuthenticationState.User;
         
         DetailsView.DataBind();
     }
@@ -35,9 +36,9 @@
     {
         OperationManager.StartOperation("EditAccount", FormView);
 
-        DataForm.DataSource = UserFactory.Current.GetUserByUsername(My.Username);
-
-        DataForm.DataBind();
+        DataForm.DataSource = RetrieveStrategy.New<User>().Retrieve<User>("Username", AuthenticationState.Username);
+throw new Exception(DataForm.DataSource.ToString());
+        //DataForm.DataBind();
         FormView.DataBind();
     }
 
@@ -46,7 +47,7 @@
         if (IsValid)
         {
             // Get a fresh copy of the user object
-            User user = UserFactory.Current.GetUserByUsername(My.Username);
+            User user = RetrieveStrategy.New<User>().Retrieve<User>("Username", AuthenticationState.Username);
 
 			string originalUsername = user.Username;
             string originalPassword = user.Password;
@@ -60,7 +61,7 @@
                 user.Password = Crypter.EncryptPassword(user.Password);
 
             // Update the user object
-            if (UserFactory.Current.UpdateUser(user))
+            if (UpdateStrategy.New<User>().Update(user))
             {
                 // Display the result to the user
                 Result.Display(Resources.Language.AccountUpdated);
