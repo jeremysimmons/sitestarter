@@ -2,6 +2,7 @@
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.State" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Data" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Providers" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Projections" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Data" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Configuration" %>
@@ -54,6 +55,12 @@
         // or SQLServer, the event is not raised.
 
     }
+    
+    void Application_BeginRequest(object sender, EventArgs e)
+    {
+            // Initialize the URL rewriter to take care of friendly URLs
+            UrlRewriter.Initialize();
+    }
 
     private void Initialize()
     {
@@ -65,6 +72,7 @@
 	            Config.Initialize(Server.MapPath(HttpContext.Current.Request.ApplicationPath), WebUtilities.GetLocationVariation(HttpContext.Current.Request.Url));
 	            new DataProviderInitializer().Initialize();
 	        	InitializeBusiness();
+	        	InitializeWeb();
 	        }
 		//}
     }
@@ -73,6 +81,12 @@
     {
     	if (Config.IsInitialized)
 	    	new StrategyInitializer().Initialize();
+    }
+    
+    private void InitializeWeb()
+    {
+    	if (Config.IsInitialized)
+    		new ProjectionsInitializer().Initialize();
     }
 
     public override void Dispose()
