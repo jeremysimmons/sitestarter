@@ -125,6 +125,17 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 					else
 						returnValue = 0;
 				}
+				else if (type.FullName == typeof(decimal).FullName)
+				{
+					AppLogger.Debug("Value is Decimal");
+					
+					if (value != null)
+					{
+						returnValue = System.Convert.ToDecimal(value);
+					}
+					else
+						returnValue = 0;
+				}
 				else if (type.FullName == typeof(String).FullName)
 				{
 					AppLogger.Debug("Value is String");
