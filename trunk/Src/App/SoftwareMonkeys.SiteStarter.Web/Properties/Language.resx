@@ -156,4 +156,7 @@
   <data name="Desc" xml:space="preserve">
     <value>(desc)</value>
   </data>
+  <data name="Unauthorised" xml:space="preserve">
+    <value>You aren't authorised to do that.</value>
+  </data>
 </root>

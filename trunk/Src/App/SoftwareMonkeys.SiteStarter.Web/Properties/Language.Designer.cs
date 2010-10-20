@@ -169,6 +169,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.Properties {
 		}
 		
 		/// <summary>
+		///   Looks up a localized string similar to You aren&apos;t authorised to do that..
+		/// </summary>
+		internal static string Unauthorised {
+			get {
+				return ResourceManager.GetString("Unauthorised", resourceCulture);
+			}
+		}
+		
+		/// <summary>
 		///   Looks up a localized string similar to The user was deleted successfully..
 		/// </summary>
 		internal static string UserDeleted {
