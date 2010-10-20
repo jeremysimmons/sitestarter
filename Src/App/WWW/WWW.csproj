@@ -59,7 +59,8 @@
     <None Include="Admin\Import.aspx" />
     <None Include="Admin\Keywords.aspx" />
     <None Include="Admin\Log.aspx" />
-    <None Include="Admin\Settings.aspx" />
+    <None Include="Admin\Settings.aspx">
+    </None>
     <None Include="Admin\Setup.aspx" />
     <None Include="Admin\Tests\CreateHugeData.aspx" />
     <None Include="Admin\Tests\EntitySelectDelivererTests.aspx" />
@@ -70,8 +71,6 @@
     <None Include="Admin\UnitTests.aspx" />
     <None Include="Admin\Update.aspx" />
     <None Include="Admin\UpdateReady.html" />
-    <None Include="Admin\UserRoles.aspx" />
-    <None Include="Admin\Users.aspx" />
     <None Include="Admin\WebSiteSettings.aspx" />
     <None Include="App_GlobalResources\_svn\all-wcprops" />
     <None Include="App_GlobalResources\_svn\entries" />
@@ -101,6 +100,12 @@
     <None Include="Members\Login.aspx" />
     <None Include="Members\Logout.aspx" />
     <None Include="Members\Register.aspx" />
+    <None Include="Projections\IEntity-Delete.ascx" />
+    <None Include="Projections\User-Create-Edit.ascx" />
+    <None Include="Projections\User-Index.ascx" />
+    <None Include="Projections\UserRole-Create-Edit.ascx" />
+    <None Include="Projections\UserRole-Index.ascx" />
+    <None Include="Projector.aspx" />
     <None Include="Site.master" />
     <None Include="Styles\Simple.css" />
     <None Include="Web.config" />
@@ -155,6 +160,7 @@
     <Folder Include="Controls\_svn\tmp\props" />
     <Folder Include="Controls\_svn\tmp\text-base" />
     <Folder Include="Members" />
+    <Folder Include="Projections" />
     <Folder Include="Styles" />
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Business.Tests\SiteStarter.Business.Tests.csproj">
       <Project>{F6AA1DC2-1E10-43FF-97AB-D6679A854D51}</Project>

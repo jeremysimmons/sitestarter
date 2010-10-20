@@ -62,12 +62,37 @@
     <Compile Include="BasePage.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\CreateEntityController.cs" />
+    <Compile Include="Controllers\DeleteEntityController.cs" />
+    <Compile Include="Controllers\EditEntityController.cs" />
+    <Compile Include="Controllers\IndexEntityController.cs" />
+    <Compile Include="Controllers\ViewEntityController.cs" />
     <Compile Include="Data\DataProviderInitializer.cs" />
+    <Compile Include="DynamicLanguage.cs" />
     <Compile Include="FileMapper.cs" />
     <Compile Include="GuidValidator.cs" />
     <Compile Include="LogWriter.cs" />
-    <Compile Include="My.cs" />
+    <Compile Include="Navigation\Navigator.cs" />
     <Compile Include="OperationManager.cs" />
+    <Compile Include="Projections\BaseCreateEditProjection.cs" />
+    <Compile Include="Projections\BaseDeleteProjection.cs" />
+    <Compile Include="Projections\BaseIndexProjection.cs" />
+    <Compile Include="Projections\BaseProjection.cs" />
+    <Compile Include="Projections\BaseProjectionScanner.cs" />
+    <Compile Include="Projections\BaseViewProjection.cs" />
+    <Compile Include="Projections\ControllableProjection.cs" />
+    <Compile Include="Projections\IProjection.cs" />
+    <Compile Include="Projections\ProjectionFileNamer.cs" />
+    <Compile Include="Projections\ProjectionInfo.cs" />
+    <Compile Include="Projections\ProjectionLoader.cs" />
+    <Compile Include="Projections\ProjectionLocator.cs" />
+    <Compile Include="Projections\ProjectionNotFoundException.cs" />
+    <Compile Include="Projections\ProjectionSaver.cs" />
+    <Compile Include="Projections\ProjectionScanner.cs" />
+    <Compile Include="Projections\ProjectionsInitializer.cs" />
+    <Compile Include="Projections\ProjectionStateCollection.cs" />
+    <Compile Include="Projections\ProjectionState.cs" />
     <Compile Include="Properties\Language.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -75,10 +100,8 @@
     </Compile>
     <Compile Include="Providers\DynamicPersonalizationProvider.cs" />
     <Compile Include="QueryStrings.cs" />
+    <Compile Include="Security\Authentication.cs" />
     <Compile Include="Security\Authorisation.cs" />
-    <Compile Include="Security\Member.cs" />
-    <Compile Include="Security\MemberProvider.cs" />
-    <Compile Include="Security\RoleProvider.cs" />
     <Compile Include="SetupChecker.cs" />
     <Compile Include="SetupUtilities.cs" />
     <Compile Include="State\StateProviderManager.cs" />
@@ -86,6 +109,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TextParser.cs" />
+    <Compile Include="UrlCreator.cs" />
+    <Compile Include="UrlRewriter.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="WebControls\DeleteLink.cs" />
     <Compile Include="WebControls\EntityFormKeywordsItem.cs" />
@@ -111,6 +136,7 @@
     <Compile Include="WebControls\EntityTree.cs" />
     <Compile Include="WebControls\IndexGrid.cs" />
     <Compile Include="WebControls\KeywordsControl.cs" />
+    <Compile Include="WebControls\ProjectorControl.cs" />
     <Compile Include="WebControls\Result.cs" />
     <Compile Include="WebControls\TestResults.cs" />
     <Compile Include="WebControls\WebControlUtilities.cs" />
@@ -168,7 +194,10 @@
       <Project>{3609F512-9E15-41C7-95AF-D1B3E7F93562}</Project>
       <Name>SiteStarter.Entities</Name>
     </ProjectReference>
+    <Folder Include="Controllers" />
     <Folder Include="Data" />
+    <Folder Include="Navigation" />
+    <Folder Include="Projections" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

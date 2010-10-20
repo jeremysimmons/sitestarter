@@ -138,7 +138,7 @@
     <Compile Include="EntityFileNamerTests.cs" />
     <Compile Include="FilterGroupTests.cs" />
     <Compile Include="FilterTests.cs" />
-    <Compile Include="MockDataProviderManager.cs" />
+    <Compile Include="MockDataProviderInitializer.cs" />
     <Compile Include="ReferenceFilterTests.cs" />
     <Compile Include="ReferenceValidatorTests.cs" />
     <Compile Include="DataSchemaTests.cs" />

@@ -59,9 +59,10 @@
   <ItemGroup>
     <Compile Include="Business\IActivateStrategy.cs" />
     <Compile Include="Business\ICommandManager.cs" />
+    <Compile Include="Business\ICreateStrategy.cs" />
     <Compile Include="Business\IDeleteStrategy.cs" />
-    <Compile Include="Business\IFactory.cs" />
     <Compile Include="Business\IIndexStrategy.cs" />
+    <Compile Include="Business\INotifyStrategy.cs" />
     <Compile Include="Business\IRetrieveStrategy.cs" />
     <Compile Include="Business\IStrategy.cs" />
     <Compile Include="Business\ISaveStrategy.cs" />
@@ -70,6 +71,13 @@
     <Compile Include="Business\IUniqueValidateStrategy.cs" />
     <Compile Include="Business\IUpdateStrategy.cs" />
     <Compile Include="Business\IValidateStrategy.cs" />
+    <Compile Include="Business\Security\IAuthenticateStrategy.cs" />
+    <Compile Include="Business\Security\IAuthoriseDeleteStrategy.cs" />
+    <Compile Include="Business\Security\IAuthoriseIndexStrategy.cs" />
+    <Compile Include="Business\Security\IAuthoriseRetrieveStrategy.cs" />
+    <Compile Include="Business\Security\IAuthoriseSaveStrategy.cs" />
+    <Compile Include="Business\Security\IAuthoriseStrategy.cs" />
+    <Compile Include="Business\Security\IAuthoriseUpdateStrategy.cs" />
     <Compile Include="Configuration\IAppConfig.cs" />
     <Compile Include="Configuration\IConfig.cs" />
     <Compile Include="Configuration\IConfigSaver.cs" />
@@ -87,10 +95,13 @@
     <Compile Include="IAppComponent.cs" />
     <Compile Include="IO\IFileMapper.cs" />
     <Compile Include="State\IStateProvider.cs" />
+    <Compile Include="Web\IControllable.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Business\Security" />
     <Folder Include="IO" />
     <Folder Include="State" />
+    <Folder Include="Web" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
