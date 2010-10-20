@@ -17,8 +17,11 @@
 	    		</fileset>
 		</delete>
 
+		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Strategies" />
+		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Imported" />
+		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Projections" />
 		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Suspended" />
-		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Logs/" />
+		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Logs" />
 		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Legacy" />
 		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Import" />
 
