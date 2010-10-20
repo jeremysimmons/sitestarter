@@ -46,7 +46,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		public ProjectionInfo Locate(string action, string typeName)
 		{
 			// Get the specified type
-			Type type = Entities.EntitiesUtilities.GetType(typeName);
+			Type type = null;
+			try
+			{
+				Entities.EntitiesUtilities.GetType(typeName);
+			}
+			catch
+			{
+				// TODO: Check if this can be done without an exception occurring at all
+				// Ignore
+			}
 			
 			// Create a direct projection key for the specified type
 			string key = Projections.GetProjectionKey(action, typeName);
@@ -60,7 +69,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				projectionInfo = Projections[key];
 			}
 			// If not then navigate up the heirarchy looking for a matching projection
-			else
+			else if (type != null)
 			{
 				projectionInfo = LocateFromHeirarchy(action, type);
 			}

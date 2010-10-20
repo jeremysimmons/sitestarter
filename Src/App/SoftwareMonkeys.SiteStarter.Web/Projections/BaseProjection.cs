@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Web.UI;
 
-namespace SoftwareMonkeys.SiteStarter.Web
+namespace SoftwareMonkeys.SiteStarter.Web.Projections
 {
 	/// <summary>
 	/// Defines the base of all web projections that can be used in the application.
