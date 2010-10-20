@@ -2,8 +2,9 @@
 <siteMap>
   <siteMapNode title="Home" url="~/Default.aspx" description="">
     <siteMapNode title="Administration" url="" description="">
-      <siteMapNode title="Users" url="~/Admin/Users.aspx" description="" />
-      <siteMapNode title="Roles" url="~/Admin/UserRoles.aspx" description="" />
+      <siteMapNode title="Account" url="~/Members/Default.aspx" description="" />
+      <siteMapNode title="Users" url="~/User/Index.aspx" description="" />
+      <siteMapNode title="Roles" url="~/UserRole/Index.aspx" description="" />
       <siteMapNode title="Settings" url="~/Admin/Settings.aspx" description="" />
       <siteMapNode title="Backup" url="~/Admin/Backup.aspx" description="" />
       <siteMapNode title="Log" url="~/Admin/Log.aspx" description="" />
