@@ -11,6 +11,7 @@ using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Business;
 using SoftwareMonkeys.SiteStarter.Web.WebControls;
 using SoftwareMonkeys.SiteStarter.Web.Properties;
+using SoftwareMonkeys.SiteStarter.Business.Security;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Security
 {
@@ -21,32 +22,62 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
     {
         public static bool UserCan(string action, Type type)
         {
-            // TODO: Add security
-            if (HttpContext.Current.Request.IsAuthenticated
-        || action == "View")
-                return true;
-            else
-                return false;
+        	if (!AuthenticationState.IsAuthenticated)
+        		return false;
+        	
+        	string internalAction = GetInternalAction(action);
+        	
+        	IAuthoriseStrategy strategy = StrategyState.Strategies.Creator.New<IAuthoriseStrategy>("Authorise" + internalAction, type.Name);
+        	
+        	return strategy.Authorise(type.Name);
+        	
         }
 
         public static bool UserCan(string action, IEntity entity)
         {
-            // TODO: Add security
-            if (HttpContext.Current.Request.IsAuthenticated
-        || action == "View")
-                return true;
-            else
-                return false;
+        	
+        	if (!AuthenticationState.IsAuthenticated)
+        		return false;
+        	
+        	string internalAction = GetInternalAction(action);
+        	
+        	IAuthoriseStrategy strategy = StrategyState.Strategies.Creator.New<IAuthoriseStrategy>("Authorise" + internalAction, entity.GetType().Name);
+        	
+        	return strategy.Authorise(entity.GetType().Name);
+        	
         }
 
         public static bool UserCan(string action, IEntity[] entities)
         {
-            // TODO: Add security
-            if (HttpContext.Current.Request.IsAuthenticated
-        || action == "View")
-                return true;
-            else
-                return false;
+        	
+        	if (!AuthenticationState.IsAuthenticated)
+        		return false;
+        	
+        	string internalAction = GetInternalAction(action);
+        	
+        	Type type = entities.GetType().GetElementType();
+        	
+        	IAuthoriseStrategy strategy = StrategyState.Strategies.Creator.New<IAuthoriseStrategy>("Authorise" + internalAction, type.Name);
+        	
+        	return strategy.Authorise(type.Name);
+        
+        }
+        
+        private static string GetInternalAction(string action)
+        {
+        	switch (action)
+        	{
+        		case "View":
+        			return "Retrieve";
+        		case "Manage":
+        			return "Index";
+        		case "Edit":
+        			return "Update";
+        		case "Create":
+        			return "Save";
+        	}
+        	
+        	return action;
         }
 
 
@@ -83,7 +114,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 
         public static void EnsureIsAuthenticated()
         {
-            if (HttpContext.Current != null && !HttpContext.Current.Request.IsAuthenticated)
+            if (HttpContext.Current != null && !AuthenticationState.IsAuthenticated)
                 HttpContext.Current.Response.Redirect(HttpContext.Current.Request.ApplicationPath + "/Members/Login.aspx");
         }
 
@@ -114,13 +145,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 
             //return false;
 
-            if (My.User == null)
+            if (AuthenticationState.User == null)
                 return false;
             else
             {
-                UserFactory.Current.Activate(My.User, "Roles");
+            	ActivateStrategy.New<User>().Activate(AuthenticationState.User, "Roles");
 
-                foreach (UserRole role in My.User.Roles)
+                foreach (UserRole role in AuthenticationState.User.Roles)
                 {
                     if (role.Name == roleName)
                         return true;
