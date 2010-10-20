@@ -98,6 +98,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 		}
 		
+		public ProjectionsInitializer(BaseProjectionScanner[] scanners)
+		{
+			Scanners = scanners;
+		}
+		
 		
 		/// <summary>
 		/// Initializes the projections and loads all projections to state.

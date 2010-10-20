@@ -61,9 +61,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			{
 				foreach (string file in Directory.GetFiles(FileNamer.ProjectionsDirectoryPath, "*.ascx"))
 				{
-					foreach (ProjectionInfo info in ExtractProjectionInfo(file))
+					if (IsProjection(file))
 					{
-						projections.Add(info);
+						foreach (ProjectionInfo info in ExtractProjectionInfo(file))
+						{
+							projections.Add(info);
+						}
 					}
 				}
 			}
@@ -79,7 +82,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		public ProjectionInfo[] ExtractProjectionInfo(string filePath)
 		{
 			string shortName = Path.GetFileNameWithoutExtension(filePath);
-						
+			
 			string[] actions = ExtractActions(shortName);
 			
 			string typeName = ExtractType(shortName);
@@ -89,7 +92,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			string relativeFilePath = filePath.Replace(Configuration.Config.Application.PhysicalApplicationPath, "")
 				.Replace(@"\", "/")
 				.Trim('/');
-						
+			
 			foreach (string action in actions)
 			{
 				ProjectionInfo info = new ProjectionInfo();
@@ -144,6 +147,27 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				throw new ArgumentException("The provided short file name is invalid: " + shortFileName);
 			
 			return parts[0];
+		}
+		
+		/// <summary>
+		/// Checks whether the file at the specified location is a projection file.
+		/// </summary>
+		/// <param name="fileName">The full name and path of the file to check.</param>
+		/// <returns></returns>
+		public bool IsProjection(string fileName)
+		{
+			string ext = Path.GetExtension(fileName);
+			string shortFileName = Path.GetFileNameWithoutExtension(fileName);
+			
+			// File extention
+			if (ext.ToLower() != ".ascx")
+				return false;
+			
+			// - in file name
+			if (shortFileName.IndexOf('-') == -1)
+				return false;
+			
+			return true;
 		}
 	}
 }

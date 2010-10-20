@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 
-namespace SoftwareMonkeys.SiteStarter.Web
+namespace SoftwareMonkeys.SiteStarter.Web.Projections
 {
 	/// <summary>
 	/// The base of all pages that use a controller.
