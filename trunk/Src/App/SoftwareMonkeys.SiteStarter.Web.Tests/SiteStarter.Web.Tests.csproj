@@ -67,6 +67,7 @@
       <HintPath>..\..\..\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
@@ -99,6 +100,10 @@
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Data.Tests\SiteStarter.Data.Tests.csproj">
       <Project>{0BBD2A6C-9955-4BB6-9DCA-6AA57715C3F2}</Project>
       <Name>SiteStarter.Data.Tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Data\SiteStarter.Data.csproj">
+      <Project>{0D77AB54-E3BE-4B29-8750-91F16BC3DEDB}</Project>
+      <Name>SiteStarter.Data</Name>
     </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Diagnostics.Tests\SiteStarter.Diagnostics.Tests.csproj">
       <Project>{7869F9C1-61D7-4C16-9577-CA85BDD3E01F}</Project>
@@ -134,11 +139,17 @@
     </ProjectReference>
     <None Include="WebControls\_svn\entries" />
     <Compile Include="BaseWebTestFixture.cs" />
-    <Compile Include="Security\RoleProviderTests.cs" />
+    <Compile Include="Controllers\IndexEntityControllerTests.cs" />
+    <Compile Include="Controllers\ViewEntityControllerTests.cs" />
+    <Compile Include="MockUrlCreator.cs" />
+    <Compile Include="Projections\ProjectionScannerTests.cs" />
     <Compile Include="SetupCheckerTests.cs" />
+    <Compile Include="UrlCreatorTests.cs" />
+    <Compile Include="UrlRewriterTests.cs" />
     <Compile Include="WebControls\EntityFormHelperTests.cs" />
     <Compile Include="WebUtilitiesTests.cs" />
-    <Folder Include="Security" />
+    <Folder Include="Controllers" />
+    <Folder Include="Projections" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

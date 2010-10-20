@@ -86,21 +86,31 @@
     <Compile Include="ApplicationInstaller.cs" />
     <Compile Include="ApplicationRestorer.cs" />
     <Compile Include="BaseStrategy.cs" />
-    <Compile Include="BaseFactory.cs" />
+    <Compile Include="CreateStrategy.cs" />
     <Compile Include="DefaultActions.cs" />
     <Compile Include="DeleteStrategy.cs" />
+    <Compile Include="DynamicLanguage.cs" />
     <Compile Include="IndexStrategy.cs" />
+    <Compile Include="NotifyStrategy.cs" />
     <Compile Include="SaveStrategy.cs" />
+    <Compile Include="Security\AuthenticateStrategy.cs" />
+    <Compile Include="Security\AuthenticationState.cs" />
+    <Compile Include="Security\AuthoriseDeleteStrategy.cs" />
+    <Compile Include="Security\AuthoriseIndexStrategy.cs" />
+    <Compile Include="Security\AuthoriseRetrieveStrategy.cs" />
+    <Compile Include="Security\AuthoriseSaveStrategy.cs" />
+    <Compile Include="Security\AuthoriseUpdateSettingsStrategy.cs" />
+    <Compile Include="Security\AuthoriseUpdateStrategy.cs" />
+    <Compile Include="Security\BaseAuthoriseStrategy.cs" />
+    <Compile Include="Security\UnauthorisedException.cs" />
     <Compile Include="StrategyCreator.cs" />
     <Compile Include="StrategyLocator.cs" />
     <Compile Include="StrategyNotFoundException.cs" />
     <Compile Include="StrategyState.cs" />
     <Compile Include="CommandAttribute.cs" />
-    <Compile Include="CommandManager.cs" />
     <Compile Include="Crypter.cs" />
     <Compile Include="DirectoryZipper.cs" />
     <Compile Include="RetrieveStrategy.cs" />
-    <Compile Include="FactoryManager.cs" />
     <Compile Include="GetCommandAttribute.cs" />
     <Compile Include="StrategyAttribute.cs" />
     <Compile Include="StrategyFileNamer.cs" />
@@ -115,11 +125,6 @@
     <Compile Include="UniqueUpdateStrategy.cs" />
     <Compile Include="UniqueValidateStrategy.cs" />
     <Compile Include="UpdateStrategy.cs" />
-    <Compile Include="UserFactory.cs" />
-    <Compile Include="EmailFactory.cs" />
-    <Compile Include="EntityFactory.cs" />
-    <Compile Include="KeywordFactory.cs" />
-    <Compile Include="UserRoleFactory.cs" />
     <Compile Include="ValidateStrategy.cs" />
     <Compile Include="ZipAnalyzer.cs">
       <SubType>Component</SubType>
@@ -150,6 +155,7 @@
       <Project>{34129651-3B9F-4A0D-AEBF-7DE2098DD98F}</Project>
       <Name>SiteStarter.State</Name>
     </ProjectReference>
+    <Folder Include="Security" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

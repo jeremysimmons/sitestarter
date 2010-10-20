@@ -141,10 +141,8 @@
     <Compile Include="ApplicationInstallerTests.cs" />
     <Compile Include="ApplicationRestorerTests.cs" />
     <Compile Include="BaseBusinessTestFixture.cs" />
-    <Compile Include="BaseFactoryTests.cs" />
     <Compile Include="DeleteStrategyTests.cs" />
     <Compile Include="DirectoryZipperTests.cs" />
-    <Compile Include="Factories\TestRecordFactory.cs" />
     <Compile Include="IndexStrategyTests.cs" />
     <Compile Include="MockFileMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
