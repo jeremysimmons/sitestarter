@@ -91,5 +91,14 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		T[] IndexWithReference<T>(string propertyName, string referencedEntityType, Guid referencedEntityID)
 			where T : IEntity;
 		
+		/// <summary>
+		/// Retrieves the entities matching the provided filter value.
+		/// </summary>
+		/// <param name="propertyName">The name of the property to filter the entities by.</param>
+		/// <param name="propertyValue">The value of the property to match the filter values by.</param>
+		/// <returns>The entities with properties matching the specified value.</returns>
+		T[] Index<T>(string propertyName, object propertyValue)
+			where T : IEntity;
+		
 	}
 }

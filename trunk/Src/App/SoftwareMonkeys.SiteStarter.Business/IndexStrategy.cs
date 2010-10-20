@@ -96,7 +96,18 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public T[] IndexWithReference<T>(string propertyName, string referencedEntityType, Guid referencedEntityID)
 			where T : IEntity
 		{
-			T[] entities = (T[])DataAccess.Data.Indexer.GetEntitiesWithReference<T>(propertyName, EntitiesUtilities.GetType(referencedEntityType), referencedEntityID);
+			T[] entities = new T[] {};
+			
+			if (EnablePaging)
+			{
+				PagingLocation location = new PagingLocation(CurrentPageIndex, PageSize);
+				
+				entities = (T[])DataAccess.Data.Indexer.GetPageOfEntitiesWithReference<T>(propertyName, EntitiesUtilities.GetType(referencedEntityType), referencedEntityID, location, sortExpression);
+			}
+			else
+			{
+				entities = (T[])DataAccess.Data.Indexer.GetEntitiesWithReference<T>(propertyName, EntitiesUtilities.GetType(referencedEntityType), referencedEntityID);
+			}
 			
 			if (RequireAuthorisation)
 				AuthoriseIndexStrategy.New<T>().EnsureAuthorised<T>(entities);
@@ -212,6 +223,21 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		}
 		
 		/// <summary>
+		/// Retrieves the entities matching the provided filter value.
+		/// </summary>
+		/// <param name="propertyName">The name of the property to filter the entities by.</param>
+		/// <param name="propertyValue">The value of the property to match the filter values by.</param>
+		/// <returns>The entities with properties matching the specified value.</returns>
+		public T[] Index<T>(string propertyName, object propertyValue)
+			where T : IEntity
+		{
+			Dictionary<string, object> parameters = new Dictionary<string, object>();
+			parameters.Add(propertyName, propertyValue);
+			
+			return Index<T>(parameters);
+		}
+		
+		/// <summary>
 		/// Retrieves the entities matching the provided filter values.
 		/// </summary>
 		/// <param name="filterValues"></param>
@@ -245,7 +271,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		
 		#region New functions
 		/// <summary>
-		/// Creates a new strategy for retrieving the specified type.
+		/// Creates a new strategy for indexing the specified type.
 		/// </summary>
 		static public IIndexStrategy New<T>()
 		{
@@ -260,6 +286,21 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			return StrategyState.Strategies.Creator.NewIndexer(typeName);
 		}
+		
+		/// <summary>
+		/// Creates a new strategy for indexing a single page of entities the specified type.
+		/// </summary>
+		static public IIndexStrategy New<T>(PagingLocation location, string sortExpression)
+		{
+			IIndexStrategy strategy = StrategyState.Strategies.Creator.NewIndexer(typeof(T).Name);
+			strategy.EnablePaging = true;
+			strategy.CurrentPageIndex = location.PageIndex;
+			strategy.PageSize = location.PageSize;
+			strategy.SortExpression = sortExpression;
+			
+			return strategy;
+		}
+		
 		#endregion
 	}
 }
