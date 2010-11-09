@@ -71,6 +71,7 @@
     <Compile Include="ObjectCloner.cs" />
     <Compile Include="PagingLocation.cs" />
     <Compile Include="ReferenceAttribute.cs" />
+    <Compile Include="SerializableCollection.cs" />
     <Compile Include="TestClass.cs" />
     <Compile Include="EntityCollection.cs" />
     <Compile Include="EntityEventHandler.cs" />

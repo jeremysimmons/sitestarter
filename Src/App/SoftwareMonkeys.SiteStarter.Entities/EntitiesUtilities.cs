@@ -376,6 +376,14 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			return tmpType;
 		}
 		
+		
+		static public bool IsTypeRegistered(string typeName)
+		{
+			MappingItem mappingItem = Config.Mappings.GetItem(typeName, true);
+			
+			return mappingItem != null;
+		}
+		
 		static public Type GetType(string typeName)
 		{
 			Type returnType = null;

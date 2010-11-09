@@ -709,7 +709,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		static public E[] Remove(E[] items, E item)
 		{
 			List<E> list = new List<E>(items);
-			list.Remove(item);
+			list.Remove(GetByID(items, item.ID));
 			
 			return (E[])list.ToArray();
 		}
