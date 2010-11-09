@@ -56,6 +56,22 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			set { ViewState["TypeName"] = value; }
 		}
 		
+		
+		/// <summary>
+		/// Gets/sets the output format of the target projection.
+		/// </summary>
+		[Browsable(true)]
+		[Bindable(true)]
+		public ProjectionFormat Format
+		{
+			get {
+				if (ViewState["Format"] == null)
+					ViewState["Format"] = QueryStrings.Format;
+				return (ProjectionFormat)ViewState["Format"];
+			}
+			set { ViewState["Format"] = value; }
+		}
+		
 		public ProjectorControl()
 		{
 		}
@@ -66,7 +82,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		/// <param name="e"></param>
 		protected override void OnInit(EventArgs e)
 		{
-			Control control = ProjectionState.Projections[Action, TypeName].Load(Page);
+			Control control = ProjectionState.Projections[Action, TypeName, Format].Load(Page);
 			
             if (control != null)
             {
