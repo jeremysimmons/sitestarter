@@ -26,7 +26,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			DataAccess.Data.Saver.Save(article);
 			DataAccess.Data.Saver.Save(article2);
 			
-			IndexStrategy strategy = new IndexStrategy();
+			IIndexStrategy strategy = IndexStrategy.New<TestArticle>(false);
 			strategy.PageSize = 20;
 			
 			TestArticle[] foundArticles = strategy.Index<TestArticle>();
@@ -51,7 +51,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			DataAccess.Data.Saver.Save(article);
 			DataAccess.Data.Saver.Save(article2);
 			
-			IndexStrategy strategy = new IndexStrategy();
+			IIndexStrategy strategy = IndexStrategy.New<TestArticle>(false);
 			strategy.TypeName = "TestArticle";
 			strategy.PageSize = 20;
 			

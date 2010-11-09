@@ -44,7 +44,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				
 				AppLogger.Debug("Entity: " + entity.GetType().FullName);
 				
-				IRetrieveStrategy strategy = StrategyState.Strategies.Creator.NewRetriever(entity.ShortTypeName);
+				IRetrieveStrategy strategy = RetrieveStrategy.New(entity.ShortTypeName, false);
 				
 				object propertyValue = EntitiesUtilities.GetPropertyValue(entity, propertyName);
 				

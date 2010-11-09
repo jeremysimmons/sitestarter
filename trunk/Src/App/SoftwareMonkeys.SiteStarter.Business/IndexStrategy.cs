@@ -73,11 +73,11 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="referencedEntityType">The type of the entity being referenced.</param>
 		/// <param name="referencedEntityID">The ID of the entity being referenced.</param>
 		/// <returns>The entity matching the provided parameters.</returns>
-		public IEntity[] IndexWithReference(Type type, string propertyName, string referencedEntityType, Guid referencedEntityID)
+		public virtual IEntity[] IndexWithReference(Type type, string propertyName, string referencedEntityType, Guid referencedEntityID)
 		{
 			IEntity[] entities = (IEntity[])Reflector.InvokeGenericMethod(this,
 			                                                              "IndexWithReference",
-			                                                              new Type[] {EntitiesUtilities.GetType(referencedEntityType)},
+			                                                              new Type[] {type},
 			                                                              new object[] {propertyName, referencedEntityType, referencedEntityID});
 			
 			if (RequireAuthorisation)
@@ -93,7 +93,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="referencedEntityType">The type of the entity being referenced.</param>
 		/// <param name="referencedEntityID">The ID of the entity being referenced.</param>
 		/// <returns>The entity matching the provided parameters.</returns>
-		public T[] IndexWithReference<T>(string propertyName, string referencedEntityType, Guid referencedEntityID)
+		public virtual T[] IndexWithReference<T>(string propertyName, string referencedEntityType, Guid referencedEntityID)
 			where T : IEntity
 		{
 			T[] entities = new T[] {};
@@ -121,7 +121,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="ids">The IDs of the entities to retrieve.</param>
 		/// <returns>An array of the entities matching the provided IDs.</returns>
-		public T[] Index<T>(Guid[] ids)
+		public virtual T[] Index<T>(Guid[] ids)
 			where T : IEntity
 		{
 			Collection<T> list = new Collection<T>();
@@ -147,7 +147,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// Retrieves the entities of the specified type.
 		/// </summary>
 		/// <returns></returns>
-		public T[] Index<T>()
+		public virtual T[] Index<T>()
 			where T : IEntity
 		{
 			Collection<T> collection = new Collection<T>();
@@ -181,7 +181,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="sortExpression"></param>
 		/// <returns></returns>
-		public IEntity[] Index()
+		public virtual IEntity[] Index()
 		{
 			CheckTypeName();
 			
@@ -203,7 +203,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="filterValues"></param>
 		/// <returns></returns>
-		public IEntity[] Index(Dictionary<string, object> filterValues)
+		public virtual IEntity[] Index(Dictionary<string, object> filterValues)
 		{
 			Type type = EntitiesUtilities.GetType(TypeName);
 			
@@ -228,7 +228,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="propertyName">The name of the property to filter the entities by.</param>
 		/// <param name="propertyValue">The value of the property to match the filter values by.</param>
 		/// <returns>The entities with properties matching the specified value.</returns>
-		public T[] Index<T>(string propertyName, object propertyValue)
+		public virtual T[] Index<T>(string propertyName, object propertyValue)
 			where T : IEntity
 		{
 			Dictionary<string, object> parameters = new Dictionary<string, object>();
@@ -242,7 +242,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="filterValues"></param>
 		/// <returns></returns>
-		public T[] Index<T>(Dictionary<string, object> filterValues)
+		public virtual T[] Index<T>(Dictionary<string, object> filterValues)
 			where T : IEntity
 		{
 			T[] entities = new T[]{};
@@ -298,6 +298,29 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			strategy.PageSize = location.PageSize;
 			strategy.SortExpression = sortExpression;
 			
+			return strategy;
+		}
+		
+		/// <summary>
+		/// Creates a new strategy for indexing the specified type.
+		/// </summary>
+		/// <param name="requiresAutorisation">A value indicating whether or not the strategy requires authorisation.</param>
+		static public IIndexStrategy New<T>(bool requiresAuthorisation)
+		{
+			IIndexStrategy strategy = StrategyState.Strategies.Creator.NewIndexer(typeof(T).Name);
+			strategy.RequireAuthorisation = false;
+			return strategy;
+		}
+		
+		/// <summary>
+		/// Creates a new strategy for indexing the specified type.
+		/// </summary>
+		/// <param name="typeName">The short name of the type involved in the strategy.</param>
+		/// <param name="requiresAutorisation">A value indicating whether or not the strategy requires authorisation.</param>
+		static public IIndexStrategy New(string typeName, bool requiresAuthorisation)
+		{
+			IIndexStrategy strategy = StrategyState.Strategies.Creator.NewIndexer(typeName);
+			strategy.RequireAuthorisation = false;
 			return strategy;
 		}
 		

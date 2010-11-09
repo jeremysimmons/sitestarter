@@ -19,7 +19,10 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			get {
 				if (validator == null)
+				{
 					validator = StrategyState.Strategies.Creator.NewValidator(TypeName);
+					validator.RequireAuthorisation = RequireAuthorisation;
+				}
 				return validator; }
 			set { validator = value; }
 		}
@@ -85,6 +88,29 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		static public IUpdateStrategy New(string typeName)
 		{
 			return StrategyState.Strategies.Creator.NewUpdater(typeName);
+		}
+		
+		/// <summary>
+		/// Creates a new strategy for updating the specified type.
+		/// </summary>
+		/// <param name="requiresAuthorisation">A value indicating whether the strategy requires authorisation.</param>
+		static public IUpdateStrategy New<T>(bool requiresAuthorisation)
+		{
+			IUpdateStrategy strategy = StrategyState.Strategies.Creator.NewUpdater(typeof(T).Name);
+			strategy.RequireAuthorisation = requiresAuthorisation;
+			return strategy;
+		}
+		
+		/// <summary>
+		/// Creates a new strategy for updating the specified type.
+		/// </summary>
+		/// <param name="typeName">The short name of the type involved in the strategy.</param>
+		/// <param name="requiresAuthorisation">A value indicating whether the strategy requires authorisation.</param>
+		static public IUpdateStrategy New(string typeName, bool requiresAuthorisation)
+		{
+			IUpdateStrategy strategy = StrategyState.Strategies.Creator.NewUpdater(typeName);
+			strategy.RequireAuthorisation = requiresAuthorisation;
+			return strategy;
 		}
 		#endregion
 	}

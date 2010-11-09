@@ -31,7 +31,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			DataAccess.Data.Saver.Save(article);
 			
 			
-			IRetrieveStrategy strategy = new RetrieveStrategy();
+			IRetrieveStrategy strategy = RetrieveStrategy.New<TestArticle>(false);
 			
 			IEntity foundArticle = strategy.Retrieve<TestArticle>(article.ID);
 			
@@ -46,7 +46,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			
 			DataAccess.Data.Saver.Save(article);
 			
-			IRetrieveStrategy strategy = new RetrieveStrategy();
+			IRetrieveStrategy strategy = RetrieveStrategy.New<TestArticle>(false);
 			
 			IEntity foundArticle = strategy.Retrieve<TestArticle>(article.UniqueKey);
 			
@@ -62,7 +62,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			
 			DataAccess.Data.Saver.Save(article);
 			
-			IRetrieveStrategy strategy = new RetrieveStrategy();
+			IRetrieveStrategy strategy = RetrieveStrategy.New<TestArticle>(false);
 			
 			IEntity foundArticle = strategy.Retrieve<TestArticle>("Title", article.Title);
 			
