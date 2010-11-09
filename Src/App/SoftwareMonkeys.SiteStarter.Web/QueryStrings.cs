@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Web;
 using System.Text;
+using SoftwareMonkeys.SiteStarter.Web.Projections;
 
 namespace SoftwareMonkeys.SiteStarter.Web
 {
@@ -49,32 +50,18 @@ namespace SoftwareMonkeys.SiteStarter.Web
                     return String.Empty;
             }
         }
-
+        
         /// <summary>
-        /// The module passed to the page via the query string variable "m".
+        /// The action passed to the page via the query string variable "a".
         /// </summary>
-        static public string Module
+        static public ProjectionFormat Format
         {
             get
             {
-                if (HttpContext.Current.Request.QueryString["m"] != null)
-                    return HttpContext.Current.Request.QueryString["m"];
+                if (HttpContext.Current.Request.QueryString["f"] != null)
+                	return (ProjectionFormat)Enum.Parse(typeof(ProjectionFormat), HttpContext.Current.Request.QueryString["f"]);
                 else
-                    return String.Empty;
-            }
-        }
-
-        /// <summary>
-        /// The control ID passed to the page via the query string variable "cid".
-        /// </summary>
-        static public string ControlID
-        {
-            get
-            {
-                if (HttpContext.Current.Request.QueryString["cid"] != null)
-                    return HttpContext.Current.Request.QueryString["cid"];
-                else
-                    return String.Empty;
+                    return ProjectionFormat.NotSet;
             }
         }
         
