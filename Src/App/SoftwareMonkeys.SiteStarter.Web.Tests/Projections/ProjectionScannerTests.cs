@@ -11,6 +11,54 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Projections
 	public class ProjectionScannerTests : BaseWebTestFixture
 	{
 		[Test]
+		public void Test_GetFormatFromFileName_Html()
+		{
+			string appName = "MockApplication";
+			
+			ProjectionScanner scanner = new ProjectionScanner();
+			scanner.FileNamer.FileMapper = new MockFileMapper(this, TestUtilities.GetTestingPath(this), appName);
+			scanner.FileNamer.ProjectionsDirectoryPath = TestUtilities.GetTestApplicationPath(this, appName) + Path.DirectorySeparatorChar + "Projections";
+			
+			string fileName = "Test.ascx";
+			
+			ProjectionFormat format = scanner.GetFormatFromFileName(fileName);
+			
+			Assert.AreEqual(ProjectionFormat.Html, format, "The format doesn't match what's expected.");
+		}
+		
+		[Test]
+		public void Test_GetFormatFromFileName_Xml()
+		{
+			string appName = "MockApplication";
+			
+			ProjectionScanner scanner = new ProjectionScanner();
+			scanner.FileNamer.FileMapper = new MockFileMapper(this, TestUtilities.GetTestingPath(this), appName);
+			scanner.FileNamer.ProjectionsDirectoryPath = TestUtilities.GetTestApplicationPath(this, appName) + Path.DirectorySeparatorChar + "Projections";
+			
+			string fileName = "Test.xml.ascx";
+			
+			ProjectionFormat format = scanner.GetFormatFromFileName(fileName);
+			
+			Assert.AreEqual(ProjectionFormat.Xml, format, "The format doesn't match what's expected.");
+		}
+		
+		[Test]
+		public void Test_GetFormatFromFileName_Xslt()
+		{
+			string appName = "MockApplication";
+			
+			ProjectionScanner scanner = new ProjectionScanner();
+			scanner.FileNamer.FileMapper = new MockFileMapper(this, TestUtilities.GetTestingPath(this), appName);
+			scanner.FileNamer.ProjectionsDirectoryPath = TestUtilities.GetTestApplicationPath(this, appName) + Path.DirectorySeparatorChar + "Projections";
+			
+			string fileName = "Test.xslt.ascx";
+			
+			ProjectionFormat format = scanner.GetFormatFromFileName(fileName);
+			
+			Assert.AreEqual(ProjectionFormat.Xslt, format, "The format doesn't match what's expected.");
+		}
+		
+		[Test]
 		public void Test_FindProjections()
 		{
 			string appName = "MockApplication";
