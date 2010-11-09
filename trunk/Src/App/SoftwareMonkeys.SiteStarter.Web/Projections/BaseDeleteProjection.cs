@@ -15,11 +15,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 	{
 		
 		
-		private DeleteEntityController controller;
+		private DeleteController controller;
 		/// <summary>
 		/// Gets the controller used for deleting an entity.
 		/// </summary>
-		public DeleteEntityController Controller
+		public DeleteController Controller
 		{
 			get {
 				return controller; }
@@ -40,7 +40,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		
 		public void Initialize(Type defaultType)
 		{
-			controller = DeleteEntityController.CreateController(this, defaultType);
+			controller = DeleteController.New(this, defaultType);
 		}
 		
 		/*public void Delete<T>()
@@ -61,22 +61,27 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			Controller.Delete(entity);
 		}*/
 		
-		public void Delete()
+		public virtual void Delete()
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Deleting the entity specified in the query string.", NLog.LogLevel.Debug))
 			{
 				Controller.Delete();
-				Navigator.Go("Index");
+				NavigateAfterDelete(Controller.DataSource);
 			}
 		}
 		
-		public void Delete(IEntity entity)
+		public virtual void Delete(IEntity entity)
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Deleting the entity provided.", NLog.LogLevel.Debug))
 			{
 				Controller.Delete(entity);
-				Navigator.Go("Index");
+				NavigateAfterDelete(entity);
 			}
+		}
+		
+		public virtual void NavigateAfterDelete(IEntity entity)
+		{
+			Navigator.Go("Index");
 		}
 	}
 }

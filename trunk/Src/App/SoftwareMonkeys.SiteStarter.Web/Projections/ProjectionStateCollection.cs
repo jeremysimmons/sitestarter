@@ -1,6 +1,7 @@
 ﻿using System;
 using SoftwareMonkeys.SiteStarter.State;
 
+
 namespace SoftwareMonkeys.SiteStarter.Web.Projections
 {
 	/// <summary>
@@ -13,8 +14,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// </summary>
 		public ProjectionInfo this[string action, string type]
 		{
-			get { return GetProjection(action, type); }
-			set { SetProjection(action, type, value); }
+			get { return GetProjection(action, type, ProjectionFormat.Html); }
+			set { SetProjection(action, type, ProjectionFormat.Html, value); }
 		}
 		
 		/// <summary>
@@ -22,9 +23,28 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// </summary>
 		public ProjectionInfo this[string action, Type type]
 		{
-			get { return GetProjection(action, type.Name); }
-			set { SetProjection(action, type.Name, value); }
+			get { return GetProjection(action, type.Name, ProjectionFormat.Html); }
+			set { SetProjection(action, type.Name, ProjectionFormat.Html, value); }
 		}
+		
+		/// <summary>
+		/// Gets/sets the projection for the specifid action and type.
+		/// </summary>
+		public ProjectionInfo this[string action, string type, ProjectionFormat format]
+		{
+			get { return GetProjection(action, type, format); }
+			set { SetProjection(action, type, format, value); }
+		}
+		
+		/// <summary>
+		/// Gets/sets the projection for the specifid action and type.
+		/// </summary>
+		public ProjectionInfo this[string action, Type type, ProjectionFormat format]
+		{
+			get { return GetProjection(action, type.Name, format); }
+			set { SetProjection(action, type.Name, format, value); }
+		}
+		
 		
 		
 		public ProjectionStateCollection() : base(StateScope.Application, "Web.Projections")
@@ -35,7 +55,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			foreach (ProjectionInfo projection in strategies)
 			{
-				SetProjection(projection.Action, projection.TypeName, projection);
+				SetProjection(projection.Action, projection.TypeName, projection.Format, projection);
 			}
 		}
 		
@@ -48,7 +68,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			if (projection == null)
 				throw new ArgumentNullException("projection");
 			
-			string key = GetProjectionKey(projection.Action, projection.TypeName);
+			string key = GetProjectionKey(projection.Action, projection.TypeName, projection.Format);
 			
 			this[key] = projection;
 		}
@@ -82,15 +102,17 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// </summary>
 		/// <param name="action">The action that the projection performs.</param>
 		/// <param name="typeName">The type of entity involved in the projection</param>
+		/// <param name="format">The output format of the desired projection.</param>
 		/// <returns>The projection matching the provided action and type.</returns>
-		public ProjectionInfo GetProjection(string action, string typeName)
+		public ProjectionInfo GetProjection(string action, string typeName, ProjectionFormat format)
 		{
 			ProjectionLocator locator = new ProjectionLocator(this);
 			
-			ProjectionInfo foundProjection = locator.Locate(action, typeName);
+			ProjectionInfo foundProjection = locator.Locate(action, typeName, format);
 			
 			if (foundProjection == null)
-				throw new ProjectionNotFoundException(action, typeName);
+				throw new ProjectionNotFoundException(action, typeName, format);
+			
 			
 			return foundProjection;
 		}
@@ -101,9 +123,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <param name="action">The action that the projection performs.</param>
 		/// <param name="type">The type of entity involved in the projection</param>
 		/// <param name="projection">The projection that corresponds with the specified action and type.</param>
-		public void SetProjection(string action, string type, ProjectionInfo projection)
+		/// <param name="format">The output format of the projection.</param>
+		public void SetProjection(string action, string type, ProjectionFormat format, ProjectionInfo projection)
 		{
-			this[GetProjectionKey(action, type)] = projection;
+			this[GetProjectionKey(action, type, format)] = projection;
 		}
 
 		/// <summary>
@@ -111,10 +134,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// </summary>
 		/// <param name="action"></param>
 		/// <param name="type"></param>
+		/// <param name="format"></param>
 		/// <returns></returns>
-		public string GetProjectionKey(string action, string type)
+		public string GetProjectionKey(string action, string type, ProjectionFormat format)
 		{
-			string fullKey = action + "_" + type;
+			string fullKey = action + "_" + type + "_" + format.ToString();
 			
 			return fullKey;
 		}

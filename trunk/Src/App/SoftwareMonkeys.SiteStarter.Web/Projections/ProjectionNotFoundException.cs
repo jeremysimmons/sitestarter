@@ -27,10 +27,21 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			set { typeName = value; }
 		}
 		
-		public ProjectionNotFoundException(string action, string typeName) : base("A projection could not be found to carry out the '" + action + "' action with the '" + typeName + "' entity type.")
+		private ProjectionFormat format = ProjectionFormat.Html;
+		/// <summary>
+		/// Gets/sets the format of the projection output.
+		/// </summary>
+		public ProjectionFormat Format
+		{
+			get { return format; }
+			set { format = value; }
+		}
+		
+		public ProjectionNotFoundException(string action, string typeName, ProjectionFormat format) : base("A projection could not be found to carry out with action '" + action + "', entity type '" + typeName + "' and output format '" + format + "'.")
 		{
 			Action = action;
 			TypeName = typeName;
+			Format = format;
 		}
 	}
 }

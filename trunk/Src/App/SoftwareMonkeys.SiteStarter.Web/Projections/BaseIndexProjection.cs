@@ -22,11 +22,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			set { grid = value; }
 		}
 		
-		private IndexEntityController controller;
+		private IndexController controller;
 		/// <summary>
 		/// Gets the controller used to perform actions in relation to this page.
 		/// </summary>
-		public IndexEntityController Controller
+		public IndexController Controller
 		{
 			get {
 				return controller; }
@@ -116,7 +116,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		public void Initialize(Type defaultType, IndexGrid indexGrid, bool isPaged)
 		{
 			Grid = indexGrid;
-			controller = IndexEntityController.CreateController(this, defaultType, isPaged);
+			controller = IndexController.New(this, defaultType, isPaged);
 			PageSize = Grid.PageSize;
 			Grid.SortCommand += new DataGridSortCommandEventHandler(Grid_SortCommand);
 			Grid.PageIndexChanged += new DataGridPageChangedEventHandler(Grid_PageIndexChanged);

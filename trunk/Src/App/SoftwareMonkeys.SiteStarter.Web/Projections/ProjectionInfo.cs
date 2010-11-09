@@ -51,6 +51,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			set { projectionFilePath = value; }
 		}
 		
+		private ProjectionFormat format = ProjectionFormat.Html;
+		/// <summary>
+		/// Gets/sets the format of the projection output.
+		/// </summary>
+		public ProjectionFormat Format
+		{
+			get { return format; }
+			set { format = value; }
+		}
+		
 		private ProjectionLoader loader;
 		/// <summary>
 		/// Gets the projection loader.
