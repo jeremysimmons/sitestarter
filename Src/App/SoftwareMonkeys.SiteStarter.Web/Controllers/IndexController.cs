@@ -13,7 +13,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	/// <summary>
 	/// Used to control the display of entity indexes.
 	/// </summary>
-	public class IndexEntityController : BaseController
+	[Controller("Index", "IEntity")]
+	public class IndexController : BaseController
 	{
 		
 		private Dictionary<string, string> language = new Dictionary<string, string>();
@@ -100,10 +101,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			set { indexer = value; }
 		}
 		
-		public IndexEntityController()
+		public IndexController()
 		{
 		}
-		
+		                    
 		#region Index functions
 		/// <summary>
 		/// Loads and displays an index of entities.
@@ -123,6 +124,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <param name="entities"></param>
 		public void Index(IEntity[] entities)
 		{
+			if (entities == null)
+				entities = new IEntity[] {};
+			
 			if (AbsoluteTotal < entities.Length)
 			{
 				AbsoluteTotal = entities.Length;
@@ -226,6 +230,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				Type type = entities.GetType().GetElementType();
 				
 				OperationManager.StartOperation("Index" + type.Name, null);
+				
+				DataSource = entities;
 			}
 		}
 		
@@ -252,9 +258,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		}
 		
 		
-		public static IndexEntityController CreateController(IControllable container, Type type, bool enablePaging)
+		public static IndexController New(IControllable container, Type type, bool enablePaging)
 		{
-			IndexEntityController controller = new IndexEntityController();
+			IndexController controller = ControllerState.Controllers.Creator.NewIndexer(type.Name);
 			
 			controller.Type = type;
 			controller.EnablePaging = enablePaging;

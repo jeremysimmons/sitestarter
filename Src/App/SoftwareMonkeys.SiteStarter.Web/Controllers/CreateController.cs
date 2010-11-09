@@ -13,7 +13,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	/// <summary>
 	/// Used to control the create entity process.
 	/// </summary>
-	public class CreateEntityController : BaseController
+	[Controller("Create", "IEntity")]
+	public class CreateController : BaseController
 	{
 		private IEntity dataSource;
 		public IEntity DataSource
@@ -47,7 +48,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			set { requiresAuthentication = value; }
 		}*/
 		
-		public CreateEntityController()
+		public CreateController()
 		{
 			
 		}
@@ -137,12 +138,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <param name="container"></param>
 		/// <param name="type"></param>
 		/// <returns></returns>
-		public static CreateEntityController CreateController(IControllable container, Type type)
+		public static CreateController New(IControllable container, Type type)
 		{
 			if (type.Name == "IEntity")
 				throw new ArgumentException("The provided type cannot be 'IEntity'.");
 			
-			CreateEntityController controller = new CreateEntityController();
+			CreateController controller = ControllerState.Controllers.Creator.New<CreateController>("Create", type.Name);
 			
 			controller.Container = container;
 			controller.Type = type;

@@ -14,7 +14,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	/// <summary>
 	/// Description of BaseController.
 	/// </summary>
-	public class BaseController
+	public class BaseController : IController
 	{		
 		/// <summary>
 		/// Gets/sets the title displayed in the window.
@@ -32,10 +32,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			set { HttpContext.Current.Items["WindowTitle"] = value; }
 		}
 		
+		private Type type;
 		/// <summary>
 		/// The type of entity involved in the operation being controlled.
 		/// </summary>
-		public Type Type;
+		public Type Type
+		{
+			get { return type; }
+			set { type = value; }
+		}
 		
 		/// <summary>
 		/// The container of the controller.
@@ -89,7 +94,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			Result.DisplayError(Language.Unauthorised);
 			
-			HttpContext.Current.Response.Redirect(UnauthorisedUrl);
+			if (HttpContext.Current != null && HttpContext.Current.Request != null)
+				HttpContext.Current.Response.Redirect(UnauthorisedUrl);
+
 		}
 	}
 }

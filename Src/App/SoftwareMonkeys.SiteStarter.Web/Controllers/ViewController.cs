@@ -12,7 +12,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	/// <summary>
 	/// Used to control the viewing of entities.
 	/// </summary>
-	public class ViewEntityController : BaseController
+	[Controller("View", "IEntity")]
+	public class ViewController : BaseController
 	{
 		private IRetrieveStrategy retriever;
 		/// <summary>
@@ -49,7 +50,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			set { activator = value; }
 		}
 		
-		public ViewEntityController()
+		public ViewController()
 		{
 		}
 		
@@ -268,9 +269,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		}
 		#endregion
 		
-		public static ViewEntityController CreateController(IControllable container, Type type)
+		public static ViewController New(IControllable container, Type type)
 		{
-			ViewEntityController controller = new ViewEntityController();
+			ViewController controller = ControllerState.Controllers.Creator.NewViewer(type.Name);
 			
 			controller.Container = container;
 			controller.Type = type;
