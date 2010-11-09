@@ -3,6 +3,7 @@
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Data" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Providers" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Projections" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Controllers" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Data" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Configuration" %>
@@ -86,7 +87,10 @@
     private void InitializeWeb()
     {
     	if (Config.IsInitialized)
+    	{
+    		new ControllersInitializer().Initialize();
     		new ProjectionsInitializer().Initialize();
+    	}
     }
 
     public override void Dispose()
