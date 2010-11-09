@@ -321,8 +321,8 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				if (parts.Length < 2)
 					throw new InvalidOperationException("Not enough parts. Expected 2. Was " + parts.Length);
 
-				AppLogger.Debug("Original path: " + friendlyUrl);
-				AppLogger.Debug("Application path: " + applicationPath);
+				//AppLogger.Debug("Original path: " + friendlyUrl);
+				//AppLogger.Debug("Application path: " + applicationPath);
 				
 				string type = parts[0];
 				string action = parts[1];
@@ -350,81 +350,59 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				string pageType = "Html";
 				string originalFileName = Path.GetFileName(GetShortUrl(friendlyUrl));
 				
-				AppLogger.Debug("Original file name: " + originalFileName);
+				//AppLogger.Debug("Original file name: " + originalFileName);
 				
 				int pos = originalFileName.IndexOf(".");
 
 				string ext = originalFileName.Substring(pos, originalFileName.Length - pos);
 				
-				AppLogger.Debug("Extension: " + ext);
+				//AppLogger.Debug("Extension: " + ext);
 				
 				if (ext.ToLower().Trim('.') == "xml.aspx")
 					pageType = "Xml";
+				else if (ext.ToLower().Trim('.') == "xslt.aspx")
+					pageType = "Xslt";
 				
-				AppLogger.Debug("Page type: " + pageType.ToString());
+				//AppLogger.Debug("Page type: " + pageType.ToString());
 
 
-				AppLogger.Debug("Action: " + action);
-				AppLogger.Debug("Type: " + type);
-				AppLogger.Debug("Property name: " + propertyName);
-				AppLogger.Debug("Data: " + data);
+				//AppLogger.Debug("Action: " + action);
+				//AppLogger.Debug("Type: " + type);
+				//AppLogger.Debug("Property name: " + propertyName);
+				//AppLogger.Debug("Data: " + data);
 
-				//ModulePageConfig modulePage = ModuleState.Loader.GetModulePage(action, type, (ModulePageConfigType)Enum.Parse(typeof(ModulePageConfigType), pageType));
+				string realPageName = "Projector.aspx";
+				if (pageType == "Xml"
+				    || pageType == "Xslt")
+					realPageName = "XmlProjector.aspx";
+				
+				//AppLogger.Debug("Real page name: " + realPageName);
 
-				// If the module page isn't found then it's most likely a real URL.
-//				if (modulePage == null)
-//				{
-//					throw new InvalidOperationException("Cannot find page for '" + action + "' action and type '" + type + "'.");
-//				}
-//				else
-//				{
-					//AppLogger.Debug("Module page config found. Control ID: " + modulePage.ControlID);
+				newUrl = applicationPath + "/" + realPageName
+					+ "?a=" + action
+					+ "&t=" + type
+					+ "&f=" + pageType;
+				
+				//AppLogger.Debug("New url: " + newUrl);
+
+				// TODO: Remove comment
+				//if (propertyName.ToLower() == "ID".ToLower())
+				propertyName = type + "-" + propertyName;
+				
+				//AppLogger.Debug("Property name: " + propertyName);
+
+				if (propertyName != String.Empty
+				    && data != String.Empty)
+				{
+					string qs = "&" + propertyName + "=" + data;
 					
-					//if (modulePage.ParentModule == null)
-					//	throw new Exception("modulePage.ParentModule == null");
-
-					//if (id != Guid.Empty)
-					//{
-					//    newUrl = applicationPath + "/Default.aspx"
-					//        + "?m=" + modulePage.ParentModule.Name
-					//        + "&cid=" + modulePage.ControlID
-					//         + "&" + type + "ID=" + id;
-					//}
-					//else
-					//
-					string realPageName = "Projector.aspx";
-					if (ext.ToLower().Trim('.') == "xml.aspx")
-						realPageName = "Xml.aspx";
+				//	AppLogger.Debug("Adding query string: " + qs);
 					
-					AppLogger.Debug("Real page name: " + realPageName);
-
-					newUrl = applicationPath + "/" + realPageName
-						+ "?a=" + action
-						+ "&t=" + type;
+					newUrl = newUrl + qs;
 					
-					AppLogger.Debug("New url: " + newUrl);
-
-					// TODO: Remove comment
-					//if (propertyName.ToLower() == "ID".ToLower())
-					propertyName = type + "-" + propertyName;
-					
-					AppLogger.Debug("Property name: " + propertyName);
-
-					if (propertyName != String.Empty
-					    && data != String.Empty)
-					{
-						string qs = "&" + propertyName + "=" + data;
-						
-						AppLogger.Debug("Adding query string: " + qs);
-						
-						newUrl = newUrl + qs;
-						
-						AppLogger.Debug("New url: " + newUrl);
-					}
-					// }
+				//	AppLogger.Debug("New url: " + newUrl);
 				}
-
-	//		}
+			}
 
 
 			return newUrl;

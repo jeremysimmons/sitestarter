@@ -9,6 +9,7 @@ using System.Collections.Specialized;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Configuration;
 using SoftwareMonkeys.SiteStarter.Web.State;
+using SoftwareMonkeys.SiteStarter.Web.Projections;
 
 namespace SoftwareMonkeys.SiteStarter.Web
 {
@@ -161,15 +162,19 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// </summary>
 		/// <param name="action">The action to be performed at the target page.</param>
 		/// <param name="typeName">The name of the type being acted upon at the target page.</param>
+		/// <param name="format">The format of the target projection.</param>
 		/// <returns>The URL to the page handling the provided action in relation to the provided type.</returns>
-		public string CreateStandardUrl(string action, string typeName)
+		public string CreateStandardUrl(string action, string typeName, ProjectionFormat format)
 		{
-			//string moduleID = ModuleState.GetModuleID(action, typeName);
-			//string controlID = ModuleState.GetControlID(action, typeName);
 			
-			string link = ApplicationPath + "/Projector.aspx?a=" + PrepareForUrl(action) + "&t=" + PrepareForUrl(typeName);
+			string link = ApplicationPath + "/Projector.aspx?a=" + PrepareForUrl(action) + "&t=" + PrepareForUrl(typeName) + "&f=" + PrepareForUrl(format.ToString());
 			link = AddResult(link);
 			return link;
+		}
+		
+		public string CreateStandardUrl(string action, string typeName)
+		{
+			return CreateStandardUrl(action, typeName, ProjectionFormat.Html);
 		}
 		
 		
@@ -180,15 +185,18 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <param name="typeName">The name of the type being acted upon at the target page.</param>
 		/// <param name="propertyName">The name of the property to filter the specified type by.</param>
 		/// <param name="dataKey">The value of the property to filter the specified type by.</param>
+		/// <param name="format">The format of the target projection.</param>
 		/// <returns>The URL to the page handling the provided action in relation to the provided type.</returns>
-		public string CreateStandardUrl(string action, string typeName, string propertyName, string dataKey)
+		public string CreateStandardUrl(string action, string typeName, string propertyName, ProjectionFormat format, string dataKey)
 		{
-			//string moduleID = ModuleState.GetModuleID(action, typeName);
-			//string controlID = ModuleState.GetControlID(action, typeName);
-			
-			string link = ApplicationPath + "/Projector.aspx?a=" + PrepareForUrl(action) + "&t=" + PrepareForUrl(typeName) + "&" + PrepareForUrl(typeName) + "-" + PrepareForUrl(propertyName) + "=" + PrepareForUrl(dataKey);
+			string link = ApplicationPath + "/Projector.aspx?a=" + PrepareForUrl(action) + "&t=" + PrepareForUrl(typeName) + "&f=" + PrepareForUrl(format.ToString()) + "&" + PrepareForUrl(typeName) + "-" + PrepareForUrl(propertyName) + "=" + PrepareForUrl(dataKey);
 			link = AddResult(link);
 			return link;
+		}
+		
+		public string CreateStandardUrl(string action, string typeName, string propertyName, string dataKey)
+		{
+			return CreateStandardUrl(action, typeName, propertyName, ProjectionFormat.Html, dataKey);
 		}
 		
 		#endregion
@@ -372,12 +380,14 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <summary>
 		/// Creates a URL to the specified XSLT file in the specified module.
 		/// </summary>
-		/// <param name="moduleID">The ID of the module containing the XSLT file.</param>
-		/// <param name="xsltFileName">The name of the xslt file (without the .xslt extension).</param>
+		/// <param name="action">The action being performed and rendering the XML.</param>
+		/// <param name="typeName">The short type name of the entity involved in action.</param>
 		/// <returns>The URL to the specified XSLT file.</returns>
-		public string CreateXsltUrl(string moduleID, string xsltFileName)
+		public string CreateXsltUrl(string action, string typeName)
 		{
-			return ApplicationPath + "/Modules/" + moduleID + "/Xslt/" + xsltFileName + ".xslt";
+			string link = ApplicationPath + "/" + PrepareForUrl(typeName) + "/" + PrepareForUrl(action) + ".xslt.aspx";
+			link = AddResult(link);
+			return link;
 		}
 		#endregion
 		
@@ -427,9 +437,9 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				/*string moduleID = ModuleState.GetModuleID(action, type);
 				string controlID = ModuleState.GetControlID(action, type);
 				
-				return ApplicationPath + "/Xml.aspx?m=" + moduleID + "&cid=" + controlID + "&a=" + PrepareForUrl(action) + "&Type=" + type;*/
+				return ApplicationPath + "/XmlProjector.aspx?m=" + moduleID + "&cid=" + controlID + "&a=" + PrepareForUrl(action) + "&Type=" + type;*/
 				
-				return ApplicationPath + "/Xml.aspx?a=" + PrepareForUrl(action) + "&Type=" + type;
+				return ApplicationPath + "/XmlProjector.aspx?a=" + PrepareForUrl(action) + "&t=" + PrepareForUrl(type) + "&f=" + ProjectionFormat.Xml;
 			}
 		}
 
