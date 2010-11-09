@@ -37,7 +37,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			article2.ID = Guid.NewGuid();
 			article2.Title = "Test Title";
 			
-			IUniqueSaveStrategy strategy = new Business.UniqueSaveStrategy();
+			ISaveStrategy strategy = UniqueSaveStrategy.New<TestArticle>(false);
 			
 			strategy.Save(article);
 			

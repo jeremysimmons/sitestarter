@@ -65,7 +65,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		
 		#region New functions
 		/// <summary>
-		/// Creates a new strategy for authorising the updateing of the specified type.
+		/// Creates a new strategy for authorising the updating of the specified type.
 		/// </summary>
 		static public IAuthoriseUpdateStrategy New<T>()
 		{
@@ -73,13 +73,37 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		}
 		
 		/// <summary>
-		/// Creates a new strategy for authorising the updateing the specified type.
+		/// Creates a new strategy for authorising the updating the specified type.
 		/// </summary>
 		/// <param name="typeName">The short name of the type involved in the strategy.</param>
 		static public IAuthoriseUpdateStrategy New(string typeName)
 		{
 			return StrategyState.Strategies.Creator.New<IAuthoriseUpdateStrategy>("AuthoriseUpdate", typeName);
 		}
+		
+		// TODO: Remove. Shouldn't be needed
+		/*/// <summary>
+		/// Creates a new strategy for authorising the updating of the specified type.
+		/// </summary>
+		/// <param name="requireAuthorisation">A value indicating whether the strategy requires authorisation.</param>
+		static public IAuthoriseUpdateStrategy New<T>(bool requireAuthorisation)
+		{
+			IAuthoriseUpdateStrategy strategy = StrategyState.Strategies.Creator.New<IAuthoriseUpdateStrategy>("AuthoriseUpdate", typeof(T).Name);
+			strategy.RequireAuthorisation = requireAuthorisation;
+			return strategy;
+		}
+		
+		/// <summary>
+		/// Creates a new strategy for authorising the updating the specified type.
+		/// </summary>
+		/// <param name="typeName">The short name of the type involved in the strategy.</param>
+		/// <param name="requireAuthorisation">A value indicating whether the strategy requires authorisation.</param>
+		static public IAuthoriseUpdateStrategy New(string typeName, bool requireAuthorisation)
+		{
+			IAuthoriseUpdateStrategy strategy = StrategyState.Strategies.Creator.New<IAuthoriseUpdateStrategy>("AuthoriseUpdate", typeName);
+			strategy.RequireAuthorisation = requireAuthorisation;
+			return strategy;
+		}*/
 		#endregion
 
 	}

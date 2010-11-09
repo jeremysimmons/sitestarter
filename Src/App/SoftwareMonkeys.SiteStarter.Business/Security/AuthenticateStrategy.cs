@@ -25,9 +25,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 			parameters.Add("Username", username);
 			parameters.Add("Password", encryptedPassword);
 			
-			IRetrieveStrategy strategy = RetrieveStrategy.New<User>();
-			// Disable the authorisation here because it's being used behind the scenes and the retrieved entity is not accessible to the user
-			strategy.RequireAuthorisation = false;
+			IRetrieveStrategy strategy = RetrieveStrategy.New<User>(false);
 			
 			User user = strategy.Retrieve<User>(parameters);
 			

@@ -48,7 +48,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			// Ensure that the updated article hasn't been committed yet
 			Assert.AreEqual(1, foundArticles.Length, "Invalid number found.");
 			
-			IUniqueUpdateStrategy strategy = new Business.UniqueUpdateStrategy();
+			IUpdateStrategy strategy = UniqueUpdateStrategy.New<TestArticle>(false);
 			
 			bool articleWasUpdated = strategy.Update(article3);
 			

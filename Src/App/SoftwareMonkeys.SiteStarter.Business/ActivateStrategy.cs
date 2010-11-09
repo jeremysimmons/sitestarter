@@ -18,7 +18,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// Activates the provided entity by retrieving the corresponding references.
 		/// </summary>
 		/// <param name="entity">The entity to activate.</param>
-		public void Activate(SoftwareMonkeys.SiteStarter.Entities.IEntity entity)
+			public virtual void Activate(SoftwareMonkeys.SiteStarter.Entities.IEntity entity)
 		{
 			DataAccess.Data.Activator.Activate(entity);
 		}
@@ -28,7 +28,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="entity">The entity to activate.</param>
 		/// <param name="propertyName">The name of the property to activate.</param>
-		public void Activate(SoftwareMonkeys.SiteStarter.Entities.IEntity entity, string propertyName)
+		public virtual void Activate(SoftwareMonkeys.SiteStarter.Entities.IEntity entity, string propertyName)
 		{
 			DataAccess.Data.Activator.Activate(entity, propertyName);
 		}
@@ -37,7 +37,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// Activates the provided entities by retrieving the corresponding references.
 		/// </summary>
 		/// <param name="entities">The entities to activate.</param>
-		public void Activate(SoftwareMonkeys.SiteStarter.Entities.IEntity[] entities)
+		public virtual void Activate(SoftwareMonkeys.SiteStarter.Entities.IEntity[] entities)
 		{
 			DataAccess.Data.Activator.Activate(entities);
 		}
@@ -47,12 +47,36 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="entities">The entities to activate.</param>
 		/// <param name="propertyName">The name of the property to activate.</param>
-		public void Activate(SoftwareMonkeys.SiteStarter.Entities.IEntity[] entities, string propertyName)
+		public virtual void Activate(SoftwareMonkeys.SiteStarter.Entities.IEntity[] entities, string propertyName)
 		{
 			foreach (IEntity entity in entities)
 			{
 				DataAccess.Data.Activator.Activate(entity, propertyName);
 			}
+		}
+		
+		
+		/// <summary>
+		/// Activates the specified property of the provided entities by retrieving the corresponding references.
+		/// </summary>
+		/// <param name="entities">The entities to activate.</param>
+		/// <param name="depth">The number of levels to activate.</param>
+		public virtual void Activate(SoftwareMonkeys.SiteStarter.Entities.IEntity[] entities, int depth)
+		{
+			foreach (IEntity entity in entities)
+			{
+				DataAccess.Data.Activator.Activate(entity, depth);
+			}
+		}
+		
+		/// <summary>
+		/// Activates the specified property of the provided entity by retrieving the corresponding references.
+		/// </summary>
+		/// <param name="entity">The entity to activate.</param>
+		/// <param name="depth">The number of levels to activate.</param>
+		public virtual void Activate(SoftwareMonkeys.SiteStarter.Entities.IEntity entity, int depth)
+		{
+				DataAccess.Data.Activator.Activate(entity, depth);
 		}
 		
 		#region New functions

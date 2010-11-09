@@ -15,7 +15,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			TestArticle article = new TestArticle();
 			article.ID = Guid.NewGuid();
 			
-			IDeleteStrategy strategy = new DeleteStrategy();
+			IDeleteStrategy strategy = DeleteStrategy.New<TestArticle>(false);
 			
 			Data.DataAccess.Data.Saver.Save(article);
 			

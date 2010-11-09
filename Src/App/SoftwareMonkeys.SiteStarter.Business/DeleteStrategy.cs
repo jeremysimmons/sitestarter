@@ -19,7 +19,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// Deletes the provided entity.
 		/// </summary>
 		/// <param name="entity">The entity to delete.</param>
-		public void Delete(IEntity entity)
+		public virtual void Delete(IEntity entity)
 		{
 			if (entity == null)
 				throw new ArgumentNullException("entity");
@@ -47,6 +47,29 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		static public IDeleteStrategy New(string typeName)
 		{
 			return StrategyState.Strategies.Creator.NewDeleter(typeName);
+		}
+		
+		/// <summary>
+		/// Creates a new strategy for deleting the specified type.
+		/// </summary>
+		/// <param name="requiresAutorisation">A value indicating whether or not the strategy requires authorisation.</param>
+		static public IDeleteStrategy New<T>(bool requiresAuthorisation)
+		{
+			IDeleteStrategy strategy = StrategyState.Strategies.Creator.NewDeleter(typeof(T).Name);
+			strategy.RequireAuthorisation = false;
+			return strategy;
+		}
+		
+		/// <summary>
+		/// Creates a new strategy for deleting the specified type.
+		/// </summary>
+		/// <param name="typeName">The short name of the type involved in the strategy.</param>
+		/// <param name="requiresAutorisation">A value indicating whether or not the strategy requires authorisation.</param>
+		static public IDeleteStrategy New(string typeName, bool requiresAuthorisation)
+		{
+			IDeleteStrategy strategy = StrategyState.Strategies.Creator.NewDeleter(typeName);
+			strategy.RequireAuthorisation = false;
+			return strategy;
 		}
 		#endregion
 	}

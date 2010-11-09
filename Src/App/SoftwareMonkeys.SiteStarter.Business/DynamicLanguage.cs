@@ -21,6 +21,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			ResourceSet resources = GetResourceSet(relativeType, key);
 			
+			if (resources == null)
+				throw new Exception("No resource set found for key '" + key + "'.");
+			
 			string output = resources.GetString(key);
 			
 			if (output == null || output == String.Empty)
@@ -38,6 +41,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			
 			ResourceSet resources = GetResourceSet(key);
+			
+			if (resources == null)
+				throw new Exception("No resource set found for key '" + key + "'.");
 			
 			string output = resources.GetString(key);
 			
