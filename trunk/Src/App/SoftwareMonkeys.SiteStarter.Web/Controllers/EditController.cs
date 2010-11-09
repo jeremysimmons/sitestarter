@@ -12,7 +12,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	/// <summary>
 	/// Used to control standard edit entity projections.
 	/// </summary>
-	public class EditEntityController : BaseController
+	[Controller("Edit", "IEntity")]
+	public class EditController : BaseController
 	{
 		private IRetrieveStrategy retriever;
 		/// <summary>
@@ -66,7 +67,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		}
 		
 		
-		public EditEntityController()
+		public EditController()
 		{
 		}
 		
@@ -218,9 +219,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			return isAuthorised;
 		}
 		
-		public static EditEntityController CreateController(IControllable container, Type type)
+		public static EditController New(IControllable container, Type type)
 		{
-			EditEntityController controller = new EditEntityController();
+			EditController controller = ControllerState.Controllers.Creator.NewEditor(type.Name);
 			
 			controller.Container = container;
 			controller.Type = type;

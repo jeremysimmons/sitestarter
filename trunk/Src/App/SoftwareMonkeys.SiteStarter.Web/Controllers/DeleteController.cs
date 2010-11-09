@@ -11,7 +11,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	/// <summary>
 	/// Used to control the operation of deleting an entity.
 	/// </summary>
-	public class DeleteEntityController : BaseController
+	[Controller("Delete", "IEntity")]
+	public class DeleteController : BaseController
 	{
 		private IRetrieveStrategy retriever;
 		public IRetrieveStrategy Retriever
@@ -41,7 +42,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			set { deleter = value; }
 		}
 		
-		public DeleteEntityController()
+		public DeleteController()
 		{
 		}
 		
@@ -66,7 +67,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				AppLogger.Debug("Done");
 				
 				// Display the result
-				Result.Display(Container.GetTextItem(entity.GetType().Name + "Deleted"));
+				Result.Display(DynamicLanguage.GetEntityText("EntityDeleted", entity.ShortTypeName));
 			}
 		}
 		
@@ -130,9 +131,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			return entity;
 		}
 		
-		public static DeleteEntityController CreateController(IControllable container, Type type)
+		public static DeleteController New(IControllable container, Type type)
 		{
-			DeleteEntityController controller = new DeleteEntityController();
+			DeleteController controller = ControllerState.Controllers.Creator.NewDeleter(type.Name);
 			
 			controller.Container = container;
 			controller.Type = type;
