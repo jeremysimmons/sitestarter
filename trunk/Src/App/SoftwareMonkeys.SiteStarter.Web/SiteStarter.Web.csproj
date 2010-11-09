@@ -63,11 +63,25 @@
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Controllers\BaseController.cs" />
-    <Compile Include="Controllers\CreateEntityController.cs" />
-    <Compile Include="Controllers\DeleteEntityController.cs" />
-    <Compile Include="Controllers\EditEntityController.cs" />
-    <Compile Include="Controllers\IndexEntityController.cs" />
-    <Compile Include="Controllers\ViewEntityController.cs" />
+    <Compile Include="Controllers\BaseControllerScanner.cs" />
+    <Compile Include="Controllers\ControllerAttribute.cs" />
+    <Compile Include="Controllers\ControllerCreator.cs" />
+    <Compile Include="Controllers\ControllerFileNamer.cs" />
+    <Compile Include="Controllers\ControllerInfo.cs" />
+    <Compile Include="Controllers\ControllerLoader.cs" />
+    <Compile Include="Controllers\ControllerLocator.cs" />
+    <Compile Include="Controllers\ControllerNotFoundException.cs" />
+    <Compile Include="Controllers\ControllerSaver.cs" />
+    <Compile Include="Controllers\ControllerScanner.cs" />
+    <Compile Include="Controllers\ControllersInitializer.cs" />
+    <Compile Include="Controllers\ControllerState.cs" />
+    <Compile Include="Controllers\ControllerStateCollection.cs" />
+    <Compile Include="Controllers\CreateController.cs" />
+    <Compile Include="Controllers\DeleteController.cs" />
+    <Compile Include="Controllers\EditController.cs" />
+    <Compile Include="Controllers\IController.cs" />
+    <Compile Include="Controllers\IndexController.cs" />
+    <Compile Include="Controllers\ViewController.cs" />
     <Compile Include="Data\DataProviderInitializer.cs" />
     <Compile Include="DynamicLanguage.cs" />
     <Compile Include="FileMapper.cs" />
@@ -79,11 +93,14 @@
     <Compile Include="Projections\BaseDeleteProjection.cs" />
     <Compile Include="Projections\BaseIndexProjection.cs" />
     <Compile Include="Projections\BaseProjection.cs" />
-    <Compile Include="Projections\BaseProjectionScanner.cs" />
+    <Compile Include="Projections\BaseProjectionScanner.cs">
+    </Compile>
     <Compile Include="Projections\BaseViewProjection.cs" />
+    <Compile Include="Projections\BaseXmlIndexProjection.cs" />
     <Compile Include="Projections\ControllableProjection.cs" />
     <Compile Include="Projections\IProjection.cs" />
     <Compile Include="Projections\ProjectionFileNamer.cs" />
+    <Compile Include="Projections\ProjectionFormat.cs" />
     <Compile Include="Projections\ProjectionInfo.cs" />
     <Compile Include="Projections\ProjectionLoader.cs" />
     <Compile Include="Projections\ProjectionLocator.cs" />
@@ -93,6 +110,7 @@
     <Compile Include="Projections\ProjectionsInitializer.cs" />
     <Compile Include="Projections\ProjectionStateCollection.cs" />
     <Compile Include="Projections\ProjectionState.cs" />
+    <Compile Include="Projections\XmlProjectionRenderer.cs" />
     <Compile Include="Properties\Language.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
