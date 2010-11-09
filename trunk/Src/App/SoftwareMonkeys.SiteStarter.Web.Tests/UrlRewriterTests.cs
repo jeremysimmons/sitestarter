@@ -102,7 +102,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
 
             string original = fullApplicationUrl + "/TestType/TestCommand.aspx";
 
-            string expected = applicationPath + "/Projector.aspx?a=TestCommand&t=TestType";
+            string expected = applicationPath + "/Projector.aspx?a=TestCommand&t=TestType&f=Html";
 
             IFileMapper fileMapper = new MockFileMapper(this, TestUtilities.GetTestingPath(this));
             
@@ -125,7 +125,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
 
             string original = fullApplicationUrl + "/TestType/TestCommand/ID/" + entityID + ".aspx";
 
-            string expected = applicationPath + "/Projector.aspx?a=TestCommand&t=TestType&TestType-ID=" + entityID;
+            string expected = applicationPath + "/Projector.aspx?a=TestCommand&t=TestType&f=Html&TestType-ID=" + entityID;
 
             IFileMapper fileMapper = new MockFileMapper(this, TestUtilities.GetTestingPath(this));
             
@@ -151,7 +151,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
 
             string original = fullApplicationUrl + "/TestType/TestCommand/Name/" + entityName + ".aspx";
 
-            string expected = applicationPath + "/Projector.aspx?a=TestCommand&t=TestType&TestType-Name=" + entityName;
+            string expected = applicationPath + "/Projector.aspx?a=TestCommand&t=TestType&f=Html&TestType-Name=" + entityName;
 
             IFileMapper fileMapper = new MockFileMapper(this, TestUtilities.GetTestingPath(this));
             

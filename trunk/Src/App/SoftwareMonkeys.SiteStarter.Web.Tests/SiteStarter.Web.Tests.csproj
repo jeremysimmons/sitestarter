@@ -125,9 +125,9 @@
       <Project>AD977DB1-879A-476C-A74A-FC2E0EC98F0A</Project>
       <Name>SiteStarter.State.Tests</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Tests\SiteStarter.Tests.csproj">
-      <Project>3109EA47-5620-4C75-93E2-A552FC75EB8B</Project>
-      <Name>SiteStarter.Tests</Name>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.State\SiteStarter.State.csproj">
+      <Project>{34129651-3B9F-4A0D-AEBF-7DE2098DD98F}</Project>
+      <Name>SiteStarter.State</Name>
     </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Tests\SiteStarter.Tests.csproj">
       <Project>3109EA47-5620-4C75-93E2-A552FC75EB8B</Project>
@@ -139,9 +139,12 @@
     </ProjectReference>
     <None Include="WebControls\_svn\entries" />
     <Compile Include="BaseWebTestFixture.cs" />
-    <Compile Include="Controllers\IndexEntityControllerTests.cs" />
-    <Compile Include="Controllers\ViewEntityControllerTests.cs" />
+    <Compile Include="Controllers\ControllerLocatorTests.cs" />
+    <Compile Include="Controllers\ControllerScannerTests.cs" />
+    <Compile Include="Controllers\IndexControllerTests.cs" />
+    <Compile Include="Controllers\ViewControllerTests.cs" />
     <Compile Include="MockUrlCreator.cs" />
+    <Compile Include="Projections\ProjectionLocatorTests.cs" />
     <Compile Include="Projections\ProjectionScannerTests.cs" />
     <Compile Include="SetupCheckerTests.cs" />
     <Compile Include="UrlCreatorTests.cs" />
