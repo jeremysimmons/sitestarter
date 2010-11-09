@@ -166,7 +166,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
 			
 			string url = creator.CreateStandardUrl(action, typeName);
 
-			string expectedUrl = "/Test/Projector.aspx?a=" + creator.PrepareForUrl(action) + "&t=" + creator.PrepareForUrl(typeName);
+			string expectedUrl = "/Test/Projector.aspx?a=" + creator.PrepareForUrl(action) + "&t=" + creator.PrepareForUrl(typeName) + "&f=Html";
 			
 			Assert.AreEqual(expectedUrl, url, "The URL doesn't match what's expected.");
 		}
@@ -190,7 +190,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
 			
 			string url = creator.CreateStandardUrl(action, typeName, propertyName, dataKey);
 			
-			string expectedUrl = "/Test/Projector.aspx?a=" + creator.PrepareForUrl(action) + "&t=" + creator.PrepareForUrl(typeName) + "&" + typeName + "-" + propertyName + "=" + creator.PrepareForUrl(dataKey);
+			string expectedUrl = "/Test/Projector.aspx?a=" + creator.PrepareForUrl(action) + "&t=" + creator.PrepareForUrl(typeName) + "&f=Html&" + typeName + "-" + propertyName + "=" + creator.PrepareForUrl(dataKey);
 			
 			Assert.AreEqual(expectedUrl, url, "The URL doesn't match what's expected.");
 		
@@ -204,12 +204,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
 			
 			UrlCreator creator = new UrlCreator(applicationPath, currentUrl);
 			
-			string moduleID = "MockModule";
-			string xsltFile = "TestFile";
+			string action = "TestAction";
+			string type = "TestType";
 			
-			string url = creator.CreateXsltUrl(moduleID, xsltFile);
+			string url = creator.CreateXsltUrl(action, type);
 			
-			string expected = "/Test/Modules/" + moduleID + "/Xslt/" + xsltFile + ".xslt";
+			string expected = "/Test/" + type + "/" + action + ".xslt.aspx";
 			
 			Assert.AreEqual(expected, url, "The returned URL doesn't match what's expected.");
 		}
