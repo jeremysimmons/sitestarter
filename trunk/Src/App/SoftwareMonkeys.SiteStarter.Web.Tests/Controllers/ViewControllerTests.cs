@@ -9,7 +9,7 @@ using SoftwareMonkeys.SiteStarter.Web.Projections;
 namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 {
 	[TestFixture]
-	public class ViewEntityControllerTests : BaseWebTestFixture
+	public class ViewControllerTests : BaseWebTestFixture
 	{
 		[Test]
 		public void Test_View_EntityProvided()
@@ -29,7 +29,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 			BaseViewProjection page = new BaseViewProjection();
 
 			
-			ViewEntityController controller = ViewEntityController.CreateController(page, typeof(TestRecord));
+			ViewController controller = ViewController.New(page, typeof(TestRecord));
 			
 			
 			if (controller == null)

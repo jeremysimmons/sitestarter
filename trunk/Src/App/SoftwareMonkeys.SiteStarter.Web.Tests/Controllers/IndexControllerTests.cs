@@ -16,7 +16,7 @@ using SoftwareMonkeys.SiteStarter.Web.Projections;
 namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 {
 	[TestFixture]
-	public class IndexEntityControllerTests : BaseWebTestFixture
+	public class IndexControllerTests : BaseWebTestFixture
 	{
 		[Test]
 		public void Test_Index_Default()
@@ -57,14 +57,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 			int pageIndex = 0;
 			
 			
-			IndexEntityController controller = IndexEntityController.CreateController(page, typeof(TestRecord), false);
+			IndexController controller = IndexController.New(page, typeof(TestRecord), false);
 			
 			
 			if (controller == null)
 				throw new Exception("Controller is null.");
 			
-			controller.CurrentPageIndex = pageIndex;
-			controller.PageSize = 20;
+			//controller.CurrentPageIndex = pageIndex;
+			//controller.PageSize = 20;
 			
 			controller.Index();
 			
@@ -105,7 +105,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 			
 			
 			
-			IndexEntityController controller = IndexEntityController.CreateController(page, typeof(TestRecord), true);
+			IndexController controller = IndexController.New(page, typeof(TestRecord), true);
 			//controller.Vi
 			
 			if (controller == null)
@@ -155,7 +155,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 			
 			
 			
-			IndexEntityController controller = IndexEntityController.CreateController(page, typeof(TestRecord), true);
+			IndexController controller = IndexController.New(page, typeof(TestRecord), true);
 			//controller.Vi
 			
 			if (controller == null)
@@ -202,7 +202,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 			
 			BaseIndexProjection page = new BaseIndexProjection();
 			
-			IndexEntityController controller = IndexEntityController.CreateController(page, typeof(TestRecord), true);
+			IndexController controller = IndexController.New(page, typeof(TestRecord), true);
 			//controller.Vi
 			
 			if (controller == null)
@@ -224,7 +224,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 				DataAccess.Data.Deleter.Delete(record);
 		}
 		
-		/*public IndexEntityController CreateIndexController()
+		/*public IndexController CreateIndexController()
 		{
 			MultiView multiView = new MultiView();
 
@@ -243,7 +243,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 			
 			indexView.Controls.Add(grid);
 			
-			IndexEntityController controller = new IndexEntityController(indexView,grid);
+			IndexController controller = new IndexController(indexView,grid);
 			
 			return controller;
 		}*/
