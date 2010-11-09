@@ -59,7 +59,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			
 			using (LogGroup logGroup = AppLogger.StartGroup("Finding projections by scanning the attributes of the available type.", NLog.LogLevel.Debug))
 			{
-				foreach (string file in Directory.GetFiles(FileNamer.ProjectionsDirectoryPath, "*.ascx"))
+				foreach (string file in Directory.GetFiles(FileNamer.ProjectionsDirectoryPath))
 				{
 					if (IsProjection(file))
 					{
@@ -82,6 +82,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		public ProjectionInfo[] ExtractProjectionInfo(string filePath)
 		{
 			string shortName = Path.GetFileNameWithoutExtension(filePath);
+			string extension = Path.GetExtension(filePath).Trim('.');
 			
 			string[] actions = ExtractActions(shortName);
 			
@@ -93,17 +94,65 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				.Replace(@"\", "/")
 				.Trim('/');
 			
+			
 			foreach (string action in actions)
 			{
 				ProjectionInfo info = new ProjectionInfo();
 				info.Action = action;
 				info.TypeName = typeName;
 				info.ProjectionFilePath = relativeFilePath;
+				info.Format = GetFormatFromFileName(filePath);
+				//info.Format = ConvertSubExtensionToFormat(subExtension);
 				
 				projections.Add(info);
 			}
 			
 			return projections.ToArray();
+		}
+		
+		/// <summary>
+		/// Retrieves the format of the projection with the provided file name.
+		/// </summary>
+		/// <param name="fileName"></param>
+		/// <returns></returns>
+		public ProjectionFormat GetFormatFromFileName(string fileName)
+		{
+			string shortFileName = Path.GetFileName(fileName);
+			string extension = shortFileName.Substring
+				(
+					shortFileName.IndexOf('.'),
+					shortFileName.Length - shortFileName.IndexOf('.')
+				);
+			
+			extension = extension.Trim('.');
+			
+			string subExtension = extension;
+			
+			if (extension.IndexOf(".") > -1)
+			{
+				subExtension = extension.Substring(0, extension.IndexOf("."));
+			}
+			
+			return ConvertSubExtensionToFormat(subExtension);
+		}
+		
+		/// <summary>
+		/// Converts a sub extension such as 'xml' from '*.xml.ascx' into a projection format such as ProjectionFormat.Xml.
+		/// </summary>
+		/// <param name="subExtension"></param>
+		/// <returns></returns>
+		private ProjectionFormat ConvertSubExtensionToFormat(string subExtension)
+		{
+			switch (subExtension.Trim('.').ToLower())
+			{
+				case "xml":
+					return ProjectionFormat.Xml;
+				case "xslt":
+					return ProjectionFormat.Xslt;
+				case "html":
+				default:
+					return ProjectionFormat.Html;
+			}
 		}
 		
 		/// <summary>
@@ -159,13 +208,22 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			string ext = Path.GetExtension(fileName);
 			string shortFileName = Path.GetFileNameWithoutExtension(fileName);
 			
-			// File extention
-			if (ext.ToLower() != ".ascx")
-				return false;
-			
 			// - in file name
 			if (shortFileName.IndexOf('-') == -1)
 				return false;
+			
+			// File extension
+			if (ext.ToLower() == ".ascx")
+				return true;
+			
+			// File extension
+			if (ext.ToLower() == ".xslt")
+				return true;
+			
+			// File extension
+			if (ext.ToLower() == ".html")
+				return true;
+			
 			
 			return true;
 		}

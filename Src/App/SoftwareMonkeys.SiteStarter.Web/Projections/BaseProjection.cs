@@ -6,7 +6,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 	/// <summary>
 	/// Defines the base of all web projections that can be used in the application.
 	/// </summary>
-	public class BaseProjection : UserControl
+	public class BaseProjection : UserControl, IProjection
 	{
 		/// <summary>
 		/// Gets/sets the title displayed in the window.

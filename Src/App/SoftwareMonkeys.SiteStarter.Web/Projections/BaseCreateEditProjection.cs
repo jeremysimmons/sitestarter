@@ -23,21 +23,21 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			set { dataSource = value; }
 		}
 		
-		private CreateEntityController createController;
+		private CreateController createController;
 		/// <summary>
 		/// Gets the controller responsible for the create process.
 		/// </summary>
-		public CreateEntityController CreateController
+		public CreateController CreateController
 		{
 			get {
 				return createController; }
 		}
 		
-		private EditEntityController editController;
+		private EditController editController;
 		/// <summary>
 		/// Gets the controller responsible for the edit process.
 		/// </summary>
-		public EditEntityController EditController
+		public EditController EditController
 		{
 			get {
 				return editController; }
@@ -75,8 +75,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			DefaultType = defaultType;
 			Form = form;
 			
-			createController = CreateEntityController.CreateController(this, defaultType);
-			editController = EditEntityController.CreateController(this, defaultType);
+			createController = CreateController.New(this, defaultType);
+			editController = EditController.New(this, defaultType);
 			
 			Form.EntityCommand += new EntityFormEventHandler(Form_EntityCommand);
 		}
@@ -314,7 +314,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				
 				success = EditController.Update(DataSource);
 				
-				if (success)
+				if (success && AutoNavigate)
 					NavigateAfterUpdate();
 			}
 			return success;
@@ -332,7 +332,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			{
 				success = EditController.Update(entity);
 				
-				if (success)
+				if (success && AutoNavigate)
 					NavigateAfterUpdate();
 			}
 			return success;

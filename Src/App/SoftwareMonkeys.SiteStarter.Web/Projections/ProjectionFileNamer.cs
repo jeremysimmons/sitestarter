@@ -74,7 +74,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			if (projection.Action == null)
 				throw new ArgumentNullException("projection.Action", "No action has been set to the Action property.");
 			
-			string name = projection.TypeName + "-" + projection.Action + ".projection";
+			string name = projection.TypeName + "-" + projection.Action + "." + projection.Format.ToString().ToLower() + ".projection";
 			
 			return name;
 		}

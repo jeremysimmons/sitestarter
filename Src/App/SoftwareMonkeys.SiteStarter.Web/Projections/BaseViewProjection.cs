@@ -13,11 +13,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 	/// </summary>
 	public class BaseViewProjection : ControllableProjection
 	{
-		private ViewEntityController controller;
+		private ViewController controller;
 		/// <summary>
 		/// Gets the controller responsible for this page.
 		/// </summary>
-		public ViewEntityController Controller
+		public ViewController Controller
 		{
 			get {
 				return controller; }
@@ -56,7 +56,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <param name="form">The form used to display entity data.</param>
 		public void Initialize(Type defaultType, EntityForm form)
 		{
-			controller = ViewEntityController.CreateController(this, defaultType);
+			controller = ViewController.New(this, defaultType);
 			Form = form;
 			Form.EntityCommand += new EntityFormEventHandler(Form_EntityCommand);
 		}

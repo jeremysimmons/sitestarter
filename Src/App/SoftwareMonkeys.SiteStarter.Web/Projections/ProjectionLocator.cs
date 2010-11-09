@@ -42,23 +42,18 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// </summary>
 		/// <param name="action">The action that is to be performed by the projection.</param>
 		/// <param name="typeName">The short type name of the entity that is involved in the action.</param>
+		/// <param name="format">The output format of the projection to locate.</param>
 		/// <returns>The projection info for the specified scenario.</returns>
-		public ProjectionInfo Locate(string action, string typeName)
+		public ProjectionInfo Locate(string action, string typeName, ProjectionFormat format)
 		{
 			// Get the specified type
 			Type type = null;
-			try
-			{
-				Entities.EntitiesUtilities.GetType(typeName);
-			}
-			catch
-			{
-				// TODO: Check if this can be done without an exception occurring at all
-				// Ignore
-			}
+			
+			if (Entities.EntitiesUtilities.IsTypeRegistered(typeName))
+				type = Entities.EntitiesUtilities.GetType(typeName);
 			
 			// Create a direct projection key for the specified type
-			string key = Projections.GetProjectionKey(action, typeName);
+			string key = Projections.GetProjectionKey(action, typeName, format);
 			
 			// Create the projection info variable to hold the return value
 			ProjectionInfo projectionInfo = null;
@@ -71,7 +66,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			// If not then navigate up the heirarchy looking for a matching projection
 			else if (type != null)
 			{
-				projectionInfo = LocateFromHeirarchy(action, type);
+				projectionInfo = LocateFromHeirarchy(action, type, format);
 			}
 			
 			return projectionInfo;
@@ -82,13 +77,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// </summary>
 		/// <param name="action">The action that is to be performed by the projection.</param>
 		/// <param name="type">The type that is involved in the action.</param>
+		/// <param name="format">The output format of the projection to location.</param>
 		/// <returns>The projection info for the specified scenario.</returns>
-		public ProjectionInfo LocateFromHeirarchy(string action, Type type)
+		public ProjectionInfo LocateFromHeirarchy(string action, Type type, ProjectionFormat format)
 		{
-			ProjectionInfo projectionInfo = LocateFromInterfaces(action, type);
+			ProjectionInfo projectionInfo = LocateFromInterfaces(action, type, format);
 			
 			if (projectionInfo == null)
-				projectionInfo = LocateFromBaseTypes(action, type);
+				projectionInfo = LocateFromBaseTypes(action, type, format);
 			
 			return projectionInfo;
 		}
@@ -99,8 +95,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// </summary>
 		/// <param name="action">The action that is to be performed by the projection.</param>
 		/// <param name="type">The type that is involved in the action.</param>
+		/// <param name="format">The output format of the projection to location.</param>
 		/// <returns>The projection info for the specified scenario.</returns>
-		public ProjectionInfo LocateFromInterfaces(string action, Type type)
+		public ProjectionInfo LocateFromInterfaces(string action, Type type, ProjectionFormat format)
 		{
 			ProjectionInfo projectionInfo = null;
 			
@@ -111,7 +108,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			{
 				Type interfaceType = interfaceTypes[i];
 				
-				string key = Projections.GetProjectionKey(action, interfaceType.Name);
+				string key = Projections.GetProjectionKey(action, interfaceType.Name, format);
 				
 				if (Projections.ProjectionExists(key))
 				{
@@ -129,8 +126,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// </summary>
 		/// <param name="action">The action that is to be performed by the projection.</param>
 		/// <param name="type">The type that is involved in the action.</param>
+		/// <param name="format">The output format of the projection to locate.</param>
 		/// <returns>The projection info for the specified scenario.</returns>
-		public ProjectionInfo LocateFromBaseTypes(string action, Type type)
+		public ProjectionInfo LocateFromBaseTypes(string action, Type type, ProjectionFormat format)
 		{
 			ProjectionInfo projectionInfo = null;
 			
@@ -140,7 +138,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			{
 				Type nextType = navigator.Next();
 				
-				string key = Projections.GetProjectionKey(action, nextType.Name);
+				string key = Projections.GetProjectionKey(action, nextType.Name, format);
 				
 				// If a projection exists for the base type then use it
 				if (Projections.ProjectionExists(key))
