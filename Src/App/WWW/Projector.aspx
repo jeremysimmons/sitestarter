@@ -5,14 +5,11 @@
     
     private void Page_Load(object sender, EventArgs e)
     {
-        if (QueryStrings.Module != String.Empty && QueryStrings.ControlID != String.Empty)
-        {            
             if (!Projector.FoundProjection)
             {
             	// TODO: Review whether a friendly error should be displayed
                 Response.Redirect("Default.aspx");
             }
-        }
     }
 
 
