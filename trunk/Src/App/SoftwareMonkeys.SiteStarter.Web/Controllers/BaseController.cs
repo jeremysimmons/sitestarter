@@ -12,9 +12,9 @@ using SoftwareMonkeys.SiteStarter.Web.Properties;
 namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 {
 	/// <summary>
-	/// Description of BaseController.
+	/// 
 	/// </summary>
-	public class BaseController : IController
+	public abstract class BaseController : IController
 	{		
 		/// <summary>
 		/// Gets/sets the title displayed in the window.

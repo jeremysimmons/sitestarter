@@ -89,7 +89,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			ControllerAttribute attribute = null;
 			foreach (Attribute a in type.GetCustomAttributes(true))
 			{
-				if (a is ControllerAttribute)
+				if (a.GetType().FullName == typeof(ControllerAttribute).FullName)
 				{
 					attribute = (ControllerAttribute)a;
 					break;
