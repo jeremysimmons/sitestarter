@@ -30,10 +30,11 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <returns>An array of full file paths to the available assemblies.</returns>
 		public string[] GetAssemblyPaths()
-		{
+		{			
 			List<string> list = new List<string>();
 			
-			string binPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+			string binPath = Configuration.Config.Application.PhysicalApplicationPath
+				+ Path.DirectorySeparatorChar + "bin";
 			
 			foreach (string file in Directory.GetFiles(binPath, "*.dll"))
 			{
@@ -42,6 +43,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			return list.ToArray();
 		}
+		
 		
 		/// <summary>
 		/// Finds all the strategies in the available assemblies.
@@ -58,11 +60,11 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				
 				foreach (string assemblyPath in AssemblyPaths)
 				{
-					Assembly assembly = Assembly.LoadFile(assemblyPath);
+					Assembly assembly = Assembly.LoadFrom(assemblyPath);
 					
 					foreach (Type type in assembly.GetTypes())
 					{
-						if  (IsStrategy(type))
+						if (IsStrategy(type))
 						{
 							AppLogger.Debug("Found strategy type: " + type.ToString());
 							
@@ -91,22 +93,27 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public bool IsStrategy(Type type)
 		{
 			bool matchesInterface = false;
-			bool isNotStrategyInterface = false;
+			bool isNotInterface = false;
+			bool isNotBaseStrategy = false;
 			
 			using (LogGroup logGroup = AppLogger.StartGroup("Checks whether the provided type is a strategy.", NLog.LogLevel.Debug))
 			{
 				AppLogger.Debug("Type: " + type.ToString());
 				
-				matchesInterface = typeof(IStrategy).IsAssignableFrom(type);
+				matchesInterface = typeof(IStrategy).IsAssignableFrom(type)
+					|| type.GetInterface("IStrategy") != null;
 				
-				isNotStrategyInterface = type != typeof(IStrategy);
+				isNotInterface = !type.IsInterface;
+				
+				isNotBaseStrategy = (type != typeof(BaseStrategy));
 				
 				AppLogger.Debug("Matches interface: " + matchesInterface);
-				AppLogger.Debug("Is not strategy interface: " + isNotStrategyInterface);
+				AppLogger.Debug("Is not strategy interface: " + isNotInterface);
 			}
 			
 			return matchesInterface
-				&& isNotStrategyInterface;
+				&& isNotInterface
+				&& isNotBaseStrategy;
 		}
 	}
 }

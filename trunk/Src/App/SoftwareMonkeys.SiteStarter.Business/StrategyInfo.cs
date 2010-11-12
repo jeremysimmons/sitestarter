@@ -97,7 +97,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			StrategyAttribute attribute = null;
 			foreach (Attribute a in type.GetCustomAttributes(true))
 			{
-				if (a is StrategyAttribute)
+				if (a.GetType().FullName == typeof(StrategyAttribute).FullName)
 				{
 					attribute = (StrategyAttribute)a;
 					break;
@@ -109,7 +109,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			Action = attribute.Action;
 			TypeName = attribute.TypeName;
-			StrategyType = type.FullName;
+			StrategyType = type.FullName + ", " + type.Assembly.FullName;
 			Key = attribute.Key;
 		}
 		
