@@ -83,6 +83,7 @@
     <Compile Include="Entities\TestSample.cs" />
     <Compile Include="Entities\TestTask.cs" />
     <Compile Include="Entities\TestUser.cs" />
+    <Compile Include="Entities\Widget.cs" />
     <Compile Include="TestUtilities.cs" />
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration\SiteStarter.Configuration.csproj">
       <Project>{4B83307F-8307-43EF-A176-8AB1CDA78264}</Project>
