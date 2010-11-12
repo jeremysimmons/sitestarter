@@ -71,6 +71,8 @@
     <None Include="Admin\UnitTests.aspx" />
     <None Include="Admin\Update.aspx" />
     <None Include="Admin\UpdateReady.html" />
+    <None Include="Admin\UserRoles.aspx" />
+    <None Include="Admin\Users.aspx" />
     <None Include="Admin\WebSiteSettings.aspx" />
     <None Include="App_GlobalResources\_svn\all-wcprops" />
     <None Include="App_GlobalResources\_svn\entries" />
