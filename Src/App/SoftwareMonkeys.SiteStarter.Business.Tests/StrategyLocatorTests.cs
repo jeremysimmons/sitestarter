@@ -51,5 +51,27 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			
 			Assert.IsNotNull(info, "No strategy info found.");
 		}
+		
+		[Test]
+		public void Test_Locate_CustomOverride()
+		{
+			Widget.RegisterType();
+			
+			string type = "Widget";
+			string action = "Index";
+			
+			StrategyStateNameValueCollection strategies = new StrategyStateNameValueCollection();
+			
+			strategies.Add(new IndexStrategy());
+			strategies.Add(new MockIndexWidgetStrategy());
+			
+			StrategyLocator locator = new StrategyLocator(strategies);
+			
+			StrategyInfo info = locator.Locate(action, type);
+			
+			Assert.IsNotNull(info, "No strategy info found.");
+			
+			Assert.AreEqual(new MockIndexWidgetStrategy().GetType().FullName, info.StrategyType, "Wrong strategy type selected.");
+		}
 	}
 }
