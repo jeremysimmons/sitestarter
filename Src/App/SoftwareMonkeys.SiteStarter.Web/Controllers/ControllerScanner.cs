@@ -44,7 +44,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			List<string> list = new List<string>();
 			
-			string binPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+			string binPath = Configuration.Config.Application.PhysicalApplicationPath
+				+ Path.DirectorySeparatorChar + "bin";
 			
 			foreach (string file in Directory.GetFiles(binPath, "*.dll"))
 			{
@@ -69,7 +70,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				
 				foreach (string assemblyPath in AssemblyPaths)
 				{
-					Assembly assembly = Assembly.LoadFile(assemblyPath);
+					Assembly assembly = Assembly.LoadFrom(assemblyPath);
 					
 					foreach (Type type in assembly.GetTypes())
 					{
@@ -102,8 +103,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		public bool IsController(Type type)
 		{
 			bool matchesInterface = false;
-			bool isNotControllerInterface = false;
-			bool isNotBaseController = false;
+			bool isNotInterface = false;
+			bool isNotAbstract = false;
 			
 			using (LogGroup logGroup = AppLogger.StartGroup("Checks whether the provided type is a controller.", NLog.LogLevel.Debug))
 			{
@@ -111,17 +112,17 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				
 				matchesInterface = (type.GetInterface("IController") != null);
 				
-				isNotControllerInterface = type != typeof(IController);
+				isNotInterface = !type.IsInterface;
 				
-				isNotBaseController = type != typeof(BaseController);
+				isNotAbstract = !type.IsAbstract;
 				
 				AppLogger.Debug("Matches interface: " + matchesInterface);
-				AppLogger.Debug("Is not controller interface: " + isNotControllerInterface);
+				AppLogger.Debug("Is not controller interface: " + isNotInterface);
 			}
 			
 			return matchesInterface
-				&& isNotControllerInterface
-				&& isNotBaseController;
+				&& isNotInterface
+				&& isNotAbstract;
 		}
 	}
 }

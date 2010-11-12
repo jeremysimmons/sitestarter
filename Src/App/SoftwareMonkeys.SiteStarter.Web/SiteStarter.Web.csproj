@@ -83,7 +83,6 @@
     <Compile Include="Controllers\IndexController.cs" />
     <Compile Include="Controllers\ViewController.cs" />
     <Compile Include="Data\DataProviderInitializer.cs" />
-    <Compile Include="DynamicLanguage.cs" />
     <Compile Include="FileMapper.cs" />
     <Compile Include="GuidValidator.cs" />
     <Compile Include="LogWriter.cs" />

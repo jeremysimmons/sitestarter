@@ -49,6 +49,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 
         public static bool UserCan(string action, IEntity[] entities)
         {
+        	if (entities == null)
+        		return true;
         	
         	if (!AuthenticationState.IsAuthenticated)
         		return false;
