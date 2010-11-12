@@ -22,7 +22,7 @@
 	        
 	        OperationManager.StartOperation("ManageUserRoles", IndexView);
 	
-	        UserRole[] roles = UserRoleFactory.Current.GetUserRoles();
+	        UserRole[] roles = IndexStrategy.New<UserRole>().Index<UserRole>();
 	        IndexGrid.DataSource = roles;
 	
 	        Authorisation.EnsureUserCan("View", roles);        
@@ -61,7 +61,7 @@
     {
         // Save the new role
         DataForm.ReverseBind();
-        if (UserRoleFactory.Current.SaveUserRole((UserRole)DataForm.DataSource))
+        if (SaveStrategy.New<UserRole>().Save((UserRole)DataForm.DataSource))
         {
             // Display the result to the role
             Result.Display(Resources.Language.UserRoleSaved);
@@ -86,8 +86,8 @@
 	
 	        // Load the specified role
 	        UserRole role = null;
-	        DataForm.DataSource = role = UserRoleFactory.Current.GetUserRole(roleID);
-	        UserRoleFactory.Current.Activate((UserRole)DataForm.DataSource);
+	        DataForm.DataSource = role = RetrieveStrategy.New<UserRole>().Retrieve<UserRole>("ID", roleID);
+	        ActivateStrategy.New<UserRole>().Activate((UserRole)DataForm.DataSource);
 	
 	        // Bind the form
 	        FormView.DataBind();
@@ -99,15 +99,15 @@
     	using (LogGroup logGroup = AppLogger.StartGroup("Updating the user role on the form.", NLog.LogLevel.Debug))
     	{
 	        // Get a fresh copy of the role object
-	        UserRole role = (UserRole)UserRoleFactory.Current.GetUserRole(((UserRole)DataForm.DataSource).ID);
+	        UserRole role = (UserRole)RetrieveStrategy.New<UserRole>().Retrieve<UserRole>("ID", (UserRole)DataForm.DataSource).ID);
 	        
-	        UserRoleFactory.Current.Activate(role);
+	        ActivateStrategy.New<UserRole>().Activate(role);
 	
 	        // Transfer data from the form to the object
 	        DataForm.ReverseBind(role);
 	        
 	        // Update the role
-	        if (UserRoleFactory.Current.UpdateUserRole(role))
+	        if (UpdateStrategy.New<UserRole>().Update(role))
 	        {
 	        	AppLogger.Debug("Role name not in use. Updating.");
 	        
@@ -136,12 +136,12 @@
 
         Authorisation.EnsureIsInRole("Administrator");
 
-        UserRole role = UserRoleFactory.Current.GetUserRole(roleID);
+        UserRole role = RetrieveStrategy.New<UserRole>().Retrieve<UserRole>("ID", roleID);
 
         Authorisation.EnsureUserCan("Delete", role);        
         
         // Delete the specified role
-        UserRoleFactory.Current.DeleteUserRole(role);
+        DeleteStrategy.New<UserRole>().Delete(role);
 
         // Display the result to the role
         Result.Display(Resources.Language.UserRoleDeleted);
@@ -201,7 +201,7 @@
 
     protected void UsersSelect_DataLoading(object sender, EventArgs e)
     {
-        ((EntitySelect)sender).DataSource = UserFactory.Current.GetUsers();
+        ((EntitySelect)sender).DataSource = IndexStrategy.New<User>().Index<User>();
     }
     #endregion
 </script>
