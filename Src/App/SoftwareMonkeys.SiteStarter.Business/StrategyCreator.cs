@@ -53,6 +53,10 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			using (LogGroup logGroup = AppLogger.StartGroup("Creating a new strategy based on the provided info.", NLog.LogLevel.Debug))
 			{
 				Type strategyType = Type.GetType(strategyInfo.StrategyType);
+				
+				if (strategyType == null)
+					throw new Exception("Strategy type cannot by instantiated: " + strategyInfo.StrategyType);
+				
 				Type entityType = Entities.EntitiesUtilities.GetType(strategyInfo.TypeName);
 				
 				AppLogger.Debug("Strategy type: " + strategyType.FullName);
