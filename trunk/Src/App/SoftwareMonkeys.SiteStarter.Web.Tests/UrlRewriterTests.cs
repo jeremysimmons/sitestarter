@@ -144,8 +144,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
 
             string entityName = "TestProject";
 
-            string entityID = "A1FC7BA3-3832-467f-8989-058BF420D1D9";
-
             string fullApplicationUrl = "http://localhost/SiteStarter";
             string applicationPath = "/SiteStarter";
 

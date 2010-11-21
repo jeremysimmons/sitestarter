@@ -4,6 +4,7 @@ using SoftwareMonkeys.SiteStarter.Web.Controllers;
 using SoftwareMonkeys.SiteStarter.Business.Tests;
 using NUnit.Framework;
 using System.IO;
+using System.Reflection;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 {
@@ -15,9 +16,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 		{
 			string appName = "MockApplication";
 			
+			string[] assemblyPaths = new string[] {
+				Assembly.Load("SoftwareMonkeys.SiteStarter.Web").Location
+			};
+			
 			ControllerScanner scanner = new ControllerScanner();
 			scanner.FileNamer.FileMapper = new MockFileMapper(this, TestUtilities.GetTestingPath(this), appName);
 			scanner.FileNamer.ControllersDirectoryPath = TestUtilities.GetTestApplicationPath(this, appName) + Path.DirectorySeparatorChar + "Controllers";
+			scanner.AssemblyPaths = assemblyPaths;
 			
 			CreateMockControllers(scanner.FileNamer);
 			

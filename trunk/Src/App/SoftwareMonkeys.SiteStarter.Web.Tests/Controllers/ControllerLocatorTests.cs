@@ -34,11 +34,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 			ControllerStateCollection strategies = new ControllerStateCollection();
 			
 			strategies.Add(new ControllerInfo(typeof(CreateController)));
-			strategies.Add(new ControllerInfo(typeof(DeleteController)));
+			strategies.Add(new ControllerInfo(typeof(MockController)));
 			
 			ControllerLocator locator = new ControllerLocator(strategies);
 			
-			ControllerInfo controller = (ControllerInfo)locator.Locate("Delete", "User");
+			ControllerInfo controller = (ControllerInfo)locator.Locate("Mock", "TestUser");
 			
 			Assert.IsNotNull(controller, "No controller found.");
 		}
