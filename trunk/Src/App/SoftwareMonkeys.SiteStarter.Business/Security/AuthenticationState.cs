@@ -59,7 +59,8 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		{
 			User user = AuthenticationState.User;
 			
-			ActivateStrategy.New<User>().Activate(user, "Roles");
+			if (user.Roles == null || user.Roles.Length == 0)
+				ActivateStrategy.New<User>().Activate(user, "Roles");
 			
 			return user.IsInRole(roleName);
 		}

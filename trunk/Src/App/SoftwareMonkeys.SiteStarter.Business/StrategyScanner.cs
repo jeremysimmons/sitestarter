@@ -17,7 +17,10 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		public string[] AssemblyPaths
 		{
-			get { return assemblyPaths; }
+			get {
+				if (assemblyPaths == null || assemblyPaths.Length == 0)
+					assemblyPaths = GetAssemblyPaths();
+				return assemblyPaths; }
 			set { assemblyPaths = value; }
 		}
 		
@@ -54,10 +57,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			List<StrategyInfo> strategies = new List<StrategyInfo>();
 			
 			using (LogGroup logGroup = AppLogger.StartGroup("Finding strategies by scanning the attributes of the available type.", NLog.LogLevel.Debug))
-			{
-				if (AssemblyPaths == null)
-					AssemblyPaths = GetAssemblyPaths();
-				
+			{				
 				foreach (string assemblyPath in AssemblyPaths)
 				{
 					Assembly assembly = Assembly.LoadFrom(assemblyPath);

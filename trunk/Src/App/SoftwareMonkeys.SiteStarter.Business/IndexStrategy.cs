@@ -81,7 +81,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			                                                              new object[] {propertyName, referencedEntityType, referencedEntityID});
 			
 			if (RequireAuthorisation)
-				AuthoriseIndexStrategy.New(type.Name).EnsureAuthorised(entities);
+				AuthoriseIndexStrategy.New(type.Name).EnsureAuthorised(ref entities);
 			
 			return entities;
 		}
@@ -110,7 +110,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			}
 			
 			if (RequireAuthorisation)
-				AuthoriseIndexStrategy.New<T>().EnsureAuthorised<T>(entities);
+				AuthoriseIndexStrategy.New<T>().EnsureAuthorised<T>(ref entities);
 			
 			return entities;
 		}
@@ -138,7 +138,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			T[] entities = list.ToArray();
 			
 			if (RequireAuthorisation)
-				AuthoriseIndexStrategy.New<T>().EnsureAuthorised(entities);
+				AuthoriseIndexStrategy.New<T>().EnsureAuthorised(ref entities);
 			
 			return entities;
 		}
@@ -171,7 +171,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			T[] entities = collection.ToArray();
 			
 			if (RequireAuthorisation)
-				AuthoriseIndexStrategy.New<T>().EnsureAuthorised(entities);
+				AuthoriseIndexStrategy.New<T>().EnsureAuthorised(ref entities);
 			
 			return entities;
 		}
@@ -193,7 +193,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			                                                                                  new object[] {})); // Method arguments);
 			
 			if (RequireAuthorisation)
-				AuthoriseIndexStrategy.New(TypeName).EnsureAuthorised(entities);
+				AuthoriseIndexStrategy.New(TypeName).EnsureAuthorised(ref entities);
 			
 			return entities;
 		}
@@ -217,7 +217,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				                              new object[] {filterValues})); // Method arguments);
 			
 			if (RequireAuthorisation)
-				AuthoriseIndexStrategy.New(TypeName).EnsureAuthorised(entities);
+				AuthoriseIndexStrategy.New(TypeName).EnsureAuthorised(ref entities);
 			
 			return entities;
 		}
@@ -263,7 +263,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			}
 			
 			if (RequireAuthorisation)
-				AuthoriseIndexStrategy.New<T>().EnsureAuthorised(entities);
+				AuthoriseIndexStrategy.New<T>().EnsureAuthorised(ref entities);
 			
 			return entities;
 		}

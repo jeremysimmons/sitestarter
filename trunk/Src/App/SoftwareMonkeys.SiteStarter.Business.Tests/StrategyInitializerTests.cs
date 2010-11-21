@@ -3,6 +3,7 @@ using NUnit.Framework;
 using SoftwareMonkeys.SiteStarter.Tests;
 using System.IO;
 using SoftwareMonkeys.SiteStarter.Tests.Entities;
+using System.Reflection;
 
 namespace SoftwareMonkeys.SiteStarter.Business.Tests
 {
@@ -37,6 +38,12 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		{
 			StrategyInitializer initializer = new StrategyInitializer();
 			initializer.FileNamer.StrategiesDirectoryPath = GetMockStrategiesDirectoryPath(MockApplicationName);
+			
+			string[] assemblyPaths = new string[] {
+				Assembly.Load("SoftwareMonkeys.SiteStarter.Business").Location
+			};
+			
+			initializer.Scanner.AssemblyPaths = assemblyPaths;
 			
 			initializer.Initialize();
 			

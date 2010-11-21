@@ -10,7 +10,6 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 	[Strategy("AuthoriseIndex", "IEntity")]
 	public class AuthoriseIndexStrategy : BaseAuthoriseStrategy, IAuthoriseIndexStrategy
 	{
-		
 		/// <summary>
 		/// Checks whether the current user is authorised to index an entity of the specified type.
 		/// </summary>
@@ -18,10 +17,8 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// <returns>A value indicating whether the current user is authorised to index an entity of the specified type.</returns>
 		public override bool Authorise(string shortTypeName)
 		{
-			if (!AuthenticationState.IsAuthenticated)
-				return false;
-			
-			return true;
+			return AuthoriseRetrieveStrategy.New(shortTypeName).Authorise(shortTypeName);
+		
 		}
 		
 		/// <summary>
@@ -39,16 +36,17 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// </summary>
 		/// <param name="entities">The entities being indexed.</param>
 		/// <returns>A value indicating whether the current user is authorised to index the provided entities.</returns>
-		public bool Authorise(ref IEntity[] entities)
+		public virtual bool Authorise(ref IEntity[] entities)
 		{
-			if (!AuthenticationState.IsAuthenticated)
-				return false;
+			
+			int originalCount = entities.Length;
 			
 			Collection<IEntity> collection = new Collection<IEntity>();
+			collection.AddRange(entities);
 			
-			for (int i = 0; i < entities.Length; i++)
+			for (int i = 0; i < collection.Count; i++)
 			{
-				if (!Authorise(entities[i]))
+				if (!Authorise(collection[i]))
 				{
 					collection.RemoveAt(i);
 					i--;
@@ -56,20 +54,17 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 			}
 			
 			entities = collection.ToArray();
-			
-			return true;
+
+			return entities.Length > 0;
 		}
 		
 		/// <summary>
-		/// Checks whether the current user is authorised to index the provided entity.
+		/// Checks whether the current user is authorised to view provided entity in an index.
 		/// </summary>
 		/// <param name="entity">An entity in the index.</param>
 		/// <returns>A value indicating whether the current user is authorised to access an index of entities including the one provided.</returns>
 		public override bool Authorise(IEntity entity)
 		{
-			if (entity == null)
-				throw new ArgumentNullException("entity");
-			
 			return AuthoriseRetrieveStrategy.New(entity.ShortTypeName).Authorise(entity);
 		}
 		
@@ -79,32 +74,40 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// <param name="entity">An entity involved in the index.</param>
 		public override void EnsureAuthorised(IEntity entity)
 		{
-			if (entity == null)
-				throw new ArgumentNullException("entity");
-			
-			if (!Authorise(entity))
-				throw new UnauthorisedException("Index", entity.ShortTypeName);
+			AuthoriseRetrieveStrategy.New(entity.ShortTypeName).EnsureAuthorised(entity);
 		}
 		
 		/// <summary>
 		/// Ensures that the current user is authorised to access an index of entities including the one provided.
 		/// </summary>
 		/// <param name="entities">The entities in the index.</param>
-		public void EnsureAuthorised(IEntity[] entities)
+		public virtual void EnsureAuthorised(ref IEntity[] entities)
 		{
-			foreach (IEntity entity in entities)
-				EnsureAuthorised(entity);
+			if (entities == null)
+				throw new ArgumentNullException("entities");
+			
+			if (entities.Length > 0)
+			{
+				string shortTypeName = entities[0].ShortTypeName;
+				
+				if (!Authorise(ref entities))
+					throw new UnauthorisedException("Index", shortTypeName);
+					//throw new UnauthorisedException("Index", this.TypeName);
+			}
 		}
 		
 		/// <summary>
 		/// Ensures that the current user is authorised to access an index of entities including the one provided.
 		/// </summary>
 		/// <param name="entities">The entities in the index.</param>
-		public void EnsureAuthorised<T>(T[] entities)
+		public virtual void EnsureAuthorised<T>(ref T[] entities)
 			where T : IEntity
 		{
-			foreach (T entity in entities)
-				EnsureAuthorised(entity);
+			IEntity[] e = Collection<IEntity>.ConvertAll(entities);
+			
+			EnsureAuthorised(ref e);
+			
+			entities = Collection<T>.ConvertAll(e);
 		}
 		
 		#region New functions

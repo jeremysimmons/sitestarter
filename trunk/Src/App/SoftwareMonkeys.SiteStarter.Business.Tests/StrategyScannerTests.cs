@@ -2,7 +2,7 @@
 using System;
 using SoftwareMonkeys.SiteStarter.Business;
 using SoftwareMonkeys.SiteStarter.Tests.Entities;
-
+using System.Reflection;
 
 namespace SoftwareMonkeys.SiteStarter.Business.Tests
 {
@@ -13,6 +13,13 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		public void Test_FindStrategies()
 		{
 			StrategyScanner scanner = new StrategyScanner();
+			
+			
+			string[] assemblyPaths = new string[] {
+				Assembly.Load("SoftwareMonkeys.SiteStarter.Business").Location
+			};
+			
+			scanner.AssemblyPaths = assemblyPaths;
 			
 			StrategyInfo[] strategies = scanner.FindStrategies();
 			

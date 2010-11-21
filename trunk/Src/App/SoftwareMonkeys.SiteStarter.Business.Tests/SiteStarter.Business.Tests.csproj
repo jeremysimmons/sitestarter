@@ -96,10 +96,6 @@
       <Project>4ADB5F1E-B2C2-4EF3-9B46-6755C2D2663E</Project>
       <Name>SiteStarter.Data.Db4o.Tests</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Data.Db4o.Tests\SiteStarter.Data.Db4o.Tests.csproj">
-      <Project>{1073B70F-C3B8-48F9-B44E-DA94AD62F32B}</Project>
-      <Name>SiteStarter.Data.Db4o.Tests</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Data.Tests\SiteStarter.Data.Tests.csproj">
       <Project>{0BBD2A6C-9955-4BB6-9DCA-6AA57715C3F2}</Project>
       <Name>SiteStarter.Data.Tests</Name>
@@ -116,16 +112,16 @@
       <Project>{C3626F0A-DFD4-4EF2-8755-3532DE3712A4}</Project>
       <Name>SiteStarter.Diagnostics</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Entities.Tests\SiteStarter.Entities.Tests.csproj">
+      <Project>{C81C653C-6983-4401-A016-68586963DC9B}</Project>
+      <Name>SiteStarter.Entities.Tests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Entities\SiteStarter.Entities.csproj">
       <Project>{3609F512-9E15-41C7-95AF-D1B3E7F93562}</Project>
       <Name>SiteStarter.Entities</Name>
     </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.State.Tests\SiteStarter.State.Tests.csproj">
       <Project>AD977DB1-879A-476C-A74A-FC2E0EC98F0A</Project>
-      <Name>SiteStarter.State.Tests</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.State.Tests\SiteStarter.State.Tests.csproj">
-      <Project>{91C362DD-993D-4BF9-A90A-FFE18AB17434}</Project>
       <Name>SiteStarter.State.Tests</Name>
     </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.State\SiteStarter.State.csproj">

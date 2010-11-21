@@ -67,8 +67,6 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			
 			StrategyStateNameValueCollection collection = new StrategyStateNameValueCollection();
 			
-			string interfaceType = "IEntity";
-			string uniqueInterfaceType = "IUniqueEntity";
 			string type = "TestArticle";
 			string action = "Save";
 			
@@ -90,7 +88,6 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			
 			StrategyStateNameValueCollection collection = new StrategyStateNameValueCollection();
 			
-			string interfaceType = "IEntity";
 			string type = "TestArticle";
 			string action = "TestAction";
 			
