@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A5D49D94-D936-4123-BA9A-572AA7C7F426}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -88,15 +88,29 @@
     <Compile Include="LogWriter.cs" />
     <Compile Include="Navigation\Navigator.cs" />
     <Compile Include="OperationManager.cs" />
-    <Compile Include="Projections\BaseCreateEditProjection.cs" />
-    <Compile Include="Projections\BaseDeleteProjection.cs" />
-    <Compile Include="Projections\BaseIndexProjection.cs" />
-    <Compile Include="Projections\BaseProjection.cs" />
+    <Compile Include="Projections\BaseCreateEditProjection.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Projections\BaseDeleteProjection.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Projections\BaseIndexProjection.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Projections\BaseProjection.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="Projections\BaseProjectionScanner.cs">
     </Compile>
-    <Compile Include="Projections\BaseViewProjection.cs" />
-    <Compile Include="Projections\BaseXmlIndexProjection.cs" />
-    <Compile Include="Projections\ControllableProjection.cs" />
+    <Compile Include="Projections\BaseViewProjection.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Projections\BaseXmlIndexProjection.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Projections\ControllableProjection.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="Projections\IProjection.cs" />
     <Compile Include="Projections\ProjectionFileNamer.cs" />
     <Compile Include="Projections\ProjectionFormat.cs" />
@@ -119,6 +133,9 @@
     <Compile Include="QueryStrings.cs" />
     <Compile Include="Security\Authentication.cs" />
     <Compile Include="Security\Authorisation.cs" />
+    <Compile Include="Security\Member.cs" />
+    <Compile Include="Security\MemberProvider.cs" />
+    <Compile Include="Security\RoleProvider.cs" />
     <Compile Include="SetupChecker.cs" />
     <Compile Include="SetupUtilities.cs" />
     <Compile Include="State\StateProviderManager.cs" />
@@ -211,10 +228,6 @@
       <Project>{3609F512-9E15-41C7-95AF-D1B3E7F93562}</Project>
       <Name>SiteStarter.Entities</Name>
     </ProjectReference>
-    <Folder Include="Controllers" />
-    <Folder Include="Data" />
-    <Folder Include="Navigation" />
-    <Folder Include="Projections" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
