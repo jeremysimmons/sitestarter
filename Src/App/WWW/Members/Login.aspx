@@ -11,7 +11,7 @@
 		if (Authentication.SignIn(Login.UserName, Login.Password))
 			Response.Redirect("Default.aspx");
 		else
-			Result.Display(Resources.Language.InvalidCredentials);
+			Result.DisplayError(Resources.Language.InvalidCredentials);
 	}
 </script>
 <asp:Content ID="Content1" ContentPlaceHolderID="Body" Runat="Server">
