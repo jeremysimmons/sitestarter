@@ -113,6 +113,10 @@
       <Project>{C3626F0A-DFD4-4EF2-8755-3532DE3712A4}</Project>
       <Name>SiteStarter.Diagnostics</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Entities.Tests\SiteStarter.Entities.Tests.csproj">
+      <Project>{C81C653C-6983-4401-A016-68586963DC9B}</Project>
+      <Name>SiteStarter.Entities.Tests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Entities\SiteStarter.Entities.csproj">
       <Project>{3609F512-9E15-41C7-95AF-D1B3E7F93562}</Project>
       <Name>SiteStarter.Entities</Name>
