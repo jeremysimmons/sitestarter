@@ -324,12 +324,19 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				// Initialize everything now that the default config has been created
 				Config.Initialize(FileMapper.MapPath(ApplicationPath), PathVariation);
 				
+				InitializeEntities();
+				
 				CheckDataProviderInitializer();
 				
 				DataProviderInitializer.Initialize();
 				
 				InitializeBusiness();
 			}
+		}
+		private void InitializeEntities()
+		{
+			// TODO: Add the initializer to a property so it can be customized for specific cases
+	    	new EntityInitializer().Initialize();
 		}
 		
 		private void InitializeBusiness()
