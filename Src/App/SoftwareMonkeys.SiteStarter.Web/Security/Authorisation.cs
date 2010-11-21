@@ -21,10 +21,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
     public class Authorisation
     {
         public static bool UserCan(string action, Type type)
-        {
-        	if (!AuthenticationState.IsAuthenticated)
-        		return false;
-        	
+        {        	
         	string internalAction = GetInternalAction(action);
         	
         	IAuthoriseStrategy strategy = StrategyState.Strategies.Creator.New<IAuthoriseStrategy>("Authorise" + internalAction, type.Name);
@@ -35,10 +32,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 
         public static bool UserCan(string action, IEntity entity)
         {
-        	
-        	if (!AuthenticationState.IsAuthenticated)
-        		return false;
-        	
         	string internalAction = GetInternalAction(action);
         	
         	IAuthoriseStrategy strategy = StrategyState.Strategies.Creator.New<IAuthoriseStrategy>("Authorise" + internalAction, entity.GetType().Name);
@@ -49,19 +42,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 
         public static bool UserCan(string action, IEntity[] entities)
         {
-        	if (entities == null)
+        	if (entities == null || entities.Length == 0)
         		return true;
-        	
-        	if (!AuthenticationState.IsAuthenticated)
-        		return false;
         	
         	string internalAction = GetInternalAction(action);
         	
-        	Type type = entities.GetType().GetElementType();
+        	string shortTypeName = entities[0].ShortTypeName;
         	
-        	IAuthoriseStrategy strategy = StrategyState.Strategies.Creator.New<IAuthoriseStrategy>("Authorise" + internalAction, type.Name);
+        	IAuthoriseStrategy strategy = StrategyState.Strategies.Creator.New<IAuthoriseStrategy>("Authorise" + internalAction, shortTypeName);
         	
-        	return strategy.Authorise(type.Name);
+        	return strategy.Authorise(shortTypeName);
         
         }
         
@@ -132,34 +122,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 
         static public bool IsInRole(string roleName)
         {
-            /*foreach (UserRole role in My.User.Roles)
-            {
-                if (role.Name == roleName)
-                    return true;
-            }*/
-            /*if (HttpContext.Current == null)
-                return false;
-
-            if (!HttpContext.Current.Request.IsAuthenticated)
-                return false;
-            else
-                return HttpContext.Current.User.IsInRole(roleName);*/
-
-            //return false;
-
-            if (AuthenticationState.User == null)
+            if (!AuthenticationState.IsAuthenticated)
                 return false;
             else
             {
-            	ActivateStrategy.New<User>().Activate(AuthenticationState.User, "Roles");
-
-                foreach (UserRole role in AuthenticationState.User.Roles)
-                {
-                    if (role.Name == roleName)
-                        return true;
-                }
-
-                return false;
+            	return AuthenticationState.UserIsInRole(roleName);
             }
         }
     }
