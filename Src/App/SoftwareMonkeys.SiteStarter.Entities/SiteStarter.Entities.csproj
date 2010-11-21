@@ -57,17 +57,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AliasAttribute.cs" />
     <Compile Include="BaseEntityReferenceAttribute.cs" />
     <Compile Include="BaseEntity.cs" />
     <Compile Include="BaseUniqueEntity.cs" />
     <Compile Include="EntitiesUtilities.cs" />
+    <Compile Include="EntityAttribute.cs" />
     <Compile Include="EntityEventArgs.cs" />
+    <Compile Include="EntityFileNamer.cs" />
     <Compile Include="EntityIDReferenceCollection.cs" />
-    <Compile Include="EntityMapper.cs" />
+    <Compile Include="EntityInfo.cs" />
+    <Compile Include="EntityInitializer.cs" />
+    <Compile Include="EntityLoader.cs" />
+    <Compile Include="EntityLocator.cs" />
+    <Compile Include="EntityNotFoundException.cs" />
     <Compile Include="EntityPointer.cs" />
     <Compile Include="EntityReference.cs" />
     <Compile Include="EntityReferenceCollection.cs" />
     <Compile Include="EntityIDReference.cs" />
+    <Compile Include="EntitySaver.cs" />
+    <Compile Include="EntityScanner.cs" />
+    <Compile Include="EntityState.cs" />
+    <Compile Include="EntityStateCollection.cs" />
+    <Compile Include="EntityTypeLoader.cs" />
     <Compile Include="ObjectCloner.cs" />
     <Compile Include="PagingLocation.cs" />
     <Compile Include="ReferenceAttribute.cs" />
@@ -93,6 +105,10 @@
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Diagnostics\SiteStarter.Diagnostics.csproj">
       <Project>{C3626F0A-DFD4-4EF2-8755-3532DE3712A4}</Project>
       <Name>SiteStarter.Diagnostics</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.State\SiteStarter.State.csproj">
+      <Project>{34129651-3B9F-4A0D-AEBF-7DE2098DD98F}</Project>
+      <Name>SiteStarter.State</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
