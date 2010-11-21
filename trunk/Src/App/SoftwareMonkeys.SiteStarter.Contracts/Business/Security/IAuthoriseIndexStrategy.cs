@@ -19,13 +19,13 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// Ensures that the current user is authorised to access an index of entities including the one provided.
 		/// </summary>
 		/// <param name="entities">The entities in the index.</param>
-		void EnsureAuthorised(IEntity[] entities);
+		void EnsureAuthorised(ref IEntity[] entities);
 		
 		/// <summary>
 		/// Ensures that the current user is authorised to access an index of entities including the one provided.
 		/// </summary>
 		/// <param name="entities">The entities in the index.</param>
-		void EnsureAuthorised<T>(T[] entities)
+		void EnsureAuthorised<T>(ref T[] entities)
 			where T : IEntity;
 	}
 }
