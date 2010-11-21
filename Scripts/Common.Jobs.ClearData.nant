@@ -17,6 +17,7 @@
 	    		</fileset>
 		</delete>
 
+		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Entities" />
 		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Strategies" />
 		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Imported" />
 		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Projections" />
