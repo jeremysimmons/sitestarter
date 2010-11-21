@@ -3,6 +3,7 @@ using System;
 using NUnit.Framework;
 using SoftwareMonkeys.SiteStarter.State;
 using SoftwareMonkeys.SiteStarter.Entities;
+using SoftwareMonkeys.SiteStarter.Entities.Tests;
 using SoftwareMonkeys.SiteStarter.Configuration.Tests;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Tests
@@ -10,17 +11,18 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 	/// <summary>
 	/// Provides a base implementation for all data test fixtures and test fixtures that require a mock data tier to function.
 	/// </summary>
-	public abstract class BaseDataTestFixture : BaseConfigurationTestFixture
+	public abstract class BaseDataTestFixture : BaseEntityTestFixture
 	{
 		/// <summary>
 		/// Starts a test by initializing the mock environment, registering test entities, and ensuring the testing directory is clear.
 		/// </summary>
 		[SetUp]
-		public void Start()
+		public new void Start()
 		{
 			TestUtilities.ClearTestingDirectory(this);
 			InitializeMockState();
 			InitializeMockConfiguration();
+			InitializeMockEntities();
 			InitializeMockData();
 			TestUtilities.RegisterTestEntities(this);
 		}
@@ -32,6 +34,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		public void End()
 		{
 			DisposeMockData();
+			DisposeMockEntities();
 			DisposeMockConfiguration();
 			DisposeMockState();
 			TestUtilities.ClearTestingDirectory(this);
@@ -58,7 +61,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				DataAccess.Data.Stores.Remove(DataAccess.Data.Stores[dataStoreName]);
 			}*/
 			
-			DataAccess.Data.Dispose();
+			if (DataAccess.IsInitialized)
+				DataAccess.Data.Dispose();
 		}
 	}
 }

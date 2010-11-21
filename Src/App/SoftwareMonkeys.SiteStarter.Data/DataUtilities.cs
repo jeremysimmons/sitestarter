@@ -135,7 +135,8 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <returns>The data store that the provided entity is stored in.</returns>
 		static public string GetDataStoreName(Type type, bool throwErrorIfNotFound)
 		{
-			string dataStoreName = String.Empty;
+			return type.Name;
+			/*string dataStoreName = String.Empty;
 			//using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the name of the data store.", NLog.LogLevel.Debug))
 			// {
 			if (type == null)
@@ -168,7 +169,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			dataStoreName = (string)item.Settings["DataStoreName"];
 
 			//}
-			return dataStoreName;
+			return dataStoreName;*/
 		}
 
 		/// <summary>
