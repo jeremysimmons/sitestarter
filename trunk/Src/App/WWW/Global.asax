@@ -70,12 +70,19 @@
 	        if (!StateAccess.IsInitialized || !Config.IsInitialized)
 	        {
 	        	InitializeState();
-	            Config.Initialize(Server.MapPath(HttpContext.Current.Request.ApplicationPath), WebUtilities.GetLocationVariation(HttpContext.Current.Request.Url));
+                Config.Initialize(Server.MapPath(HttpContext.Current.Request.ApplicationPath), WebUtilities.GetLocationVariation(HttpContext.Current.Request.Url));
+                InitializeEntities();
 	            new DataProviderInitializer().Initialize();
 	        	InitializeBusiness();
 	        	InitializeWeb();
 	        }
 		//}
+    }
+
+    private void InitializeEntities()
+    {
+        if (Config.IsInitialized)
+            new EntityInitializer().Initialize();
     }
     
     private void InitializeBusiness()
