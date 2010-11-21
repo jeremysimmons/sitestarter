@@ -6,6 +6,7 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
     /// <summary>
     /// Defines the interface for a user in the application.
     /// </summary>
+    [Alias("TestUser")]
     public interface ITestUser : IEntity
     {
         string Name { get; }
