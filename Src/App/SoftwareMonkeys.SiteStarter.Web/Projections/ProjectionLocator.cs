@@ -49,8 +49,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			// Get the specified type
 			Type type = null;
 			
-			if (Entities.EntitiesUtilities.IsTypeRegistered(typeName))
-				type = Entities.EntitiesUtilities.GetType(typeName);
+			if (Entities.EntityState.Entities.EntityExists(typeName))
+				type = Entities.EntityState.Entities[typeName].GetEntityType();
 			
 			// Create a direct projection key for the specified type
 			string key = Projections.GetProjectionKey(action, typeName, format);
