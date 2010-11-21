@@ -16,6 +16,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	[Controller("Create", "IEntity")]
 	public class CreateController : BaseController
 	{
+		public override string Action
+		{
+			get { return "Create"; }
+		}
+		
 		private IEntity dataSource;
 		public IEntity DataSource
 		{

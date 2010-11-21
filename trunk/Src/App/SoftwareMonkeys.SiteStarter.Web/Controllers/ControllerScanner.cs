@@ -28,11 +28,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		
 		private string[] assemblyPaths;
 		/// <summary>
-		/// Gets/sets the paths of the assemblies containing controllers.
+		/// Gets/sets the paths of the assemblies containing strategies.
 		/// </summary>
 		public string[] AssemblyPaths
 		{
-			get { return assemblyPaths; }
+			get {
+				if (assemblyPaths == null || assemblyPaths.Length == 0)
+					assemblyPaths = GetAssemblyPaths();
+				return assemblyPaths; }
 			set { assemblyPaths = value; }
 		}
 		
@@ -65,9 +68,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			
 			using (LogGroup logGroup = AppLogger.StartGroup("Finding controllers by scanning the attributes of the available type.", NLog.LogLevel.Debug))
 			{
-				if (AssemblyPaths == null)
-					AssemblyPaths = GetAssemblyPaths();
-				
 				foreach (string assemblyPath in AssemblyPaths)
 				{
 					Assembly assembly = Assembly.LoadFrom(assemblyPath);

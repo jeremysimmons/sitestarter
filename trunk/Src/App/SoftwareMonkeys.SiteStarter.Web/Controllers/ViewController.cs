@@ -15,6 +15,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	[Controller("View", "IEntity")]
 	public class ViewController : BaseController
 	{
+		public override string Action
+		{
+			get { return "View"; }
+		}
+		
 		private IRetrieveStrategy retriever;
 		/// <summary>
 		/// Gets/sets the strategy used to retrieve entities.

@@ -48,9 +48,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			// Get the specified type
 			Type type = null;
 
-			if (Entities.EntitiesUtilities.IsTypeRegistered(typeName))
-				type = Entities.EntitiesUtilities.GetType(typeName);
-
+			type = Entities.EntityState.GetType(typeName);
+			
+			if (type == null)
+				throw new ArgumentException("No type found with the name '" + typeName + "'.");
 			
 			// Create a direct controller key for the specified type
 			string key = Controllers.GetControllerKey(action, typeName);
