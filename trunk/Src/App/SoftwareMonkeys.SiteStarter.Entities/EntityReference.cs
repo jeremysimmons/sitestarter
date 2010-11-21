@@ -13,7 +13,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 	[Serializable]
 	[XmlRootAttribute("EntityReference")]
 	[XmlTypeAttribute("EntityReference")]
-	public class EntityReference : EntityIDReference//, IXmlSerializable
+	public class EntityReference : EntityIDReference, IEntity//, IXmlSerializable
 	{
 		private IEntity sourceEntity;
 		/// <summary>

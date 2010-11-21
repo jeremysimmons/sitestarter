@@ -16,45 +16,6 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 			return typeof(IEntity).IsAssignableFrom(type);
 		}
-
-		static public void RegisterEntityType(Type type)
-		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Registering entity type: "+ type.ToString(), NLog.LogLevel.Debug))
-			{
-				// Get the RegisterType method from the IEntity based class
-				MethodInfo method = type.GetMethod("RegisterType");
-				
-				// Invoke the RegisterType method
-				if (method != null)
-					method.Invoke(null, null);
-				
-				// Save the mappings config
-				string path = Config.Application.PhysicalApplicationPath.TrimEnd('\\') + @"\App_Data\";
-				ConfigFactory<MappingConfig>.SaveConfig(path, (MappingConfig)Config.Mappings, Config.Mappings.PathVariation);
-				
-				//AddMappings(type, dataStoreName);
-			}
-		}
-		
-		static public void DeregisterEntityType(Type type)
-		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Deregistering entity type: "+ type.ToString(), NLog.LogLevel.Debug))
-			{
-				
-				// Get the RegisterType method from the IEntity based class
-				MethodInfo method = type.GetMethod("DeregisterType");
-				
-				// Invoke the RegisterType method
-				if (method != null)
-					method.Invoke(null, null);
-				
-				// Save the mappings config
-				string path = Config.Application.PhysicalApplicationPath.TrimEnd('\\') + @"\App_Data\";
-				ConfigFactory<MappingConfig>.SaveConfig(path, (MappingConfig)Config.Mappings, Config.Mappings.PathVariation);
-				
-				//RemoveMappings(type);
-			}
-		}
 		
 		/*static public void AddMappings(Type type, string dataStoreName)
 		{
@@ -376,17 +337,12 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			return tmpType;
 		}
 		
-		
-		static public bool IsTypeRegistered(string typeName)
-		{
-			MappingItem mappingItem = Config.Mappings.GetItem(typeName, true);
-			
-			return mappingItem != null;
-		}
-		
+		[Obsolete("Use EntityState.Entities[typeName].GetEntityType().")]
 		static public Type GetType(string typeName)
 		{
-			Type returnType = null;
+			return EntityState.GetType(typeName);
+			
+			/*Type returnType = null;
 			
 			//using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the actual type based on the specified type/alias.", NLog.LogLevel.Debug))
 			//{
@@ -460,7 +416,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			}
 			//}
 			
-			return returnType;
+			return returnType;*/
 			
 		}
 		
