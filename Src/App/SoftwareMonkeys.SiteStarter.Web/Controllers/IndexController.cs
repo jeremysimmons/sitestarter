@@ -16,6 +16,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	[Controller("Index", "IEntity")]
 	public class IndexController : BaseController
 	{
+		public override string Action
+		{
+			get { return "Index"; }
+		}
 		
 		private Dictionary<string, string> language = new Dictionary<string, string>();
 		public Dictionary<string, string> Language
@@ -30,7 +34,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// </summary>
 		public new IEntity[] DataSource
 		{
-			get { return dataSource; }
+			get {
+				if (dataSource == null)
+					dataSource = new IEntity[]{};
+				return dataSource; }
 			set { dataSource = value;
 			}
 		}
@@ -95,7 +102,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				{
 					if (Type == null)
 						throw new InvalidOperationException("Type property hasn't been initialized.");
-					indexer = StrategyState.Strategies.Creator.NewIndexer(Type.Name);
+					indexer = IndexStrategy.New(Type.Name, RequireAuthorisation);
 				}
 				return indexer; }
 			set { indexer = value; }
@@ -113,9 +120,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			CheckInitialized();
 			
-			IEntity[] entities = PrepareIndex();
+			DataSource = PrepareIndex();
 			
-			Index(entities);
+			Index(DataSource);
 		}
 		
 		/// <summary>
@@ -124,6 +131,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <param name="entities"></param>
 		public void Index(IEntity[] entities)
 		{
+			DataSource = entities;
+			
 			if (entities == null)
 				entities = new IEntity[] {};
 			
@@ -178,6 +187,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			if (EnsureAuthorised())
 			{
 				DataSource = Indexer.Index();
+				
 				AbsoluteTotal = Indexer.AbsoluteTotal;
 			}
 			
@@ -242,20 +252,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				throw new InvalidOperationException("Type not specified.");
 		}
 		#endregion
-		
-		/// <summary>
-		/// Ensures that the user is authorised to index entities of the specified type.
-		/// </summary>
-		/// <returns>A value indicating whether the user is authorised.</returns>
-		public bool EnsureAuthorised()
-		{
-			bool isAuthorised = AuthoriseIndexStrategy.New(Type.Name).Authorise(Type.Name);
-			
-			if (!isAuthorised)
-				FailAuthorisation();
-			
-			return isAuthorised;
-		}
 		
 		
 		public static IndexController New(IControllable container, Type type, bool enablePaging)

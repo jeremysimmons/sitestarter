@@ -1,5 +1,6 @@
 ﻿using System;
 using SoftwareMonkeys.SiteStarter.Business;
+using SoftwareMonkeys.SiteStarter.Business.Security;
 using SoftwareMonkeys.SiteStarter.Entities;
 using System.Web.UI.WebControls;
 using System.Collections.Generic;
@@ -15,7 +16,22 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	/// 
 	/// </summary>
 	public abstract class BaseController : IController
-	{		
+	{
+		/// <summary>
+		/// Gets/sets the action being performed.
+		/// </summary>
+		public abstract string Action {get;}
+		
+		private bool requireAuthorisation = true;
+		/// <summary>
+		/// Gets/sets a value indicating whether authorisation is required to perform business operations and/or access data.
+		/// </summary>
+		public bool RequireAuthorisation
+		{
+			get { return requireAuthorisation; }
+			set { requireAuthorisation = value; }
+		}
+		
 		/// <summary>
 		/// Gets/sets the title displayed in the window.
 		/// </summary>
@@ -67,7 +83,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			get { return Configuration.Config.Application.ApplicationPath + "/Default.aspx"; }
 			set { unauthorisedUrl = value; }
 		}
-				
+		
 		public string UniquePropertyName;
 		
 		public BaseController()
@@ -92,11 +108,32 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// </summary>
 		public virtual void FailAuthorisation()
 		{
-			Result.DisplayError(Language.Unauthorised);
-			
 			if (HttpContext.Current != null && HttpContext.Current.Request != null)
-				HttpContext.Current.Response.Redirect(UnauthorisedUrl);
-
+			{
+				Result.DisplayError(Language.Unauthorised);
+				
+				if (HttpContext.Current != null && HttpContext.Current.Request != null)
+					HttpContext.Current.Response.Redirect(UnauthorisedUrl);
+			}
+			else
+			{
+				throw new UnauthorisedException(Action, Type.Name);
+			}
+		}
+		
+		/// <summary>
+		/// Ensures that the user is authorised to index entities of the specified type.
+		/// </summary>
+		/// <returns>A value indicating whether the user is authorised.</returns>
+		public bool EnsureAuthorised()
+		{
+			bool isAuthorised = StrategyState.Strategies["Authorise" + Action, Type.Name]
+				.New<IAuthoriseStrategy>(Type.Name).Authorise(Type.Name);
+			
+			if (RequireAuthorisation && !isAuthorised)
+				FailAuthorisation();
+			
+			return !RequireAuthorisation || isAuthorised;
 		}
 	}
 }

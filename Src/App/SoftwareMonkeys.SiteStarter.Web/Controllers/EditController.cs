@@ -15,6 +15,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	[Controller("Edit", "IEntity")]
 	public class EditController : BaseController
 	{
+		public override string Action
+		{
+			get { return "Edit"; }
+		}
+		
 		private IRetrieveStrategy retriever;
 		/// <summary>
 		/// Gets/sets the strategy used to retrieve an entity.
