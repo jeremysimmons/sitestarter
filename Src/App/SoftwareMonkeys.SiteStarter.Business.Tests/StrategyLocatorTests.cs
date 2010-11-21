@@ -71,7 +71,9 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			
 			Assert.IsNotNull(info, "No strategy info found.");
 			
-			Assert.AreEqual(new MockIndexWidgetStrategy().GetType().FullName, info.StrategyType, "Wrong strategy type selected.");
+			Type mockStrategyType = new MockIndexWidgetStrategy().GetType();
+			
+			Assert.AreEqual(mockStrategyType.FullName + ", " + mockStrategyType.Assembly.FullName, info.StrategyType, "Wrong strategy type selected.");
 		}
 	}
 }

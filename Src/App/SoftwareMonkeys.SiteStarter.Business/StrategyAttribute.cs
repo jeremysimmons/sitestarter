@@ -39,18 +39,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			set { isStrategy = value; }
 		}
 		
-		private string key;
-		/// <summary>
-		/// Gets/sets the key used to differentiate the strategy from others that are similar.
-		/// For example: A general purpose strategy has no key set; A strategy that enforces a particular rule such as a unique property can use
-		/// the key "Unique" (or whatever suits).
-		/// </summary>
-		public string Key
-		{
-			get { return key; }
-			set { key = value; }
-		}
-		
 		/// <summary>
 		/// Sets the type name and action of the strategy.
 		/// </summary>
@@ -62,20 +50,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			Action = action;
 		}
 		
-		
-		/// <summary>
-		/// Sets the type name and action of the strategy.
-		/// </summary>
-		/// <param name="action"></param>
-		/// <param name="typeName"></param>
-		/// <param name="key"></param>
-		public StrategyAttribute(string action, string typeName, string key)
-		{
-			TypeName = typeName;
-			Action = action;
-			Key = key;
-		}
-		
 		/// <summary>
 		/// Sets the type name and action of the strategy.
 		/// </summary>
@@ -85,19 +59,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			TypeName = type.Name;
 			Action = action;
-		}
-
-		/// <summary>
-		/// Sets the type name and action of the strategy.
-		/// </summary>
-		/// <param name="action"></param>
-		/// <param name="type"></param>
-		/// <param name="key"></param>
-		public StrategyAttribute(string action, Type type, string key)
-		{
-			TypeName = type.Name;
-			Action = action;
-			Key = key;
 		}
 		
 		/// <summary>
