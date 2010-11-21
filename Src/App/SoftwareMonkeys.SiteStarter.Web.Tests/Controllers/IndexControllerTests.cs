@@ -21,8 +21,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 		[Test]
 		public void Test_Index_Default()
 		{
-			TestRecord.RegisterType();
-			
 			TestRecord record1 = new TestRecord();
 			record1.ID = Guid.NewGuid();
 			record1.Text = "Record 1";
@@ -52,12 +50,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 			Assert.AreEqual(4, count, "Invalid number of TestRecord objects found.");
 			
 			BaseIndexProjection page = new BaseIndexProjection();
-
-			
-			int pageIndex = 0;
-			
 			
 			IndexController controller = IndexController.New(page, typeof(TestRecord), false);
+			controller.RequireAuthorisation = false;
 			
 			
 			if (controller == null)
@@ -106,7 +101,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 			
 			
 			IndexController controller = IndexController.New(page, typeof(TestRecord), true);
-			//controller.Vi
+			controller.RequireAuthorisation = false;
 			
 			if (controller == null)
 				throw new Exception("Controller is null.");
@@ -156,7 +151,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 			
 			
 			IndexController controller = IndexController.New(page, typeof(TestRecord), true);
-			//controller.Vi
+			controller.RequireAuthorisation = false;
 			
 			if (controller == null)
 				throw new Exception("Controller is null.");
@@ -182,8 +177,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 		[Test]
 		public void Test_Index_PrepareIndex()
 		{
-			TestRecord.RegisterType();
-			
 			List<TestRecord> list = new List<TestRecord>();
 			
 			for (int i = 0; i < 30; i++)
@@ -203,7 +196,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 			BaseIndexProjection page = new BaseIndexProjection();
 			
 			IndexController controller = IndexController.New(page, typeof(TestRecord), true);
-			//controller.Vi
+			controller.RequireAuthorisation = false;
 			
 			if (controller == null)
 				throw new Exception("Controller is null.");
@@ -214,7 +207,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 			
 			IEntity[] entities = controller.PrepareIndex();
 			
-			Assert.IsNotNull("entities", "entities == null");
+			Assert.IsNotNull(entities, "entities == null");
 			
 			Assert.AreEqual(20, entities.Length, "Entity count mismatch.");
 			
