@@ -99,7 +99,7 @@
     	using (LogGroup logGroup = AppLogger.StartGroup("Updating the user role on the form.", NLog.LogLevel.Debug))
     	{
 	        // Get a fresh copy of the role object
-	        UserRole role = (UserRole)RetrieveStrategy.New<UserRole>().Retrieve<UserRole>("ID", (UserRole)DataForm.DataSource).ID);
+	        UserRole role = (UserRole)RetrieveStrategy.New<UserRole>().Retrieve<UserRole>("ID", DataForm.EntityID);
 	        
 	        ActivateStrategy.New<UserRole>().Activate(role);
 	
