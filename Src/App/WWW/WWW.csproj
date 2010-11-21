@@ -46,9 +46,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Admin\Tests\EntitySelectTests.aspx.cs">
-      <DependentUpon>EntitySelectTests.aspx</DependentUpon>
-    </Compile>
     <None Include="Admin\Restore.aspx" />
     <None Include="Admin\Tests\EntityTreeTests.aspx" />
     <None Include="Admin\AutoBackup.aspx" />
@@ -67,7 +64,6 @@
     <None Include="Admin\Tests\EntitySelectRequesterTests.aspx" />
     <None Include="Admin\Tests\EntitySelectTests.aspx" />
     <None Include="Admin\Tests\IndexGridTests.aspx" />
-    <None Include="Admin\Tests\RefactorData.aspx" />
     <None Include="Admin\UnitTests.aspx" />
     <None Include="Admin\Update.aspx" />
     <None Include="Admin\UpdateReady.html" />
