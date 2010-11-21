@@ -2,6 +2,8 @@
 using NUnit.Framework;
 using SoftwareMonkeys.SiteStarter.Configuration.Tests;
 using SoftwareMonkeys.SiteStarter.Tests.Entities;
+using System.IO;
+using System.Reflection;
 
 namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 {
@@ -10,9 +12,30 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 	/// </summary>
 	public class BaseEntityTestFixture : BaseConfigurationTestFixture
 	{
-		public BaseEntityTestFixture()
-		{
+		[SetUp]
+		public void Initialize()
+		{			
+			InitializeMockEntities();
 		}
 		
+		
+		protected void InitializeMockEntities()
+		{
+			string testsAssemblyPath = Assembly.Load("SoftwareMonkeys.SiteStarter.Tests").Location;
+			
+			string[] assemblyPaths = new String[] {testsAssemblyPath};
+			
+			EntityInitializer initializer = new EntityInitializer();
+			
+			// Set the specific assemblies used during testing as it can't do it automatically in the mock environment
+			initializer.Scanner.AssemblyPaths = assemblyPaths;
+			
+			initializer.Initialize();
+		}
+		
+		protected void DisposeMockEntities()
+		{
+			
+		}
 	}
 }
