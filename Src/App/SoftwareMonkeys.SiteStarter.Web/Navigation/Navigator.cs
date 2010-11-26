@@ -49,17 +49,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Navigation
 			return UrlCreator.CreateUrl(action, type);
 		}
 		
-		public string GetExternalLink(string action, string type)
-		{
-			return UrlCreator.CreateExternalUrl(action, type);
-		}
-			
-		public string GetExternalLink(string action, string type, string propertyName, string value)
-		{
-			return UrlCreator.CreateExternalUrl(action, type, propertyName, value);
-		}
-		
-		
 		public string GetStandardLink(string action, string type)
 		{
 			
