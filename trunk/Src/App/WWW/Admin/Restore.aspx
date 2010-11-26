@@ -95,6 +95,6 @@
 <p><%= Resources.Language.PreviousVersion %>: <%= DataAccess.Data.Schema.LegacyVersion %></p>
 <p><%= Resources.Language.CurrentVersion %>: <%= DataAccess.Data.Schema.ApplicationVersion %></p>
 <p>
-<a href='<%= Request.ApplicationPath %>'><%= Resourcecs.Language.Continue %> &raquo;</a>
+<a href='<%= Request.ApplicationPath %>'><%= Resources.Language.Continue %> &raquo;</a>
 </p>
 </asp:Content>
