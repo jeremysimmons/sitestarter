@@ -14,5 +14,5 @@
         administration section) is used by authorised administrators to browse, create,
         edit, and delete user accounts.</li>
     <li><strong><a href='<%= Request.ApplicationPath + "/Admin/Log.aspx" %>'>Log</a></strong> (/Admin/Log.aspx) - The log includes application exceptions and other important information.</li>
-    <li><strong><a href='<%= Request.ApplicationPath + "/Admin/Data.aspx" %>'>Data</a></strong> (/Admin/Data.aspx) - A simple raw data/object browser organized by data store.</li>
+    <li><strong><a href='<%= Request.ApplicationPath + "/Admin/Data.aspx" %>'>Data</a></strong> (/Admin/Data.aspx) - A simple and direct data browser.</li>
 </ul>
