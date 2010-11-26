@@ -47,7 +47,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Admin\Restore.aspx" />
-    <None Include="Admin\Tests\EntityTreeTests.aspx" />
     <None Include="Admin\AutoBackup.aspx" />
     <None Include="Admin\Backup.aspx" />
     <None Include="Admin\Data.aspx" />
@@ -59,11 +58,7 @@
     <None Include="Admin\Settings.aspx">
     </None>
     <None Include="Admin\Setup.aspx" />
-    <None Include="Admin\Tests\CreateHugeData.aspx" />
-    <None Include="Admin\Tests\EntitySelectDelivererTests.aspx" />
-    <None Include="Admin\Tests\EntitySelectRequesterTests.aspx" />
-    <None Include="Admin\Tests\EntitySelectTests.aspx" />
-    <None Include="Admin\Tests\IndexGridTests.aspx" />
+    <None Include="Admin\Tests\TestContactForm.aspx" />
     <None Include="Admin\UnitTests.aspx" />
     <None Include="Admin\Update.aspx" />
     <None Include="Admin\UpdateReady.html" />
@@ -111,6 +106,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Admin" />
+    <Folder Include="Admin\New Folder" />
     <Folder Include="Admin\Tests" />
     <Folder Include="App_GlobalResources" />
     <Folder Include="App_GlobalResources\_svn" />
