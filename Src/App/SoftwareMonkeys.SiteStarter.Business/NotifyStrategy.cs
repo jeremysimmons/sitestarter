@@ -35,7 +35,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="message">The message of the email to send to all notifiable users.</param>
 		public virtual void SendNotification(IEntity entity, string subject, string message)
 		{			
-			foreach (User user in IndexStrategy.New<User>().Index<User>("EnableNotifications", true))
+			foreach (User user in IndexStrategy.New<User>(false).Index<User>("EnableNotifications", true))
 			{
 				if (user != null)
 				{
