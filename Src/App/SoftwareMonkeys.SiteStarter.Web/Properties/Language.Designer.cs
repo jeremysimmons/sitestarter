@@ -106,6 +106,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.Properties {
 		}
 		
 		/// <summary>
+		///   Looks up a localized string similar to Message.
+		/// </summary>
+		internal static string Message {
+			get {
+				return ResourceManager.GetString("Message", resourceCulture);
+			}
+		}
+		
+		/// <summary>
 		///   Looks up a localized string similar to Name.
 		/// </summary>
 		internal static string Name {
@@ -160,11 +169,38 @@ namespace SoftwareMonkeys.SiteStarter.Web.Properties {
 		}
 		
 		/// <summary>
+		///   Looks up a localized string similar to Send.
+		/// </summary>
+		internal static string Send {
+			get {
+				return ResourceManager.GetString("Send", resourceCulture);
+			}
+		}
+		
+		/// <summary>
+		///   Looks up a localized string similar to Subject.
+		/// </summary>
+		internal static string Subject {
+			get {
+				return ResourceManager.GetString("Subject", resourceCulture);
+			}
+		}
+		
+		/// <summary>
 		///   Looks up a localized string similar to Test Fixtures.
 		/// </summary>
 		internal static string TestFixtures {
 			get {
 				return ResourceManager.GetString("TestFixtures", resourceCulture);
+			}
+		}
+		
+		/// <summary>
+		///   Looks up a localized string similar to To.
+		/// </summary>
+		internal static string To {
+			get {
+				return ResourceManager.GetString("To", resourceCulture);
 			}
 		}
 		

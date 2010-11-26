@@ -159,4 +159,16 @@
   <data name="Unauthorised" xml:space="preserve">
     <value>You aren't authorised to do that.</value>
   </data>
+  <data name="To" xml:space="preserve">
+    <value>To</value>
+  </data>
+  <data name="Subject" xml:space="preserve">
+    <value>Subject</value>
+  </data>
+  <data name="Message" xml:space="preserve">
+    <value>Message</value>
+  </data>
+  <data name="Send" xml:space="preserve">
+    <value>Send</value>
+  </data>
 </root>
