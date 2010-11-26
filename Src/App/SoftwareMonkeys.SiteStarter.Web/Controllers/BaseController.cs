@@ -80,7 +80,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// </summary>
 		public string UnauthorisedUrl
 		{
-			get { return Configuration.Config.Application.ApplicationPath + "/Default.aspx"; }
+			get { return Configuration.Config.Application.ApplicationPath + "/Members/Login.aspx"; }
 			set { unauthorisedUrl = value; }
 		}
 		
