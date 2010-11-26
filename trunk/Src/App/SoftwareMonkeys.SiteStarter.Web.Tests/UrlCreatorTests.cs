@@ -12,56 +12,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
 	[TestFixture]
 	public class UrlCreatorTests : BaseWebTestFixture
 	{
-		
-		[Test]
-		public void Test_CreateExternalUrl()
-		{			
-			InitializeMockProjections();
-			
-			string applicationPath = "/Test";
-			string originalUrl = "http://localhost/Test";
-			
-			string action = "Create";
-			string typeName = "User";
-						
-			UrlCreator creator = new UrlCreator(applicationPath, originalUrl);
-			creator.EnableFriendlyUrls = true;
-			
-			string url = creator.CreateExternalUrl(action, typeName);
-			
-			string expectedUrl = "http://localhost/Test/" + creator.PrepareForUrl(typeName) + "/" + creator.PrepareForUrl(action) + ".aspx";
-			
-			Assert.AreEqual(expectedUrl, url, "The URL doesn't match what's expected.");
-		
-		}
-		
-		
-		[Test]
-		public void Test_CreateExternalUrl_MatchProperty()
-		{
-			InitializeMockProjections();
-			
-			string applicationPath = "/Test";
-			string originalUrl = "http://localhost/Test";
-			
-			string action = "Create";
-			string typeName = "User";
-			
-			UrlCreator creator = new UrlCreator(applicationPath, originalUrl);
-			creator.EnableFriendlyUrls = true;
-			
-			string propertyName = "ID";
-			string dataKey = Guid.NewGuid().ToString();
-			
-			string url = creator.CreateExternalUrl(action, typeName, propertyName, dataKey);
-			
-			string expectedUrl = "http://localhost/Test/" + creator.PrepareForUrl(typeName) + "/" + creator.PrepareForUrl(action) + "/" + creator.PrepareForUrl(propertyName) + "/" + creator.PrepareForUrl(dataKey) + ".aspx";
-			
-			Assert.AreEqual(expectedUrl, url, "The URL doesn't match what's expected.");
-		
-		}
-		
-		
 		[Test]
 		public void Test_CreateFriendlyUrl()
 		{
