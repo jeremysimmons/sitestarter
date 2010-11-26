@@ -728,4 +728,10 @@ ${WebSite.Title}&lt;br /&gt;
   <data name="EntityUpdated" xml:space="preserve">
     <value>The ${entity} was updated successfully.</value>
   </data>
+  <data name="Continue" xml:space="preserve">
+    <value>Continue</value>
+  </data>
+  <data name="SmtpServerTest" xml:space="preserve">
+    <value>SMTP Server Test</value>
+  </data>
 </root>
