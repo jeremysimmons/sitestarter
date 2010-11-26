@@ -285,6 +285,23 @@ namespace SoftwareMonkeys.SiteStarter.Business
 						File.Move(file, toFile);
 					}
 				}
+				
+				string[] suspendableDirectories = new String[]
+				{
+					"Entities",
+					"Strategies",
+					"Projections",
+					"Controllers"
+				};
+				
+				foreach (string shortDir in suspendableDirectories)
+				{
+					string dir = DataAccess.Data.DataDirectoryPath + Path.DirectorySeparatorChar + shortDir;
+					string toDir = DataAccess.Data.SuspendedDirectoryPath + Path.DirectorySeparatorChar + shortDir;
+					
+					if (Directory.Exists(dir))
+						Directory.Move(dir, toDir);
+				}
 			}
 		}
 	}
