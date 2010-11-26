@@ -103,6 +103,7 @@
     <Compile Include="Security\AuthoriseUpdateStrategy.cs" />
     <Compile Include="Security\BaseAuthoriseStrategy.cs" />
     <Compile Include="Security\UnauthorisedException.cs" />
+    <Compile Include="SendEmailStrategy.cs" />
     <Compile Include="StrategyCreator.cs" />
     <Compile Include="StrategyLocator.cs" />
     <Compile Include="StrategyNotFoundException.cs" />
@@ -121,6 +122,7 @@
     <Compile Include="StrategyScanner.cs" />
     <Compile Include="StrategyStateNameValueCollection.cs" />
     <Compile Include="TestExecutor.cs" />
+    <Compile Include="TestSmtpStrategy.cs" />
     <Compile Include="UniqueSaveStrategy.cs" />
     <Compile Include="UniqueUpdateStrategy.cs" />
     <Compile Include="UniqueValidateStrategy.cs" />
