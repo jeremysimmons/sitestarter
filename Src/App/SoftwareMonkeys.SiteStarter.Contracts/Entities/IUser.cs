@@ -7,7 +7,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
     /// <summary>
     /// Defines the interface for a user in the application.
     /// </summary>
-    public interface IUser : IEntity
+    public interface IUser : IUniqueEntity
     {
         string Name { get; }
         string Username { get;set; }
@@ -16,5 +16,6 @@ namespace SoftwareMonkeys.SiteStarter.Entities
         string FirstName { get;set; }
         string LastName { get;set; }
         IUserRole[] Roles { get;set; }
+        bool IsInRole(string roleName);
     }
 }
