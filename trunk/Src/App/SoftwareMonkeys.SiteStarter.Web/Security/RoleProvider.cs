@@ -372,11 +372,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		public bool IsUserInRole<U>(string username, string rolename)
 			where U : IUser
 		{
-			IUser user = RetrieveStrategy.New<User>().Retrieve<User>("Username", username);
+			IUser user = RetrieveStrategy.New("User").Retrieve<User>("Username", username);
 
 			//IUserRole role = UserRoleFactory<R>.Current.GetUserRoleByName(rolename);
 
-			ActivateStrategy.New<U>().Activate(user, "Roles");
+			ActivateStrategy.New("User").Activate(user, "Roles");
 
 			if (user == null)
 				throw new ProviderException("User not found with specified username.");
@@ -387,13 +387,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 			if (user.Roles == null)
 				return false;
 			
-			foreach (UserRole role in user.Roles)
-			{
-				if (role.Name.ToLower() == rolename.ToLower())
-					return true;
-			}
+			return user.IsInRole(rolename);
 			
-			return false;
 		}
 		
 		public override bool IsUserInRole(string username, string rolename)
