@@ -708,8 +708,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <returns>An array containing the all the provided items.</returns>
 		static public E[] Remove(E[] items, E item)
 		{
-			List<E> list = new List<E>(items);
-			list.Remove(GetByID(items, item.ID));
+			Collection<E> list = new Collection<E>(items);
+			list.Remove(list[item.ID]);
 			
 			return (E[])list.ToArray();
 		}

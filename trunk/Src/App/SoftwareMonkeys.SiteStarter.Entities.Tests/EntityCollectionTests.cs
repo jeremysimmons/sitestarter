@@ -95,5 +95,27 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 			
 			Assert.IsNull(role2, "A role was retrieved when it shouldn't have been.");
 		}
+		
+		[Test]
+		public void Test_Remove_Static()
+		{
+			TestRecord record1 = new TestRecord();
+			record1.ID = Guid.NewGuid();
+			TestRecord record2 = new TestRecord();
+			record2.ID = Guid.NewGuid();
+			
+			Collection<TestRecord> collection = new Collection<TestRecord>();
+			collection.Add(record1);
+			collection.Add(record2);
+			
+			TestRecord copy = new TestRecord();
+			copy.ID = record1.ID;
+			
+			TestRecord[] records = collection.ToArray();
+			
+			records = Collection<TestRecord>.Remove(records, copy);
+			
+			Assert.AreEqual(1, records.Length, "Invalid number found.");
+		}
 	}
 }
