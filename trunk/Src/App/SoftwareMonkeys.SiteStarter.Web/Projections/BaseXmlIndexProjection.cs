@@ -10,6 +10,19 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 	/// </summary>
 	public class BaseXmlIndexProjection : ControllableProjection
 	{
+		private string xsltFilePath = String.Empty;
+		/// <summary>
+		/// Gets/sets the path to the XSLT file.
+		/// </summary>
+		public string XsltFilePath
+		{
+			get {
+				if (xsltFilePath == String.Empty)
+					xsltFilePath = new UrlCreator().CreateXsltUrl(QueryStrings.Action, QueryStrings.Type);
+				return xsltFilePath; }
+			set { xsltFilePath = value; }
+		}
+		
 		private IEntity[] dataSource = new IEntity[] {};
 		/// <summary>
 		/// Gets/sets the data source being output by the projection.
@@ -49,8 +62,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 
 			XmlProjectionRenderer renderer = new XmlProjectionRenderer(QueryStrings.Type);
 			renderer.DataSource = DataSource;
-			renderer.XsltFile = new UrlCreator().CreateXsltUrl(QueryStrings.Action, QueryStrings.Type);
+			renderer.XsltFile = XsltFilePath;
 			renderer.Render(writer);
+		}
+		
+		public string CreateXsltFilePath(string action, string type)
+		{
+			return new UrlCreator().CreateXsltUrl(action, type);
 		}
 	}
 }

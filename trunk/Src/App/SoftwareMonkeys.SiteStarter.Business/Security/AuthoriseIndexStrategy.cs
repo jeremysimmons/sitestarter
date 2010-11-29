@@ -22,16 +22,6 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		}
 		
 		/// <summary>
-		/// Ensures that the current user is authorised to index an entity of the specified type.
-		/// </summary>
-		/// <param name="shortTypeName">The type of entity being indexed.</param>
-		public override void EnsureAuthorised(string shortTypeName)
-		{
-			if (!Authorise(shortTypeName))
-				throw new UnauthorisedException("Index", shortTypeName);
-		}
-		
-		/// <summary>
 		/// Checks whether the current user is authorised to index the provided entities.
 		/// </summary>
 		/// <param name="entities">The entities being indexed.</param>
@@ -40,9 +30,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		{
 			int originalCount = entities.Length;
 			
-			string typeName = entities.GetType().GetElementType().Name;
-			
-			if (Authorise(typeName))
+			if (Authorise(TypeName))
 			{
 				Collection<IEntity> collection = new Collection<IEntity>();
 				collection.AddRange(entities);
@@ -94,11 +82,14 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 			
 			if (entities.Length > 0)
 			{
-				string shortTypeName = entities[0].ShortTypeName;
-				
-				if (!Authorise(ref entities))
-					throw new UnauthorisedException("Index", shortTypeName);
-				//throw new UnauthorisedException("Index", this.TypeName);
+				if (!Authorise(TypeName))
+				{
+					throw new UnauthorisedException("Index", TypeName);
+				}
+				else
+				{
+					Authorise(ref entities);
+				}
 			}
 		}
 		
@@ -114,6 +105,16 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 			EnsureAuthorised(ref e);
 			
 			entities = Collection<T>.ConvertAll(e);
+		}
+		
+		/// <summary>
+		/// Ensures that the current user is authorised to index an entity of the specified type.
+		/// </summary>
+		/// <param name="shortTypeName">The type of entity being indexed.</param>
+		public override void EnsureAuthorised(string shortTypeName)
+		{
+			if (!Authorise(shortTypeName))
+				throw new UnauthorisedException("Index", shortTypeName);
 		}
 		
 		#region New functions

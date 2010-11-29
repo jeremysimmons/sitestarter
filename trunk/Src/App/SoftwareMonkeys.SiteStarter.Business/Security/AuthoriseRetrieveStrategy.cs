@@ -24,16 +24,6 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		}
 		
 		/// <summary>
-		/// Ensures that the current user is authorised to retrieve an entity of the specified type.
-		/// </summary>
-		/// <param name="shortTypeName">The type of entity being retrieved.</param>
-		public override void EnsureAuthorised(string shortTypeName)
-		{
-			if (!Authorise(shortTypeName))
-				throw new UnauthorisedException("Retrieve", shortTypeName);
-		}
-		
-		/// <summary>
 		/// Checks whether the current user is authorised to retrieve the provided entity.
 		/// </summary>
 		/// <param name="entity">The entity to be retrieved.</param>
@@ -47,6 +37,16 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 				return false;
 			
 			return true;
+		}
+		
+		/// <summary>
+		/// Ensures that the current user is authorised to retrieve an entity of the specified type.
+		/// </summary>
+		/// <param name="shortTypeName">The type of entity being retrieved.</param>
+		public override void EnsureAuthorised(string shortTypeName)
+		{
+			if (!Authorise(shortTypeName))
+				throw new UnauthorisedException("Retrieve", shortTypeName);
 		}
 		
 		/// <summary>
