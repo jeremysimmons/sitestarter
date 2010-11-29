@@ -115,6 +115,18 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		
 		[Browsable(true)]
 		[Bindable(true)]
+		public string RequiredCssClass
+		{
+			get {
+				if (ViewState["RequiredCssClass"] == null)
+					ViewState["RequiredCssClass"] = "Required";
+				return (string)ViewState["RequiredCssClass"];
+			}
+			set { ViewState["RequiredCssClass"] = value; }
+		}
+		
+		[Browsable(true)]
+		[Bindable(true)]
 		public string LabelCssClass
 		{
 			get {
@@ -204,20 +216,20 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			// To
 			FormTable.Rows.Add(new TableRow());
 			FormTable.Rows[1].Cells.Add(new TableCell());
-			FormTable.Rows[1].Cells[0].Controls.Add(new LiteralControl(Language.To + ":"));
+			FormTable.Rows[1].Cells[0].Controls.Add(new LiteralControl("<span class='" + RequiredCssClass + "'>*</span>&nbsp;" + Language.To + ":"));
 			FormTable.Rows[1].Cells.Add(new TableCell());
 			
 			// Subject
 			FormTable.Rows.Add(new TableRow());
 			FormTable.Rows[2].Cells.Add(new TableCell());
-			FormTable.Rows[2].Cells[0].Controls.Add(new LiteralControl(Language.Subject + ":"));
+			FormTable.Rows[2].Cells[0].Controls.Add(new LiteralControl("<span class='" + RequiredCssClass + "'>*</span>&nbsp;" + Language.Subject + ":"));
 			FormTable.Rows[2].Cells.Add(new TableCell());
 			FormTable.Rows[2].Cells[1].Controls.Add(SubjectField);
 			
 			// Message
 			FormTable.Rows.Add(new TableRow());
 			FormTable.Rows[3].Cells.Add(new TableCell());
-			FormTable.Rows[3].Cells[0].Controls.Add(new LiteralControl(Language.Message + ":"));
+			FormTable.Rows[3].Cells[0].Controls.Add(new LiteralControl("<span class='" + RequiredCssClass + "'>*</span>&nbsp;" + Language.Message + ":"));
 			FormTable.Rows[3].Cells.Add(new TableCell());
 			FormTable.Rows[3].Cells[1].Controls.Add(MessageField);
 			
