@@ -18,7 +18,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		public override bool Authorise(string shortTypeName)
 		{
 			return AuthoriseRetrieveStrategy.New(shortTypeName).Authorise(shortTypeName);
-		
+			
 		}
 		
 		/// <summary>
@@ -38,24 +38,30 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// <returns>A value indicating whether the current user is authorised to index the provided entities.</returns>
 		public virtual bool Authorise(ref IEntity[] entities)
 		{
-			
 			int originalCount = entities.Length;
 			
-			Collection<IEntity> collection = new Collection<IEntity>();
-			collection.AddRange(entities);
+			string typeName = entities.GetType().GetElementType().Name;
 			
-			for (int i = 0; i < collection.Count; i++)
+			if (Authorise(typeName))
 			{
-				if (!Authorise(collection[i]))
+				Collection<IEntity> collection = new Collection<IEntity>();
+				collection.AddRange(entities);
+				
+				for (int i = 0; i < collection.Count; i++)
 				{
-					collection.RemoveAt(i);
-					i--;
+					if (!Authorise(collection[i]))
+					{
+						collection.RemoveAt(i);
+						i--;
+					}
 				}
-			}
-			
-			entities = collection.ToArray();
+				
+				entities = collection.ToArray();
 
-			return entities.Length > 0;
+				return true;
+			}
+			else
+				return false;
 		}
 		
 		/// <summary>
@@ -92,7 +98,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 				
 				if (!Authorise(ref entities))
 					throw new UnauthorisedException("Index", shortTypeName);
-					//throw new UnauthorisedException("Index", this.TypeName);
+				//throw new UnauthorisedException("Index", this.TypeName);
 			}
 		}
 		

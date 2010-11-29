@@ -74,6 +74,15 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		
 		#region New functions
 		/// <summary>
+		/// Creates a new strategy for updating the provided entity.
+		/// </summary>
+		/// <param name="entity">The entity involved in the strategy.</param>
+		static public IUpdateStrategy New(IEntity entity)
+		{
+			return StrategyState.Strategies.Creator.NewUpdater(entity.ShortTypeName);
+		}
+		
+		/// <summary>
 		/// Creates a new strategy for updating the specified type.
 		/// </summary>
 		static public IUpdateStrategy New<T>()

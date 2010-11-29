@@ -100,6 +100,15 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <summary>
 		/// Creates a new strategy for activating the specified type.
 		/// </summary>
+		/// <param name="entity">The entity involved in the strategy.</param>
+		static public IActivateStrategy New(IEntity entity)
+		{
+			return StrategyState.Strategies.Creator.NewActivator(entity.ShortTypeName);
+		}
+		
+		/// <summary>
+		/// Creates a new strategy for activating the specified type.
+		/// </summary>
 		/// <param name="requiresAuthorisation">A value indicating whether the strategy requires authorisation.</param>
 		static public IActivateStrategy New<T>(bool requiresAuthorisation)
 		{

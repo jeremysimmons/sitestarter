@@ -94,7 +94,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public T New<T>(string action, string typeName)
 			where T : IStrategy
 		{
-			return Strategies[action, typeName].New<T>();
+			return Strategies[action, typeName].New<T>(typeName);
 		}
 		
 		/// <summary>
