@@ -187,7 +187,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			if (EnsureAuthorised())
 			{
 				DataSource = Indexer.Index();
-				
+					
 				AbsoluteTotal = Indexer.AbsoluteTotal;
 			}
 			
@@ -236,10 +236,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				
 				AppLogger.Debug("# of entities: " + entities.Length);
 				
-				
 				Type type = entities.GetType().GetElementType();
 				
 				OperationManager.StartOperation("Index" + type.Name, null);
+				
+				// There will likely be an authorisation check before this function is called, checking based on just the type,
+				// but it's necessary to check the authorisation for the actual entities
+				Authorise(ref entities);
 				
 				DataSource = entities;
 			}
@@ -252,6 +255,20 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				throw new InvalidOperationException("Type not specified.");
 		}
 		#endregion
+		
+		
+		/// <summary>
+		/// Ensures that the user is authorised to index entities of the specified type.
+		/// </summary>
+		/// <param name="entities">The entities involved in the authorisation check.</param>
+		/// <returns>A value indicating whether the user is authorised.</returns>
+		public bool Authorise(ref IEntity[] entities)
+		{
+			bool isAuthorised = StrategyState.Strategies["Authorise" + Action, Type.Name]
+				.New<IAuthoriseIndexStrategy>(Type.Name).Authorise(ref entities);
+		
+			return !RequireAuthorisation || isAuthorised;
+		}
 		
 		
 		public static IndexController New(IControllable container, Type type, bool enablePaging)

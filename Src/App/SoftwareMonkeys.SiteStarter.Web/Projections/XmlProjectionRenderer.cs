@@ -62,19 +62,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 					XmlDocument doc = new XmlDocument();
 					
 					AppLogger.Debug("Xslt file: " + XsltFile);
-
-					UrlCreator creator = new UrlCreator();
 					
-					string xsltPath = creator.CreateXsltUrl(QueryStrings.Action, QueryStrings.Type);
-					
-					AppLogger.Debug("Xslt path: " + xsltPath);
 					
 					doc.LoadXml(stringWriter.ToString());
 
 
 					XmlProcessingInstruction pi =
 						doc.CreateProcessingInstruction("xml-stylesheet",
-						                                "type=\"text/xsl\" href=\"" + xsltPath + "\"");
+						                                "type=\"text/xsl\" href=\"" + XsltFile + "\"");
 
 					doc.InsertBefore(pi, doc.DocumentElement);
 

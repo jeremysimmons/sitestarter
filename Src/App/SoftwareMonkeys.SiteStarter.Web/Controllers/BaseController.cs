@@ -135,5 +135,18 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			
 			return !RequireAuthorisation || isAuthorised;
 		}
+		
+		/// <summary>
+		/// Ensures that the user is authorised to index entities of the specified type.
+		/// </summary>
+		/// <param name="entity">The entity involved in the authorisation check.</param>
+		/// <returns>A value indicating whether the user is authorised.</returns>
+		public bool Authorise(IEntity entity)
+		{
+			bool isAuthorised = StrategyState.Strategies["Authorise" + Action, Type.Name]
+				.New<IAuthoriseStrategy>(Type.Name).Authorise(entity);
+			
+			return !RequireAuthorisation || isAuthorised;
+		}
 	}
 }
