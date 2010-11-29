@@ -87,6 +87,19 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			           currentUrl);
 		}
 		
+		/// <summary>
+		/// Sets the provided application path.
+		/// </summary>
+		/// <param name="applicationPath">The relative path to the root of the application.</param>
+		/// <param name="enableFriendlyUrls"></param>
+		/// <param name="currentUrl">The URL of the current request.</param>
+		public UrlCreator(string applicationPath, bool enableFriendlyUrls, string currentUrl)
+		{
+			Initialize(applicationPath,
+			           enableFriendlyUrls,
+			           currentUrl);
+		}
+		
 		public virtual void Initialize()
 		{
 			Initialize(
