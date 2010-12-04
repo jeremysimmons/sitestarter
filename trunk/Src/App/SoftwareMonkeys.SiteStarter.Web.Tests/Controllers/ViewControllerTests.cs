@@ -14,8 +14,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 		[Test]
 		public void Test_View_EntityProvided()
 		{
-			TestRecord.RegisterType();
-			
 			TestRecord record1 = new TestRecord();
 			record1.ID = Guid.NewGuid();
 			record1.Text = "Record 1";
