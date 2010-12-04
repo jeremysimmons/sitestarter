@@ -17,6 +17,11 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 		void Add(string key, object value);
 		
 		bool ContainsKey(string key);
+		
 		string[] GetKeys();
+		
+		string GetString(string key);
+		
+		bool GetBool(string key);
 	}
 }

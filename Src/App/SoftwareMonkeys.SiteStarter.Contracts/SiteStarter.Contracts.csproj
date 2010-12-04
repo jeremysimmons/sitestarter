@@ -72,6 +72,7 @@
     <Compile Include="Business\IUpdateStrategy.cs" />
     <Compile Include="Business\IValidateStrategy.cs" />
     <Compile Include="Business\Security\IAuthenticateStrategy.cs" />
+    <Compile Include="Business\Security\IAuthoriseCreateStrategy.cs" />
     <Compile Include="Business\Security\IAuthoriseDeleteStrategy.cs" />
     <Compile Include="Business\Security\IAuthoriseIndexStrategy.cs" />
     <Compile Include="Business\Security\IAuthoriseRetrieveStrategy.cs" />
@@ -96,6 +97,9 @@
     <Compile Include="IO\IFileMapper.cs" />
     <Compile Include="State\IStateProvider.cs" />
     <Compile Include="Web\IControllable.cs" />
+    <Compile Include="Web\ISiteMap.cs" />
+    <Compile Include="Web\ISiteMapManager.cs" />
+    <Compile Include="Web\ISiteMapNode.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Business\Security" />
