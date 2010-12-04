@@ -29,5 +29,31 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 			}
 			return keys.ToArray();
 		}
+		
+		/// <summary>
+		/// Retrieves a string value from the dictionary.
+		/// </summary>
+		/// <param name="key"></param>
+		/// <returns></returns>
+		public string GetString(string key)
+		{
+			if (ContainsKey(key))
+				return (string)this[key];
+			else
+				return String.Empty;
+		}
+		
+		/// <summary>
+		/// Retrieves a bool value from the dictionary.
+		/// </summary>
+		/// <param name="key"></param>
+		/// <returns></returns>
+		public bool GetBool(string key)
+		{
+			if (ContainsKey(key))
+				return (bool)this[key];
+			else
+				return false;
+		}
 	}
 }

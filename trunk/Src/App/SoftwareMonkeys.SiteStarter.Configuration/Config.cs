@@ -60,8 +60,8 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
             } 
         }
         
-        
-        /// <summary>
+        // TODO: Remove if not needed
+        /*/// <summary>
         /// Gets/sets the application configuration object.
         /// </summary>
         static public MappingConfig Mappings
@@ -91,64 +91,14 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
                 else
                     All.Add((IConfig)value);
             } 
-        }
-        
-        /*
-        static protected string VirtualServerKey
-        {
-        	get { return "VirtualServer_" + VirtualServerState.VirtualServerID; }
         }*/
-
-//        /// <summary>
-  //      /// Gets/sets the virtual server configuration object.
-  //      /// </summary>
-  //      static public IVirtualServerConfig VirtualServer
-  //      {
-  //              get {
-   //         	IVirtualServerConfig server = null;
-            	
-                /*if (All != null && All.Count > 0)
-                {
-                    for (int i = 0; i < All.Count; i++)
-                    {
-                        if (All[i] is IVirtualServerConfig && ((IVirtualServerConfig)All[i]).ID.ToString() == (string)StateAccess.State.GetSession("VirtualServerID"))
-                        {
-                            server = (IVirtualServerConfig)All[i];
-                        }
-                    }
-                }*/
-                
-    //            server = (IVirtualServerConfig)StateAccess.State.GetApplication(VirtualServerKey);
-                
-    //            if (server == null)
-     //           {
-    //            	server = LoadVirtualServerConfig();
-     //           	
-    //            	StateAccess.State.SetApplication(VirtualServerKey, server);
-    //            }
-    //            return server;
-    //        }
-            /*set
-            {
-                if (All.Contains((IVirtualServerConfig)value))
-                {
-                    for (int i = 0; i < All.Count; i++)
-                    {
-                        if (All[i] is IVirtualServerConfig && ((IVirtualServerConfig)All[i]).ID.ToString() == (string)StateAccess.State.GetSession("VirtualServerID"))
-                            All[i] = (IVirtualServerConfig)value;
-                    }
-                }
-                else
-                    All.Add((IVirtualServerConfig)value);
-            } */
-      //  }
-
+        
         /// <summary>
         /// Gets a flag indicating whether the application configuration has been initialized.
         /// </summary>
         static public bool IsInitialized
         {
-            get { return (Application != null && Mappings != null); }
+            get { return (Application != null); }
         }
         
         /// <summary>
