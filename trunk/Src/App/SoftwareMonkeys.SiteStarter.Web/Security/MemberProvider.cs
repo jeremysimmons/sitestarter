@@ -33,114 +33,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
         {
             get
             {
-                return "WorkHub";
+                return "SiteStarter";
             }
             set
             {
                 throw new Exception("The method or operation is not implemented.");
             }
         }
-
-		/*/// <summary>
-		/// Gets/sets the current session key.
-		/// </summary>
-		static public Guid SessionKey
-		{
-			get
-			{
-				if (!HttpContext.Current.Request.IsAuthenticated)
-					return Guid.Empty;
-				return new Guid(HttpContext.Current.User.Identity.Name);
-			}
-		}*/
-
-		/*/// <summary>
-		/// Authenticates the user, logs them in, then redirects them to the appropriate page.
-		/// </summary>
-		/// <param name="username">The user's username.</param>
-		/// <param name="password">The user's password.</param>
-		/// <param name="encryptPassword">Whether or not the password needs to be encrypted before authenticating.</param>
-		/// <param name="rememberPassword">Remember or not to remember the user's password.</param>
-		/// <returns>Whether or not the username and password were valid.</returns>
-		static public bool LoginAndRedirect(string username, string password, bool encryptPassword, bool rememberPassword)
-		{
-			User user = Login(username, password, encryptPassword, rememberPassword);
-			if (user != null)
-			{
-				string returnUrl = HttpContext.Current.Request.QueryString["ReturnUrl"];
-				if (returnUrl == null || returnUrl == String.Empty)
-					returnUrl = "Default.aspx";
-				HttpContext.Current.Response.Redirect(returnUrl);
-				return true;
-			}
-			else
-				return false;
-		}*/
-
-		/*/// <summary>
-		/// Authenticates the user and logs them in. 
-		/// </summary>
-		/// <param name="username">The user's username.</param>
-		/// <param name="password">The user's password</param>
-		/// <param name="encryptPassword">Whether or not the password needs to be encrypted before authenticating.</param>.
-		/// <param name="rememberPassword">Remember or not to remember the user's password.</param> 
-		/// <returns>The details of the user matching the username and password.</returns>
-		static public User Login(string username, string password, bool encryptPassword, bool rememberPassword)
-		{
-			Logout();
-
-			if (encryptPassword)
-				password = Crypter.EncryptPassword(password);
-
-			SessionKey key = My.SessionEngine.CreateKey(username, password);
-
-			if (key != null && key.User.Enabled)
-			{
-				FormsAuthentication.SetAuthCookie(key.Key.ToString(), rememberPassword);
-				// Update My.User
-				My.User = key.User;
-				My.User.Permissions = UserFactory.GetPermissions(My.User);
-			}
-			else
-				return null;
-
-			return key.User;
-		}*/
-
-		/*/// <summary>
-		/// Logs the user in with the provided session key. 
-		/// </summary>
-		/// <param name="key">The session key to use for authentication.</param>
-		static public void Login(Guid key)
-		{
-			Logout();
-
-			if (key != Guid.Empty)
-			{
-				My.User = My.SessionEngine.GetSessionKey(key).User;
-				My.User.Permissions = UserFactory.GetPermissions(My.User);
-				FormsAuthentication.SetAuthCookie(key.ToString(), false);
-			}
-		}*/
-
-		/*/// <summary>
-		/// Logs the current user out.
-		/// </summary>
-		static public void Logout()
-		{
-			My.SessionEngine.DeleteSessionKey(My.SessionEngine.GetSessionKey(SessionKey));
-			My.User = null;
-			FormsAuthentication.SignOut();
-		}*/
-
-		/*/// <summary>
-		/// Redirects the user to the login page.
-		/// </summary>
-		static public void RedirectToLogin()
-		{
-			if (HttpContext.Current.Request.Url.ToString().ToLower().IndexOf("login.aspx") == -1)
-				HttpContext.Current.Response.Redirect("Login.aspx");
-		}*/
 
         public override bool ChangePassword(string username, string oldPassword, string newPassword)
         {
