@@ -1,5 +1,6 @@
 ﻿using System;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using SoftwareMonkeys.SiteStarter.Entities;
 
 namespace SoftwareMonkeys.SiteStarter.Business
 {
@@ -46,7 +47,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public StrategyInfo Locate(string action, string typeName)
 		{
 			// Get the specified type
-			Type type = Entities.EntitiesUtilities.GetType(typeName);
+			Type type = null;
+			if (EntityState.IsType(typeName))
+				type = EntityState.GetType(typeName);
 			
 			// Create a direct strategy key for the specified type
 			string key = Strategies.GetStrategyKey(action, typeName);
@@ -60,7 +63,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				strategyInfo = Strategies[key];
 			}
 			// If not then navigate up the heirarchy looking for a matching strategy
-			else
+			else if (type != null) // If no type was found then skip the hierarchy check as it's just a name without a corresponding type
 			{
 				strategyInfo = LocateFromHeirarchy(action, type);
 			}

@@ -14,12 +14,14 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		
 		public override bool Authorise(string shortTypeName)
 		{
-			return AuthenticationState.UserIsInRole("Administrator");
+			return AuthenticationState.IsAuthenticated
+				&& AuthenticationState.UserIsInRole("Administrator");
 		}
 		
 		public override bool Authorise(SoftwareMonkeys.SiteStarter.Entities.IEntity entity)
 		{
-			return AuthenticationState.UserIsInRole("Administrator");
+			return AuthenticationState.IsAuthenticated
+				&& AuthenticationState.UserIsInRole("Administrator");
 		}
 		
 	}

@@ -26,7 +26,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			
 		}
 		
-		public override IEntity[] IndexWithReference(Type type, string propertyName, string referencedEntityType, Guid referencedEntityID)
+		public override IEntity[] IndexWithReference(string propertyName, string referencedEntityType, Guid referencedEntityID)
 		{
 			throw new NotImplementedException();
 			

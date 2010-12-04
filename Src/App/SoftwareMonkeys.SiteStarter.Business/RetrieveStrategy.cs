@@ -21,15 +21,14 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <summary>
 		/// Retrieves the entity of the specified type with the provided unique key.
 		/// </summary>
-		/// <param name="type">The type of entity being retrieved.</param>
 		/// <param name="uniqueKey">The unique key of the entity to retrieve.</param>
 		/// <returns>The entity with the provided unique key.</returns>
-		public IEntity Retrieve(Type type, string uniqueKey)
+		public IEntity Retrieve(string uniqueKey)
 		{
-			IEntity entity = Retrieve(type, "UniqueKey", uniqueKey);
+			IEntity entity = Retrieve("UniqueKey", uniqueKey);
 			
 			if (RequireAuthorisation && entity != null)
-				AuthoriseRetrieveStrategy.New(type.Name).EnsureAuthorised(entity);
+				AuthoriseRetrieveStrategy.New(TypeName).EnsureAuthorised(entity);
 			
 			return entity;
 		}
@@ -42,7 +41,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public T Retrieve<T>(string uniqueKey)
 			where T : IEntity
 		{
-			T entity = (T)Retrieve(typeof(T), "UniqueKey", uniqueKey);
+			T entity = (T)Retrieve("UniqueKey", uniqueKey);
 			
 			if (RequireAuthorisation && entity != null)
 				AuthoriseRetrieveStrategy.New<T>().EnsureAuthorised(entity);
@@ -53,15 +52,14 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <summary>
 		/// Retrieves the entity of the specified type with the provided ID.
 		/// </summary>
-		/// <param name="type">The type of entity being retrieved.</param>
 		/// <param name="entityID">The ID of the entity to retrieve.</param>
 		/// <returns>The entity with the provided ID.</returns>
-		public IEntity Retrieve(Type type, Guid entityID)
+		public IEntity Retrieve(Guid entityID)
 		{
-			IEntity entity = Retrieve(type, "ID", entityID);
+			IEntity entity = Retrieve("ID", entityID);
 			
 			if (RequireAuthorisation && entity != null)
-				AuthoriseRetrieveStrategy.New(type.Name).EnsureAuthorised(entity);
+				AuthoriseRetrieveStrategy.New(TypeName).EnsureAuthorised(entity);
 			
 			return entity;
 		}
@@ -74,7 +72,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public T Retrieve<T>(Guid entityID)
 			where T : IEntity
 		{
-			T entity = (T)Retrieve(typeof(T), "ID", entityID);
+			T entity = (T)Retrieve("ID", entityID);
 			
 			if (RequireAuthorisation && entity != null)
 				AuthoriseRetrieveStrategy.New<T>().EnsureAuthorised(entity);
@@ -85,16 +83,17 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <summary>
 		/// Retrieves the entity of the specified type with the specified property matching the provided value.
 		/// </summary>
-		/// <param name="type">The type of entity being retrieved.</param>
 		/// <param name="propertyName">The name of the property to match to the provided value.</param>
 		/// <param name="value">The name of the value to match to the specified property.</param>
 		/// <returns>The entity with the specified property matching the provided value.</returns>
-		public IEntity Retrieve(Type type, string propertyName, object value)
+		public IEntity Retrieve(string propertyName, object value)
 		{
-			IEntity entity = DataAccess.Data.Reader.GetEntity(type, propertyName, value);
+			IEntity entity = DataAccess.Data.Reader.GetEntity(EntitiesUtilities.GetType(TypeName),
+			                                                  propertyName,
+			                                                  value);
 			
 			if (RequireAuthorisation && entity != null)
-				AuthoriseRetrieveStrategy.New(type.Name).EnsureAuthorised(entity);
+				AuthoriseRetrieveStrategy.New(TypeName).EnsureAuthorised(entity);
 			
 			return entity;
 		}
@@ -137,15 +136,15 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <summary>
 		/// Retrieves the entity of the specified type with the specified property matching the provided value.
 		/// </summary>
-		/// <param name="type">The type of entity to retrieve.</param>
 		/// <param name="parameters">The parameters to use as filters when retrieving the entities. Corresponds with properties and their values.</param>
 		/// <returns>The entity with the specified property matching the provided value.</returns>
-		public IEntity Retrieve(Type type, Dictionary<string, object> parameters)
+		public IEntity Retrieve(Dictionary<string, object> parameters)
 		{
-			IEntity entity = DataAccess.Data.Reader.GetEntity(type, parameters);
+			IEntity entity = DataAccess.Data.Reader.GetEntity(EntityState.Entities[TypeName].GetEntityType(),
+			                                                  parameters);
 			
 			if (RequireAuthorisation && entity != null)
-				AuthoriseRetrieveStrategy.New(type.Name).EnsureAuthorised(entity);
+				AuthoriseRetrieveStrategy.New(TypeName).EnsureAuthorised(entity);
 			
 			return entity;
 		}
