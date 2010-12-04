@@ -734,4 +734,55 @@ ${WebSite.Title}&lt;br /&gt;
   <data name="SmtpServerTest" xml:space="preserve">
     <value>SMTP Server Test</value>
   </data>
+  <data name="EmailSent" xml:space="preserve">
+    <value>Email Sent</value>
+  </data>
+  <data name="Send" xml:space="preserve">
+    <value>Send</value>
+  </data>
+  <data name="SendMessage" xml:space="preserve">
+    <value>Send Message</value>
+  </data>
+  <data name="SendMessageIntro" xml:space="preserve">
+    <value>Use the form below to send a message.</value>
+  </data>
+  <data name="MessageDetails" xml:space="preserve">
+    <value>Message Details</value>
+  </data>
+  <data name="SignIn" xml:space="preserve">
+    <value>Sign In</value>
+  </data>
+  <data name="SignOut" xml:space="preserve">
+    <value>Sign Out</value>
+  </data>
+  <data name="UserSettings" xml:space="preserve">
+    <value>User Settings</value>
+  </data>
+  <data name="EditUserSettingsIntro" xml:space="preserve">
+    <value>Edit the settings for the users feature in the form below.</value>
+  </data>
+  <data name="EnableUserRegistration" xml:space="preserve">
+    <value>Enable User Registration</value>
+  </data>
+  <data name="AutoApproveNewUsers" xml:space="preserve">
+    <value>Auto Approve New Users</value>
+  </data>
+  <data name="EnableUserRegistrationNote" xml:space="preserve">
+    <value>Yes, allow new users to register.</value>
+  </data>
+  <data name="AutoApproveNewUsersNote" xml:space="preserve">
+    <value>Yes, automatically approve new users so they can sign in immediately.</value>
+  </data>
+  <data name="PendingApproval" xml:space="preserve">
+    <value>Pending Approval</value>
+  </data>
+  <data name="RegistrationPendingApprovalMessage" xml:space="preserve">
+    <value>Your account has been registered and is now pending approval from administrators.</value>
+  </data>
+  <data name="EntityExists" xml:space="preserve">
+    <value>An existing ${entity} with similar details was found. Please try again.</value>
+  </data>
+  <data name="UserRegistered" xml:space="preserve">
+    <value>The new user account has been registered successfully.</value>
+  </data>
 </root>
