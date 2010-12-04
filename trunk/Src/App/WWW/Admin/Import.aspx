@@ -5,6 +5,8 @@
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Data" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Business" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Web.Properties" %>
+<%@ Import namespace="SoftwareMonkeys.SiteStarter.Web.Projections" %>
+<%@ Import namespace="SoftwareMonkeys.SiteStarter.Web.Controllers" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Web.State" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Web.Data" %>
@@ -56,7 +58,15 @@
 		installer.DataProviderInitializer = new DataProviderInitializer();
 		
 		installer.Setup();
+		
+		InitializeWeb();
     }
+    
+	private void InitializeWeb()
+	{
+		new ControllersInitializer().Initialize();
+		new ProjectionsInitializer(this).Initialize();
+	}
     
     private void ExecuteImport()
     {
@@ -81,7 +91,7 @@
 
 <div class="Heading1"><%= Resources.Language.ImportComplete%></div>
 <p><%= Resources.Language.ImportCompleteMessage %></p>
-<ul><li><a href='../Members/LogIn.aspx'><%= Resources.Language.LogIn %></a></li></ul>
+<ul><li><a href='../User/SignIn.aspx'><%= Resources.Language.SignIn %></a></li></ul>
 
 </asp:View>
 </asp:MultiView>

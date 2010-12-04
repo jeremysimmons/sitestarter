@@ -8,6 +8,8 @@
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Web.State" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Web.Data" %>
+<%@ Import namespace="SoftwareMonkeys.SiteStarter.Web.Projections" %>
+<%@ Import namespace="SoftwareMonkeys.SiteStarter.Web.Controllers" %>
 <%@ Import namespace="System.Xml.Serialization" %>
 <%@ Import namespace="System.Collections.Specialized" %>
 <%@ Import namespace="System.Collections.Generic" %>
@@ -61,7 +63,16 @@
 		installer.AdministratorRoleName = Resources.Language.Administrator;
 		
 		installer.Setup();
+		
+		InitializeWeb();
     }
+    
+	private void InitializeWeb()
+	{
+		new ControllersInitializer().Initialize();
+		new ProjectionsInitializer(this).Initialize();
+	}
+
 
     private void ExecuteUpdate()
     {
