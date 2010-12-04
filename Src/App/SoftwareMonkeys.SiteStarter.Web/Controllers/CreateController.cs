@@ -21,14 +21,20 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			get { return "Create"; }
 		}
 		
-		private IEntity dataSource;
-		public IEntity DataSource
+		private string entitySavedLanguageKey = "EntitySaved";
+		public string EntitySavedLanguageKey
 		{
-			get { return dataSource; }
-			set { dataSource = value;
-			}
+			get { return entitySavedLanguageKey; }
+			set { entitySavedLanguageKey = value; }
 		}
-	
+		
+		private string entityExistsLanguageKey = "EntityExists";
+		public string EntityExistsLanguageKey
+		{
+			get { return entityExistsLanguageKey; }
+			set { entityExistsLanguageKey = value; }
+		}
+		
 		private ISaveStrategy saver;
 		/// <summary>
 		/// Gets/sets the strategy use to save an entity.
@@ -41,17 +47,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 					if (Type == null)
 						throw new InvalidOperationException("Type property hasn't been initialized.");
 					saver = StrategyState.Strategies.Creator.NewSaver(Type.Name);
+					saver.RequireAuthorisation = RequireAuthorisation;
 				}
 				return saver; }
 			set { saver = value; }
 		}
-		
-		/*private bool requiresAuthentication = true;
-		public bool RequiresAuthentication
-		{
-			get { return requiresAuthentication; }
-			set { requiresAuthentication = value; }
-		}*/
 		
 		public CreateController()
 		{
@@ -107,13 +107,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				if (Saver.Save(entity))
 				{					
 					// Display the result
-					Result.Display(DynamicLanguage.GetEntityText("EntitySaved", Type.Name));
+					Result.Display(DynamicLanguage.GetEntityText(EntitySavedLanguageKey, Type.Name));
 
 					saved = true;
 				}
 				else
 				{					
-					Result.DisplayError(DynamicLanguage.GetEntityText("EntityExists", Type.Name));
+					Result.DisplayError(DynamicLanguage.GetEntityText(EntityExistsLanguageKey, Type.Name));
 					
 					saved = false;
 				}
@@ -121,20 +121,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				AppLogger.Debug("Saved: " + saved.ToString());
 			}
 			return saved;
-		}
-		
-		/// <summary>
-		/// Ensures that the user is authorised to create an entity of the specified type.
-		/// </summary>
-		/// <returns>A value indicating whether the user is authorised.</returns>
-		public bool EnsureAuthorised()
-		{
-			bool isAuthorised = AuthoriseSaveStrategy.New(Type.Name).Authorise(Type.Name);
-			
-			if (!isAuthorised)
-				FailAuthorisation();
-			
-			return isAuthorised;
 		}
 		
 		/// <summary>
