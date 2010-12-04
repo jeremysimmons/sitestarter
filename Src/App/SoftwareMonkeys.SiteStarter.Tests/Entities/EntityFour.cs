@@ -41,29 +41,5 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
 		}
 	}
         
-        
-        /// <summary>
-        /// Registers the entity in the system.
-        /// </summary>
-        static public void RegisterType()
-        {
-			
-			MappingItem item = new MappingItem("EntityFour");
-			item.Settings.Add("DataStoreName", "Testing_EntityFours");
-			item.Settings.Add("IsEntity", true);
-			item.Settings.Add("FullName", typeof(EntityFour).FullName);
-			item.Settings.Add("AssemblyName", typeof(EntityFour).Assembly.FullName);
-			
-			Config.Mappings.AddItem(item);
-        }
-        
-        /// <summary>
-        /// Deregisters the entity from the system.
-        /// </summary>
-        static public void DeregisterType()
-        {
-        	throw new NotImplementedException();
-        }
-
     }
 }

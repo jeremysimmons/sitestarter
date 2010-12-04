@@ -237,35 +237,6 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			Username = username;
 			Password = password;
 		}
-		
-		/// <summary>
-		/// Registers the entity in the system.
-		/// </summary>
-		/// <param name="config">The mapping configuration object to add the settings to.</param>
-		static public void RegisterType()
-		{
-			MappingItem item = new MappingItem("User");
-			item.Settings.Add("DataStoreName", "Users");
-			item.Settings.Add("IsEntity", true);
-			item.Settings.Add("FullName", typeof(User).FullName);
-			item.Settings.Add("AssemblyName", typeof(User).Assembly.FullName);
-			
-			
-			MappingItem item2 = new MappingItem("IUser");
-			item2.Settings.Add("Alias", "User");
-			
-			Config.Mappings.AddItem(item);
-			Config.Mappings.AddItem(item2);
-		}
-		
-		/// <summary>
-		/// Deregisters the entity from the system.
-		/// </summary>
-		/// <param name="config">The mapping configuration object to remove the settings from.</param>
-		static public void DeregisterType()
-		{
-			throw new NotImplementedException();
-		}
 	
 		public bool IsInRole(string roleName)
 		{

@@ -17,85 +17,11 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			return typeof(IEntity).IsAssignableFrom(type);
 		}
 		
-		/*static public void AddMappings(Type type, string dataStoreName)
-		{
-			
-			using (LogGroup logGroup = AppLogger.StartGroup("Adding mappings.", NLog.LogLevel.Debug))
-			{
-				AddDataStoreMapping(type, dataStoreName);
-				
-				string path = Config.Application.PhysicalApplicationPath.TrimEnd('\\') + @"\App_Data\";
-				
-				ConfigFactory<MappingConfig>.SaveConfig(path, (MappingConfig)Config.Mappings);
-			}
-		}
-		
-		static public void AddDataStoreMapping(Type type, string dataStoreName)
-		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Adding data store mapping information.", NLog.LogLevel.Debug))
-			{
-				AppLogger.Debug("Type: " + type.ToString());
-				AppLogger.Debug("Data store name: " + dataStoreName);
-				
-				IMappingConfig config = Config.Mappings;
-				if (config == null)
-					throw new InvalidOperationException("The mappings have not been initialized.");
-				
-				MappingItem item = new MappingItem(type.Name);
-				item.Settings.Add("DataStoreName", dataStoreName);
-				
-				config.AddItem(item);
-			}
-		}*/
-		
-		static public void RemoveMappings(Type type)
-		{
-			throw new NotImplementedException();
-			/*IMappingConfig config = Config.Mappings;
-			if (config == null)
-				config = new MappingConfig();
-			
-			config.RemoveItem(config.I*/
-		}
-		
 		static public bool MatchAlias(string typeName, string aliasTypeName)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Matching the type '" + typeName + "' with alias type '" + aliasTypeName + "'.", NLog.LogLevel.Debug))
-			{
-				MappingConfig config = Config.Mappings;
-				
-				if (config != null)
-				{
-					MappingItem item = config.GetItem(typeName, true);
-					
-					if (item != null)
-					{
-						AppLogger.Debug("Mapping item found");
-						//  If the settings for the type define an alias
-						if (item.Settings.ContainsKey("Alias"))
-						{
-							AppLogger.Debug("Alias setting found in mappings: " + item.Settings["Alias"]);
-							// If the alias specified in settings matches the specified alias
-							if (item.Settings["Alias"].Equals(aliasTypeName))
-							{
-								AppLogger.Debug("Alias matches.");
-								return true;
-							}
-							else
-								AppLogger.Debug("The alias specified in mappings '" + item.Settings["Alias"] + "' doesn't match.");
-						}
-						else
-							AppLogger.Debug("No alias setting found for the type name.");
-					}
-					else
-						AppLogger.Debug("No item found for the type name.");
-				}
-				else
-					AppLogger.Debug("The mappings haven't been initialized.");
-				
-				// No match, return false
-				return false;
-			}
+			// If the Alias property on the specified alias type is the specified type, then it means the alias is referencing back to the original
+			// and therefore the match is true
+			return Entities.EntityState.Entities[aliasTypeName].Alias == typeName;
 		}
 		
 		/// <summary>

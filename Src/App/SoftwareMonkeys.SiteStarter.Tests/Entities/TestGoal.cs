@@ -21,26 +21,5 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
 		{
 		}
 		
-        /// <summary>
-        /// Registers the entity in the system.
-        /// </summary>
-        static public void RegisterType()
-        {
-			MappingItem item = new MappingItem("TestGoal");
-			item.Settings.Add("DataStoreName", "Testing_Goals");
-			item.Settings.Add("IsEntity", true);
-			item.Settings.Add("FullName", typeof(TestGoal).FullName);
-			item.Settings.Add("AssemblyName", typeof(TestGoal).Assembly.FullName);
-			
-			Config.Mappings.AddItem(item);
-        }
-        
-        /// <summary>
-        /// Deregisters the entity from the system.
-        /// </summary>
-        static public void DeregisterType()
-        {
-        	throw new NotImplementedException();
-        }
 	}
 }

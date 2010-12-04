@@ -82,34 +82,5 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
             get { return editors; }
             set { editors = value; }
         }
-        
-        
-        /// <summary>
-        /// Registers the entity in the system.
-        /// </summary>
-        static public void RegisterType()
-        {
-        	
-			MappingItem item1 = new MappingItem("ITestArticle");
-			item1.Settings.Add("Alias", "TestArticle");
-        	
-			MappingItem item2 = new MappingItem("TestArticle");
-			item2.Settings.Add("DataStoreName", "Testing_Articles");
-			item2.Settings.Add("IsEntity", true);
-			item2.Settings.Add("FullName", typeof(TestArticle).FullName);
-			item2.Settings.Add("AssemblyName", typeof(TestArticle).Assembly.FullName);
-			
-			Config.Mappings.AddItem(item2);
-			Config.Mappings.AddItem(item1);
-        }
-        
-        /// <summary>
-        /// Deregisters the entity from the system.
-        /// </summary>
-        static public void DeregisterType()
-        {
-        	throw new NotImplementedException();
-        }
-
     }
 }
