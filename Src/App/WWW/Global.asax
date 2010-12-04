@@ -95,8 +95,11 @@
     {
     	if (Config.IsInitialized)
     	{
-    		new ControllersInitializer().Initialize();
-    		new ProjectionsInitializer().Initialize();
+    	
+    		// These are now taken care of by the Projector control as it's responsible for projections and controllers
+    		// The projection scanner needs a Page component to access the LoadControl function and so initializing in the Projector control is an appropriate solution
+    		//new ControllersInitializer().Initialize();
+    		//new ProjectionsInitializer().Initialize();
     	}
     }
 
