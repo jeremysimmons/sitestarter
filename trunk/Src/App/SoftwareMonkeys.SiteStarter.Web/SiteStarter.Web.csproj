@@ -82,6 +82,7 @@
     <Compile Include="Controllers\IController.cs" />
     <Compile Include="Controllers\IndexController.cs" />
     <Compile Include="Controllers\ViewController.cs" />
+    <Compile Include="ControlLoader.cs" />
     <Compile Include="Data\DataProviderInitializer.cs" />
     <Compile Include="FileMapper.cs" />
     <Compile Include="GuidValidator.cs" />
@@ -138,6 +139,9 @@
     <Compile Include="Security\RoleProvider.cs" />
     <Compile Include="SetupChecker.cs" />
     <Compile Include="SetupUtilities.cs" />
+    <Compile Include="SiteMap.cs" />
+    <Compile Include="SiteMapManager.cs" />
+    <Compile Include="SiteMapNode.cs" />
     <Compile Include="State\StateProviderManager.cs" />
     <Compile Include="State\WebStateProvider.cs">
       <SubType>Code</SubType>
