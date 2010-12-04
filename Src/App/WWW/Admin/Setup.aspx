@@ -50,7 +50,7 @@ private void Setup()
 	private void InitializeWeb()
 	{
 		new ControllersInitializer().Initialize();
-		new ProjectionsInitializer().Initialize();
+		new ProjectionsInitializer(this).Initialize();
 	}
 
 
