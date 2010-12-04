@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Web.UI.WebControls;
 using SoftwareMonkeys.SiteStarter.Web.Projections;
+using SoftwareMonkeys.SiteStarter.Web.Controllers;
 using System.Web.UI;
 using System.ComponentModel;
 
@@ -82,19 +83,32 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		/// <param name="e"></param>
 		protected override void OnInit(EventArgs e)
 		{
+			InitializeProjections();
+			
 			Control control = ProjectionState.Projections[Action, TypeName, Format].Load(Page);
 			
-            if (control != null)
-            {
-                Controls.Add(control);
-                FoundProjection = true;
-            }
-            else
-            {
-            	FoundProjection = false;
-            }
+			if (control != null)
+			{
+				Controls.Add(control);
+				FoundProjection = true;
+			}
+			else
+			{
+				FoundProjection = false;
+			}
 			
 			base.OnInit(e);
+		}
+		
+		public void InitializeProjections()
+		{
+			
+			if (Configuration.Config.IsInitialized)
+			{
+				new ControllersInitializer().Initialize();
+				new ProjectionsInitializer(Page).Initialize();
+			}
+			
 		}
 	}
 }
