@@ -20,6 +20,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
     /// </summary>
     public class Authorisation
     {
+        public static bool UserCan(string action, string typeName)
+        {        	
+        	string internalAction = GetInternalAction(action);
+        	
+        	IAuthoriseStrategy strategy = StrategyState.Strategies.Creator.New<IAuthoriseStrategy>("Authorise" + internalAction, typeName);
+        	
+        	return strategy.Authorise(typeName);
+        	
+        }
+        
         public static bool UserCan(string action, Type type)
         {        	
         	string internalAction = GetInternalAction(action);
@@ -72,13 +82,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
         	return action;
         }
 
+        public static void EnsureUserCan(string action, string typeName)
+        {
+            if (!UserCan(action, typeName))
+                InvalidPermissionsRedirect();
+        }
 
         public static void EnsureUserCan(string action, Type type)
         {
             if (!UserCan(action, type))
                 InvalidPermissionsRedirect();
-            //                throw new Exception("Invalid permissions.");
-            // TODO: Add redirect to friendly page
         }
 
         
@@ -101,13 +114,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
         public static void InvalidPermissionsRedirect()
         {
             // TODO: This shouldn't be hard coded
-            HttpContext.Current.Response.Redirect("~/Members/Login.aspx");
+            HttpContext.Current.Response.Redirect("~/User/SignIn.aspx");
         }
 
         public static void EnsureIsAuthenticated()
         {
             if (HttpContext.Current != null && !AuthenticationState.IsAuthenticated)
-                HttpContext.Current.Response.Redirect(HttpContext.Current.Request.ApplicationPath + "/Members/Login.aspx");
+                HttpContext.Current.Response.Redirect(HttpContext.Current.Request.ApplicationPath + "/User/SignIn.aspx");
         }
 
         public static void EnsureIsInRole(string role)
@@ -116,7 +129,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
             {
                 Result.DisplayError(Language.InvalidRole);
                 if (HttpContext.Current != null)
-                    HttpContext.Current.Response.Redirect(HttpContext.Current.Request.ApplicationPath + "/Members/Default.aspx");
+                    HttpContext.Current.Response.Redirect(HttpContext.Current.Request.ApplicationPath + "/User/Account.aspx");
             }
         }
 
