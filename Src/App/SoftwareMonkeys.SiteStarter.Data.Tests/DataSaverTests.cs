@@ -280,9 +280,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing saving of an EntityIDReference.", NLog.LogLevel.Debug))
 			{
-				TestArticle.RegisterType();
-				TestArticlePage.RegisterType();
-				
 				EntityIDReference reference = new EntityIDReference();
 				reference.ID = Guid.NewGuid();
 				reference.Type1Name = "TestArticle";

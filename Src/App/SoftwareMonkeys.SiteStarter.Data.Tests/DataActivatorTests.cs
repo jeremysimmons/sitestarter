@@ -21,9 +21,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the Active function.", NLog.LogLevel.Debug))
 			{
-				TestUser.RegisterType();
-				TestRole.RegisterType();
-				
 				
 				TestUser user = new TestUser();
 				Guid userID = user.ID = Guid.NewGuid();
@@ -67,10 +64,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the activate function with a single reference.", NLog.LogLevel.Debug))
 			{
-				TestArticle.RegisterType();
-				TestArticlePage.RegisterType();
-				
-				
 				TestArticle article = new TestArticle();
 				Guid articleID = article.ID = Guid.NewGuid();
 				article.Title = "Test";
@@ -274,10 +267,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the activate function with a reverse reference.", NLog.LogLevel.Debug))
 			{
-				TestUser.RegisterType();
-				TestRole.RegisterType();
-				
-				
 				TestUser user = new TestUser();
 				Guid userID = user.ID = Guid.NewGuid();
 				user.FirstName = "Test";

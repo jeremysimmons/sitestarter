@@ -47,8 +47,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_IsMatch_And_True()
 		{
-			TestArticle.RegisterType();
-			
 			TestArticle article = new TestArticle();
 			article.ID = Guid.NewGuid();
 			article.Title = "Article1";
@@ -80,8 +78,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		public void Test_IsMatch_And_False()
 		{
 			
-			TestArticle.RegisterType();
-			
 			TestArticle article = new TestArticle();
 			article.ID = Guid.NewGuid();
 			article.Title = "Article1";
@@ -112,8 +108,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_IsMatch_Or_True_BothMatch()
 		{
-			TestArticle.RegisterType();
-			
 			TestArticle article = new TestArticle();
 			article.ID = Guid.NewGuid();
 			article.Title = "Article1";
@@ -145,8 +139,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_IsMatch_Or_True_OneMatches()
 		{
-			
-			TestArticle.RegisterType();
 			
 			TestArticle article = new TestArticle();
 			article.ID = Guid.NewGuid();
@@ -183,8 +175,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			{
 				ClearTestEntities();
 				
-				TestArticle.RegisterType();
-				TestCategory.RegisterType();
 				
 				TestArticle article = new TestArticle();
 				article.ID = Guid.NewGuid();
@@ -262,9 +252,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			{
 				ClearTestEntities();
 				
-				TestArticle.RegisterType();
-				TestCategory.RegisterType();
-				
 				TestArticle article = new TestArticle();
 				article.ID = Guid.NewGuid();
 				article.Title = "Article1";
@@ -337,8 +324,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		public void Test_IsMatch_EmptyGroup()
 		{
 			
-			TestArticle.RegisterType();
-			
 			TestArticle article = new TestArticle();
 			article.ID = Guid.NewGuid();
 			article.Title = "Article1";
@@ -351,17 +336,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		#endregion
 
 		private void ClearTestEntities()
-		{
-			TestArticle.RegisterType();
-			TestCategory.RegisterType();
-			TestUser.RegisterType();
-			TestRole.RegisterType();
-			TestEntity.RegisterType();
-			EntityOne.RegisterType();
-			EntityTwo.RegisterType();
-			EntityThree.RegisterType();
-			EntityFour.RegisterType();
-			
+		{	
 			Type[] types = new Type[] {
 				typeof(TestArticle),
 				typeof(TestCategory),

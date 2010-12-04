@@ -17,10 +17,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
 			{
-				TestUser.RegisterType();
-				TestRole.RegisterType();
-				
-				
 				TestUser user = new TestUser();
 				Guid userID = user.ID = Guid.NewGuid();
 				user.FirstName = "Test";
@@ -61,10 +57,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
 			{
-				TestUser.RegisterType();
-				TestRole.RegisterType();
-				
-				
 				TestUser user = new TestUser();
 				Guid userID = user.ID = Guid.NewGuid();
 				user.FirstName = "Test";
@@ -99,10 +91,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
 			{
-				TestUser.RegisterType();
-				TestRole.RegisterType();
-				
-				
 				TestUser user = new TestUser();
 				Guid userID = user.ID = Guid.NewGuid();
 				user.FirstName = "Test";

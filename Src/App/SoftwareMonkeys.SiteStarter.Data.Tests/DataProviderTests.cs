@@ -40,8 +40,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the IsStored function on a reference object", NLog.LogLevel.Debug))
 			{
-				TestArticle.RegisterType();
-				TestCategory.RegisterType();
 
 				TestArticle article = new TestArticle();
 				article.ID = Guid.NewGuid();
@@ -82,8 +80,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the IsStored function on a reference object", NLog.LogLevel.Debug))
 			{
-				TestArticle.RegisterType();
-				TestCategory.RegisterType();
 
 				TestArticle article = new TestArticle();
 				article.ID = Guid.NewGuid();

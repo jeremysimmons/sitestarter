@@ -52,9 +52,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			{
 				ClearTestEntities();
 				
-				TestArticle.RegisterType();
-				TestCategory.RegisterType();
-				
 				TestArticle article = new TestArticle();
 				article.ID = Guid.NewGuid();
 				
@@ -89,9 +86,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the ReferenceFilter.IsMatch function.", NLog.LogLevel.Debug))
 			{
 				ClearTestEntities();
-				
-				TestArticle.RegisterType();
-				TestCategory.RegisterType();
 				
 				TestArticle article = new TestArticle();
 				article.ID = Guid.NewGuid();

@@ -13,9 +13,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 	{
 		[Test]
 		public void Test_CheckForCircularReferences_True()
-		{
-			TestTask.RegisterType();
-			
+		{			
 			TestTask task1 = new TestTask();
 			task1.Title = "Task1";
 			
@@ -41,8 +39,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_CheckForCircularReferences_False()
 		{
-			TestTask.RegisterType();
-			
 			TestTask task1 = new TestTask();
 			task1.Title = "Task1";
 			
