@@ -1,14 +1,14 @@
-﻿<%@ Control Language="C#" ClassName="CreateEditProjection" Inherits="SoftwareMonkeys.WorkHub.Web.Projections.BaseProjection" %>
-<%@ Register Namespace="SoftwareMonkeys.WorkHub.Web.WebControls" Assembly="SoftwareMonkeys.WorkHub.Web" TagPrefix="cc" %>
-<%@ Import Namespace="SoftwareMonkeys.WorkHub.Business" %>
-<%@ Import Namespace="SoftwareMonkeys.WorkHub.Web" %>
-<%@ Import Namespace="SoftwareMonkeys.WorkHub.Web.Security" %>
-<%@ Import Namespace="SoftwareMonkeys.WorkHub.Web.WebControls" %>
-<%@ Import Namespace="SoftwareMonkeys.WorkHub.Web.Properties" %>
-<%@ Import Namespace="SoftwareMonkeys.WorkHub.Data" %>
-<%@ Import Namespace="SoftwareMonkeys.WorkHub.Diagnostics" %>
-<%@ Import Namespace="SoftwareMonkeys.WorkHub.Entities" %>
-<%@ Import Namespace="SoftwareMonkeys.WorkHub.Business.Security" %>
+﻿<%@ Control Language="C#" ClassName="CreateEditProjection" Inherits="SoftwareMonkeys.SiteStarter.Web.Projections.BaseProjection" %>
+<%@ Register Namespace="SoftwareMonkeys.SiteStarter.Web.WebControls" Assembly="SoftwareMonkeys.SiteStarter.Web" TagPrefix="cc" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Security" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.WebControls" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Properties" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Data" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Entities" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business.Security" %>
 <%@ Import Namespace="System.Collections.Generic" %>
 <script runat="server">
 	protected string ToUserName = String.Empty;
