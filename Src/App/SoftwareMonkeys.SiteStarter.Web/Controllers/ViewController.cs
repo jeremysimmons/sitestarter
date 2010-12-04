@@ -228,7 +228,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			{
 				AppLogger.Debug("Unique key: " + uniqueKey);
 				
-				DataSource = entity = Retriever.Retrieve(Type, uniqueKey);
+				DataSource = entity = Retriever.Retrieve(uniqueKey);
 				
 				if (entity == null)
 					throw new ArgumentException("Entity of type '" + Type.Name + "' not found with unique key '" + uniqueKey + "'. Check that the entity and the factory retrieve method are properly configured.");
@@ -250,7 +250,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			{
 				AppLogger.Debug("ID: " + id.ToString());
 				
-				entity = Retriever.Retrieve(Type, id);
+				entity = Retriever.Retrieve(id);
 				
 				if (entity == null)
 					throw new ArgumentException("Entity of type '" + Type.Name + "' not found with ID '" + id.ToString() + "'. Check that the entity and the factory retrieve method are properly configured.");

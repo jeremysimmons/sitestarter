@@ -168,7 +168,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <returns>The loaded and activated entity.</returns>
 		public IEntity Load(string uniqueKey)
 		{
-			DataSource = Retriever.Retrieve(Type, "UniqueKey", uniqueKey);
+			DataSource = Retriever.Retrieve("UniqueKey", uniqueKey);
 			
 			return DataSource;
 		}
@@ -180,7 +180,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <returns>The loaded and activated entity.</returns>
 		public IEntity Load(Guid id)
 		{
-			DataSource = Retriever.Retrieve(Type, "ID", id);
+			DataSource = Retriever.Retrieve("ID", id);
 			
 			return DataSource;
 		}
