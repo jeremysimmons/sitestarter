@@ -74,12 +74,11 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <summary>
 		/// Index the entity with a references that matches the provided parameters.
 		/// </summary>
-		/// <param name="type">The type of entity containing the references.</param>
 		/// <param name="propertyName">The name of the property containing the references.</param>
 		/// <param name="referencedEntityType">The type of the entity being referenced.</param>
 		/// <param name="referencedEntityID">The ID of the entity being referenced.</param>
 		/// <returns>The entity matching the provided parameters.</returns>
-		IEntity[] IndexWithReference(Type type, string propertyName, string referencedEntityType, Guid referencedEntityID);
+		IEntity[] IndexWithReference(string propertyName, string referencedEntityType, Guid referencedEntityID);
 		
 		/// <summary>
 		/// Indexes the entity with a references that matches the provided parameters.

@@ -37,34 +37,31 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <summary>
 		/// Retrieves the entity of the specified type with the provided unique key.
 		/// </summary>
-		/// <param name="type">The type of entity to retrieve.</param>
 		/// <param name="uniqueKey">The unique key of the entity to retrieve.</param>
 		/// <returns>The entity with the provided unique key.</returns>
-		IEntity Retrieve(Type type, string uniqueKey);
+		IEntity Retrieve(string uniqueKey);
 		
 		/// <summary>
 		/// Retrieves the entity of the specified type with the provided ID.
 		/// </summary>
-		/// <param name="type">The type of entity to retrieve.</param>
 		/// <param name="entityID">The ID of the entity to retrieve.</param>
 		/// <returns>The entity with the provided ID.</returns>
-		IEntity Retrieve(Type type, Guid entityID);
+		IEntity Retrieve(Guid entityID);
 		
 		/// <summary>
 		/// Retrieves the entity of the specified type with the specified property matching the provided value.
 		/// </summary>
-		/// <param name="type">The type of entity to retrieve.</param>
 		/// <param name="propertyName">The name of the property to match to the provided value.</param>
 		/// <param name="value">The name of the value to match to the specified property.</param>
 		/// <returns>The entity with the specified property matching the provided value.</returns>
-		IEntity Retrieve(Type type, string propertyName, object value);
+		IEntity Retrieve(string propertyName, object value);
 		
 		/// <summary>
 		/// Retrieves the entity of the specified type with the specified property matching the provided value.
 		/// </summary>
 		/// <param name="parameters">The parameters to use as filters when retrieving the entities. Corresponds with properties and their values.</param>
 		/// <returns>The entity with the specified property matching the provided value.</returns>
-		IEntity Retrieve(Type type, Dictionary<string, object> parameters);
+		IEntity Retrieve(Dictionary<string, object> parameters);
 		
 		/// <summary>
 		/// Retrieves the entity of the specified type with the specified property matching the provided value.
