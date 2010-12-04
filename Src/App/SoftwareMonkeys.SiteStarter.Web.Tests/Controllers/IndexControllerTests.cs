@@ -77,8 +77,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 		[Test]
 		public void Test_Index_Paged_Page1()
 		{
-			TestRecord.RegisterType();
-			
 			List<TestRecord> list = new List<TestRecord>();
 			
 			for (int i = 0; i < 30; i++)
@@ -128,8 +126,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 		[Test]
 		public void Test_Index_Paged_Page2()
 		{
-			TestRecord.RegisterType();
-			
 			List<TestRecord> list = new List<TestRecord>();
 			
 			for (int i = 0; i < 30; i++)

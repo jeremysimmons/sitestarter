@@ -29,7 +29,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 		[Test]
 		public void Test_Locate_Delete_User()
 		{
-			User.RegisterType();
 			
 			ControllerStateCollection strategies = new ControllerStateCollection();
 			
