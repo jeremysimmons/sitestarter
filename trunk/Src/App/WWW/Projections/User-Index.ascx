@@ -15,7 +15,7 @@
 <script runat="server">
 
     private void Page_Init(object sender, EventArgs e)
-    {
+    {        
     	Initialize(typeof(User), IndexGrid, true);
     	
     	PageSize = 20;
@@ -26,13 +26,14 @@
         IndexGrid.AddDualSortItem(Resources.Language.Username, "Username");
        
       	AddTextItem("Entities", Resources.Language.Users);
-        
     }
-
-    #region Main functions
-
-    #endregion
-
+    
+    public override void InitializeMenu()
+    {
+      	MenuTitle = "Users";
+      	MenuCategory = "Administration";
+        ShowOnMenu = true;
+    }
 
     private void IndexGrid_SortChanged(object sender, EventArgs e)
     {
