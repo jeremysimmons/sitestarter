@@ -1,5 +1,6 @@
 ﻿using System;
 using SoftwareMonkeys.SiteStarter.Entities;
+using SoftwareMonkeys.SiteStarter.Business.Security;
 
 namespace SoftwareMonkeys.SiteStarter.Business
 {
@@ -26,6 +27,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public IEntity Create(string shortTypeName)
 		{
 			Type type = EntitiesUtilities.GetType(shortTypeName);
+			
+			if (RequireAuthorisation)
+				AuthoriseCreateStrategy.New(shortTypeName).EnsureAuthorised(shortTypeName);
 			
 			IEntity entity = (IEntity)Activator.CreateInstance(type);
 			
