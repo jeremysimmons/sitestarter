@@ -76,27 +76,34 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			
 			using (LogGroup logGroup = AppLogger.StartGroup("Finding entities by scanning the attributes of the available type.", NLog.LogLevel.Debug))
 			{
-				
 				foreach (string assemblyPath in AssemblyPaths)
 				{
-					Assembly assembly = Assembly.LoadFrom(assemblyPath);
-					
-					foreach (Type type in assembly.GetTypes())
+					try
 					{
-						if (IsEntity(type))
+						Assembly assembly = Assembly.LoadFrom(assemblyPath);
+						
+						foreach (Type type in assembly.GetTypes())
 						{
-							AppLogger.Debug("Found entity type: " + type.ToString());
-							
-							EntityInfo entityInfo = new EntityInfo(type);
-							
-							if (entityInfo.TypeName != null && entityInfo.TypeName != String.Empty)
+							if (IsEntity(type))
 							{
-								AppLogger.Debug("Found match.");
+								AppLogger.Debug("Found entity type: " + type.ToString());
 								
-								entities.Add(entityInfo);
+								EntityInfo entityInfo = new EntityInfo(type);
+								
+								if (entityInfo.TypeName != null && entityInfo.TypeName != String.Empty)
+								{
+									AppLogger.Debug("Found match.");
+									
+									entities.Add(entityInfo);
+								}
 							}
 						}
 					}
+					catch(ReflectionTypeLoadException ex)
+					{
+						AppLogger.Error(ex.ToString());
+					}
+					
 				}
 			}
 			

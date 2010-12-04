@@ -207,36 +207,5 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
 		public TestAccount()
 		{
 		}
-		
-		
-		/// <summary>
-		/// Registers the entity in the system.
-		/// </summary>
-		/// <param name="config">The mapping configuration object to add the settings to.</param>
-		static public void RegisterType()
-		{
-			MappingItem item = new MappingItem("TestAccount");
-			item.Settings.Add("DataStoreName", "Testing_Accounts");
-			item.Settings.Add("IsEntity", true);
-			item.Settings.Add("FullName", typeof(TestAccount).FullName);
-			item.Settings.Add("AssemblyName", typeof(TestAccount).Assembly.FullName);
-			
-			
-			MappingItem item2 = new MappingItem("ITestAccount");
-			item2.Settings.Add("Alias", "TestAccount");
-			
-			Config.Mappings.AddItem(item);
-			Config.Mappings.AddItem(item2);
-		}
-		
-		/// <summary>
-		/// Deregisters the entity from the system.
-		/// </summary>
-		/// <param name="config">The mapping configuration object to remove the settings from.</param>
-		static public void DeregisterType()
-		{
-			throw new NotImplementedException();
-		}
-
 	}
 }

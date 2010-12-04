@@ -29,6 +29,26 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		}
 		
 		/// <summary>
+		/// Checks whether the specified type exists.
+		/// </summary>
+		/// <param name="typeName">The short type name.</param>
+		/// <returns></returns>
+		static public bool IsType(string typeName)
+		{
+			if (typeName == String.Empty)
+				throw new ArgumentException("typeName");
+			
+			if (typeName == "IEntity"
+			    || typeName == "IUniqueEntity"
+			    || typeName == "EntityReference")
+				return true;
+			
+			EntityInfo info = GetInfo(typeName, false);
+			
+			return (info != null);
+		}
+		
+		/// <summary>
 		/// Retrieves the type with the provided short name.
 		/// </summary>
 		/// <param name="typeName">The short type name.</param>
@@ -68,21 +88,30 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		
 		static public EntityInfo GetInfo(string typeName)
 		{
+			return GetInfo(typeName, true);
+		}
+		
+		static public EntityInfo GetInfo(string typeName, bool throwExceptionIfNotFound)
+		{
 			EntityInfo info = EntityState.Entities[typeName];
 			
-			if (info == null)
-				throw new ArgumentException("No entity type info found with the name '" + typeName + "'.");
-			
-			Type type = null;
-			
-			// If an alias is specified then grab the alias
-			// Repeat until no alias is specified
-			while (info.Alias != String.Empty)
+			if (info != null)
 			{
-				info = EntityState.Entities[info.Alias];
+				Type type = null;
+				
+				// If an alias is specified then grab the alias
+				// Repeat until no alias is specified
+				while (info.Alias != String.Empty)
+				{
+					info = EntityState.Entities[info.Alias];
+				}
+				
+				return info;
 			}
-			
-			return info;
+			else if (throwExceptionIfNotFound)
+				throw new ArgumentException("No entity type info found with the name '" + typeName + "'.");
+			else
+				return null;
 		}
 	}
 }

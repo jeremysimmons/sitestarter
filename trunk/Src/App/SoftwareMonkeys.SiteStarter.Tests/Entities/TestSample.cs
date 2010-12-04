@@ -31,28 +31,6 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
             set { articles = value; }
         }
         
-        
-        /// <summary>
-        /// Registers the entity in the system.
-        /// </summary>
-        static public void RegisterType()
-        {
-			MappingItem item2 = new MappingItem("TestSample");
-			item2.Settings.Add("DataStoreName", "TestSamples");
-			item2.Settings.Add("IsEntity", true);
-			item2.Settings.Add("FullName", typeof(TestSample).FullName);
-			item2.Settings.Add("AssemblyName", typeof(TestSample).Assembly.FullName);
-			
-			Config.Mappings.AddItem(item2);
-        }
-        
-        /// <summary>
-        /// Deregisters the entity from the system.
-        /// </summary>
-        static public void DeregisterType()
-        {
-        	throw new NotImplementedException();
-        }
 
     }
 }

@@ -49,26 +49,6 @@ namespace SoftwareMonkeys.SiteStarter.Tests
 			return GetTestApplicationPath(executingTestFixture, applicationName) + Path.DirectorySeparatorChar + "App_Data";
 		}
 		
-		static public void RegisterTestEntities(BaseTestFixture executingTestFixture)
-		{
-			if (Config.Mappings == null)
-				Config.Mappings = ConfigFactory<MappingConfig>.NewConfig(GetTestingPath(executingTestFixture), "Mappings", "Testing");
-			
-			TestArticle.RegisterType();
-			TestArticlePage.RegisterType();
-			TestCategory.RegisterType();
-			TestSample.RegisterType();
-			TestEntity.RegisterType();
-			EntityOne.RegisterType();
-			EntityTwo.RegisterType();
-			EntityThree.RegisterType();
-			EntityFour.RegisterType();
-			TestUser.RegisterType();
-			TestRole.RegisterType();
-			TestAccount.RegisterType();
-			
-		}
-		
 
 		static public void ClearTestEntities(BaseTestFixture executingTestFixture)
 		{

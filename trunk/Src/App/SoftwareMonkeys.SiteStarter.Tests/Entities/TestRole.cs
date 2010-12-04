@@ -61,31 +61,5 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
 		{
 		}
 		
-		
-        /// <summary>
-        /// Registers the entity in the system.
-        /// </summary>
-        static public void RegisterType()
-        {
-			MappingItem item = new MappingItem("ITestRole");
-			item.Settings.Add("Alias", "TestRole");
-			
-			MappingItem item2 = new MappingItem("TestRole");
-			item2.Settings.Add("DataStoreName", "Testing_Roles");
-			item2.Settings.Add("IsEntity", true);
-			item2.Settings.Add("FullName", typeof(TestRole).FullName);
-			item2.Settings.Add("AssemblyName", typeof(TestRole).Assembly.FullName);
-			
-			Config.Mappings.AddItem(item2);
-			Config.Mappings.AddItem(item);
-        }
-        
-        /// <summary>
-        /// Deregisters the entity from the system.
-        /// </summary>
-        static public void DeregisterType()
-        {
-        	throw new NotImplementedException();
-        }
 	}
 }
