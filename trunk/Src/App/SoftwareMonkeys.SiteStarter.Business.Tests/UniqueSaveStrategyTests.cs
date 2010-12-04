@@ -12,7 +12,6 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		[Test]
 		public void Test_Found_ForIEntityInterface()
 		{
-			TestRecord.RegisterType();
 			
 			StrategyStateNameValueCollection strategies = new StrategyStateNameValueCollection();
 			strategies["Save", "IUniqueEntity"] = new StrategyInfo(new UniqueSaveStrategy());

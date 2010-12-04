@@ -1,5 +1,6 @@
 ﻿using System;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using SoftwareMonkeys.SiteStarter.Entities;
 
 namespace SoftwareMonkeys.SiteStarter.Business
 {
@@ -57,12 +58,14 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				if (strategyType == null)
 					throw new Exception("Strategy type cannot by instantiated: " + strategyInfo.StrategyType);
 				
-				Type entityType = Entities.EntitiesUtilities.GetType(strategyInfo.TypeName);
+				Type entityType = null;
+				if (EntityState.IsType(strategyInfo.TypeName))
+					entityType = EntityState.GetType(strategyInfo.TypeName);
 				
 				AppLogger.Debug("Strategy type: " + strategyType.FullName);
-				AppLogger.Debug("Entity type: " + entityType.FullName);
+				AppLogger.Debug("Entity type: " + (entityType != null ? entityType.FullName : String.Empty));
 				
-				if (strategyType.IsGenericTypeDefinition)
+				if (entityType != null && strategyType.IsGenericTypeDefinition)
 				{
 					AppLogger.Debug("Is generic type definition.");
 					

@@ -170,11 +170,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				config.Save(); // Needs to be saved here but will be updated again during setup
 				
 				AppLogger.Debug("Created application configuration object.");
-
-				SetupMappings();
 				
-				AppLogger.Debug("Finished setting up core mappings.");
-
 				Initialize();
 				
 				AppLogger.Debug("Initialized config and data.");
@@ -343,29 +339,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			// TODO: Add the initializer to a property so it can be customized for specific cases
 	    	new StrategyInitializer().Initialize();
-		}
-
-		/// <summary>
-		/// Sets up the mappings for the default entities.
-		/// </summary>
-		private void SetupMappings()
-		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Setting up default entity mappings.", NLog.LogLevel.Debug))
-			{
-				CheckPathVariation();
-				
-				CheckFileMapper();
-				
-				if (Config.Mappings == null)
-					Config.Mappings = ConfigFactory<MappingConfig>.NewConfig(FileMapper.MapPath(ApplicationPath + "/" + DataDirectory), "Mappings", PathVariation);
-
-				// TODO: Dynamically detect and register entities.
-				Entities.User.RegisterType();
-				UserRole.RegisterType();
-				Keyword.RegisterType();
-
-				Config.Mappings.Save();
-			}
 		}
 
 		/// <summary>

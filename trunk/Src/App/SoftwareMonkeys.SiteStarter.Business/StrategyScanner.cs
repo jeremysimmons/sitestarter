@@ -94,7 +94,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			bool matchesInterface = false;
 			bool isNotInterface = false;
-			bool isNotBaseStrategy = false;
+			bool isNotAbstract = false;
 			
 			using (LogGroup logGroup = AppLogger.StartGroup("Checks whether the provided type is a strategy.", NLog.LogLevel.Debug))
 			{
@@ -105,7 +105,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				
 				isNotInterface = !type.IsInterface;
 				
-				isNotBaseStrategy = (type != typeof(BaseStrategy));
+				isNotAbstract = (!type.IsAbstract);
 				
 				AppLogger.Debug("Matches interface: " + matchesInterface);
 				AppLogger.Debug("Is not strategy interface: " + isNotInterface);
@@ -113,7 +113,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			return matchesInterface
 				&& isNotInterface
-				&& isNotBaseStrategy;
+				&& isNotAbstract;
 		}
 	}
 }

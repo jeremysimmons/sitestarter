@@ -50,7 +50,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				
 				AppLogger.Debug("Property value: " + propertyValue.ToString());
 				
-				IEntity existingEntity = (IEntity)strategy.Retrieve(entity.GetType(), propertyName, propertyValue);
+				IEntity existingEntity = (IEntity)strategy.Retrieve(propertyName, propertyValue);
 				
 				AppLogger.Debug("Existing entity found: " + (existingEntity != null).ToString());
 				

@@ -54,9 +54,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		
 		[Test]
 		public void Test_Locate_CustomOverride()
-		{
-			Widget.RegisterType();
-			
+		{			
 			string type = "Widget";
 			string action = "Index";
 			

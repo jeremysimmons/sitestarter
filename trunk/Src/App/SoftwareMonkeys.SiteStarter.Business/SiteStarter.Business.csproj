@@ -95,6 +95,7 @@
     <Compile Include="SaveStrategy.cs" />
     <Compile Include="Security\AuthenticateStrategy.cs" />
     <Compile Include="Security\AuthenticationState.cs" />
+    <Compile Include="Security\AuthoriseCreateStrategy.cs" />
     <Compile Include="Security\AuthoriseDeleteStrategy.cs" />
     <Compile Include="Security\AuthoriseIndexStrategy.cs" />
     <Compile Include="Security\AuthoriseRetrieveStrategy.cs" />
