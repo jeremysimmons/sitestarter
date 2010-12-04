@@ -46,7 +46,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			// Config.Initialize(ApplicationPath, "");
 			
-			TestUtilities.RegisterTestEntities(this);
 		}
 		
 

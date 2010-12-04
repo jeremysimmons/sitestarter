@@ -16,9 +16,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_PreUpdate()
 		{
-			// Register the types
-			TestUser.RegisterType();
-			TestRole.RegisterType();
 			
 			// Create the dummy objects
 			TestUser user = new TestUser();
@@ -66,9 +63,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the DataAccess.Data.Updater.Update function.", NLog.LogLevel.Debug))
 			{
-				TestUser.RegisterType();
-				TestRole.RegisterType();
-				
 				TestUser user = new TestUser();
 				user.ID = Guid.NewGuid();
 				Guid userID = user.ID;
@@ -124,9 +118,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_Update_2References_CheckLocationOfReferencedEntities()
 		{
-			TestUser.RegisterType();
-			TestRole.RegisterType();
-			
 			TestUser user = new TestUser();
 			user.ID = Guid.NewGuid();
 			Guid userID = user.ID;
@@ -202,9 +193,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing saving of an EntityIDReference.", NLog.LogLevel.Debug))
 			{
-				TestUser.RegisterType();
-				TestRole.RegisterType();
-				
 				TestUser user = new TestUser();
 				user.ID = Guid.NewGuid();
 				user.FirstName = "Test";

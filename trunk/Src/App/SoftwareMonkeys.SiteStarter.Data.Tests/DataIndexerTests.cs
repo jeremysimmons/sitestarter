@@ -398,8 +398,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetEntities<T>(IDictionary<string, object>) function.", NLog.LogLevel.Debug))
 			{
-				EntityOne.RegisterType();
-				
 				EntityOne e1 = new EntityOne();
 				e1.Name = "Test E1";
 				
@@ -426,8 +424,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetEntities<T>(IDictionary<string, object>) function to ensure it excludes entities properly.", NLog.LogLevel.Debug))
 			{
-				EntityOne.RegisterType();
-				
 				EntityOne e1 = new EntityOne();
 				e1.Name = "Test E1";
 				

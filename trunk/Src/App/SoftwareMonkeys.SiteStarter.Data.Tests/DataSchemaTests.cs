@@ -36,8 +36,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_RenewSchema()
 		{
-			TestUser.RegisterType();
-			
 			TestUser user = new TestUser();
 			user.ID = Guid.NewGuid();
 			user.FirstName = "--FirstName--";
@@ -331,11 +329,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		
 		private void ClearTestEntities()
 		{
-			
-			TestArticle.RegisterType();
-			TestCategory.RegisterType();
-			TestUser.RegisterType();
-			TestRole.RegisterType();
 			
 			Type[] types = new Type[] {
 				typeof(TestArticle),

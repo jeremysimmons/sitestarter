@@ -169,10 +169,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetReference function with an asynchronous reference to ensure it retrieves the correct reference.", NLog.LogLevel.Debug))
 			{
-				TestArticle.RegisterType();
-				TestAction.RegisterType();
-				TestCategory.RegisterType();
-				
 				TestAction action = new TestAction();
 				action.ID = Guid.NewGuid();
 				action.Title = "Test Action";
@@ -304,8 +300,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				TestUtilities.CreateDummyReferences(100);
 				
-				TestUser.RegisterType();
-				TestRole.RegisterType();
 				
 				TestUser user = new TestUser();
 				user.ID = Guid.NewGuid();
@@ -512,12 +506,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the MatchReference function to ensure matches properly.", NLog.LogLevel.Debug))
 			{
-				TestArticle.RegisterType();
-				TestUser.RegisterType();
-				TestSample.RegisterType();
-				TestArticlePage.RegisterType();
-				TestCategory.RegisterType();
-				
 				TestArticle article = new TestArticle();
 				article.ID = Guid.NewGuid();
 				article.Title = "Test Article";
@@ -553,12 +541,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the MatchReference function to ensure excludes properly.", NLog.LogLevel.Debug))
 			{
-				TestArticle.RegisterType();
-				TestUser.RegisterType();
-				TestSample.RegisterType();
-				TestArticlePage.RegisterType();
-				TestCategory.RegisterType();
-				
 				TestArticle article = new TestArticle();
 				article.ID = Guid.NewGuid();
 				article.Title = "Test Article";
@@ -607,8 +589,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_GetActiveReferences_Multiple_Async()
 		{
-			TestGoal.RegisterType();
-			
 			TestGoal goal = new TestGoal();
 			goal.ID = Guid.NewGuid();
 			

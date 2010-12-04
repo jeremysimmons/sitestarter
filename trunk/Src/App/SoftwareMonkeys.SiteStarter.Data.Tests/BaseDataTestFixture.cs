@@ -24,7 +24,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			InitializeMockConfiguration();
 			InitializeMockEntities();
 			InitializeMockData();
-			TestUtilities.RegisterTestEntities(this);
 		}
 		
 		/// <summary>

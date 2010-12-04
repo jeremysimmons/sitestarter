@@ -40,9 +40,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the DataUtilities.GetType function.", NLog.LogLevel.Debug))
 			{
-				TestArticle.RegisterType();
-				TestArticlePage.RegisterType();
-				
 				TestArticle e1 = new TestArticle();
 				e1.ID = Guid.NewGuid();
 				e1.Title = "Test 1";
@@ -114,9 +111,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the DataUtilities.GetEntityType function.", NLog.LogLevel.Debug))
 			{
-				TestUser.RegisterType();
-				TestRole.RegisterType();
-				
 				
 				TestUser user = new TestUser();
 				user.ID = Guid.NewGuid();
@@ -150,8 +144,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_GetType_Alias()
 		{
-			TestUser.RegisterType();
-			//TestRole.RegisterType();
 			
 			//TestUser user = new TestUser();
 			//user.ID = Guid.NewGuid();
@@ -174,8 +166,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_GetType_Name()
 		{
-			TestUser.RegisterType();
-			//TestRole.RegisterType();
 			
 			//TestUser user = new TestUser();
 			//user.ID = Guid.NewGuid();
