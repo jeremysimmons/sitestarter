@@ -76,7 +76,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			Form = form;
 			
 			createController = CreateController.New(this, defaultType);
+			createController.RequireAuthorisation = RequireAuthorisation;
 			editController = EditController.New(this, defaultType);
+			editController.RequireAuthorisation = RequireAuthorisation;
 			
 			Form.EntityCommand += new EntityFormEventHandler(Form_EntityCommand);
 		}

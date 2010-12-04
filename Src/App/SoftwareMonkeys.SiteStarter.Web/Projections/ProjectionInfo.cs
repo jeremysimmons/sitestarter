@@ -78,6 +78,36 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			set { loader = value; }
 		}
 		
+		private string menuTitle;
+		/// <summary>
+		/// Gets/sets the title of the projection used on the menu.
+		/// </summary>
+		public string MenuTitle
+		{
+			get { return menuTitle; }
+			set { menuTitle = value; }
+		}
+		
+		private string menuCategory;
+		/// <summary>
+		/// Gets/sets the category that the projection is listed under, on the menu.
+		/// </summary>
+		public string MenuCategory
+		{
+			get { return menuCategory; }
+			set { menuCategory = value; }
+		}
+		
+		private bool showOnMenu;
+		/// <summary>
+		/// Gets/sets a value indicating whether to show the projection on the menu.
+		/// </summary>
+		public bool ShowOnMenu
+		{
+			get { return showOnMenu; }
+			set { showOnMenu = value; }
+		}
+		
 		public ProjectionInfo()
 		{
 		}

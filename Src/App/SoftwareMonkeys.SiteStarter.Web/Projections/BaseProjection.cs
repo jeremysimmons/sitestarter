@@ -24,6 +24,59 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			set { Context.Items["WindowTitle"] = value; }
 		}
 		
+		private bool requireAuthorisation = false;
+		/// <summary>
+		/// Gets/sets a value indicating whether authorisation is required.
+		/// </summary>
+		public bool RequireAuthorisation
+		{
+			get
+			{
+				return requireAuthorisation;
+			}
+			set { requireAuthorisation = value; }
+		}
+		
+		
+		private string menuTitle = String.Empty;
+		/// <summary>
+		/// Gets/sets the title displayed in the menu.
+		/// </summary>
+		public string MenuTitle
+		{
+			get
+			{
+				return menuTitle;
+			}
+			set { menuTitle = value; }
+		}
+		
+		private string menuCategory = String.Empty;
+		/// <summary>
+		/// Gets/sets the categy displayed in the menu.
+		/// </summary>
+		public string MenuCategory
+		{
+			get
+			{
+				return menuCategory;
+			}
+			set { menuCategory = value; }
+		}
+		
+		private bool showOnMenu = false;
+		/// <summary>
+		/// Gets/sets a value indicating whether the projection is to be displayed in the menu.
+		/// </summary>
+		public bool ShowOnMenu
+		{
+			get
+			{
+				return showOnMenu;
+			}
+			set { showOnMenu = value; }
+		}
+		
 		private Navigation.Navigator navigator;
 		/// <summary>
 		/// Gets/sets the component responsible for navigating between pages/projections.
@@ -40,6 +93,18 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		
 		public BaseProjection()
 		{
+		}
+		
+		public virtual void InitializeMenu()
+		{
+			// override to set menu properties such as MenuTitle, MenuCategory, and ShowOnMenu
+		}
+		
+		protected override void OnInit(EventArgs e)
+		{
+			base.OnInit(e);
+			
+			InitializeMenu();
 		}
 	}
 }

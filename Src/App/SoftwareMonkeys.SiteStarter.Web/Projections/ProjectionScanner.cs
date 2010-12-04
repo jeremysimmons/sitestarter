@@ -3,6 +3,8 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.IO;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using System.Web.UI;
+using System.Web;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Projections
 {
@@ -45,13 +47,32 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			set { fileNamer = value; }
 		}
 		
+		private ControlLoader controlLoader;
+		/// <summary>
+		/// Gets/sets component used to load user controls.
+		/// </summary>
+		public ControlLoader ControlLoader
+		{
+			get {
+				if (controlLoader == null)
+					throw new InvalidOperationException("ControlLoader has not been initialized. Pass a Page component as a parameter to the ProjectionScanner constructor and it will automatically initialized the ControlLoader.");
+				return controlLoader; }
+			set { controlLoader = value; }
+		}
+		
 		public ProjectionScanner()
 		{
+		}
+		
+		public ProjectionScanner(Page page)
+		{
+			ControlLoader = new ControlLoader(page);
 		}
 		
 		/// <summary>
 		/// Finds all the projections in the available assemblies.
 		/// </summary>
+		/// <param name="page"></param>
 		/// <returns>An array of info about the projections found.</returns>
 		public override ProjectionInfo[] FindProjections()
 		{
@@ -77,7 +98,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <summary>
 		/// Extracts the projection infos from the provided file path.
 		/// </summary>
-		/// <param name="filePath"></param>
+		/// <param name="filePath">The full path to the projection (.ascx) file.</param>
 		/// <returns></returns>
 		public ProjectionInfo[] ExtractProjectionInfo(string filePath)
 		{
@@ -102,6 +123,18 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				info.TypeName = typeName;
 				info.ProjectionFilePath = relativeFilePath;
 				info.Format = GetFormatFromFileName(filePath);
+				
+				BaseProjection p = (BaseProjection)ControlLoader.LoadControl(filePath);
+				
+				if (p == null)
+					throw new ArgumentException("Cannot find projection file at path: " + filePath);
+				
+				// Ensure that the menu properties have been set
+				p.InitializeMenu();
+				
+				info.MenuTitle = p.MenuTitle;
+				info.MenuCategory = p.MenuCategory;
+				info.ShowOnMenu = p.ShowOnMenu;
 				//info.Format = ConvertSubExtensionToFormat(subExtension);
 				
 				projections.Add(info);
@@ -225,7 +258,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				return true;
 			
 			
-			return true;
+			return false;
 		}
+		
 	}
 }

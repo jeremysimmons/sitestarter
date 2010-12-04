@@ -3,6 +3,9 @@ using SoftwareMonkeys.SiteStarter.Data;
 using System.IO;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using System.Collections.Generic;
+using System.Web;
+using System.Web.UI;
+using SoftwareMonkeys.SiteStarter.State;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Projections
 {
@@ -50,10 +53,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			get {
 				if (scanners == null)
 				{
-					scanners = new BaseProjectionScanner[]
+					scanners = DefaultScanners;
+					
+					// Make sure each of the default scanners uses the right page
+					foreach (BaseProjectionScanner scanner in scanners)
+						scanner.Page = Page;
+					/*scanners = new BaseProjectionScanner[]
 					{
-						new ProjectionScanner()
-					};
+						new ProjectionScanner(Page)
+					};*/
 				}
 				return scanners; }
 			set { scanners = value; }
@@ -86,6 +94,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				return isMapped; }
 		}
 		
+		public Page Page;
+		
 		/// <summary>
 		/// Gets the full path to the directory containing projection mappings.
 		/// </summary>
@@ -94,12 +104,48 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			get { return FileNamer.ProjectionsDirectoryPath; }
 		}
 		
+		static public string DefaultScannersKey = "ProjectionsInitializer.DefaultScanners";
+		
+		static private BaseProjectionScanner[] defaultScanners;
+		/// <summary>
+		/// Gets/sets the projection scanners used to find available projections in the existing assemblies.
+		/// </summary>
+		static public BaseProjectionScanner[] DefaultScanners
+		{
+			get {
+				if (defaultScanners == null)
+				{
+					if (StateAccess.State.ContainsApplication(DefaultScannersKey))
+						defaultScanners = (BaseProjectionScanner[])StateAccess.State.GetApplication(DefaultScannersKey);
+					
+					defaultScanners = new BaseProjectionScanner[]
+					{
+						new ProjectionScanner()
+					};
+				}
+				return defaultScanners; }
+			set { defaultScanners = value;
+				StateAccess.State.SetApplication(DefaultScannersKey, defaultScanners);
+			}
+		}
+		
+		
 		public ProjectionsInitializer()
 		{
 		}
 		
-		public ProjectionsInitializer(BaseProjectionScanner[] scanners)
+		public ProjectionsInitializer(Page page)
 		{
+			Page = page;
+			Scanners = new BaseProjectionScanner[]
+			{
+				new ProjectionScanner(Page)
+			};
+		}
+		
+		public ProjectionsInitializer(Page page, BaseProjectionScanner[] scanners)
+		{
+			Page = page;
 			Scanners = scanners;
 		}
 		
@@ -121,21 +167,31 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			using (LogGroup logGroup = AppLogger.StartGroup("Initializing the business projections.", NLog.LogLevel.Debug))
 			{
 				ProjectionInfo[] projections = new ProjectionInfo[]{};
-				if (IsMapped)
-				{
-					AppLogger.Debug("Is mapped. Loading from XML.");
-					
-					projections = LoadProjections();
-				}
-				else
+				
+				bool pageIsAccessible = Page != null;
+				
+				// Only scan for projections if the page component is accessible (otherwise they can't be loaded through LoadControl)
+				// and when the projections have NOT yet been mapped
+				if (pageIsAccessible && !IsMapped)
 				{
 					AppLogger.Debug("Is not mapped. Scanning from type attributes.");
 					
 					projections = FindProjections();
+					
 					SaveInfoToFile(projections);
+					
+					Initialize(projections);
 				}
+				else if(IsMapped)
+				{
+					AppLogger.Debug("Is mapped. Loading from XML.");
+					
+					projections = LoadProjections();
+					
+					Initialize(projections);
+				}
+				// Otherwise just skip it, as it's likely before setup has run and just needs to wait
 				
-				Initialize(projections);
 			}
 		}
 		
@@ -173,7 +229,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			List<ProjectionInfo> projections = new List<ProjectionInfo>();
 			
 			using (LogGroup logGroup = AppLogger.StartGroup("Finding projections.", NLog.LogLevel.Debug))
-			{	
+			{
 				AppLogger.Debug("# of scanners: " + Scanners.Length);
 				
 				foreach (BaseProjectionScanner scanner in Scanners)
