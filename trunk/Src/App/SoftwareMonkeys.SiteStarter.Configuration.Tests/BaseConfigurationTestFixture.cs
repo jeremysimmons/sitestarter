@@ -48,7 +48,6 @@ namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
 		public virtual void InitializeMockConfiguration()
 		{
 			Config.Application = CreateMockAppConfig();
-			Config.Mappings = CreateMockMappingsConfig();
 		}
 		
 		/// <summary>
