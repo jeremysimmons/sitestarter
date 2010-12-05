@@ -49,12 +49,12 @@
 
             Config.Application.Settings["LastAutoBackup"] = DateTime.Now;
 
-            ConfigFactory<AppConfig>.SaveConfig(
-                Server.MapPath(Request.ApplicationPath + "/App_Data"),
-                (AppConfig)Config.Application,
-        
-        
-        	Config.Application.PathVariation);
+			Config.Application.Save();
+			
+            //ConfigFactory<AppConfig>.SaveConfig(
+            //    Server.MapPath(Request.ApplicationPath + "/App_Data"),
+            //    (AppConfig)Config.Application,
+        	//Config.Application.PathVariation);
         }
     }
     
