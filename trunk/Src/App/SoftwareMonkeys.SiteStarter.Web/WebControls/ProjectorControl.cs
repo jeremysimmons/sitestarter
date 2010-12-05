@@ -2,6 +2,7 @@
 using System.Web.UI.WebControls;
 using SoftwareMonkeys.SiteStarter.Web.Projections;
 using SoftwareMonkeys.SiteStarter.Web.Controllers;
+using SoftwareMonkeys.SiteStarter.Web.Parts;
 using System.Web.UI;
 using System.ComponentModel;
 
@@ -107,6 +108,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			{
 				new ControllersInitializer().Initialize();
 				new ProjectionsInitializer(Page).Initialize();
+				new PartsInitializer(Page).Initialize();
 			}
 			
 		}
