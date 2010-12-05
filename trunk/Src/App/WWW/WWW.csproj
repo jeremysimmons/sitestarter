@@ -55,11 +55,8 @@
     <None Include="Admin\Import.aspx" />
     <None Include="Admin\Keywords.aspx" />
     <None Include="Admin\Log.aspx" />
-    <None Include="Admin\Settings.aspx">
-    </None>
     <None Include="Admin\Setup.aspx" />
     <None Include="Admin\Tests\TestContactForm.aspx" />
-    <None Include="Admin\UnitTests.aspx" />
     <None Include="Admin\Update.aspx" />
     <None Include="Admin\UpdateReady.html" />
     <None Include="Admin\UserRoles.aspx" />

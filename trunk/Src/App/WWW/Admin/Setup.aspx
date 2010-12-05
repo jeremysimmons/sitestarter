@@ -7,6 +7,7 @@
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Data" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Web.Data" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Web.Projections" %>
+<%@ Import namespace="SoftwareMonkeys.SiteStarter.Web.Parts" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Web.Controllers" %>
 <%@ Import namespace="System.IO" %>
 <script language="C#" runat="server">
@@ -51,6 +52,7 @@ private void Setup()
 	{
 		new ControllersInitializer().Initialize();
 		new ProjectionsInitializer(this).Initialize();
+		new PartsInitializer(this).Initialize();
 	}
 
 
