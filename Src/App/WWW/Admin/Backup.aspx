@@ -45,7 +45,7 @@
     protected void Page_Load(object sender, EventArgs e)
     {
 		if (!Request.IsAuthenticated && Request.QueryString["Auto"] != "true")
-			Response.Redirect("../Members/Login.aspx");
+			Response.Redirect("../User/SignIn.aspx");
 	
 		
 		//if (Request.QueryString["Auto"] == "true")
