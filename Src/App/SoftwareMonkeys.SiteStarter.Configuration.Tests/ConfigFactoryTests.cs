@@ -39,7 +39,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
 
         #region Save tests
         [Test]
-        public void Test_SaveConfig_And_LoadConfig()
+        public void Test_LoadConfig()
         {
         	string directory = TestUtilities.GetTestingPath(this);
         	
@@ -55,12 +55,10 @@ namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
             config.Settings.Add("TestSetting", "TestValue");
             config.Settings.Add("TestSetting2", true);
             
-            ConfigFactory<MockAppConfig>.SaveConfig(directory, config, "");
+            config.Save();
             
             string configPath = directory + Path.DirectorySeparatorChar + "Application.config";
             
-            Assert.IsTrue(File.Exists(configPath), "The configuration file wasn't found.");
-
             config = null;
             
             IAppConfig config2 = ConfigFactory<MockAppConfig>.LoadConfig(directory, "Application", "");
