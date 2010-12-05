@@ -147,7 +147,7 @@
     <Compile Include="MockControlLoader.cs" />
     <Compile Include="MockUrlCreator.cs" />
     <Compile Include="MockUserControl.cs" />
-    <Compile Include="Projections\MockProjectScanner.cs" />
+    <Compile Include="Projections\MockProjectionScanner.cs" />
     <Compile Include="Projections\ProjectionLocatorTests.cs" />
     <Compile Include="Projections\ProjectionScannerTests.cs" />
     <Compile Include="SetupCheckerTests.cs" />
