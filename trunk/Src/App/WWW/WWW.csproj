@@ -80,24 +80,27 @@
     <None Include="App_Themes\_svn\entries" />
     <None Include="App_Themes\_svn\format" />
     <None Include="BackupLauncher.ascx" />
+    <None Include="Controls\AuthMenu.ascx" />
     <None Include="Controls\Guide.ascx" />
     <None Include="Controls\Testing.ascx" />
-    <None Include="Controls\_svn\entries" />
-    <None Include="Controls\_svn\format" />
-    <None Include="Controls\_svn\text-base\Guide.ascx.svn-base" />
-    <None Include="Controls\_svn\text-base\Testing.ascx.svn-base" />
     <None Include="Default.aspx" />
     <None Include="Global.asax" />
     <None Include="Maintenance.html" />
     <None Include="Members\Default.aspx" />
-    <None Include="Members\Login.aspx" />
-    <None Include="Members\Logout.aspx" />
-    <None Include="Members\Register.aspx" />
     <None Include="Projections\IEntity-Delete.ascx" />
+    <None Include="Projections\Message-Send.ascx" />
+    <None Include="Projections\Settings-Index.ascx" />
+    <None Include="Projections\Smtp-Test.ascx" />
+    <None Include="Projections\User-Account.ascx" />
     <None Include="Projections\User-Create-Edit.ascx" />
     <None Include="Projections\User-Index.ascx" />
+    <None Include="Projections\User-Register.ascx" />
+    <None Include="Projections\User-SignIn.ascx" />
+    <None Include="Projections\User-SignOut.ascx" />
     <None Include="Projections\UserRole-Create-Edit.ascx" />
     <None Include="Projections\UserRole-Index.ascx" />
+    <None Include="Projections\UserSettings-Edit.ascx" />
+    <None Include="Projections\WebSiteSettings-Edit.ascx" />
     <None Include="Projector.aspx" />
     <None Include="Site.master" />
     <None Include="Styles\Simple.css" />
@@ -106,7 +109,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Admin" />
-    <Folder Include="Admin\New Folder" />
     <Folder Include="Admin\Tests" />
     <Folder Include="App_GlobalResources" />
     <Folder Include="App_GlobalResources\_svn" />
@@ -145,14 +147,6 @@
     <Folder Include="App_Themes\_svn\tmp\props" />
     <Folder Include="App_Themes\_svn\tmp\text-base" />
     <Folder Include="Controls" />
-    <Folder Include="Controls\_svn" />
-    <Folder Include="Controls\_svn\prop-base" />
-    <Folder Include="Controls\_svn\props" />
-    <Folder Include="Controls\_svn\text-base" />
-    <Folder Include="Controls\_svn\tmp" />
-    <Folder Include="Controls\_svn\tmp\prop-base" />
-    <Folder Include="Controls\_svn\tmp\props" />
-    <Folder Include="Controls\_svn\tmp\text-base" />
     <Folder Include="Members" />
     <Folder Include="Projections" />
     <Folder Include="Styles" />
