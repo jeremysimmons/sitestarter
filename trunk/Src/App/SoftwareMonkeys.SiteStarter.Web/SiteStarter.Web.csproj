@@ -89,6 +89,20 @@
     <Compile Include="LogWriter.cs" />
     <Compile Include="Navigation\Navigator.cs" />
     <Compile Include="OperationManager.cs" />
+    <Compile Include="Parts\BasePart.cs" />
+    <Compile Include="Parts\BasePartScanner.cs" />
+    <Compile Include="Parts\IPart.cs" />
+    <Compile Include="Parts\PartFileNamer.cs" />
+    <Compile Include="Parts\PartFormat.cs" />
+    <Compile Include="Parts\PartInfo.cs" />
+    <Compile Include="Parts\PartLoader.cs" />
+    <Compile Include="Parts\PartLocator.cs" />
+    <Compile Include="Parts\PartNotFoundException.cs" />
+    <Compile Include="Parts\PartSaver.cs" />
+    <Compile Include="Parts\PartScanner.cs" />
+    <Compile Include="Parts\PartsInitializer.cs" />
+    <Compile Include="Parts\PartState.cs" />
+    <Compile Include="Parts\PartStateCollection.cs" />
     <Compile Include="Projections\BaseCreateEditProjection.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
@@ -233,6 +247,7 @@
       <Project>{3609F512-9E15-41C7-95AF-D1B3E7F93562}</Project>
       <Name>SiteStarter.Entities</Name>
     </ProjectReference>
+    <Folder Include="Parts" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
