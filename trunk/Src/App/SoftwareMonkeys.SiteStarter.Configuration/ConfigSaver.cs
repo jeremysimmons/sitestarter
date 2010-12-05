@@ -41,14 +41,6 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 				
 				string name = config.Name;
 				
-				// All virtual server config files should be named VirtualServer.config because they have separate directories
-				if (config is IVirtualServerConfig)
-				{
-					AppLogger.Debug("The configuration object is derived from IVirtualServerConfig. Setting the name of it to 'VirtualServer'.");
-					
-					name = "VirtualServer";
-				}
-				
 				string configPath = config.FilePath;
 				
 				AppLogger.Debug("Configuration path: " + configPath);
