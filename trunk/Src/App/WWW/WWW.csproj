@@ -50,8 +50,6 @@
     <None Include="Admin\AutoBackup.aspx" />
     <None Include="Admin\Backup.aspx" />
     <None Include="Admin\Data.aspx" />
-    <None Include="Admin\Help.aspx" />
-    <None Include="Admin\HelpRaw.aspx" />
     <None Include="Admin\Import.aspx" />
     <None Include="Admin\Keywords.aspx" />
     <None Include="Admin\Log.aspx" />
@@ -59,9 +57,6 @@
     <None Include="Admin\Tests\TestContactForm.aspx" />
     <None Include="Admin\Update.aspx" />
     <None Include="Admin\UpdateReady.html" />
-    <None Include="Admin\UserRoles.aspx" />
-    <None Include="Admin\Users.aspx" />
-    <None Include="Admin\WebSiteSettings.aspx" />
     <None Include="App_GlobalResources\_svn\all-wcprops" />
     <None Include="App_GlobalResources\_svn\entries" />
     <None Include="App_GlobalResources\_svn\format" />
@@ -83,7 +78,6 @@
     <None Include="Default.aspx" />
     <None Include="Global.asax" />
     <None Include="Maintenance.html" />
-    <None Include="Members\Default.aspx" />
     <None Include="Projections\IEntity-Delete.ascx" />
     <None Include="Projections\Message-Send.ascx" />
     <None Include="Projections\Settings-Index.ascx" />
@@ -144,7 +138,6 @@
     <Folder Include="App_Themes\_svn\tmp\props" />
     <Folder Include="App_Themes\_svn\tmp\text-base" />
     <Folder Include="Controls" />
-    <Folder Include="Members" />
     <Folder Include="Projections" />
     <Folder Include="Styles" />
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Business.Tests\SiteStarter.Business.Tests.csproj">
