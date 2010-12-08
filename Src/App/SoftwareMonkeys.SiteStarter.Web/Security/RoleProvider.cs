@@ -327,9 +327,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 
 		public override string[] GetRolesForUser(string username)
 		{
-			IUser user = RetrieveStrategy.New<User>().Retrieve<User>("Username", username);
+			IUser user = RetrieveStrategy.New<User>(false).Retrieve<User>("Username", username);
 
-			IUserRole[] roles = IndexStrategy.New<UserRole>().Index<UserRole>(Collection<IUserRole>.GetIDs(user.Roles));
+			IUserRole[] roles = IndexStrategy.New<UserRole>(false).Index<UserRole>(Collection<IUserRole>.GetIDs(user.Roles));
 
 			List<string> names = new List<string>();
 			foreach (IUserRole role in roles)
@@ -372,11 +372,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		public bool IsUserInRole<U>(string username, string rolename)
 			where U : IUser
 		{
-			IUser user = RetrieveStrategy.New("User").Retrieve<User>("Username", username);
+			IUser user = RetrieveStrategy.New("User", false).Retrieve<User>("Username", username);
 
 			//IUserRole role = UserRoleFactory<R>.Current.GetUserRoleByName(rolename);
 
-			ActivateStrategy.New("User").Activate(user, "Roles");
+			ActivateStrategy.New("User", false).Activate(user, "Roles");
 
 			if (user == null)
 				throw new ProviderException("User not found with specified username.");

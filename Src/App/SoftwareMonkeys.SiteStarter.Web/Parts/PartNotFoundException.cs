@@ -3,13 +3,13 @@
 namespace SoftwareMonkeys.SiteStarter.Web.Parts
 {
 	/// <summary>
-	/// Indicates that a projection for the provided type and action could not be found.
+	/// Indicates that a part for the provided type and action could not be found.
 	/// </summary>
 	public class PartNotFoundException : ApplicationException
 	{
 		private string action;
 		/// <summary>
-		/// Gets/sets the action being performed by the projection.
+		/// Gets/sets the action being performed by the part.
 		/// </summary>
 		public string Action
 		{
@@ -19,7 +19,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		
 		private string typeName;
 		/// <summary>
-		/// Gets/sets the name of the type involved in the projection.
+		/// Gets/sets the name of the type involved in the part.
 		/// </summary>
 		public string TypeName
 		{
@@ -27,21 +27,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 			set { typeName = value; }
 		}
 		
-		private PartFormat format = PartFormat.Html;
-		/// <summary>
-		/// Gets/sets the format of the projection output.
-		/// </summary>
-		public PartFormat Format
-		{
-			get { return format; }
-			set { format = value; }
-		}
-		
-		public PartNotFoundException(string action, string typeName, PartFormat format) : base("A projection could not be found to carry out with action '" + action + "', entity type '" + typeName + "' and output format '" + format + "'.")
+		public PartNotFoundException(string action, string typeName) : base("A part could not be found to carry out with action '" + action + "', entity type '" + typeName + "'.")
 		{
 			Action = action;
 			TypeName = typeName;
-			Format = format;
+		}
+		
+		public PartNotFoundException(string action) : base("A part could not be found to carry out with action '" + action + "'.")
+		{
+			Action = action;
 		}
 	}
 }

@@ -8,13 +8,13 @@ using SoftwareMonkeys.SiteStarter.Diagnostics;
 namespace SoftwareMonkeys.SiteStarter.Web.Parts
 {
 	/// <summary>
-	/// Used to load projections (a type of user control) for display on a page.
+	/// Used to load parts (a type of user control) for display on a page.
 	/// </summary>
 	public class PartLoader
 	{
 		private PartFileNamer fileNamer;
 		/// <summary>
-		/// Gets/sets the file namer used to create file paths for projections.
+		/// Gets/sets the file namer used to create file paths for parts.
 		/// </summary>
 		public PartFileNamer FileNamer
 		{
@@ -25,40 +25,40 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 			set { fileNamer = value; }
 		}
 		
-		private string projectionsDirectoryPath;
+		private string partsDirectoryPath;
 		/// <summary>
-		/// Gets/sets the path to the directory containing the projection files.
+		/// Gets/sets the path to the directory containing the part files.
 		/// </summary>
 		public string PartsDirectoryPath
 		{
 			get {
-				if (projectionsDirectoryPath == null || projectionsDirectoryPath == String.Empty)
+				if (partsDirectoryPath == null || partsDirectoryPath == String.Empty)
 				{
 					if (FileNamer == null)
 						throw new InvalidOperationException("FileNamer is not set.");
 					
-					projectionsDirectoryPath = FileNamer.PartsDirectoryPath;
+					partsDirectoryPath = FileNamer.PartsDirectoryPath;
 				}
-				return projectionsDirectoryPath; }
-			set { projectionsDirectoryPath = value; }
+				return partsDirectoryPath; }
+			set { partsDirectoryPath = value; }
 		}
 		
-		private string projectionsInfoDirectoryPath;
+		private string partsInfoDirectoryPath;
 		/// <summary>
-		/// Gets/sets the path to the directory containing the projection info files.
+		/// Gets/sets the path to the directory containing the part info files.
 		/// </summary>
 		public string PartsInfoDirectoryPath
 		{
 			get {
-				if (projectionsInfoDirectoryPath == null || projectionsInfoDirectoryPath == String.Empty)
+				if (partsInfoDirectoryPath == null || partsInfoDirectoryPath == String.Empty)
 				{
 					if (FileNamer == null)
 						throw new InvalidOperationException("FileNamer is not set.");
 					
-					projectionsInfoDirectoryPath = FileNamer.PartsInfoDirectoryPath;
+					partsInfoDirectoryPath = FileNamer.PartsInfoDirectoryPath;
 				}
-				return projectionsInfoDirectoryPath; }
-			set { projectionsInfoDirectoryPath = value; }
+				return partsInfoDirectoryPath; }
+			set { partsInfoDirectoryPath = value; }
 		}
 		
 		public PartLoader()
@@ -66,65 +66,65 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		}
 		
 		/// <summary>
-		/// Loads all the projections found in the projections directory.
+		/// Loads all the parts found in the parts directory.
 		/// </summary>
-		/// <returns>An array of the the projections found in the directory.</returns>
+		/// <returns>An array of the the parts found in the directory.</returns>
 		public PartInfo[] LoadFromDirectory()
 		{
-			List<PartInfo> projections = new List<PartInfo>();
+			List<PartInfo> parts = new List<PartInfo>();
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Loading the projections from the XML files.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = AppLogger.StartGroup("Loading the parts from the XML files.", NLog.LogLevel.Debug))
 			{
 				foreach (string file in Directory.GetFiles(PartsDirectoryPath))
 				{
 					AppLogger.Debug("File: " + file);
 					
-					projections.Add(LoadFromFile(file));
+					parts.Add(LoadFromFile(file));
 				}
 			}
 			
-			return projections.ToArray();
+			return parts.ToArray();
 		}
 		
 		/// <summary>
-		/// Loads all the projections found in the projections directory.
+		/// Loads all the parts found in the parts directory.
 		/// </summary>
-		/// <returns>An array of the the projections found in the directory.</returns>
+		/// <returns>An array of the the parts found in the directory.</returns>
 		public PartInfo[] LoadInfoFromDirectory()
 		{
-			List<PartInfo> projections = new List<PartInfo>();
+			List<PartInfo> parts = new List<PartInfo>();
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Loading the projections info from the XML files.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = AppLogger.StartGroup("Loading the parts info from the XML files.", NLog.LogLevel.Debug))
 			{
 				foreach (string file in Directory.GetFiles(PartsInfoDirectoryPath))
 				{
 					AppLogger.Debug("File: " + file);
 					
-					projections.Add(LoadFromFile(file));
+					parts.Add(LoadFromFile(file));
 				}
 			}
 			
-			return projections.ToArray();
+			return parts.ToArray();
 		}
 		
 		/// <summary>
-		/// Loads the projection from the specified path.
+		/// Loads the part from the specified path.
 		/// </summary>
-		/// <param name="projectionPath">The full path to the projection to load.</param>
-		/// <returns>The projection deserialized from the specified file path.</returns>
-		public PartInfo LoadFromFile(string projectionPath)
+		/// <param name="partPath">The full path to the part to load.</param>
+		/// <returns>The part deserialized from the specified file path.</returns>
+		public PartInfo LoadFromFile(string partPath)
 		{
 			PartInfo info = null;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Loading the projection from the specified path.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = AppLogger.StartGroup("Loading the part from the specified path.", NLog.LogLevel.Debug))
 			{
-				if (!File.Exists(projectionPath))
+				if (!File.Exists(partPath))
 					throw new ArgumentException("The specified file does not exist.");
 				
-				AppLogger.Debug("Path: " + projectionPath);
+				AppLogger.Debug("Path: " + partPath);
 				
 				
-				using (StreamReader reader = new StreamReader(File.OpenRead(projectionPath)))
+				using (StreamReader reader = new StreamReader(File.OpenRead(partPath)))
 				{
 					XmlSerializer serializer = new XmlSerializer(typeof(PartInfo));
 					

@@ -10,13 +10,13 @@ using SoftwareMonkeys.SiteStarter.State;
 namespace SoftwareMonkeys.SiteStarter.Web.Parts
 {
 	/// <summary>
-	/// Used to initialize the projection state and make projections available for use.
+	/// Used to initialize the part state and make parts available for use.
 	/// </summary>
 	public class PartsInitializer
 	{
 		private PartFileNamer fileNamer;
 		/// <summary>
-		/// Gets/sets the file namer used to create projection file names/paths.
+		/// Gets/sets the file namer used to create part file names/paths.
 		/// </summary>
 		public PartFileNamer FileNamer
 		{
@@ -29,7 +29,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		
 		private PartSaver saver;
 		/// <summary>
-		/// Gets/sets the projection saver used to save projections to file.
+		/// Gets/sets the part saver used to save parts to file.
 		/// </summary>
 		public PartSaver Saver
 		{
@@ -46,7 +46,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		
 		private BasePartScanner[] scanners;
 		/// <summary>
-		/// Gets/sets the projection scanners used to find available projections in the existing assemblies.
+		/// Gets/sets the part scanners used to find available parts in the existing assemblies.
 		/// </summary>
 		public BasePartScanner[] Scanners
 		{
@@ -69,7 +69,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		
 		private PartLoader loader;
 		/// <summary>
-		/// Gets/sets the projection loader used to find available projections in the existing assemblies.
+		/// Gets/sets the part loader used to find available parts in the existing assemblies.
 		/// </summary>
 		public PartLoader Loader
 		{
@@ -85,7 +85,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		}
 		
 		/// <summary>
-		/// Gets a value indicating whether the projections have been mapped yet.
+		/// Gets a value indicating whether the parts have been mapped yet.
 		/// </summary>
 		public bool IsMapped
 		{
@@ -97,7 +97,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		public Page Page;
 		
 		/// <summary>
-		/// Gets the full path to the directory containing projection mappings.
+		/// Gets the full path to the directory containing part mappings.
 		/// </summary>
 		public string PartsDirectoryPath
 		{
@@ -108,7 +108,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		
 		static private BasePartScanner[] defaultScanners;
 		/// <summary>
-		/// Gets/sets the projection scanners used to find available projections in the existing assemblies.
+		/// Gets/sets the part scanners used to find available parts in the existing assemblies.
 		/// </summary>
 		static public BasePartScanner[] DefaultScanners
 		{
@@ -151,44 +151,44 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		
 		
 		/// <summary>
-		/// Initializes the projections and loads all projections to state.
+		/// Initializes the parts and loads all parts to state.
 		/// </summary>
-		/// <param name="projections">The projections to initialize.</param>
-		public void Initialize(PartInfo[] projections)
+		/// <param name="parts">The parts to initialize.</param>
+		public void Initialize(PartInfo[] parts)
 		{
-			PartState.Parts = new PartStateCollection(projections);
+			PartState.Parts = new PartStateCollection(parts);
 		}
 		
 		/// <summary>
-		/// Initializes the projections and loads all projections to state.
+		/// Initializes the parts and loads all parts to state.
 		/// </summary>
 		public void Initialize()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Initializing the business projections.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = AppLogger.StartGroup("Initializing the business parts.", NLog.LogLevel.Debug))
 			{
-				PartInfo[] projections = new PartInfo[]{};
+				PartInfo[] parts = new PartInfo[]{};
 				
 				bool pageIsAccessible = Page != null;
 				
-				// Only scan for projections if the page component is accessible (otherwise they can't be loaded through LoadControl)
-				// and when the projections have NOT yet been mapped
+				// Only scan for parts if the page component is accessible (otherwise they can't be loaded through LoadControl)
+				// and when the parts have NOT yet been mapped
 				if (pageIsAccessible && !IsMapped)
 				{
 					AppLogger.Debug("Is not mapped. Scanning from type attributes.");
 					
-					projections = FindParts();
+					parts = FindParts();
 					
-					SaveInfoToFile(projections);
+					SaveInfoToFile(parts);
 					
-					Initialize(projections);
+					Initialize(parts);
 				}
 				else if(IsMapped)
 				{
 					AppLogger.Debug("Is mapped. Loading from XML.");
 					
-					projections = LoadParts();
+					parts = LoadParts();
 					
-					Initialize(projections);
+					Initialize(parts);
 				}
 				// Otherwise just skip it, as it's likely before setup has run and just needs to wait
 				
@@ -196,57 +196,57 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		}
 		
 		/// <summary>
-		/// Saves the info for the provided projections to projections info directory.
+		/// Saves the info for the provided parts to parts info directory.
 		/// </summary>
-		/// <param name="projections">The projections to save to file.</param>
-		public void SaveInfoToFile(PartInfo[] projections)
+		/// <param name="parts">The parts to save to file.</param>
+		public void SaveInfoToFile(PartInfo[] parts)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Saving the provided projections to XML.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = AppLogger.StartGroup("Saving the provided parts to XML.", NLog.LogLevel.Debug))
 			{
-				foreach (PartInfo projection in projections)
+				foreach (PartInfo part in parts)
 				{
-					Saver.SaveInfoToFile(projection);
+					Saver.SaveInfoToFile(part);
 				}
 			}
 		}
 		
 		
 		/// <summary>
-		/// Loads the available projections from file.
+		/// Loads the available parts from file.
 		/// </summary>
-		/// <returns>The loaded from the projections mappings directory.</returns>
+		/// <returns>The loaded from the parts mappings directory.</returns>
 		public PartInfo[] LoadParts()
 		{
 			return Loader.LoadInfoFromDirectory();
 		}
 		
 		/// <summary>
-		/// Finds all the projections available to the application.
+		/// Finds all the parts available to the application.
 		/// </summary>
-		/// <returns>An array of the available projections.</returns>
+		/// <returns>An array of the available parts.</returns>
 		public PartInfo[] FindParts()
 		{
-			List<PartInfo> projections = new List<PartInfo>();
+			List<PartInfo> parts = new List<PartInfo>();
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Finding projections.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = AppLogger.StartGroup("Finding parts.", NLog.LogLevel.Debug))
 			{
 				AppLogger.Debug("# of scanners: " + Scanners.Length);
 				
 				foreach (BasePartScanner scanner in Scanners)
 				{
-					foreach (PartInfo projection in scanner.FindParts())
+					foreach (PartInfo part in scanner.FindParts())
 					{
-						projections.Add(projection);
+						parts.Add(part);
 					}
 				}
 			}
-			return projections.ToArray();
+			return parts.ToArray();
 		}
 		
 		/// <summary>
-		/// Checks whether the projection mappings have been created and saved to file.
+		/// Checks whether the part mappings have been created and saved to file.
 		/// </summary>
-		/// <returns>A value indicating whether the projection mappings directory was found.</returns>
+		/// <returns>A value indicating whether the part mappings directory was found.</returns>
 		public bool PartMappingsExist()
 		{
 			string directory = FileNamer.PartsInfoDirectoryPath;
