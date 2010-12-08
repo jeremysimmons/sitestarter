@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Specialized;
 using System.Collections.Generic;
 using SoftwareMonkeys.SiteStarter.Entities;
 
@@ -7,8 +9,23 @@ namespace SoftwareMonkeys.SiteStarter.State
 	/// <summary>
 	/// Persists data in application, session, or request scope state.
 	/// </summary>
-	public class StateNameValueCollection<T> : System.Collections.Specialized.NameObjectCollectionBase
+	public class StateNameValueCollection<T> : NameObjectCollectionBase, IEnumerable<T>
 	{
+		private StateCollection<string> keys;
+		/// <summary>
+		/// Gets/sets
+		/// </summary>
+		public StateCollection<string> Keys
+		{
+			get {
+				if (keys == null)
+				{
+					keys = StateCollection<string>.Current(StateScope.Application, GroupKey + "_Keys");
+				}
+				return keys; }
+			set { keys = value; }
+		}
+		
 		private StateScope scope;
 		/// <summary>
 		/// Gets/sets the scope of the state being managed by the collection.
@@ -26,7 +43,9 @@ namespace SoftwareMonkeys.SiteStarter.State
 		public string GroupKey
 		{
 			get { return groupKey; }
-			set { groupKey = value; }
+			set { groupKey = value;
+				Keys.GroupKey = value + "_Keys";
+			}
 		}
 		
 		/// <summary>
@@ -36,6 +55,15 @@ namespace SoftwareMonkeys.SiteStarter.State
 		{
 			get { return GetStateValue(key); }
 			set { SetStateValue(key, value); }
+		}
+		
+		/// <summary>
+		/// Gets/sets the state variable with the specified key.
+		/// </summary>
+		public T this[int index]
+		{
+			get { return this[Keys[index]]; }
+			set { this[Keys[index]] = value; }
 		}
 		
 		/// <summary>
@@ -55,21 +83,23 @@ namespace SoftwareMonkeys.SiteStarter.State
 		/// <returns>The total number of items in the collection.</returns>
 		public int GetCount()
 		{
-			int i = 0;
+			/*int i = 0;
 			int count = 0;
 			
 			foreach (string key in StateAccess.State.GetKeys(Scope))
 			{
 				// If it starts with the group key
-				if (key.IndexOf(GroupKey + "_") == 0)
-				{
+				//if (key.IndexOf(GroupKey + "_") > -1)
+				//{
 					i++;
-				}
+				//}
 			}
 			
 			count = i;
 			
-			return count;
+			return count;*/
+			
+			return Keys.Count;
 		}
 		
 		
@@ -142,12 +172,39 @@ namespace SoftwareMonkeys.SiteStarter.State
 		}
 		
 		/// <summary>
+		/// Removes the value with the provided key.
+		/// </summary>
+		/// <param name="key">The key of the value to remove.</param>
+		public void RemoveStateValue(string key)
+		{
+			string fullKey = GetStateKey(groupKey, key);
+			
+			// Remove the key
+			if (Keys.Contains(key))
+				Keys.Remove(key);
+			
+			
+			switch (Scope)
+			{
+				case StateScope.Application:
+					StateAccess.State.RemoveApplication(fullKey);
+					break;
+				case StateScope.Session:
+					StateAccess.State.RemoveSession(fullKey);
+					break;
+				case StateScope.Operation:
+					StateAccess.State.RemoveRequest(fullKey);
+					break;
+			}
+		}
+		
+		/// <summary>
 		/// Sets the provided value in the state to correspond with the provided key, in the scope indicated by the Scope property, and in the group indicated by the GroupKey property.
 		/// </summary>
 		/// <param name="key">The key to assign to the provided value.</param>
 		/// <param name="value">The value to save to state along with the provided key, prefixed by scope and group key.</param>
 		public void SetStateValue(string key, T value)
-		{
+		{			
 			string fullKey = GetStateKey(groupKey, key);
 			
 			switch (Scope)
@@ -162,6 +219,19 @@ namespace SoftwareMonkeys.SiteStarter.State
 					StateAccess.State.SetRequest(fullKey, value);
 					break;
 			}
+			
+			if (value == null)
+			{
+				// Remove the key
+				Keys.Remove(key);
+				
+				RemoveStateValue(key);
+			}
+			else
+			{
+				if (!Keys.Contains(key))
+					Keys.Add(key);
+			}
 		}
 		
 		/// <summary>
@@ -173,6 +243,88 @@ namespace SoftwareMonkeys.SiteStarter.State
 		public string GetStateKey(string groupKey, string key)
 		{
 			return groupKey + "_" + key;
+		}
+		
+		public int IndexOf(T item)
+		{
+			for (int i = 0; i < Count; i ++)
+			{
+				if (item.Equals(this[i]))
+					return i;
+			}
+			
+			return -1;
+		}
+		
+		public void Insert(int index, T item)
+		{
+			this[index] = item;
+		}
+		
+		public void RemoveAt(int index)
+		{
+			if (index > -1)
+			{
+				string key = Keys[index];
+				
+				RemoveStateValue(key);
+				
+				base.BaseRemove(key);	
+			}
+		}
+		
+		public void Clear()
+		{
+			for (int i = 0; i < Count; i ++)
+			{
+				this[i] = default(T);
+			}
+		}
+		
+		public bool Contains(T item)
+		{
+			return IndexOf(item) > -1;
+		}
+		
+		public void CopyTo(T[] array, int arrayIndex)
+		{
+			throw new NotImplementedException();
+		}
+		
+		public bool Remove(T item)
+		{
+			
+			int index = IndexOf(item);
+			
+			if (index > -1)
+			{
+				string key = Keys[index];
+				
+				RemoveStateValue(key);
+				
+				base.BaseRemove(key);
+				
+				return true;
+			}
+			else
+				return false;
+		}
+		
+		public IEnumerator<T> GetEnumerator()
+		{
+			foreach (string key in Keys)
+			{
+				yield return this[key];
+			}
+		}
+		
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		{
+			foreach (string key in Keys)
+			{
+				yield return this[key];
+			}
+
 		}
 	}
 }

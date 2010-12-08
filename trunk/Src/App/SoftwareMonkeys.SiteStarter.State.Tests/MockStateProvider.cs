@@ -68,6 +68,14 @@ namespace SoftwareMonkeys.SiteStarter.State.Tests
 			
 			return ApplicationData[key];
 		}
+		
+		public override void RemoveApplication(string key)
+		{
+			if (ContainsApplication(key))
+			{
+				ApplicationData.Remove(key);
+			}
+		}
 		#endregion
 		
 		#region Session state
@@ -90,6 +98,14 @@ namespace SoftwareMonkeys.SiteStarter.State.Tests
 			}
 			
 			return SessionData[key];
+		}
+		
+		public override void RemoveSession(string key)
+		{
+			if (ContainsSession(key))
+			{
+				SessionData.Remove(key);
+			}
 		}
 		#endregion
 
@@ -114,6 +130,14 @@ namespace SoftwareMonkeys.SiteStarter.State.Tests
 			}
 			
 			return RequestData[key];
+		}
+		
+		public override void RemoveRequest(string key)
+		{
+			if (ContainsRequest(key))
+			{
+				RequestData.Remove(key);
+			}
 		}
 		#endregion
 		

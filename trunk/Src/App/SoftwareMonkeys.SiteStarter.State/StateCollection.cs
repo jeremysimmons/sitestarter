@@ -6,8 +6,9 @@ namespace SoftwareMonkeys.SiteStarter.State
 	/// <summary>
 	/// Persists data in application, session, or request scope state.
 	/// </summary>
-	public class StateCollection<T> : System.Collections.Generic.IList<T>
+	public class StateCollection<T> : System.Collections.Generic.List<T>
 	{
+		
 		private StateScope scope;
 		/// <summary>
 		/// Gets/sets the scope of the state being managed by the collection.
@@ -31,13 +32,36 @@ namespace SoftwareMonkeys.SiteStarter.State
 		/// <summary>
 		/// Gets/sets the state variable at the specified index.
 		/// </summary>
-		public T this[int index]
+		public new T this[int index]
 		{
-			get { return GetStateValue(index); }
-			set { SetStateValue(index, value); }
+			get { return base[index]; }
+			set { base[index] = value;
+				Commit();
+			}
 		}
 		
-		/// <summary>
+		public new void Add(T item)
+		{
+			base.Add(item);
+			
+			Commit();
+		}
+		
+		public new void Remove(T item)
+		{
+			base.Remove(item);
+			
+			Commit();
+		}
+		
+		public new void RemoveAt(int index)
+		{
+			base.RemoveAt(index);
+			
+			Commit();
+		}
+		
+		/*/// <summary>
 		/// Adds the provided item to the state collection.
 		/// </summary>
 		/// <param name="value">The value to add to the state collection.</param>
@@ -50,7 +74,7 @@ namespace SoftwareMonkeys.SiteStarter.State
 			// The two lines above could be skipped but are there because it makes the logic in the code more readable
 			
 			SetStateValue(newPosition, value);
-		}
+		}*/
 		
 		/// <summary>
 		/// Sets the scope and group key used by this collection.
@@ -63,7 +87,7 @@ namespace SoftwareMonkeys.SiteStarter.State
 			GroupKey = groupKey;
 		}
 		
-		/// <summary>
+		/*/// <summary>
 		/// Retrieves the value of the state variable with the provided key, in the scope indicated by the Scope property, and in the group indicated by the GroupKey property.
 		/// </summary>
 		/// <param name="index">The index of the item.</param>
@@ -88,9 +112,9 @@ namespace SoftwareMonkeys.SiteStarter.State
 			}
 			
 			return value;
-		}
+		}*/
 		
-		/// <summary>
+		/*/// <summary>
 		/// Sets the provided value in the state to correspond with the provided key, in the scope indicated by the Scope property, and in the group indicated by the GroupKey property.
 		/// </summary>
 		/// <param name="index">The index of the item.</param>
@@ -98,6 +122,15 @@ namespace SoftwareMonkeys.SiteStarter.State
 		public void SetStateValue(int index, T value)
 		{
 			string fullKey = GetStateKey(groupKey, index);
+			
+			if (value == null)
+			{
+				// Remove the key
+				List<string> list = new List<string>(Keys);
+				list.RemoveAt(index);
+				
+				Keys = list.ToArray();
+			}
 			
 			switch (Scope)
 			{
@@ -111,9 +144,9 @@ namespace SoftwareMonkeys.SiteStarter.State
 					StateAccess.State.SetRequest(fullKey, value);
 					break;
 			}
-		}
+		}*/
 		
-		
+		/*
 		/// <summary>
 		/// Checks whether a state value exists at the specified index.
 		/// </summary>
@@ -144,21 +177,19 @@ namespace SoftwareMonkeys.SiteStarter.State
 			}
 			
 			return exists;
-		}
+		}*/
 		
 		/// <summary>
-		/// Creates the full key used to store a state variable prefixed by the provided group.
+		/// Creates the key used to store the collection in state.
 		/// </summary>
-		/// <param name="groupKey">The key of the group used as a prefix.</param>
-		/// <param name="index">The index of the state entry.</param>
-		/// <returns>The full key; a combination of groupKey and key with an underscore _ between them.</returns>
-		public string GetStateKey(string groupKey, int index)
+		/// <returns>The state key.</returns>
+		public string GetStateKey()
 		{
-			string key  = groupKey + "_" + index;
+			string key  = groupKey;
 			
 			return key;
 		}
-		
+		/*
 		/// <summary>
 		/// Counts the number of items in the collection.
 		/// </summary>
@@ -178,8 +209,8 @@ namespace SoftwareMonkeys.SiteStarter.State
 			count = i;
 			
 			return count;
-		}
-		
+		}*/
+		/*
 		/// <summary>
 		/// The total number of items in the collection.
 		/// </summary>
@@ -187,14 +218,14 @@ namespace SoftwareMonkeys.SiteStarter.State
 			get {
 				return GetCount();
 			}
-		}
+		}*/
 		
 		public bool IsReadOnly {
 			get {
 				throw new NotImplementedException();
 			}
 		}
-		
+	/*	
 		public int IndexOf(T item)
 		{
 			for (int i = 0; i < Count; i ++)
@@ -213,7 +244,13 @@ namespace SoftwareMonkeys.SiteStarter.State
 		
 		public void RemoveAt(int index)
 		{
-			this[index] = default(T);
+			List<string> list = new List<string>(Keys);
+			list.RemoveAt(index);
+			
+			Keys = list.ToArray();
+			
+			SetStateValue(index, default(T));
+			
 		}
 		
 		public void Clear()
@@ -232,30 +269,42 @@ namespace SoftwareMonkeys.SiteStarter.State
 		public void CopyTo(T[] array, int arrayIndex)
 		{
 			throw new NotImplementedException();
-		}
+		}*/
 		
-		public bool Remove(T item)
+		/*public bool Remove(T item)
 		{
 			int index = IndexOf(item);
 			
 			if (index > -1)
 			{
-				this[index] = default(T);
+				List<string> list = new List<string>(Keys);
+				list.RemoveAt(index);
+				
+				Keys = list.ToArray();
+				
+				SetStateValue(index, default(T));
+				
 				return true;
 			}
 			else
 				return false;
-		}
+		}*/
 		
-		public IEnumerator<T> GetEnumerator()
+		/*public IEnumerator<T> GetEnumerator()
 		{
-			throw new NotImplementedException();
+			for (int i = 0; i < Count; i++)
+			{
+				yield return this[i];
+			}
 		}
 		
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
 		{
-			throw new NotImplementedException();
-		}
+			for (int i = 0; i < Count; i++)
+			{
+				yield return this[i];
+			}
+		}*/
 		
 		public T[] ToArray()
 		{
@@ -265,6 +314,49 @@ namespace SoftwareMonkeys.SiteStarter.State
 				list.Add(this[i]);
 			}
 			return list.ToArray();
+		}
+		
+		
+		public void Commit()
+		{
+			string key = GroupKey;
+			
+			switch (Scope)
+			{
+				case StateScope.Application:
+					StateAccess.State.SetApplication(key, this);
+					break;
+				case StateScope.Session:
+					StateAccess.State.SetSession(key, this);
+					break;
+				case StateScope.Operation:
+					StateAccess.State.SetRequest(key, this);
+					break;
+			}
+		}
+		
+		static public StateCollection<T> Current(StateScope scope, string group)
+		{
+			StateCollection<T> collection = null;
+			switch (scope)
+			{
+				case StateScope.Application:
+					collection = (StateAccess.State.ContainsApplication(group)
+					              ? (StateCollection<T>)StateAccess.State.GetApplication(group)
+					              :  new StateCollection<T>(scope, group));
+					break;
+				case StateScope.Session:
+					collection = (StateAccess.State.ContainsSession(group)
+					              ? (StateCollection<T>)StateAccess.State.GetSession(group)
+					              :  new StateCollection<T>(scope, group));
+					break;
+				case StateScope.Operation:
+					collection = (StateAccess.State.ContainsRequest(group)
+					              ? (StateCollection<T>)StateAccess.State.GetRequest(group)
+					              :  new StateCollection<T>(scope, group));
+					break;
+			}
+			return collection;
 		}
 	}
 }
