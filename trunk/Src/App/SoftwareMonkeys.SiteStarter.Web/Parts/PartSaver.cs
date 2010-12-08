@@ -7,26 +7,26 @@ using SoftwareMonkeys.SiteStarter.Diagnostics;
 namespace SoftwareMonkeys.SiteStarter.Web.Parts
 {
 	/// <summary>
-	/// Used to save projection components to file.
+	/// Used to save part components to file.
 	/// </summary>
 	public class PartSaver
 	{
-		private string projectionsDirectoryPath;
+		private string partsDirectoryPath;
 		/// <summary>
-		/// Gets the full path to the directory containing projection mappings.
+		/// Gets the full path to the directory containing part mappings.
 		/// </summary>
 		public string PartsDirectoryPath
 		{
 			get {
-				if (projectionsDirectoryPath == null || projectionsDirectoryPath == String.Empty)
+				if (partsDirectoryPath == null || partsDirectoryPath == String.Empty)
 				{
 					if (FileNamer != null)
-						projectionsDirectoryPath = FileNamer.PartsDirectoryPath;
+						partsDirectoryPath = FileNamer.PartsDirectoryPath;
 					
 				}
-				return projectionsDirectoryPath;
+				return partsDirectoryPath;
 			}
-			set { projectionsDirectoryPath = value; }
+			set { partsDirectoryPath = value; }
 		}
 		
 		private PartFileNamer fileNamer;
@@ -47,14 +47,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		}
 		
 		/// <summary>
-		/// Saves the provided projection info to the projections info directory.
+		/// Saves the provided part info to the parts info directory.
 		/// </summary>
-		/// <param name="projection">The projection info to save to file.</param>
-		public void SaveInfoToFile(PartInfo projection)
+		/// <param name="part">The part info to save to file.</param>
+		public void SaveInfoToFile(PartInfo part)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Saving the provided projection to file.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = AppLogger.StartGroup("Saving the provided part to file.", NLog.LogLevel.Debug))
 			{
-				string path = FileNamer.CreateInfoFilePath(projection);
+				string path = FileNamer.CreateInfoFilePath(part);
 				
 				AppLogger.Debug("Path : " + path);
 				
@@ -63,24 +63,24 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 				
 				using (StreamWriter writer = File.CreateText(path))
 				{
-					XmlSerializer serializer = new XmlSerializer(projection.GetType());
-					serializer.Serialize(writer, projection);
+					XmlSerializer serializer = new XmlSerializer(part.GetType());
+					serializer.Serialize(writer, part);
 					writer.Close();
 				}
 			}
 		}
 		
 		/// <summary>
-		/// Saves the provided projections info to file.
+		/// Saves the provided parts info to file.
 		/// </summary>
-		/// <param name="projections">An array of the projections to save to file.</param>
-		public void SaveInfoToFile(PartInfo[] projections)
+		/// <param name="parts">An array of the parts to save to file.</param>
+		public void SaveInfoToFile(PartInfo[] parts)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Saving the provided projections to XML files.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = AppLogger.StartGroup("Saving the provided parts to XML files.", NLog.LogLevel.Debug))
 			{
-				foreach (PartInfo projection in projections)
+				foreach (PartInfo part in parts)
 				{
-					SaveInfoToFile(projection);
+					SaveInfoToFile(part);
 				}
 			}
 		}

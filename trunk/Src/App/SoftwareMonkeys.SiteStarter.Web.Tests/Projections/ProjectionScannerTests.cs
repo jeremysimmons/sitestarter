@@ -48,7 +48,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Projections
 			string appName = "MockApplication";
 			
 			ProjectionScanner scanner = new ProjectionScanner();
-			scanner.ControlLoader = new MockControlLoader(this, String.Empty);
+			scanner.ControlLoader = new MockProjectionLoader(this, String.Empty);
 			scanner.FileNamer.FileMapper = new MockFileMapper(this, TestUtilities.GetTestingPath(this), appName);
 			scanner.FileNamer.ProjectionsDirectoryPath = TestUtilities.GetTestApplicationPath(this, appName) + Path.DirectorySeparatorChar + "Projections";
 			
@@ -65,7 +65,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Projections
 			string appName = "MockApplication";
 			
 			ProjectionScanner scanner = new ProjectionScanner();
-			scanner.ControlLoader = new MockControlLoader(this, String.Empty);
+			scanner.ControlLoader = new MockProjectionLoader(this, String.Empty);
 			scanner.FileNamer.FileMapper = new MockFileMapper(this, TestUtilities.GetTestingPath(this), appName);
 			scanner.FileNamer.ProjectionsDirectoryPath = TestUtilities.GetTestApplicationPath(this, appName) + Path.DirectorySeparatorChar + "Projections";
 			
@@ -86,7 +86,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Projections
 			string mockFileName = "User-Create.aspx";
 			
 			ProjectionScanner scanner = new ProjectionScanner();
-			scanner.ControlLoader = new MockControlLoader(this, mockFileName);
+			scanner.ControlLoader = new MockProjectionLoader(this, mockFileName);
 			
 			ProjectionInfo[] infos = scanner.ExtractProjectionInfo(mockFileName);
 			
@@ -99,7 +99,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Projections
 			string mockFileName = "User-Create-Edit.aspx";
 			
 			ProjectionScanner scanner = new ProjectionScanner();
-			scanner.ControlLoader = new MockControlLoader(this, mockFileName);
+			scanner.ControlLoader = new MockProjectionLoader(this, mockFileName);
 			
 			ProjectionInfo[] infos = scanner.ExtractProjectionInfo(mockFileName);
 			

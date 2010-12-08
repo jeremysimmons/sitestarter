@@ -52,6 +52,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
 	        else
 	        	return null;
         }
+        
+		public override void RemoveApplication(string key)
+		{
+			if (ContainsApplication(key))
+			{
+				HttpContext.Current.Application.Remove(key);
+			}
+		}
         #endregion
         
         #region Session state
@@ -92,6 +100,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
 	        else
 	        	return null;
         }
+        
+		public override void RemoveSession(string key)
+		{
+			if (ContainsSession(key))
+			{
+				HttpContext.Current.Session.Remove(key);
+			}
+		}
         #endregion
         
         #region Request state
@@ -132,6 +148,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
 	        else
 	        	return null;
         }
+        
+		public override void RemoveRequest(string key)
+		{
+			if (ContainsRequest(key))
+			{
+				HttpContext.Current.Items.Remove(key);
+			}
+		}
         #endregion
 
         

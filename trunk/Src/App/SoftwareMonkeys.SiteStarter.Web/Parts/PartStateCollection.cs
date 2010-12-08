@@ -5,47 +5,37 @@ using SoftwareMonkeys.SiteStarter.State;
 namespace SoftwareMonkeys.SiteStarter.Web.Parts
 {
 	/// <summary>
-	/// Holds the state of all available projections.
+	/// Holds the state of all available parts.
 	/// </summary>
 	public class PartStateCollection : StateNameValueCollection<PartInfo>
 	{
 		/// <summary>
-		/// Gets/sets the projection for the specifid action and type.
+		/// Gets/sets the part for the specifid action and type.
 		/// </summary>
 		public PartInfo this[string action, string type]
 		{
-			get { return GetPart(action, type, PartFormat.Html); }
-			set { SetPart(action, type, PartFormat.Html, value); }
+			get { return GetPart(action, type); }
+			set { SetPart(action, type, value); }
 		}
 		
 		/// <summary>
-		/// Gets/sets the projection for the specifid action and type.
+		/// Gets/sets the part for the specifid action and type.
 		/// </summary>
 		public PartInfo this[string action, Type type]
 		{
-			get { return GetPart(action, type.Name, PartFormat.Html); }
-			set { SetPart(action, type.Name, PartFormat.Html, value); }
+			get { return GetPart(action, type.Name); }
+			set { SetPart(action, type.Name, value); }
 		}
 		
-		/// <summary>
-		/// Gets/sets the projection for the specifid action and type.
+		// TODO: Remove if not needed
+		/*/// <summary>
+		/// Gets/sets the part for the specifid action and type.
 		/// </summary>
-		public PartInfo this[string action, string type, PartFormat format]
+		public PartInfo this[string action]
 		{
-			get { return GetPart(action, type, format); }
-			set { SetPart(action, type, format, value); }
-		}
-		
-		/// <summary>
-		/// Gets/sets the projection for the specifid action and type.
-		/// </summary>
-		public PartInfo this[string action, Type type, PartFormat format]
-		{
-			get { return GetPart(action, type.Name, format); }
-			set { SetPart(action, type.Name, format, value); }
-		}
-		
-		
+			get { return GetPart(action); }
+			set { SetPart(action, value); }
+		}*/
 		
 		public PartStateCollection() : base(StateScope.Application, "Web.Parts")
 		{
@@ -53,80 +43,107 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		
 		public PartStateCollection(PartInfo[] strategies) : base(StateScope.Application, "Web.Parts")
 		{
-			foreach (PartInfo projection in strategies)
+			foreach (PartInfo part in strategies)
 			{
-				SetPart(projection.Action, projection.TypeName, projection.Format, projection);
+				SetPart(part.Action, part.TypeName, part);
 			}
 		}
 		
 		/// <summary>
-		/// Adds the provided projection info to the collection.
+		/// Adds the provided part info to the collection.
 		/// </summary>
-		/// <param name="projection">The projection info to add to the collection.</param>
-		public void Add(PartInfo projection)
+		/// <param name="part">The part info to add to the collection.</param>
+		public void Add(PartInfo part)
 		{
-			if (projection == null)
-				throw new ArgumentNullException("projection");
+			if (part == null)
+				throw new ArgumentNullException("part");
 			
-			string key = GetPartKey(projection.Action, projection.TypeName, projection.Format);
+			string key = GetPartKey(part.Action, part.TypeName);
 			
-			this[key] = projection;
+			base[key] = part;
 		}
 		
 		// TODO: Remove if not needed
 		/*/// <summary>
-		/// Adds the info of the provided projection to the collection.
+		/// Adds the info of the provided part to the collection.
 		/// </summary>
-		/// <param name="projection">The projection info to add to the collection.</param>
-		public void Add(IPart projection)
+		/// <param name="part">The part info to add to the collection.</param>
+		public void Add(IPart part)
 		{
-			if (projection == null)
-				throw new ArgumentNullException("projection");
+			if (part == null)
+				throw new ArgumentNullException("part");
 			
-			Add(new PartInfo(projection));
+			Add(new PartInfo(part));
 		}*/
-		
-		
-		/// <summary>
-		/// Checks whether a projection exists with the provided key.
-		/// </summary>
-		/// <param name="key">The key of the projection to check for.</param>
-		/// <returns>A value indicating whether the projection exists.</returns>
-		public bool PartExists(string key)
+			
+			
+			/// <summary>
+			/// Checks whether a part exists with the provided key.
+			/// </summary>
+			/// <param name="key">The key of the part to check for.</param>
+			/// <returns>A value indicating whether the part exists.</returns>
+			public bool PartExists(string key)
 		{
 			return StateValueExists(key);
 		}
 		
 		/// <summary>
-		/// Retrieves the projection with the provided action and type.
+		/// Retrieves the part with the provided action and type.
 		/// </summary>
-		/// <param name="action">The action that the projection performs.</param>
-		/// <param name="typeName">The type of entity involved in the projection</param>
-		/// <param name="format">The output format of the desired projection.</param>
-		/// <returns>The projection matching the provided action and type.</returns>
-		public PartInfo GetPart(string action, string typeName, PartFormat format)
+		/// <param name="action">The action that the part performs.</param>
+		/// <param name="typeName">The type of entity involved in the part</param>
+		/// <returns>The part matching the provided action and type.</returns>
+		public PartInfo GetPart(string action, string typeName)
 		{
 			PartLocator locator = new PartLocator(this);
 			
-			PartInfo foundPart = locator.Locate(action, typeName, format);
+			PartInfo foundPart = locator.Locate(action, typeName);
 			
 			if (foundPart == null)
-				throw new PartNotFoundException(action, typeName, format);
+				throw new PartNotFoundException(action, typeName);
+			
+			
+			return foundPart;
+		}
+		
+		
+		/// <summary>
+		/// Retrieves the part with the provided action and type.
+		/// </summary>
+		/// <param name="action">The action that the part performs.</param>
+		/// <returns>The part matching the provided action and type.</returns>
+		public PartInfo GetPart(string action)
+		{
+			PartLocator locator = new PartLocator(this);
+			
+			PartInfo foundPart = locator.Locate(action);
+			
+			if (foundPart == null)
+				throw new PartNotFoundException(action);
 			
 			
 			return foundPart;
 		}
 
 		/// <summary>
-		/// Sets the projection with the provided action and type.
+		/// Sets the part with the provided action and type.
 		/// </summary>
-		/// <param name="action">The action that the projection performs.</param>
-		/// <param name="type">The type of entity involved in the projection</param>
-		/// <param name="projection">The projection that corresponds with the specified action and type.</param>
-		/// <param name="format">The output format of the projection.</param>
-		public void SetPart(string action, string type, PartFormat format, PartInfo projection)
+		/// <param name="action">The action that the part performs.</param>
+		/// <param name="type">The type of entity involved in the part</param>
+		/// <param name="part">The part that corresponds with the specified action and type.</param>
+		public void SetPart(string action, string type, PartInfo part)
 		{
-			this[GetPartKey(action, type, format)] = projection;
+			base[GetPartKey(action, type)] = part;
+		}
+		
+		/// <summary>
+		/// Sets the part with the provided action and type.
+		/// </summary>
+		/// <param name="action">The action that the part performs.</param>
+		/// <param name="part">The part that corresponds with the specified action and type.</param>
+		public void SetPart(string action, PartInfo part)
+		{
+			base[GetPartKey(action)] = part;
 		}
 
 		/// <summary>
@@ -134,11 +151,34 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		/// </summary>
 		/// <param name="action"></param>
 		/// <param name="type"></param>
-		/// <param name="format"></param>
 		/// <returns></returns>
-		public string GetPartKey(string action, string type, PartFormat format)
+		public string GetPartKey(string action, string type)
 		{
-			string fullKey = action + "_" + type + "_" + format.ToString();
+			if (type == String.Empty)
+			{
+				return GetPartKey(action);
+			}
+			else
+			{
+				string fullKey = String.Empty;
+				
+				if (action != String.Empty)
+					fullKey += action + "-";
+				
+				fullKey += type;
+				
+				return fullKey;	
+			}
+		}
+		
+		/// <summary>
+		/// Retrieves the key for the specifid action.
+		/// </summary>
+		/// <param name="action"></param>
+		/// <returns></returns>
+		public string GetPartKey(string action)
+		{
+			string fullKey = action;
 			
 			return fullKey;
 		}

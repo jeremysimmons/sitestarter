@@ -4,31 +4,31 @@ using SoftwareMonkeys.SiteStarter.Diagnostics;
 namespace SoftwareMonkeys.SiteStarter.Web.Parts
 {
 	/// <summary>
-	/// Used to locate a projection for a particular scenario.
+	/// Used to locate a part for a particular scenario.
 	/// </summary>
 	public class PartLocator
 	{
-		private PartStateCollection projections;
+		private PartStateCollection parts;
 		/// <summary>
-		/// Gets/sets the projections that are available to the projection locator.
+		/// Gets/sets the parts that are available to the part locator.
 		/// Note: Defaults to PartState.Parts.
 		/// </summary>
 		public PartStateCollection Parts
 		{
 			get {
-				if (projections == null)
-					projections = PartState.Parts;
-				return projections; }
-			set { projections = value; }
+				if (parts == null)
+					parts = PartState.Parts;
+				return parts; }
+			set { parts = value; }
 		}
 		
 		/// <summary>
-		/// Sets the provided projections to the Parts property.
+		/// Sets the provided parts to the Parts property.
 		/// </summary>
-		/// <param name="projections"></param>
-		public PartLocator(PartStateCollection projections)
+		/// <param name="parts"></param>
+		public PartLocator(PartStateCollection parts)
 		{
-			Parts = projections;
+			Parts = parts;
 		}
 		
 		/// <summary>
@@ -38,13 +38,22 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		{}
 		
 		/// <summary>
-		/// Locates the projection info for performing the specified action with the specified type.
+		/// Locates the part info for performing the specified action.
 		/// </summary>
-		/// <param name="action">The action that is to be performed by the projection.</param>
+		/// <param name="action">The action that is to be performed by the part.</param>
+		/// <returns>The part info for the specified scenario.</returns>
+		public PartInfo Locate(string action)
+		{
+			return Locate(action, String.Empty);
+		}
+		
+		/// <summary>
+		/// Locates the part info for performing the specified action with the specified type.
+		/// </summary>
+		/// <param name="action">The action that is to be performed by the part.</param>
 		/// <param name="typeName">The short type name of the entity that is involved in the action.</param>
-		/// <param name="format">The output format of the projection to locate.</param>
-		/// <returns>The projection info for the specified scenario.</returns>
-		public PartInfo Locate(string action, string typeName, PartFormat format)
+		/// <returns>The part info for the specified scenario.</returns>
+		public PartInfo Locate(string action, string typeName)
 		{
 			// Get the specified type
 			Type type = null;
@@ -52,54 +61,52 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 			if (Entities.EntityState.Entities.EntityExists(typeName))
 				type = Entities.EntityState.Entities[typeName].GetEntityType();
 			
-			// Create a direct projection key for the specified type
-			string key = Parts.GetPartKey(action, typeName, format);
+			// Create a direct part key for the specified type
+			string key = Parts.GetPartKey(action, typeName);
 			
-			// Create the projection info variable to hold the return value
-			PartInfo projectionInfo = null;
+			// Create the part info variable to hold the return value
+			PartInfo partInfo = null;
 			
-			// Check the direct key to see if a projection exists
+			// Check the direct key to see if a part exists
 			if (Parts.PartExists(key))
 			{
-				projectionInfo = Parts[key];
+				partInfo = Parts[key];
 			}
-			// If not then navigate up the heirarchy looking for a matching projection
+			// If not then navigate up the heirarchy looking for a matching part
 			else if (type != null)
 			{
-				projectionInfo = LocateFromHeirarchy(action, type, format);
+				partInfo = LocateFromHeirarchy(action, type);
 			}
 			
-			return projectionInfo;
+			return partInfo;
 		}
 		
 		/// <summary>
-		/// Locates the projection info for performing the specified action with the specified type by looking at the base types and interfaces of the provided type.
+		/// Locates the part info for performing the specified action with the specified type by looking at the base types and interfaces of the provided type.
 		/// </summary>
-		/// <param name="action">The action that is to be performed by the projection.</param>
+		/// <param name="action">The action that is to be performed by the part.</param>
 		/// <param name="type">The type that is involved in the action.</param>
-		/// <param name="format">The output format of the projection to location.</param>
-		/// <returns>The projection info for the specified scenario.</returns>
-		public PartInfo LocateFromHeirarchy(string action, Type type, PartFormat format)
+		/// <returns>The part info for the specified scenario.</returns>
+		public PartInfo LocateFromHeirarchy(string action, Type type)
 		{
-			PartInfo projectionInfo = LocateFromInterfaces(action, type, format);
+			PartInfo partInfo = LocateFromInterfaces(action, type);
 			
-			if (projectionInfo == null)
-				projectionInfo = LocateFromBaseTypes(action, type, format);
+			if (partInfo == null)
+				partInfo = LocateFromBaseTypes(action, type);
 			
-			return projectionInfo;
+			return partInfo;
 		}
 		
 		
 		/// <summary>
-		/// Locates the projection info for performing the specified action with the specified type by looking at the interfaces of the provided type.
+		/// Locates the part info for performing the specified action with the specified type by looking at the interfaces of the provided type.
 		/// </summary>
-		/// <param name="action">The action that is to be performed by the projection.</param>
+		/// <param name="action">The action that is to be performed by the part.</param>
 		/// <param name="type">The type that is involved in the action.</param>
-		/// <param name="format">The output format of the projection to location.</param>
-		/// <returns>The projection info for the specified scenario.</returns>
-		public PartInfo LocateFromInterfaces(string action, Type type, PartFormat format)
+		/// <returns>The part info for the specified scenario.</returns>
+		public PartInfo LocateFromInterfaces(string action, Type type)
 		{
-			PartInfo projectionInfo = null;
+			PartInfo partInfo = null;
 			
 			Type[] interfaceTypes = type.GetInterfaces();
 			
@@ -108,54 +115,48 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 			{
 				Type interfaceType = interfaceTypes[i];
 				
-				string key = Parts.GetPartKey(action, interfaceType.Name, format);
+				string key = Parts.GetPartKey(action, interfaceType.Name);
 				
 				if (Parts.PartExists(key))
 				{
-					projectionInfo = Parts[key];
+					partInfo = Parts[key];
 					
 					break;
 				}
 			}
 			
-			return projectionInfo;
+			return partInfo;
 		}
 
 		/// <summary>
-		/// Locates the projection info for performing the specified action with the specified type by looking at the base types of the provided type.
+		/// Locates the part info for performing the specified action with the specified type by looking at the base types of the provided type.
 		/// </summary>
-		/// <param name="action">The action that is to be performed by the projection.</param>
+		/// <param name="action">The action that is to be performed by the part.</param>
 		/// <param name="type">The type that is involved in the action.</param>
-		/// <param name="format">The output format of the projection to locate.</param>
-		/// <returns>The projection info for the specified scenario.</returns>
-		public PartInfo LocateFromBaseTypes(string action, Type type, PartFormat format)
+		/// <param name="format">The output format of the part to locate.</param>
+		/// <returns>The part info for the specified scenario.</returns>
+		public PartInfo LocateFromBaseTypes(string action, Type type)
 		{
-			PartInfo projectionInfo = null;
+			PartInfo partInfo = null;
 			
 			TypeNavigator navigator = new TypeNavigator(type);
 			
-			while (navigator.HasNext && projectionInfo == null)
+			while (navigator.HasNext && partInfo == null)
 			{
 				Type nextType = navigator.Next();
 				
-				string key = Parts.GetPartKey(action, nextType.Name, format);
+				string key = Parts.GetPartKey(action, nextType.Name);
 				
-				// If a projection exists for the base type then use it
+				// If a part exists for the base type then use it
 				if (Parts.PartExists(key))
 				{
-					projectionInfo = Parts[key];
+					partInfo = Parts[key];
 					
 					break;
 				}
-				// TODO: Check if needed. It shouldn't be. The other call to LocateFromInterfaces in LocateFromHeirarchy should be sufficient
-				// Otherwise check the interfaces of that base type
-				//else
-				//{
-				//	projectionInfo = LocateFromInterfaces(action, nextType);
-				//}
 			}
 			
-			return projectionInfo;
+			return partInfo;
 		}
 	}
 }

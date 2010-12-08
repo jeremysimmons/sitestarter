@@ -3,17 +3,18 @@ using System.Xml;
 using System.Xml.Serialization;
 using System.IO;
 using System.Web.UI;
+using System.Web.UI.WebControls.WebParts;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Parts
 {
 	/// <summary>
-	/// Holds information related to a web projection.
+	/// Holds information related to a web part.
 	/// </summary>
 	public class PartInfo
 	{
 		private string key;
 		/// <summary>
-		/// Gets/sets the key that is used as an identifier for this projection.
+		/// Gets/sets the key that is used as an identifier for this part.
 		/// </summary>
 		public string Key
 		{
@@ -23,7 +24,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		
 		private string action;
 		/// <summary>
-		/// Gets/sets the action that the projection is responsible for carrying out in relation to an entity of the specified type.
+		/// Gets/sets the action that the part is responsible for carrying out in relation to an entity of the specified type.
 		/// </summary>
 		public string Action
 		{
@@ -33,7 +34,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		
 		private string typeName;
 		/// <summary>
-		/// Gets/sets the name of the type that is involved in the projection.
+		/// Gets/sets the name of the type that is involved in the part.
 		/// </summary>
 		public string TypeName
 		{
@@ -41,19 +42,19 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 			set { typeName = value; }
 		}
 		
-		private string projectionFilePath;
+		private string partFilePath;
 		/// <summary>
-		/// Gets/sets the full file path to the projection that corresponds with the Actions and TypeName.
+		/// Gets/sets the full file path to the part that corresponds with the Actions and TypeName.
 		/// </summary>
 		public string PartFilePath
 		{
-			get { return projectionFilePath; }
-			set { projectionFilePath = value; }
+			get { return partFilePath; }
+			set { partFilePath = value; }
 		}
 		
 		private PartFormat format = PartFormat.Html;
 		/// <summary>
-		/// Gets/sets the format of the projection output.
+		/// Gets/sets the format of the part output.
 		/// </summary>
 		public PartFormat Format
 		{
@@ -63,7 +64,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		
 		private PartLoader loader;
 		/// <summary>
-		/// Gets the projection loader.
+		/// Gets the part loader.
 		/// </summary>
 		[XmlIgnore]
 		public PartLoader Loader
@@ -80,7 +81,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		
 		private string menuTitle;
 		/// <summary>
-		/// Gets/sets the title of the projection used on the menu.
+		/// Gets/sets the title of the part used on the menu.
 		/// </summary>
 		public string MenuTitle
 		{
@@ -90,7 +91,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		
 		private string menuCategory;
 		/// <summary>
-		/// Gets/sets the category that the projection is listed under, on the menu.
+		/// Gets/sets the category that the part is listed under, on the menu.
 		/// </summary>
 		public string MenuCategory
 		{
@@ -100,7 +101,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		
 		private bool showOnMenu;
 		/// <summary>
-		/// Gets/sets a value indicating whether to show the projection on the menu.
+		/// Gets/sets a value indicating whether to show the part on the menu.
 		/// </summary>
 		public bool ShowOnMenu
 		{
@@ -113,13 +114,24 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		}
 		
 		/// <summary>
-		/// Loads the corresponding projection control so it can be displayed.
+		/// Loads the corresponding part control so it can be displayed.
 		/// </summary>
 		/// <param name="page">The page that the control is to be loaded onto.</param>
-		/// <returns>The projection control ready to be added to the page.</returns>
-		public Control Load(Page page)
+		/// <param name="manager">The web part manager used by the web parts.</param>
+		/// <returns>The part control ready to be added to the page.</returns>
+		public WebPart Load(Page page, WebPartManager manager)
 		{
-			return page.LoadControl(PartFilePath);
+			Control uc = page.LoadControl(PartFilePath);
+			
+			if (uc.ID == null || uc.ID == String.Empty)
+				uc.ID = uc.GetType().Name + "_Inner";
+			
+			WebPart part = manager.CreateWebPart(uc);
+			
+			part.Title = MenuTitle;
+			part.ID = uc.GetType().Name;
+						
+			return part;
 		}
 	}
 }

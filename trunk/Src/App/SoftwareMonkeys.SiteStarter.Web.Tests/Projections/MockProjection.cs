@@ -4,11 +4,11 @@ using SoftwareMonkeys.SiteStarter.Web.Projections;
 namespace SoftwareMonkeys.SiteStarter.Web.Tests.Projections
 {
 	/// <summary>
-	/// 
+	/// Description of MockProjection.
 	/// </summary>
-	public class MockProjectionScanner : ProjectionScanner
+	public class MockProjection : BaseProjection
 	{
-		public MockProjectionScanner() : base(null)
+		public MockProjection()
 		{
 		}
 	}

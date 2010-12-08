@@ -3,7 +3,7 @@
 namespace SoftwareMonkeys.SiteStarter.Web.Parts
 {
 	/// <summary>
-	/// Defines the various projection formats that are supported.
+	/// Defines the various part formats that are supported.
 	/// </summary>
 	public enum PartFormat
 	{

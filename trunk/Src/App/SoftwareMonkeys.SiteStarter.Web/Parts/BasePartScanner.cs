@@ -4,7 +4,7 @@ using System.Web.UI;
 namespace SoftwareMonkeys.SiteStarter.Web.Parts
 {
 	/// <summary>
-	/// The base of all projection scanners. Derivatives can be created to scan different locations or different approaches.
+	/// The base of all part scanners. Derivatives can be created to scan different locations or different approaches.
 	/// </summary>
 	public abstract class BasePartScanner
 	{
@@ -25,9 +25,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		}		
 		
 		/// <summary>
-		/// Finds all the projections in the available assemblies.
+		/// Finds all the parts in the available assemblies.
 		/// </summary>
-		/// <returns>An array of info about the projections found.</returns>
+		/// <returns>An array of info about the parts found.</returns>
 		public abstract PartInfo[] FindParts();
 	}
 }

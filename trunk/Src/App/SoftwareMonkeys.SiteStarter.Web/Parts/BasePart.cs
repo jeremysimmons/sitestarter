@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Web.UI;
+using System.Web.UI.WebControls.WebParts;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Parts
 {
 	/// <summary>
-	/// Defines the base of all web projections that can be used in the application.
+	/// Defines the base of all web parts that can be used in the application.
 	/// </summary>
 	public class BasePart : UserControl, IPart
 	{
@@ -66,7 +67,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		
 		private bool showOnMenu = false;
 		/// <summary>
-		/// Gets/sets a value indicating whether the projection is to be displayed in the menu.
+		/// Gets/sets a value indicating whether the part is to be displayed in the menu.
 		/// </summary>
 		public bool ShowOnMenu
 		{
@@ -79,7 +80,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		
 		private Navigation.Navigator navigator;
 		/// <summary>
-		/// Gets/sets the component responsible for navigating between pages/projections.
+		/// Gets/sets the component responsible for navigating between pages/parts.
 		/// </summary>
 		public Navigation.Navigator Navigator
 		{

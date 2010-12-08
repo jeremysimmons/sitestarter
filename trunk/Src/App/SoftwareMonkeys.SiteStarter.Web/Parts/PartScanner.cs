@@ -9,34 +9,34 @@ using System.Web;
 namespace SoftwareMonkeys.SiteStarter.Web.Parts
 {
 	/// <summary>
-	/// Used for scanning assemblies to look for usable business projections.
+	/// Used for scanning assemblies to look for usable business parts.
 	/// </summary>
 	public class PartScanner : BasePartScanner
 	{
 		// TODO: Tidy up
 		
-		/*private string projectionsDirectoryName;
+		/*private string partsDirectoryName;
 		/// <summary>
-		/// Gets/sets the name of the directory containing the projections.
+		/// Gets/sets the name of the directory containing the parts.
 		/// </summary>
 		public string PartsDirectoryName
 		{
-			get { return projectionsDirectoryName; }
-			set { projectionsDirectoryName = value; }
+			get { return partsDirectoryName; }
+			set { partsDirectoryName = value; }
 		}
 		
 		/// <summary>
-		/// Gets/sets the full path of the directory containing the projections.
+		/// Gets/sets the full path of the directory containing the parts.
 		/// </summary>
 		public string PartsDirectoryPath
 		{
-			get { return projectionsDirectoryName; }
-			set { projectionsDirectoryName = value; }
+			get { return partsDirectoryName; }
+			set { partsDirectoryName = value; }
 		}*/
 		
 		private PartFileNamer fileNamer;
 		/// <summary>
-		/// Gets/sets the file namer used for generating projection file names and paths.
+		/// Gets/sets the file namer used for generating part file names and paths.
 		/// </summary>
 		public PartFileNamer FileNamer
 		{
@@ -70,15 +70,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		}
 		
 		/// <summary>
-		/// Finds all the projections in the available assemblies.
+		/// Finds all the parts in the available assemblies.
 		/// </summary>
 		/// <param name="page"></param>
-		/// <returns>An array of info about the projections found.</returns>
+		/// <returns>An array of info about the parts found.</returns>
 		public override PartInfo[] FindParts()
 		{
-			List<PartInfo> projections = new List<PartInfo>();
+			List<PartInfo> parts = new List<PartInfo>();
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Finding projections by scanning the attributes of the available type.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = AppLogger.StartGroup("Finding parts by scanning the attributes of the available type.", NLog.LogLevel.Debug))
 			{
 				foreach (string file in Directory.GetFiles(FileNamer.PartsDirectoryPath))
 				{
@@ -86,19 +86,19 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 					{
 						foreach (PartInfo info in ExtractPartInfo(file))
 						{
-							projections.Add(info);
+							parts.Add(info);
 						}
 					}
 				}
 			}
 			
-			return projections.ToArray();
+			return parts.ToArray();
 		}
 		
 		/// <summary>
-		/// Extracts the projection infos from the provided file path.
+		/// Extracts the part infos from the provided file path.
 		/// </summary>
-		/// <param name="filePath">The full path to the projection (.ascx) file.</param>
+		/// <param name="filePath">The full path to the part (.ascx) file.</param>
 		/// <returns></returns>
 		public PartInfo[] ExtractPartInfo(string filePath)
 		{
@@ -109,7 +109,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 			
 			string typeName = ExtractType(shortName);
 			
-			List<PartInfo> projections = new List<PartInfo>();
+			List<PartInfo> parts = new List<PartInfo>();
 			
 			string relativeFilePath = filePath.Replace(Configuration.Config.Application.PhysicalApplicationPath, "")
 				.Replace(@"\", "/")
@@ -122,12 +122,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 				info.Action = action;
 				info.TypeName = typeName;
 				info.PartFilePath = relativeFilePath;
-				info.Format = GetFormatFromFileName(filePath);
 				
 				BasePart p = (BasePart)ControlLoader.LoadControl(filePath);
 				
 				if (p == null)
-					throw new ArgumentException("Cannot find projection file at path: " + filePath);
+					throw new ArgumentException("Cannot find part file at path: " + filePath);
 				
 				// Ensure that the menu properties have been set
 				p.InitializeMenu();
@@ -137,55 +136,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 				info.ShowOnMenu = p.ShowOnMenu;
 				//info.Format = ConvertSubExtensionToFormat(subExtension);
 				
-				projections.Add(info);
+				parts.Add(info);
 			}
 			
-			return projections.ToArray();
-		}
-		
-		/// <summary>
-		/// Retrieves the format of the projection with the provided file name.
-		/// </summary>
-		/// <param name="fileName"></param>
-		/// <returns></returns>
-		public PartFormat GetFormatFromFileName(string fileName)
-		{
-			string shortFileName = Path.GetFileName(fileName);
-			string extension = shortFileName.Substring
-				(
-					shortFileName.IndexOf('.'),
-					shortFileName.Length - shortFileName.IndexOf('.')
-				);
-			
-			extension = extension.Trim('.');
-			
-			string subExtension = extension;
-			
-			if (extension.IndexOf(".") > -1)
-			{
-				subExtension = extension.Substring(0, extension.IndexOf("."));
-			}
-			
-			return ConvertSubExtensionToFormat(subExtension);
-		}
-		
-		/// <summary>
-		/// Converts a sub extension such as 'xml' from '*.xml.ascx' into a projection format such as PartFormat.Xml.
-		/// </summary>
-		/// <param name="subExtension"></param>
-		/// <returns></returns>
-		private PartFormat ConvertSubExtensionToFormat(string subExtension)
-		{
-			switch (subExtension.Trim('.').ToLower())
-			{
-				case "xml":
-					return PartFormat.Xml;
-				case "xslt":
-					return PartFormat.Xslt;
-				case "html":
-				default:
-					return PartFormat.Html;
-			}
+			return parts.ToArray();
 		}
 		
 		/// <summary>
@@ -200,14 +154,19 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 			
 			string[] parts = shortFileName.Split('-');
 			
-			if (parts.Length <= 1)
-				throw new ArgumentException("The provided short file name is invalid: " + shortFileName);
-			
 			List<string> actions = new List<string>();
 			
-			for (int i = 1; i < parts.Length; i++)
+			// If no dash (-) is found then the full file name (without extension) is the action
+			if (parts.Length == 1)
 			{
-				actions.Add(parts[i]);
+				actions.Add(parts[0]);
+			}
+			else
+			{
+				for (int i = 1; i < parts.Length; i++)
+				{
+					actions.Add(parts[i]);
+				}
 			}
 			
 			return actions.ToArray();
@@ -225,14 +184,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 			
 			string[] parts = shortFileName.Split('-');
 			
+			// If no dash (-) is found in the file name then the type is String.Empty
 			if (parts.Length <= 1)
-				throw new ArgumentException("The provided short file name is invalid: " + shortFileName);
-			
-			return parts[0];
+				return String.Empty;
+			else
+				return parts[0];
 		}
 		
 		/// <summary>
-		/// Checks whether the file at the specified location is a projection file.
+		/// Checks whether the file at the specified location is a part file.
 		/// </summary>
 		/// <param name="fileName">The full name and path of the file to check.</param>
 		/// <returns></returns>
@@ -241,20 +201,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 			string ext = Path.GetExtension(fileName);
 			string shortFileName = Path.GetFileNameWithoutExtension(fileName);
 			
-			// - in file name
-			if (shortFileName.IndexOf('-') == -1)
-				return false;
-			
 			// File extension
 			if (ext.ToLower() == ".ascx")
-				return true;
-			
-			// File extension
-			if (ext.ToLower() == ".xslt")
-				return true;
-			
-			// File extension
-			if (ext.ToLower() == ".html")
 				return true;
 			
 			

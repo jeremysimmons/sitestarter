@@ -144,9 +144,15 @@
     <Compile Include="Controllers\IndexControllerTests.cs" />
     <Compile Include="Controllers\MockController.cs" />
     <Compile Include="Controllers\ViewControllerTests.cs" />
-    <Compile Include="MockControlLoader.cs" />
     <Compile Include="MockUrlCreator.cs" />
     <Compile Include="MockUserControl.cs" />
+    <Compile Include="Parts\MockPart.cs" />
+    <Compile Include="Parts\MockPartLoader.cs" />
+    <Compile Include="Parts\MockPartScanner.cs" />
+    <Compile Include="Parts\PartLocatorTests.cs" />
+    <Compile Include="Parts\PartScannerTests.cs" />
+    <Compile Include="Projections\MockProjection.cs" />
+    <Compile Include="Projections\MockProjectionLoader.cs" />
     <Compile Include="Projections\MockProjectionScanner.cs" />
     <Compile Include="Projections\ProjectionLocatorTests.cs" />
     <Compile Include="Projections\ProjectionScannerTests.cs" />
@@ -156,6 +162,7 @@
     <Compile Include="WebControls\EntityFormHelperTests.cs" />
     <Compile Include="WebUtilitiesTests.cs" />
     <Folder Include="Controllers" />
+    <Folder Include="Parts" />
     <Folder Include="Projections" />
   </ItemGroup>
   <ItemGroup>

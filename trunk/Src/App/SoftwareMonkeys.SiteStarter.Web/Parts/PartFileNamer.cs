@@ -6,42 +6,42 @@ using SoftwareMonkeys.SiteStarter.IO;
 namespace SoftwareMonkeys.SiteStarter.Web.Parts
 {
 	/// <summary>
-	/// Used to create file names/paths for projection components.
+	/// Used to create file names/paths for part components.
 	/// </summary>
 	public class PartFileNamer
 	{
-		private string projectionsDirectoryPath;
+		private string partsDirectoryPath;
 		/// <summary>
-		/// Gets the path to the directory containing the projection files.
+		/// Gets the path to the directory containing the part files.
 		/// </summary>
 		public virtual string PartsDirectoryPath
 		{
 			get {
-				if (projectionsDirectoryPath == null || projectionsDirectoryPath == String.Empty)
+				if (partsDirectoryPath == null || partsDirectoryPath == String.Empty)
 				{
 					if (DataAccess.IsInitialized)
-						projectionsDirectoryPath = Configuration.Config.Application.PhysicalApplicationPath + Path.DirectorySeparatorChar + "Parts";
+						partsDirectoryPath = Configuration.Config.Application.PhysicalApplicationPath + Path.DirectorySeparatorChar + "Parts";
 				}
-				return projectionsDirectoryPath;
+				return partsDirectoryPath;
 			}
-			set { projectionsDirectoryPath = value; }
+			set { partsDirectoryPath = value; }
 		}
 		
-		private string projectionsInfoDirectoryPath;
+		private string partsInfoDirectoryPath;
 		/// <summary>
-		/// Gets the path to the directory containing serialized projection information.
+		/// Gets the path to the directory containing serialized part information.
 		/// </summary>
 		public virtual string PartsInfoDirectoryPath
 		{
 			get {
-				if (projectionsInfoDirectoryPath == null || projectionsInfoDirectoryPath == String.Empty)
+				if (partsInfoDirectoryPath == null || partsInfoDirectoryPath == String.Empty)
 				{
 					if (DataAccess.IsInitialized)
-						projectionsInfoDirectoryPath = DataAccess.Data.DataDirectoryPath + Path.DirectorySeparatorChar + "Parts";
+						partsInfoDirectoryPath = DataAccess.Data.DataDirectoryPath + Path.DirectorySeparatorChar + "Parts";
 				}
-				return projectionsInfoDirectoryPath;
+				return partsInfoDirectoryPath;
 			}
-			set { projectionsInfoDirectoryPath = value; }
+			set { partsInfoDirectoryPath = value; }
 		}
 		
 		private IFileMapper fileMapper;
@@ -62,87 +62,92 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		}
 		
 		/// <summary>
-		/// Creates the file name for the serialized info for the provided projection.
+		/// Creates the file name for the serialized info for the provided part.
 		/// </summary>
-		/// <param name="projection">The projection to create the file name for.</param>
-		/// <returns>The full file name for the serialized info for the provided projection.</returns>
-		public virtual string CreateInfoFileName(PartInfo projection)
+		/// <param name="part">The part to create the file name for.</param>
+		/// <returns>The full file name for the serialized info for the provided part.</returns>
+		public virtual string CreateInfoFileName(PartInfo part)
 		{			
-			if (projection == null)
-				throw new ArgumentNullException("projection");
+			if (part == null)
+				throw new ArgumentNullException("part");
 			
-			if (projection.Action == null)
-				throw new ArgumentNullException("projection.Action", "No action has been set to the Action property.");
+			if (part.Action == null)
+				throw new ArgumentNullException("part.Action", "No action has been set to the Action property.");
 			
-			string name = projection.TypeName + "-" + projection.Action + "." + projection.Format.ToString().ToLower() + ".projection";
+			string name = String.Empty;
+			
+			if (part.TypeName != String.Empty)
+				name += part.TypeName + "-";
+			
+			name += part.Action + ".part";
 			
 			return name;
 		}
 		
 		/*/// <summary>
-		/// Creates the file name for the provided projection.
+		/// Creates the file name for the provided part.
 		/// </summary>
-		/// <param name="projection">The projection to create the file name for.</param>
-		/// <returns>The full file name for the provided projection.</returns>
-		public virtual string CreatePartFileName(PartInfo projection)
+		/// <param name="part">The part to create the file name for.</param>
+		/// <returns>The full file name for the provided part.</returns>
+		public virtual string CreatePartFileName(PartInfo part)
 		{			
-			if (projection == null)
-				throw new ArgumentNullException("projection");
+			if (part == null)
+				throw new ArgumentNullException("part");
 			
-			if (projection.Action == null)
-				throw new ArgumentNullException("projection.Action", "No action has been set to the Action property.");
+			if (part.Action == null)
+				throw new ArgumentNullException("part.Action", "No action has been set to the Action property.");
 			
-			string name = projection.TypeName + "-" + projection.Action + ".ascx";
+			string name = part.TypeName + "-" + part.Action + ".ascx";
 			
 			return name;
 		}*/
 		
 		// TODO: Remove if not needed
 		/*/// <summary>
-		/// Creates the file name for the provided projection.
+		/// Creates the file name for the provided part.
 		/// </summary>
-		/// <param name="projection">The projection to create the file name for.</param>
+		/// <param name="part">The part to create the file name for.</param>
 		/// <returns>The full file name for the provided entity.</returns>
-		public string CreateFileName(IPart projection)
+		public string CreateFileName(IPart part)
 		{
-			return CreateFileName(new PartInfo(projection));
+			return CreateFileName(new PartInfo(part));
 		}*/
 		
 		
 		/// <summary>
-		/// Creates the full file path for the serialized info for the provided projection.
+		/// Creates the full file path for the serialized info for the provided part.
 		/// </summary>
-		/// <param name="projection">The projection to create the file path for.</param>
-		/// <returns>The full file path for the serialized info for the provided projection.</returns>
-		public string CreateInfoFilePath(PartInfo projection)
+		/// <param name="part">The part to create the file path for.</param>
+		/// <returns>The full file path for the serialized info for the provided part.</returns>
+		public string CreateInfoFilePath(PartInfo part)
 		{
-			return PartsInfoDirectoryPath + Path.DirectorySeparatorChar + CreateInfoFileName(projection);
+			return PartsInfoDirectoryPath + Path.DirectorySeparatorChar + CreateInfoFileName(part);
 		}
 		
 		
 		/// <summary>
-		/// Creates the full file path for the provided projection.
+		/// Creates the full file path for the provided part.
 		/// </summary>
-		/// <param name="projection">The projection to create the file path for.</param>
-		/// <returns>The full file path for the provided projection.</returns>
-		public string CreatePartFilePath(PartInfo projection)
+		/// <param name="part">The part to create the file path for.</param>
+		/// <returns>The full file path for the provided part.</returns>
+		public string CreatePartFilePath(PartInfo part)
 		{
-			if (projection.PartFilePath == null || projection.PartFilePath == String.Empty)
-				throw new ArgumentException("The projection.PartFilePath property hasn't been set.");
+			if (part.PartFilePath == null || part.PartFilePath == String.Empty)
+				throw new ArgumentException("The part.PartFilePath property hasn't been set.");
 			
-			return FileMapper.MapApplicationRelativePath(projection.PartFilePath);
+			return FileMapper.MapApplicationRelativePath(part.PartFilePath);
 		}
 		
 		// TODO: Remove if not needed
 		/*
 		/// <summary>
-		/// Creates the full file path for the provided projection.
+		/// Creates the full file path for the provided part.
 		/// </summary>
-		/// <param name="projection">The projection to create the file path for.</param>
-		/// <returns>The full file path for the provided projection.</returns>
-		public string CreateFilePath(IPart projection)
+		/// <param name="part">The part to create the file path for.</param>
+		/// <returns>The full file path for the provided part.</returns>
+		public string CreateFilePath(IPart part)
 		{
-			return CreateFilePath(new PartInfo(projection));
+			return CreateFilePath(new PartInfo(part));
 		}*/
 		
 	}
