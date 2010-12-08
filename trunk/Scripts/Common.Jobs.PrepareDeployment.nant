@@ -96,6 +96,10 @@
 	        <exclude name="**/App_Data/Imported/**"/>
 	        <exclude name="**/App_Data/LegacyConverted/**"/>
 	        <exclude name="**/App_Data/Suspended/**"/>
+	        <exclude name="**/App_Data/Entities/**"/>
+	        <exclude name="**/App_Data/Projections/**"/>
+	        <exclude name="**/App_Data/Controllers/**"/>
+	        <exclude name="**/App_Data/Strategies/**"/>
 	        <exclude name="*.Import.nant"/>
 	        <exclude name="**/Releases/**"/>
 	        <exclude name="**/Backups/**"/>
