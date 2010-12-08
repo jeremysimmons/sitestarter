@@ -44,8 +44,13 @@
 	       		 	</items>
 	   		 	</in>
 	    		<do>
-				  	<copy todir="${Solution.RootPath}\WWW\Modules\${path::get-file-name(currentModule)}" overwrite="true">
-	    				<fileset basedir="${currentModule}/Web">
+				  	<copy todir="${Solution.RootPath}\WWW\Modules\${path::get-file-name(currentModule)}\Projections" overwrite="true">
+	    				<fileset basedir="${currentModule}/Web/Projections">
+	        				<include name="**/*.ascx" />
+	    				</fileset>
+					</copy>
+				  	<copy todir="${Solution.RootPath}\WWW\Modules\${path::get-file-name(currentModule)}\Parts" overwrite="true">
+	    				<fileset basedir="${currentModule}/Web/Parts">
 	        				<include name="**/*.ascx" />
 	    				</fileset>
 					</copy>
