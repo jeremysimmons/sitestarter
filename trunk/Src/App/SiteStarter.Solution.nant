@@ -5,7 +5,7 @@
 		  <property name="Solution.Name" value="SiteStarter" />
 		  <property name="Solution.BaseNamespace" value="SoftwareMonkeys.SiteStarter" />
 		<property name="Solution.VirtualDirectoryName" value="SiteStarter" />
-		  <property name="Solution.Version" value="2-6-2 alpha" />
+		  <property name="Solution.Version" value="2-6-3 alpha" />
 		<property name="Solution.SourceReleaseName" value="SiteStarter Source ${Solution.Version} [${Solution.ReleaseTimestamp}]"/>
 		<property name="Solution.InstallReleaseName" value="SiteStarter Install ${Solution.Version} [${Solution.ReleaseTimestamp}]"/>
 		<property name="Solution.BuildOrder" value="Contracts,State,Diagnostics,Configuration,Entities,Tests,State.Tests,Diagnostics.Tests,Configuration.Tests,Entities.Tests,Data,Data.Db4o,Data.Tests,Data.Db4o.Tests,Business,Business.Tests,Web,Web.Tests"/>
