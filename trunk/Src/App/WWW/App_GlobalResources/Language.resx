@@ -785,4 +785,10 @@ ${WebSite.Title}&lt;br /&gt;
   <data name="UserRegistered" xml:space="preserve">
     <value>The new user account has been registered successfully.</value>
   </data>
+  <data name="SignInIntro" xml:space="preserve">
+    <value>Please enter your username and password so that you can be authenticated.</value>
+  </data>
+  <data name="SignInDetails" xml:space="preserve">
+    <value>Sign In Details</value>
+  </data>
 </root>
