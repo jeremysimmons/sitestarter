@@ -4,6 +4,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Web.UI.WebControls;
+using SoftwareMonkeys.SiteStarter.Web.Projections;
 
 namespace SoftwareMonkeys.SiteStarter.Web
 {
@@ -88,6 +89,14 @@ namespace SoftwareMonkeys.SiteStarter.Web
         	Title = title;
         	Action = action;
         	TypeName = typeName;
+        }
+        
+        public SiteMapNode(ProjectionInfo projection)
+        {
+        	Category = projection.MenuCategory;
+        	Title = projection.MenuTitle;
+        	Action = projection.Action;
+        	TypeName = projection.TypeName;
         }
         
         #region IXmlSerializable Members
