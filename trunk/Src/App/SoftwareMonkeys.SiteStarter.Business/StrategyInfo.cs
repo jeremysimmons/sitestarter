@@ -109,7 +109,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			Action = attribute.Action;
 			TypeName = attribute.TypeName;
-			StrategyType = type.FullName + ", " + type.Assembly.FullName;
+			StrategyType = type.FullName + ", " + type.Assembly.GetName().Name;
 			
 		}
 		
