@@ -7,13 +7,6 @@ namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
 	/// </summary>
 	public class MockConfigSaver : ConfigSaver
 	{
-		/// <summary>
-		/// Provides a blank implementation for use during testing.
-		/// </summary>
-		/// <param name="config"></param>
-		public override void Save(IConfig config)
-		{
-			
-		}
+	
 	}
 }
