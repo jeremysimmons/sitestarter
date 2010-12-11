@@ -100,9 +100,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			get {
 				if (indexer== null)
 				{
-					if (Type == null)
+					if (Container.Type == null)
 						throw new InvalidOperationException("Type property hasn't been initialized.");
-					indexer = IndexStrategy.New(Type.Name, RequireAuthorisation);
+					indexer = IndexStrategy.New(Container.Type.Name, Container.RequireAuthorisation);
 				}
 				return indexer; }
 			set { indexer = value; }
@@ -184,7 +184,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <returns></returns>
 		public IEntity[] PrepareIndex()
 		{
-			if (EnsureAuthorised())
+			if (Container.EnsureAuthorised())
 			{
 				DataSource = Indexer.Index();
 					
@@ -215,7 +215,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <returns></returns>
 		public IEntity[] PrepareIndex(Dictionary<string, object> filterValues)
 		{
-			if (EnsureAuthorised())
+			if (Container.EnsureAuthorised())
 			{
 				DataSource = Indexer.Index(filterValues);
 			}
@@ -251,7 +251,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		public void CheckInitialized()
 		{
 			
-			if (this.Type == null)
+			if (Container.Type == null)
 				throw new InvalidOperationException("Type not specified.");
 		}
 		#endregion
@@ -264,20 +264,21 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <returns>A value indicating whether the user is authorised.</returns>
 		public bool Authorise(ref IEntity[] entities)
 		{
-			bool isAuthorised = StrategyState.Strategies["Authorise" + Action, Type.Name]
-				.New<IAuthoriseIndexStrategy>(Type.Name).Authorise(ref entities);
+			bool isAuthorised = StrategyState.Strategies["Authorise" + Container.InternalAction, Container.Type.Name]
+				.New<IAuthoriseIndexStrategy>(Container.Type.Name).Authorise(ref entities);
 		
-			return !RequireAuthorisation || isAuthorised;
+			return !Container.RequireAuthorisation || isAuthorised;
 		}
 		
 		
-		public static IndexController New(IControllable container, Type type, bool enablePaging)
+		public static IndexController New(IControllable container, bool enablePaging)
 		{
-			IndexController controller = ControllerState.Controllers.Creator.NewIndexer(type.Name);
+			container.EnsureTypeInitialized();
 			
-			controller.Type = type;
-			controller.EnablePaging = enablePaging;
+			IndexController controller = ControllerState.Controllers.Creator.NewIndexer(container.Type.Name);
+			
 			controller.Container = container;
+			controller.EnablePaging = enablePaging;
 			
 			return controller;
 		}

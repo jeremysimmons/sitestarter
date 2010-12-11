@@ -29,9 +29,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			get {
 				if (retriever == null)
 				{
-					if (Type == null)
+					if (Container.Type == null)
 						throw new InvalidOperationException("Type property hasn't been initialized.");
-					retriever = StrategyState.Strategies.Creator.NewRetriever(Type.Name);
+					retriever = StrategyState.Strategies.Creator.NewRetriever(Container.Type.Name);
 				}
 				return retriever; }
 			set { retriever = value; }
@@ -46,9 +46,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			get {
 				if (updater == null)
 				{
-					if (Type == null)
+					if (Container.Type == null)
 						throw new InvalidOperationException("Type property hasn't been initialized.");
-					updater = StrategyState.Strategies.Creator.NewUpdater(Type.Name);
+					updater = StrategyState.Strategies.Creator.NewUpdater(Container.Type.Name);
 				}
 				return updater; }
 			set { updater = value; }
@@ -63,9 +63,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			get {
 				if (activator == null)
 				{
-					if (Type == null)
+					if (Container.Type == null)
 						throw new InvalidOperationException("Type property hasn't been initialized.");
-					activator = StrategyState.Strategies.Creator.NewActivator(Type.Name);
+					activator = StrategyState.Strategies.Creator.NewActivator(Container.Type.Name);
 				}
 				return activator; }
 			set { activator = value; }
@@ -81,9 +81,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// </summary>
 		public void StartEdit()
 		{
-			if (EnsureAuthorised())
+			if (Container.EnsureAuthorised())
 			{
-				string typeName = Type.Name;
+				string typeName = Container.Type.Name;
 				
 				OperationManager.StartOperation("Edit" + typeName, null);
 			}
@@ -105,8 +105,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <returns>The entity specified in the query string.</returns>
 		public IEntity PrepareEdit()
 		{
-			Guid id = QueryStrings.GetID(Type.Name);
-			string uniqueKey = QueryStrings.GetUniqueKey(Type.Name);
+			Guid id = QueryStrings.GetID(Container.Type.Name);
+			string uniqueKey = QueryStrings.GetUniqueKey(Container.Type.Name);
 			
 			if (id != Guid.Empty)
 				return PrepareEdit(id);
@@ -198,30 +198,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			// Update the entity
 			if (Updater.Update(entity))
 			{
-				Result.Display(DynamicLanguage.GetEntityText("EntityUpdated", Type.Name));
+				Result.Display(DynamicLanguage.GetEntityText("EntityUpdated", Container.Type.Name));
 
 				return true;
 			}
 			else
 			{
-				Result.DisplayError(DynamicLanguage.GetEntityText("EntityExists", Type.Name));
+				Result.DisplayError(DynamicLanguage.GetEntityText("EntityExists", Container.Type.Name));
 				
 				return false;
 			}
-		}
-		
-		/// <summary>
-		/// Ensures that the user is authorised to edit an entity of the specified type.
-		/// </summary>
-		/// <returns>A value indicating whether the user is authorised.</returns>
-		public bool EnsureAuthorised()
-		{
-			bool isAuthorised = AuthoriseUpdateStrategy.New(Type.Name).Authorise(Type.Name);
-			
-			if (!isAuthorised)
-				FailAuthorisation();
-			
-			return isAuthorised;
 		}
 		
 		public static EditController New(IControllable container, Type type)
@@ -229,7 +215,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			EditController controller = ControllerState.Controllers.Creator.NewEditor(type.Name);
 			
 			controller.Container = container;
-			controller.Type = type;
 			
 			return controller;
 		}

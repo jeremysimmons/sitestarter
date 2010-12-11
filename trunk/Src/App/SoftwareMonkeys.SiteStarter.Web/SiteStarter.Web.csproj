@@ -123,9 +123,6 @@
     <Compile Include="Projections\BaseXmlIndexProjection.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Projections\ControllableProjection.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
     <Compile Include="Projections\IProjection.cs" />
     <Compile Include="Projections\ProjectionFileNamer.cs" />
     <Compile Include="Projections\ProjectionFormat.cs" />
@@ -175,7 +172,6 @@
     <Compile Include="WebControls\EntityFormLabelItem.cs" />
     <Compile Include="WebControls\EntityFormButtonsItem.cs" />
     <Compile Include="WebControls\EntityFormCheckBoxItem.cs">
-      <DependentUpon>EntityFormButtonsItem.cs</DependentUpon>
     </Compile>
     <Compile Include="WebControls\EntityFormHelper.cs" />
     <Compile Include="WebControls\EntityFormItem.cs" />

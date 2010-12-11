@@ -25,9 +25,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			get {
 				if (retriever == null)
 				{
-					if (Type == null)
+					if (Container.Type == null)
 						throw new InvalidOperationException("Type property hasn't been initialized.");
-					retriever = StrategyState.Strategies.Creator.NewRetriever(Type.Name);
+					retriever = StrategyState.Strategies.Creator.NewRetriever(Container.Type.Name);
 				}
 				return retriever; }
 			set { retriever = value; }
@@ -39,9 +39,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			get {
 				if (deleter == null)
 				{
-					if (Type == null)
+					if (Container.Type == null)
 						throw new InvalidOperationException("Type property hasn't been initialized.");
-					deleter = StrategyState.Strategies.Creator.NewDeleter(Type.Name);
+					deleter = StrategyState.Strategies.Creator.NewDeleter(Container.Type.Name);
 				}
 				return deleter; }
 			set { deleter = value; }
@@ -102,7 +102,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		public IEntity Load()
 		{
 			return (IEntity)Reflector.InvokeGenericMethod(this, "Load",
-			                              new Type[] {Type},
+			                              new Type[] {Container.Type},
 			                              new object[] {});
 		}
 		
@@ -141,7 +141,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			DeleteController controller = ControllerState.Controllers.Creator.NewDeleter(type.Name);
 			
 			controller.Container = container;
-			controller.Type = type;
 			
 			return controller;
 		}

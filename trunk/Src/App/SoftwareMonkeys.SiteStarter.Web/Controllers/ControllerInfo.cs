@@ -147,7 +147,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				AppLogger.Debug("Controller type: " + typeof(T).FullName);
 				
 				controller = (T)New();
-				controller.Type = EntitiesUtilities.GetType(entityTypeName);
 			}
 			
 			return controller;
