@@ -104,7 +104,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			if (aliasAttribute != null)
 				Alias = aliasAttribute.AliasTypeName;
 			
-			FullType = type.FullName + ", " + type.Assembly.FullName;
+			FullType = type.FullName + ", " + type.Assembly.GetName().Name;
 			//.FullName + ", " + type.Assembly.FullName;
 		}
 		
