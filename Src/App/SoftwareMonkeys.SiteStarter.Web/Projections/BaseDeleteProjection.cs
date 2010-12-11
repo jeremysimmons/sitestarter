@@ -11,7 +11,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 	/// <summary>
 	/// The based of all standard projections used to delete an entity.
 	/// </summary>
-	public class BaseDeleteProjection : ControllableProjection
+	public class BaseDeleteProjection : BaseProjection
 	{
 		
 		
@@ -27,8 +27,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		
 		public BaseDeleteProjection()
 		{
-			
-			DefaultAction = "Delete";
 		}
 		
 		protected override void OnLoad(EventArgs e)

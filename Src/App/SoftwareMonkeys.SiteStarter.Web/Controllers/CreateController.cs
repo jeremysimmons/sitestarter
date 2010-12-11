@@ -44,10 +44,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			get {
 				if (saver == null)
 				{
-					if (Type == null)
+					if (Container.Type == null)
 						throw new InvalidOperationException("Type property hasn't been initialized.");
-					saver = StrategyState.Strategies.Creator.NewSaver(Type.Name);
-					saver.RequireAuthorisation = RequireAuthorisation;
+					saver = StrategyState.Strategies.Creator.NewSaver(Container.Type.Name);
+					saver.RequireAuthorisation = Container.RequireAuthorisation;
 				}
 				return saver; }
 			set { saver = value; }
@@ -89,8 +89,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// </summary>
 		public void Start()
 		{
-			if (EnsureAuthorised())
-				OperationManager.StartOperation("Create" + Type.Name, null);
+			if (Container.EnsureAuthorised())
+				OperationManager.StartOperation("Create" + Container.Type.Name, null);
 		}
 		
 		/// <summary>
@@ -107,13 +107,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				if (Saver.Save(entity))
 				{					
 					// Display the result
-					Result.Display(DynamicLanguage.GetEntityText(EntitySavedLanguageKey, Type.Name));
+					Result.Display(DynamicLanguage.GetEntityText(EntitySavedLanguageKey, Container.Type.Name));
 
 					saved = true;
 				}
 				else
 				{					
-					Result.DisplayError(DynamicLanguage.GetEntityText(EntityExistsLanguageKey, Type.Name));
+					Result.DisplayError(DynamicLanguage.GetEntityText(EntityExistsLanguageKey, Container.Type.Name));
 					
 					saved = false;
 				}
@@ -131,13 +131,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <returns></returns>
 		public static CreateController New(IControllable container, Type type)
 		{
+			// TODO: Remove type parameter if not needed
+			
 			if (type.Name == "IEntity")
 				throw new ArgumentException("The provided type cannot be 'IEntity'.");
 			
 			CreateController controller = ControllerState.Controllers.Creator.New<CreateController>("Create", type.Name);
 			
 			controller.Container = container;
-			controller.Type = type;
 			
 			return controller;
 		}

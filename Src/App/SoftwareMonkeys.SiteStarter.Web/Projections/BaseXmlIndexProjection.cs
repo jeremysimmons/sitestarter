@@ -8,7 +8,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 	/// <summary>
 	/// Used as the base of all XML projections.
 	/// </summary>
-	public class BaseXmlIndexProjection : ControllableProjection
+	public class BaseXmlIndexProjection : BaseProjection
 	{
 		private string xsltFilePath = String.Empty;
 		/// <summary>

@@ -24,10 +24,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 			//int count = DataAccess.Data.Indexer.GetEntities<TestRecord>().Length;
 			//Assert.AreEqual(1, count, "Invalid number of TestRecord objects found.");
 			
-			BaseViewProjection page = new BaseViewProjection();
+			BaseViewProjection page = new BaseViewProjection("View", typeof(TestRecord), false);
 
 			
-			ViewController controller = ViewController.New(page, typeof(TestRecord));
+			ViewController controller = ViewController.New(page);
 			
 			
 			if (controller == null)

@@ -29,9 +29,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			get {
 				if (retriever == null)
 				{
-					if (Type == null)
+					if (Container.Type == null)
 						throw new InvalidOperationException("Type property hasn't been initialized.");
-					retriever = StrategyState.Strategies.Creator.NewRetriever(Type.Name);
+					retriever = StrategyState.Strategies.Creator.NewRetriever(Container.Type.Name);
 				}
 				return retriever; }
 			set { retriever = value; }
@@ -47,9 +47,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			get {
 				if (activator == null)
 				{
-					if (Type == null)
+					if (Container.Type == null)
 						throw new InvalidOperationException("Type property hasn't been initialized.");
-					activator = StrategyState.Strategies.Creator.NewActivator(Type.Name);
+					activator = StrategyState.Strategies.Creator.NewActivator(Container.Type.Name);
 				}
 				return activator; }
 			set { activator = value; }
@@ -67,7 +67,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			Reflector.InvokeGenericMethod(this,
 			                              "View",
-			                              new Type[] {Type},
+			                              new Type[] {Container.Type},
 			                              new object[]{});
 		}
 		
@@ -77,8 +77,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		public void View<T>()
 			where T : IEntity
 		{
-			Guid id = QueryStrings.GetID(Type.Name);
-			string uniqueKey = QueryStrings.GetUniqueKey(Type.Name);
+			Guid id = QueryStrings.GetID(Container.Type.Name);
+			string uniqueKey = QueryStrings.GetUniqueKey(Container.Type.Name);
 			
 			if (id != Guid.Empty)
 				View<T>(id);
@@ -95,7 +95,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			Reflector.InvokeGenericMethod(this,
 			                              "View",
-			                              new Type[] {Type},
+			                              new Type[] {Container.Type},
 			                              new object[]{entityID});
 		}
 		
@@ -119,7 +119,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			return (IEntity)Reflector.InvokeGenericMethod(this,
 			                                              "View",
-			                                              new Type[] {Type},
+			                                              new Type[] {Container.Type},
 			                                              new object[]{uniqueKey});
 		}
 		
@@ -153,9 +153,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		public void View<T>(T entity)
 			where T : IEntity
 		{
-			StartView();
-			
-			DataSource = entity;
+			if (Container.EnsureAuthorised())
+			{
+				StartView();
+				
+				DataSource = entity;
+			}
 		}
 		#endregion
 		
@@ -163,7 +166,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		
 		public void StartView()
 		{
-			OperationManager.StartOperation("View" + Type.Name, null);
+			OperationManager.StartOperation("View" + Container.Type.Name, null);
 		}
 		
 		/// <summary>
@@ -173,8 +176,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		public IEntity PrepareView()
 		{
 			return (IEntity)Reflector.InvokeGenericMethod(this, "PrepareView",
-			                                     new Type[] { Type },
-			                                     new object[] {});
+			                                              new Type[] { Container.Type },
+			                                              new object[] {});
 		}
 		
 		/// <summary>
@@ -185,8 +188,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			where T : IEntity
 		{
 			
-			Guid goalID = QueryStrings.GetID(Type.Name);
-			string goalKey = QueryStrings.GetUniqueKey(Type.Name);
+			Guid goalID = QueryStrings.GetID(Container.Type.Name);
+			string goalKey = QueryStrings.GetUniqueKey(Container.Type.Name);
 			
 			if (goalID != Guid.Empty)
 				return (T)PrepareView<T>(goalID);
@@ -231,7 +234,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				DataSource = entity = Retriever.Retrieve(uniqueKey);
 				
 				if (entity == null)
-					throw new ArgumentException("Entity of type '" + Type.Name + "' not found with unique key '" + uniqueKey + "'. Check that the entity and the factory retrieve method are properly configured.");
+					throw new ArgumentException("Entity of type '" + Container.Type.Name + "' not found with unique key '" + uniqueKey + "'. Check that the entity and the factory retrieve method are properly configured.");
 				
 				PrepareView(entity);
 			}
@@ -253,7 +256,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				entity = Retriever.Retrieve(id);
 				
 				if (entity == null)
-					throw new ArgumentException("Entity of type '" + Type.Name + "' not found with ID '" + id.ToString() + "'. Check that the entity and the factory retrieve method are properly configured.");
+					throw new ArgumentException("Entity of type '" + Container.Type.Name + "' not found with ID '" + id.ToString() + "'. Check that the entity and the factory retrieve method are properly configured.");
 				
 				AppLogger.Debug("Entity: " + entity.ToString());
 				
@@ -274,12 +277,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		}
 		#endregion
 		
-		public static ViewController New(IControllable container, Type type)
+		public static ViewController New(IControllable container)
 		{
-			ViewController controller = ControllerState.Controllers.Creator.NewViewer(type.Name);
+			container.EnsureTypeInitialized();
+			
+			ViewController controller = ControllerState.Controllers.Creator.NewViewer(container.Type.Name);
 			
 			controller.Container = container;
-			controller.Type = type;
 			
 			return controller;
 		}

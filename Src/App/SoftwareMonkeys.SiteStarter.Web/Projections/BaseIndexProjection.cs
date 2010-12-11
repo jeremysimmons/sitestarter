@@ -10,7 +10,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 	/// <summary>
 	/// Used as the base for all standard index projection.
 	/// </summary>
-	public class BaseIndexProjection : ControllableProjection
+	public class BaseIndexProjection : BaseProjection
 	{
 		private IndexGrid grid;
 		/// <summary>
@@ -88,7 +88,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		
 		public BaseIndexProjection()
 		{
-			DefaultAction = "Index";
+		}
+		
+		public BaseIndexProjection(string action, Type type) : base(action, type)
+		{}
+		
+		public BaseIndexProjection(string action, Type type, bool requireAuthorisation) : base(action, type, requireAuthorisation)
+		{
 		}
 		
 		protected override void OnLoad(EventArgs e)
@@ -101,22 +107,23 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <summary>
 		/// Initializes the page and the controller for the specified type.
 		/// </summary>
-		/// <param name="defaultType"></param>
+		/// <param name="type"></param>
 		/// <param name="indexGrid"></param>
-		public void Initialize(Type defaultType, IndexGrid indexGrid)
+		public void Initialize(Type type, IndexGrid indexGrid)
 		{
-			Initialize(defaultType, indexGrid, false);
+			Initialize(type, indexGrid, false);
 		}
 		
 		/// <summary>
 		/// Initializes the page and the controller for the specified type.
 		/// </summary>
-		/// <param name="defaultType"></param>
+		/// <param name="type"></param>
 		/// <param name="isPaged"></param>
-		public void Initialize(Type defaultType, IndexGrid indexGrid, bool isPaged)
+		public void Initialize(Type type, IndexGrid indexGrid, bool isPaged)
 		{
+			Type = type;
 			Grid = indexGrid;
-			controller = IndexController.New(this, defaultType, isPaged);
+			controller = IndexController.New(this, isPaged);
 			PageSize = Grid.PageSize;
 			Grid.SortCommand += new DataGridSortCommandEventHandler(Grid_SortCommand);
 			Grid.PageIndexChanged += new DataGridPageChangedEventHandler(Grid_PageIndexChanged);

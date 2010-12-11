@@ -49,11 +49,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 			int count = DataAccess.Data.Indexer.GetEntities<TestRecord>().Length;
 			Assert.AreEqual(4, count, "Invalid number of TestRecord objects found.");
 			
-			BaseIndexProjection page = new BaseIndexProjection();
+			BaseIndexProjection page = new BaseIndexProjection("Index", typeof(TestRecord), false);
 			
-			IndexController controller = IndexController.New(page, typeof(TestRecord), false);
-			controller.RequireAuthorisation = false;
-			
+			IndexController controller = IndexController.New(page, false);
 			
 			if (controller == null)
 				throw new Exception("Controller is null.");
@@ -93,13 +91,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 			if (DataAccess.Data == null)
 				throw new InvalidOperationException("Data provider has not been initialized. Run setup.");
 			
-			BaseIndexProjection page = new BaseIndexProjection();
+			BaseIndexProjection page = new BaseIndexProjection("Index", typeof(TestRecord), false);
 			
-			
-			
-			
-			IndexController controller = IndexController.New(page, typeof(TestRecord), true);
-			controller.RequireAuthorisation = false;
+			IndexController controller = IndexController.New(page, true);
 			
 			if (controller == null)
 				throw new Exception("Controller is null.");
@@ -142,12 +136,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 			if (DataAccess.Data == null)
 				throw new InvalidOperationException("Data provider has not been initialized. Run setup.");
 			
-			BaseIndexProjection page = new BaseIndexProjection();
+			BaseIndexProjection page = new BaseIndexProjection("Index", typeof(TestRecord), false);
 			
-			
-			
-			IndexController controller = IndexController.New(page, typeof(TestRecord), true);
-			controller.RequireAuthorisation = false;
+			IndexController controller = IndexController.New(page, true);
 			
 			if (controller == null)
 				throw new Exception("Controller is null.");
@@ -189,10 +180,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 			if (DataAccess.Data == null)
 				throw new InvalidOperationException("Data provider has not been initialized. Run setup.");
 			
-			BaseIndexProjection page = new BaseIndexProjection();
-			
-			IndexController controller = IndexController.New(page, typeof(TestRecord), true);
-			controller.RequireAuthorisation = false;
+			BaseIndexProjection page = new BaseIndexProjection("Index", typeof(TestRecord), false);
+
+			IndexController controller = IndexController.New(page, true);
 			
 			if (controller == null)
 				throw new Exception("Controller is null.");

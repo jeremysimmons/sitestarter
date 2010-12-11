@@ -59,7 +59,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		public void Start()
 		{
 			if (EnsureAuthorised())
-				OperationManager.StartOperation("Mock" + Type.Name, null);
+				OperationManager.StartOperation("Mock" + Container.Type.Name, null);
 		}
 		
 		/// <summary>
@@ -79,10 +79,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <returns>A value indicating whether the user is authorised.</returns>
 		public bool EnsureAuthorised()
 		{
-			bool isAuthorised = AuthoriseSaveStrategy.New(Type.Name).Authorise(Type.Name);
+			bool isAuthorised = AuthoriseSaveStrategy.New(Container.Type.Name).Authorise(Container.Type.Name);
 			
 			if (!isAuthorised)
-				FailAuthorisation();
+				Container.FailAuthorisation();
 			
 			return isAuthorised;
 		}
@@ -101,7 +101,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			MockController controller = ControllerState.Controllers.Creator.New<MockController>("Mock", type.Name);
 			
 			controller.Container = container;
-			controller.Type = type;
 			
 			return controller;
 		}

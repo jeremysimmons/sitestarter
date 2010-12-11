@@ -11,7 +11,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 	/// <summary>
 	/// The base of all standard view projections.
 	/// </summary>
-	public class BaseViewProjection : ControllableProjection
+	public class BaseViewProjection : BaseProjection
 	{
 		private ViewController controller;
 		/// <summary>
@@ -33,7 +33,19 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			set { form = value; }
 		}
 		
+		public override string InternalAction
+		{
+			get { return "Retrieve"; }
+		}
+		
 		public BaseViewProjection()
+		{
+		}
+		
+		public BaseViewProjection(string action, Type type) : base(action, type)
+		{}
+		
+		public BaseViewProjection(string action, Type type, bool requireAuthorisation) : base(action, type, requireAuthorisation)
 		{
 		}
 		
@@ -52,11 +64,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <summary>
 		/// Initializes the view page, the controller, and the form.
 		/// </summary>
-		/// <param name="defaultType">The default type of the page.</param>
+		/// <param name="type">The type of entity being viewed.</param>
 		/// <param name="form">The form used to display entity data.</param>
-		public void Initialize(Type defaultType, EntityForm form)
+		public void Initialize(Type type, EntityForm form)
 		{
-			controller = ViewController.New(this, defaultType);
+			Type = type;
+			controller = ViewController.New(this);
 			Form = form;
 			Form.EntityCommand += new EntityFormEventHandler(Form_EntityCommand);
 		}
