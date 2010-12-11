@@ -57,11 +57,15 @@ namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
             
             config.Save();
             
-            string configPath = directory + Path.DirectorySeparatorChar + "Application.config";
+            string configPath = config.FilePath;
+            
+            string pathVariation = config.PathVariation;
             
             config = null;
             
-            IAppConfig config2 = ConfigFactory<MockAppConfig>.LoadConfig(directory, "Application", "");
+            Assert.IsTrue(File.Exists(configPath), "Config file not saved.");
+            
+            IAppConfig config2 = ConfigFactory<MockAppConfig>.LoadConfig(directory, "Application", pathVariation);
             
             
             Assert.IsNotNull(config2, "Configuration object wasn't re-loaded.");
