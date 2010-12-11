@@ -7,6 +7,7 @@
 <%@ Import Namespace="System.Reflection" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.WebControls" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Security" %>
 <%@ Import namespace="System.IO" %>
 <%@ Import namespace="System.Xml" %>
 <%@ Import namespace="System.Xml.Serialization" %>
@@ -44,40 +45,18 @@
 	
     protected void Page_Load(object sender, EventArgs e)
     {
-		if (!Request.IsAuthenticated && Request.QueryString["Auto"] != "true")
-			Response.Redirect("../User/SignIn.aspx");
+		Authorisation.EnsureIsAuthenticated();
+		Authorisation.EnsureIsInRole("Administrator");
 	
-		
-		//if (Request.QueryString["Auto"] == "true")
-		//{
-		//	Step2();
-		//}
-        //else
         if (PrepareForUpdate)
         {
             Step2();
         }
         else
         {
-            if (Request.QueryString["a"] == "ClearBackups")
-            {
-                ClearBackups();
-            }
-            else
-                Start();
+            Start();
         }
 	}
-
-    private void ClearBackups()
-    {
-    throw new NotImplementedException();
-        //appBackup.ClearBackups();
-        
-        Result.Display("The backups have been cleared.");
-
-        PageViews.SetActiveView(BackupsClearedView);
-    }
-    
     
     private void Start()
     {
