@@ -24,8 +24,6 @@
         IndexGrid.AddDualSortItem(Resources.Language.FirstName, "FirstName");
         IndexGrid.AddDualSortItem(Resources.Language.LastName, "LastName");
         IndexGrid.AddDualSortItem(Resources.Language.Username, "Username");
-       
-      	AddTextItem("Entities", Resources.Language.Users);
     }
     
     public override void InitializeMenu()

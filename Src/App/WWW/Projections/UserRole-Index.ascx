@@ -21,9 +21,6 @@
     	PageSize = 20;
         
         IndexGrid.AddDualSortItem(Resources.Language.Name, "Name");
-       
-      	AddTextItem("Entities", Resources.Language.UserRoles);
-        
     }
 
     #region Main functions

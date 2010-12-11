@@ -17,12 +17,6 @@
 	
 		// Initialize
 		Initialize(type);
-		
-		// Get the result message
-		string msg = DynamicLanguage.GetText(type, type.Name + "Deleted");
-		
-		// Add the result message to text items
-		AddTextItem(QueryStrings.Type + "Deleted", msg);
 	}
 
 	// DeleteProjection class takes care of all functionality.
