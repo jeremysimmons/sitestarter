@@ -101,6 +101,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <returns></returns>
 		public IEntity Load()
 		{
+			Container.CheckType();
+			
 			return (IEntity)Reflector.InvokeGenericMethod(this, "Load",
 			                              new Type[] {Container.Type},
 			                              new object[] {});

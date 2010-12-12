@@ -233,8 +233,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <returns>A value indicating whether the user is authorised.</returns>
 		public bool EnsureAuthorised()
 		{
-			EnsureActionInitialized();
-			EnsureTypeInitialized();
+			CheckAction();
+			CheckType();
 			
 			// TODO: Remove if not needed
 			/*bool isAuthorised = StrategyState.Strategies["Authorise" + InternalAction, Type.Name]
@@ -262,13 +262,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		}
 		
 		
-		public void EnsureTypeInitialized()
+		public void CheckType()
 		{
 			if (Type == null)
 				throw new InvalidOperationException("The Type property has not been set.");
 		}
 		
-		public void EnsureActionInitialized()
+		public void CheckAction()
 		{
 			if (Action == String.Empty)
 				throw new InvalidOperationException("The Action property has not been set.");

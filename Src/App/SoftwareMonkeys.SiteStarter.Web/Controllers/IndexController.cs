@@ -273,7 +273,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		
 		public static IndexController New(IControllable container, bool enablePaging)
 		{
-			container.EnsureTypeInitialized();
+			container.CheckType();
 			
 			IndexController controller = ControllerState.Controllers.Creator.NewIndexer(container.Type.Name);
 			

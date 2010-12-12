@@ -279,7 +279,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		
 		public static ViewController New(IControllable container)
 		{
-			container.EnsureTypeInitialized();
+			container.CheckType();
 			
 			ViewController controller = ControllerState.Controllers.Creator.NewViewer(container.Type.Name);
 			
