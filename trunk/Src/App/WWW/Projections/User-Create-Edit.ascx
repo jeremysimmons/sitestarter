@@ -13,7 +13,8 @@
 <script runat="server">
     private void Page_Init(object sender, EventArgs e)
     {
-        Initialize(typeof(User), DataForm);        
+        Initialize(typeof(User), DataForm, "Username");
+        
     }
 
     #region Main functions
@@ -56,7 +57,8 @@
     	
     	bool success = base.Save();
     	    	
-    	NavigateAfterSave();
+    	if (success && AutoNavigate)
+    		NavigateAfterSave();
     	
     	return success;
     }
@@ -86,7 +88,8 @@
     		&& originalUser.Username != user.Username)
     		AuthenticationState.Username = user.Username;
     	    	
-    	NavigateAfterUpdate();
+    	if (success && AutoNavigate)
+    		NavigateAfterSave();
     	
     	return success;
     }

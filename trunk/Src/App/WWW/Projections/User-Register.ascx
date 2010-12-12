@@ -16,9 +16,10 @@
     {
         RequireAuthorisation = false;
         
-        Initialize(typeof(User), DataForm); 
+        Initialize(typeof(User), DataForm, "Username"); 
         
         CreateController.EntitySavedLanguageKey = "UserRegistered";
+        
     }
 
     #region Main functions
