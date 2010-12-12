@@ -14,7 +14,8 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		string InternalAction { get;set; }
 		Type Type { get;set; }
 		
-		void EnsureTypeInitialized();
+		void CheckType();
+		void CheckAction();
 		
 		bool RequireAuthorisation {get;set;}
 		string UnauthorisedUrl {get;set;}

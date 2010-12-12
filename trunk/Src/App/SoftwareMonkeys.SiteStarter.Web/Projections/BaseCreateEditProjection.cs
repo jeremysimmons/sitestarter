@@ -72,6 +72,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			set { internalAction = value; }
 		}
 		
+		private string uniquePropertyName;
+		/// <summary>
+		/// Gets/sets the name of the unique property of the entity.
+		/// </summary>
+		public string UniquePropertyName
+		{
+			get { return uniquePropertyName; }
+			set { uniquePropertyName = value; }
+		}
+		
 		
 		public BaseCreateEditProjection()
 		{
@@ -93,15 +103,22 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			base.OnLoad(e);
 		}
 		
+		public void Initialize(Type type, EntityForm form, string uniquePropertyName)
+		{
+			UniquePropertyName = uniquePropertyName;
+			
+			Type = type;
+			Form = form;
+			
+			createController = CreateController.New(this, type, UniquePropertyName);
+			editController = EditController.New(this, type, UniquePropertyName);
+			
+			Form.EntityCommand += new EntityFormEventHandler(Form_EntityCommand);
+		}
+		
 		public void Initialize(Type type, EntityForm form)
 		{
-				Type = type;
-				Form = form;
-				
-				createController = CreateController.New(this, type);
-				editController = EditController.New(this, type);
-				
-				Form.EntityCommand += new EntityFormEventHandler(Form_EntityCommand);
+			Initialize(type, form, uniquePropertyName);
 		}
 
 		void Form_EntityCommand(object sender, EntityFormEventArgs e)
@@ -465,5 +482,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			if (EditController == null)
 				throw new InvalidOperationException("Edit controller has not be initialized. Call Initialize().");
 		}
+		
 	}
 }

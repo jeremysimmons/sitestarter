@@ -28,11 +28,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			set { entitySavedLanguageKey = value; }
 		}
 		
-		private string entityExistsLanguageKey = "EntityExists";
-		public string EntityExistsLanguageKey
+		private string entityPropertyTakenLanguageKey = "EntityPropertyTaken";
+		public string EntityPropertyTakenLanguageKey
 		{
-			get { return entityExistsLanguageKey; }
-			set { entityExistsLanguageKey = value; }
+			get { return entityPropertyTakenLanguageKey; }
+			set { entityPropertyTakenLanguageKey = value; }
 		}
 		
 		private ISaveStrategy saver;
@@ -112,8 +112,17 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 					saved = true;
 				}
 				else
-				{					
-					Result.DisplayError(DynamicLanguage.GetEntityText(EntityExistsLanguageKey, Container.Type.Name));
+				{	
+					CheckUniquePropertyName();
+					
+					// Get the "entity exists" language entry
+					string error = DynamicLanguage.GetEntityText(EntityPropertyTakenLanguageKey, Container.Type.Name);
+					
+					// Insert the name of the unique property
+					error = error.Replace("${property}", DynamicLanguage.GetText(UniquePropertyName).ToLower());
+					
+					// Display the error
+					Result.DisplayError(error);
 					
 					saved = false;
 				}
@@ -131,6 +140,17 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <returns></returns>
 		public static CreateController New(IControllable container, Type type)
 		{
+			return New(container, type, String.Empty);
+		}
+		
+		/// <summary>
+		/// Creates a new create controller.
+		/// </summary>
+		/// <param name="container"></param>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public static CreateController New(IControllable container, Type type, string uniquePropertyName)
+		{
 			// TODO: Remove type parameter if not needed
 			
 			if (type.Name == "IEntity")
@@ -139,8 +159,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			CreateController controller = ControllerState.Controllers.Creator.New<CreateController>("Create", type.Name);
 			
 			controller.Container = container;
+			controller.UniquePropertyName = uniquePropertyName;
 			
 			return controller;
+		}
+		
+		public void CheckUniquePropertyName()
+		{
+			if (UniquePropertyName == null || UniquePropertyName == String.Empty)
+				throw new InvalidOperationException("The UniquePropertyName property has not been set.");
 		}
 	}
 }

@@ -36,28 +36,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			base.OnLoad(e);
 		}
 		
-		public void Initialize(Type defaultType)
+		public void Initialize(Type type)
 		{
-			controller = DeleteController.New(this, defaultType);
+			Type = type;
+			controller = DeleteController.New(this, type);
 		}
-		
-		/*public void Delete<T>()
-			where T : IEntity
-		{
-			if (controller == null)
-				throw new InvalidOperationException("Controller has not be initialized. Call DeletePage.Initialize().");
-			
-			Controller.Delete<T>();
-		}*/
-		
-		
-		/*public void Delete(IEntity entity)
-		{
-			if (controller == null)
-				throw new InvalidOperationException("Controller has not be initialized. Call DeletePage.Initialize().");
-			
-			Controller.Delete(entity);
-		}*/
 		
 		public virtual void Delete()
 		{

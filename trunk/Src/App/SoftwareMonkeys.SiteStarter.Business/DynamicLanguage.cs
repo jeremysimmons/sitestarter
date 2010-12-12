@@ -19,6 +19,12 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns>The text matching the provided key from the assembly that contains the relative type.</returns>
 		public static string GetText(Type relativeType, string key)
 		{
+			if (relativeType == null)
+				throw new ArgumentNullException("relativeType");
+			
+			if (key == null || key == String.Empty)
+				throw new ArgumentNullException("key");
+			
 			ResourceSet resources = GetResourceSet(relativeType, key);
 			
 			if (resources == null)
@@ -39,6 +45,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns>The text matching the provided key from the assembly.</returns>
 		public static string GetText(string key)
 		{
+			if (key == null || key == String.Empty)
+				throw new ArgumentNullException("key");
 			
 			ResourceSet resources = GetResourceSet(key);
 			
@@ -162,6 +170,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns>The resource set from the provided assembly containing the provided key.</returns>
 		public static ResourceSet GetResourceSetFromAssembly(Assembly assembly, string key)
 		{
+			
 			string[] resourceNames = assembly.GetManifestResourceNames();
 			
 			ResourceSet resources = null;

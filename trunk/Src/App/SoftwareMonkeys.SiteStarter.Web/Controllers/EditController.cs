@@ -72,6 +72,21 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		}
 		
 		
+		private string entityUpdatedLanguageKey = "EntityUpdated";
+		public string EntityUpdatedLanguageKey
+		{
+			get { return entityUpdatedLanguageKey; }
+			set { entityUpdatedLanguageKey = value; }
+		}
+		
+		private string entityPropertyTakenLanguageKey = "EntityPropertyTaken";
+		public string EntityPropertyTakenLanguageKey
+		{
+			get { return entityPropertyTakenLanguageKey; }
+			set { entityPropertyTakenLanguageKey = value; }
+		}
+		
+		
 		public EditController()
 		{
 		}
@@ -198,13 +213,22 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			// Update the entity
 			if (Updater.Update(entity))
 			{
-				Result.Display(DynamicLanguage.GetEntityText("EntityUpdated", Container.Type.Name));
+				Result.Display(DynamicLanguage.GetEntityText(EntityUpdatedLanguageKey, Container.Type.Name));
 
 				return true;
 			}
 			else
 			{
-				Result.DisplayError(DynamicLanguage.GetEntityText("EntityExists", Container.Type.Name));
+				CheckUniquePropertyName();
+				
+				// Get the "entity exists" language entry
+				string error = DynamicLanguage.GetEntityText(EntityPropertyTakenLanguageKey, Container.Type.Name);
+				
+				// Insert the name of the unique property
+				error = error.Replace("${property}", DynamicLanguage.GetText(UniquePropertyName).ToLower());
+				
+				// Display the error
+				Result.DisplayError(error);
 				
 				return false;
 			}
@@ -212,11 +236,23 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		
 		public static EditController New(IControllable container, Type type)
 		{
+			return New(container, type);
+		}
+		
+		public static EditController New(IControllable container, Type type, string uniquePropertyName)
+		{
 			EditController controller = ControllerState.Controllers.Creator.NewEditor(type.Name);
 			
 			controller.Container = container;
+			controller.UniquePropertyName = uniquePropertyName;
 			
 			return controller;
+		}
+		
+		public void CheckUniquePropertyName()
+		{
+			if (UniquePropertyName == null || UniquePropertyName == String.Empty)
+				throw new InvalidOperationException("The UniquePropertyName property has not been set.");
 		}
 	}
 }
