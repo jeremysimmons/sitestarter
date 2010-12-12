@@ -791,4 +791,7 @@ ${WebSite.Title}&lt;br /&gt;
   <data name="SignInDetails" xml:space="preserve">
     <value>Sign In Details</value>
   </data>
+  <data name="EntityPropertyTaken" xml:space="preserve">
+    <value>The specified ${property} is already in use, please try another one.</value>
+  </data>
 </root>
