@@ -161,6 +161,11 @@ namespace SoftwareMonkeys.SiteStarter.State.Tests
 		{
 			UserData[key] = value;
 		}
+		
+		public override void SetUser(string key, object value, DateTime expirationDate)
+		{
+			UserData[key] = value;
+		}
 
 		public override object GetUser(string key)
 		{

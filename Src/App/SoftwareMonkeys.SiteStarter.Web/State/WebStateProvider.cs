@@ -175,6 +175,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
         
         public override void SetUser(string key, object value)
         {
+        	SetUser(key, value, DateTime.MinValue);
+        }
+
+        
+        public override void SetUser(string key, object value, DateTime expirationDate)
+        {
         	if (key == String.Empty)
         		throw new ArgumentException("The provided key cannot be null or String.Empty.");
         	
@@ -182,8 +188,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
                 && HttpContext.Current != null
                 && HttpContext.Current.Request != null)
             {
-        		HttpContext.Current.Response.Cookies.Add(
-        			HttpSecureCookie.Encode(new HttpCookie(key, value.ToString())));
+        		HttpCookie cookie = new HttpCookie(key, value.ToString());
+        		
+        		if (expirationDate > DateTime.MinValue)
+        			cookie.Expires = expirationDate;
+        		
+        		HttpContext.Current.Response.Cookies.Add(HttpSecureCookie.Encode(cookie));
             }
         }
 
@@ -192,10 +202,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
         	if (key == String.Empty)
         		throw new ArgumentException("The provided key cannot be null or String.Empty.");
         	
-        	if (key != String.Empty && HttpContext.Current != null && HttpContext.Current.Items != null)
-        		return HttpSecureCookie.Decode(HttpContext.Current.Request.Cookies[key]).Value;
-	        else
-	        	return null;
+        	if (key != String.Empty && HttpContext.Current != null && HttpContext.Current.Response != null)
+        	{
+        		HttpCookie cookie = HttpContext.Current.Request.Cookies[key];
+        		
+        		if (cookie != null)
+	        		return HttpSecureCookie.Decode(cookie).Value;
+        	}
+        	
+	        return null;
         }
         
 		public override void RemoveUser(string key)

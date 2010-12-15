@@ -22,7 +22,7 @@
 		// Cancel the automatic login as it is done manually
 		e.Cancel = true;
 	
-		if (Authentication.SignIn(Login.UserName, Login.Password))
+		if (Authentication.SignIn(Login.UserName, Login.Password, Login.RememberMeSet))
 			Response.Redirect("Default.aspx");
 		else
 			Result.DisplayError(Resources.Language.InvalidCredentials);

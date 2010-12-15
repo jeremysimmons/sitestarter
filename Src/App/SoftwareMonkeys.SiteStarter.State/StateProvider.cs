@@ -28,6 +28,7 @@ namespace SoftwareMonkeys.SiteStarter.State
         
         public abstract bool ContainsUser(string key);
         public abstract void SetUser(string key, object value);
+        public abstract void SetUser(string key, object value, DateTime expirationDate);
         public abstract object GetUser(string key);
         public abstract void RemoveUser(string key);
         
