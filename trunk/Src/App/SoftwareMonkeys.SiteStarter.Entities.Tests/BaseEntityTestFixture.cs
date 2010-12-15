@@ -15,6 +15,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 		[SetUp]
 		public void Initialize()
 		{			
+			InitializeMockState();
+			InitializeMockConfiguration();
 			InitializeMockEntities();
 		}
 		
