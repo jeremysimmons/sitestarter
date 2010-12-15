@@ -99,20 +99,18 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
         {
             if (!UserCan(action, entity))
                 InvalidPermissionsRedirect();
-            //    throw new Exception("Invalid permissions.");
-            // TODO: Add redirect to friendly page
         }
 
         public static void EnsureUserCan(string action, IEntity[] entities)
         {
             if (!UserCan(action, entities))
                 InvalidPermissionsRedirect();
-            //    throw new Exception("Invalid permissions.");
-            // TODO: Add redirect to friendly page
         }
         
         public static void InvalidPermissionsRedirect()
         {
+        	Result.DisplayError(Language.Unauthorised);
+        	
             // TODO: This shouldn't be hard coded
             HttpContext.Current.Response.Redirect("~/User/SignIn.aspx");
         }
