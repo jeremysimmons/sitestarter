@@ -153,6 +153,10 @@
     <Compile Include="SiteMap.cs" />
     <Compile Include="SiteMapManager.cs" />
     <Compile Include="SiteMapNode.cs" />
+    <Compile Include="State\Cookies\CookieProtectionHelperWrapper.cs" />
+    <Compile Include="State\Cookies\HttpSecureCookie.cs" />
+    <Compile Include="State\Cookies\InvalidCypherTextException.cs" />
+    <Compile Include="State\Cookies\MachineKeyCryptography.cs" />
     <Compile Include="State\StateProviderManager.cs" />
     <Compile Include="State\WebStateProvider.cs">
       <SubType>Code</SubType>
@@ -244,6 +248,7 @@
       <Name>SiteStarter.Entities</Name>
     </ProjectReference>
     <Folder Include="Parts" />
+    <Folder Include="State\Cookies" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

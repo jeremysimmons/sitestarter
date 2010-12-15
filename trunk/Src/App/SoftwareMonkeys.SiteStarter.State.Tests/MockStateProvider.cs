@@ -43,6 +43,16 @@ namespace SoftwareMonkeys.SiteStarter.State.Tests
 			set { requestData = value; }
 		}
 		
+		private Dictionary<string, object> userData;
+		public Dictionary<string, object> UserData
+		{
+			get {
+				if (userData == null)
+					userData = new Dictionary<string, object>();
+				return userData; }
+			set { userData = value; }
+		}
+		
 		public MockStateProvider()
 		{
 		}
@@ -137,6 +147,36 @@ namespace SoftwareMonkeys.SiteStarter.State.Tests
 			if (ContainsRequest(key))
 			{
 				RequestData.Remove(key);
+			}
+		}
+		#endregion
+		
+		#region User state
+		public override bool ContainsUser(string key)
+		{
+			return UserData.ContainsKey(key);
+		}
+		
+		public override void SetUser(string key, object value)
+		{
+			UserData[key] = value;
+		}
+
+		public override object GetUser(string key)
+		{
+			if (!ContainsUser(key))
+			{
+				return null;
+			}
+			
+			return RequestData[key];
+		}
+		
+		public override void RemoveUser(string key)
+		{
+			if (ContainsUser(key))
+			{
+				UserData.Remove(key);
 			}
 		}
 		#endregion
