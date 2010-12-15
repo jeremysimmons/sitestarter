@@ -65,12 +65,17 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		
 		static public bool UserIsInRole(string roleName)
 		{
-			User user = AuthenticationState.User;
-			
-			if (user.Roles == null || user.Roles.Length == 0)
-				ActivateStrategy.New<User>().Activate(user, "Roles");
-			
-			return user.IsInRole(roleName);
+			if (IsAuthenticated)
+			{
+				User user = AuthenticationState.User;
+				
+				if (user.Roles == null || user.Roles.Length == 0)
+					ActivateStrategy.New<User>().Activate(user, "Roles");
+				
+				return user.IsInRole(roleName);
+			}
+			else
+				return false;
 		}
 		
 		

@@ -66,7 +66,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		/// <param name="username">The username of the current user.</param>
 		public static void SetAuthenticatedUsername(string username)
 		{
-			AuthenticationState.Username = username;
+			SetAuthenticatedUsername(username, false);
 		}
 		
 		/// <summary>
@@ -81,6 +81,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 				expirationDate = DateTime.Now.AddDays(GetPersistDurationDays());
 			
 			AuthenticationState.SetAuthenticatedUsername(username, expirationDate);
+			
+			if (username != String.Empty)
+			{
+				// Set the auth cookie in standard forms authentication to ensure dependent features work
+				System.Web.Security.FormsAuthentication.SetAuthCookie(username, persistAuthentication);
+			}
+			else
+				System.Web.Security.FormsAuthentication.SignOut();
+			
 		}
 		
 		public static int GetPersistDurationDays()
