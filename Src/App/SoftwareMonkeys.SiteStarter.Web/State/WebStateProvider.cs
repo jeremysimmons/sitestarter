@@ -190,6 +190,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
             {
         		HttpCookie cookie = new HttpCookie(key, value.ToString());
         		
+        		cookie.Path = Config.Application.ApplicationPath;
+        		
         		if (expirationDate > DateTime.MinValue)
         			cookie.Expires = expirationDate;
         		
