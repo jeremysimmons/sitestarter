@@ -18,9 +18,11 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				if (entitiesDirectoryPath == null || entitiesDirectoryPath == String.Empty)
 				{
 					if (Configuration.Config.IsInitialized)
+					{
 						entitiesDirectoryPath = Configuration.Config.Application.PhysicalApplicationPath
 							+ Path.DirectorySeparatorChar + "App_Data"
 							+ Path.DirectorySeparatorChar + "Entities";
+					}
 				}
 				return entitiesDirectoryPath;
 			}
@@ -64,7 +66,9 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <returns>The full file path for the provided entity.</returns>
 		public string CreateFilePath(EntityInfo entity)
 		{
-			return EntitiesDirectoryPath + Path.DirectorySeparatorChar + CreateFileName(entity);
+			string path = EntitiesDirectoryPath + Path.DirectorySeparatorChar + CreateFileName(entity);
+			
+			return path;
 		}
 		
 		/// <summary>

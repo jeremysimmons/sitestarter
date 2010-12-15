@@ -32,17 +32,6 @@ namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
         }
 		
 		/// <summary>
-		/// Creates a mock MappingConfig object for use while testing.
-		/// </summary>
-		/// <returns></returns>
-		public MappingConfig CreateMockMappingsConfig()
-        {
-        	MappingConfig config = new MockMappingConfig();
-        	
-        	return config;
-        }
-		
-		/// <summary>
 		/// Initializes the mock configuration environment.
 		/// </summary>
 		public virtual void InitializeMockConfiguration()
