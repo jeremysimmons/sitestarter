@@ -10,6 +10,14 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 	public static class AuthenticationState
 	{
 		/// <summary>
+		/// Gets the key used to store the authentication state value.
+		/// </summary>
+		static public string AuthenticationStateKey
+		{
+			get { return "Username"; }
+		}
+		
+		/// <summary>
 		/// Gets/sets the username of the current user.
 		/// </summary>
 		static public string Username
@@ -63,6 +71,26 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 				ActivateStrategy.New<User>().Activate(user, "Roles");
 			
 			return user.IsInRole(roleName);
+		}
+		
+		
+		/// <summary>
+		/// Sets the provided username to the session state for the current user.
+		/// </summary>
+		/// <param name="username">The username of the current user.</param>
+		public static void SetAuthenticatedUsername(string username)
+		{
+			SetAuthenticatedUsername(username, DateTime.MinValue);
+		}
+		
+		/// <summary>
+		/// Sets the provided username to the session state for the current user.
+		/// </summary>
+		/// <param name="username">The username of the current user.</param>
+		/// <param name="expirationDate">The expiration date of the authentication data.</param>
+		public static void SetAuthenticatedUsername(string username, DateTime expirationDate)
+		{
+			StateAccess.State.SetUser(AuthenticationStateKey, username, expirationDate);
 		}
 	}
 }

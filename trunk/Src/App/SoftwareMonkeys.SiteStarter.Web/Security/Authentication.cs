@@ -29,9 +29,22 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		/// <returns>A value indicating whether the user's credentials are authentic.</returns>
 		public static bool SignIn(string username, string password)
 		{
+			return SignIn(username, password, false);
+		}
+		
+		
+		/// <summary>
+		/// Authenticates and the user with the provided username and password and signs them in.
+		/// </summary>
+		/// <param name="username">The username of the user to authenticate and sign in.</param>
+		/// <param name="password">The unencrypted password of the user to authenticate and sign in.</param>
+		/// <param name="persistAuthentication">A value that indicates whether to persist the authentication (ie. remember the user).</param>
+		/// <returns>A value indicating whether the user's credentials are authentic.</returns>
+		public static bool SignIn(string username, string password, bool persistAuthentication)
+		{
 			if(Authenticate(username, password))
 			{
-				SetAuthenticatedUsername(username);
+				SetAuthenticatedUsername(username, persistAuthentication);
 				
 				return true;
 			}
@@ -54,6 +67,52 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		public static void SetAuthenticatedUsername(string username)
 		{
 			AuthenticationState.Username = username;
+		}
+		
+		/// <summary>
+		/// Sets the provided username to the session state for the current user.
+		/// </summary>
+		/// <param name="username">The username of the current user.</param>
+		public static void SetAuthenticatedUsername(string username, bool persistAuthentication)
+		{
+			DateTime expirationDate = DateTime.Now.AddHours(GetStandardDurationHours());
+			
+			if (persistAuthentication)
+				expirationDate = DateTime.Now.AddDays(GetPersistDurationDays());
+			
+			AuthenticationState.SetAuthenticatedUsername(username, expirationDate);
+		}
+		
+		public static int GetPersistDurationDays()
+		{
+			int duration = 0;
+			
+			try
+			{
+				duration = Convert.ToInt32(System.Configuration.ConfigurationSettings.AppSettings["Authentication.PersistDuration.Days"]);
+			}
+			catch
+			{
+				throw new Exception("Authentication.PersistDuration.Days configuration setting is invalid.");
+			}
+			
+			return duration;
+		}
+		
+		public static int GetStandardDurationHours()
+		{
+			int duration = 0;
+			
+			try
+			{
+				duration = Convert.ToInt32(System.Configuration.ConfigurationSettings.AppSettings["Authentication.StandardDuration.Hours"]);
+			}
+			catch
+			{
+				throw new Exception("Authentication.StandardDuration.Hours configuration setting is invalid.");
+			}
+			
+			return duration;
 		}
 	}
 }
