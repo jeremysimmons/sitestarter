@@ -26,6 +26,11 @@ namespace SoftwareMonkeys.SiteStarter.State
         public abstract object GetRequest(string key);
         public abstract void RemoveRequest(string key);
         
+        public abstract bool ContainsUser(string key);
+        public abstract void SetUser(string key, object value);
+        public abstract object GetUser(string key);
+        public abstract void RemoveUser(string key);
+        
         public abstract string[] GetKeys(StateScope scope);
     }
 }

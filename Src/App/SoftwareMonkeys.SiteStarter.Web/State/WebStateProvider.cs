@@ -7,7 +7,7 @@ using SoftwareMonkeys.SiteStarter.Entities;
 using System.IO;
 using SoftwareMonkeys.SiteStarter.Configuration;
 using System.Web;
-using SoftwareMonkeys.SiteStarter.State;
+using SoftwareMonkeys.SiteStarter.Web.State.Cookies;
 
 namespace SoftwareMonkeys.SiteStarter.Web.State
 {
@@ -154,6 +154,55 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
 			if (ContainsRequest(key))
 			{
 				HttpContext.Current.Items.Remove(key);
+			}
+		}
+        #endregion
+
+        #region User state
+        public override bool ContainsUser(string key)
+        {
+        	if (key == String.Empty)
+        		throw new ArgumentException("The provided key cannot be null or String.Empty.");
+        	
+       		if (key != String.Empty
+        	    && HttpContext.Current != null
+                && HttpContext.Current.Request != null
+        	    && HttpContext.Current.Request.Cookies[key] != null)
+	            return true;
+	        else
+	        	return false;
+        }
+        
+        public override void SetUser(string key, object value)
+        {
+        	if (key == String.Empty)
+        		throw new ArgumentException("The provided key cannot be null or String.Empty.");
+        	
+            if (key != String.Empty
+                && HttpContext.Current != null
+                && HttpContext.Current.Request != null)
+            {
+        		HttpContext.Current.Response.Cookies.Add(
+        			HttpSecureCookie.Encode(new HttpCookie(key, value.ToString())));
+            }
+        }
+
+        public override object GetUser(string key)
+        {
+        	if (key == String.Empty)
+        		throw new ArgumentException("The provided key cannot be null or String.Empty.");
+        	
+        	if (key != String.Empty && HttpContext.Current != null && HttpContext.Current.Items != null)
+        		return HttpSecureCookie.Decode(HttpContext.Current.Request.Cookies[key]).Value;
+	        else
+	        	return null;
+        }
+        
+		public override void RemoveUser(string key)
+		{
+			if (ContainsUser(key))
+			{
+				HttpContext.Current.Response.Cookies.Remove(key);
 			}
 		}
         #endregion

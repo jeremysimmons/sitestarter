@@ -14,8 +14,8 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// </summary>
 		static public string Username
 		{
-			get { return (string)StateAccess.State.GetSession("Username"); }
-			set { StateAccess.State.SetSession("Username", value); }
+			get { return (string)StateAccess.State.GetUser("Username"); }
+			set { StateAccess.State.SetUser("Username", value); }
 		}
 
 		/// <summary>
