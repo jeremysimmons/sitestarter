@@ -55,7 +55,11 @@
     {
     	AutoNavigate = false;
     	
-    	bool success = base.Save();
+    	User user = PrepareSave<User>();
+    	
+    	user.Password = Crypter.EncryptPassword(user.Password);
+    	
+    	bool success = base.Save(user);
     	    	
     	if (success && AutoNavigate)
     		NavigateAfterSave();
