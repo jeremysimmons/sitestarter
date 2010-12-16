@@ -109,7 +109,6 @@
     <Compile Include="ConfigSaverTests.cs" />
     <Compile Include="MockAppConfig.cs" />
     <Compile Include="MockConfigSaver.cs" />
-    <Compile Include="MockMappingConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
