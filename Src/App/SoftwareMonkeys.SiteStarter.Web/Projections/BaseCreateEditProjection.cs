@@ -91,13 +91,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			if (!IsPostBack)
 			{
-				if (EnsureAuthorised())
-				{
-					if (QueryStrings.Action == "Edit")
-						Edit();
-					else
-						Create();
-				}
+				if (QueryStrings.Action == "Edit")
+					Edit();
+				else
+					Create();
 			}
 			
 			base.OnLoad(e);
