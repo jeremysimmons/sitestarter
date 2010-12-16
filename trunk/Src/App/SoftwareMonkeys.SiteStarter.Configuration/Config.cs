@@ -125,31 +125,9 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
                 	fullPath += virtualServerID + @"\";*/
                 
                 All.Add(ConfigFactory<AppConfig>.LoadConfig(fullPath, "Application", variation));
-                All.Add(ConfigFactory<MappingConfig>.LoadConfig(fullPath, "Mappings", variation));
             }
         }
-        
-       /* static protected IVirtualServerConfig LoadVirtualServerConfig()
-        {
-        	using (LogGroup logGroup = AppLogger.StartGroup("Loading the current virtual server config.", NLog.LogLevel.Debug))
-        	{
-        		string path = Config.Application.PhysicalApplicationPath + @"\App_Data\VS\" + StateAccess.State.GetSession("VirtualServerID") + @"\VirtualServer.config";
-        		
-        		AppLogger.Debug("Path: " + path);
-        		AppLogger.Debug("Virtual server name: " + VirtualServerState.VirtualServerName);
-        		AppLogger.Debug("Virtual server ID: " + VirtualServerState.VirtualServerID);
-        		
-	        	if (!VirtualServerState.VirtualServerSelected
-	        		|| StateAccess.State.GetSession("VirtualServerID") == null
-	        		|| StateAccess.State.GetSession("VirtualServerID") == String.Empty
-	        		|| StateAccess.State.GetSession("VirtualServerID") == Guid.Empty.ToString())
-	        	{
-	        		return null;
-	        	}
-	        		
-	        	return (IVirtualServerConfig)ConfigFactory.LoadConfig(path, typeof(VirtualServer));
-        	}
-        }*/
+
 
         /// <summary>
         /// Clears and disposes all configuration objects.
