@@ -47,7 +47,7 @@
         Result.Display(Resources.Language.SettingsUpdated);
 
         // Show the index again
-        Response.Redirect("Settings.aspx");
+            Navigator.Go("Index", "Settings");
     }
 
     #endregion
@@ -68,7 +68,7 @@
             UpdateSettings();
         }
         else
-            Response.Redirect("Settings.aspx");
+            Navigator.Go("Index", "Settings");
     }
 
     private void UpdateButton_Click(object sender, EventArgs e)
@@ -78,7 +78,7 @@
 
     private void CancelButton_Click(object sender, EventArgs e)
     {
-        Response.Redirect("Settings.aspx");
+            Navigator.Go("Index", "Settings");
     }
     #endregion
 
