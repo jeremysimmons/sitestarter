@@ -65,15 +65,6 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// <summary>
 		/// Ensures that the current user is authorised to access an index of entities including the one provided.
 		/// </summary>
-		/// <param name="entity">An entity involved in the index.</param>
-		public override void EnsureAuthorised(IEntity entity)
-		{
-			AuthoriseRetrieveStrategy.New(entity.ShortTypeName).EnsureAuthorised(entity);
-		}
-		
-		/// <summary>
-		/// Ensures that the current user is authorised to access an index of entities including the one provided.
-		/// </summary>
 		/// <param name="entities">The entities in the index.</param>
 		public virtual void EnsureAuthorised(ref IEntity[] entities)
 		{
@@ -105,16 +96,6 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 			EnsureAuthorised(ref e);
 			
 			entities = Collection<T>.ConvertAll(e);
-		}
-		
-		/// <summary>
-		/// Ensures that the current user is authorised to index an entity of the specified type.
-		/// </summary>
-		/// <param name="shortTypeName">The type of entity being indexed.</param>
-		public override void EnsureAuthorised(string shortTypeName)
-		{
-			if (!Authorise(shortTypeName))
-				throw new UnauthorisedException("Index", shortTypeName);
 		}
 		
 		#region New functions
