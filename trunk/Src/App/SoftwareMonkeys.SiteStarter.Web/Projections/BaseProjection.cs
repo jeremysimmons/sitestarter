@@ -236,17 +236,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			CheckAction();
 			CheckType();
 			
-			// TODO: Remove if not needed
-			/*bool isAuthorised = StrategyState.Strategies["Authorise" + InternalAction, Type.Name]
-				.New<IAuthoriseStrategy>(Type.Name).Authorise(Type.Name);
-			*/
-			
-			bool isAuthorised = Security.Authorisation.UserCan(Action, Type.Name);
-			
-			if (RequireAuthorisation && !isAuthorised)
-				FailAuthorisation();
-			
-			return !RequireAuthorisation || isAuthorised;
+			if (RequireAuthorisation)
+			{
+				bool isAuthorised = Security.Authorisation.UserCan(Action, Type.Name);
+				
+				if (!isAuthorised)
+					FailAuthorisation();
+				
+				return !RequireAuthorisation || isAuthorised;
+			}
+			return true;
 		}
 		
 		/// <summary>
