@@ -25,16 +25,6 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		}
 		
 		/// <summary>
-		/// Ensures that the current user is authorised to update an entity of the specified type.
-		/// </summary>
-		/// <param name="shortTypeName">The type of entity being updated.</param>
-		public override void EnsureAuthorised(string shortTypeName)
-		{
-			if (!Authorise(shortTypeName))
-				throw new UnauthorisedException("Update", shortTypeName);
-		}
-		
-		/// <summary>
 		/// Checks whether the current user is authorised to update the provided entity.
 		/// </summary>
 		/// <param name="entity">The entity to be updated.</param>
@@ -48,19 +38,6 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 				return false;
 			
 			return true;
-		}
-		
-		/// <summary>
-		/// Ensures that the current user is authorised to update the entity provided.
-		/// </summary>
-		/// <param name="entity">An entity being updated.</param>
-		public override void EnsureAuthorised(IEntity entity)
-		{
-			if (entity == null)
-				throw new ArgumentNullException("entity");
-			
-			if (!Authorise(entity))
-				throw new UnauthorisedException("Update", entity.ShortTypeName);
 		}
 		
 		#region New functions

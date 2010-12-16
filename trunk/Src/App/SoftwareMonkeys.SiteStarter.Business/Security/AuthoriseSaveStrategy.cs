@@ -24,16 +24,6 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		}
 		
 		/// <summary>
-		/// Ensures that the current user is authorised to save an entity of the specified type.
-		/// </summary>
-		/// <param name="shortTypeName">The type of entity being saved.</param>
-		public override void EnsureAuthorised(string shortTypeName)
-		{
-			if (!Authorise(shortTypeName))
-				throw new UnauthorisedException("Save", shortTypeName);
-		}
-		
-		/// <summary>
 		/// Checks whether the current user is authorised to save the provided entity.
 		/// </summary>
 		/// <param name="entity">The entity to be saved.</param>
@@ -46,17 +36,6 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 			return Authorise(entity.ShortTypeName);
 		}
 		
-		/// <summary>
-		/// Ensures that the current user is authorised to save the entity provided.
-		/// </summary>
-		/// <param name="entity">An entity being saved.</param>
-		public override void EnsureAuthorised(IEntity entity)
-		{
-			if (entity == null)
-				throw new ArgumentNullException("entity");
-			
-			EnsureAuthorised(entity.ShortTypeName);
-		}
 		
 		#region New functions
 		/// <summary>
