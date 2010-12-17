@@ -122,6 +122,11 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			get { return ChildNodes[index]; }
 			set { ChildNodes[index] =(SiteMapNode)value; }
 		}
+		
+		
+		public SiteMap()
+		{
+		}
 
 		#region Load/save functions
 		/// <summary>
@@ -344,17 +349,23 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				SiteMapNode node = new SiteMapNode();
 				
 				node.Title = item.Title;
+				node.Url = item.Url;
 				
 				if (node.Url == String.Empty)
 					node.Url = UrlCreator.CreateUrl(item.Action, item.TypeName);
-
+				
 				AppLogger.Debug("URL: " + node.Url);
 
-				SiteMapNode rootNode = GetNodeByTitle(ChildNodes, "Home");
+				SiteMapNode rootNode = ChildNodes.Count > 0 ? ChildNodes[0] : null;
+				
+				// Choose the appropriate child nodes collection (depending on whether a root node is found)
+				List<SiteMapNode> childNodes = (rootNode != null
+				                                ? rootNode.ChildNodes
+				                                : ChildNodes);
 
 				// Check for an existing node with the same title
 				// TODO: Check if the category property should be chcked too
-				SiteMapNode existingNode = GetNodeByUrl(rootNode.ChildNodes, node.Url);
+				SiteMapNode existingNode = GetNodeByUrl(childNodes, node.Url);
 
 				if (existingNode == null)
 				{
@@ -376,7 +387,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 					else
 					{
 						AppLogger.Debug("Added node to root.");
-						rootNode.ChildNodes.Add(node);
+						childNodes.Add(node);
 					}
 				}
 				else
@@ -395,16 +406,22 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			if (UrlCreator == null)
 				throw new InvalidOperationException("The UrlCreator property has not been initialized.");
 			
-			SiteMapNode rootNode = GetNodeByTitle(ChildNodes, "Home");
-			
 			AppLogger.Debug("Page: " + item.Title);
-
-
-			string url = UrlCreator.CreateUrl(item.Title, item.TypeName);
+			
+			string url = UrlCreator.CreateUrl(item.Action, item.TypeName);
 
 			AppLogger.Debug("URL: " + url);
+			
+			
+			SiteMapNode rootNode = ChildNodes.Count > 0 ? ChildNodes[0] : null;
+			
+			// Choose the appropriate child nodes collection (depending on whether a root node is found)
+			List<SiteMapNode> childNodes = (rootNode != null
+			                                ? rootNode.ChildNodes
+			                                : ChildNodes);
 
-			SiteMapNode existingNode = GetNodeByUrl(rootNode.ChildNodes, url);
+
+			SiteMapNode existingNode = GetNodeByUrl(childNodes, url);
 
 			if (existingNode != null)
 			{
@@ -427,7 +444,11 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				}
 			}
 			else
+			{
 				AppLogger.Debug("Node not found. Skipping remove.");
+				
+				throw new Exception("No existing node found with URL '" + url + "'.");
+			}
 			
 		}
 

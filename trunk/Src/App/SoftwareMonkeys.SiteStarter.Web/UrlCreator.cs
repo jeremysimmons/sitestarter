@@ -115,21 +115,6 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			EnableFriendlyUrls = enableFriendlyUrls;
 			CurrentUrl = currentUrl;
 		}
-		
-		// TODO: Remove if not needed
-		/*/// <summary>
-		/// Creates a URL to the page corresponding with the specified action and specified type.
-		/// </summary>
-		/// <param name="action">The action to be performed at the target page.</param>
-		/// <param name="typeName">The name of the type being acted upon at the target page.</param>
-		/// <returns>The URL to the page handling the provided action in relation to the provided type.</returns>
-		public string CreateActionUrl(string action, string typeName)
-		{
-			if (enableFriendlyUrls)
-				return CreateFriendlyActionUrl(action, typeName);
-			else
-				return CreateStandardActionUrl(action, typeName);
-		}*/
 			
 			#region Friendly URL functions
 			
@@ -222,7 +207,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <param name="action">The action to be performed by following the link.</param>
 		/// <param name="type">The type that the action is dealing with.</param>
 		/// <returns>The rewritten raw URL to be used behind the scenes.</returns>
-		public string CreateUrl(string action, Type type)
+		public virtual string CreateUrl(string action, Type type)
 		{
 			return CreateUrl(action, type.Name);
 		}
@@ -233,7 +218,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <param name="action">The action to be performed by following the link.</param>
 		/// <param name="typeName">The name of the type that the action is dealing with.</param>
 		/// <returns>The rewritten raw URL to be used behind the scenes.</returns>
-		public string CreateUrl(string action, string typeName)
+		public virtual string CreateUrl(string action, string typeName)
 		{
 			if (EnableFriendlyUrls)
 				return CreateFriendlyUrl(action, typeName);
@@ -248,7 +233,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <param name="type">The type that the action is dealing with.</param>
 		/// <param name="entityID">The value of the ID property to filter the type by.</param>
 		/// <returns>The rewritten raw URL to be used behind the scenes.</returns>
-		public string CreateUrl(string action, Type type, Guid entityID)
+		public virtual string CreateUrl(string action, Type type, Guid entityID)
 		{
 			return CreateUrl(action, type.Name, entityID);
 		}
@@ -260,7 +245,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <param name="typeName">The name of the type that the action is dealing with.</param>
 		/// <param name="entityID">The value of the ID property to filter the type by.</param>
 		/// <returns>The rewritten raw URL to be used behind the scenes.</returns>
-		public string CreateUrl(string action, string typeName, Guid entityID)
+		public virtual string CreateUrl(string action, string typeName, Guid entityID)
 		{
 			return CreateUrl(action, typeName, "ID", entityID.ToString());
 		}
@@ -272,7 +257,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <param name="type">The type that the action is dealing with.</param>
 		/// <param name="dataKey">The value of the UniqueKey property to filter the type by.</param>
 		/// <returns>The rewritten raw URL to be used behind the scenes.</returns>
-		public string CreateUrl(string action, Type type, string dataKey)
+		public virtual string CreateUrl(string action, Type type, string dataKey)
 		{
 			return CreateUrl(action, type.Name, dataKey);
 		}
@@ -284,7 +269,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <param name="typeName">The name of the type that the action is dealing with.</param>
 		/// <param name="dataKey">The value of the UniqueKey property to filter the type by.</param>
 		/// <returns>The rewritten raw URL to be used behind the scenes.</returns>
-		public string CreateUrl(string action, string typeName, string dataKey)
+		public virtual string CreateUrl(string action, string typeName, string dataKey)
 		{
 			return CreateUrl(action, typeName, "UniqueKey", dataKey);
 		}

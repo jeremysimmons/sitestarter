@@ -11,5 +11,6 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		string Title { get;set; }
 		string Action { get;set; }
 		string TypeName { get;set; }
+		string Url { get;set; }
 	}
 }
