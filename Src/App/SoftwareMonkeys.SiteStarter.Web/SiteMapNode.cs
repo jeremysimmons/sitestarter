@@ -91,6 +91,12 @@ namespace SoftwareMonkeys.SiteStarter.Web
         	TypeName = typeName;
         }
         
+        public SiteMapNode(string title, string url)
+        {
+        	Title = title;
+        	Url = url;
+        }
+        
         public SiteMapNode(ProjectionInfo projection)
         {
         	Category = projection.MenuCategory;

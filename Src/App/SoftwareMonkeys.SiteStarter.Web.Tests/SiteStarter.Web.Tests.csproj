@@ -157,6 +157,7 @@
     <Compile Include="Projections\ProjectionLocatorTests.cs" />
     <Compile Include="Projections\ProjectionScannerTests.cs" />
     <Compile Include="SetupCheckerTests.cs" />
+    <Compile Include="SiteMapTests.cs" />
     <Compile Include="UrlCreatorTests.cs" />
     <Compile Include="UrlRewriterTests.cs" />
     <Compile Include="WebControls\EntityFormHelperTests.cs" />

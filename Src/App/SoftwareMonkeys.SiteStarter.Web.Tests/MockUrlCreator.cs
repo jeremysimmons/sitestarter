@@ -34,10 +34,34 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
 		
 		public override string CreateUrl(string action, string typeName, string propertyName, string dataKey)
 		{
+			if (action == null || action == String.Empty)
+				throw new ArgumentNullException("action");
+			
+			if (typeName == null || typeName == String.Empty)
+				throw new ArgumentNullException("typeName");
+			
+			if (propertyName == null || propertyName == String.Empty)
+				throw new ArgumentNullException("propertyName");
+			
+			if (dataKey == null || dataKey == String.Empty)
+				throw new ArgumentNullException("dataKey");
+			
 			return "http://localhost/TestApplication/" + EntitiesUtilities.FormatUniqueKey(typeName)
 				+ "/" + EntitiesUtilities.FormatUniqueKey(action)
 				+ "/" + EntitiesUtilities.FormatUniqueKey(propertyName)
 				+ "/" + EntitiesUtilities.FormatUniqueKey(dataKey);
+		}
+		
+		public override string CreateUrl(string action, string typeName)
+		{
+			if (action == null || action == String.Empty)
+				throw new ArgumentNullException("action");
+			
+			if (typeName == null || typeName == String.Empty)
+				throw new ArgumentNullException("typeName");
+			
+			return "http://localhost/TestApplication/" + EntitiesUtilities.FormatUniqueKey(typeName)
+				+ "/" + EntitiesUtilities.FormatUniqueKey(action);
 		}
 	}
 }
