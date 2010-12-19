@@ -87,11 +87,21 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		}
 		
 		/// <summary>
-		/// Loads all the parts found in the parts directory.
+		/// Loads all the enabled parts found in the parts directory.
 		/// </summary>
 		/// <returns>An array of the the parts found in the directory.</returns>
 		public PartInfo[] LoadInfoFromDirectory()
 		{
+			return LoadInfoFromDirectory(false);
+		}
+		
+		/// <summary>
+		/// Loads all the parts found in the parts directory.
+		/// </summary>
+		/// <param name="includeDisabled">A value indicating whether or not to include disabled projections.</param>
+		/// <returns>An array of the the parts found in the directory.</returns>
+		public PartInfo[] LoadInfoFromDirectory(bool includeDisabled)
+		{			
 			List<PartInfo> parts = new List<PartInfo>();
 			
 			using (LogGroup logGroup = AppLogger.StartGroup("Loading the parts info from the XML files.", NLog.LogLevel.Debug))
@@ -100,7 +110,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 				{
 					AppLogger.Debug("File: " + file);
 					
-					parts.Add(LoadFromFile(file));
+					PartInfo part = LoadFromFile(file);
+					if (includeDisabled || part.Enabled)
+						parts.Add(part);
 				}
 			}
 			

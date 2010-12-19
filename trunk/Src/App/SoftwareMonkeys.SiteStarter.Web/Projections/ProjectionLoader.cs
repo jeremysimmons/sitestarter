@@ -4,6 +4,7 @@ using System.Xml.Serialization;
 using SoftwareMonkeys.SiteStarter.Entities;
 using System.Collections.Generic;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using System.Xml;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Projections
 {
@@ -87,10 +88,20 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		}
 		
 		/// <summary>
-		/// Loads all the projections found in the projections directory.
+		/// Loads all the enabled projections found in the projections directory.
 		/// </summary>
 		/// <returns>An array of the the projections found in the directory.</returns>
 		public ProjectionInfo[] LoadInfoFromDirectory()
+		{
+			return LoadInfoFromDirectory(false);
+		}
+		
+		/// <summary>
+		/// Loads all the projections found in the projections directory.
+		/// </summary>
+		/// <param name="includeDisabled">A value indicating whether or not to include disabled projections.</param>
+		/// <returns>An array of the the projections found in the directory.</returns>
+		public ProjectionInfo[] LoadInfoFromDirectory(bool includeDisabled)
 		{
 			List<ProjectionInfo> projections = new List<ProjectionInfo>();
 			
@@ -100,7 +111,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				{
 					AppLogger.Debug("File: " + file);
 					
-					projections.Add(LoadFromFile(file));
+					ProjectionInfo projection = LoadFromFile(file);
+					if (projection.Enabled || includeDisabled)
+						projections.Add(projection);
 				}
 			}
 			
@@ -128,7 +141,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				{
 					XmlSerializer serializer = new XmlSerializer(typeof(ProjectionInfo));
 					
-					info = (ProjectionInfo)serializer.Deserialize(reader);
+					try
+					{
+						info = (ProjectionInfo)serializer.Deserialize(reader);
+					}
+					catch (XmlException ex)
+					{
+						throw new Exception("Can't load projection at '" + projectionPath + "'.", ex);
+					}
 					
 					reader.Close();
 				}

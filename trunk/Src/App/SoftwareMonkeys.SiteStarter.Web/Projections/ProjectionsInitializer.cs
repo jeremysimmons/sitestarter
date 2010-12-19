@@ -143,7 +143,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			};
 		}
 		
-		public ProjectionsInitializer(Page page, BaseProjectionScanner[] scanners)
+		public ProjectionsInitializer(Page page, params BaseProjectionScanner[] scanners)
 		{
 			Page = page;
 			Scanners = scanners;

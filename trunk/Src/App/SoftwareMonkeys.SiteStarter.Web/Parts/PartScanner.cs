@@ -53,10 +53,17 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		/// </summary>
 		public ControlLoader ControlLoader
 		{
-			get {
+			get
+			{
 				if (controlLoader == null)
-					throw new InvalidOperationException("ControlLoader has not been initialized. Pass a Page component as a parameter to the PartScanner constructor and it will automatically initialized the ControlLoader.");
-				return controlLoader; }
+				{
+					if (Page != null)
+						controlLoader = new ControlLoader(Page);
+					else
+						throw new InvalidOperationException("ControlLoader has not been initialized, and cannot initialize automatically because the Page property is null.");
+				}
+				return controlLoader;
+			}
 			set { controlLoader = value; }
 		}
 		
@@ -133,8 +140,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 				
 				info.MenuTitle = p.MenuTitle;
 				info.MenuCategory = p.MenuCategory;
-				info.ShowOnMenu = p.ShowOnMenu;
-				//info.Format = ConvertSubExtensionToFormat(subExtension);
 				
 				parts.Add(info);
 			}

@@ -100,6 +100,7 @@
     <Compile Include="Parts\PartNotFoundException.cs" />
     <Compile Include="Parts\PartSaver.cs" />
     <Compile Include="Parts\PartScanner.cs" />
+    <Compile Include="Parts\PartsDisposer.cs" />
     <Compile Include="Parts\PartsInitializer.cs" />
     <Compile Include="Parts\PartState.cs" />
     <Compile Include="Parts\PartStateCollection.cs" />
@@ -132,6 +133,7 @@
     <Compile Include="Projections\ProjectionNotFoundException.cs" />
     <Compile Include="Projections\ProjectionSaver.cs" />
     <Compile Include="Projections\ProjectionScanner.cs" />
+    <Compile Include="Projections\ProjectionsDisposer.cs" />
     <Compile Include="Projections\ProjectionsInitializer.cs" />
     <Compile Include="Projections\ProjectionStateCollection.cs" />
     <Compile Include="Projections\ProjectionState.cs" />
