@@ -134,8 +134,12 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 				logEntry.AppendFormat("<Component>{0}</Component>\r\n", EscapeLogData(callingMethod.DeclaringType.ToString()));
 				logEntry.AppendFormat("<Method>{0}</Method>\r\n", EscapeLogData(callingMethod.Name));
 				logEntry.AppendFormat("<Data>{0}</Data>\r\n", EscapeLogData(message));
+				
+				// TODO: Skip stack trace here and save it to a separate file, to reduce log size
 				logEntry.AppendFormat("<StackTrace>{0}</StackTrace>\r\n", EscapeLogData(CreateStackTrace()));
+				
 				logEntry.Append("</Entry>\r\n");
+				
 				logEntry.AppendLine();
 			}
 
