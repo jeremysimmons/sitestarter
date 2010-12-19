@@ -99,17 +99,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 			set { menuCategory = value; }
 		}
 		
-		// TODO: Remove if not neede
-		/*private bool showOnMenu;
-		/// <summary>
-		/// Gets/sets a value indicating whether to show the part on the menu.
-		/// </summary>
-		public bool ShowOnMenu
-		{
-			get { return showOnMenu; }
-			set { showOnMenu = value; }
-		}*/
-		
 		private bool enabled = true;
 		/// <summary>
 		/// Gets/sets a value indicating whether the part is enabled.
