@@ -143,7 +143,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 			};
 		}
 		
-		public PartsInitializer(Page page, BasePartScanner[] scanners)
+		public PartsInitializer(Page page, params BasePartScanner[] scanners)
 		{
 			Page = page;
 			Scanners = scanners;

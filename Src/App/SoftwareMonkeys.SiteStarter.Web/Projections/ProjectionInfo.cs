@@ -108,6 +108,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			set { showOnMenu = value; }
 		}
 		
+		private bool enabled = true;
+		/// <summary>
+		/// Gets/sets a value indicating whether the part is enabled.
+		/// </summary>
+		public bool Enabled
+		{
+			get { return enabled; }
+			set { enabled = value; }
+		}
+		
 		public ProjectionInfo()
 		{
 		}

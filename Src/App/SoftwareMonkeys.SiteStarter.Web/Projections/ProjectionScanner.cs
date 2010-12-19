@@ -13,27 +13,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 	/// </summary>
 	public class ProjectionScanner : BaseProjectionScanner
 	{
-		// TODO: Tidy up
-		
-		/*private string projectionsDirectoryName;
-		/// <summary>
-		/// Gets/sets the name of the directory containing the projections.
-		/// </summary>
-		public string ProjectionsDirectoryName
-		{
-			get { return projectionsDirectoryName; }
-			set { projectionsDirectoryName = value; }
-		}
-		
-		/// <summary>
-		/// Gets/sets the full path of the directory containing the projections.
-		/// </summary>
-		public string ProjectionsDirectoryPath
-		{
-			get { return projectionsDirectoryName; }
-			set { projectionsDirectoryName = value; }
-		}*/
-		
 		private ProjectionFileNamer fileNamer;
 		/// <summary>
 		/// Gets/sets the file namer used for generating projection file names and paths.
@@ -55,7 +34,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			get {
 				if (controlLoader == null)
-					throw new InvalidOperationException("ControlLoader has not been initialized. Pass a Page component as a parameter to the ProjectionScanner constructor and it will automatically initialized the ControlLoader.");
+				{
+					if (Page != null)
+						controlLoader = new ControlLoader(Page);
+					else
+						throw new InvalidOperationException("ControlLoader has not been initialized, and cannot initialize automatically because the Page property is null.");
+				}
 				return controlLoader; }
 			set { controlLoader = value; }
 		}
