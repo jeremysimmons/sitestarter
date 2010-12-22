@@ -108,7 +108,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			{
 				new ControllersInitializer().Initialize();
 				new ProjectionsInitializer(Page).Initialize();
-				new PartsInitializer(Page).Initialize();
 			}
 			
 		}
