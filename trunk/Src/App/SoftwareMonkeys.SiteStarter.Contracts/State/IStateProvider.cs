@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftwareMonkeys.SiteStarter.Configuration;
 
 namespace SoftwareMonkeys.SiteStarter.State
 {
@@ -7,5 +8,6 @@ namespace SoftwareMonkeys.SiteStarter.State
 	/// </summary>
 	public interface IStateProvider
 	{
+		string PhysicalApplicationPath { get;set; }
 	}
 }
