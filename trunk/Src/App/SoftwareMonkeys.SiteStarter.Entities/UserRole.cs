@@ -13,13 +13,6 @@ namespace SoftwareMonkeys.SiteStarter.Entities
     [Serializable]
     public class UserRole : BaseUniqueEntity, IUserRole
     {
-    	public override string UniqueKey
-		{
-			get {
-    			return EntitiesUtilities.FormatUniqueKey(Name);
-			}
-		}
-    	
         private string name;
         /// <summary>
         /// Gets/sets the name of the role.
@@ -33,6 +26,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
             set
             {
                 name = value;
+                UniqueKey = value;
             }
         }
 
