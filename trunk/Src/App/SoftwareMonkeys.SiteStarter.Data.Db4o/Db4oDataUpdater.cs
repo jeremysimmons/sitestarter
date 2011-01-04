@@ -32,11 +32,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			using (LogGroup logGroup = AppLogger.StartGroup("Preparing entity to be updated.", NLog.LogLevel.Debug))
 			{
+				if (entity == null)
+					throw new ArgumentNullException("entity");
+				
 				AppLogger.Debug("Entity type: " + entity.GetType().ToString());
 				AppLogger.Debug("Entity ID : " + entity.ID);
 				
-				if (entity == null)
-					throw new ArgumentNullException("entity");
+				entity.PreStore();
 				
 				EntityReferenceCollection latestReferences = Provider.Referencer.GetActiveReferences(entity);
 				

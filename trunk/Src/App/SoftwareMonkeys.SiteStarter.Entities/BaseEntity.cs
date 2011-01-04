@@ -81,5 +81,9 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				}
 			}
 		}
+		
+		public virtual void PreStore()
+		{
+		}
 	}
 }
