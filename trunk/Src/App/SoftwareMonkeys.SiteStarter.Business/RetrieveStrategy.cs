@@ -19,6 +19,54 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		
 		
 		/// <summary>
+		/// Retrieves the entity matching the provided filter group.
+		/// </summary>
+		/// <param name="group"></param>
+		/// <returns></returns>
+		public virtual T Retrieve<T>(FilterGroup group)
+			where T : IEntity
+		{
+			T entity = (T)Retrieve(typeof(T), group);
+			
+			return entity;
+		}
+		
+		/// <summary>
+		/// Retrieves the entity matching the provided filter group.
+		/// </summary>
+		/// <param name="group"></param>
+		/// <returns></returns>
+		public virtual IEntity Retrieve(Type type, FilterGroup group)
+		{
+			IEntity entity = DataAccess.Data.Reader.GetEntity(group);
+			
+			if (RequireAuthorisation && entity != null)
+				AuthoriseRetrieveStrategy.New(type.Name).EnsureAuthorised(entity);
+			
+			return entity;
+		}
+		
+		/// <summary>
+		/// Retrieves the entity matching the provided filter group.
+		/// </summary>
+		/// <param name="group"></param>
+		/// <returns></returns>
+		T IRetrieveStrategy.Retrieve<T>(IFilterGroup group)
+		{
+			return Retrieve<T>((FilterGroup)group);
+		}
+		
+		/// <summary>
+		/// Retrieves the entity matching the provided filter group.
+		/// </summary>
+		/// <param name="group"></param>
+		/// <returns></returns>
+		IEntity IRetrieveStrategy.Retrieve(Type type, IFilterGroup group)
+		{
+			return Retrieve(type, (FilterGroup)group);
+		}
+		
+		/// <summary>
 		/// Retrieves the entity of the specified type with the provided unique key.
 		/// </summary>
 		/// <param name="uniqueKey">The unique key of the entity to retrieve.</param>
