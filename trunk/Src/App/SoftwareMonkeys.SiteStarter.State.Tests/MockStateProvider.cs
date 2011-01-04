@@ -3,6 +3,7 @@ using SoftwareMonkeys.SiteStarter.State;
 using System.Collections.Generic;
 using System.Collections;
 using System.Collections.Specialized;
+using SoftwareMonkeys.SiteStarter.Configuration;
 
 namespace SoftwareMonkeys.SiteStarter.State.Tests
 {
@@ -11,6 +12,16 @@ namespace SoftwareMonkeys.SiteStarter.State.Tests
 	/// </summary>
 	public class MockStateProvider : StateProvider
 	{
+    	private string physicalApplicationPath = String.Empty;
+    	/// <summary>
+    	/// Gets/sets the full physical path to the room of the running application.
+    	/// </summary>
+    	public override string PhysicalApplicationPath
+    	{
+    		get { return physicalApplicationPath; }
+    		set { physicalApplicationPath = value; }
+    	}
+    	
 		private Dictionary<string, object> sessionData;
 		public Dictionary<string, object> SessionData
 		{

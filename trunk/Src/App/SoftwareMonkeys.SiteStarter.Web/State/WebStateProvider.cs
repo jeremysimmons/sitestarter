@@ -16,6 +16,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
 	/// </summary>
     public class WebStateProvider : StateProvider 
     {
+    	private string physicalApplicationPath = String.Empty;
+    	/// <summary>
+    	/// Gets/sets the full physical path to the room of the running application.
+    	/// </summary>
+    	public override string PhysicalApplicationPath
+    	{
+    		get { return physicalApplicationPath; }
+    		set { physicalApplicationPath = value; }
+    	}
+		
     	#region Application state
         public override bool ContainsApplication(string key)
         {
@@ -204,12 +214,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
         	if (key == String.Empty)
         		throw new ArgumentException("The provided key cannot be null or String.Empty.");
         	
-        	if (key != String.Empty && HttpContext.Current != null && HttpContext.Current.Response != null)
+        	if (key != String.Empty && HttpContext.Current != null && HttpContext.Current.Request != null)
         	{
         		HttpCookie cookie = HttpContext.Current.Request.Cookies[key];
         		
         		if (cookie != null)
-	        		return HttpSecureCookie.Decode(cookie).Value;
+        		{
+        			HttpCookie decodedCookie = HttpSecureCookie.Decode(cookie);
+        			if (decodedCookie != null)
+	        			return decodedCookie.Value;
+        		}
         	}
         	
 	        return null;
@@ -252,7 +266,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
         {
             StateAccess.State = this;
             
-
+            PhysicalApplicationPath = HttpContext.Current.Server.MapPath(HttpContext.Current.Request.ApplicationPath);
+            
             base.Initialize(name, config);
         }
 

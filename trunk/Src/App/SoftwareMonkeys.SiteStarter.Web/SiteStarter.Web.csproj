@@ -159,7 +159,7 @@
     <Compile Include="State\Cookies\HttpSecureCookie.cs" />
     <Compile Include="State\Cookies\InvalidCypherTextException.cs" />
     <Compile Include="State\Cookies\MachineKeyCryptography.cs" />
-    <Compile Include="State\StateProviderManager.cs" />
+    <Compile Include="State\StateProviderInitializer.cs" />
     <Compile Include="State\WebStateProvider.cs">
       <SubType>Code</SubType>
     </Compile>
