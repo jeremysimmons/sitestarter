@@ -9,16 +9,14 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
 {
 	[Serializable]
     public class TestArticle : BaseUniqueTestEntity, ITestArticle
-    {
-		public override string UniqueKey {
-    		get { return EntitiesUtilities.FormatUniqueKey(Title); }
-		}
-    	
+    {    	
         private string title;
         public string Title
         {
             get { return title; }
-            set { title = value; }
+            set { title = value;
+            	UniqueKey = value;
+            }
         }
 
         // TODO: Remove if not in use. References don't directly reference IDs

@@ -12,14 +12,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 	/// </summary>
 	[Serializable]
 	public class User : BaseUniqueEntity, IUser
-	{
-		public override string UniqueKey
-		{
-			get {
-				return EntitiesUtilities.FormatUniqueKey(Username);
-			}
-		}
-		
+	{		
 		private string firstName;
 		/// <summary>
 		/// Gets/sets the first name of the user.
@@ -65,7 +58,9 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		public virtual string Username
 		{
 			get { return this.username; }
-			set { this.username = value; }
+			set { this.username = value;
+				UniqueKey = value;
+			}
 		}
 
 		private string password;
