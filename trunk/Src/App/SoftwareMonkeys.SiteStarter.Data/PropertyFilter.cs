@@ -13,7 +13,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 	/// </summary>
     public class PropertyFilter : BaseFilter
     {
-        private FilterOperator _operator;
+        private FilterOperator _operator = FilterOperator.Equal;
         /// <summary>
         /// Gets/sets the base log level for this group.
         /// </summary>
@@ -23,7 +23,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
             set { _operator = value; }
         }
 
-        private string propertyName;
+        private string propertyName = String.Empty;
         /// <summary>
         /// Gets/sets the name of the property being matched.
         /// </summary>
@@ -62,8 +62,12 @@ namespace SoftwareMonkeys.SiteStarter.Data
 	
 		public override bool IsMatch(IEntity entity)
 		{
+			if (entity == null)
+				throw new ArgumentNullException("entity");
+			
 			bool typeMatches = false;
 			Type entityType = entity.GetType();
+			
 			foreach (Type type in Types)
 			{
 				if (type.Equals(entityType)
@@ -75,8 +79,14 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			}
 			
 			PropertyInfo property = entityType.GetProperty(PropertyName);
+			
+			if (property == null)
+				throw new InvalidOperationException("Can't find property '" + PropertyName + "' on type '" + entityType.ToString() + "'.");
+			
 			object value = property.GetValue(entity, null);
-			bool valueMatches = value.Equals(PropertyValue);
+			
+			bool valueMatches = value == PropertyValue
+				|| (value != null && value.Equals(PropertyValue));
 			
 			return typeMatches && valueMatches;
 		}

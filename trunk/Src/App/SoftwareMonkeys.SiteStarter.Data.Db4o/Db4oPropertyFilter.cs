@@ -15,7 +15,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
     /// </summary>
     public class Db4oPropertyFilter : PropertyFilter
     {
-        public override bool IsMatch(IEntity entity)
+    	// TODO: Check if needed
+    	// The base implementation should take care of it
+        /*public override bool IsMatch(IEntity entity)
         {
             bool isMatch = false;
 
@@ -50,7 +52,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
             //}
 
             return isMatch;
-        }
+        }*/
     }
 
 }

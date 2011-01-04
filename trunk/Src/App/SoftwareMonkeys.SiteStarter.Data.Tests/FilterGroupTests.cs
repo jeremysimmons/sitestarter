@@ -45,6 +45,56 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		#region Tests
 		
 		[Test]
+		public void Test_IsMatch_2SubGroups_False()
+		{
+			
+			
+			TestArticle article = new TestArticle();
+			article.ID = Guid.NewGuid();
+			article.Title = "Article1";
+			
+			// Outer group
+			FilterGroup group = new FilterGroup();
+			group.Operator = FilterOperator.And; // BOTH child groups MUST match
+			
+			FilterGroup subGroup1 = new MockFailingFilterGroup();
+			FilterGroup subGroup2 = new MockMatchingFilterGroup();
+			
+			group.Add(subGroup1);
+			group.Add(subGroup2);
+			
+			Assert.IsFalse(subGroup1.IsMatch(article), "First sub group matches when it shouldn't.");
+			Assert.IsTrue(subGroup2.IsMatch(article), "Second sub group doesn't match when it should.");
+			
+			Assert.IsFalse(group.IsMatch(article), "Entire group matched when it shouldn't match");
+		}
+		
+		[Test]
+		public void Test_IsMatch_2SubGroups_True()
+		{
+			
+			
+			TestArticle article = new TestArticle();
+			article.ID = Guid.NewGuid();
+			article.Title = "Article1";
+			
+			// Outer group
+			FilterGroup group = new FilterGroup();
+			group.Operator = FilterOperator.And; // BOTH child groups MUST match
+			
+			FilterGroup subGroup1 = new MockMatchingFilterGroup();
+			FilterGroup subGroup2 = new MockMatchingFilterGroup();
+			
+			group.Add(subGroup1);
+			group.Add(subGroup2);
+			
+			Assert.IsTrue(subGroup1.IsMatch(article), "First sub group doesn't match when it should.");
+			Assert.IsTrue(subGroup2.IsMatch(article), "Second sub group doesn't match when it should.");
+			
+			Assert.IsTrue(group.IsMatch(article), "Entire group failed to match.");
+		}
+		
+		[Test]
 		public void Test_IsMatch_And_True()
 		{
 			TestArticle article = new TestArticle();
@@ -169,157 +219,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		}
 		
 		[Test]
-		public void Test_GetEntityByFilterGroup_PropertyAndReference()
-		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the ReferenceFilter.IsMatch function.", NLog.LogLevel.Debug))
-			{
-				ClearTestEntities();
-				
-				
-				TestArticle article = new TestArticle();
-				article.ID = Guid.NewGuid();
-				article.Title = "Article1";
-				
-				TestCategory category = new TestCategory();
-				category.ID = Guid.NewGuid();
-				category.Name = "Category1";
-				
-				
-				TestArticle article2 = new TestArticle();
-				article2.ID = Guid.NewGuid();
-				article2.Title = "Article2";
-				
-				TestCategory category2 = new TestCategory();
-				category2.ID = Guid.NewGuid();
-				category2.Name = "Category2";
-				
-				article.Categories = new TestCategory[] {category};
-				
-				article2.Categories = new TestCategory[] {category2};
-				
-				DataAccess.Data.Saver.Save(article2);
-				DataAccess.Data.Saver.Save(category2);
-				DataAccess.Data.Saver.Save(article);
-				DataAccess.Data.Saver.Save(category);
-				
-				FilterGroup filterGroup = new FilterGroup();
-				filterGroup.Operator = FilterOperator.And;
-				
-				PropertyFilter filter1 = (PropertyFilter)DataAccess.Data.CreateFilter(typeof(PropertyFilter));
-				filter1.PropertyName = "Title";
-				filter1.PropertyValue = article.Title;
-				filter1.AddType(typeof(TestArticle));
-
-				ReferenceFilter filter2 = (ReferenceFilter)DataAccess.Data.CreateFilter(typeof(ReferenceFilter));
-				filter2.PropertyName = "Categories";
-				filter2.ReferencedEntityID = category.ID;
-				filter2.ReferenceType = typeof(TestCategory);
-				filter2.AddType(typeof(TestArticle));
-				
-				filterGroup.Add(filter1);
-				filterGroup.Add(filter2);
-				
-				
-				
-				
-				Assert.IsTrue(filter1.IsMatch(article), "filter1 (property filter) doesn't match test article.");
-				Assert.IsTrue(filter2.IsMatch(article), "filter2 (reference filter) doesn't match test article.");
-
-				
-				Assert.IsFalse(filter1.IsMatch(article2), "filter1 (property filter) matches article2 when it shouldn't.");
-				Assert.IsFalse(filter2.IsMatch(article2), "filter2 (reference filter) matches article2 when it shouldn't.");
-
-				
-				TestArticle foundArticle = (TestArticle)DataAccess.Data.Reader.GetEntity(filterGroup);
-				
-				
-				Assert.IsNotNull(foundArticle, "foundArticle == null");
-				
-				Assert.AreEqual(article.ID.ToString(), foundArticle.ID.ToString(), "Found article ID doesn't match expected.");
-				
-				
-				//bool isMatch = filter.IsMatch(article);
-				//Assert.IsTrue(isMatch, "The IsMatch function returned false when it should have been true.");
-				ClearTestEntities();
-			}
-		}
-		
-		
-		[Test]
-		public void Test_GetEntityByFilterGroup_PropertyAndReference_Exclude()
-		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the ReferenceFilter.IsMatch function.", NLog.LogLevel.Debug))
-			{
-				ClearTestEntities();
-				
-				TestArticle article = new TestArticle();
-				article.ID = Guid.NewGuid();
-				article.Title = "Article1";
-				
-				TestCategory category = new TestCategory();
-				category.ID = Guid.NewGuid();
-				category.Name = "Category1";
-				
-				
-				TestArticle article2 = new TestArticle();
-				article2.ID = Guid.NewGuid();
-				article2.Title = "Article2";
-				
-				TestCategory category2 = new TestCategory();
-				category2.ID = Guid.NewGuid();
-				category2.Name = "Category2";
-				
-				article.Categories = new TestCategory[] {category};
-				
-				article2.Categories = new TestCategory[] {category2};
-				
-				DataAccess.Data.Saver.Save(article2);
-				DataAccess.Data.Saver.Save(category2);
-				DataAccess.Data.Saver.Save(article);
-				DataAccess.Data.Saver.Save(category);
-				
-				
-				
-				FilterGroup failingFilterGroup = new FilterGroup();
-				failingFilterGroup.Operator = FilterOperator.And;
-				
-				PropertyFilter failingFilter1 = (PropertyFilter)DataAccess.Data.CreateFilter(typeof(PropertyFilter));
-				failingFilter1.PropertyName = "Title";
-				failingFilter1.PropertyValue = article.Title;
-				failingFilter1.AddType(typeof(TestArticle));
-
-				ReferenceFilter failingFilter2 = (ReferenceFilter)DataAccess.Data.CreateFilter(typeof(ReferenceFilter));
-				failingFilter2.PropertyName = "Categories";
-				failingFilter2.ReferencedEntityID = category2.ID;
-				failingFilter2.ReferenceType = typeof(TestCategory);
-				failingFilter2.AddType(typeof(TestArticle));
-				
-				failingFilterGroup.Add(failingFilter1);
-				failingFilterGroup.Add(failingFilter2);
-				
-				
-				
-				//Assert.IsFalse(failingFilter1.IsMatch(article2), "failingFilter1 (property filter) matches when it shouldn't.");
-				//Assert.IsFalse(failingFilter2.IsMatch(article2), "failingFilter2 (reference filter) matches when it shouldn't.");
-
-				
-				//Assert.IsTrue(failingFilter1.IsMatch(article), "failingFilter1 (property filter) doesn't match secondary article when it should.");
-				//Assert.IsTrue(failingFilter2.IsMatch(article), "failingFilter2 (reference filter) doesn't match secondary article when it should.");
-
-				
-				// This next one SHOULD FAIL to return anything
-				TestArticle excludedArticle = (TestArticle)DataAccess.Data.Reader.GetEntity(failingFilterGroup);
-				
-				Assert.IsNull(excludedArticle, "The excludedArticle should be null because it should have failed to match.");
-				
-				
-				//bool isMatch = filter.IsMatch(article);
-				//Assert.IsTrue(isMatch, "The IsMatch function returned false when it should have been true.");
-				ClearTestEntities();
-			}
-		}
-		
-		[Test]
 		[ExpectedException("System.InvalidOperationException")]
 		public void Test_IsMatch_EmptyGroup()
 		{
@@ -333,6 +232,119 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			Assert.IsTrue(group.IsMatch(article), "group failed to match when it should match");
 		}
 		
+		// TODO: Check if needed.
+		// Should be obsolete now due to other unit tests
+		/*
+		[Test]
+		public void Test_2ChildGroups_IsMatch_OuterAnd_SubOr_True()
+		{
+			
+			TestArticle article = new TestArticle();
+			article.ID = Guid.NewGuid();
+			article.Title = "Article1";
+			
+			FilterGroup group = new FilterGroup();
+			group.Operator = FilterOperator.And;
+			
+			PropertyFilter filter1 = new PropertyFilter();
+			filter1.AddType(typeof(TestArticle));
+			filter1.PropertyName = "Title";
+			filter1.PropertyValue = article.Title;
+			
+			Assert.IsTrue(filter1.IsMatch(article), "filter1 failed to match article when it should.");
+			
+			
+			PropertyFilter filter2 = new PropertyFilter();
+			filter2.AddType(typeof(TestArticle));
+			filter2.PropertyName = "Title";
+			filter2.PropertyValue = "MISMATCH"; // This one should fail
+			
+			Assert.IsFalse(filter2.IsMatch(article), "filter2 matched when it should fail.");
+			
+			FilterGroup subGroup1 = new FilterGroup();
+			subGroup1.Operator = FilterOperator.And;
+			subGroup1.Add(filter1);
+			subGroup1.Add(filter2);
+			
+			
+			PropertyFilter filter3 = new PropertyFilter();
+			filter3.AddType(typeof(TestArticle));
+			filter3.PropertyName = "ID";
+			filter3.PropertyValue = article.ID;
+			
+			Assert.IsTrue(filter3.IsMatch(article), "filter3 matched when it should fail.");
+			
+			
+			FilterGroup subGroup2 = new FilterGroup();
+			subGroup2.Operator = FilterOperator.And;
+			subGroup2.Add(filter3);
+			
+			group.Add(subGroup1);
+			group.Add(subGroup2);
+			
+			Assert.IsTrue(group.IsMatch(article), "group failed when it should match");
+		}*/
+		
+		// TODO: Check if needed.
+		// Should be obsolete now due to other unit tests
+		/*
+		[Test]
+		public void Test_2ChildGroups_IsMatch_OuterAnd_SubAnd_False()
+		{
+			
+			TestArticle article = new TestArticle();
+			article.ID = Guid.NewGuid();
+			article.Title = "Article1";
+			
+			// Outer group
+			FilterGroup group = new FilterGroup();
+			group.Operator = FilterOperator.And; // BOTH child groups MUST match
+			
+			// Child group 1 - filter 1
+			PropertyFilter filter1 = new PropertyFilter();
+			filter1.AddType(typeof(TestArticle));
+			filter1.PropertyName = "Title";
+			filter1.PropertyValue = article.Title; // This should match
+			
+			Assert.IsTrue(filter1.IsMatch(article), "filter1 failed to match article when it should.");
+			
+			
+			// Child group 1 - filter 2
+			PropertyFilter filter2 = new PropertyFilter();
+			filter2.AddType(typeof(TestArticle));
+			filter2.PropertyName = "Title";
+			filter2.PropertyValue = "MISMATCH"; // This should fail
+			
+			Assert.IsFalse(filter2.IsMatch(article), "filter2 matched when it should fail.");
+			
+			// Child group 1
+			FilterGroup subGroup1 = new FilterGroup();
+			subGroup1.Operator = FilterOperator.And; // BOTH filters in this group need to succeed for it to match (which they won't in this test)
+			subGroup1.Add(filter1);
+			subGroup1.Add(filter2);
+			
+			
+			// Child group 2 - filter 1
+			PropertyFilter filter3 = new PropertyFilter();
+			filter3.AddType(typeof(TestArticle));
+			filter3.PropertyName = "ID";
+			filter3.PropertyValue = article.ID;
+			
+			Assert.IsTrue(filter3.IsMatch(article), "filter3 failed to match when it should.");
+			
+			// Child grou p2
+			FilterGroup subGroup2 = new FilterGroup();
+			subGroup2.Operator = FilterOperator.And;
+			subGroup2.Add(filter3);
+			
+			group.Add(subGroup1);
+			group.Add(subGroup2);
+			
+			Assert.IsFalse(subGroup1.IsMatch(article), "First sub group matches when it shouldn't.");
+			Assert.IsTrue(subGroup2.IsMatch(article), "Second sub group doesn't match when it should.");
+			
+			Assert.IsFalse(group.IsMatch(article), "Entire group matched when it shouldn't match");
+		}*/
 		#endregion
 
 		private void ClearTestEntities()

@@ -14,7 +14,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 	/// <summary>
 	/// Represents a group of data filters.
 	/// </summary>
-	public class FilterGroup
+	public class FilterGroup : IFilterGroup
 	{
 		
 		private FilterOperator _operator = FilterOperator.And;
@@ -36,6 +36,17 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			get { return filters; }
 			set { filters = value; }
 		}
+		
+		private FilterGroup[] childGroups;
+		/// <summary>
+		/// Gets/sets the child groups.
+		/// </summary>
+		public FilterGroup[] ChildGroups
+		{
+			get { return childGroups; }
+			set { childGroups = value; }
+		}
+		
 		
 		public FilterGroup()
 		{
@@ -70,11 +81,24 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			
 		}
 		
-		
-		public bool IsMatch(IEntity entity)
+		public void Add(FilterGroup group)
 		{
-			if (Filters == null || Filters.Length == 0)
-				throw new InvalidOperationException("Filters have not been added so the group cannot be used to match yet.");
+			if (group == null)
+				throw new ArgumentNullException("group");
+			
+			List<FilterGroup> list = (childGroups == null ? new List<FilterGroup>() : new List<FilterGroup>(childGroups));
+			
+			list.Add(group);
+			childGroups = (FilterGroup[])list.ToArray();
+			
+		}
+		
+		
+		public virtual bool IsMatch(IEntity entity)
+		{
+			if ((Filters == null || Filters.Length == 0)
+			    && (ChildGroups == null || ChildGroups.Length == 0))
+				throw new InvalidOperationException("No filters or child groups have been added so IsMatch cannot execute.");
 			
 			bool isMatch = false;
 			
@@ -93,30 +117,57 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			
 			//	AppLogger.Debug("# of filters: " + Filters.Length);
 			// If there are no filters then match all
-			if (Filters == null || Filters.Length == 0)
+			if ((Filters == null || Filters.Length == 0)
+			    && (ChildGroups == null || ChildGroups.Length == 0))
 			{
 				isMatch = true;
 			}
 			else
 			{
-				foreach (IDataFilter filter in this.Filters)
+				if (Filters != null)
 				{
-					//		using (LogGroup logGroup2 = AppLogger.StartGroup("Checking individual filter.", NLog.LogLevel.Debug))
-					//		{
-					if (filter.IsMatch(entity))
+					foreach (IDataFilter filter in this.Filters)
 					{
-						//				AppLogger.Debug("Filter matches. At least one of the filters match. anyMatch = true");
-						// At least one entity matches to anyMatch gets set to true
-						anyMatch = true;
+						//		using (LogGroup logGroup2 = AppLogger.StartGroup("Checking individual filter.", NLog.LogLevel.Debug))
+						//		{
+						if (filter.IsMatch(entity))
+						{
+							//				AppLogger.Debug("Filter matches. At least one of the filters match. anyMatch = true");
+							// At least one entity matches to anyMatch gets set to true
+							anyMatch = true;
+						}
+						else
+						{
+							//				AppLogger.Debug("Filter failed. At least one of the filters fail. allMatch = false");
+							// At least one entity FAILED to match to allMatch gets set to false
+							allMatch = false;
+						}
+						//}
+						
 					}
-					else
+				}
+				
+				if (ChildGroups != null)
+				{
+					foreach (FilterGroup group in this.ChildGroups)
 					{
-						//				AppLogger.Debug("Filter failed. At least one of the filters fail. allMatch = false");
-						// At least one entity FAILED to match to allMatch gets set to false
-						allMatch = false;
+						//		using (LogGroup logGroup2 = AppLogger.StartGroup("Checking individual filter.", NLog.LogLevel.Debug))
+						//		{
+						if (group.IsMatch(entity))
+						{
+							//				AppLogger.Debug("Filter matches. At least one of the filters match. anyMatch = true");
+							// At least one entity matches to anyMatch gets set to true
+							anyMatch = true;
+						}
+						else
+						{
+							//				AppLogger.Debug("Filter failed. At least one of the filters fail. allMatch = false");
+							// At least one entity FAILED to match to allMatch gets set to false
+							allMatch = false;
+						}
+						//}
+						
 					}
-					//}
-					
 				}
 				
 				if (Operator == FilterOperator.Or)

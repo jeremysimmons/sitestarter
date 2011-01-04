@@ -55,12 +55,23 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		}
 
 		/// <summary>
-		/// Sets the provided property name and property value to the filter.
+		/// Sets the provided values.
 		/// </summary>
-		public ReferenceFilter(Type type, string propertyName, Guid referencedEntityID, Type referenceType)
+		public ReferenceFilter(Type type, string propertyName, Type referenceType, Guid referencedEntityID)
 		{
 			Types = new Type[] {type};
 			ReferenceType = referenceType;
+			PropertyName = propertyName;
+			ReferencedEntityID = referencedEntityID;
+		}
+		
+		/// <summary>
+		/// Sets the provided values.
+		/// </summary>
+		public ReferenceFilter(Type type, string propertyName, string referenceType, Guid referencedEntityID)
+		{
+			Types = new Type[] {type};
+			ReferenceType = Entities.EntityState.GetType(referenceType);
 			PropertyName = propertyName;
 			ReferencedEntityID = referencedEntityID;
 		}
