@@ -16,5 +16,6 @@ namespace SoftwareMonkeys.SiteStarter.Entities
         void Strip();
         IEntity Clone();
         void CopyTo(IEntity entity);
+        void PreStore();
     }
 }
