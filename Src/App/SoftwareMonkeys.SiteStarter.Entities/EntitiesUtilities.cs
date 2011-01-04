@@ -668,6 +668,9 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			if (propertyName == "ID")
 				return "id";
 			
+			if (propertyName == "UniqueKey")
+				return "uniqueKey";
+			
 			// Create a camel case field name
 			string fieldName1 = ToCamelCase(propertyName);
 			

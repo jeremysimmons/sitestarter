@@ -74,8 +74,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 			List<EntityInfo> entities = new List<EntityInfo>();
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Finding entities by scanning the attributes of the available type.", NLog.LogLevel.Debug))
-			{
+			//using (LogGroup logGroup = AppLogger.StartGroup("Finding entities by scanning the attributes of the available type.", NLog.LogLevel.Debug))
+			//{
 				foreach (string assemblyPath in AssemblyPaths)
 				{
 					try
@@ -86,13 +86,13 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 						{
 							if (IsEntity(type))
 							{
-								AppLogger.Debug("Found entity type: " + type.ToString());
+								//AppLogger.Debug("Found entity type: " + type.ToString());
 								
 								EntityInfo entityInfo = new EntityInfo(type);
 								
 								if (entityInfo.TypeName != null && entityInfo.TypeName != String.Empty)
 								{
-									AppLogger.Debug("Found match.");
+									//AppLogger.Debug("Found match.");
 									
 									entities.Add(entityInfo);
 								}
@@ -105,7 +105,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 					}
 					
 				}
-			}
+			//}
 			
 			return entities.ToArray();
 		}
@@ -122,21 +122,17 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			//bool isNotInterface = false;
 			//bool isNotBaseEntity = false;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Checks whether the provided type is a entity.", NLog.LogLevel.Debug))
-			{
-				AppLogger.Debug("Type: " + type.ToString());
+			//using (LogGroup logGroup = AppLogger.StartGroup("Checks whether the provided type is a entity.", NLog.LogLevel.Debug))
+			//{
+			//	AppLogger.Debug("Type: " + type.ToString());
 				
 				matchesInterface = typeof(IEntity).IsAssignableFrom(type)
 					|| type.GetInterface("IEntity") != null
 					|| type.Name == "IEntity";
 				
-				//isNotInterface = !type.IsInterface;
 				
-				//isNotBaseEntity = (type != typeof(BaseEntity));
-				
-				AppLogger.Debug("Matches interface: " + matchesInterface);
-				//AppLogger.Debug("Is not entity interface: " + isNotInterface);
-			}
+			//	AppLogger.Debug("Matches interface: " + matchesInterface);
+			//}
 			
 			return matchesInterface;
 		}
