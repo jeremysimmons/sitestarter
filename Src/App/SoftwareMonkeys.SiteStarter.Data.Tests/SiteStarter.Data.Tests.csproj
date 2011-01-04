@@ -139,6 +139,9 @@
     <Compile Include="FilterGroupTests.cs" />
     <Compile Include="FilterTests.cs" />
     <Compile Include="MockDataProviderInitializer.cs" />
+    <Compile Include="MockFailingFilterGroup.cs" />
+    <Compile Include="MockMatchingFilterGroup.cs" />
+    <Compile Include="PropertyFilterTests.cs" />
     <Compile Include="ReferenceFilterTests.cs" />
     <Compile Include="ReferenceValidatorTests.cs" />
     <Compile Include="DataSchemaTests.cs" />

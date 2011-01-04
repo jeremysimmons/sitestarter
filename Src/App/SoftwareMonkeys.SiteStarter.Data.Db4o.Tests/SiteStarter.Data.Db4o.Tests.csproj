@@ -144,6 +144,7 @@
     <Compile Include="Db4oDataReaderTests.cs" />
     <Compile Include="Db4oDataUtilitiesTests.cs" />
     <Compile Include="Db4oEntityFileNamerTests.cs" />
+    <Compile Include="Db4oPropertyFilterTests.cs" />
     <Compile Include="Db4oReferenceFilterTests.cs" />
     <Compile Include="Db4oDataReferencerTests.cs" />
     <Compile Include="Db4oDataSaverTests.cs" />

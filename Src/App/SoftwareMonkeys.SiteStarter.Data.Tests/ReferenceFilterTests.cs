@@ -50,7 +50,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the ReferenceFilter.IsMatch function.", NLog.LogLevel.Debug))
 			{
-				ClearTestEntities();
 				
 				TestArticle article = new TestArticle();
 				article.ID = Guid.NewGuid();
@@ -75,7 +74,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				bool isMatch = filter.IsMatch(article);
 				Assert.IsTrue(isMatch, "The IsMatch function returned false when it should have been true.");
 				
-				ClearTestEntities();
 			}
 		}
 		
@@ -85,8 +83,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the ReferenceFilter.IsMatch function.", NLog.LogLevel.Debug))
 			{
-				ClearTestEntities();
-				
 				TestArticle article = new TestArticle();
 				article.ID = Guid.NewGuid();
 				
@@ -119,24 +115,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				bool isMatch = filter.IsMatch(article2);
 				Assert.IsFalse(isMatch, "The IsMatch function returned true when it should have been false.");
 				
-				ClearTestEntities();
 			}
 		}
 		#endregion
-
-		private void ClearTestEntities()
-		{
-			Type[] types = new Type[] { typeof(TestEntity), typeof(EntityThree), typeof(EntityFour) };
-
-			Collection<IEntity> entities = new Collection<IEntity>();
-			foreach (Type type in types)
-				entities.Add((IEntity[])DataAccess.Data.Indexer.GetEntities(type));
-
-			foreach (IEntity entity in entities)
-			{
-				DataAccess.Data.Deleter.Delete(entity);
-			}
-		}
 
 
 	}
