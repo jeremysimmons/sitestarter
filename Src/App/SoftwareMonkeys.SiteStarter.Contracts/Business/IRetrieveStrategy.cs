@@ -1,6 +1,7 @@
 ﻿using System;
 using SoftwareMonkeys.SiteStarter.Entities;
 using System.Collections.Generic;
+using SoftwareMonkeys.SiteStarter.Data;
 
 namespace SoftwareMonkeys.SiteStarter.Business
 {
@@ -8,6 +9,21 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// </summary>
 	public interface IRetrieveStrategy : IStrategy
 	{
+		
+		/// <summary>
+		/// Retrieves the entity matching the provided filter group.
+		/// </summary>
+		/// <param name="group"></param>
+		/// <returns></returns>
+		T Retrieve<T>(IFilterGroup group)
+			where T : IEntity;
+		
+		/// <summary>
+		/// Retrieves the entity matching the provided filter group.
+		/// </summary>
+		/// <param name="group"></param>
+		/// <returns></returns>
+		IEntity Retrieve(Type type, IFilterGroup group);
 		
 		/// <summary>
 		/// Retrieves the entity of the specified type with the provided unique key.
