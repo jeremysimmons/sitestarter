@@ -10,7 +10,7 @@ using NLog;
 
 namespace SoftwareMonkeys.SiteStarter.Web.State
 {
-	public class StateProviderManager
+	public class StateProviderInitializer
 	{
 		//Initialization related variables and logic
 		private static bool isInitialized = false;
@@ -18,7 +18,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
 
 		private static object initializationLock = new object();
 
-		static StateProviderManager()
+		static StateProviderInitializer()
 		{
 			Initialize();
 		}

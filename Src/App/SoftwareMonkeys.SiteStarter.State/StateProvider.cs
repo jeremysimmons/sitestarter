@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Collections.Specialized;
 using System.Configuration.Provider;
+using SoftwareMonkeys.SiteStarter.Configuration;
 
 namespace SoftwareMonkeys.SiteStarter.State
 {
@@ -33,5 +34,7 @@ namespace SoftwareMonkeys.SiteStarter.State
         public abstract void RemoveUser(string key);
         
         public abstract string[] GetKeys(StateScope scope);
+        
+        public abstract string PhysicalApplicationPath { get;set; }
     }
 }
