@@ -29,6 +29,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Preparing entity for saving: " + entity.GetType().ToString(), NLog.LogLevel.Debug))
 			{
+				entity.PreStore();
+				
 				if (entity == null)
 					throw new ArgumentNullException("entity");
 				
