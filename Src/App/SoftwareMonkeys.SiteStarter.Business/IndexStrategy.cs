@@ -13,17 +13,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// </summary>
 	[Strategy("Index", "IEntity")]
 	public class IndexStrategy : BaseStrategy, IIndexStrategy
-	{
-		private int absoluteTotal;
-		/// <summary>
-		/// Gets/sets the absolute total number of entities found (including those on other pages).
-		/// </summary>
-		public int AbsoluteTotal
-		{
-			get { return absoluteTotal; }
-			set { absoluteTotal = value; }
-		}
-		
+	{		
 		private bool enablePaging;
 		/// <summary>
 		/// Gets/sets a value indicating whether paging is enabled on the index.
@@ -31,7 +21,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public bool EnablePaging
 		{
 			get {
-				return enablePaging && PageSize > 0; }
+				return enablePaging; }
 			set { enablePaging = value; }
 		}
 		
@@ -45,24 +35,23 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			set { sortExpression = value; }
 		}
 		
-		private int currentPageIndex;
+		private PagingLocation location;
 		/// <summary>
-		/// Gets/sets the current page index.
+		/// Gets/sets the current paging location.
 		/// </summary>
-		public int CurrentPageIndex
+		public PagingLocation Location
 		{
-			get { return currentPageIndex; }
-			set { currentPageIndex = value; }
+			get {
+				if (location == null)
+					location = new PagingLocation(0, 10);
+				return location; }
+			set { location = value; }
 		}
 		
-		private int pageSize;
-		/// <summary>
-		/// Gets/sets the number of items on each page.
-		/// </summary>
-		public int PageSize
+		IPagingLocation IIndexStrategy.Location
 		{
-			get { return pageSize; }
-			set { pageSize = value; }
+			get { return location; }
+			set { location = (PagingLocation)value; }
 		}
 		
 		/// <summary>
@@ -99,9 +88,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			if (EnablePaging)
 			{
-				PagingLocation location = new PagingLocation(CurrentPageIndex, PageSize);
-				
-				entities = (T[])DataAccess.Data.Indexer.GetPageOfEntitiesWithReference<T>(propertyName, EntitiesUtilities.GetType(referencedEntityType), referencedEntityID, location, sortExpression);
+				entities = (T[])DataAccess.Data.Indexer.GetPageOfEntitiesWithReference<T>(propertyName, EntitiesUtilities.GetType(referencedEntityType), referencedEntityID, Location, sortExpression);
 			}
 			else
 			{
@@ -153,17 +140,11 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			if (EnablePaging)
 			{
-				PagingLocation location = new PagingLocation(CurrentPageIndex, PageSize);
-				
-				collection.AddRange(DataAccess.Data.Indexer.GetPageOfEntities<T>(location, SortExpression));
-				
-				AbsoluteTotal = location.AbsoluteTotal;
+				collection.AddRange(DataAccess.Data.Indexer.GetPageOfEntities<T>(Location, SortExpression));
 			}
 			else
 			{
 				collection.AddRange(DataAccess.Data.Indexer.GetEntities<T>());
-				
-				AbsoluteTotal = collection.Count;
 			}
 			
 			
@@ -244,27 +225,46 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public virtual T[] Index<T>(Dictionary<string, object> filterValues)
 			where T : IEntity
 		{
+			return Index<T>(new FilterGroup(typeof(T), filterValues));
+		}
+		
+		
+		/// <summary>
+		/// Retrieves the entities matching the provided filter group.
+		/// </summary>
+		/// <param name="group"></param>
+		/// <returns></returns>
+		public virtual T[] Index<T>(FilterGroup group)
+			where T : IEntity
+		{
 			T[] entities = new T[]{};
 			
 			if (EnablePaging)
 			{
-				PagingLocation location = new PagingLocation(CurrentPageIndex, PageSize);
+				entities = Collection<T>.ConvertAll(DataAccess.Data.Indexer.GetPageOfEntities<T>(group, Location, SortExpression));
 				
-				entities = Collection<T>.ConvertAll(DataAccess.Data.Indexer.GetPageOfEntities<T>(new FilterGroup(typeof(T), filterValues), location, SortExpression));
 				
-				AbsoluteTotal = location.AbsoluteTotal;
 			}
 			else
 			{
-				entities = Collection<T>.ConvertAll(DataAccess.Data.Indexer.GetEntities<T>(new FilterGroup(typeof(T), filterValues), SortExpression));
+				entities = Collection<T>.ConvertAll(DataAccess.Data.Indexer.GetEntities<T>(group, SortExpression));
 				
-				AbsoluteTotal = entities.Length;
 			}
 			
 			if (RequireAuthorisation)
 				AuthoriseIndexStrategy.New<T>().EnsureAuthorised(ref entities);
 			
 			return entities;
+		}
+		
+		/// <summary>
+		/// Retrieves the entities matching the provided filter group.
+		/// </summary>
+		/// <param name="group"></param>
+		/// <returns></returns>
+		T[] IIndexStrategy.Index<T>(IFilterGroup group)
+		{
+			return this.Index<T>((FilterGroup)group);
 		}
 		
 		
@@ -293,8 +293,21 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			IIndexStrategy strategy = StrategyState.Strategies.Creator.NewIndexer(typeof(T).Name);
 			strategy.EnablePaging = true;
-			strategy.CurrentPageIndex = location.PageIndex;
-			strategy.PageSize = location.PageSize;
+			strategy.Location = location;
+			strategy.SortExpression = sortExpression;
+			
+			return strategy;
+		}
+		
+		/// <summary>
+		/// Creates a new strategy for indexing a single page of entities the specified type.
+		/// </summary>
+		static public IIndexStrategy New<T>(PagingLocation location, string sortExpression, bool requireAuthorisation)
+		{
+			IIndexStrategy strategy = StrategyState.Strategies.Creator.NewIndexer(typeof(T).Name);
+			strategy.EnablePaging = true;
+			strategy.Location = location;
+			strategy.RequireAuthorisation = requireAuthorisation;
 			strategy.SortExpression = sortExpression;
 			
 			return strategy;
@@ -323,6 +336,19 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			return strategy;
 		}
 		
+		/// <summary>
+		/// Creates a new strategy for indexing a single page of entities the specified type.
+		/// </summary>
+		static public IIndexStrategy New(PagingLocation location, string typeName, string sortExpression, bool requireAuthorisation)
+		{
+			IIndexStrategy strategy = StrategyState.Strategies.Creator.NewIndexer(typeName);
+			strategy.EnablePaging = true;
+			strategy.Location = location;
+			strategy.RequireAuthorisation = requireAuthorisation;
+			strategy.SortExpression = sortExpression;
+			
+			return strategy;
+		}
 		#endregion
 	}
 }
