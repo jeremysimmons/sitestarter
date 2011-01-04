@@ -7,8 +7,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 	/// </summary>
 	public interface IPagingLocation
 	{
-		int PageSize {get;}
-		int PageIndex {get;}
-		int AbsoluteTotal {get;}
+		int PageSize {get;set;}
+		int PageIndex {get;set;}
+		int AbsoluteTotal {get;set;}
 	}
 }
