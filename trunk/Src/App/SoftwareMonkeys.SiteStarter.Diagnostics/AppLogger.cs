@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Configuration;
 using SoftwareMonkeys.SiteStarter.State;
 //using Microsoft.Practices.EnterpriseLibrary.Logging;
+using System.IO;
 
 namespace SoftwareMonkeys.SiteStarter.Diagnostics
 {
@@ -37,18 +38,19 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		#region Write functions
 
 		public static void WriteGroup(string message, MethodBase callingMethod, NLog.LogLevel level, Guid groupID)
-		{
+		{			
 			/*LogEntry log = new LogEntry();
 			log.Message = FormatLogEntry(level, message, callingMethod, groupID, Indent-1);
 			log.Categories.Add("General");
 			log.Priority = 1;
 			Microsoft.Practices.EnterpriseLibrary.Logging.Logger.Write(log);*/
 			if (level == NLog.LogLevel.Info)
-				logger.Info(FormatLogEntry(LogLevel.Info, message, callingMethod, groupID, Indent-1));
+				logger.Info(CreateLogEntry(LogLevel.Info, message, callingMethod, groupID, Indent-1));
 			else if (level == NLog.LogLevel.Debug)
-				logger.Debug(FormatLogEntry(LogLevel.Debug, message, callingMethod, groupID, Indent-1));
+				logger.Debug(CreateLogEntry(LogLevel.Debug, message, callingMethod, groupID, Indent-1));
 			else
 				throw new NotSupportedException("Invalid level.");
+						
 		}
 		
 		public static void Error(string message)
@@ -65,7 +67,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			log.Categories.Add("General");
 			log.Priority = 1;
 			Microsoft.Practices.EnterpriseLibrary.Logging.Logger.Write(log);*/
-			logger.Error(FormatLogEntry(LogLevel.Error, message, callingMethod, Guid.NewGuid(), Indent));
+			logger.Error(CreateLogEntry(LogLevel.Error, message, callingMethod, Guid.NewGuid(), Indent));
 		}
 
 		public static void Info(string message)
@@ -81,7 +83,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			log.Categories.Add("General");
 			log.Priority = 1;
 			Microsoft.Practices.EnterpriseLibrary.Logging.Logger.Write(log);*/
-			logger.Info(FormatLogEntry(LogLevel.Info, message, callingMethod, Guid.NewGuid(), Indent));
+			logger.Info(CreateLogEntry(LogLevel.Info, message, callingMethod, Guid.NewGuid(), Indent));
 		}
 
 		[ Conditional("DEBUG") ]
@@ -102,14 +104,14 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 				log.Priority = 1;
 				log.Priority = 1;
 				Microsoft.Practices.EnterpriseLibrary.Logging.Logger.Write(log);*/
-				logger.Info(FormatLogEntry(LogLevel.Debug, message, callingMethod, Guid.NewGuid(), Indent));
+				logger.Info(CreateLogEntry(LogLevel.Debug, message, callingMethod, Guid.NewGuid(), Indent));
 			}
 		}
 
 		#endregion
 		
 		
-		private static string FormatLogEntry(
+		private static string CreateLogEntry(
 			LogLevel logLevel,
 			string message,
 			MethodBase callingMethod,
@@ -136,14 +138,46 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 				logEntry.AppendFormat("<Data>{0}</Data>\r\n", EscapeLogData(message));
 				
 				// TODO: Skip stack trace here and save it to a separate file, to reduce log size
-				logEntry.AppendFormat("<StackTrace>{0}</StackTrace>\r\n", EscapeLogData(CreateStackTrace()));
+				// TODO: Check if needed. Should be obsolete
+				//logEntry.AppendFormat("<StackTrace>{0}</StackTrace>\r\n", EscapeLogData());
 				
 				logEntry.Append("</Entry>\r\n");
 				
 				logEntry.AppendLine();
 			}
+			
+			SaveStackTrace(id);
 
 			return logEntry.ToString();
+		}
+		
+		private static void SaveStackTrace(Guid id)
+		{
+			string trace = CreateStackTrace();
+			
+			string path = GetStackTracePath(id);
+			
+			if (!Directory.Exists(Path.GetDirectoryName(path)))
+				Directory.CreateDirectory(Path.GetDirectoryName(path));
+			
+			using (StreamWriter writer = File.CreateText(path))
+			{
+				writer.Write(trace);
+				writer.Close();
+			}
+		}
+		
+		private static string GetStackTraceDirectoryPath()
+		{
+			return StateAccess.State.PhysicalApplicationPath + Path.DirectorySeparatorChar + "App_Data"
+				+ Path.DirectorySeparatorChar + "Logs"
+				+ Path.DirectorySeparatorChar + DateTime.Now.ToString("yyyy-MM-dd")
+				+ Path.DirectorySeparatorChar + "StackTrace";
+		}
+		
+		private static string GetStackTracePath(Guid id)
+		{
+			return GetStackTraceDirectoryPath() + Path.DirectorySeparatorChar + id.ToString() + ".trace";
 		}
 		
 		private static string CreateStackTrace()
