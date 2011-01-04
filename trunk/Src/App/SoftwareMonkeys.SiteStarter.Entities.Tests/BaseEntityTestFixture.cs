@@ -21,7 +21,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 		}
 		
 		
-		protected void InitializeMockEntities()
+		protected virtual void InitializeMockEntities()
 		{
 			string testsAssemblyPath = Assembly.Load("SoftwareMonkeys.SiteStarter.Tests").Location;
 			
