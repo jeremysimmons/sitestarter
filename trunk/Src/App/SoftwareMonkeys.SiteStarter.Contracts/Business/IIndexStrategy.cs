@@ -1,6 +1,7 @@
 ﻿using System;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Business;
+using SoftwareMonkeys.SiteStarter.Data;
 using System.Collections.Generic;
 
 namespace SoftwareMonkeys.SiteStarter.Business
@@ -20,7 +21,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		bool EnablePaging {get;set;}
 		
-		/// <summary>
+		// TODO: Clean up
+		/*/// <summary>
 		/// Gets/sets the index of the current page.
 		/// </summary>
 		int CurrentPageIndex {get;set;}
@@ -34,6 +36,12 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// Gets/sets the absolute total number of entities found (including those on other pages).
 		/// </summary>
 		int AbsoluteTotal {get;set;}
+		*/
+			
+			/// <summary>
+			/// Gets/sets the current paging location.
+			/// </summary>
+			IPagingLocation Location { get;set; }
 		
 		/// <summary>
 		/// Retrieves the entities of the specified type.
@@ -97,6 +105,15 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="propertyValue">The value of the property to match the filter values by.</param>
 		/// <returns>The entities with properties matching the specified value.</returns>
 		T[] Index<T>(string propertyName, object propertyValue)
+			where T : IEntity;
+		
+		
+		/// <summary>
+		/// Retrieves the entities matching the provided filter group.
+		/// </summary>
+		/// <param name="group"></param>
+		/// <returns></returns>
+		T[] Index<T>(IFilterGroup group)
 			where T : IEntity;
 		
 	}
