@@ -332,18 +332,18 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// Creates a filter object used to match entities by checking that a specified property matches a specified value.
 		/// </summary>
 		/// <returns></returns>
-		public virtual IDataFilter CreatePropertyFilter()
+		public virtual PropertyFilter CreatePropertyFilter()
 		{
-			return CreateFilter(typeof(PropertyFilter));
+			return (PropertyFilter)CreateFilter(typeof(PropertyFilter));
 		}
 		
 		/// <summary>
 		/// Creates a filter object used to match entities by checking that a specified reference property is associated with a specified referenced entity.
 		/// </summary>
 		/// <returns></returns>
-		public virtual IDataFilter CreateReferenceFilter()
+		public virtual ReferenceFilter CreateReferenceFilter()
 		{
-			return CreateFilter(typeof(ReferenceFilter));
+			return (ReferenceFilter)CreateFilter(typeof(ReferenceFilter));
 		}
 		
 		/// <summary>
