@@ -32,12 +32,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			EntityReferenceCollection collection = new EntityReferenceCollection();
 			
-			// TODO: Clean up
-			//(EntityReferenceCollection)Reflector.CreateGenericObject(typeof(EntityReferenceCollection<,>),
-			//                        new Type[] {entity.GetType(),
-			//              	referenceType},
-			//              new object[] { entity });
-			
 			// Commented out logging to improve performance
 			//using (LogGroup logGroup = AppLogger.StartGroup("Retrieving references.", NLog.LogLevel.Debug))
 			//{
@@ -86,13 +80,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 						query2.Descend("entity1ID").Constrain(referenceEntityID).Equal().And(
 							query2.Descend("property1Name").Constrain(mirrorPropertyName).Equal().And(
 								query2.Descend("type1Name").Constrain(EntitiesUtilities.GetShortType(referenceType.Name)).Equal())))));
-			
-			//IConstraint c2 = query2.Descend("entity2ID").Constrain(entityID).Equal().And(
-			//	query2.Descend("entity1ID").Constrain(referenceEntityID).Equal());
-			
-			//ssquery2.Constrain(c2);
-			
-			
 			
 			
 			
@@ -240,86 +227,154 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			EntityReferenceCollection collection = new EntityReferenceCollection();
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving references.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = AppLogger.StartGroup("Retrieving references.", NLog.LogLevel.Debug))
+			//{
+			
+			if (entityType == null)
+				throw new ArgumentNullException("entityType");
+			
+			if (entityID == Guid.Empty)
+				throw new ArgumentNullException("entityID");
+			
+			if (referenceType == null)
+				throw new ArgumentNullException("referenceType");
+			
+			//AppLogger.Debug("Entity type: " + entityType.ToString());
+			//AppLogger.Debug("Reference type: " + referenceType.ToString());
+			
+			Db4oDataStore dataStore = (Db4oDataStore)GetDataStore(entityType.Name, referenceType.Name);
+			
+			if(dataStore.DoesExist)
 			{
-				
-				if (entityType == null)
-					throw new ArgumentNullException("entityType");
-				
-				if (entityID == Guid.Empty)
-					throw new ArgumentNullException("entityID");
-				
-				if (referenceType == null)
-					throw new ArgumentNullException("referenceType");
-				
-				AppLogger.Debug("Entity type: " + entityType.ToString());
-				AppLogger.Debug("Reference type: " + referenceType.ToString());
-				
-				Db4oDataStore dataStore = (Db4oDataStore)GetDataStore(entityType.Name, referenceType.Name);
-				
-				if(dataStore.DoesExist)
-				{
-					// Load the references from the data store
-					IList<EntityIDReference> list = dataStore.ObjectContainer.Query<EntityIDReference>(
+				// Load the references from the data store
+				/*IList<EntityIDReference> list = dataStore.ObjectContainer.Query<EntityIDReference>(
 						delegate(EntityIDReference reference)
 						{
-							return reference.Includes(entityID, propertyName);
-						});
-					
-					if (list.Count == 0){
-						AppLogger.Debug("No references loaded from the data store.");
-					}
-					else
+							return (entityID.Equals(reference.Entity1ID) && propertyName.Equals(reference.Property1Name))
+								|| (entityID.Equals(reference.Entity2ID) && propertyName.Equals(reference.Property2Name));
+						//	return reference.Includes(entityID, propertyName);
+						});*/
+				
+				EntityIDReferenceCollection list = new EntityIDReferenceCollection();
+				
+				IQuery query1 = dataStore.ObjectContainer.Query();
+				query1.Constrain(typeof(EntityIDReference));
+				//query1.Constrain(query1.Descend("entity1ID").Constrain(entityID).Equal());
+				
+				query1.Descend("entity1ID").Constrain(entityID).Equal().And(
+					query1.Descend("property1Name").Constrain(propertyName).Equal().And(
+						query1.Descend("type1Name").Constrain(EntitiesUtilities.GetShortType(entityType.Name)).Equal().And(
+							query1.Descend("type2Name").Constrain(EntitiesUtilities.GetShortType(referenceType.Name)).Equal())));
+				
+				
+				//query1.Descend("entity1ID").Constrain(entityID).Equal().And(
+				//	query1.Descend("entity2ID").Constrain(referenceEntityID).Equal());
+				
+				IQuery query2 = dataStore.ObjectContainer.Query();
+				query2.Constrain(typeof(EntityIDReference));
+				//query2.Constrain(query2.Descend("entity2ID").Constrain(entityID).Equal());
+				
+				query2.Descend("entity2ID").Constrain(entityID).Equal().And(
+					query2.Descend("property2Name").Constrain(propertyName).Equal().And(
+						query2.Descend("type2Name").Constrain(EntitiesUtilities.GetShortType(entityType.Name)).Equal().And(
+							query2.Descend("type1Name").Constrain(EntitiesUtilities.GetShortType(referenceType.Name)).Equal())));
+				
+				
+				
+				IObjectSet os1 = query1.Execute();
+				
+				while (os1.HasNext())
+				{
+					EntityIDReference reference = (EntityIDReference)os1.Next();
+					if (reference != null)
 					{
-						AppLogger.Debug("Count: " + list.Count);
-						
-						foreach (EntityIDReference r in list)
+						if (reference.Includes(entityID, propertyName))
 						{
-							using (LogGroup logGroup2 = AppLogger.StartGroup("Processing ID reference.", NLog.LogLevel.Debug))
-							{
-								
-								EntityReference reference = (EntityReference)r.SwitchFor(entityType, entityID);
-								
-								AppLogger.Debug("Loaded reference - Entity ID 1: " + reference.Entity1ID);
-								AppLogger.Debug("Loaded reference - Entity ID 2: " + reference.Entity2ID);
-								
-								AppLogger.Debug("Loaded reference - Property 1 name: " + reference.Property1Name);
-								AppLogger.Debug("Loaded reference - Property 2 name: " + reference.Property2Name);
-								
-								AppLogger.Debug("Loaded reference - Type name 1: " + reference.Type1Name);
-								AppLogger.Debug("Loaded reference - Type name 2: " + reference.Type2Name);
-								
-								if (reference.Entity1ID != Guid.Empty
-								    && reference.Entity2ID != Guid.Empty)
-								{
-									AppLogger.Debug("Adding to the collection.");
-									collection.Add(reference);
-								}
-								else
-								{
-									AppLogger.Error("Reference not added to the collection. IDs are empty. This shouldn't happen but the system can ignore it and continue. Invalid references like these should probably be deleted.");
-								}
-							}
+							//				AppLogger.Debug("1 Reference matches expected. Adding to the list.");
+							list.Add(reference);
+						}
+						else
+						{
+							//				AppLogger.Debug("1 Reference failed match. Skipping. IMPORTANT!!! IT SHOULD NOT HAVE FAILED!!!");
 						}
 					}
 				}
 				
-				AppLogger.Debug("References #: " + collection.Count.ToString());
+				IObjectSet os2 = query2.Execute();
 				
-				if (activateAll)
+				while (os2.HasNext())
 				{
-					AppLogger.Debug("Activating references.");
-					
-					foreach (EntityReference reference in collection)
+					EntityIDReference reference = (EntityIDReference)os2.Next();
+					if (reference != null)
 					{
-						Provider.Activator.ActivateReference(reference);
+						if (reference.Includes(entityID, propertyName))
+						{
+							//				AppLogger.Debug("2 Reference matches expected. Adding to the list.");
+							list.Add(reference);
+						}
+						else
+						{
+							//				AppLogger.Debug("2 Reference failed match. Skipping. IMPORTANT!!! IT SHOULD NOT HAVE FAILED!!!");
+						}
 					}
 				}
 				
-				AppLogger.Debug("References #: " + collection.Count.ToString());
+				if (list.Count == 0)
+				{
+					//AppLogger.Debug("No references loaded from the data store.");
+				}
+				else
+				{
+					//AppLogger.Debug("Count: " + list.Count);
+					
+					foreach (EntityIDReference r in list)
+					{
+						//using (LogGroup logGroup2 = AppLogger.StartGroup("Processing ID reference.", NLog.LogLevel.Debug))
+						//{
+						
+						EntityReference reference = (EntityReference)r.SwitchFor(entityType, entityID);
+						
+						//AppLogger.Debug("Loaded reference - Entity ID 1: " + reference.Entity1ID);
+						//AppLogger.Debug("Loaded reference - Entity ID 2: " + reference.Entity2ID);
+						
+						//AppLogger.Debug("Loaded reference - Property 1 name: " + reference.Property1Name);
+						//AppLogger.Debug("Loaded reference - Property 2 name: " + reference.Property2Name);
+						
+						//AppLogger.Debug("Loaded reference - Type name 1: " + reference.Type1Name);
+						//AppLogger.Debug("Loaded reference - Type name 2: " + reference.Type2Name);
+						
+						if (reference.Entity1ID != Guid.Empty
+						    && reference.Entity2ID != Guid.Empty)
+						{
+							//	AppLogger.Debug("Adding to the collection.");
+							collection.Add(reference);
+						}
+						//else
+						//{
+						//	AppLogger.Error("Reference not added to the collection. IDs are empty. This shouldn't happen but the system can ignore it and continue. Invalid references like these should probably be deleted.");
+						//}
+						//}
+					}
+				}
 			}
+			
+			//AppLogger.Debug("References #: " + collection.Count.ToString());
+			
+			if (activateAll)
+			{
+				//AppLogger.Debug("Activating references.");
+				
+				foreach (EntityReference reference in collection)
+				{
+					Provider.Activator.ActivateReference(reference);
+				}
+			}
+			
+			//AppLogger.Debug("References #: " + collection.Count.ToString());
+			//}
 			
 			return collection;
 		}
+		
 	}
 }
