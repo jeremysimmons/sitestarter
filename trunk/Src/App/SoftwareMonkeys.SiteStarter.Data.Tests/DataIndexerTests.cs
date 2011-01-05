@@ -446,7 +446,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		
 		
 		[Test]
-		public void Test_GetEntitiesPage_Page1_SortAscending()
+		public void Test_GetEntitiesPage_Page1_PageSize2_SortAscending()
 		{				
 			TestArticle article1 = new TestArticle();
 			article1.ID = Guid.NewGuid();
@@ -471,7 +471,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				article3.Title
 			};
 			
-			PagingLocation pagingLocation = new PagingLocation(0, 10);
+			PagingLocation pagingLocation = new PagingLocation(0, 2);
 			
 			string sortExpression = "TitleAscending";
 			
@@ -484,11 +484,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				Assert.Greater(Array.IndexOf(titles, a.Title), -1, "The title of one of the retrieved entities doesn't match any of those expected.");
 			}
 			
-			Assert.AreEqual(3, entities.Length, "Invalid number found.");
+			Assert.AreEqual(2, entities.Length, "Invalid number found.");
 			
 			Assert.AreEqual(article3.Title, entities[0].Title, "Sorting failed #1.");
 			Assert.AreEqual(article2.Title, entities[1].Title, "Sorting failed #2.");
-			Assert.AreEqual(article1.Title, entities[2].Title, "Sorting failed #3.");
+			//Assert.AreEqual(article1.Title, entities[1].Title, "Sorting failed #3.");
+			
+			Assert.AreEqual(3, pagingLocation.AbsoluteTotal, "Invalid total");
 			
 		}
 		
@@ -496,7 +498,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		
 		
 		[Test]
-		public void Test_GetEntitiesPage_Page1_SortDescending()
+		public void Test_GetEntitiesPage_Page1_PageSize2_SortDescending()
 		{
 			TestArticle article1 = new TestArticle();
 			article1.ID = Guid.NewGuid();
@@ -524,7 +526,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			DataAccess.Data.Saver.Save(article2);
 			DataAccess.Data.Saver.Save(article3);
 			
-			PagingLocation pagingLocation = new PagingLocation(0, 10);
+			PagingLocation pagingLocation = new PagingLocation(0, 2);
 			
 			string sortExpression = "TitleDescending";
 			
@@ -549,11 +551,123 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				idsFound.Add(a.ID);
 			}
 			
-			Assert.AreEqual(3, entities.Length, "Invalid number found.");
+			Assert.AreEqual(2, entities.Length, "Invalid number found.");
 			
 			Assert.AreEqual(article1.Title, entities[0].Title, "Sorting failed #1.");
 			Assert.AreEqual(article2.Title, entities[1].Title, "Sorting failed #2.");
-			Assert.AreEqual(article3.Title, entities[2].Title, "Sorting failed #3.");
+		}
+		
+		[Test]
+		public void Test_GetEntitiesPage_Page1_PageSize1_SortAscending()
+		{				
+			TestArticle article1 = new TestArticle();
+			article1.ID = Guid.NewGuid();
+			article1.Title = "Article C";
+			
+			TestArticle article2 = new TestArticle();
+			article2.ID = Guid.NewGuid();
+			article2.Title = "Article B";
+			
+			TestArticle article3 = new TestArticle();
+			article3.ID = Guid.NewGuid();
+			article3.Title = "Article A";
+			
+			DataAccess.Data.Saver.Save(article1);
+			DataAccess.Data.Saver.Save(article2);
+			DataAccess.Data.Saver.Save(article3);
+			
+			string[] titles = new String[]
+			{
+				article1.Title,
+				article2.Title,
+				article3.Title
+			};
+			
+			PagingLocation pagingLocation = new PagingLocation(0, 1);
+			
+			string sortExpression = "TitleAscending";
+			
+			TestArticle[] entities = DataAccess.Data.Indexer.GetPageOfEntities<TestArticle>(pagingLocation, sortExpression);
+			
+			Assert.IsNotNull(entities);
+			
+			foreach (TestArticle a in entities)
+			{
+				Assert.Greater(Array.IndexOf(titles, a.Title), -1, "The title of one of the retrieved entities doesn't match any of those expected.");
+			}
+			
+			Assert.AreEqual(1, entities.Length, "Invalid number found.");
+			
+			Assert.AreEqual(article3.Title, entities[0].Title, "Sorting failed #1.");
+			//Assert.AreEqual(article2.Title, entities[1].Title, "Sorting failed #2.");
+			//Assert.AreEqual(article1.Title, entities[1].Title, "Sorting failed #3.");
+			
+			Assert.AreEqual(3, pagingLocation.AbsoluteTotal, "Invalid total");
+			
+		}
+		
+		
+		
+		
+		[Test]
+		public void Test_GetEntitiesPage_Page1_PageSize1_SortDescending()
+		{
+			TestArticle article1 = new TestArticle();
+			article1.ID = Guid.NewGuid();
+			article1.Title = "Article C";
+			
+			TestArticle article2 = new TestArticle();
+			article2.ID = Guid.NewGuid();
+			article2.Title = "Article B";
+			
+			TestArticle article3 = new TestArticle();
+			article3.ID = Guid.NewGuid();
+			article3.Title = "Article A";
+			
+			List<string> titles = new List<string>();
+			titles.Add(article1.Title);
+			titles.Add(article2.Title);
+			titles.Add(article3.Title);		
+			
+			List<Guid> ids = new List<Guid>();
+			ids.Add(article1.ID);
+			ids.Add(article2.ID);
+			ids.Add(article3.ID);			
+			
+			DataAccess.Data.Saver.Save(article1);
+			DataAccess.Data.Saver.Save(article2);
+			DataAccess.Data.Saver.Save(article3);
+			
+			PagingLocation pagingLocation = new PagingLocation(0, 1);
+			
+			string sortExpression = "TitleDescending";
+			
+			TestArticle[] entities = DataAccess.Data.Indexer.GetPageOfEntities<TestArticle>(pagingLocation, sortExpression);
+			
+			Assert.IsNotNull(entities);
+			
+			List<string> titlesFound = new List<string>();
+			List<Guid> idsFound = new List<Guid>();
+			
+			foreach (TestArticle a in entities)
+			{
+				Assert.IsFalse(idsFound.Contains(a.ID), "The returned entities list includes more than one entity with the same ID'.");
+				
+				Assert.IsFalse(titlesFound.Contains(a.Title), "The returned entities list includes more than one entity with the same title: '" + a.Title + "'.");
+				
+				Assert.IsTrue(titles.Contains(a.Title), "The title of one of the retrieved entities doesn't match any of those expected.");
+				
+				Assert.IsTrue(ids.Contains(a.ID), "The ID of one of the retrieved entities doesn't match any of those expected.");
+				
+				titlesFound.Add(a.Title);
+				idsFound.Add(a.ID);
+			}
+			
+			Assert.AreEqual(1, entities.Length, "Invalid number found.");
+			
+			Assert.AreEqual(article1.Title, entities[0].Title, "Sorting failed #1.");
+			//Assert.AreEqual(article2.Title, entities[1].Title, "Sorting failed #2.");
+			//Assert.AreEqual(article3.Title, entities[2].Title, "Sorting failed #3.");
 		}
 	}
 }
