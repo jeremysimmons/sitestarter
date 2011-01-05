@@ -299,6 +299,11 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					string dir = DataAccess.Data.DataDirectoryPath + Path.DirectorySeparatorChar + shortDir;
 					string toDir = DataAccess.Data.SuspendedDirectoryPath + Path.DirectorySeparatorChar + shortDir;
 					
+					// If the directory already exists then delete it
+					// This shouldn't occur in production but can during debugging
+					if (Directory.Exists(toDir))
+						Directory.Delete(toDir, true);
+					
 					if (Directory.Exists(dir))
 						Directory.Move(dir, toDir);
 				}
