@@ -84,11 +84,13 @@
     <Compile Include="Configuration\IConfigSaver.cs" />
     <Compile Include="Configuration\IConfigurationDictionary.cs" />
     <Compile Include="Configuration\IVirtualServerConfig.cs" />
+    <Compile Include="Data\IFilterGroup.cs" />
     <Compile Include="Entities\ICollection.cs" />
     <Compile Include="Entities\ICollection[E].cs" />
     <Compile Include="Entities\IEntity.cs" />
     <Compile Include="Entities\IKeyword.cs" />
     <Compile Include="Entities\IPagingLocation.cs" />
+    <Compile Include="Entities\ISimple.cs" />
     <Compile Include="Entities\IUniqueEntity.cs" />
     <Compile Include="Entities\IUser.cs" />
     <Compile Include="Entities\IUserPermission.cs" />
@@ -104,6 +106,7 @@
   <ItemGroup>
     <Folder Include="Business\Security" />
     <Folder Include="IO" />
+    <Folder Include="Data" />
     <Folder Include="State" />
     <Folder Include="Web" />
   </ItemGroup>
