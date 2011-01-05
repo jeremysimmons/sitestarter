@@ -126,7 +126,17 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns>An instance of the corresponding strategy.</returns>
 		public IStrategy New()
 		{
-			return Creator.CreateStrategy(this);
+			IStrategy strategy = null;
+			using (LogGroup logGroup = AppLogger.StartGroup("Creating a new strategy."))
+			{
+				AppLogger.Debug("Type name: " + TypeName);
+				
+				AppLogger.Debug("Action: " + Action);
+				
+				AppLogger.Debug("Key: " + Key);
+				
+				return Creator.CreateStrategy(this);
+			}
 		}
 		
 		/// <summary>
@@ -148,7 +158,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			T strategy = default(T);
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Creating a new strategy for the type: " + entityTypeName, NLog.LogLevel.Debug))
+			using (LogGroup logGroup = AppLogger.StartGroup("Creating a new strategy for the type '" + entityTypeName + "' and action '" + Action + "'.", NLog.LogLevel.Debug))
 			{
 				AppLogger.Debug("Entity type name: " + entityTypeName);
 				

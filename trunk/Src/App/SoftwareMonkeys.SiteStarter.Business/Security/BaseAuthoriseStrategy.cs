@@ -7,7 +7,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 	/// The base of all authorise strategies.
 	/// </summary>
 	public abstract class BaseAuthoriseStrategy : BaseStrategy, IAuthoriseStrategy
-	{
+	{		
 		/// <summary>
 		/// Checks whether the current user is authorised to perform an operation involving an entity of the specified type.
 		/// </summary>
@@ -29,7 +29,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		public virtual void EnsureAuthorised(string shortTypeName)
 		{
 			if (!Authorise(shortTypeName))
-				throw new UnauthorisedException(GetAction(), shortTypeName);
+				throw new UnauthorisedException(GetRestrictedAction(), shortTypeName);
 		}
 		
 		/// <summary>
@@ -42,7 +42,18 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 				throw new ArgumentNullException("entity");
 			
 			if (!Authorise(entity))
-				throw new UnauthorisedException(GetAction(), entity.ShortTypeName);
+				throw new UnauthorisedException(GetRestrictedAction(), entity.ShortTypeName);
+		}
+		
+		/// <summary>
+		/// Retrieves the short type name specified by the Strategy attribute.
+		/// </summary>
+		/// <returns></returns>
+		public virtual string GetRestrictedAction()
+		{
+			StrategyInfo info = new StrategyInfo(this);
+			
+			return info.Action.Replace("Authorise", "");
 		}
 	}
 }

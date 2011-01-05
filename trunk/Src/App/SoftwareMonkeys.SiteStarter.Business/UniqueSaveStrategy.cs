@@ -37,7 +37,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			get {
 				if (uniqueValidator == null)
-					uniqueValidator = StrategyState.Strategies["Validate", "IUniqueEntity"].New<UniqueValidateStrategy>();
+					uniqueValidator = UniqueValidateStrategy.New(TypeName);
 				return uniqueValidator; }
 			set { uniqueValidator = value; }
 		}

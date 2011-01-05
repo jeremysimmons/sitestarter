@@ -56,8 +56,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			List<StrategyInfo> strategies = new List<StrategyInfo>();
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Finding strategies by scanning the attributes of the available type.", NLog.LogLevel.Debug))
-			{				
+			//using (LogGroup logGroup = AppLogger.StartGroup("Finding strategies by scanning the attributes of the available type.", NLog.LogLevel.Debug))
+			//{				
 				foreach (string assemblyPath in AssemblyPaths)
 				{
 					Assembly assembly = Assembly.LoadFrom(assemblyPath);
@@ -66,21 +66,21 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					{
 						if (IsStrategy(type))
 						{
-							AppLogger.Debug("Found strategy type: " + type.ToString());
+							//AppLogger.Debug("Found strategy type: " + type.ToString());
 							
 							StrategyInfo strategyInfo = new StrategyInfo(type);
 							
 							if (strategyInfo.TypeName != null && strategyInfo.TypeName != String.Empty
 							    && strategyInfo.Action != null && strategyInfo.Action != String.Empty)
 							{
-								AppLogger.Debug("Found match.");
+								//AppLogger.Debug("Found match.");
 								
 								strategies.Add(strategyInfo);
 							}
 						}
 					}
 				}
-			}
+			//}
 			
 			return strategies.ToArray();
 		}
@@ -96,9 +96,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			bool isNotInterface = false;
 			bool isNotAbstract = false;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Checks whether the provided type is a strategy.", NLog.LogLevel.Debug))
-			{
-				AppLogger.Debug("Type: " + type.ToString());
+			//using (LogGroup logGroup = AppLogger.StartGroup("Checks whether the provided type is a strategy.", NLog.LogLevel.Debug))
+			//{
+			//	AppLogger.Debug("Type: " + type.ToString());
 				
 				matchesInterface = typeof(IStrategy).IsAssignableFrom(type)
 					|| type.GetInterface("IStrategy") != null;
@@ -107,9 +107,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				
 				isNotAbstract = (!type.IsAbstract);
 				
-				AppLogger.Debug("Matches interface: " + matchesInterface);
-				AppLogger.Debug("Is not strategy interface: " + isNotInterface);
-			}
+			//	AppLogger.Debug("Matches interface: " + matchesInterface);
+			//	AppLogger.Debug("Is not strategy interface: " + isNotInterface);
+			//}
 			
 			return matchesInterface
 				&& isNotInterface

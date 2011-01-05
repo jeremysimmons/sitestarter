@@ -42,8 +42,9 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 				{
 					User user = RetrieveStrategy.New<User>().Retrieve<User>("Username", Username);
 					
-					if (user == null)
-						throw new Exception("No user was retrieved with the username '" + Username + "'.");
+					// TODO: Check if needed. Without it there's a risk of a NullReferenceException
+					//if (user == null)
+					//	throw new Exception("No user was retrieved with the username '" + Username + "'.");
 					
 					StateAccess.State.SetRequest("User", user);
 				}
@@ -60,7 +61,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// </summary>
 		static public bool IsAuthenticated
 		{
-			get { return Username != null && Username != String.Empty;  }
+			get { return Username != null && Username != String.Empty; }
 		}
 		
 		static public bool UserIsInRole(string roleName)
@@ -68,6 +69,9 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 			if (IsAuthenticated)
 			{
 				User user = AuthenticationState.User;
+				
+				if (user == null)
+					return false;
 				
 				if (user.Roles == null || user.Roles.Length == 0)
 					ActivateStrategy.New<User>().Activate(user, "Roles");

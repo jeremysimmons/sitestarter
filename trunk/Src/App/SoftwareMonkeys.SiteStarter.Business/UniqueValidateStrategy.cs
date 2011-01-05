@@ -11,7 +11,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	[Strategy("Validate", "IUniqueEntity")]
 	public class UniqueValidateStrategy : ValidateStrategy, IUniqueValidateStrategy
 	{
-		private string uniquePropertyName;
+		private string uniquePropertyName = "UniqueKey";
 		/// <summary>
 		/// Gets/sets the name of the property on the target entity that is unique.
 		/// </summary>
@@ -40,6 +40,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				if (entity == null)
 					throw new ArgumentNullException("entity");
 				
+				if (propertyName == null || propertyName == String.Empty)
+					throw new ArgumentNullException("propertyName");
+				
 				AppLogger.Debug("Property name: " + propertyName);
 				
 				AppLogger.Debug("Entity: " + entity.GetType().FullName);
@@ -63,6 +66,30 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			}
 			
 			return !isTaken;
+		}
+		
+		new static public UniqueValidateStrategy New(string typeName)
+		{
+			UniqueValidateStrategy strategy = null;
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Creating a new validator strategy.", NLog.LogLevel.Debug))
+			{
+				strategy = (UniqueValidateStrategy)StrategyState.Strategies.Creator.NewValidator(typeName);
+			}
+			return strategy;
+		}
+		
+		new static public UniqueValidateStrategy New(string typeName, bool requireAuthorisation)
+		{
+			UniqueValidateStrategy strategy = null;
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Creating a new validator strategy.", NLog.LogLevel.Debug))
+			{
+				strategy = (UniqueValidateStrategy)StrategyState.Strategies.Creator.NewValidator(typeName);
+				
+				strategy.RequireAuthorisation = requireAuthorisation;
+			}
+			return strategy;
 		}
 	}
 }

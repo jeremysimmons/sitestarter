@@ -101,12 +101,17 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns>The strategy matching the provided action and type.</returns>
 		public StrategyInfo GetStrategy(string action, string typeName)
 		{
-			StrategyLocator locator = new StrategyLocator(this);
+			StrategyInfo foundStrategy = null;
 			
-			StrategyInfo foundStrategy = locator.Locate(action, typeName);
-			
-			if (foundStrategy == null)
-				throw new StrategyNotFoundException(action, typeName);
+			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the strategy for performing the action '" + action + "' with the type '" + typeName + "'.", NLog.LogLevel.Debug))
+			{
+				StrategyLocator locator = new StrategyLocator(this);
+				
+				foundStrategy = locator.Locate(action, typeName);
+				
+				if (foundStrategy == null)
+					throw new StrategyNotFoundException(action, typeName);
+			}
 			
 			return foundStrategy;
 		}
