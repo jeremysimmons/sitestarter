@@ -30,13 +30,13 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		
 		private UniqueValidateStrategy uniqueValidator;
 		/// <summary>
-		/// Gets/sets the validation strategy uniqued to ensure entities are unique.
+		/// Gets/sets the validation strategy used to ensure entities are unique.
 		/// </summary>
 		public UniqueValidateStrategy UniqueValidator
 		{
 			get {
 				if (uniqueValidator == null)
-					uniqueValidator = StrategyState.Strategies["Validate", "IUniqueEntity"].New<UniqueValidateStrategy>();
+					uniqueValidator = UniqueValidateStrategy.New(TypeName);
 				return uniqueValidator; }
 			set { uniqueValidator = value; }
 		}

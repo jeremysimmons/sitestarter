@@ -7,6 +7,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// <summary>
 	/// Used to create new instances of entities.
 	/// </summary>
+	[Strategy("Create", "IEntity")]
 	public class CreateStrategy : BaseStrategy, ICreateStrategy
 	{
 		/// <summary>
@@ -51,7 +52,21 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="typeName">The short name of the type involved in the strategy.</param>
 		static public ICreateStrategy New(string typeName)
 		{
-			return StrategyState.Strategies.Creator.NewCreator(typeName);
+			return New(typeName, true);
+		}
+		
+		/// <summary>
+		/// Creates a new strategy for creating an instance of the specified type.
+		/// </summary>
+		/// <param name="typeName">The short name of the type involved in the strategy.</param>
+		static public ICreateStrategy New(string typeName, bool requiresAuthorisation)
+		{
+			
+			ICreateStrategy strategy = StrategyState.Strategies.Creator.NewCreator(typeName);
+			
+			strategy.RequireAuthorisation = requiresAuthorisation;
+			
+			return strategy;
 		}
 		#endregion
 	}

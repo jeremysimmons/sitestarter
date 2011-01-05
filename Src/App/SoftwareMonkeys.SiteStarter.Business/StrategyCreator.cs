@@ -65,6 +65,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				AppLogger.Debug("Strategy type: " + strategyType.FullName);
 				AppLogger.Debug("Entity type: " + (entityType != null ? entityType.FullName : String.Empty));
 				
+				AppLogger.Debug("Action: " + strategyInfo.Action);
+				
 				if (entityType != null && strategyType.IsGenericTypeDefinition)
 				{
 					AppLogger.Debug("Is generic type definition.");
@@ -292,10 +294,19 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns></returns>
 		public IValidateStrategy NewValidator(string typeName)
 		{
-			CheckType(typeName);
+			IValidateStrategy strategy = null;
 			
-			return Strategies["Validate", typeName]
-				.New<IValidateStrategy>(typeName);
+			using (LogGroup logGroup = AppLogger.StartGroup("Creating a new validator strategy.", NLog.LogLevel.Debug))
+			{				
+				CheckType(typeName);
+				
+				AppLogger.Debug("Type name: " + typeName);
+				
+				strategy = Strategies["Validate", typeName]
+					.New<IValidateStrategy>(typeName);
+			}
+			
+			return strategy;
 		}
 		
 		/// <summary>
