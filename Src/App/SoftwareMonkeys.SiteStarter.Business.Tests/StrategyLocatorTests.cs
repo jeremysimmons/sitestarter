@@ -75,5 +75,30 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			
 			Assert.AreEqual(expected, info.StrategyType, "Wrong strategy type selected.");
 		}
+		
+		[Test]
+		public void Test_Locate_InterfaceOverride()
+		{			
+			string type = "MockInterfaceEntity";
+			string action = "Index";
+			
+			StrategyStateNameValueCollection strategies = new StrategyStateNameValueCollection();
+			
+			strategies.Add(new IndexStrategy());
+			strategies.Add(new MockIndexWidgetStrategy());
+			strategies.Add(new MockIndexInterfaceStrategy());
+			
+			StrategyLocator locator = new StrategyLocator(strategies);
+			
+			StrategyInfo info = locator.Locate(action, type);
+			
+			Assert.IsNotNull(info, "No strategy info found.");
+			
+			Type mockStrategyType = new MockIndexInterfaceStrategy().GetType();
+			
+			string expected = mockStrategyType.FullName + ", " + mockStrategyType.Assembly.GetName().Name;
+			
+			Assert.AreEqual(expected, info.StrategyType, "Wrong strategy type selected.");
+		}
 	}
 }
