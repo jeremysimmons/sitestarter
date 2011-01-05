@@ -139,7 +139,10 @@
     <Compile Include="BaseBusinessTestFixture.cs" />
     <Compile Include="DeleteStrategyTests.cs" />
     <Compile Include="DirectoryZipperTests.cs" />
+    <Compile Include="Entities\MockInterfaceEntity.cs" />
+    <Compile Include="Entities\IMockInterface.cs" />
     <Compile Include="IndexStrategyTests.cs" />
+    <Compile Include="MockIndexInterfaceStrategy.cs" />
     <Compile Include="MockIndexWidgetStrategy.cs" />
     <Compile Include="MockFileMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -160,6 +163,7 @@
     <Compile Include="UpdateStrategyTests.cs" />
     <Compile Include="VersionTestUtilities.cs" />
     <Compile Include="ZipAnalyzerTests.cs" />
+    <Folder Include="Entities" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

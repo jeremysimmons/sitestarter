@@ -48,7 +48,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			TestArticle foundArticle = Data.DataAccess.Data.Reader.GetEntity<TestArticle>("ID", article.ID);
 			
 			// Check that the original article was found
-			Assert.IsNotNull(foundArticle);
+			Assert.IsNotNull(foundArticle, "Original article wasn't found.");
 			
 		}
 	}
