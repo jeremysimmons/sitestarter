@@ -7,7 +7,7 @@
 /* Template */
 .PageHeader
 {
-	border-bottom: dotted 1px gray;
+	border-bottom: solid 1px gray;
 }
 
 .PageHeaderText
@@ -27,6 +27,7 @@
 	width: 5%;
 	vertical-align: top;
 	border-right: dotted 1px gray;
+	padding: 10px;
 }
 
 .Column UL
@@ -44,7 +45,7 @@
 
 DIV.Heading2,
 TD.Heading2,
-TR.Heading2 TD
+H2
 {
 	font-family: Verdana;
 	font-size: 14px;
@@ -52,10 +53,27 @@ TR.Heading2 TD
 	padding: 3px;
 	color: #515151;
 	padding-left: 4px;
-	background-color: #DEDEDE;
+	background-color: #F5F5F5;
 	vertical-align: middle;
 	height: 22px;
 	margin-top: 0px;
+	border-top: solid 1px #DEDEDE;
+}
+
+TD.Heading2
+{
+	margin: 0px;
+}
+
+.Heading2Right
+{
+	font-size: 11px;
+	font-weight: normal;
+}
+
+.Heading2Right SELECT
+{
+	margin: 0px 5px 0px 5px;
 }
 
 /* Form */
@@ -103,4 +121,20 @@ OL LI
 {
 	margin-top: 8px;
 	margin-bottom: 8px;
+}
+
+.PagingContainer
+{
+	font-size: 11px;
+}
+
+.BodyContainer
+{
+	padding: 10px;
+	vertical-align: top;
+}
+
+.Column A
+{
+	color: blue;
 }
