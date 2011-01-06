@@ -62,7 +62,7 @@ private string GetMenuDataFile()
 
                                 </asp:TreeView>
                                 <asp:XmlDataSource ID="MenuSource" XPath="siteMap/*" DataFile='<%# GetMenuDataFile() %>' runat="server" />
-        </td><td>
+        </td><td class="BodyContainer">
         <% } %>
         <asp:contentplaceholder id="Body" runat="server">
         </asp:contentplaceholder>
