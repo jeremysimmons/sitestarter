@@ -856,6 +856,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			
 			string url = HttpContext.Current.Request.Url.ToString();
 			
+			// If currently using a projection then the default path is to the same projection and the same action
+			if (QueryStrings.Action != String.Empty && QueryStrings.Type != String.Empty)
+				url = UrlCreator.Current.CreateUrl(QueryStrings.Action, QueryStrings.Type);
+			
 			// Remove the page query string. The new one gets added as needed.
 			string pageKey = "Page";
 			Regex pageRegex = new Regex("[?&]" + pageKey + "(?:=([^&]*))?", RegexOptions.IgnoreCase);
