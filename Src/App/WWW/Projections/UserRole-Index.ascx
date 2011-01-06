@@ -17,8 +17,6 @@
     private void Page_Init(object sender, EventArgs e)
     {
     	Initialize(typeof(UserRole), IndexGrid, true);
-    	
-    	PageSize = 20;
         
         IndexGrid.AddDualSortItem(Resources.Language.Name, "Name");
     }
@@ -26,20 +24,6 @@
     #region Main functions
 
     #endregion
-
-
-    private void IndexGrid_SortChanged(object sender, EventArgs e)
-    {
-    	SortExpression = IndexGrid.CurrentSort;
-    	
-        Index();
-    }
-
-    private void IndexGrid_PageIndexChanged(object sender, DataGridPageChangedEventArgs e)
-    {
-    	CurrentPageIndex = e.NewPageIndex;
-        Index();
-    }
     
   private void CreateButton_Click(object sender, EventArgs e)
   {
