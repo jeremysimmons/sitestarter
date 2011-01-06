@@ -11,18 +11,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 	/// </summary>
 	public class BasePart : UserControl, IPart
 	{
-		public bool HeightSet = false;
-		
 		public Unit Height
 		{
 			get {
 				Unit height = ((WebPart)Parent).Height;
-				if (height == Unit.Empty)
-					height = Unit.Pixel(200);
 				return height; }
 			set { ((WebPart)Parent).Height = value;
-				if (value != Unit.Empty)
-					HeightSet = true;
 			}
 		}
 		
@@ -36,7 +30,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 				if (Context == null)
 					return String.Empty;
 				if (Context.Items["WindowTitle"] == null)
-					Context.Items["WindowTitle"] = "SiteStarter";
+					Context.Items["WindowTitle"] = "WorkHub";
 				return (string)Context.Items["WindowTitle"];
 			}
 			set { Context.Items["WindowTitle"] = value; }
@@ -125,6 +119,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 			InitializeMenu();
 		}
 		
+		protected override void OnPreRender(EventArgs e)
+		{
+			// This is in OnPreRender so that the derived part has time to set its own value, before this occurs
+			if (Height == Unit.Empty)
+				Height = Unit.Pixel(200);
+			
+			base.OnPreRender(e);
+		}
+		
 		protected override void Render(HtmlTextWriter writer)
 		{
 			RenderContainerStart(writer);
@@ -170,7 +173,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		public void SetHeight(int itemHeight, int maxHeight, params IEntity[] entities)
 		{
 			// If it's already been set then skip it
-			if (!HeightSet)
+			if (Height == Unit.Empty)
 			{
 				int height = 0;
 				
