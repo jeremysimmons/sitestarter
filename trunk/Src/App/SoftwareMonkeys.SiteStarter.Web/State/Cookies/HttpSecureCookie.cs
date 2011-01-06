@@ -2,6 +2,7 @@ using System;
 using System.Web;
 using System.Text;
 using System.Web.Security;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 
 namespace SoftwareMonkeys.SiteStarter.Web.State.Cookies {
 
@@ -47,9 +48,18 @@ namespace SoftwareMonkeys.SiteStarter.Web.State.Cookies {
         /// <param name="cookieProtection">The protection level to use when decoding</param>
         /// <returns>A clone of the cookie in decoded format</returns>
         public static HttpCookie Decode(HttpCookie cookie, CookieProtection cookieProtection) {
-            HttpCookie decodedCookie = CloneCookie(cookie);
-            decodedCookie.Value = MachineKeyCryptography.Decode(cookie.Value, cookieProtection);
-            return decodedCookie;
+        	try
+        	{
+	            HttpCookie decodedCookie = CloneCookie(cookie);
+	            decodedCookie.Value = MachineKeyCryptography.Decode(cookie.Value, cookieProtection);
+	            
+	            return decodedCookie;
+        	}
+        	catch (InvalidCypherTextException ex)
+        	{
+        		AppLogger.Error(ex.ToString());
+        	}
+        	return null;
         }
 
         /// <summary>
