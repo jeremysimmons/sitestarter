@@ -10,6 +10,19 @@ namespace SoftwareMonkeys.SiteStarter.Web
     {
     	
         /// <summary>
+        /// Gets a flag indicating whether the query strings are available. Note: This is determined by checking whther HttpContext.Current.Request is available.
+        /// </summary>
+        static public bool Available
+        {
+            get
+            {
+                return HttpContext.Current != null
+                	&& HttpContext.Current.Request != null;
+            }
+        }
+    	
+    	
+        /// <summary>
         /// The type passed to the page via the query string variable "Sort".
         /// </summary>
         static public string Sort
@@ -75,7 +88,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
             {
                 if (HttpContext.Current.Request.QueryString["Page"] != null)
                 	return Convert.ToInt32(HttpContext.Current.Request.QueryString["Page"])
-                		-1;
+                		-1; // Decrement by one to convert page number into 0 based page index
                 else
                     return 0;
             }
