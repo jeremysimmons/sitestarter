@@ -190,7 +190,7 @@
 	{
 						string componentName = node.SelectSingleNode("Component").InnerText;
 						string methodName = node.SelectSingleNode("Method").InnerText;
-						string stackTrace = node.SelectSingleNode("StackTrace").InnerText;
+						//string stackTrace = node.SelectSingleNode("StackTrace").InnerText;
 						string timestamp = node.SelectSingleNode("Timestamp").InnerText;
 						int indent = Int32.Parse(node.SelectSingleNode("Indent").InnerText);
 						string data = node.SelectSingleNode("Data").InnerText;
@@ -218,12 +218,12 @@
 
 		output += "<hr/>";
 
-		//output += "<div>";
+/*		//output += "<div>";
 		output += "<div class='LogSubTitle'>Stack Trace</div>";
 		output += HttpUtility.HtmlEncode(stackTrace).Replace("\n\n", "<br/>");
 		//output += "</div>";
 
-		output += "</div>";
+		output += "</div>";*/
 
 		output += "</td></tr></table>";
 		output += "</div>";
