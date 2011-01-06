@@ -111,7 +111,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <returns>The entity specified in the query string.</returns>
 		public T PrepareEdit<T>()
 		{
-			return (T)PrepareEdit();
+			T entity = (T)PrepareEdit();
+			
+			return entity;
 		}
 		
 		/// <summary>
@@ -123,12 +125,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			Guid id = QueryStrings.GetID(Container.Type.Name);
 			string uniqueKey = QueryStrings.GetUniqueKey(Container.Type.Name);
 			
+			IEntity entity = null;
+			
 			if (id != Guid.Empty)
-				return PrepareEdit(id);
+				entity = PrepareEdit(id);
 			else if (uniqueKey != String.Empty)
-				return PrepareEdit(uniqueKey);
+				entity = PrepareEdit(uniqueKey);
 			else
 				throw new InvalidOperationException("Cannot edit entity. No identifier found.");
+			
+			return entity;
 		}
 		
 		/// <summary>
@@ -137,7 +143,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <returns>The entity specified by the provided ID.</returns>
 		public IEntity PrepareEdit(Guid entityID)
 		{
-			return Load(entityID);
+			IEntity entity = Load(entityID);
+			
+			if (entity == null)
+				throw new Exception("Can't load entity of type '" + Container.Type.Name + "' with ID '" + entityID.ToString() + ".");
+			
+			return entity;
 		}
 		
 		/// <summary>
@@ -146,7 +157,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <returns>The entity specified by the provided unique key.</returns>
 		public IEntity PrepareEdit(string uniqueKey)
 		{
-			return Load(uniqueKey);
+			IEntity entity = Load(uniqueKey);
+			
+			if (entity == null)
+				throw new Exception("Can't load entity of type '" + Container.Type.Name + "' with unique key '" + uniqueKey + "'.");
+			
+			return entity;
 		}
 		
 		
