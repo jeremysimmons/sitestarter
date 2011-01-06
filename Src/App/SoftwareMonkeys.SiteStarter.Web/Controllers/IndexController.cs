@@ -57,11 +57,26 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		public int CurrentPageIndex
 		{
 			get {
-				if (QueryStrings.PageIndex != -1)
-					Indexer.CurrentPageIndex = QueryStrings.PageIndex;
-				return Indexer.CurrentPageIndex;
+				CheckInitialized();
+				
+				// TODO: Clean up
+				//if (Indexer != null && Indexer.Location != null)
+				//{
+					if (QueryStrings.Available && QueryStrings.PageIndex != 0)
+					{
+						Indexer.Location.PageIndex = QueryStrings.PageIndex;
+					}
+					return Indexer.Location.PageIndex;
+				//}
 			}
-			set { Indexer.CurrentPageIndex = value; }
+			set
+			{
+				CheckInitialized();
+				if (Indexer != null && Indexer.Location != null)
+				{
+					Indexer.Location.PageIndex = value;
+				}
+			}
 		}
 		
 		/// <summary>
@@ -69,8 +84,25 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// </summary>
 		public string SortExpression
 		{
-			get { return Indexer.SortExpression; }
-			set { Indexer.SortExpression = value; }
+			get {
+				CheckInitialized();
+				
+				if (Indexer != null && Indexer.Location != null)
+				{
+					return Indexer.SortExpression;
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
+			set {
+				CheckInitialized();
+				if (Indexer != null && Indexer.Location != null)
+				{
+					Indexer.SortExpression = value;
+				}
+			}
 		}
 		
 		/// <summary>
@@ -78,8 +110,24 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// </summary>
 		public int PageSize
 		{
-			get { return Indexer.PageSize; }
-			set { Indexer.PageSize = value; }
+			get
+			{
+				CheckInitialized();
+				if (Indexer != null && Indexer.Location != null)
+				{
+					return Indexer.Location.PageSize;
+				}
+				else
+					return 0;
+			}
+			set
+			{
+				CheckInitialized();
+				if (Indexer != null && Indexer.Location != null)
+				{
+					Indexer.Location.PageSize = value;
+				}
+			}
 		}
 		
 		/// <summary>
@@ -87,200 +135,236 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// </summary>
 		public int AbsoluteTotal
 		{
-			get { return Indexer.AbsoluteTotal; }
-			set { Indexer.AbsoluteTotal = value; }
-		}
-		
-		private IIndexStrategy indexer;
-		/// <summary>
-		/// Gets/sets the index strategy used to retrieve the entities for the index.
-		/// </summary>
-		public IIndexStrategy Indexer
-		{
-			get {
-				if (indexer== null)
+			get
+			{
+				
+				CheckInitialized();
+				if (Indexer != null && Indexer.Location != null)
 				{
-					if (Container.Type == null)
-						throw new InvalidOperationException("Type property hasn't been initialized.");
-					indexer = IndexStrategy.New(Container.Type.Name, Container.RequireAuthorisation);
+					return Indexer.Location.AbsoluteTotal;
 				}
-				return indexer; }
-			set { indexer = value; }
+				else
+					return 0;
+			}
+			set 
+			{
+				
+				CheckInitialized();
+				if (Indexer != null && Indexer.Location != null)
+				{
+					Indexer.Location.AbsoluteTotal = value;
+				}
+			}
 		}
+	
+	
+	private IIndexStrategy indexer;
+	/// <summary>
+	/// Gets/sets the index strategy used to retrieve the entities for the index.
+	/// </summary>
+	public IIndexStrategy Indexer
+	{
+		get {
+			if (indexer== null)
+			{
+				Container.CheckType();
+				
+				indexer = IndexStrategy.New(Container.Type.Name, Container.RequireAuthorisation);
+			}
+			return indexer; }
+		set { indexer = value; }
+	}
+	
+	public IndexController()
+	{
+	}
+	
+	#region Index functions
+	/// <summary>
+	/// Loads and displays an index of entities.
+	/// </summary>
+	public void Index()
+	{
+		CheckInitialized();
 		
-		public IndexController()
-		{
-		}
-		                    
-		#region Index functions
-		/// <summary>
-		/// Loads and displays an index of entities.
-		/// </summary>
-		public void Index()
-		{
-			CheckInitialized();
-			
-			DataSource = PrepareIndex();
-			
-			Index(DataSource);
-		}
+		DataSource = PrepareIndex();
 		
-		/// <summary>
-		/// Displays the provided index of entities.
-		/// </summary>
-		/// <param name="entities"></param>
-		public void Index(IEntity[] entities)
-		{
-			DataSource = entities;
-			
-			if (entities == null)
-				entities = new IEntity[] {};
-			
-			if (AbsoluteTotal < entities.Length)
+		Index(DataSource);
+	}
+	
+	/// <summary>
+	/// Displays the provided index of entities.
+	/// </summary>
+	/// <param name="entities"></param>
+	public void Index(IEntity[] entities)
+	{
+		DataSource = entities;
+		
+		if (entities == null)
+			entities = new IEntity[] {};
+		
+		// TODO: Check if needed. Should be obsolete.
+		/*if (AbsoluteTotal < entities.Length)
 			{
 				AbsoluteTotal = entities.Length;
-			}
+			}*/
+		
+		
+		if (entities == null)
+			throw new ArgumentNullException("entities");
+		
+		
+		ExecuteIndex(entities);
+	}
+	
+	/// <summary>
+	/// Displays an index of entities matching the provided filter values.
+	/// </summary>
+	/// <param name="filterValues"></param>
+	public void Index(Dictionary<string, object> filterValues)
+	{
+		using (LogGroup logGroup = AppLogger.StartGroup("Preparing to load an index of enitities for display."))
+		{
+			if (filterValues == null)
+				filterValues = new Dictionary<string, object>();
 			
+			CheckInitialized();
 			
+			if (filterValues == null)
+				throw new ArgumentNullException("filterValues");
+			
+			if (filterValues.Count == 0)
+				throw new ArgumentNullException("No filter values specified. Use the other overload if not specifying filter values.");
+			
+			IEntity[] entities = null;
+			
+			entities = PrepareIndex(filterValues);
+			
+			Index(entities);
+		}
+	}
+	#endregion
+	
+	#region Specific functions
+	/// <summary>
+	/// Loads the entities for the index.
+	/// </summary>
+	/// <returns></returns>
+	public IEntity[] PrepareIndex()
+	{
+		if (Container.EnsureAuthorised())
+		{
+			DataSource = Indexer.Index();
+		}
+		
+		return DataSource;
+	}
+	
+	/// <summary>
+	/// Loads the entities for the index based on the provided filter values.
+	/// </summary>
+	/// <param name="propertyName"></param>
+	/// <param name="propertyValue"></param>
+	/// <returns></returns>
+	public IEntity[] PrepareIndex(string propertyName, object propertyValue)
+	{
+		Dictionary<string, object> filterValues = new Dictionary<string, object>();
+		filterValues.Add(propertyName, propertyValue);
+		
+		return PrepareIndex(filterValues);
+	}
+	
+	/// <summary>
+	/// Loads the entities for the index based on the provided filter values.
+	/// </summary>
+	/// <param name="filterValues"></param>
+	/// <returns></returns>
+	public IEntity[] PrepareIndex(Dictionary<string, object> filterValues)
+	{
+		if (Container.EnsureAuthorised())
+		{
+			DataSource = Indexer.Index(filterValues);
+		}
+		
+		return DataSource;
+	}
+	
+	/// <summary>
+	/// Executes the index operation using the provided entities.
+	/// </summary>
+	/// <param name="entities"></param>
+	protected void ExecuteIndex(IEntity[] entities)
+	{
+		using (LogGroup logGroup = AppLogger.StartGroup("Preparing to display an index of entities.", NLog.LogLevel.Debug))
+		{
 			if (entities == null)
 				throw new ArgumentNullException("entities");
 			
+			AppLogger.Debug("# of entities: " + entities.Length);
 			
-			ExecuteIndex(entities);
-		}
-		
-		/// <summary>
-		/// Displays an index of entities matching the provided filter values.
-		/// </summary>
-		/// <param name="filterValues"></param>
-		public void Index(Dictionary<string, object> filterValues)
-		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Preparing to load an index of enitities for display."))
-			{
-				if (filterValues == null)
-					filterValues = new Dictionary<string, object>();
-				
-				CheckInitialized();
-				
-				if (filterValues == null)
-					throw new ArgumentNullException("filterValues");
-				
-				if (filterValues.Count == 0)
-					throw new ArgumentNullException("No filter values specified. Use the other overload if not specifying filter values.");
-				
-				IEntity[] entities = null;
-				
-				entities = PrepareIndex(filterValues);
-				
-				Index(entities);
-			}
-		}
-		#endregion
-		
-		#region Specific functions
-		/// <summary>
-		/// Loads the entities for the index.
-		/// </summary>
-		/// <returns></returns>
-		public IEntity[] PrepareIndex()
-		{
-			if (Container.EnsureAuthorised())
-			{
-				DataSource = Indexer.Index();
-					
-				AbsoluteTotal = Indexer.AbsoluteTotal;
-			}
+			Type type = entities.GetType().GetElementType();
 			
-			return DataSource;
-		}
-		
-		/// <summary>
-		/// Loads the entities for the index based on the provided filter values.
-		/// </summary>
-		/// <param name="propertyName"></param>
-		/// <param name="propertyValue"></param>
-		/// <returns></returns>
-		public IEntity[] PrepareIndex(string propertyName, object propertyValue)
-		{
-			Dictionary<string, object> filterValues = new Dictionary<string, object>();
-			filterValues.Add(propertyName, propertyValue);
+			OperationManager.StartOperation("Index" + type.Name, null);
 			
-			return PrepareIndex(filterValues);
-		}
-		
-		/// <summary>
-		/// Loads the entities for the index based on the provided filter values.
-		/// </summary>
-		/// <param name="filterValues"></param>
-		/// <returns></returns>
-		public IEntity[] PrepareIndex(Dictionary<string, object> filterValues)
-		{
-			if (Container.EnsureAuthorised())
-			{
-				DataSource = Indexer.Index(filterValues);
-			}
+			// There will likely be an authorisation check before this function is called, checking based on just the type,
+			// but it's necessary to check the authorisation for the actual entities
+			Authorise(ref entities);
 			
-			return DataSource;
-		}
-		
-		/// <summary>
-		/// Executes the index operation using the provided entities.
-		/// </summary>
-		/// <param name="entities"></param>
-		protected void ExecuteIndex(IEntity[] entities)
-		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Preparing to display an index of entities.", NLog.LogLevel.Debug))
-			{
-				if (entities == null)
-					throw new ArgumentNullException("entities");
-				
-				AppLogger.Debug("# of entities: " + entities.Length);
-				
-				Type type = entities.GetType().GetElementType();
-				
-				OperationManager.StartOperation("Index" + type.Name, null);
-				
-				// There will likely be an authorisation check before this function is called, checking based on just the type,
-				// but it's necessary to check the authorisation for the actual entities
-				Authorise(ref entities);
-				
-				DataSource = entities;
-			}
-		}
-		
-		public void CheckInitialized()
-		{
-			
-			if (Container.Type == null)
-				throw new InvalidOperationException("Type not specified.");
-		}
-		#endregion
-		
-		
-		/// <summary>
-		/// Ensures that the user is authorised to index entities of the specified type.
-		/// </summary>
-		/// <param name="entities">The entities involved in the authorisation check.</param>
-		/// <returns>A value indicating whether the user is authorised.</returns>
-		public bool Authorise(ref IEntity[] entities)
-		{
-			bool isAuthorised = StrategyState.Strategies["Authorise" + Container.InternalAction, Container.Type.Name]
-				.New<IAuthoriseIndexStrategy>(Container.Type.Name).Authorise(ref entities);
-		
-			return !Container.RequireAuthorisation || isAuthorised;
-		}
-		
-		
-		public static IndexController New(IControllable container, bool enablePaging)
-		{
-			container.CheckType();
-			
-			IndexController controller = ControllerState.Controllers.Creator.NewIndexer(container.Type.Name);
-			
-			controller.Container = container;
-			controller.EnablePaging = enablePaging;
-			
-			return controller;
+			DataSource = entities;
 		}
 	}
+	
+	public void CheckInitialized()
+	{
+		
+		if (Container.Type == null)
+			throw new InvalidOperationException("Type not specified.");
+	}
+	#endregion
+	
+	
+	/// <summary>
+	/// Ensures that the user is authorised to index entities of the specified type.
+	/// </summary>
+	/// <param name="entities">The entities involved in the authorisation check.</param>
+	/// <returns>A value indicating whether the user is authorised.</returns>
+	public bool Authorise(ref IEntity[] entities)
+	{
+		bool isAuthorised = StrategyState.Strategies["Authorise" + Container.InternalAction, Container.Type.Name]
+			.New<IAuthoriseIndexStrategy>(Container.Type.Name).Authorise(ref entities);
+		
+		return !Container.RequireAuthorisation || isAuthorised;
+	}
+	
+	
+	public static IndexController New(IControllable container, bool enablePaging)
+	{
+		container.CheckType();
+		
+		IndexController controller = ControllerState.Controllers.Creator.NewIndexer(container.Type.Name);
+		
+		controller.Container = container;
+		controller.EnablePaging = enablePaging;
+		if (QueryStrings.Available)
+		{
+			controller.CurrentPageIndex = QueryStrings.PageIndex;
+			controller.SortExpression = QueryStrings.Sort;
+		}
+		
+		return controller;
+	}
+	
+	public static IndexController New(IControllable container, PagingLocation location)
+	{
+		container.CheckType();
+		
+		IndexController controller = ControllerState.Controllers.Creator.NewIndexer(container.Type.Name);
+		
+		controller.Container = container;
+		controller.EnablePaging = true;
+		controller.Indexer.Location = location;
+		
+		return controller;
+	}
+}
 }
