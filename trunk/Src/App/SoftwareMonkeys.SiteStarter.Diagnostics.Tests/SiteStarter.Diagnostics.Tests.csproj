@@ -105,7 +105,6 @@
       <Name>SiteStarter.Tests</Name>
     </ProjectReference>
     <Compile Include="BaseDiagnosticsTestFixture.cs" />
-    <Compile Include="LogGrowerTests.cs" />
     <Compile Include="LogThreaderTests.cs" />
     <Compile Include="LogUtilitiesTests.cs" />
     <Compile Include="ReflectorTests.cs" />
