@@ -11,10 +11,71 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 	/// </summary>
 	public class BasePart : UserControl, IPart
 	{
+		public bool HeightSet
+		{
+			get { return !Height.Equals(DefaultHeight); }
+		}
+		
+		private int defaultEmptyHeight = 45;
+		/// <summary>
+		/// Gets/sets the default height of the part when it's empty.
+		/// </summary>
+		public int DefaultEmptyHeight
+		{
+			get {
+				return defaultEmptyHeight; }
+			set { defaultEmptyHeight = value;
+			}
+		}
+		
+		
+		private int defaultItemHeight = 80;
+		/// <summary>
+		/// Gets/sets the default height of each data item when displaying a list.
+		/// </summary>
+		public int DefaultItemHeight
+		{
+			get {
+				return defaultItemHeight; }
+			set { defaultItemHeight = value;
+			}
+		}
+		
+		private Unit defaultHeight;
+		/// <summary>
+		/// Gets/sets the default height of the part.
+		/// </summary>
+		public Unit DefaultHeight
+		{
+			get {
+				if (defaultHeight == Unit.Empty)
+					defaultHeight = DefaultEmptyHeight;
+				return defaultHeight; }
+			set { defaultHeight = value;
+			}
+		}
+		
+		private int defaultMaximumHeight;
+		/// <summary>
+		/// Gets/sets the maximum default height that the part can get to, when calculating its own height.
+		/// Note: This should not restrict the height that the user can change the part to.
+		/// </summary>
+		public int DefaultMaximumHeight
+		{
+			get {
+				if (defaultMaximumHeight == 0)
+					defaultMaximumHeight = 200;
+				return defaultMaximumHeight; }
+			set { defaultMaximumHeight = value;
+			}
+		}
+		
 		public Unit Height
 		{
 			get {
 				Unit height = ((WebPart)Parent).Height;
+				if (height == Unit.Empty)
+					height = DefaultHeight;
 				return height; }
 			set { ((WebPart)Parent).Height = value;
 			}
@@ -122,8 +183,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		protected override void OnPreRender(EventArgs e)
 		{
 			// This is in OnPreRender so that the derived part has time to set its own value, before this occurs
-			if (Height == Unit.Empty)
-				Height = Unit.Pixel(200);
+			//if (!HeightSet)
+			//	Height = Unit.Pixel(200);
 			
 			base.OnPreRender(e);
 		}
@@ -148,49 +209,31 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 			writer.Write("</div>");
 		}
 		
+		
 		/// <summary>
 		/// Sets the height of the part based on how much data is in it.
 		/// </summary>
-		/// <param name="entities"></param>
-		public void SetHeight(params IEntity[] entities)
+		public void SetDefaultHeight(int itemCount)
 		{
-			SetHeight(80, 200, entities);
+			SetDefaultHeight(itemCount, DefaultItemHeight);
 		}
 		
 		/// <summary>
 		/// Sets the height of the part based on how much data is in it.
 		/// </summary>
-		/// <param name="entities"></param>
-		public void SetHeight(int itemHeight, params IEntity[] entities)
+		public void SetDefaultHeight(int itemCount, int itemHeight)
 		{
-			SetHeight(itemHeight, 200, entities);
-		}
-		
-		/// <summary>
-		/// Sets the height of the part based on how much data is in it.
-		/// </summary>
-		/// <param name="entities"></param>
-		public void SetHeight(int itemHeight, int maxHeight, params IEntity[] entities)
-		{
-			// If it's already been set then skip it
-			if (Height == Unit.Empty)
+			if (itemCount > 0)
 			{
-				int height = 0;
+				int height = itemCount * itemHeight;
 				
-				if (entities == null || entities.Length == 0)
-					height = 45;
-				else
-				{
-					height = entities.Length * itemHeight;
-				}
+				if (height > DefaultMaximumHeight)
+					height = DefaultMaximumHeight;
 				
-				if (height > maxHeight)
-				{
-					height = maxHeight;
-				}
-				
-				Height = Unit.Pixel(height);
+				DefaultHeight = height;
 			}
+			else
+				DefaultHeight = DefaultEmptyHeight;
 		}
 	}
 }
