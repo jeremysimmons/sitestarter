@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" ClassName="GettingStarted" %>
+﻿<%@ Control Language="C#" ClassName="AuthMenu" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business.Security" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Configuration" %>
