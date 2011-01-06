@@ -305,16 +305,32 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		/// <summary>
 		/// Gets/sets the text displayed when the data is empty.
 		/// </summary>
-		public string NoDataText // TODO: Finish adding support for this property
+		public string NoDataText
 		{
 			get
 			{
-				if (ViewState["EmptyDataText"] == null)
-					ViewState["EmptyDataText"] = String.Empty;
-				return (string)ViewState["EmptyDataText"];
+				if (ViewState["NoDataText"] == null)
+					ViewState["NoDataText"] = String.Empty;
+				return (string)ViewState["NoDataText"];
 			}
-			set { ViewState["EmptyDataText"] = value; }
+			set { ViewState["NoDataText"] = value; }
 		}
+		
+		
+		/// <summary>
+		/// Gets/sets the CSS class of the text displayed when the data is empty.
+		/// </summary>
+		public string NoDataTextCssClass
+		{
+			get
+			{
+				if (ViewState["NoDataTextCssClass"] == null)
+					ViewState["NoDataTextCssClass"] = "NoDataText";
+				return (string)ViewState["NoDataTextCssClass"];
+			}
+			set { ViewState["NoDataTextCssClass"] = value; }
+		}
+		
 
 		protected override void OnInit(EventArgs e)
 		{
@@ -350,10 +366,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				// If post back then
 				if (!Page.IsPostBack)
 				{
-					if (CurrentSort != String.Empty)
-						Sort.SelectedIndex = Sort.Items.IndexOf(Sort.Items.FindByValue(CurrentSort));
-					else
-						Sort.SelectedIndex = Sort.Items.IndexOf(Sort.Items.FindByValue(DefaultSort));
+					SelectSortItem();
 				}
 
 				AppLogger.Debug("Default sort: " + DefaultSort);
@@ -397,8 +410,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		void Sort_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			HttpContext.Current.Response.Redirect(CompileNavigateUrl(CurrentPageIndex, Sort.SelectedValue));
-			//CurrentSort = Sort.SelectedValue;
-			//RaiseSortChanged();
 		}
 
 		protected override void OnItemCreated(DataGridItemEventArgs e)
@@ -442,13 +453,65 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				if (e.Item.Cells[0].Controls.Count > 0)
 					e.Item.Cells[0].Controls.RemoveAt(0);
 
-				Table table = CreateHeaderTable();
+				Panel panel = CreateHeaderPanel();
 				
-				e.Item.Cells[0].Controls.Add(table);
-				e.Item.CssClass = "Heading2";
+				e.Item.Cells[0].Controls.Add(panel);
+				e.Item.Cells[0].Style.Add("padding", "0px");
+				
+				
 			}
 		}
 		
+		private Panel CreateHeaderPanel()
+		{
+			Panel panel = new Panel();
+			panel.CssClass = "Heading2";
+			panel.Style.Add("clear", "both");
+			panel.Controls.Add(CreateTitlePanel());
+			panel.Controls.Add(CreateRightPanel());
+			
+			return panel;
+
+		}
+		
+		private Panel CreateTitlePanel()
+		{
+			
+			Panel panel = new Panel();
+			panel.CssClass = "Heading2Left";
+			panel.Controls.Add(new LiteralControl(HeaderText));
+			panel.Style.Add("float", "left");
+			
+			return panel;
+		}
+	
+		private Panel CreateRightPanel()
+		{
+			// Outer panel
+			Panel panel = new Panel();
+			panel.CssClass = "Heading2Right";
+			panel.Style.Add("float", "right");
+			panel.HorizontalAlign = HorizontalAlign.Right;
+			
+			// Paging panel
+			PlaceHolder pagingPanel = CreatePagingPanel();
+
+			// Sort panel
+			PlaceHolder sortPanel = new PlaceHolder();
+			
+			if (ShowSort)
+			{
+				if (Sort != null)
+					panel.Controls.Add(Sort);
+			}
+			
+			panel.Controls.Add(sortPanel);
+			panel.Controls.Add(pagingPanel);
+			
+			return panel;
+		}
+		
+		/*
 		private Table CreateHeaderTable()
 		{
 			// Add the table
@@ -503,7 +566,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			table.Rows[0].Cells.Add(cell4);
 			
 			return table;
-		}
+		}*/
 
 		protected void CustomizeFooter(DataGridItemEventArgs e)
 		{
@@ -520,27 +583,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
 				if (e.Item.Cells[0].Controls.Count > 0)
 					e.Item.Cells[0].Controls.RemoveAt(0);
-
-				// Add the table
-				Table table = new Table();
-				table.ID = "FooterTable";
-				table.Width = Unit.Percentage(100);
-				table.Rows.Add(new TableRow());
-
-				e.Item.Cells[0].Controls.Add(table);
-
 				
-				
-				// Create cell 1
-				TableCell cell1 = CreatePagingCell();
-				cell1.Width = Unit.Percentage(50);
-				cell1.HorizontalAlign = HorizontalAlign.Right;
-				cell1.CssClass = "PagingContainer";
-				cell1.ID = "PagingCell2";
-				cell1.Wrap = false;
-				cell1.Visible = AllowPaging && DataSource != null && DataSource.Length > 0;
+				e.Item.Cells[0].HorizontalAlign = HorizontalAlign.Right;
 
-				table.Rows[0].Cells.Add(cell1);
+				e.Item.Cells[0].Controls.Add(CreatePagingPanel());
 				
 			}
 		}
@@ -648,12 +694,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			
 			// Header cell
 			headerRow.Cells.Add(new TableCell());
-			headerRow.Cells[0].Controls.Add(CreateHeaderTable());
+			headerRow.Cells[0].Controls.Add(CreateHeaderPanel());
 			headerRow.CssClass = "Heading2";
 			
 			// Text cell
 			TableCell textCell = new TableCell();
-			textCell.Controls.Add(new LiteralControl("<i>" + NoDataText + "</i>"));
+			textCell.Controls.Add(new LiteralControl("<div class='" + NoDataTextCssClass + "'>" + NoDataText + "</div>"));
 			
 			DataGridItem textRow = new DataGridItem(Items.Count, 0, ListItemType.Item);
 			textRow.Cells.Add(textCell);
@@ -695,34 +741,34 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			row.Cells.Add(cell);
 			noDataTable.Rows.Add(row);*/
 
-	}
-
-	protected override void OnPreRender(EventArgs e)
-	{
-		if (DataSource == null || DataSource.Length == 0)
-		{
-			InitializeNoDataText();
-		}
-		else
-		{
-			AppLogger.Debug("DataSource is not empty.");
-			AppLogger.Debug("DataSource.Length: " + DataSource.Length);
-		}
-		
-		if (DataSource == null || DataSource.Length == 0)
-		{
-			ShowFooter = true;
 		}
 
-		if (PageCount <= 1)
-			PagerStyle.Visible = false;
-		
-
-		if (EnableExpansion)
+		protected override void OnPreRender(EventArgs e)
 		{
-			if (!Page.ClientScript.IsClientScriptBlockRegistered(this.GetType(), "SmartGrid"))
+			if (DataSource == null || DataSource.Length == 0)
 			{
-				/*string script = @"<script language='JavaScript' defer>
+				InitializeNoDataText();
+			}
+			else
+			{
+				AppLogger.Debug("DataSource is not empty.");
+				AppLogger.Debug("DataSource.Length: " + DataSource.Length);
+			}
+			
+			if (DataSource == null || DataSource.Length == 0)
+			{
+				ShowFooter = true;
+			}
+
+			if (PageCount <= 1)
+				PagerStyle.Visible = false;
+			
+
+			if (EnableExpansion)
+			{
+				if (!Page.ClientScript.IsClientScriptBlockRegistered(this.GetType(), "SmartGrid"))
+				{
+					/*string script = @"<script language='JavaScript' defer>
 						function ExpandGridItem(gridID, itemIndex)
 						{
 							for (var i = 0; i < " + Columns.Count + 5 + @"; i++)
@@ -748,7 +794,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 						}
 				</script>";*/
 
-				string script = @"<script language='JavaScript'>
+					string script = @"<script language='JavaScript'>
 						function ToggleExpansion(gridID, itemIndex)
 						{
 							for (var i = 0; i <= " + Columns.Count + @"; i++)
@@ -775,206 +821,193 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 						}
 						</script>";
 
-				Page.ClientScript.RegisterClientScriptBlock(this.GetType(), "SmartGrid", script);
-			}
-		}
-
-		base.OnPreRender(e);
-	}
-	
-	private string AddPageQueryString(string url, int pageIndex)
-	{
-		string separator = "?";
-		if (url.IndexOf("?") > -1)
-			separator = "&";
-		
-		// Convert index into number. Index is 0 based. Number is 1 based.
-		// Conversion is a usability measure
-		int pageNumber = pageIndex+1;
-		
-		return url + separator + "Page=" + pageNumber.ToString();
-	}
-	
-	
-	private string AddSortQueryString(string url, string sortExpression)
-	{
-		string separator = "?";
-		if (url.IndexOf("?") > -1)
-			separator = "&";
-		
-		return url + separator + "Sort=" + sortExpression;
-	}
-	
-	private string CreateDefaultNavigateUrl()
-	{
-		
-		string url = HttpContext.Current.Request.Url.ToString();
-		
-		// Remove the page query string. The new one gets added as needed.
-		string pageKey = "Page";
-		Regex pageRegex = new Regex("[?&]" + pageKey + "(?:=([^&]*))?", RegexOptions.IgnoreCase);
-		
-		url = pageRegex.Replace(url, "");
-		
-		// Remove the sort query string. The new one gets added as needed.
-		string sortKey = "Sort";
-		Regex sortRegex = new Regex("[?&]" + sortKey + "(?:=([^&]*))?", RegexOptions.IgnoreCase);
-		
-		url = sortRegex.Replace(url, "");
-		
-		return url;
-	}
-
-	private TableCell CreatePagingCell()
-	{
-		TableCell cell = new TableCell();
-		
-		cell.Controls.Add(new LiteralControl(Language.Pages + "&nbsp;"));
-
-		for (int i = 0; i < PageCount; i++)
-		{
-			if (i != CurrentPageIndex)
-			{
-				
-				string url = CompileNavigateUrl(i, CurrentSort);
-				
-				HyperLink link = new HyperLink();
-				link.Text = (i+1).ToString();
-				//button.CommandName = "Page";
-				//button.CommandArgument = (i+1).ToString();
-				link.NavigateUrl = url;
-				cell.Controls.Add(link);
-			}
-			else
-			{
-				cell.Controls.Add(new LiteralControl("<b>" + (i+1) + "</b>"));
-			}
-
-			if (i < PageCount-1)
-				cell.Controls.Add(new LiteralControl(" | "));
-		}
-
-		/*if (!IsLastPage)
-				{
-					e.Item.Cells[0].Controls.Add(new LiteralControl(" | "));
-
-					LinkButton nextButton = new LinkButton();
-					nextButton.Text = "&raquo;";
-					nextButton.CommandName = "Page";
-					nextButton.CommandArgument = (CurrentPageIndex + 2).ToString();
-					nextButton.CausesValidation = false;
-					e.Item.Cells[0].Controls.Add(nextButton);
-
-					e.Item.Cells[0].Controls.Add(new LiteralControl(" | "));
-
-					LinkButton lastButton = new LinkButton();
-					lastButton.Text = "&raquo;&raquo;|";
-					lastButton.CommandName = "Page";
-					lastButton.CommandArgument = PageCount.ToString();
-					lastButton.CausesValidation = false;
-					e.Item.Cells[0].Controls.Add(lastButton);
-				}*/
-
-		/*if (Items.Count == 0)
-			{
-				for (int i = 0; i < e.Item.Cells[0].Controls.Count; i++)
-				{
-					Control control = e.Item.Cells[0].Controls[i];
-					//control.ID = Guid.NewGuid().ToString().Substring(0, 5);
-					//e.Item.Cells[0].Controls.Remove(control);
-					PagingCell1.Controls.Add(control);
-					//i--;
+					Page.ClientScript.RegisterClientScriptBlock(this.GetType(), "SmartGrid", script);
 				}
 			}
-			else
-			{
-				for (int i = 0; i < e.Item.Cells[0].Controls.Count; i++)
-				{
-					Control control = e.Item.Cells[0].Controls[i];
-					//control.ID = Guid.NewGuid().ToString().Substring(0, 5);
-					//e.Item.Cells[0].Controls.Remove(control);
-					PagingCell2.Controls.Add(control);
-					//i--;
-				}
-			}*/
 
-		return cell;
-	}
-	
-	private string CompileNavigateUrl(int pageIndex, string sort)
-	{
-		
-		string url = NavigateUrl;
-		if (url == String.Empty)
-			url = CreateDefaultNavigateUrl();
-		
-		url = AddPageQueryString(url, pageIndex);
-		url = AddSortQueryString(url, sort);
-		
-		return url;
-	}
-
-	public override void DataBind()
-	{
-
-		using (LogGroup logGroup = AppLogger.StartGroup("Binding IndexGrid control: " + ID, NLog.LogLevel.Debug))
-		{
-			
-			base.DataBind ();
-			
-			//if (DataSource == null)
-			//	AppLogger.Debug("DataSource == null. Skipping bind.");
-			//else
-			//{
-
-			SelectSortItem();
-			
-			if (this.Parent == null)
-				throw new InvalidOperationException("Parent == null");
-			
-			if (Items == null)
-				throw new InvalidOperationException("Items == null");
-			
-			if (Columns == null)
-				throw new InvalidOperationException("Columns == null");
-
-			
-			//}
-
+			base.OnPreRender(e);
 		}
-	}
-
-
-	#region Expansion functions
-	/// <summary>
-	/// Gets the ID to use for an expanding div.
-	/// </summary>
-	/// <param name="item"></param>
-	/// <returns></returns>
-	public string GetExpandedClientID(DataGridItem item, int cellID)
-	{
-		string id = ClientID + "__ctl" + item.ItemIndex + "_Expanded_" + cellID;
-		// TODO: Remove expanded count
-		//ExpandedCount++;
-		return id;
-	}
-	#endregion
-	
-
-	protected override void Render(HtmlTextWriter writer)
-	{
-		base.Render (writer);
-
-		if (EnableExpansion)
+		
+		private string AddPageQueryString(string url, int pageIndex)
 		{
-			writer.Write(
-				@"<script language='JavaScript' defer>
+			string separator = "?";
+			if (url.IndexOf("?") > -1)
+				separator = "&";
+			
+			// Convert index into number. Index is 0 based. Number is 1 based.
+			// Conversion is a usability measure
+			int pageNumber = pageIndex+1;
+			
+			return url + separator + "Page=" + pageNumber.ToString();
+		}
+		
+		
+		private string AddSortQueryString(string url, string sortExpression)
+		{
+			string separator = "?";
+			if (url.IndexOf("?") > -1)
+				separator = "&";
+			
+			return url + separator + "Sort=" + sortExpression;
+		}
+		
+		private string CreateDefaultNavigateUrl()
+		{
+			
+			string url = HttpContext.Current.Request.Url.ToString();
+			
+			// Remove the page query string. The new one gets added as needed.
+			string pageKey = "Page";
+			Regex pageRegex = new Regex("[?&]" + pageKey + "(?:=([^&]*))?", RegexOptions.IgnoreCase);
+			
+			url = pageRegex.Replace(url, "");
+			
+			// Remove the sort query string. The new one gets added as needed.
+			string sortKey = "Sort";
+			Regex sortRegex = new Regex("[?&]" + sortKey + "(?:=([^&]*))?", RegexOptions.IgnoreCase);
+			
+			url = sortRegex.Replace(url, "");
+			
+			return url;
+		}
+
+		private PlaceHolder CreatePagingPanel()
+		{
+			PlaceHolder panel = new PlaceHolder();
+						
+			panel.Controls.Add(new LiteralControl(Language.Pages + ":&nbsp;"));
+
+			for (int i = 0; i < PageCount; i++)
+			{
+				if (i != CurrentPageIndex)
+				{
+					
+					string url = CompileNavigateUrl(i, CurrentSort);
+					
+					HyperLink link = new HyperLink();
+					link.Text = (i+1).ToString();
+					//button.CommandName = "Page";
+					//button.CommandArgument = (i+1).ToString();
+					link.NavigateUrl = url;
+					panel.Controls.Add(link);
+				}
+				else
+				{
+					panel.Controls.Add(new LiteralControl("<b>" + (i+1) + "</b>"));
+				}
+
+				if (i < PageCount-1)
+					panel.Controls.Add(new LiteralControl(" | "));
+			}
+			return panel;
+		}
+		
+		public string CompileNavigateUrl()
+		{
+			return CompileNavigateUrl(CurrentPageIndex, CurrentSort);
+		}
+		
+		public string CompileNavigateUrl(int pageIndex, string sort)
+		{
+			
+			string url = NavigateUrl;
+			if (url == String.Empty)
+				url = CreateDefaultNavigateUrl();
+			
+			url = AddPageQueryString(url, pageIndex);
+			url = AddSortQueryString(url, sort);
+			
+			return url;
+		}
+
+		public override void DataBind()
+		{
+
+			using (LogGroup logGroup = AppLogger.StartGroup("Binding IndexGrid control: " + ID, NLog.LogLevel.Debug))
+			{
+				ValidatePageIndex();
+				
+				base.DataBind ();
+				
+				if (!Page.IsPostBack)
+					SelectSortItem();
+				
+				if (this.Parent == null)
+					throw new InvalidOperationException("Parent == null");
+				
+				if (Items == null)
+					throw new InvalidOperationException("Items == null");
+				
+				if (Columns == null)
+					throw new InvalidOperationException("Columns == null");
+			}
+		}
+
+
+		#region Expansion functions
+		/// <summary>
+		/// Gets the ID to use for an expanding div.
+		/// </summary>
+		/// <param name="item"></param>
+		/// <returns></returns>
+		public string GetExpandedClientID(DataGridItem item, int cellID)
+		{
+			string id = ClientID + "__ctl" + item.ItemIndex + "_Expanded_" + cellID;
+			// TODO: Remove expanded count
+			//ExpandedCount++;
+			return id;
+		}
+		#endregion
+		
+
+		protected override void Render(HtmlTextWriter writer)
+		{
+			base.Render (writer);
+
+			if (EnableExpansion)
+			{
+				writer.Write(
+					@"<script language='JavaScript' defer>
 
 				InitToggle();
 
 				</script>");
+			}
+		}
+		
+		public void ValidatePageIndex()
+		{
+			int validPageIndex = GetValidPageIndex();
+			
+			if (validPageIndex != CurrentPageIndex)
+			{
+				CurrentPageIndex = validPageIndex;
+				Page.Response.Redirect(CompileNavigateUrl());
+			}
+			
+		}
+
+		public int GetValidPageIndex()
+		{
+			if (VirtualItemCount == 0)
+				return 0;
+			
+			long remainder = (VirtualItemCount % PageSize);
+			
+			int maximumPageIndex = (VirtualItemCount / PageSize)-1;
+			
+			// If there are some left over then add another page
+			if (remainder > 0)
+				maximumPageIndex ++;
+			
+			int pageIndex = CurrentPageIndex;
+			
+			if (pageIndex > maximumPageIndex)
+			{
+				pageIndex = maximumPageIndex;
+			}
+			
+			return pageIndex;
 		}
 	}
-
-}
 }
