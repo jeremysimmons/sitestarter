@@ -6,6 +6,7 @@ using SoftwareMonkeys.SiteStarter.Business.Security;
 using SoftwareMonkeys.SiteStarter.Web.WebControls;
 using SoftwareMonkeys.SiteStarter.Web.Properties;
 using SoftwareMonkeys.SiteStarter.Business;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Projections
 {
@@ -171,7 +172,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			// override to set menu properties such as MenuTitle, MenuCategory, and ShowOnMenu
 		}
-			protected override void OnInit(EventArgs e)
+		protected override void OnInit(EventArgs e)
 		{
 			try
 			{
@@ -214,16 +215,19 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// </summary>
 		public virtual void FailAuthorisation()
 		{
-			if (HttpContext.Current != null && HttpContext.Current.Request != null)
+			using (LogGroup logGroup = AppLogger.StartGroup("User failed authorisation.", NLog.LogLevel.Debug))
 			{
-				Result.DisplayError(Language.Unauthorised);
-				
 				if (HttpContext.Current != null && HttpContext.Current.Request != null)
-					HttpContext.Current.Response.Redirect(UnauthorisedUrl);
-			}
-			else
-			{
-				throw new UnauthorisedException(QueryStrings.Action, Type.Name);
+				{
+					Result.DisplayError(Language.Unauthorised);
+					
+					if (HttpContext.Current != null && HttpContext.Current.Request != null)
+						HttpContext.Current.Response.Redirect(UnauthorisedUrl);
+				}
+				else
+				{
+					throw new UnauthorisedException(QueryStrings.Action, Type.Name);
+				}
 			}
 		}
 		
@@ -233,17 +237,22 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <returns>A value indicating whether the user is authorised.</returns>
 		public bool EnsureAuthorised()
 		{
-			CheckAction();
-			CheckType();
+			bool output = false;
 			
-			if (RequireAuthorisation)
+			using (LogGroup logGroup = AppLogger.StartGroup("Ensuring that the current user is authorised to performed the desired action.", NLog.LogLevel.Debug))
 			{
-				bool isAuthorised = Security.Authorisation.UserCan(Action, Type.Name);
+				CheckAction();
+				CheckType();
 				
-				if (!isAuthorised)
-					FailAuthorisation();
-				
-				return !RequireAuthorisation || isAuthorised;
+				if (RequireAuthorisation)
+				{
+					bool isAuthorised = Security.Authorisation.UserCan(Action, Type.Name);
+					
+					if (!isAuthorised)
+						FailAuthorisation();
+					
+					output = (!RequireAuthorisation || isAuthorised);
+				}
 			}
 			return true;
 		}
@@ -255,9 +264,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <returns>A value indicating whether the user is authorised.</returns>
 		public bool Authorise(IEntity entity)
 		{
-			bool isAuthorised = Security.Authorisation.UserCan(Action, entity);
+			bool output = false;
 			
-			return !RequireAuthorisation || isAuthorised;
+			using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the current user is authorised to perform the desired action.", NLog.LogLevel.Debug))
+			{
+				bool isAuthorised = Security.Authorisation.UserCan(Action, entity);
+				
+				output = (!RequireAuthorisation || isAuthorised);
+			}
+			
+			return output;
 		}
 		
 		
