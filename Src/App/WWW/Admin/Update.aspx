@@ -46,14 +46,15 @@
 			<p>
 			    This wizard will guide you through the process of updating the application.
 			</p>
+			<asp:placeholder runat="server" visible="false">
 			<p>
 			<i>Note: Your data will be backed up before the update begins. The backup zip files can be accessed at:<br/>
 			<%= new ApplicationBackup().BackupDirectoryPath %></i>
 			</p>
-			
+			</asp:placeholder>
 				<p>
 			    <ol><li>
-			    Download the latest release via HTTP or SVN; go to <a href="http://www.softwaremonkeys.net" target="_blank">www.softwaremonkeys.net</a>.
+			    Download the latest release via HTTP or SVN - get it at <a href="http://www.softwaremonkeys.net" target="_blank">www.softwaremonkeys.net</a>.
 			    </li>
 			    <li>
 			    When you are ready... <input type="button" value='Begin &raquo;' onclick="location.href='Backup.aspx?PrepareForUpdate=true'"/>
