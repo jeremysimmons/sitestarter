@@ -177,7 +177,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 					if (EditController == null)
 						throw new InvalidOperationException("Controller has not be initialized. Call FormPage.Initialize().");
 					
-					return EditController.PrepareEdit<T>();
+					T entity = EditController.PrepareEdit<T>();
+					
+					return entity;
 				}
 				else
 					return default(T);
@@ -363,12 +365,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// </summary>
 		public virtual T PrepareSave<T>()
 		{
-			if (EnsureAuthorised())
+			T entity = default(T);
+			using (LogGroup logGroup = AppLogger.StartGroup("Preparing to save the data from the form.", NLog.LogLevel.Debug))
 			{
-				return (T)PrepareSave();
+				if (EnsureAuthorised())
+				{
+					entity = (T)PrepareSave();
+				}
 			}
-			else
-				return default(T);
+			return entity;
+			
 		}
 		
 		/// <summary>
@@ -376,22 +382,29 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// </summary>
 		public virtual IEntity PrepareSave()
 		{
-			if (EnsureAuthorised())
+			IEntity entity = null;
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Preparing to save the data from the form.", NLog.LogLevel.Debug))
 			{
-				if (Form == null)
-					throw new Exception("Form == null");
-				
-				if (Form.DataSource == null)
-					throw new Exception("Form.DataSource == null");
-				
-				Form.ReverseBind();
-				
-				DataSource = (IEntity)Form.DataSource;
-				
-				return DataSource;
+				if (EnsureAuthorised())
+				{
+					if (Form == null)
+						throw new Exception("Form == null");
+					
+					if (Form.DataSource == null)
+						throw new Exception("Form.DataSource == null");
+					
+					Form.ReverseBind();
+					
+					DataSource = (IEntity)Form.DataSource;
+					
+					entity = DataSource;
+				}
+				else
+					entity = null;
 			}
-			else
-				return null;
+			
+			return entity;
 		}
 		
 		/// <summary>
