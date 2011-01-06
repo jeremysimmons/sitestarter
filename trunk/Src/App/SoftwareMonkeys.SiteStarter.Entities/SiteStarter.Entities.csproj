@@ -61,6 +61,7 @@
     <Compile Include="BaseEntityReferenceAttribute.cs" />
     <Compile Include="BaseEntity.cs" />
     <Compile Include="BaseUniqueEntity.cs" />
+    <Compile Include="DynamicComparer.cs" />
     <Compile Include="EntitiesUtilities.cs" />
     <Compile Include="EntityAttribute.cs" />
     <Compile Include="EntityEventArgs.cs" />
@@ -87,7 +88,6 @@
     <Compile Include="TestClass.cs" />
     <Compile Include="EntityCollection.cs" />
     <Compile Include="EntityEventHandler.cs" />
-    <Compile Include="Keyword.cs" />
     <Compile Include="SortDirection.cs" />
     <Compile Include="User.cs" />
     <Compile Include="UserPermission.cs" />
