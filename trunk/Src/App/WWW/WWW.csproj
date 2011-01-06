@@ -51,7 +51,6 @@
     <None Include="Admin\Backup.aspx" />
     <None Include="Admin\Data.aspx" />
     <None Include="Admin\Import.aspx" />
-    <None Include="Admin\Keywords.aspx" />
     <None Include="Admin\Log.aspx" />
     <None Include="Admin\Setup.aspx" />
     <None Include="Admin\Tests\TestContactForm.aspx" />
