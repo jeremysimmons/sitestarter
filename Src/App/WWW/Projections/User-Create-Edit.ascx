@@ -61,7 +61,7 @@
     	
     	bool success = base.Save(user);
     	    	
-    	if (success && AutoNavigate)
+    	if (success)
     		NavigateAfterSave();
     	
     	return success;
@@ -89,10 +89,10 @@
     	
     	// If the current user edited their username then fix their authentication session
     	if (originalUser.Username == AuthenticationState.Username
-    		&& originalUser.Username != user.Username)
+    		&& user.Username != AuthenticationState.Username)
     		AuthenticationState.Username = user.Username;
     	    	
-    	if (success && AutoNavigate)
+    	if (success)
     		NavigateAfterSave();
     	
     	return success;
