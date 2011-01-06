@@ -93,13 +93,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 			
 			BaseIndexProjection page = new BaseIndexProjection("Index", typeof(TestRecord), false);
 			
-			IndexController controller = IndexController.New(page, true);
+			PagingLocation location = new PagingLocation(0, 20);
 			
+			IndexController controller = IndexController.New(page, location);
+						
 			if (controller == null)
 				throw new Exception("Controller is null.");
 			
 			controller.CurrentPageIndex = 0;
-			controller.PageSize = 20;
 			
 			controller.Index();
 			
@@ -182,13 +183,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 			
 			BaseIndexProjection page = new BaseIndexProjection("Index", typeof(TestRecord), false);
 
-			IndexController controller = IndexController.New(page, true);
+			PagingLocation location = new PagingLocation(0, 20);
+			
+			IndexController controller = IndexController.New(page, location);
 			
 			if (controller == null)
 				throw new Exception("Controller is null.");
 			
-			controller.CurrentPageIndex = 0;
-			controller.PageSize = 20;
 			controller.SortExpression = "NameAscending";
 			
 			IEntity[] entities = controller.PrepareIndex();
