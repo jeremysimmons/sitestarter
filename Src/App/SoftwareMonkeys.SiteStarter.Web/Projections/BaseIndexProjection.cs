@@ -40,7 +40,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			get { return Controller.DataSource; }
 			set { Controller.DataSource = value; }
 		}
-		
+		/*
 		/// <summary>
 		/// Gets/sets the current page index.
 		/// </summary>
@@ -58,7 +58,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			get { return Controller.PageSize; }
 			set { Controller.PageSize = value; }
 		}
-		
+		 */
 		/// <summary>
 		/// Gets/sets the sort expression applied to the index.
 		/// </summary>
@@ -77,13 +77,19 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			set { Controller.EnablePaging = value; }
 		}
 		
-		/// <summary>
+		/*/// <summary>
 		/// Gets/sets the size of each page in the index.
 		/// </summary>
 		public int AbsoluteTotal
 		{
 			get { return Controller.AbsoluteTotal; }
 			set { Controller.AbsoluteTotal = value; }
+		}*/
+			
+		public PagingLocation Location
+		{
+			get { return (PagingLocation)Controller.Indexer.Location; }
+			set { Controller.Indexer.Location = value; }
 		}
 		
 		public BaseIndexProjection()
@@ -123,10 +129,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			Type = type;
 			Grid = indexGrid;
-			controller = IndexController.New(this, isPaged);
-			PageSize = Grid.PageSize;
+			controller = IndexController.New(this,
+			                                 new PagingLocation(Grid.CurrentPageIndex, Grid.PageSize));
+
 			Grid.SortCommand += new DataGridSortCommandEventHandler(Grid_SortCommand);
 			Grid.PageIndexChanged += new DataGridPageChangedEventHandler(Grid_PageIndexChanged);
+			SortExpression = indexGrid.CurrentSort;
 		}
 
 		void Grid_SortCommand(object source, DataGridSortCommandEventArgs e)
@@ -137,7 +145,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 
 		void Grid_PageIndexChanged(object source, DataGridPageChangedEventArgs e)
 		{
-			CurrentPageIndex = e.NewPageIndex;
+			Location.PageIndex = e.NewPageIndex;
 			Index();
 		}
 		
@@ -147,7 +155,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <param name="pageIndex"></param>
 		public virtual void Index(int pageIndex)
 		{
-			CurrentPageIndex = pageIndex;
+			Location.PageIndex = pageIndex;
 			
 			Index();
 		}
@@ -178,10 +186,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			
 			Grid.DataSource = entities;
 			
-			if (AbsoluteTotal < entities.Length)
-				throw new InvalidOperationException("The AbsoluteTotal property has not been set.");
+			if (Location.AbsoluteTotal < entities.Length)
+				Location.AbsoluteTotal = entities.Length;
 			
-			Grid.VirtualItemCount = AbsoluteTotal;
+			Grid.VirtualItemCount = Location.AbsoluteTotal;
 			
 			DataBind();
 		}
