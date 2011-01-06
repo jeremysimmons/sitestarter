@@ -34,7 +34,7 @@
     	
     	try
     	{
-    	appBackup.PrepareForUpdate = Convert.ToBoolean(Request.QueryString["PrepareForUpdate"]);
+    		appBackup.PrepareForUpdate = Convert.ToBoolean(Request.QueryString["PrepareForUpdate"]);
     	}
     	catch (FormatException ex)
     	{
@@ -85,16 +85,7 @@
     {
         Step2();
     }
-    
-
-		
-		public string ConvertRelativeUrlToAbsoluteUrl(string relativeUrl)
-		{
-			if (Page.Request.IsSecureConnection)
-				return string.Format("https://{0}{1}", Page.Request.Url.Host, Page.ResolveUrl(relativeUrl));
-			else
-				return string.Format("http://{0}{1}", Page.Request.Url.Host, Page.ResolveUrl(relativeUrl));
-		}
+   
 </script>
 <asp:Content ID="Content1" ContentPlaceHolderID="Body" Runat="Server">
 <asp:MultiView runat="server" ID="PageViews">
