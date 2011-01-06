@@ -17,13 +17,12 @@
     private void Page_Init(object sender, EventArgs e)
     {        
     	Initialize(typeof(User), IndexGrid, true);
-    	
-    	PageSize = 20;
         
         IndexGrid.AddDualSortItem(Resources.Language.Email, "Email");
         IndexGrid.AddDualSortItem(Resources.Language.FirstName, "FirstName");
         IndexGrid.AddDualSortItem(Resources.Language.LastName, "LastName");
         IndexGrid.AddDualSortItem(Resources.Language.Username, "Username");
+        
     }
     
     public override void InitializeMenu()
@@ -33,19 +32,6 @@
         ShowOnMenu = true;
     }
 
-    private void IndexGrid_SortChanged(object sender, EventArgs e)
-    {
-    	SortExpression = IndexGrid.CurrentSort;
-    	
-        Index();
-    }
-
-    private void IndexGrid_PageIndexChanged(object sender, DataGridPageChangedEventArgs e)
-    {
-    	CurrentPageIndex = e.NewPageIndex;
-        Index();
-    }
-    
   private void CreateButton_Click(object sender, EventArgs e)
   {
   		Navigator.Go("Create");
@@ -67,9 +53,10 @@
 				<p>
                 <cc:IndexGrid ID="IndexGrid" runat="server" AllowPaging="True" DefaultSort="UsernameAscending" HeaderStyle-CssClass="Heading2" AllowSorting="True"
                                 AutoGenerateColumns="False"  HeaderText='<%# Resources.Language.Users %>' EmptyDataText='<%# Resources.Language.NoUsersFound %>'
-                                OnPageIndexChanged="IndexGrid_PageIndexChanged" OnSortChanged="IndexGrid_SortChanged"
                                 Width="100%"
-                                PageSize="20" DataKeyField="ID">
+                                PageSize="20" DataKeyField="ID"
+                                NavigateUrl='<%# Navigator.GetLink("Index", "User") %>'
+                                >
                                 <Columns>
                                     <asp:BoundColumn DataField="Username" HeaderText="Username" SortExpression="Username" />
                                     <asp:BoundColumn DataField="FirstName" HeaderText="FirstName" SortExpression="FirstName" />
