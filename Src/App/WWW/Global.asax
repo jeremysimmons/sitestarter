@@ -113,7 +113,7 @@
     
     private void InitializeState()
     {
-    	SoftwareMonkeys.SiteStarter.Web.State.StateProviderManager.Initialize();
+    	SoftwareMonkeys.SiteStarter.Web.State.StateProviderInitializer.Initialize();
     }
    
        
