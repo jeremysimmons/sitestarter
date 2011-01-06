@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Web.UI;
 using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.WebControls;
+using SoftwareMonkeys.SiteStarter.Entities;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Parts
 {
@@ -9,6 +11,21 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 	/// </summary>
 	public class BasePart : UserControl, IPart
 	{
+		public bool HeightSet = false;
+		
+		public Unit Height
+		{
+			get {
+				Unit height = ((WebPart)Parent).Height;
+				if (height == Unit.Empty)
+					height = Unit.Pixel(200);
+				return height; }
+			set { ((WebPart)Parent).Height = value;
+				if (value != Unit.Empty)
+					HeightSet = true;
+			}
+		}
+		
 		/// <summary>
 		/// Gets/sets the title displayed in the window.
 		/// </summary>
@@ -106,6 +123,71 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 			base.OnInit(e);
 			
 			InitializeMenu();
+		}
+		
+		protected override void Render(HtmlTextWriter writer)
+		{
+			RenderContainerStart(writer);
+			
+			base.Render(writer);
+			
+			RenderContainerEnd(writer);
+		}
+		
+		private void RenderContainerStart(HtmlTextWriter writer)
+		{
+			Unit height = Height;
+			writer.Write("<div style='height:{0}; width: 100%; overflow:auto;'>", height.ToString());
+		}
+		
+		private void RenderContainerEnd(HtmlTextWriter writer)
+		{
+			writer.Write("</div>");
+		}
+		
+		/// <summary>
+		/// Sets the height of the part based on how much data is in it.
+		/// </summary>
+		/// <param name="entities"></param>
+		public void SetHeight(params IEntity[] entities)
+		{
+			SetHeight(80, 200, entities);
+		}
+		
+		/// <summary>
+		/// Sets the height of the part based on how much data is in it.
+		/// </summary>
+		/// <param name="entities"></param>
+		public void SetHeight(int itemHeight, params IEntity[] entities)
+		{
+			SetHeight(itemHeight, 200, entities);
+		}
+		
+		/// <summary>
+		/// Sets the height of the part based on how much data is in it.
+		/// </summary>
+		/// <param name="entities"></param>
+		public void SetHeight(int itemHeight, int maxHeight, params IEntity[] entities)
+		{
+			// If it's already been set then skip it
+			if (!HeightSet)
+			{
+				int height = 0;
+				
+				if (entities == null || entities.Length == 0)
+					height = 45;
+				else
+				{
+					height = entities.Length * itemHeight;
+				}
+				
+				if (height > maxHeight)
+				{
+					height = maxHeight;
+				}
+				
+				Height = Unit.Pixel(height);
+			}
 		}
 	}
 }
