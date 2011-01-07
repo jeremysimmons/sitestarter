@@ -3,6 +3,7 @@ using SoftwareMonkeys.SiteStarter.Configuration;
 using System.Web.UI;
 using System.Web;
 using SoftwareMonkeys.SiteStarter.Business;
+using SoftwareMonkeys.SiteStarter.Business.Security;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.IO;
 
@@ -185,12 +186,19 @@ namespace SoftwareMonkeys.SiteStarter.Web
 					
 					if (RequiresRestore())
 					{
-						// If restoration is required then all normal users are send to the "Down for Maintenance" page.
-						// The administrator will be taken to the Restore.aspx page by the wizard
-						
-						AppLogger.Debug("Requires restore. Redirecting standard user to maintenance page.");
-						
-						returnPath = ApplicationPath + "/Maintenance.html";
+						// If the user is an administrator then go to the update ready page
+						if (AuthenticationState.IsAuthenticated && AuthenticationState.UserIsInRole("Administrator"))
+						{
+							AppLogger.Debug("Requires restore. Redirecting administrator to update ready page.");
+							
+							returnPath = ApplicationPath + "/Admin/UpdateReady.html";
+						}
+						else
+						{
+							AppLogger.Debug("Requires restore. Redirecting standard user to maintenance page.");
+							
+							returnPath = ApplicationPath + "/Maintenance.html";
+						}
 					}
 					else if (RequiresImport())
 					{
@@ -271,6 +279,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				AppLogger.Debug("URL: " + url.ToString());
 				
 				string[] skippable = new String[] {
+					"backup.aspx",
 					"setup.aspx",
 					"restore.aspx",
 					"import.aspx",
