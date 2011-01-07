@@ -26,10 +26,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		}
 		
 		/// <summary>
-		/// Retrieves all the entities of the specified type from the data store.
+		/// Retrieves all the entities matching the provided filter from the data store.
 		/// </summary>
 		/// <param name="filter">The filter to apply to the query.</param>
-		/// <returns>The entities of the specified type found in the data store.</returns>
+		/// <returns>The entities matching the provided filter.</returns>
 		public override IEntity[] GetEntities(IDataFilter filter)
 		{
 			List<IEntity> entities = new List<IEntity>();
@@ -54,7 +54,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				{
 					using (LogGroup logGroup2 = AppLogger.StartGroup("Entity found.", NLog.LogLevel.Debug))
 					{
-						//IEntity entity = (IEntity)os.Next();
 						AppLogger.Debug("Entity ID: " + entity.ID);
 						AppLogger.Debug("Entity .ToString(): " + entity.ToString());
 					}
@@ -304,7 +303,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					//AppLogger.Debug("Entity ID: " + e.ID);
 					
 					matches = Array.IndexOf(entityIDs, e.ID) > -1;
-						//Provider.Referencer.MatchReference(e.GetType(), e.ID, propertyName, referencedEntityType, referencedEntityID);
 					
 					isInPage = location.IsInPage(i);
 					
@@ -323,9 +321,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			location.AbsoluteTotal = i;
 			
 
-// TODO: Check if needed
-// Code below is start of a performance improvement that may not be possible to get working
-/*
+			// TODO: Check if needed
+			// Code below is start of a performance improvement that may not be possible to get working
+			/*
 string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(typeof(T), propertyName);
 				
 				EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences(typeof(T),
