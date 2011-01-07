@@ -1,6 +1,5 @@
 ﻿<%@ Control Language="C#" ClassName="RegisterEditProjection" Inherits="SoftwareMonkeys.SiteStarter.Web.Projections.BaseProjection" %>
 <%@ Register Namespace="SoftwareMonkeys.SiteStarter.Web.WebControls" Assembly="SoftwareMonkeys.SiteStarter.Web" TagPrefix="cc" %>
-<%@ Register Assembly="FredCK.FCKeditorV2" Namespace="FredCK.FCKeditorV2" TagPrefix="fckeditor" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Entities" %>
