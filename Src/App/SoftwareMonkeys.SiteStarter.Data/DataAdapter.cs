@@ -83,6 +83,36 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			}
 		}
 		
+		
+		/// <summary>
+		/// Retrieves the data store with the specified name, or the data store that this adapter is tied to.
+		/// </summary>
+		/// <param name="dataStoreName">The name of the data store to retrieve.</param>
+		/// <returns>Either the data store that this adapter is tied to, or if its [null] then the data store that is specified.</returns>
+		public IDataStore GetDataStore(string dataStoreName)
+		{
+			IDataStore store = null;
+			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the data store for the provided entity.", NLog.LogLevel.Debug))
+			{
+				if (dataStore == null)
+				{
+					store = DataAccess.Data.Stores[dataStoreName];
+					AppLogger.Debug("Dynamically selected data store.");
+				}
+				else
+				{
+					store = dataStore;
+					AppLogger.Debug("Using the data store tied to the adapter.");
+				}
+				
+				if (store.IsClosed)
+					store = DataAccess.Data.InitializeDataStore(dataStoreName);
+				
+				AppLogger.Debug("Data store name: " + store.Name);
+			}
+			return store;
+		}
+		
 		/// <summary>
 		/// Retrieves the data store for the specified entity, or the data store that this adapter is tied to.
 		/// </summary>
