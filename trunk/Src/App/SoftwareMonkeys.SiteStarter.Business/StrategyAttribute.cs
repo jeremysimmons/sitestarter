@@ -6,7 +6,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// <summary>
 	/// Description of StrategyAttribute.
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Class, AllowMultiple=true)]
+	[AttributeUsage(AttributeTargets.Class, AllowMultiple=false)]
 	public class StrategyAttribute : Attribute
 	{
 		private string typeName;
