@@ -151,17 +151,20 @@ namespace SoftwareMonkeys.SiteStarter.Data
 
 				string shortTypeName = doc.DocumentElement.Name;
 
-				Type type = EntitiesUtilities.GetType(shortTypeName);
+				if (EntityState.IsType(shortTypeName))
+				{
+					Type type = EntityState.GetType(shortTypeName);
 
-				if (type == null)
-					throw new Exception("Cannot find object type with corresponding short type name of '" + shortTypeName + "'.");
+					if (type == null)
+						throw new Exception("Cannot find object type with corresponding short type name of '" + shortTypeName + "'.");
 
-				AppLogger.Debug("Loading type: " + type.ToString());
+					AppLogger.Debug("Loading type: " + type.ToString());
 
-				entity = (IEntity)XmlUtilities.DeserializeFromDocument(doc, type);
-				
-				// Dispose the XML document
-				doc = null;
+					entity = (IEntity)XmlUtilities.DeserializeFromDocument(doc, type);
+					
+					// Dispose the XML document
+					doc = null;
+				}
 			}
 			
 			return entity;
@@ -238,7 +241,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="entity">The entity to create the file path for.</param>
 		/// <returns>The file path for the provided entity.</returns>
 		public string CreateImportedEntityPath(IEntity entity)
-		{	
+		{
 			string basePath = ImportedDirectoryPath + Path.DirectorySeparatorChar + Provider.Schema.LegacyVersion.ToString().Replace(".", "-");
 
 			string fullPath = new EntityFileNamer(entity, basePath).CreateFilePath();
