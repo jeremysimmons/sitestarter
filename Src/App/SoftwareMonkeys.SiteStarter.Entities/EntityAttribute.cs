@@ -6,7 +6,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 	/// <summary>
 	/// Description of EntityAttribute.
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Class, AllowMultiple=true)]
+	[AttributeUsage(AttributeTargets.Class, AllowMultiple=false)]
 	public class EntityAttribute : Attribute
 	{
 		private string typeName;
