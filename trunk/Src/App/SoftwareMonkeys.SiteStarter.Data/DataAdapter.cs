@@ -35,7 +35,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <summary>
 		/// The data store that the adapter is tied to. Access it through the GetDataStore function.
 		/// </summary>
-		private IDataStore dataStore;
+		protected IDataStore DataStore;
 		
 		public DataAdapter()
 		{
@@ -79,7 +79,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				AppLogger.Debug("Set the provider for the adapter to use.");
 				this.provider = provider;
 				AppLogger.Debug("Set the store for the adapter to use.");
-				this.dataStore = store;
+				this.DataStore = store;
 			}
 		}
 		
@@ -94,14 +94,14 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			IDataStore store = null;
 			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the data store for the provided entity.", NLog.LogLevel.Debug))
 			{
-				if (dataStore == null)
+				if (DataStore == null)
 				{
 					store = DataAccess.Data.Stores[dataStoreName];
 					AppLogger.Debug("Dynamically selected data store.");
 				}
 				else
 				{
-					store = dataStore;
+					store = DataStore;
 					AppLogger.Debug("Using the data store tied to the adapter.");
 				}
 				
@@ -123,14 +123,14 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			IDataStore store = null;
 			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the data store for the provided entity.", NLog.LogLevel.Debug))
 			{
-				if (dataStore == null)
+				if (DataStore == null)
 				{
 					store = DataAccess.Data.Stores[entity];
 					AppLogger.Debug("Dynamically selected data store.");
 				}
 				else
 				{
-					store = dataStore;
+					store = DataStore;
 					AppLogger.Debug("Using the data store tied to the adapter.");
 				}
 				
@@ -152,14 +152,14 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			IDataStore store = null;
 			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the data store for the provided entity.", NLog.LogLevel.Debug))
 			{
-				if (dataStore == null)
+				if (DataStore == null)
 				{
 					store = DataAccess.Data.Stores[type];
 					AppLogger.Debug("Dynamically selected data store.");
 				}
 				else
 				{
-					store = dataStore;
+					store = DataStore;
 					AppLogger.Debug("Using the data store tied to the adapter.");
 				}
 				
