@@ -215,20 +215,42 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		}
 
 		/// <summary>
-		/// Retrieves the entities from the data store.
+		/// Retrieves all entities in the attached data store, or if it's null then all entities from all all stores.
 		/// </summary>
-		/// <returns>The entities from the data store.</returns>
+		/// <returns>All entities retrieved.</returns>
 		public override IEntity[] GetEntities()
 		{
-			IQuery query = ((Db4oDataStore)GetDataStore(typeof(IEntity))).ObjectContainer.Query();
-			query.Constrain(typeof(IEntity));
-
 			List<IEntity> list = new List<IEntity>();
-
-			IObjectSet os = query.Execute();
-			while (os.HasNext())
+			
+			DataStoreCollection stores = new DataStoreCollection();
+			
+			// Get the list of stores
+			// If the DataStore property is null then get all stores.
+			if (DataStore == null)
 			{
-				list.Add((IEntity)os.Next());
+				foreach (string dataStoreName in DataAccess.Data.GetDataStoreNames())
+				{
+					stores.Add(Provider.Stores[dataStoreName]);
+				}
+			}
+			// Otherwise use the single store attached to this adapter
+			else
+			{
+				stores.Add(DataStore);
+			}
+			
+			// Load data from the stores
+			foreach (IDataStore store in stores)
+			{
+				IQuery query = ((Db4oDataStore)store).ObjectContainer.Query();
+				
+				query.Constrain(typeof(IEntity));
+
+				IObjectSet os = query.Execute();
+				while (os.HasNext())
+				{
+					list.Add((IEntity)os.Next());
+				}
 			}
 
 			return Release((IEntity[])list.ToArray());
@@ -306,6 +328,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					
 					isInPage = location.IsInPage(i);
 					
+					// IMPORTANT: Only increment if it matches, regardless of what page it's on
 					if (matches)
 						i++;
 					//AppLogger.Debug("Matches: " + matches);
@@ -321,38 +344,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			location.AbsoluteTotal = i;
 			
 
-			// TODO: Check if needed
-			// Code below is start of a performance improvement that may not be possible to get working
-			/*
-string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(typeof(T), propertyName);
-				
-				EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences(typeof(T),
-				                                                                                referencedEntityID,
-				                                                                                mirrorPropertyName,
-				                                                                                referencedEntityType,
-				                                                                                false);
-				
-				foreach (EntityReference reference in references)
-				{
-					if (reference.Includes(referencedEntityID, mirrorPropertyName))
-					{
-						page.Add(Provider.Reader.GetEntityWithReference<T>(mirrorPropertyName, referenceEntityType, referencedEntityID));
-					}
-				}*/
-			
-			/*if (entities != null)
-			{
-				AppLogger.Debug("entities != null");
-				
-				location.AbsoluteTotal = i;
-			}
-			else
-			{
-				AppLogger.Debug("entities == null");
-				
-				location.AbsoluteTotal = 0;
-			}*/
-			
 			//AppLogger.Debug("Absolute total objects: " + location.AbsoluteTotal);
 			//}
 
@@ -837,6 +828,7 @@ string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(typeof(T), p
 		/// Applies the specified sort expression to the provided query.
 		/// </summary>
 		/// <param name="query">The query to apply the sort expression to.</param>
+		/// <param name="type">The type involved in the query.</param>
 		/// <param name="sortExpression">The sort expression to apply to the query.</param>
 		public void ApplySorting(IQuery query, Type type, string sortExpression)
 		{
