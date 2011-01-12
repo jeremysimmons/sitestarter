@@ -190,8 +190,10 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			// write call stack method names
 			foreach (StackFrame stackFrame in stackFrames)
 			{
-				builder.Append(stackFrame.ToString());   // write method name
-				builder.Append("\n");   // write method name
+				builder.Append(stackFrame.GetMethod().DeclaringType.ToString());
+				builder.Append(":");
+				builder.Append(stackFrame.GetMethod().ToString());// write method name
+				builder.Append("\n");
 			}
 			
 			return builder.ToString();
