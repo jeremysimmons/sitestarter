@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.Configuration.Provider;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using SoftwareMonkeys.SiteStarter.State;
 using SoftwareMonkeys.SiteStarter.Configuration;
 using System.Reflection;
 using System.IO;
@@ -21,7 +22,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// </summary>
 		public string DataDirectoryPath
 		{
-			get { return Config.Application.PhysicalApplicationPath + Path.DirectorySeparatorChar + "App_Data"; }
+			get { return StateAccess.State.PhysicalApplicationPath + Path.DirectorySeparatorChar + "App_Data"; }
 		}
 		
 		/// <summary>
