@@ -10,6 +10,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 	public static class Authentication
 	{
 		/// <summary>
+		/// Gets a value indicating whether the current user is authenticated.
+		/// </summary>
+		public static bool IsAuthenticated
+		{
+			get { return AuthenticationState.IsAuthenticated; }
+		}
+		
+		/// <summary>
 		/// Authenticates the user with the provided username and password.
 		/// </summary>
 		/// <param name="username">The username of the user to authenticate.</param>
@@ -57,7 +65,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		/// </summary>
 		public static void SignOut()
 		{
-			SetAuthenticatedUsername(String.Empty);
+			if (Authentication.IsAuthenticated)
+				SetAuthenticatedUsername(String.Empty);
 		}
 		
 		/// <summary>
