@@ -29,8 +29,8 @@
 	}
 </script>
 	<h1><%= Resources.Language.SignIn %></h1>
-	<p><%= Resources.Language.SignInIntro %></p>
     <cc:Result runat="server"/>
+	<p><%= Resources.Language.SignInIntro %></p>
     <asp:Login ID="Login" runat="server" DestinationPageUrl="Default.aspx" OnLoggingIn="Login_LoggingIn" titletext='<%# Resources.Language.SignInDetails %>'>
         <TitleTextStyle CssClass="Heading2" HorizontalAlign="Left" />
     </asp:Login>
