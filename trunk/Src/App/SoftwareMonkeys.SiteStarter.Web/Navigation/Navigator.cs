@@ -2,6 +2,7 @@
 using System;
 using System.Web;
 using SoftwareMonkeys.SiteStarter.Web;
+using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Configuration;
 using SoftwareMonkeys.SiteStarter.Business;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
@@ -27,11 +28,24 @@ namespace SoftwareMonkeys.SiteStarter.Web.Navigation
 			set { urlCreator = value; }
 		}
 		
+		static private Navigator current;
+		static public Navigator Current
+		{
+			get {
+				if (current == null)
+					current = new Navigator();
+				return current; }
+		}
+		
 		public Control Parent;
 		
 		public Navigator(Control parent)
 		{
 			Parent = parent;
+		}
+		
+		public Navigator()
+		{
 		}
 		
 		public string GetLink(string action, string type, string uniqueKey)
@@ -111,6 +125,29 @@ namespace SoftwareMonkeys.SiteStarter.Web.Navigation
 		public virtual string GetEntityType()
 		{
 			return HttpContext.Current.Request.QueryString["t"];
+		}
+		
+		public void NavigateAfterOperation(string action, IEntity entity)
+		{
+			
+			string url = String.Empty;
+			if (action == "Index")
+			{
+				url = UrlCreator.Current.CreateUrl(action, entity.ShortTypeName);
+			}
+			else
+			{
+				if (typeof(IUniqueEntity).IsAssignableFrom(entity.GetType()))
+				{
+					string uniqueKey = ((IUniqueEntity)entity).UniqueKey;
+					
+					url = UrlCreator.Current.CreateUrl(action, entity.ShortTypeName, "UniqueKey",  uniqueKey);
+				}
+				else
+					url = UrlCreator.Current.CreateUrl(action, entity.ShortTypeName, "ID", entity.ID.ToString());
+			}
+			
+			HttpContext.Current.Response.Redirect(url);
 		}
 	}
 }
