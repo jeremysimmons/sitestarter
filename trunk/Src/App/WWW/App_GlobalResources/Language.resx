@@ -684,7 +684,7 @@ ${WebSite.Title}&lt;br /&gt;
     <value>Log In</value>
   </data>
   <data name="EnableNotifications" xml:space="preserve">
-    <value>EnableNotifications</value>
+    <value>Enable Notifications</value>
   </data>
   <data name="UpdateComplete" xml:space="preserve">
     <value>Update Complete</value>
@@ -777,13 +777,13 @@ ${WebSite.Title}&lt;br /&gt;
     <value>Pending Approval</value>
   </data>
   <data name="RegistrationPendingApprovalMessage" xml:space="preserve">
-    <value>Your account has been registered and is now pending approval from administrators.</value>
+    <value>Your account is now pending approval from administrators.</value>
   </data>
   <data name="EntityExists" xml:space="preserve">
     <value>An existing ${entity} with similar details was found. Please try again.</value>
   </data>
   <data name="UserRegistered" xml:space="preserve">
-    <value>The new user account has been registered successfully.</value>
+    <value>You have successfully created a new account.</value>
   </data>
   <data name="SignInIntro" xml:space="preserve">
     <value>Please enter your username and password so that you can be authenticated.</value>
@@ -793,5 +793,14 @@ ${WebSite.Title}&lt;br /&gt;
   </data>
   <data name="EntityPropertyTaken" xml:space="preserve">
     <value>The specified ${property} is already in use, please try another one.</value>
+  </data>
+  <data name="EditEntity" xml:space="preserve">
+    <value>Edit ${Entity}</value>
+  </data>
+  <data name="EntityDeleted" xml:space="preserve">
+    <value>The ${entity} was deleted successfully.</value>
+  </data>
+  <data name="Message" xml:space="preserve">
+    <value>Message</value>
   </data>
 </root>
