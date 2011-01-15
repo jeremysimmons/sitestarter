@@ -2,6 +2,7 @@
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Data;
 using SoftwareMonkeys.SiteStarter.Business.Security;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 
 namespace SoftwareMonkeys.SiteStarter.Business
 {
@@ -41,16 +42,28 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns>A value indicating whether the entity was valid and was therefore saved.</returns>
 		public bool Update(IEntity entity)
 		{
-			if (RequireAuthorisation)
-				AuthoriseUpdateStrategy.New(entity.ShortTypeName).EnsureAuthorised(entity);
-			
-			if (Validate(entity))
+			bool didSucceed = false;
+			using (LogGroup logGrop = AppLogger.StartGroup("Updating the provided entity.", NLog.LogLevel.Debug))
 			{
-				DataAccess.Data.Updater.Update(entity);
-				return true;
+				if (entity == null)
+					throw new ArgumentNullException("entity");
+				
+				AppLogger.Debug("Type: " + entity.ShortTypeName);
+				
+				if (RequireAuthorisation)
+					AuthoriseUpdateStrategy.New(entity.ShortTypeName).EnsureAuthorised(entity);
+				
+				if (Validate(entity))
+				{
+					DataAccess.Data.Updater.Update(entity);
+					didSucceed = true;
+				}
+				else
+					didSucceed = false;
+				
+				AppLogger.Debug("Did succeed: " + didSucceed);
 			}
-			else
-				return false;
+			return didSucceed;
 		}
 		
 		/// <summary>
@@ -61,12 +74,15 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public virtual bool Validate(IEntity entity)
 		{
 			bool valid = false;
-			
-			if (Validator == null)
-				throw new InvalidOperationException("The validation strategy can't be found.");
-			
-			valid = Validator.Validate(entity);
-			
+			using (LogGroup logGroup = AppLogger.StartGroup("Validating the provided entity.", NLog.LogLevel.Debug))
+			{
+				if (Validator == null)
+					throw new InvalidOperationException("The validation strategy can't be found.");
+				
+				valid = Validator.Validate(entity);
+				
+				AppLogger.Debug("Is valid: " + valid.ToString());
+			}
 			return valid;
 		}
 		
@@ -79,7 +95,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="entity">The entity involved in the strategy.</param>
 		static public IUpdateStrategy New(IEntity entity)
 		{
-			return StrategyState.Strategies.Creator.NewUpdater(entity.ShortTypeName);
+			return New(entity.ShortTypeName);
 		}
 		
 		/// <summary>
@@ -87,7 +103,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		static public IUpdateStrategy New<T>()
 		{
-			return StrategyState.Strategies.Creator.NewUpdater(typeof(T).Name);
+			return New(typeof(T).Name);
 		}
 		
 		/// <summary>
@@ -96,7 +112,13 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="typeName">The short name of the type involved in the strategy.</param>
 		static public IUpdateStrategy New(string typeName)
 		{
-			return StrategyState.Strategies.Creator.NewUpdater(typeName);
+			IUpdateStrategy strategy = null;
+			using (LogGroup logGroup = AppLogger.StartGroup("Creating new update strategy.", NLog.LogLevel.Debug))
+			{
+				AppLogger.Debug("Type name: " + typeName);
+				strategy = StrategyState.Strategies.Creator.NewUpdater(typeName);
+			}
+			return strategy;
 		}
 		
 		/// <summary>
@@ -105,8 +127,13 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="requiresAuthorisation">A value indicating whether the strategy requires authorisation.</param>
 		static public IUpdateStrategy New<T>(bool requiresAuthorisation)
 		{
-			IUpdateStrategy strategy = StrategyState.Strategies.Creator.NewUpdater(typeof(T).Name);
-			strategy.RequireAuthorisation = requiresAuthorisation;
+			IUpdateStrategy strategy = null;
+			using (LogGroup logGroup = AppLogger.StartGroup("Creating new update strategy.", NLog.LogLevel.Debug))
+			{
+				AppLogger.Debug("Type name: " + typeof(T).Name);
+				strategy = StrategyState.Strategies.Creator.NewUpdater(typeof(T).Name);
+				strategy.RequireAuthorisation = requiresAuthorisation;
+			}
 			return strategy;
 		}
 		
@@ -117,8 +144,13 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="requiresAuthorisation">A value indicating whether the strategy requires authorisation.</param>
 		static public IUpdateStrategy New(string typeName, bool requiresAuthorisation)
 		{
-			IUpdateStrategy strategy = StrategyState.Strategies.Creator.NewUpdater(typeName);
-			strategy.RequireAuthorisation = requiresAuthorisation;
+			IUpdateStrategy strategy = null;
+			using (LogGroup logGroup = AppLogger.StartGroup("Creating new update strategy.", NLog.LogLevel.Debug))
+			{
+				AppLogger.Debug("Type name: " + typeName);
+				strategy = StrategyState.Strategies.Creator.NewUpdater(typeName);
+				strategy.RequireAuthorisation = requiresAuthorisation;
+			}
 			return strategy;
 		}
 		#endregion
