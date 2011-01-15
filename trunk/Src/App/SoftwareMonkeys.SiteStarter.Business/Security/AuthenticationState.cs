@@ -1,6 +1,7 @@
 ﻿using System;
 using SoftwareMonkeys.SiteStarter.State;
 using SoftwareMonkeys.SiteStarter.Entities;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 
 namespace SoftwareMonkeys.SiteStarter.Business.Security
 {
@@ -22,8 +23,18 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// </summary>
 		static public string Username
 		{
-			get { return (string)StateAccess.State.GetUser("Username"); }
-			set { StateAccess.State.SetUser("Username", value); }
+			get {
+				// If the username is found in the request scope state then use it, because it means the value has just been set
+				// and the user scope state won't reflect the change until next request because it uses cookies
+				// Using the request scope state as well gets around this hurdle
+				if (StateAccess.State.ContainsRequest("Username"))
+					return (string)StateAccess.State.GetRequest("Username");
+				return (string)StateAccess.State.GetUser("Username"); }
+			set { StateAccess.State.SetUser("Username", value);
+				// Set the request scope state as well so that the value to get around the hurdle with user scope state not reflecting
+				// changes until the next request
+				StateAccess.State.SetRequest("Username", value);
+			}
 		}
 
 		/// <summary>
@@ -64,22 +75,40 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 			get { return Username != null && Username != String.Empty; }
 		}
 		
+		/// <summary>
+		/// Checks to see whether the current user is in the specified role.
+		/// </summary>
+		/// <param name="roleName">The name of the role to check if the current user is in.</param>
+		/// <returns>A flag indicating whether the current user is in the specified role.</returns>
 		static public bool UserIsInRole(string roleName)
 		{
-			if (IsAuthenticated)
+			bool isInRole = false;
+			
+			using (LogGroup logGroup = LogGroup.Start("Checking to see whether the current user is in the specified role.", NLog.LogLevel.Debug))
 			{
-				User user = AuthenticationState.User;
 				
-				if (user == null)
-					return false;
+				AppLogger.Debug("User is authenticated: " + IsAuthenticated.ToString());
 				
-				if (user.Roles == null || user.Roles.Length == 0)
-					ActivateStrategy.New<User>().Activate(user, "Roles");
+				if (IsAuthenticated)
+				{
+					
+					User user = AuthenticationState.User;
+					
+					if (user != null)
+					{
+						AppLogger.Debug("Username: " + user.Username);
+						
+						if (user.Roles == null || user.Roles.Length == 0)
+							ActivateStrategy.New<User>().Activate(user, "Roles");
+						
+						isInRole = user.IsInRole(roleName);
+					}
+				}
 				
-				return user.IsInRole(roleName);
+				AppLogger.Debug("Is in role: " + isInRole);
 			}
-			else
-				return false;
+			
+			return isInRole;
 		}
 		
 		
@@ -99,7 +128,18 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// <param name="expirationDate">The expiration date of the authentication data.</param>
 		public static void SetAuthenticatedUsername(string username, DateTime expirationDate)
 		{
-			StateAccess.State.SetUser(AuthenticationStateKey, username, expirationDate);
+			using (LogGroup logGroup = LogGroup.Start("Setting the current user's authenticated username.", NLog.LogLevel.Debug))
+			{	
+				if (StateAccess.State == null)
+					throw new InvalidOperationException("The StateAccess.State provider has not been initialized. Use the WebStateInitializer.Initialize() function.");
+				
+				AppLogger.Debug("Username: " + username);
+				
+				StateAccess.State.SetUser(AuthenticationStateKey, username, expirationDate);
+				// Set the username in the request scope as well to get around hurdle with user scope values not being reflected until the next request
+				// due to the use of cookies
+				StateAccess.State.SetRequest(AuthenticationStateKey, username);
+			}
 		}
 	}
 }
