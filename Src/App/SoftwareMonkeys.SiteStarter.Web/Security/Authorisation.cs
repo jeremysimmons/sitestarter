@@ -13,6 +13,7 @@ using SoftwareMonkeys.SiteStarter.Web.WebControls;
 using SoftwareMonkeys.SiteStarter.Web.Properties;
 using SoftwareMonkeys.SiteStarter.Business.Security;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using System.Collections.Generic;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Security
 {
@@ -23,22 +24,35 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 	{
 		public static bool UserCan(string action, string typeName)
 		{
-			string internalAction = GetInternalAction(action);
+			bool isAuthorised = false;
 			
-			IAuthoriseStrategy strategy = StrategyState.Strategies.Creator.New<IAuthoriseStrategy>("Authorise" + internalAction, typeName);
+			using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the user can perform the action '" + action + "' with the entity type '" + typeName + "'."))
+			{
+				string internalAction = GetInternalAction(action);
+				
+				IAuthoriseStrategy strategy = StrategyState.Strategies.Creator.New<IAuthoriseStrategy>("Authorise" + internalAction, typeName);
+				
+				isAuthorised = strategy.Authorise(typeName);
+			}
 			
-			return strategy.Authorise(typeName);
+			return isAuthorised;
 			
 		}
 		
 		public static bool UserCan(string action, Type type)
 		{
-			string internalAction = GetInternalAction(action);
+			bool isAuthorised = false;
 			
-			IAuthoriseStrategy strategy = StrategyState.Strategies.Creator.New<IAuthoriseStrategy>("Authorise" + internalAction, type.Name);
+			using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the user can perform the action '" + action + "' with the entity type '" + type.Name + "'."))
+			{
+				string internalAction = GetInternalAction(action);
+				
+				IAuthoriseStrategy strategy = StrategyState.Strategies.Creator.New<IAuthoriseStrategy>("Authorise" + internalAction, type.Name);
+				
+				isAuthorised = strategy.Authorise(type.Name);
+			}
 			
-			return strategy.Authorise(type.Name);
-			
+			return isAuthorised;
 		}
 
 		public static bool UserCan(string action, IEntity entity)
@@ -53,7 +67,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 				
 				IAuthoriseStrategy strategy = StrategyState.Strategies.Creator.New<IAuthoriseStrategy>("Authorise" + internalAction, entity.GetType().Name);
 				
-				can = strategy.Authorise(entity.GetType().Name);
+				can = strategy.Authorise(entity);
 			}
 			
 			return can;
@@ -78,9 +92,17 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 					
 					string shortTypeName = entities[0].ShortTypeName;
 					
-					IAuthoriseStrategy strategy = StrategyState.Strategies.Creator.New<IAuthoriseStrategy>("Authorise" + internalAction, shortTypeName);
+					List<IEntity> matching = new List<IEntity>();
 					
-					can = strategy.Authorise(shortTypeName);
+					foreach (IEntity entity in entities)
+					{
+						if (UserCan(action, entity))
+							matching.Add(entity);
+					}
+					
+					entities = matching.ToArray();
+					
+					can = UserCan(action, shortTypeName);
 				}
 			}
 			
@@ -90,19 +112,30 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		
 		private static string GetInternalAction(string action)
 		{
-			switch (action)
+			string internalAction = action;
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Getting the internal action that corresponds with the one provided.", NLog.LogLevel.Debug))
 			{
-				case "View":
-					return "Retrieve";
-				case "Manage":
-					return "Index";
-				case "Edit":
-					return "Update";
-				case "Create":
-					return "Save";
+				AppLogger.Debug("Action: " + action);
+				
+				switch (action)
+				{
+					case "View":
+						internalAction = "Retrieve";
+						break;
+					case "Manage":
+						internalAction = "Index";
+						break;
+					case "Edit":
+						internalAction = "Update";
+						break;
+					case "Create":
+						internalAction = "Save";
+						break;
+				}
 			}
 			
-			return action;
+			return internalAction;
 		}
 
 		public static void EnsureUserCan(string action, string typeName)
@@ -132,6 +165,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		
 		public static void InvalidPermissionsRedirect()
 		{
+			AppLogger.Debug("Invalid permissions. Redirecting.");
+			
 			Result.DisplayError(Language.Unauthorised);
 			
 			// TODO: This shouldn't be hard coded
@@ -156,12 +191,17 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 
 		static public bool IsInRole(string roleName)
 		{
-			if (!AuthenticationState.IsAuthenticated)
-				return false;
-			else
+			bool isInRole = false;
+			using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the current user is in the specified role.", NLog.LogLevel.Debug))
 			{
-				return AuthenticationState.UserIsInRole(roleName);
+				if (!AuthenticationState.IsAuthenticated)
+					isInRole = false;
+				else
+				{
+					isInRole = AuthenticationState.UserIsInRole(roleName);
+				}
 			}
+			return isInRole;
 		}
 	}
 }
