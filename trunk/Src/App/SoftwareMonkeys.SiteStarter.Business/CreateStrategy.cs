@@ -13,10 +13,13 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <summary>
 		/// Creates a new instance of the specified type of entity.
 		/// </summary>
-		public T Create<T>()
+		public virtual T Create<T>()
 			where T : IEntity
 		{
 			T entity = (T)Activator.CreateInstance(typeof(T));
+			
+			if (RequireAuthorisation)
+				AuthoriseCreateStrategy.New(TypeName).EnsureAuthorised(TypeName);
 			
 			return entity;
 		}
@@ -25,14 +28,17 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// Creates a new instance of the specified type of entity.
 		/// </summary>
 		/// <param name="shortTypeName">The short name of the type of entity to create an instance of.</param>
-		public IEntity Create(string shortTypeName)
+		public virtual IEntity Create()
 		{
-			Type type = EntitiesUtilities.GetType(shortTypeName);
+			Type type = EntityState.GetType(TypeName);
 			
 			if (RequireAuthorisation)
-				AuthoriseCreateStrategy.New(shortTypeName).EnsureAuthorised(shortTypeName);
+				AuthoriseCreateStrategy.New(TypeName).EnsureAuthorised(TypeName);
 			
 			IEntity entity = (IEntity)Activator.CreateInstance(type);
+			
+			if (RequireAuthorisation)
+				AuthoriseCreateStrategy.New(TypeName).EnsureAuthorised(entity);
 			
 			return entity;
 		}
