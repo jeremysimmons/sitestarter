@@ -53,7 +53,7 @@ namespace SoftwareMonkeys.SiteStarter.State.Tests
 		/// <returns>The mock StateProvider ready for use.</returns>
 		public StateProvider CreateMockState()
         {
-        	StateProvider config = new MockStateProvider();
+        	StateProvider config = new MockStateProvider(this);
         	
         	return config;
         }
