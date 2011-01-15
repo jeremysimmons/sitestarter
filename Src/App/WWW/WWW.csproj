@@ -46,14 +46,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Admin\Setup.aspx" />
     <None Include="Admin\Restore.aspx" />
     <None Include="Admin\AutoBackup.aspx" />
     <None Include="Admin\Backup.aspx" />
     <None Include="Admin\Data.aspx" />
     <None Include="Admin\Import.aspx" />
     <None Include="Admin\Log.aspx" />
-    <None Include="Admin\Setup.aspx" />
+    <None Include="Admin\QuickSetup.aspx" />
     <None Include="Admin\Tests\TestContactForm.aspx" />
+    <None Include="Admin\Tests\TestLogging.aspx" />
+    <None Include="Admin\Tests\TestReset.aspx" />
     <None Include="Admin\Update.aspx" />
     <None Include="Admin\UpdateReady.html" />
     <None Include="App_GlobalResources\_svn\all-wcprops" />
@@ -70,8 +73,9 @@
     <None Include="App_Themes\Default\_svn\text-base\Styles.css.svn-base" />
     <None Include="App_Themes\_svn\entries" />
     <None Include="App_Themes\_svn\format" />
-    <None Include="BackupLauncher.ascx" />
+    <None Include="Controls\AdminFooter.ascx" />
     <None Include="Controls\AuthMenu.ascx" />
+    <None Include="Controls\BackupLauncher.ascx" />
     <None Include="Controls\Guide.ascx" />
     <None Include="Controls\Testing.ascx" />
     <None Include="Default.aspx" />
