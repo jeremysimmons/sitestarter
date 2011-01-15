@@ -6,6 +6,8 @@ using SoftwareMonkeys.SiteStarter.Data;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using System.IO;
 using System.Web;
+using SoftwareMonkeys.SiteStarter.State;
+using SoftwareMonkeys.SiteStarter.Configuration;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Data
 {
@@ -26,7 +28,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Data
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Initializing data provider", NLog.LogLevel.Info))
 			{
-				if (!isInitialized)
+				if (StateAccess.IsInitialized && Config.IsInitialized
+				    && !isInitialized)
 				{
 					
 					try
