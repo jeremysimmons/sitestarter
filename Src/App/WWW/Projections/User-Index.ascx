@@ -61,10 +61,19 @@
                                     <asp:BoundColumn DataField="Username" HeaderText="Username" SortExpression="Username" />
                                     <asp:BoundColumn DataField="FirstName" HeaderText="FirstName" SortExpression="FirstName" />
                                     <asp:BoundColumn DataField="LastName" HeaderText="LastName" SortExpression="LastName" />
-                                    <asp:BoundColumn DataField="Email" HeaderText="Email" SortExpression="Email" />
                                     <asp:BoundColumn DataField="IsLockedOut" HeaderText="IsLockedOut" SortExpression="IsLockedOut" />
                                     <asp:BoundColumn DataField="IsApproved" HeaderText="IsApproved" SortExpression="IsApproved" />
                                     <asp:BoundColumn DataField="CreationDate" HeaderText="CreationDate" SortExpression="CreationDate" />
+                                    <asp:TemplateColumn>
+                                        <itemtemplate>	
+                                        <ASP:Hyperlink runat="server"
+                                        	enabled='<%# Eval("Email") != null && Eval("Email") != String.Empty %>'
+                                        	ToolTip='<%# Resources.Language.SendMessage %>'
+                                        	text='<%# Resources.Language.Message %>'
+                                        	navigateurl='<%# Navigator.GetLink("Send", "Message") + "?RecipientID=" + Eval("ID") %>'>
+										</ASP:Hyperlink>
+										</itemtemplate>
+                                    </asp:TemplateColumn>
                                     <asp:TemplateColumn>
                                         <itemtemplate>	
                                         <ASP:Hyperlink id=EditButton runat="server"

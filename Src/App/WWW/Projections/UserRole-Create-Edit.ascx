@@ -13,59 +13,10 @@
     private void Page_Init(object sender, EventArgs e)
     {
         Initialize(typeof(UserRole), DataForm);        
-    }
-
-    #region Main functions
-    
-
-    /// <summary>
-    /// Displays the form for creating a new role.
-    /// </summary>
-    public override void Create()
-    {
-        UserRole role = new UserRole();
-        role.ID = Guid.NewGuid();
         
-        DataForm.DataSource = role;
-         
-        WindowTitle = Resources.Language.CreateUserRole;
-         
-        Create(role);
+        CreateController.ActionOnSuccess = "Index";
+        EditController.ActionOnSuccess = "Index";
     }
-    
-    /// <summary>
-    /// Displays the form for creating a new role.
-    /// </summary>
-    public override void Edit()
-    {
-    	 UserRole role = PrepareEdit<UserRole>();
-    	 
-         WindowTitle = Resources.Language.EditUserRole + ": " + role.Name;
-         
-         Edit(role);
-    }
-    
-    
-    /// <summary>
-    /// Saves the role from the form.
-    /// </summary>
-    public override bool Save()
-    {
-    	AutoNavigate = false;
-    
-    	bool success = base.Save();
-    	    	
-    	NavigateAfterSave();
-    	
-    	return success;
-    }
-    
-    public override void NavigateAfterOperation()
-    {
-    	Navigator.Go("Index", "UserRole");
-    }
-    #endregion
-
 
     protected void UsersSelect_DataLoading(object sender, EventArgs e)
     {
