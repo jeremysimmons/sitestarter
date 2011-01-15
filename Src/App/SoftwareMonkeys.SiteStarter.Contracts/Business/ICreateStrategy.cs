@@ -18,8 +18,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <summary>
 		/// Creates a new instance of the specified type of entity.
 		/// </summary>
-		/// <param name="">The short name of the type being created/instantiated.</param>
 		/// <returns>The newly instantiated entity.</returns>
-		IEntity Create(string typeName);
+		IEntity Create();
 	}
 }
