@@ -29,7 +29,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		}
 		
 		
-		private int defaultItemHeight = 80;
+		private int defaultItemHeight = 90;
 		/// <summary>
 		/// Gets/sets the default height of each data item when displaying a list.
 		/// </summary>
