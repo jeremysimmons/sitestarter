@@ -22,14 +22,22 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			Guid userID = user.ID = Guid.NewGuid();
 			user.FirstName = "Test";
 			user.LastName = "User";
+						
+			TestUser[] foundUsers1 = DataAccess.Data.Indexer.GetEntities<TestUser>();
+			
+			Assert.AreEqual(0, foundUsers1.Length, "There should be no users found yet.");
 			
 			DataAccess.Data.Saver.Save(user);
 			
+			TestUser[] foundUsers2 = DataAccess.Data.Indexer.GetEntities<TestUser>();
+			
+			Assert.AreEqual(1, foundUsers2.Length, "User wasn't saved or too many found.");
+					
 			DataAccess.Data.Deleter.Delete(user);
 			
-			TestUser[] foundUsers = DataAccess.Data.Indexer.GetEntities<TestUser>();
+			TestUser[] foundUsers3 = DataAccess.Data.Indexer.GetEntities<TestUser>();
 			
-			Assert.AreEqual(0, foundUsers.Length);
+			Assert.AreEqual(0, foundUsers3.Length, "Invalid number of users.");
 		}
 		
 		[Test]
