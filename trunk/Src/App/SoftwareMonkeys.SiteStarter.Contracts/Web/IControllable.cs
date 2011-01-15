@@ -10,6 +10,8 @@ namespace SoftwareMonkeys.SiteStarter.Web
 	/// </summary>
 	public interface IControllable
 	{
+		string WindowTitle { get;set; }
+		
 		string Action { get;set; }
 		string InternalAction { get;set; }
 		Type Type { get;set; }
@@ -18,9 +20,5 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		void CheckAction();
 		
 		bool RequireAuthorisation {get;set;}
-		string UnauthorisedUrl {get;set;}
-		
-		bool EnsureAuthorised();
-		void FailAuthorisation();
 	}
 }
