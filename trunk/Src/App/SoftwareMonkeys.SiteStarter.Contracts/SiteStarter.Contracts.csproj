@@ -85,8 +85,6 @@
     <Compile Include="Configuration\IConfigurationDictionary.cs" />
     <Compile Include="Configuration\IVirtualServerConfig.cs" />
     <Compile Include="Data\IFilterGroup.cs" />
-    <Compile Include="Entities\ICollection.cs" />
-    <Compile Include="Entities\ICollection[E].cs" />
     <Compile Include="Entities\IEntity.cs" />
     <Compile Include="Entities\IKeyword.cs" />
     <Compile Include="Entities\IPagingLocation.cs" />
