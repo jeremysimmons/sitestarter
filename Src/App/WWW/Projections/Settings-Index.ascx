@@ -49,10 +49,10 @@
                             <%# Resources.Language.SettingsIntro %></p>
 			<ul>
 				<li>
-		                         <a href='<%= Navigator.GetLink("Edit", "WebSiteSettings") %>'><%# Resources.Language.WebSiteSettings %></a>
+		                         <a href='<%= Navigator.GetLink("Edit", "WebSiteSettings") %>' id='WebSiteSettingsLink'><%# Resources.Language.WebSiteSettings %></a>
 				</li>
 				<li>
-		                         <a href='<%= Navigator.GetLink("Edit", "UserSettings") %>'><%# Resources.Language.UserSettings %></a>
+		                         <a href='<%= Navigator.GetLink("Edit", "UserSettings") %>' id='UserSettingsLink'><%# Resources.Language.UserSettings %></a>
 				</li>
 			</ul>
         </asp:View>
