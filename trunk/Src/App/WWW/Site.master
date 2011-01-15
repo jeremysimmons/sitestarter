@@ -3,24 +3,32 @@
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.State" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business.Security" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Configuration" %>
-<%@ Register Src="BackupLauncher.ascx" TagName="BackupLauncher" TagPrefix="uc1" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
+<%@ Register Src="Controls/BackupLauncher.ascx" TagName="BackupLauncher" TagPrefix="uc1" %>
 <%@ Register Src="Controls/AuthMenu.ascx" TagName="AuthMenu" TagPrefix="uc" %>
+<%@ Register Src="Controls/AdminFooter.ascx" TagName="AdminFooter" TagPrefix="uc" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <script runat="server">
 private void Page_Load(object sender, EventArgs e)
 {
+	using (LogGroup logGroup = AppLogger.StartGroup("Loading the Site.master page at URL: " + Request.Url.ToString()))
+	{
 		MenuSource.DataBind();
 		
         EnsureSetup();
+    }
 }
 
 
 private void EnsureSetup()
 {
-	SetupChecker setupChecker = new SetupChecker();
-	setupChecker.Check();
+	using (LogGroup logGroup = AppLogger.StartGroup("Ensuring that the application is set up and configured.", NLog.LogLevel.Debug))
+	{
+		SetupChecker setupChecker = new SetupChecker();
+		setupChecker.Check();
+	}
 }
 
 private string GetMenuDataFile()
@@ -69,11 +77,15 @@ private string GetMenuDataFile()
         <% if (!Utilities.HideTemplate)
            { %>
         </td></tr></table>
-        <table border="0" width="100%"><tr><td width="50%" style="vertical-align:top;">
         
-        </td><td align="right">
-    <uc1:BackupLauncher id="BackupLauncher" runat="server">
-    </uc1:BackupLauncher></td></tr></table>
+		    <uc:AdminFooter id="AdminFooter" runat="server">
+		    </uc:AdminFooter>
+        <div align="center">
+        <p>
+		    <uc1:BackupLauncher id="BackupLauncher" runat="server">
+		    </uc1:BackupLauncher>
+		    </p>
+    	</div>
         <% } %>
 
     </div>
