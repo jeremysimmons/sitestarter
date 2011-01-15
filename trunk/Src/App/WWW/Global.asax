@@ -59,8 +59,11 @@
     
     void Application_BeginRequest(object sender, EventArgs e)
     {
+    	using (LogGroup logGroup = AppLogger.StartGroup("Beginning application request.", NLog.LogLevel.Debug))
+    	{
             // Initialize the URL rewriter to take care of friendly URLs
             UrlRewriter.Initialize();
+        }
     }
 
     private void Initialize()
@@ -103,17 +106,17 @@
     	}
     }
 
+    private void InitializeState()
+    {
+    	SoftwareMonkeys.SiteStarter.Web.State.StateProviderInitializer.Initialize();
+    }
+    
     public override void Dispose()
     {
         Config.Dispose();
         DataAccess.Dispose();
 
         base.Dispose();
-    }
-    
-    private void InitializeState()
-    {
-    	SoftwareMonkeys.SiteStarter.Web.State.StateProviderInitializer.Initialize();
     }
    
        
