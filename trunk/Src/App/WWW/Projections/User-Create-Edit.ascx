@@ -15,94 +15,13 @@
     {
         Initialize(typeof(User), DataForm, "Username");
         
+        CreateController.ActionOnSuccess = "Index";
+        EditController.ActionOnSuccess = "Index";
     }
 
     #region Main functions
-    
 
-    /// <summary>
-    /// Displays the form for creating a new user.
-    /// </summary>
-    public override void Create()
-    {
-        User user = new User();
-        user.ID = Guid.NewGuid();
-        
-        DataForm.DataSource = user;
-         
-        WindowTitle = Resources.Language.CreateUser;
-         
-        Create(user);
-    }
     
-    /// <summary>
-    /// Displays the form for creating a new user.
-    /// </summary>
-    public override void Edit()
-    {
-    	 User user = PrepareEdit<User>();
-         
-         WindowTitle = Resources.Language.EditUser + ": " + user.Name;
-         
-         Edit(user);
-    }
-    
-    
-    /// <summary>
-    /// Saves the user from the form.
-    /// </summary>
-    public override bool Save()
-    {
-    	AutoNavigate = false;
-    	
-    	User user = PrepareSave<User>();
-    	
-    	user.Password = Crypter.EncryptPassword(user.Password);
-    	
-    	bool success = base.Save(user);
-    	    	
-    	if (success)
-    		NavigateAfterSave();
-    	
-    	return success;
-    }
-    
-    /// <summary>
-    /// Updates the user from the form.
-    /// </summary>
-    public override bool Update()
-    {
-    	AutoNavigate = false;
-    	
-    	// Get the original user data
-    	User originalUser = RetrieveStrategy.New<User>().Retrieve<User>("ID", DataForm.EntityID);
-    	
-    	User user = base.PrepareUpdate<User>();
-    	
-    	// If the password wasn't added then reset it
-    	if (user.Password == null || user.Password == String.Empty)
-    		user.Password = originalUser.Password;
-    	else
-        	user.Password = Crypter.EncryptPassword(user.Password);
-    
-    	bool success = base.Update(user);
-    	
-    	// If the current user edited their username then fix their authentication session
-    	if (originalUser.Username == AuthenticationState.Username
-    		&& user.Username != AuthenticationState.Username)
-    		AuthenticationState.Username = user.Username;
-    	    	
-    	if (success)
-    		NavigateAfterSave();
-    	
-    	return success;
-    }
-    
-    
-    public override void NavigateAfterOperation()
-    {
-    	Navigator.Go("Index", "User");
-    }
     #endregion
 
 

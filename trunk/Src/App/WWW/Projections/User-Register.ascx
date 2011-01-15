@@ -14,11 +14,14 @@
 <script runat="server">
     private void Page_Init(object sender, EventArgs e)
     {
+    	// TODO: Check if needed. Should be obsolete.
         RequireAuthorisation = false;
         
         Initialize(typeof(User), DataForm, "Username"); 
         
         CreateController.EntitySavedLanguageKey = "UserRegistered";
+        
+        CreateController.ActionOnSuccess = "Account";
         
     }
 
@@ -30,21 +33,12 @@
     /// </summary>
     public override void Create()
     {
-    	PageViews.SetActiveView(FormView);
-    
-    	bool isApproved = false;
-    
-    	RequireAuthorisation = false;
-    
-        User user = new User();
-        user.ID = Guid.NewGuid();
-        user.IsApproved = Config.Application.Settings.GetBool("AutoApproveNewUsers");
-        
-        DataForm.DataSource = user;
-         
-        WindowTitle = Resources.Language.Register;
-         
-        Create(user);
+    	using (LogGroup logGroup = AppLogger.StartGroup("Registering a new user.", NLog.LogLevel.Debug))
+    	{	    	
+	    	PageViews.SetActiveView(FormView);
+	    
+	    	base.Create();
+    	}
     }
     
     
@@ -53,29 +47,24 @@
     /// </summary>
     public override bool Save()
     {
-    	AutoNavigate = false;
+    	bool success = false;
+    	using (LogGroup logGroup = AppLogger.StartGroup("Saving a newly registered user.", NLog.LogLevel.Debug))
+    	{	    	
+    		CreateController.AutoNavigate = Config.Application.Settings.GetBool("AutoApproveNewUsers");
     	
-    	bool success = base.Save();
-    	
-    	User user = (User)DataSource;
-    	
-    	if (Config.Application.Settings.GetBool("AutoApproveNewUsers"))
-    	{
-    		Authentication.SetAuthenticatedUsername(user.Username);
-
-    		NavigateAfterSave();
+	    	success = base.Save();
+	    	
+	    	if (!Config.Application.Settings.GetBool("AutoApproveNewUsers"))
+	    		PageViews.SetActiveView(PendingView);
+	    	// else
+	    	// taken care of by controller
     	}
-    	else
-    	{
-    		PageViews.SetActiveView(PendingView);
-    	}
-    	
     	return success;
     }
     
     
     
-    public override void NavigateAfterOperation()
+    public void NavigateAfterSave()
     {
     	Response.Redirect(Request.ApplicationPath);
     }
@@ -114,7 +103,7 @@
     	<h1>
                                 <%= Resources.Language.PendingApproval %>
         </h1>
-        <cc:Result runat="server" visible="false"/>
+        <cc:Result runat="server" visible="true"/>
         <p><%= Resources.Language.RegistrationPendingApprovalMessage %></p>
     </asp:View>
 </asp:MultiView>
