@@ -58,13 +58,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppLogger.cs" />
+    <Compile Include="CorruptLogException.cs" />
     <Compile Include="DiagnosticState.cs" />
     <Compile Include="HeadingLayoutRenderer.cs" />
     <Compile Include="LogGroup.cs" />
     <Compile Include="LogGroupMode.cs" />
     <Compile Include="LogGroupSite.cs" />
+    <Compile Include="LogSupervisor.cs" />
     <Compile Include="LogThreader.cs" />
     <Compile Include="LogUtilities.cs" />
+    <Compile Include="LogWriter.cs" />
     <Compile Include="Reflector.cs" />
     <Compile Include="TypeNavigator.cs" />
   </ItemGroup>
