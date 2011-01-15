@@ -18,12 +18,22 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
     {
     	private string physicalApplicationPath = String.Empty;
     	/// <summary>
-    	/// Gets/sets the full physical path to the room of the running application.
+    	/// Gets/sets the full physical path to the root of the running application.
     	/// </summary>
     	public override string PhysicalApplicationPath
     	{
     		get { return physicalApplicationPath; }
     		set { physicalApplicationPath = value; }
+    	}
+    	
+    	private string applicationPath = String.Empty;
+    	/// <summary>
+    	/// Gets/sets the virtual path to the root of the running application.
+    	/// </summary>
+    	public override string ApplicationPath
+    	{
+    		get { return applicationPath; }
+    		set { applicationPath = value; }
     	}
 		
     	#region Application state
@@ -200,7 +210,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
             {
         		HttpCookie cookie = new HttpCookie(key, value.ToString());
         		
-        		cookie.Path = Config.Application.ApplicationPath;
+        		cookie.Path = StateAccess.State.ApplicationPath;
         		
         		if (expirationDate > DateTime.MinValue)
         			cookie.Expires = expirationDate;
@@ -267,6 +277,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
             StateAccess.State = this;
             
             PhysicalApplicationPath = HttpContext.Current.Server.MapPath(HttpContext.Current.Request.ApplicationPath);
+            ApplicationPath = HttpContext.Current.Request.ApplicationPath;
             
             base.Initialize(name, config);
         }
