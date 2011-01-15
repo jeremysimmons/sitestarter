@@ -94,23 +94,29 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="type">The strategy type with the Strategy attribute to get the strategy information from.</param>
 		public StrategyInfo(Type type)
 		{
-			StrategyAttribute attribute = null;
-			foreach (Attribute a in type.GetCustomAttributes(true))
+			using (LogGroup logGroup = AppLogger.StartGroup("Analyzing the provided type to extract the info.", NLog.LogLevel.Debug))
 			{
-				if (a.GetType().FullName == typeof(StrategyAttribute).FullName)
+				StrategyAttribute attribute = null;
+				foreach (Attribute a in type.GetCustomAttributes(true))
 				{
-					attribute = (StrategyAttribute)a;
-					break;
+					if (a is StrategyAttribute)
+					{
+						attribute = (StrategyAttribute)a;
+						break;
+					}
 				}
+				
+				if (attribute == null)
+					throw new ArgumentException("Can't find StrategyAttribute on type: " + type.FullName);
+				
+				Action = attribute.Action;
+				TypeName = attribute.TypeName;
+				StrategyType = type.FullName + ", " + type.Assembly.GetName().Name;
+				
+				AppLogger.Debug("Action: " + Action);
+				AppLogger.Debug("Type name: " + TypeName);
+				AppLogger.Debug("Strategy type: " + StrategyType);
 			}
-			
-			if (attribute == null)
-				throw new ArgumentException("Can't find StrategyAttribute on type: " + type.FullName);
-			
-			Action = attribute.Action;
-			TypeName = attribute.TypeName;
-			StrategyType = type.FullName + ", " + type.Assembly.GetName().Name;
-			
 		}
 		
 		/// <summary>
