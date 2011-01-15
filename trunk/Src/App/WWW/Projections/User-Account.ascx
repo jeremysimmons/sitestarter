@@ -1,8 +1,8 @@
 ﻿<%@ Control Language="C#" ClassName="RegisterEditProjection" Inherits="SoftwareMonkeys.SiteStarter.Web.Projections.BaseProjection" %>
-
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business.Security" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Security" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Entities" %>
 <%@ Register TagPrefix="cc" Namespace="SoftwareMonkeys.SiteStarter.Web.WebControls" Assembly="SoftwareMonkeys.SiteStarter.Web" %>
 <script runat="server">
@@ -13,25 +13,14 @@
 
     private void ViewAccount()
     {
+    	Authorisation.EnsureIsAuthenticated();
+    
         OperationManager.StartOperation("ViewAccount", DetailsView);
 
         DetailsForm.DataSource = AuthenticationState.User;
         
         DetailsView.DataBind();
     }
-
-    private void Register()
-    {
-        OperationManager.StartOperation("Register", FormView);
-
-        User user = new User();
-        user.ID = Guid.NewGuid();
-
-        DataForm.DataSource = user;
-        DataForm.DataBind();
-        FormView.DataBind();
-    }
-
 
     private void EditAccount()
     {
@@ -68,10 +57,10 @@
                 
 	            // If the user changed their own username they need to sign in again
 	            if (!originalUsername.Equals(user.Username))
-	            	Response.Redirect("Logout.aspx");
+	            	Authentication.SetAuthenticatedUsername(user.Username);
 
                 // Show the index again
-                ViewAccount();
+                Navigator.Go("Account", "User");
             }
             else
             {
@@ -83,17 +72,7 @@
             }
         }
     }
-   /* private void DeleteAccount(Guid userID)
-    {
-        // Delete the User
-        UserFactory.DeleteUser(UserFactory.GetUser(userID));
-
-        // Inform the user of the result
-       // Result.Display(Language.UserDeleted); // todo: language pack
-        Result.Display("The user was deleted successfully.");
-        // View the account
-        ViewAccount();
-    }*/
+    
     private void DataForm_EntityCommand(object sender, EntityFormEventArgs e)
     {
         if (e.CommandName == "Update")
@@ -116,9 +95,9 @@
 </script>
 <asp:MultiView runat="server">
 <asp:View runat="server" ID="DetailsView">
-<div class="Heading1"><%= Resources.Language.MyAccount %></div>
-<p><cc:Result runat="server"></cc:Result>
-<%= Resources.Language.MyAccountIntro %></p>
+<h1><%= Resources.Language.MyAccount %></h1>
+<cc:Result runat="server"></cc:Result>
+<p><%= Resources.Language.MyAccountIntro %></p>
 <cc:EntityForm runat="server" id="DetailsForm" CssClass="Panel" OnEntityCommand="DetailsForm_EntityCommand" headingtext='<%# Resources.Language.AccountDetails %>' headingcssclass="Heading2" width="100%">
 <cc:EntityFormLabelItem runat="server" PropertyName="FirstName" FieldControlID="FirstNameLabel" text='<%# Resources.Language.FirstName + ":" %>'></cc:EntityFormLabelItem>
 <cc:EntityFormLabelItem runat="server" PropertyName="LastName" FieldControlID="LastNameLabel" text='<%# Resources.Language.LastName + ":" %>'></cc:EntityFormLabelItem>
