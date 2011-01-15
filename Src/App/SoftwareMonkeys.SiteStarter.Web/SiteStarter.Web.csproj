@@ -77,8 +77,10 @@
     <Compile Include="Controllers\ControllerState.cs" />
     <Compile Include="Controllers\ControllerStateCollection.cs" />
     <Compile Include="Controllers\CreateController.cs" />
+    <Compile Include="Controllers\CreateUserController.cs" />
     <Compile Include="Controllers\DeleteController.cs" />
     <Compile Include="Controllers\EditController.cs" />
+    <Compile Include="Controllers\EditUserController.cs" />
     <Compile Include="Controllers\IController.cs" />
     <Compile Include="Controllers\IndexController.cs" />
     <Compile Include="Controllers\ViewController.cs" />
@@ -86,7 +88,6 @@
     <Compile Include="Data\DataProviderInitializer.cs" />
     <Compile Include="FileMapper.cs" />
     <Compile Include="GuidValidator.cs" />
-    <Compile Include="LogWriter.cs" />
     <Compile Include="Navigation\Navigator.cs" />
     <Compile Include="OperationManager.cs" />
     <Compile Include="Parts\BasePart.cs" />
@@ -169,7 +170,6 @@
     <Compile Include="Utilities.cs" />
     <Compile Include="WebControls\ContactForm.cs" />
     <Compile Include="WebControls\DeleteLink.cs" />
-    <Compile Include="WebControls\EntityFormKeywordsItem.cs" />
     <Compile Include="WebControls\DateSelect.cs" />
     <Compile Include="WebControls\EntityFormPasswordConfirmItem.cs" />
     <Compile Include="WebControls\EntityFormPasswordItem.cs" />
@@ -190,7 +190,6 @@
     <Compile Include="WebControls\EntitySelectRequester.cs" />
     <Compile Include="WebControls\EntityTree.cs" />
     <Compile Include="WebControls\IndexGrid.cs" />
-    <Compile Include="WebControls\KeywordsControl.cs" />
     <Compile Include="WebControls\ProjectorControl.cs" />
     <Compile Include="WebControls\Result.cs" />
     <Compile Include="WebControls\TestResults.cs" />
