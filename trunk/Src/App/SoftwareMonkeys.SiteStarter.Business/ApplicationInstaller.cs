@@ -256,11 +256,11 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				AuthenticationState.Username = administrator.Username;
 				
 				
-				if (SaveStrategy.New<User>().Save(administrator))
+				if (SaveStrategy.New<User>(false).Save(administrator))
 				{
 					administratorRole.Users = new User[]{administrator};
 					
-					SaveStrategy.New<UserRole>().Save(administratorRole);
+					SaveStrategy.New<UserRole>(false).Save(administratorRole);
 					
 //					UserRoleFactory.Current.SaveUserRole(administratorRole);
 					
@@ -317,22 +317,38 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Initializing the configuration and data access.", NLog.LogLevel.Debug))
 			{
-				// Initialize everything now that the default config has been created
-				Config.Initialize(FileMapper.MapPath(ApplicationPath), PathVariation);
+				InitializeConfig();
 				
 				InitializeEntities();
 				
-				CheckDataProviderInitializer();
 				
-				DataProviderInitializer.Initialize();
+				InitializeData();
 				
 				InitializeBusiness();
 			}
 		}
+		
+		private void InitializeConfig()
+		{
+			
+			if (!Config.IsInitialized)
+			{
+				Config.Initialize(FileMapper.MapPath(ApplicationPath), PathVariation);
+			}
+				
+		}
+		
 		private void InitializeEntities()
 		{
 			// TODO: Add the initializer to a property so it can be customized for specific cases
 	    	new EntityInitializer().Initialize();
+		}
+		
+		private void InitializeData()
+		{
+			CheckDataProviderInitializer();
+				
+			DataProviderInitializer.Initialize();
 		}
 		
 		private void InitializeBusiness()
@@ -358,8 +374,11 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				
 				AppLogger.Debug("Site map file: " + siteMapFile);
 
-				string defaultSiteMapPath = DataAccess.Data.DataDirectoryPath + Path.DirectorySeparatorChar + "Menu.default.sitemap";
-				string siteMapPath = DataAccess.Data.DataDirectoryPath + Path.DirectorySeparatorChar + siteMapFile;
+				string defaultSiteMapPath = State.StateAccess.State.PhysicalApplicationPath + Path.DirectorySeparatorChar +
+					"App_Data" + Path.DirectorySeparatorChar + "Menu.default.sitemap";
+				
+				string siteMapPath = State.StateAccess.State.PhysicalApplicationPath + Path.DirectorySeparatorChar +
+					"App_Data" + Path.DirectorySeparatorChar + siteMapFile;
 				
 				AppLogger.Debug("Default site map path: " + defaultSiteMapPath);
 				AppLogger.Debug("Site map path: " + siteMapPath);
