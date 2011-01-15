@@ -6,215 +6,61 @@ using System.Reflection;
 using System.Diagnostics;
 using System.Configuration;
 using SoftwareMonkeys.SiteStarter.State;
-//using Microsoft.Practices.EnterpriseLibrary.Logging;
 using System.IO;
 
 namespace SoftwareMonkeys.SiteStarter.Diagnostics
 {
 	static public class AppLogger
 	{
-		private static Logger logger = LogManager.GetCurrentClassLogger();
 		
-		//private static int indent;
-		/// <summary>
-		/// Gets/sets the indent of the current log entries.
-		/// </summary>
-		public static int Indent
-		{
-			get
-			{
-				if (GroupStack.Count == 0)
-					return 0;
-				else
-					return GroupStack.Count;
-			}
-		}
-
-		// public static void Info(string message, string componentName, string methodName)
-		//{
-		//     Info(message, componentName, methodName, CurrentGroup.Indent);
-		// }
-
 		#region Write functions
 
-		public static void WriteGroup(string message, MethodBase callingMethod, NLog.LogLevel level, Guid groupID)
-		{			
-			/*LogEntry log = new LogEntry();
-			log.Message = FormatLogEntry(level, message, callingMethod, groupID, Indent-1);
-			log.Categories.Add("General");
-			log.Priority = 1;
-			Microsoft.Practices.EnterpriseLibrary.Logging.Logger.Write(log);*/
-			if (level == NLog.LogLevel.Info)
-				logger.Info(CreateLogEntry(LogLevel.Info, message, callingMethod, groupID, Indent-1));
-			else if (level == NLog.LogLevel.Debug)
-				logger.Debug(CreateLogEntry(LogLevel.Debug, message, callingMethod, groupID, Indent-1));
-			else
-				throw new NotSupportedException("Invalid level.");
-						
-		}
 		
 		public static void Error(string message)
 		{
-			MethodBase callingMethod = Reflector.GetCallingMethod();
-			Error(message, callingMethod);
+			LogWriter.Error(message);
 		}
 
 		public static void Error(string message, MethodBase callingMethod)
 		{
-			
-			/*LogEntry log = new LogEntry();
-			log.Message = FormatLogEntry(LogLevel.Error, message, callingMethod, Guid.NewGuid(), Indent);
-			log.Categories.Add("General");
-			log.Priority = 1;
-			Microsoft.Practices.EnterpriseLibrary.Logging.Logger.Write(log);*/
-			logger.Error(CreateLogEntry(LogLevel.Error, message, callingMethod, Guid.NewGuid(), Indent));
+			LogWriter.Error(message, callingMethod);
 		}
 
 		public static void Info(string message)
 		{
-			MethodBase callingMethod = Reflector.GetCallingMethod();
-			Info(message, callingMethod);
+			LogWriter.Info(message);
 		}
 
 		public static void Info(string message, MethodBase callingMethod)
 		{
-			/*LogEntry log = new LogEntry();
-			log.Message = FormatLogEntry(LogLevel.Info, message, callingMethod, Guid.NewGuid(), Indent);
-			log.Categories.Add("General");
-			log.Priority = 1;
-			Microsoft.Practices.EnterpriseLibrary.Logging.Logger.Write(log);*/
-			logger.Info(CreateLogEntry(LogLevel.Info, message, callingMethod, Guid.NewGuid(), Indent));
+			LogWriter.Info(message, callingMethod);
 		}
 
 		[ Conditional("DEBUG") ]
 		public static void Debug(string message)
 		{
-			MethodBase callingMethod = Reflector.GetCallingMethod();
-			Debug(message, callingMethod);
+			LogWriter.Debug(message);
 		}
 
 		[ Conditional("DEBUG") ]
 		public static void Debug(string message, MethodBase callingMethod)
 		{
-			if (PerformLogging(callingMethod, LogLevel.Debug))
-			{
-				/*LogEntry log = new LogEntry();
-				log.Message = FormatLogEntry(LogLevel.Debug, message, callingMethod, Guid.NewGuid(), Indent);
-				log.Categories.Add("General");
-				log.Priority = 1;
-				log.Priority = 1;
-				Microsoft.Practices.EnterpriseLibrary.Logging.Logger.Write(log);*/
-				logger.Info(CreateLogEntry(LogLevel.Debug, message, callingMethod, Guid.NewGuid(), Indent));
-			}
+			LogWriter.Debug(message, callingMethod);
 		}
 
 		#endregion
 		
 		
-		private static string CreateLogEntry(
-			LogLevel logLevel,
-			string message,
-			MethodBase callingMethod,
-			Guid id,
-			int indent)
-		{
-			
-			//bool isThreadTitle = Indent == 3;
-			
-			StringBuilder logEntry = new StringBuilder();
-			
-			// If the callingMethod property is null then logging must be disabled, so skip the output
-			if (callingMethod != null && PerformLogging(callingMethod, logLevel))
-			{
-				logEntry.Append("<Entry>\r\n");
-				logEntry.AppendFormat("<ID>{0}</ID>\r\n", id.ToString());
-				logEntry.AppendFormat("<GroupID>{0}</GroupID>\r\n", CurrentGroup != null ? CurrentGroup.ID : Guid.Empty);
-				logEntry.AppendFormat("<Indent>{0}</Indent>\r\n", indent);
-				logEntry.AppendFormat("<LogLevel>{0}</LogLevel>\r\n", logLevel);
-				logEntry.AppendFormat("<Timestamp>{0}</Timestamp>\r\n", DateTime.Now);
-				//logEntry.AppendFormat("<IsThreadTitle>{0}</IsThreadTitle>\r\n", isThreadTitle.ToString());
-				logEntry.AppendFormat("<Component>{0}</Component>\r\n", EscapeLogData(callingMethod.DeclaringType.ToString()));
-				logEntry.AppendFormat("<Method>{0}</Method>\r\n", EscapeLogData(callingMethod.Name));
-				logEntry.AppendFormat("<Data>{0}</Data>\r\n", EscapeLogData(message));
-				
-				// TODO: Skip stack trace here and save it to a separate file, to reduce log size
-				// TODO: Check if needed. Should be obsolete
-				//logEntry.AppendFormat("<StackTrace>{0}</StackTrace>\r\n", EscapeLogData());
-				
-				logEntry.Append("</Entry>\r\n");
-				
-				logEntry.AppendLine();
-			}
-			
-			SaveStackTrace(id);
 
-			return logEntry.ToString();
-		}
-		
-		private static void SaveStackTrace(Guid id)
-		{
-			string trace = CreateStackTrace();
-			
-			string path = GetStackTracePath(id);
-			
-			if (!Directory.Exists(Path.GetDirectoryName(path)))
-				Directory.CreateDirectory(Path.GetDirectoryName(path));
-			
-			using (StreamWriter writer = File.CreateText(path))
-			{
-				writer.Write(trace);
-				writer.Close();
-			}
-		}
-		
-		private static string GetStackTraceDirectoryPath()
-		{
-			return StateAccess.State.PhysicalApplicationPath + Path.DirectorySeparatorChar + "App_Data"
-				+ Path.DirectorySeparatorChar + "Logs"
-				+ Path.DirectorySeparatorChar + DateTime.Now.ToString("yyyy-MM-dd")
-				+ Path.DirectorySeparatorChar + "StackTrace";
-		}
-		
-		private static string GetStackTracePath(Guid id)
-		{
-			return GetStackTraceDirectoryPath() + Path.DirectorySeparatorChar + id.ToString() + ".trace";
-		}
-		
-		private static string CreateStackTrace()
-		{
-			StringBuilder builder = new StringBuilder();
-			
-			StackTrace stackTrace = new StackTrace();           // get call stack
-			StackFrame[] stackFrames = stackTrace.GetFrames();  // get method calls (frames)
-
-			// write call stack method names
-			foreach (StackFrame stackFrame in stackFrames)
-			{
-				builder.Append(stackFrame.GetMethod().DeclaringType.ToString());
-				builder.Append(":");
-				builder.Append(stackFrame.GetMethod().ToString());// write method name
-				builder.Append("\n");
-			}
-			
-			return builder.ToString();
-		}
-
-		private static string EscapeLogData(string data)
-		{
-			return data.Replace("&", "&amp;")
-				.Replace("<", "&lt;")
-				.Replace(">", "&gt;")
-				.Replace("\"", "&quot;")
-				.Replace("'", "&apos;");
-		}
-
-		static private LogGroup currentGroup;
 		/// <summary>
-		/// Gets/sets the current, deepest group in the tree.
+		/// Gets/sets the current group.
+		/// </summary>
 		static public LogGroup CurrentGroup
 		{
-			get { return currentGroup; }
-			set { currentGroup = value; }
+			get {
+				return DiagnosticState.CurrentGroup;
+			}
+			set { DiagnosticState.CurrentGroup = value; }
 		}
 
 		/// <summary>
@@ -224,42 +70,6 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		{
 			get { return DiagnosticState.GroupStack; }
 			set { DiagnosticState.GroupStack = value; }
-		}
-
-		/*static public void Write(string message)
-    {
-        throw new NotImplementedException();
-    }*/
-
-		// static public void WriteLine(string message)
-		/// {
-		/*if (CurrentGroup != null)
-                CurrentGroup.WriteLine(message);
-            else
-                Logger.Info(message);*/
-		//   logger.Info(message);
-		//}
-
-		/*static public void Write(string category, string message)
-    {
-        throw new NotImplementedException();
-    }
-
-        static public void WriteLine(string category, string message)
-    {
-        throw new NotImplementedException();
-    }*/
-		
-		static private bool IsDebug()
-		{
-			bool isDebug = false;
-			#if (DEBUG)
-			isDebug = true;
-			#else
-			isDebug = false;
-			#endif
-			
-			return isDebug;
 		}
 		
 		/*static private bool IsLevel(LogLevel level)
@@ -276,164 +86,21 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 
 		static public LogGroup StartGroup(string summary)
 		{
-			MethodBase callingMethod = Reflector.GetCallingMethod();
-
-			return StartGroup(summary, LogLevel.Info, callingMethod);
+			return LogGroup.Start(summary);
 		}
 
 
 		static public LogGroup StartGroup(string summary, LogLevel logLevel)
 		{
-			
-			// TODO: Skip if logging is not being performed. (ie. loglevel is debug and debug logging is disabled)
-			
-			//bool isDebug = IsDebug();
-			
-			//if (logLevel == LogLevel.Debug && !isDebug)
-			//{
-			// Skip debug logging
-			//	return null;
-			//}
-			//else
-			//{
-			MethodBase callingMethod = null;
-			
-			// Don't get the calling method if its not
-			if (PerformLogging(logLevel))
-				callingMethod = Reflector.GetCallingMethod();
-			
-			return StartGroup(summary, logLevel, callingMethod);
-			///}
+			return LogGroup.Start(summary, logLevel);
 		}
 
 		static public LogGroup StartGroup(string summary, LogLevel logLevel, MethodBase callingMethod)
 		{
-			LogGroup newGroup = new LogGroup(summary, callingMethod);
-			if (CurrentGroup == null)
-				newGroup.ParentID = Guid.Empty;
-			else
-				newGroup.ParentID = CurrentGroup.ID;
-			CurrentGroup = newGroup;
-			
-			newGroup.Start(callingMethod, logLevel);
-
-
-			return newGroup;
-		}
-
-		static internal void EndGroup()
-		{
-			if (CurrentGroup != null)
-			{
-				CurrentGroup.End();
-			}
-		}
-
-		static public void AddIndent()
-		{
-			//indent++;
-		}
-
-		static public void RemoveIndent()
-		{
-			//indent--;
-		}
-
-		static public void Push(LogGroup group)
-		{
-			CurrentGroup = group;
-			if (GroupStack.Count == 0)
-				group.IsThreadTitle = true;
-			GroupStack.Push(group);
-		}
-
-		static public void Pop()
-		{
-			if (GroupStack.Count > 0)
-			{
-				GroupStack.Pop();
-
-				if (GroupStack.Count > 1)
-				{
-					CurrentGroup = GroupStack.ToArray()[GroupStack.Count - 1];
-				}
-				else
-					CurrentGroup = null;
-			}
+			return LogGroup.Start(summary, logLevel, callingMethod);
 		}
 		
-		static public bool PerformLogging(LogLevel level)
-		{
-			if (level == LogLevel.Debug && !IsDebug())
-				return false;
-			
-			object value = ConfigurationSettings.AppSettings["Logging." + level.ToString() + ".Enabled"];
-			if (value != null)
-			{
-				// TODO: Clean up and improve performance by skipping logging when it's not enabled
-				bool loggingEnabled = ((string)value).ToLower() == "true";
-				//|| level != LogLevel.Debug;
-				
-				//if (level == LogLevel.Debug && IsDebug())
-				//	return loggingEnabled;
-				//else
-				
-				return loggingEnabled;
-			}
-			else
-				return true;
-			
-		}
 		
-		static public bool PerformLogging(MethodBase callingMethod, LogLevel level)
-		{
-			object value = ConfigurationSettings.AppSettings["Logging." + level.ToString() + ".Enabled"];
-			if (value != null)
-			{
-				bool allLoggingEnabled = ((string)value).ToLower() == "true"
-					|| level != LogLevel.Debug;
-				
-				if (allLoggingEnabled && IsEnabled(level, callingMethod))
-				{
-					return true;
-				}
-				
-				// Defaults to false
-				return false;
-			}
-			else // Defaults to true if no setting was found in the web.config.
-				return true;
-			
-		}
-		
-		static public bool IsEnabled(NLog.LogLevel level, MethodBase callingMethod)
-		{
-			// If the callingMethod parameter is null then logging is disabled
-			if (callingMethod == null)
-				return false;
-			
-			Type declaringType = callingMethod.DeclaringType;
-			
-			return IsEnabled(level, declaringType.Name);
-		}
-		
-		static public bool IsEnabled(NLog.LogLevel level, string typeName)
-		{
-			object value = ConfigurationSettings.AppSettings["Logging." + level.ToString() + "." + typeName + ".Enabled"];
-			
-			
-			if (value != null)
-			{
-				string setting = ((string)value);
-				
-				if (setting.ToLower() == false.ToString().ToLower())
-					return false;
-			}
-			
-			// Defaults to true if no setting was found in the web.config
-			return true;
-		}
-
 	}
 
 }

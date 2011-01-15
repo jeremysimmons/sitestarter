@@ -6,6 +6,7 @@ using System.Collections;
 using System.Diagnostics;
 using NLog;
 using System.Reflection;
+using System.Xml.Serialization;
 
 namespace SoftwareMonkeys.SiteStarter.Diagnostics
 {
@@ -16,7 +17,6 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 	{
 		protected bool HasEnded = false;
 		protected bool IncludeInRelease = false;
-		//protected string IndentSpacer = "  ";
 
 		private Guid id;
 		public Guid ID
@@ -27,15 +27,6 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 				return id; }
 			set { id = value; }
 		}
-
-
-		
-		private Guid parentID;
-		public Guid ParentID
-		{
-			get { return parentID; }
-			set { parentID = value; }
-		}
 		
 		private bool isThreadTitle;
 		public bool IsThreadTitle
@@ -44,6 +35,36 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			set { isThreadTitle = value; }
 		}
 
+		private LogGroup parent;
+		[XmlIgnore]
+		public LogGroup Parent
+		{
+			get { return parent; }
+			set { parent = value;
+				if (parent == null)
+					parentID = Guid.Empty;
+				else
+					parentID = parent.ID;
+			}
+		}
+
+		private Guid parentID;
+		public Guid ParentID
+		{
+			get {
+				if (parent != null)
+					return parent.ID;
+				return parentID; }
+			set {
+				parentID = value;
+
+				if (parent != null)
+				{
+					if (parent.ID != parentID)
+						parent = null;
+				}
+			}
+		}
 
 		private LogLevel logLevel = LogLevel.Debug;
 		/// <summary>
@@ -55,27 +76,6 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			set { logLevel = value; }
 		}
 
-		// TODO: Clean up
-		/*private TraceGroup parent;
-		/// <summary>
-		/// Gets/sets the parent group.
-		/// </summary>
-		public TraceGroup Parent
-		{
-			get { return parent; }
-			set { parent = value; }
-		}*/
-
-		/*private int indent;
-        /// <summary>
-        /// Gets/sets the indent of the group.
-        /// </summary>
-        public int Indent
-        {
-            get { return indent; }
-           // set { indent = value; }
-        }*/
-
 		private string summary;
 		/// <summary>
 		/// Gets/sets the title of the group.
@@ -85,26 +85,6 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			get { return summary; }
 			set { summary = value; }
 		}
-
-		/*private string description;
-		/// <summary>
-		/// Gets/sets the description of the group.
-		/// </summary>
-		public string Description
-		{
-			get { return description; }
-			set { description = value; }
-		}*/
-
-		/*		private LogGroupMode mode;
-		/// <summary>
-		/// Gets/sets the mode of the group.
-		/// </summary>
-		public LogGroupMode Mode
-		{
-			get { return mode; }
-			set { mode = value; }
-		}*/
 
 		private MethodBase callingMethod;
 		/// <summary>
@@ -116,16 +96,23 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			set { callingMethod = value; }
 		}
 
-		// TODO: Clean up
-		/*private List<TraceGroup> subGroups = new List<TraceGroup>();
+		private LogGroup[] subGroups = new LogGroup[]{};
 		/// <summary>
 		/// The subgroups of this group.
 		/// </summary>
-		public List<TraceGroup> SubGroups
+		public LogGroup[] SubGroups
 		{
 			get { return subGroups; }
-			set { subGroups = value; }
-		}*/
+			set { subGroups = value;
+				if (subGroups != null)
+				{
+					foreach (LogGroup group in subGroups)
+					{
+						group.Parent = this;
+					}
+				}
+			}
+		}
 
 
 		public LogGroup(string summary, MethodBase callingMethod)
@@ -133,70 +120,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			this.summary = summary;
 			this.callingMethod = callingMethod;
 		}
-
-		// TODO: Remove unnecessary code
-		/*public LogGroup(LogGroup parent, string title, string description, LogGroupMode mode)
-		{
-			this.parent = parent;
-			this.title = title;
-			this.description = description;
-			this.mode = mode;
-		}*/
-
-		/*public LogGroup(string title, LogGroupMode mode)
-		{
-			this.title = title;
-			this.mode = mode;
-		}*/
-
-		/*public LogGroup(LogGroup parent, string title, LogGroupMode mode)
-		{
-			this.parent = parent;
-			this.title = title;
-			this.mode = mode;
-		}*/
-
-		public LogGroup(string summary, bool includeInRelease)
-		{
-			this.summary = summary;
-			//this.description = description;
-			//this.mode = mode;
-			this.IncludeInRelease = includeInRelease;
-		}
-
-		// TODO: Remove unnecessary code
-		/*public LogGroup(LogGroup parent, string title, string description, LogGroupMode mode, bool includeInRelease)
-		{
-			this.parent = parent;
-			this.title = title;
-			this.description = description;
-			this.mode = mode;
-			this.IncludeInRelease = includeInRelease;
-		}*/
-
-		/*public void Write(string message)
-		{
-			string indentString = GetIndentString(this);
-
-			Tracer.Logger.Info(indentString + message);
-		}*/
-
-		//	public void WriteLine(string message, MethodBase callingMethod)
-		//{
-		//string indentString = GetIndentString();
-
-		//Tracer.Logger.Info(indentString + message);
-		//NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-		//logger.Info(message);
-		//  DataLogger.Info(message, callingMethod.Type.ToString(), callingMethod.MethodName.ToString(), DataLogger.Indent);
-		//}
-
-		/*public void Write(string category, string message)
-		{
-			//log4net.ILog logger = log4net.LogManager.GetLogger("File");
-			//logger.Write(category, message);
-		}*/
-
+		
 		public void Write(string message, LogLevel logLevel)
 		{
 			MethodBase callingMethod = Reflector.GetCallingMethod();
@@ -208,86 +132,26 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			if (logLevel < this.LogLevel)
 				throw new ArgumentException("The provided log level " + logLevel + " must be equal or greater than the log level of the group, which is " + logLevel + ".");
 
-			//if (LogLevel == LogLevel.Debug)
-			//{
-			AppLogger.WriteGroup(message, callingMethod, LogLevel, ID);
-			//}
-			//else
-			//	throw new NotImplementedException("Support for the LogLevel type of " + logLevel + " has not yet been implemented.");
+			LogWriter.WriteGroup(message, callingMethod, LogLevel, ID, ParentID);
 		}
 
-		/*	public void Error(string message)
-		{
-			MethodBase callingMethod = Reflector.GetCallingMethod();
-			Error(message, callingMethod);
-		}
-
-		public void Error(string message, MethodBase callingMethod)
-		{
-			AppLogger.Error(message, callingMethod);
-		}
-
-		[ Conditional("DEBUG") ]
-		public void Debug(string message)
-		{
-			MethodBase callingMethod = Reflector.GetCallingMethod();
-			Debug(message, callingMethod);
-		}
-
-		[ Conditional("DEBUG") ]
-		public void Debug(string message, MethodBase callingMethod)
-		{
-			AppLogger.Debug(message, callingMethod);
-		}
-
-		public void Info(string message)
-		{
-			MethodBase callingMethod = Reflector.GetCallingMethod();
-			Info(message, callingMethod);
-		}
-
-		public void Info(string message, MethodBase callingMethod)
-		{
-			AppLogger.Info(message, callingMethod);
-		}*/
 
 		internal void Start(MethodBase callingMethod, NLog.LogLevel logLevel)
 		{
-			AppLogger.Push(this);
-
+			DiagnosticState.PushGroup(this);
 			
-			if (AppLogger.PerformLogging(callingMethod, logLevel))
-			{
-				AppLogger.AddIndent();
-				
+			if (LogSupervisor.LoggingEnabled(callingMethod, logLevel))
+			{				
 				CallingMethod = callingMethod;
 				
-				StartLevel1(callingMethod);
+				Start(callingMethod);
 
 			}
-
-			// TODO: Remove...obsolete
-			//DataLogger.Indent = DataLogger.GroupStack.Count - 1;
-
-			//switch (mode)
-			//{
-			//	case LogGroupMode.Level1:
-			/*	break;
-				case LogGroupMode.Level2:
-                    StartLevel2(callingMethod);
-					break;
-				case LogGroupMode.Level3:
-                    StartLevel3(callingMethod);
-					break;
-				case LogGroupMode.Level4:
-                    StartLevel4(callingMethod);
-					break;
-				case LogGroupMode.Level5:
-                    StartLevel5(callingMethod);
-					break;
-				default:
-					throw new Exception("The trace group mode is not valid.");*/
-			//  }
+		}
+		
+		private void Start(MethodBase callingMethod)
+		{
+			Write(Summary, LogLevel, callingMethod);
 		}
 
 		internal void End()
@@ -297,54 +161,36 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			if (!HasEnded)
 			{
 				
-				if (AppLogger.PerformLogging(CallingMethod, LogLevel))
+				if (LogSupervisor.LoggingEnabled(CallingMethod, LogLevel))
 				{
-					//AppLogger.RemoveIndent();
-					
-					EndLevel1(CallingMethod);
+					End(CallingMethod);
 
 					
 				}
 				
-				AppLogger.Pop();
+				DiagnosticState.PopGroup();
+				
+				// Ensure that the log is still properly formatted
+				// If the current group ID is not the ID of this group's parent after this group has ended then the log is corrupt
+				if (DiagnosticState.CurrentGroupID != this.ParentID)
+					throw new CorruptLogException(this);
 				
 				HasEnded = true;
 
 			}
 		}
 
-		[Conditional("DEBUG")]
-		private void StartLevel1(MethodBase callingMethod)
+		private void End(MethodBase callingMethod)
 		{
-			//if (!SkipLogging())
-			//{
-			//WriteLine("************************************************************");
-			//WriteLine("** ====================================================== **");
-			Write(Summary, LogLevel, callingMethod);
-			//WriteLine("** Date/Time: " + DateTime.Now, callingMethod);
-			//WriteLine("** ====================================================== **");
-			//WriteLine("************************************************************");
-			// WriteLine("" + Description, callingMethod);
-			//WriteLine("************************************************************");
-			//WriteLine("************************************************************");
-			//}
 		}
 
-		[Conditional("DEBUG")]
-		private void EndLevel1(MethodBase callingMethod)
+		public void Append(LogGroup group)
 		{
-			//if (!SkipLogging())
-			//{
-			//WriteLine("************************************************************");
-			//WriteLine("** ====================================================== **");
-			//Write("End", LogLevel, callingMethod);
-			// WriteLine("** Date/Time: " + DateTime.Now, callingMethod);
-			//WriteLine("** ====================================================== **");
-			//WriteLine("************************************************************");
-			//}
+			List<LogGroup> list = new List<LogGroup>();
+			list.Add(group);
+			SubGroups = list.ToArray();
 		}
-
-
+		
 		#region IComponent members
 		public event EventHandler Disposed;
 
@@ -363,6 +209,70 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 				Disposed(this,EventArgs.Empty);
 
 		}
+		#endregion
+		
+		#region Static functions
+		
+		/// <summary>
+		/// Starts a new log group.
+		/// </summary>
+		/// <param name="summary"></param>
+		/// <returns></returns>
+		static public LogGroup Start(string summary)
+		{
+			MethodBase callingMethod = Reflector.GetCallingMethod();
+
+			return Start(summary, LogLevel.Info, callingMethod);
+		}
+		
+		/// <summary>
+		/// Starts a new log group.
+		/// </summary>
+		/// <param name="summary"></param>
+		/// <param name="logLevel"></param>
+		/// <returns></returns>
+		static public LogGroup Start(string summary, LogLevel logLevel)
+		{
+			MethodBase callingMethod = null;
+			
+			// Don't get the calling method if its not
+			if (LogSupervisor.LoggingEnabled(logLevel))
+				callingMethod = Reflector.GetCallingMethod();
+			
+			return Start(summary, logLevel, callingMethod);
+		}
+		
+		/// <summary>
+		/// Starts a new log group.
+		/// </summary>
+		/// <param name="summary"></param>
+		/// <param name="logLevel"></param>
+		/// <param name="callingMethod"></param>
+		/// <returns></returns>
+		static public LogGroup Start(string summary, LogLevel logLevel, MethodBase callingMethod)
+		{
+			LogGroup parent = DiagnosticState.CurrentGroup;
+			
+			LogGroup newGroup = new LogGroup(summary, callingMethod);
+			newGroup.Parent = parent;
+			
+			
+			newGroup.Start(callingMethod, logLevel);
+
+
+			return newGroup;
+		}
+
+		/*/// <summary>
+		/// Ends the current log group.
+		/// </summary>
+		static public void End()
+		{
+			if (DiagnosticState.CurrentGroup != null)
+			{
+				DiagnosticState.CurrentGroup.End();
+			}
+		}*/
 		#endregion
 	}
 
