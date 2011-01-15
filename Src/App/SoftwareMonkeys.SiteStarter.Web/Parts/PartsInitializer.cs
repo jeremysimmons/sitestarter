@@ -166,32 +166,33 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Initializing the business parts.", NLog.LogLevel.Debug))
 			{
-				PartInfo[] parts = new PartInfo[]{};
-				
-				bool pageIsAccessible = Page != null;
-				
-				// Only scan for parts if the page component is accessible (otherwise they can't be loaded through LoadControl)
-				// and when the parts have NOT yet been mapped
-				if (pageIsAccessible && !IsMapped)
+				if (StateAccess.IsInitialized && Configuration.Config.IsInitialized)
 				{
-					AppLogger.Debug("Is not mapped. Scanning from type attributes.");
+					PartInfo[] parts = new PartInfo[]{};
 					
-					parts = FindParts();
+					bool pageIsAccessible = Page != null;
 					
-					SaveInfoToFile(parts);
-					
-					Initialize(parts);
+					// Only scan for parts if the page component is accessible (otherwise they can't be loaded through LoadControl)
+					// and when the parts have NOT yet been mapped
+					if (pageIsAccessible && !IsMapped)
+					{
+						AppLogger.Debug("Is not mapped. Scanning from type attributes.");
+						
+						parts = FindParts();
+						
+						SaveInfoToFile(parts);
+						
+						Initialize(parts);
+					}
+					else if(IsMapped)
+					{
+						AppLogger.Debug("Is mapped. Loading from XML.");
+						
+						parts = LoadParts();
+						
+						Initialize(parts);
+					}
 				}
-				else if(IsMapped)
-				{
-					AppLogger.Debug("Is mapped. Loading from XML.");
-					
-					parts = LoadParts();
-					
-					Initialize(parts);
-				}
-				// Otherwise just skip it, as it's likely before setup has run and just needs to wait
-				
 			}
 		}
 		
