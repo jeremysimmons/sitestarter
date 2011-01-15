@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections;
 using System.Collections.Specialized;
 using SoftwareMonkeys.SiteStarter.Configuration;
+using SoftwareMonkeys.SiteStarter.Tests;
 
 namespace SoftwareMonkeys.SiteStarter.State.Tests
 {
@@ -12,6 +13,13 @@ namespace SoftwareMonkeys.SiteStarter.State.Tests
 	/// </summary>
 	public class MockStateProvider : StateProvider
 	{
+		private BaseTestFixture fixture;
+		public BaseTestFixture Fixture
+		{
+			get { return fixture; }
+			set { fixture = value; }
+		}
+		
     	private string physicalApplicationPath = String.Empty;
     	/// <summary>
     	/// Gets/sets the full physical path to the room of the running application.
@@ -20,6 +28,16 @@ namespace SoftwareMonkeys.SiteStarter.State.Tests
     	{
     		get { return physicalApplicationPath; }
     		set { physicalApplicationPath = value; }
+    	}
+    	
+    	private string applicationPath = String.Empty;
+    	/// <summary>
+    	/// Gets/sets the virtual path to the room of the running application.
+    	/// </summary>
+    	public override string ApplicationPath
+    	{
+    		get { return applicationPath; }
+    		set { applicationPath = value; }
     	}
     	
 		private Dictionary<string, object> sessionData;
@@ -220,13 +238,20 @@ namespace SoftwareMonkeys.SiteStarter.State.Tests
 			return keys.ToArray();
 		}
 		
-		public override void Initialize(string name, System.Collections.Specialized.NameValueCollection config)
+		public MockStateProvider(BaseTestFixture fixture)
+		{
+			Fixture = fixture;
+			Initialize();
+		}
+		
+		public void Initialize()
 		{
 
-			//    throw new Exception("The method or operation is not implemented.");
 			SoftwareMonkeys.SiteStarter.State.StateAccess.State = this;
+			
+			this.PhysicalApplicationPath = TestUtilities.GetTestingPath(fixture);
+			this.ApplicationPath = "/MockApplication";
 
-			base.Initialize(name, config);
 		}
 	}
 }
