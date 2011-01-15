@@ -66,6 +66,11 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			SortDirection = GetSortDirectionFromSortExpression(sortExpression);
 		}
 		
+		/// <summary>
+		/// Retrieves the name of the property in the provided sort expression. Example: Passing the expression "PriorityAscending" would return the property name "Priority".
+		/// </summary>
+		/// <param name="sortExpression"></param>
+		/// <returns></returns>
 		static public string GetPropertyNameFromSortExpression(string sortExpression)
 		{
 			return sortExpression.Replace("Ascending", "")
@@ -91,7 +96,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 
 			if (property == null)
 				throw new MissingMemberException(objectType.ToString(), PropertyName);
-
+	
 			object t = property.GetValue(a, (object[])null);
 
 			IComparable c1 = (IComparable)property.GetValue(a, null);
