@@ -150,6 +150,7 @@
     <Compile Include="SaveStrategyTests.cs" />
     <Compile Include="StrategyCreatorTests.cs" />
     <Compile Include="StrategyFileNamerTests.cs" />
+    <Compile Include="StrategyInfoTests.cs" />
     <Compile Include="StrategyInitializerTests.cs" />
     <Compile Include="StrategyLoaderTests.cs" />
     <Compile Include="StrategyLocatorTests.cs" />
