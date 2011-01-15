@@ -338,45 +338,49 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				else
 				{
 
-				foreach (TableRow row in this.Rows)
-				{
-					if (row is EntityFormItem)
+					foreach (TableRow row in this.Rows)
 					{
-						EntityFormItem item = (EntityFormItem)row;
-						//PropertyInfo property = Reflector.GetProperty(((EntityFormItem)item).PropertyName, DataSource);
-						
-						if (item.AutoBind && item.PropertyName != null && item.PropertyName != String.Empty)
+						if (row is EntityFormItem)
 						{
-							AppLogger.Debug("Property name: " + item.PropertyName);
-							//AppLogger.Debug("Property type: " + property.PropertyType.ToString());
-							
-							//if (property != null)
-							//{
-							//	AppLogger.Debug("Property found");
-							
-							Control field = FindControl(item.FieldControlID);
-							// Skip label fields, they're not editable
-							if (field.GetType() != typeof(Label))
+							if (row.Enabled)
 							{
-								Type propertyType = Reflector.GetPropertyType(DataSource, item.PropertyName);
+								EntityFormItem item = (EntityFormItem)row;
+								//PropertyInfo property = Reflector.GetProperty(((EntityFormItem)item).PropertyName, DataSource);
 								
-								AppLogger.Debug("Property type: " + (propertyType == null ? "[null]" : propertyType.ToString()));
-								
-								object value = EntityFormHelper.GetFieldValue(field, item.ControlValuePropertyName, propertyType);
-								
-								AppLogger.Debug("Field value type: " + (value == null ? "[null]" : value.GetType().ToString()));
-								AppLogger.Debug("Field value: " + (value == null ? "[null]" : value.ToString()));
-														
-								object castValue = EntityFormHelper.Convert(value, propertyType);
-								
-								Reflector.SetPropertyValue(DataSource, item.PropertyName, castValue);
+								if (item.AutoBind && item.PropertyName != null && item.PropertyName != String.Empty)
+								{
+									AppLogger.Debug("Property name: " + item.PropertyName);
+									//AppLogger.Debug("Property type: " + property.PropertyType.ToString());
+									
+									//if (property != null)
+									//{
+									//	AppLogger.Debug("Property found");
+									
+									WebControl field = (WebControl)FindControl(item.FieldControlID);
+									// Skip label fields, they're not editable
+									if (field.GetType() != typeof(Label)
+									   && field.Enabled)
+									{
+										Type propertyType = Reflector.GetPropertyType(DataSource, item.PropertyName);
+										
+										AppLogger.Debug("Property type: " + (propertyType == null ? "[null]" : propertyType.ToString()));
+										
+										object value = EntityFormHelper.GetFieldValue(field, item.ControlValuePropertyName, propertyType);
+										
+										AppLogger.Debug("Field value type: " + (value == null ? "[null]" : value.GetType().ToString()));
+										AppLogger.Debug("Field value: " + (value == null ? "[null]" : value.ToString()));
+										
+										object castValue = EntityFormHelper.Convert(value, propertyType);
+										
+										Reflector.SetPropertyValue(DataSource, item.PropertyName, castValue);
+									}
+									//}
+									//else
+									//	AppLogger.Debug("Property not found.");
+								}
 							}
-							//}
-							//else
-							//	AppLogger.Debug("Property not found.");
 						}
 					}
-				}
 
 				}
 			}
@@ -415,6 +419,20 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			}
 		}
 		#endregion
+		
+		// TODO: Check if needed
+		/*
+		protected override void OnPreRender(EventArgs e)
+		{
+			RegisterFormScripts();
+			
+			base.OnPreRender(e);
+		}
+		
+		public void RegisterFormScripts()
+		{
+				Page.ClientScript.RegisterStartupScript(this.GetType(), "FormUtil", "<script language='javascript' src='" + HttpContext.Current.Request.ApplicationPath + "/Scripts/FormUtil.js'></script>");
+		}*/
 	}
 
 	#region Event types
