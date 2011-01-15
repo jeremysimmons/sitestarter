@@ -15,12 +15,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 	/// </summary>
 	public class BaseProjection : UserControl, IProjection, IControllable
 	{
-		private bool autoNavigate = true;
-		public bool AutoNavigate
-		{
-			get { return autoNavigate; }
-			set { autoNavigate = value; }
-		}
 		
 		private string action = String.Empty;
 		public string Action
@@ -157,59 +151,87 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 
 		public BaseProjection(string action, Type type)
 		{
-			Action = action;
-			Type = type;
+			using (LogGroup logGroup = AppLogger.StartGroup("Constructing projection object.", NLog.LogLevel.Debug))
+			{
+				AppLogger.Debug("Action: " + Action);
+				AppLogger.Debug("Type: " + Type);
+				
+				Action = action;
+				Type = type;
+				
+			}
 		}
 		
 		public BaseProjection(string action, Type type, bool requireAuthorisation)
 		{
-			Action = action;
-			Type = type;
-			RequireAuthorisation = requireAuthorisation;
+			using (LogGroup logGroup = AppLogger.StartGroup("Constructing projection object.", NLog.LogLevel.Debug))
+			{
+				AppLogger.Debug("Action: " + Action);
+				AppLogger.Debug("Type: " + Type);
+				AppLogger.Debug("RequireAuthorisation: " + RequireAuthorisation.ToString());
+				
+				Action = action;
+				Type = type;
+				RequireAuthorisation = requireAuthorisation;
+			}
 		}
 		
 		public virtual void InitializeMenu()
 		{
 			// override to set menu properties such as MenuTitle, MenuCategory, and ShowOnMenu
 		}
-		protected override void OnInit(EventArgs e)
+		
+		// TODO: Check if needed.
+		// Should be obsolete
+		/*protected override void OnInit(EventArgs e)
 		{
-			try
+			using (LogGroup logGroup = AppLogger.StartGroup("Initializing the projection.", NLog.LogLevel.Debug))
 			{
-				base.OnInit(e);
+				try
+				{
+					base.OnInit(e);
+				}
+				catch(UnauthorisedException)
+				{
+					FailAuthorisation();
+				}
+				
+				InitializeMenu();
 			}
-			catch(UnauthorisedException)
-			{
-				FailAuthorisation();
-			}
-			
-			InitializeMenu();
 		}
 		
 		protected override void OnLoad(EventArgs e)
 		{
-			try
+			using (LogGroup logGroup = AppLogger.StartGroup("Loading the projection.", NLog.LogLevel.Debug))
 			{
-				base.OnLoad(e);
-			}
-			catch(UnauthorisedException)
-			{
-				FailAuthorisation();
+				try
+				{
+					base.OnLoad(e);
+				}
+				catch(UnauthorisedException)
+				{
+					FailAuthorisation();
+				}
 			}
 		}
 		
 		public override void DataBind()
 		{
-			try
+			using (LogGroup logGroup = AppLogger.StartGroup("Data binding the projection.", NLog.LogLevel.Debug))
 			{
-				base.DataBind();
+				try
+				{
+					base.DataBind();
+				}
+				catch(UnauthorisedException)
+				{
+					FailAuthorisation();
+				}
 			}
-			catch(UnauthorisedException)
-			{
-				FailAuthorisation();
-			}
-		}
+		}*/
 		
+		// TODO: Check if needed. Moved to BaseController.
+		/*
 		/// <summary>
 		/// Displays a message to the user informing them that they're not authorised and redirects them to the unauthorised page.
 		/// </summary>
@@ -235,7 +257,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// Ensures that the user is authorised to index entities of the specified type.
 		/// </summary>
 		/// <returns>A value indicating whether the user is authorised.</returns>
-		public bool EnsureAuthorised()
+		public virtual bool EnsureAuthorised(IEntity entity)
 		{
 			bool output = false;
 			
@@ -244,15 +266,53 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				CheckAction();
 				CheckType();
 				
+				AppLogger.Debug("Require authorisation: " + requireAuthorisation.ToString());
+				
 				if (RequireAuthorisation)
 				{
-					bool isAuthorised = Security.Authorisation.UserCan(Action, Type.Name);
+					bool isAuthorised = Security.Authorisation.UserCan(Action, entity);
+					
+					AppLogger.Debug("Is authorised: " + isAuthorised);
 					
 					if (!isAuthorised)
 						FailAuthorisation();
 					
 					output = (!RequireAuthorisation || isAuthorised);
 				}
+				
+				AppLogger.Debug("Output: " + output.ToString());
+			}
+			return true;
+		}
+		
+		/// <summary>
+		/// Ensures that the user is authorised to index entities of the specified type.
+		/// </summary>
+		/// <returns>A value indicating whether the user is authorised.</returns>
+		public virtual bool EnsureAuthorised()
+		{
+			bool output = false;
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Ensuring that the current user is authorised to performed the desired action.", NLog.LogLevel.Debug))
+			{
+				CheckAction();
+				CheckType();
+				
+				AppLogger.Debug("Require authorisation: " + requireAuthorisation.ToString());
+				
+				if (RequireAuthorisation)
+				{
+					bool isAuthorised = Security.Authorisation.UserCan(Action, Type.Name);
+					
+					AppLogger.Debug("Is authorised: " + isAuthorised);
+					
+					if (!isAuthorised)
+						FailAuthorisation();
+					
+					output = (!RequireAuthorisation || isAuthorised);
+				}
+				
+				AppLogger.Debug("Output: " + output.ToString());
 			}
 			return true;
 		}
@@ -270,11 +330,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			{
 				bool isAuthorised = Security.Authorisation.UserCan(Action, entity);
 				
+				AppLogger.Debug("Is authorised: " + isAuthorised.ToString());
+				AppLogger.Debug("Require authorisation: " + RequireAuthorisation.ToString());
+				
 				output = (!RequireAuthorisation || isAuthorised);
+				
+				AppLogger.Debug("Output: " + output.ToString());
 			}
 			
 			return output;
-		}
+		}*/
 		
 		
 		public void CheckType()

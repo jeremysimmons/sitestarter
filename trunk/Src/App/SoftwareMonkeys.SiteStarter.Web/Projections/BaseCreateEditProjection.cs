@@ -89,12 +89,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		
 		protected override void OnLoad(EventArgs e)
 		{
-			if (!IsPostBack)
+			using (LogGroup logGroup = AppLogger.StartGroup("Loading the base create/edit projection.", NLog.LogLevel.Debug))
 			{
-				if (QueryStrings.Action == "Edit")
-					Edit();
-				else
-					Create();
+				if (!IsPostBack)
+				{
+					if (QueryStrings.Action == "Edit")
+						Edit();
+					else
+						Create();
+				}
 			}
 			
 			base.OnLoad(e);
@@ -102,30 +105,40 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		
 		public void Initialize(Type type, EntityForm form, string uniquePropertyName)
 		{
-			UniquePropertyName = uniquePropertyName;
-			
-			Type = type;
-			Form = form;
-			
-			createController = CreateController.New(this, type, UniquePropertyName);
-			editController = EditController.New(this, type, UniquePropertyName);
-			
-			Form.EntityCommand += new EntityFormEventHandler(Form_EntityCommand);
+			using (LogGroup logGroup = AppLogger.StartGroup("Initializing the base create/edit projection.", NLog.LogLevel.Debug))
+			{
+				UniquePropertyName = uniquePropertyName;
+				
+				AppLogger.Debug("Unique property name: " + uniquePropertyName);
+				
+				AppLogger.Debug("Type: " + type.ToString());
+				
+				Type = type;
+				Form = form;
+				
+				createController = CreateController.New(this, type, UniquePropertyName);
+				editController = EditController.New(this, type, UniquePropertyName);
+				
+				Form.EntityCommand += new EntityFormEventHandler(Form_EntityCommand);
+			}
 		}
 		
 		public void Initialize(Type type, EntityForm form)
 		{
-			Initialize(type, form, uniquePropertyName);
+			Initialize(type, form, String.Empty);
 		}
 
 		void Form_EntityCommand(object sender, EntityFormEventArgs e)
 		{
-			if (e.CommandName == "Save")
-				Save();
-			else if (e.CommandName == "Update")
-				Update();
-			else
-				throw new InvalidOperationException("Command name not supported: " + e.CommandName);
+			using (LogGroup logGroup = AppLogger.StartGroup("Handling entity form command.", NLog.LogLevel.Debug))
+			{
+				if (e.CommandName == "Save")
+					Save();
+				else if (e.CommandName == "Update")
+					Update();
+				else
+					throw new InvalidOperationException("Command name not supported: " + e.CommandName);
+			}
 		}
 		
 		/// <summary>
@@ -133,11 +146,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// </summary>
 		public virtual void Create()
 		{
-			if (EnsureAuthorised())
+			using (LogGroup logGroup = AppLogger.StartGroup("Creating a new entity.", NLog.LogLevel.Debug))
 			{
 				CheckCreateController();
 				
-				CreateController.Create();
+				Create(CreateController.Create());
 			}
 		}
 		
@@ -149,17 +162,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Preparing a create action.", NLog.LogLevel.Debug))
 			{
-				if (EnsureAuthorised())
-				{
-					CheckCreateController();
-					
-					DataSource = entity;
-					Form.DataSource = entity;
-					
-					CreateController.Create(entity);
-					
-					DataBind();
-				}
+				CheckCreateController();
+				
+				DataSource = entity;
+				Form.DataSource = entity;
+				
+				CreateController.Create(entity);
+				
+				DataBind();
 			}
 		}
 		
@@ -172,17 +182,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Preparing an edit action.", NLog.LogLevel.Debug))
 			{
-				if (EnsureAuthorised())
-				{
-					if (EditController == null)
-						throw new InvalidOperationException("Controller has not be initialized. Call FormPage.Initialize().");
-					
-					T entity = EditController.PrepareEdit<T>();
-					
-					return entity;
-				}
-				else
-					return default(T);
+				if (EditController == null)
+					throw new InvalidOperationException("Controller has not be initialized. Call FormPage.Initialize().");
+				
+				T entity = EditController.PrepareEdit<T>();
+				
+				return entity;
 			}
 		}
 		
@@ -192,18 +197,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <returns></returns>
 		public virtual IEntity PrepareEdit()
 		{
+			IEntity entity = null;
+			
 			using (LogGroup logGroup = AppLogger.StartGroup("Preparing an edit action.", NLog.LogLevel.Debug))
 			{
-				if (EnsureAuthorised())
-				{
-					if (EditController == null)
-						throw new InvalidOperationException("Controller has not be initialized. Call FormPage.Initialize().");
-					
-					return EditController.PrepareEdit();
-				}
-				else
-					return null;
+				if (EditController == null)
+					throw new InvalidOperationException("Controller has not be initialized. Call FormPage.Initialize().");
+				
+				entity = EditController.PrepareEdit();
 			}
+			return entity;
 		}
 		
 		/// <summary>
@@ -213,18 +216,17 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <returns>The entity with the provided entity.</returns>
 		public virtual IEntity PrepareEdit(Guid entityID)
 		{
+			IEntity entity = null;
+			
 			using (LogGroup logGroup = AppLogger.StartGroup("Preparing an edit action.", NLog.LogLevel.Debug))
 			{
-				if (EnsureAuthorised())
-				{
-					if (EditController == null)
-						throw new InvalidOperationException("Controller has not be initialized. Call FormPage.Initialize().");
-					
-					return EditController.PrepareEdit(entityID);
-				}
-				else
-					return null;
+				if (EditController == null)
+					throw new InvalidOperationException("Controller has not be initialized. Call FormPage.Initialize().");
+				
+				entity = EditController.PrepareEdit(entityID);
+
 			}
+			return entity;
 		}
 		
 		/// <summary>
@@ -234,18 +236,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <returns>The entity with the provided unique key.</returns>
 		public virtual IEntity PrepareEdit(string uniqueKey)
 		{
+			IEntity entity = null;
 			using (LogGroup logGroup = AppLogger.StartGroup("Preparing an edit action.", NLog.LogLevel.Debug))
 			{
-				if (EnsureAuthorised())
-				{
-					if (EditController == null)
-						throw new InvalidOperationException("Controller has not be initialized. Call FormPage.Initialize().");
-					
-					return EditController.PrepareEdit(uniqueKey);
-				}
-				else
-					return null;
+				if (EditController == null)
+					throw new InvalidOperationException("Controller has not be initialized. Call FormPage.Initialize().");
+				
+				entity = EditController.PrepareEdit(uniqueKey);
 			}
+			return entity;
 		}
 		
 		/// <summary>
@@ -253,9 +252,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// </summary>
 		public virtual void Edit()
 		{
-			if (EnsureAuthorised())
+			using (LogGroup logGroup = AppLogger.StartGroup("Editing an entity.", NLog.LogLevel.Debug))
 			{
-				IEntity entity = PrepareEdit();
+				IEntity entity = EditController.PrepareEdit();
 				
 				Edit(entity);
 			}
@@ -270,18 +269,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Starting an edit action.", NLog.LogLevel.Debug))
 			{
-				if (EnsureAuthorised())
-				{
-					if (EditController == null)
-						throw new InvalidOperationException("Controller has not be initialized. Call FormPage.Initialize().");
-					
-					DataSource = entity;
-					
-					EditController.Edit(entity);
-					
-					DataBind();
-				}
+				if (EditController == null)
+					throw new InvalidOperationException("Controller has not be initialized. Call FormPage.Initialize().");
+				
+				DataSource = entity;
+				
+				EditController.Edit(entity);
+				
+				DataBind();
 			}
+			
 		}
 		
 		/// <summary>
@@ -293,18 +290,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			bool success = false;
 			using (LogGroup logGroup = AppLogger.StartGroup("Saving the entity from the form.", NLog.LogLevel.Debug))
 			{
-				if (EnsureAuthorised())
-				{
-					PrepareSave();
-					
-					if (DataSource == null)
-						throw new Exception("DataSource == null. Call PrepareSave().");
-					
-					success = CreateController.Save(DataSource);
-					
-					if (success && AutoNavigate)
-						NavigateAfterSave();
-				}
+				PrepareSave();
+				
+				if (DataSource == null)
+					throw new Exception("DataSource == null. Call PrepareSave().");
+				
+				success = CreateController.Save(DataSource);
+				
 			}
 			return success;
 		}
@@ -320,13 +312,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			bool success = false;
 			using (LogGroup logGroup = AppLogger.StartGroup("Saving the provided entity.", NLog.LogLevel.Debug))
 			{
-				if (EnsureAuthorised())
-				{
-					success = CreateController.Save(entity);
-					
-					if (success && AutoNavigate)
-						NavigateAfterSave();
-				}
+				success = CreateController.Save(entity);
 			}
 			return success;
 		}
@@ -336,10 +322,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// </summary>
 		public virtual T PrepareUpdate<T>()
 		{
-			if (EnsureAuthorised())
-				return (T)PrepareUpdate();
-			else
-				return default(T);
+			T entity = default(T);
+			using (LogGroup logGroup = AppLogger.StartGroup("Preparing to update an entity.", NLog.LogLevel.Debug))
+			{
+				entity = (T)PrepareUpdate();
+			}
+			return entity;
 		}
 		
 		
@@ -348,16 +336,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// </summary>
 		public virtual IEntity PrepareUpdate()
 		{
-			if (EnsureAuthorised())
+			IEntity entity = null;
+			using (LogGroup logGroup = AppLogger.StartGroup("Preparing to update an entity.", NLog.LogLevel.Debug))
 			{
 				Form.ReverseBind();
 				
 				DataSource = (IEntity)Form.DataSource;
 				
-				return DataSource;
+				entity = DataSource;
 			}
-			else
-				return null;
+			return entity;
 		}
 		
 		/// <summary>
@@ -368,10 +356,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			T entity = default(T);
 			using (LogGroup logGroup = AppLogger.StartGroup("Preparing to save the data from the form.", NLog.LogLevel.Debug))
 			{
-				if (EnsureAuthorised())
-				{
-					entity = (T)PrepareSave();
-				}
+				entity = (T)PrepareSave();
 			}
 			return entity;
 			
@@ -386,22 +371,17 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			
 			using (LogGroup logGroup = AppLogger.StartGroup("Preparing to save the data from the form.", NLog.LogLevel.Debug))
 			{
-				if (EnsureAuthorised())
-				{
-					if (Form == null)
-						throw new Exception("Form == null");
-					
-					if (Form.DataSource == null)
-						throw new Exception("Form.DataSource == null");
-					
-					Form.ReverseBind();
-					
-					DataSource = (IEntity)Form.DataSource;
-					
-					entity = DataSource;
-				}
-				else
-					entity = null;
+				if (Form == null)
+					throw new Exception("Form == null");
+				
+				if (Form.DataSource == null)
+					throw new Exception("Form.DataSource == null");
+				
+				Form.ReverseBind();
+				
+				DataSource = (IEntity)Form.DataSource;
+				
+				entity = DataSource;
 			}
 			
 			return entity;
@@ -416,15 +396,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			bool success = false;
 			using (LogGroup logGroup = AppLogger.StartGroup("Updating the entity on the form.", NLog.LogLevel.Debug))
 			{
-				if (EnsureAuthorised())
-				{
-					PrepareUpdate();
-					
-					success = EditController.Update(DataSource);
-					
-					if (success && AutoNavigate)
-						NavigateAfterUpdate();
-				}
+				DataSource = PrepareUpdate();
+				
+				Form.ReverseBind(DataSource);
+				
+				Update(DataSource);
+				
 			}
 			return success;
 		}
@@ -439,46 +416,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			bool success = false;
 			using (LogGroup logGroup = AppLogger.StartGroup("Updating the provided entity.", NLog.LogLevel.Debug))
 			{
-				if (EnsureAuthorised())
-				{
-					success = EditController.Update(entity);
-					
-					if (success && AutoNavigate)
-						NavigateAfterUpdate();
-				}
+				success = EditController.Update(entity);
 			}
 			return success;
-		}
-
-		/// <summary>
-		/// Navigates to the appropriate page after saving the entity from the form.
-		/// </summary>
-		public virtual void NavigateAfterSave()
-		{
-			NavigateAfterOperation();
-		}
-		
-		/// <summary>
-		/// Navigates to the appropriate page after saving the entity from the form.
-		/// </summary>
-		public virtual void NavigateAfterUpdate()
-		{
-			NavigateAfterOperation();
-		}
-		
-		/// <summary>
-		/// Navigates to the appropriate page after completing any operation.
-		/// </summary>
-		public virtual void NavigateAfterOperation()
-		{
-			if (typeof(IUniqueEntity).IsAssignableFrom(Type))
-			{
-				string uniqueKey = ((IUniqueEntity)DataSource).UniqueKey;
-				
-				Navigator.Go("View", DataSource.ShortTypeName, uniqueKey);
-			}
-			else
-				Navigator.Go("View", DataSource.ShortTypeName, "ID", DataSource.ID.ToString());
 		}
 		
 		public void CheckCreateController()

@@ -6,7 +6,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	/// <summary>
 	/// Description of ControllerAttribute.
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Class, AllowMultiple=true)]
+	[AttributeUsage(AttributeTargets.Class, AllowMultiple=false)]
 	public class ControllerAttribute : Attribute
 	{
 		private string typeName;

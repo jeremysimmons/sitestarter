@@ -46,11 +46,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Deleting the entity specified in the query string.", NLog.LogLevel.Debug))
 			{
-				if (EnsureAuthorised())
-				{
-					Controller.Delete();
-					NavigateAfterDelete(Controller.DataSource);
-				}
+				Controller.Delete();
 			}
 		}
 		
@@ -58,17 +54,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Deleting the entity provided.", NLog.LogLevel.Debug))
 			{
-				if (EnsureAuthorised())
-				{
-					Controller.Delete(entity);
-					NavigateAfterDelete(entity);
-				}
+				Controller.Delete(entity);
 			}
 		}
 		
-		public virtual void NavigateAfterDelete(IEntity entity)
-		{
-			Navigator.Go("Index");
-		}
 	}
 }

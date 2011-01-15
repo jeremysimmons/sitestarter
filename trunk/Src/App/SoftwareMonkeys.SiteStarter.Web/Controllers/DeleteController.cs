@@ -5,6 +5,7 @@ using SoftwareMonkeys.SiteStarter.Web.WebControls;
 using System.Web.UI.WebControls;
 using SoftwareMonkeys.SiteStarter.Web.Properties;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using System.Web;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 {
@@ -73,6 +74,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				
 				// Display the result
 				Result.Display(DynamicLanguage.GetEntityText("EntityDeleted", entity.ShortTypeName));
+				
+				NavigateAfterDelete(entity);
 			}
 		}
 		
@@ -176,5 +179,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				Delete(entity, Container.Messages[type.Name + "Deleted"]);
 			}
 		}*/
+		
+		public virtual void NavigateAfterDelete(IEntity entity)
+		{
+			string url = UrlCreator.Current.CreateUrl("Index", entity.ShortTypeName);
+			
+			HttpContext.Current.Response.Redirect(url);
+		}
 	}
 }

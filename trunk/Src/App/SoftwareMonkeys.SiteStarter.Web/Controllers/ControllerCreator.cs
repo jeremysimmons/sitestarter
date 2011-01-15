@@ -1,5 +1,6 @@
 ﻿using System;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using SoftwareMonkeys.SiteStarter.Entities;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 {
@@ -52,8 +53,18 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			IController controller = null;
 			using (LogGroup logGroup = AppLogger.StartGroup("Creating a new controller based on the provided info.", NLog.LogLevel.Debug))
 			{
+				if (controllerInfo == null)
+					throw new ArgumentNullException("controllerInfo");
+				
 				Type controllerType = Type.GetType(controllerInfo.ControllerType);
-				Type entityType = Entities.EntitiesUtilities.GetType(controllerInfo.TypeName);
+				
+				if (controllerType == null)
+					throw new Exception("Can't get type '" + controllerInfo.ControllerType);
+				
+				Type entityType = EntityState.GetType(controllerInfo.TypeName);
+				
+				if (entityType == null)
+					throw new Exception("Can't get type '" + controllerInfo.TypeName);
 				
 				AppLogger.Debug("Controller type: " + controllerType.FullName);
 				AppLogger.Debug("Entity type: " + entityType.FullName);

@@ -252,7 +252,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	/// <returns></returns>
 	public IEntity[] PrepareIndex()
 	{
-		if (Container.EnsureAuthorised())
+		if (EnsureAuthorised())
 		{
 			DataSource = Indexer.Index();
 		}
@@ -281,7 +281,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	/// <returns></returns>
 	public IEntity[] PrepareIndex(Dictionary<string, object> filterValues)
 	{
-		if (Container.EnsureAuthorised())
+		if (EnsureAuthorised())
 		{
 			DataSource = Indexer.Index(filterValues);
 		}
