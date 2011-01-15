@@ -4,12 +4,12 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="http://localhost/SiteStarter" />
-<title>RegisterApprovedUser</title>
+<title>EnforceUniqueUsername</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">RegisterApprovedUser</td></tr>
+<tr><td rowspan="1" colspan="3">EnforceUniqueUsername</td></tr>
 </thead><tbody>
 <tr>
 	<td>setTimeout</td>
@@ -25,6 +25,11 @@
 	<td>waitForPageToLoad</td>
 	<td></td>
 	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td></td>
+	<td>Settings</td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
@@ -47,6 +52,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>assertTextPresent</td>
+	<td></td>
+	<td>successfully</td>
+</tr>
+<tr>
 	<td>clickAndWait</td>
 	<td>SignOutLink</td>
 	<td></td>
@@ -59,22 +69,22 @@
 <tr>
 	<td>type</td>
 	<td>ctl00_Body_ctl00_FirstName</td>
-	<td>Approved</td>
+	<td>first</td>
 </tr>
 <tr>
 	<td>type</td>
 	<td>ctl00_Body_ctl00_LastName</td>
-	<td>User</td>
+	<td>last</td>
 </tr>
 <tr>
 	<td>type</td>
 	<td>ctl00_Body_ctl00_Email</td>
-	<td>approveduser@softwaremonkeys.net</td>
+	<td>duplicateuser@softwaremonkeys.net</td>
 </tr>
 <tr>
 	<td>type</td>
 	<td>ctl00_Body_ctl00_Username</td>
-	<td>approveduser</td>
+	<td>admin</td>
 </tr>
 <tr>
 	<td>type</td>
@@ -97,19 +107,29 @@
 	<td></td>
 </tr>
 <tr>
-	<td>assertTextPresent</td>
+	<td>waitForPageToLoad</td>
 	<td></td>
-	<td>My Account</td>
+	<td></td>
 </tr>
 <tr>
 	<td>assertTextPresent</td>
 	<td></td>
-	<td>successfully</td>
+	<td>username is already in use</td>
 </tr>
 <tr>
 	<td>assertTextPresent</td>
 	<td></td>
-	<td>approveduser@softwaremonkeys.net</td>
+	<td>New User Details</td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td></td>
+	<td>duplicateuser@softwaremonkeys.net</td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td></td>
+	<td>Register</td>
 </tr>
 <tr>
 	<td>open</td>
@@ -121,6 +141,7 @@
 	<td></td>
 	<td></td>
 </tr>
+
 </tbody></table>
 </body>
 </html>

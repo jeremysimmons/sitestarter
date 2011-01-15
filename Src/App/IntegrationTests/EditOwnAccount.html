@@ -12,19 +12,24 @@
 <tr><td rowspan="1" colspan="3">EditOwnAccount</td></tr>
 </thead><tbody>
 <tr>
+	<td>setTimeout</td>
+	<td></td>
+	<td>90000</td>
+</tr>
+<tr>
 	<td>open</td>
 	<td>http://localhost/SiteStarter/admin/QuickSetup.aspx</td>
 	<td></td>
 </tr>
 <tr>
-	<td>setTimeout</td>
-	<td></td>
-	<td>100000</td>
-</tr>
-<tr>
 	<td>waitForPageToLoad</td>
 	<td></td>
-	<td>100000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td></td>
+	<td>Settings</td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
@@ -37,7 +42,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
+	<td>check</td>
 	<td>ctl00_Body_ctl00_AutoApproveNewUsers</td>
 	<td></td>
 </tr>
@@ -104,7 +109,7 @@
 <tr>
 	<td>waitForPageToLoad</td>
 	<td></td>
-	<td>100000</td>
+	<td></td>
 </tr>
 <tr>
 	<td>assertTextPresent</td>
@@ -162,6 +167,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
 	<td>assertTextPresent</td>
 	<td></td>
 	<td>My Account</td>
@@ -187,6 +197,41 @@
 	<td>new@softwaremonkeys.net</td>
 </tr>
 <tr>
+	<td>clickAndWait</td>
+	<td>SignOutLink</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ctl00_Body_ctl00_Login_UserName</td>
+	<td>approveduser</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ctl00_Body_ctl00_Login_Password</td>
+	<td>pass</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>ctl00_Body_ctl00_Login_LoginButton</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td></td>
+	<td>Sign Out</td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td></td>
+	<td>My Account</td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td></td>
+	<td>You are logged in as:</td>
+</tr>
+<tr>
 	<td>open</td>
 	<td>http://localhost/SiteStarter/admin/tests/testreset.aspx</td>
 	<td></td>
@@ -194,7 +239,7 @@
 <tr>
 	<td>waitForPageToLoad</td>
 	<td></td>
-	<td>100000</td>
+	<td></td>
 </tr>
 </tbody></table>
 </body>

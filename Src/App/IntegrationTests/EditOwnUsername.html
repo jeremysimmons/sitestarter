@@ -4,12 +4,12 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="http://localhost/SiteStarter" />
-<title>RegisterApprovedUser</title>
+<title>EditOwnUsername</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">RegisterApprovedUser</td></tr>
+<tr><td rowspan="1" colspan="3">EditOwnUsername</td></tr>
 </thead><tbody>
 <tr>
 	<td>setTimeout</td>
@@ -25,6 +25,11 @@
 	<td>waitForPageToLoad</td>
 	<td></td>
 	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td></td>
+	<td>Settings</td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
@@ -45,6 +50,11 @@
 	<td>clickAndWait</td>
 	<td>ctl00_Body_ctl00_UpdateButton</td>
 	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td></td>
+	<td>successfully</td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
@@ -97,6 +107,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
 	<td>assertTextPresent</td>
 	<td></td>
 	<td>My Account</td>
@@ -112,6 +127,106 @@
 	<td>approveduser@softwaremonkeys.net</td>
 </tr>
 <tr>
+	<td>assertTextPresent</td>
+	<td></td>
+	<td>Edit</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@id='ctl00_Body_ctl00_ViewEditButton']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td></td>
+	<td>First Name:</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ctl00_Body_ctl00_Username</td>
+	<td>newusername</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>ctl00_Body_ctl00_UpdateButton</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td></td>
+	<td>My Account</td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td></td>
+	<td>updated successfully</td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td></td>
+	<td>newusername</td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td></td>
+	<td>NewFirst</td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td></td>
+	<td>NewLast</td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td></td>
+	<td>new@softwaremonkeys.net</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>SignOutLink</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ctl00_Body_ctl00_Login_UserName</td>
+	<td>newusername</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ctl00_Body_ctl00_Login_Password</td>
+	<td>pass</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>ctl00_Body_ctl00_Login_LoginButton</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td></td>
+	<td>Sign Out</td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td></td>
+	<td>My Account</td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td></td>
+	<td>You are logged in as:</td>
+</tr>
+<tr>
 	<td>open</td>
 	<td>http://localhost/SiteStarter/admin/tests/testreset.aspx</td>
 	<td></td>
@@ -121,6 +236,7 @@
 	<td></td>
 	<td></td>
 </tr>
+
 </tbody></table>
 </body>
 </html>
