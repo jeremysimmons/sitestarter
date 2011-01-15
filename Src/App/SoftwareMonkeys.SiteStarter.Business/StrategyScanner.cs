@@ -39,7 +39,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			string binPath = Configuration.Config.Application.PhysicalApplicationPath
 				+ Path.DirectorySeparatorChar + "bin";
 			
-			foreach (string file in Directory.GetFiles(binPath, "*.dll"))
+			foreach (string file in Directory.GetFiles(binPath, "SoftwareMonkeys.*.dll"))
 			{
 				list.Add(file);
 			}
@@ -74,6 +74,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 							    && strategyInfo.Action != null && strategyInfo.Action != String.Empty)
 							{
 								//AppLogger.Debug("Found match.");
+								
+								//AppLogger.Debug("Type name: " + strategyInfo.TypeName);
+								//AppLogger.Debug("Action: " + strategyInfo.Action);
 								
 								strategies.Add(strategyInfo);
 							}
