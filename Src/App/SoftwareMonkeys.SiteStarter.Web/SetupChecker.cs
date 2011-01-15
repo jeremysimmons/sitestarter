@@ -283,7 +283,9 @@ namespace SoftwareMonkeys.SiteStarter.Web
 					"setup.aspx",
 					"restore.aspx",
 					"import.aspx",
-					"error.aspx"
+					"quicksetup.aspx",
+					"error.aspx",
+					"testreset.aspx"
 				};
 				
 				string urlString = url.ToString();
