@@ -77,7 +77,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					strategyInfo = LocateFromHeirarchy(action, type);
 				}
 				
-				AppLogger.Debug("Found strategy: " + strategyInfo.StrategyType);
+				AppLogger.Debug("Strategy found: " + (strategyInfo != null ? strategyInfo.StrategyType : "[null]"));
+				AppLogger.Debug("Strategy key: " + (strategyInfo != null ? strategyInfo.Key : "[null]"));
 			}
 			
 			return strategyInfo;
@@ -100,8 +101,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				if (strategyInfo == null)
 					strategyInfo = LocateFromBaseTypes(action, type);
 				
-				AppLogger.Debug("Strategy found: " + strategyInfo.StrategyType);
-				AppLogger.Debug("Strategy key: " + strategyInfo.Key);
+				AppLogger.Debug("Strategy found: " + (strategyInfo != null ? strategyInfo.StrategyType : "[null]"));
+				AppLogger.Debug("Strategy key: " + (strategyInfo != null ? strategyInfo.Key : "[null]"));
 			}
 			return strategyInfo;
 		}
@@ -124,21 +125,25 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				// Loop backwards through the interface types
 				for (int i = interfaceTypes.Length-1; i >= 0; i --)
 				{
-					Type interfaceType = interfaceTypes[i];
-					
-					using (LogGroup logGroup2 = AppLogger.StartGroup("Checking interface: " + interfaceType.FullName, NLog.LogLevel.Debug))
+					// If a strategy is already found then skip the rest
+					if (strategyInfo == null)
 					{
-						string key = Strategies.GetStrategyKey(action, interfaceType.Name);
+						Type interfaceType = interfaceTypes[i];
 						
-						AppLogger.Debug("Key: " + key);
-						
-						if (Strategies.StrategyExists(key))
+						using (LogGroup logGroup2 = AppLogger.StartGroup("Checking interface: " + interfaceType.FullName, NLog.LogLevel.Debug))
 						{
-							strategyInfo = Strategies[key];
+							string key = Strategies.GetStrategyKey(action, interfaceType.Name);
 							
-							AppLogger.Debug("Strategy found: " + strategyInfo.StrategyType);
+							AppLogger.Debug("Key: " + key);
 							
-							break;
+							if (Strategies.StrategyExists(key))
+							{
+								strategyInfo = Strategies[key];
+								
+								AppLogger.Debug("Strategy found: " + strategyInfo.StrategyType);
+							}
+							else
+								AppLogger.Debug("No strategy found for that key.");
 						}
 					}
 				}
@@ -164,29 +169,32 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				{
 					Type nextType = navigator.Next();
 					
-					using (LogGroup logGroup2 = AppLogger.StartGroup("Checking base type: " + nextType.FullName, NLog.LogLevel.Debug))
+					if (strategyInfo == null)
 					{
-						string key = Strategies.GetStrategyKey(action, nextType.Name);
 						
-						AppLogger.Debug("Key: " + key);
-						
-						// If a strategy exists for the base type then use it
-						if (Strategies.StrategyExists(key))
+						using (LogGroup logGroup2 = AppLogger.StartGroup("Checking base type: " + nextType.FullName, NLog.LogLevel.Debug))
 						{
-							strategyInfo = Strategies[key];
+							string key = Strategies.GetStrategyKey(action, nextType.Name);
 							
+							AppLogger.Debug("Key: " + key);
 							
-							AppLogger.Debug("Strategy found: " + strategyInfo.StrategyType);
-							
-							break;
+							// If a strategy exists for the base type then use it
+							if (Strategies.StrategyExists(key))
+							{
+								strategyInfo = Strategies[key];
+								
+								
+								AppLogger.Debug("Strategy found: " + strategyInfo.StrategyType);
+								
+							}
+							// TODO: Check if needed. It shouldn't be. The other call to LocateFromInterfaces in LocateFromHeirarchy should be sufficient
+							// Otherwise check the interfaces of that base type
+							//else
+							//{
+							//	strategyInfo = LocateFromInterfaces(action, nextType);
+							//}
 						}
-						// TODO: Check if needed. It shouldn't be. The other call to LocateFromInterfaces in LocateFromHeirarchy should be sufficient
-						// Otherwise check the interfaces of that base type
-						//else
-						//{
-						//	strategyInfo = LocateFromInterfaces(action, nextType);
-						//}
-					}
+					}			
 				}
 				
 			}
