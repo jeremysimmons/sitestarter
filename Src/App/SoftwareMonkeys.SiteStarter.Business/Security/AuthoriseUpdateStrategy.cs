@@ -1,6 +1,7 @@
 ﻿using System;
 using SoftwareMonkeys.SiteStarter.Entities;
 using System.Collections.Generic;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 
 namespace SoftwareMonkeys.SiteStarter.Business.Security
 {
@@ -18,10 +19,16 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// <returns>A value indicating whether the current user is authorised to update an entity of the specified type.</returns>
 		public override bool Authorise(string shortTypeName)
 		{
-			if (!AuthenticationState.IsAuthenticated)
-				return false;
-			
-			return true;
+			bool isAuthorised = false;
+			using (LogGroup logGroup = AppLogger.StartGroup("Checking whether current user is authorised to update entities of type '" + shortTypeName + "'.", NLog.LogLevel.Debug))
+			{
+				if (AuthenticationState.IsAuthenticated
+				    && AuthenticationState.UserIsInRole("Administrator"))
+					isAuthorised = true;
+				
+				AppLogger.Debug("Is authorised: " + isAuthorised);
+			}
+			return isAuthorised;
 		}
 		
 		/// <summary>
@@ -31,13 +38,19 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// <returns>A value indicating whether the current user is authorised to update the provided entity.</returns>
 		public override bool Authorise(IEntity entity)
 		{
-			if (entity == null)
-				throw new ArgumentNullException("entity");
-			
-			if (!AuthenticationState.IsAuthenticated)
-				return false;
-			
-			return true;
+			bool isAuthorised = false;
+			using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the current user is authorised to update the provided entity.", NLog.LogLevel.Debug))
+			{
+				if (entity == null)
+					throw new ArgumentNullException("entity");
+				
+				if (AuthenticationState.IsAuthenticated)
+					isAuthorised = true;
+				
+				AppLogger.Debug("Is authorised: " + isAuthorised);
+				
+			}
+			return isAuthorised;
 		}
 		
 		#region New functions
@@ -81,7 +94,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 			strategy.RequireAuthorisation = requireAuthorisation;
 			return strategy;
 		}*/
-		#endregion
+			#endregion
 
 	}
 }
