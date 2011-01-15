@@ -1,6 +1,7 @@
 ﻿using System;
 using SoftwareMonkeys.SiteStarter.Data;
 using System.IO;
+using SoftwareMonkeys.SiteStarter.State;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using System.Collections.Generic;
 
@@ -120,22 +121,25 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Initializing the business controllers.", NLog.LogLevel.Debug))
 			{
-				ControllerInfo[] controllers = new ControllerInfo[]{};
-				if (IsMapped)
+				if (StateAccess.IsInitialized && Configuration.Config.IsInitialized)
 				{
-					AppLogger.Debug("Is mapped. Loading from XML.");
+					ControllerInfo[] controllers = new ControllerInfo[]{};
+					if (IsMapped)
+					{
+						AppLogger.Debug("Is mapped. Loading from XML.");
+						
+						controllers = LoadControllers();
+					}
+					else
+					{
+						AppLogger.Debug("Is not mapped. Scanning from type attributes.");
+						
+						controllers = FindControllers();
+						SaveInfoToFile(controllers);
+					}
 					
-					controllers = LoadControllers();
+					Initialize(controllers);
 				}
-				else
-				{
-					AppLogger.Debug("Is not mapped. Scanning from type attributes.");
-					
-					controllers = FindControllers();
-					SaveInfoToFile(controllers);
-				}
-				
-				Initialize(controllers);
 			}
 		}
 		
@@ -173,7 +177,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			List<ControllerInfo> controllers = new List<ControllerInfo>();
 			
 			using (LogGroup logGroup = AppLogger.StartGroup("Finding controllers.", NLog.LogLevel.Debug))
-			{	
+			{
 				AppLogger.Debug("# of scanners: " + Scanners.Length);
 				
 				foreach (BaseControllerScanner scanner in Scanners)

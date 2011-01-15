@@ -31,9 +31,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 			
 			Assert.Greater(infos.Length, 1, "Invalid number of controllers found.");
 			
+			string expectedLongType = typeof(CreateController).FullName + ", " + typeof(CreateController).Assembly.GetName().Name;
+			
 			Assert.AreEqual("Create", infos[0].Action, "The action doesn't match.");
 			Assert.AreEqual("IEntity", infos[0].TypeName, "The type name doesn't match.");
-			Assert.AreEqual(typeof(CreateController).FullName, infos[0].ControllerType, "The full controller component type name doesn't match.");
+			Assert.AreEqual(expectedLongType, infos[0].ControllerType, "The full controller component type name doesn't match.");
 		}
 		
 		[Test]

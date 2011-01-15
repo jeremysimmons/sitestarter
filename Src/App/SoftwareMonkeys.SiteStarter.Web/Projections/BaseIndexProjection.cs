@@ -4,6 +4,7 @@ using SoftwareMonkeys.SiteStarter.Business;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Web.WebControls;
 using System.Web.UI.WebControls;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Projections
 {
@@ -86,7 +87,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			set { Controller.AbsoluteTotal = value; }
 		}*/
 			
-		public PagingLocation Location
+			public PagingLocation Location
 		{
 			get { return (PagingLocation)Controller.Indexer.Location; }
 			set { Controller.Indexer.Location = value; }
@@ -165,12 +166,17 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// </summary>
 		public virtual void Index()
 		{
-			if (controller == null)
-				throw new InvalidOperationException("Controller has not be initialized. Call IndexPage.Initialize().");
-			
-			IEntity[] entities = Controller.PrepareIndex();
-			
-			Index(entities);
+			using (LogGroup logGroup = AppLogger.StartGroup("Displaying an index of entities.", NLog.LogLevel.Debug))
+			{
+				if (controller == null)
+					throw new InvalidOperationException("Controller has not be initialized. Call IndexPage.Initialize().");
+				
+				IEntity[] entities = Controller.PrepareIndex();
+				
+				AppLogger.Debug("Count: " + entities.Length.ToString());
+				
+				Index(entities);
+			}
 		}
 		
 		/// <summary>
@@ -178,20 +184,30 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// </summary>
 		public void Index(IEntity[] entities)
 		{
-			CheckController();
-			
-			DataSource = entities;
-			
-			Controller.Index(entities);
-			
-			Grid.DataSource = entities;
-			
-			if (Location.AbsoluteTotal < entities.Length)
-				Location.AbsoluteTotal = entities.Length;
-			
-			Grid.VirtualItemCount = Location.AbsoluteTotal;
-			
-			DataBind();
+			using (LogGroup logGroup = AppLogger.StartGroup("Displaying an index of the provided entities.", NLog.LogLevel.Debug))
+			{
+				if (entities == null)
+					throw new ArgumentNullException("entities");
+				
+				CheckController();
+				
+				DataSource = entities;
+				
+				Controller.Index(entities);
+				
+				Grid.DataSource = entities;
+				
+				if (Location.AbsoluteTotal < entities.Length)
+					Location.AbsoluteTotal = entities.Length;
+				
+				Grid.VirtualItemCount = Location.AbsoluteTotal;
+				
+				AppLogger.Debug("Count: " + entities.Length);
+				
+				AppLogger.Debug("Absolute total: " + Location.AbsoluteTotal.ToString());
+				
+				DataBind();
+			}
 		}
 		
 		private void CheckController()

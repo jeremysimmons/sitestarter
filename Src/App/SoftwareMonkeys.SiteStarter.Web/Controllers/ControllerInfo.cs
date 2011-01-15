@@ -101,7 +101,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			
 			Action = attribute.Action;
 			TypeName = attribute.TypeName;
-			ControllerType = type.FullName;
+			ControllerType = type.FullName + ", " + type.Assembly.GetName().Name;
 			Key = attribute.Key;
 		}
 		

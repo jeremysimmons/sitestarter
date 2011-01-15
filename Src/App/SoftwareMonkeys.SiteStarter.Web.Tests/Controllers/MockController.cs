@@ -77,12 +77,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// Ensures that the user is authorised to create an entity of the specified type.
 		/// </summary>
 		/// <returns>A value indicating whether the user is authorised.</returns>
-		public bool EnsureAuthorised()
+		public override bool EnsureAuthorised()
 		{
 			bool isAuthorised = AuthoriseSaveStrategy.New(Container.Type.Name).Authorise(Container.Type.Name);
 			
 			if (!isAuthorised)
-				Container.FailAuthorisation();
+				FailAuthorisation();
 			
 			return isAuthorised;
 		}

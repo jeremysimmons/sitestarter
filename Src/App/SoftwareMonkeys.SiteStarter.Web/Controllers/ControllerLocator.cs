@@ -45,31 +45,46 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <returns>The controller info for the specified scenario.</returns>
 		public ControllerInfo Locate(string action, string typeName)
 		{
-			// Get the specified type
-			Type type = null;
-
-			type = Entities.EntityState.GetType(typeName);
-			
-			if (type == null)
-				throw new ArgumentException("No type found with the name '" + typeName + "'.");
-			
-			// Create a direct controller key for the specified type
-			string key = Controllers.GetControllerKey(action, typeName);
-			
 			// Create the controller info variable to hold the return value
 			ControllerInfo controllerInfo = null;
 			
-			// Check the direct key to see if a controller exists
-			if (Controllers.ControllerExists(key))
+			using (LogGroup logGroup = AppLogger.StartGroup("Locating a controller for the action '" + action + "' and the type '" + typeName + "'.", NLog.LogLevel.Debug))
 			{
-				controllerInfo = Controllers[key];
+				// Get the specified type
+				Type type = null;
+
+				type = Entities.EntityState.GetType(typeName);
+				
+				if (type == null)
+					throw new ArgumentException("No type found with the name '" + typeName + "'.");
+				
+				// Create a direct controller key for the specified type
+				string key = Controllers.GetControllerKey(action, typeName);
+				
+				AppLogger.Debug("Direct key: " + key);
+				
+				// Check the direct key to see if a controller exists
+				if (Controllers.ControllerExists(key))
+				{
+					AppLogger.Debug("Direct key matches.");
+					
+					controllerInfo = Controllers[key];
+				}
+				// If not then navigate up the heirarchy looking for a matching controller
+				else if (type != null) // Only use heirarchy if an actual type was provided.
+				{
+					AppLogger.Debug("Direct key doesn't match. Locating through heirarchy.");
+					controllerInfo = LocateFromHeirarchy(action, type);
+				}
+				
+				if (controllerInfo == null)
+					AppLogger.Debug("No controller found.");
+				else
+				{
+					AppLogger.Debug("Controller type found: " + controllerInfo.ControllerType);
+					AppLogger.Debug("Controller key: " + controllerInfo.Key);
+				}
 			}
-			// If not then navigate up the heirarchy looking for a matching controller
-			else if (type != null)
-			{
-				controllerInfo = LocateFromHeirarchy(action, type);
-			}
-			
 			return controllerInfo;
 		}
 		
@@ -81,11 +96,20 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <returns>The controller info for the specified scenario.</returns>
 		public ControllerInfo LocateFromHeirarchy(string action, Type type)
 		{
-			ControllerInfo controllerInfo = LocateFromInterfaces(action, type);
+			ControllerInfo controllerInfo = null;
 			
-			if (controllerInfo == null)
-				controllerInfo = LocateFromBaseTypes(action, type);
-			
+			using (LogGroup logGroup = AppLogger.StartGroup("Locating via heirarchy the controller for the action '" + action + "' and type '" + type.Name + "'.", NLog.LogLevel.Debug))
+			{
+				controllerInfo = LocateFromInterfaces(action, type);
+				
+				if (controllerInfo == null)
+				{
+					AppLogger.Debug("Can't locate through interfaces. Trying base types.");
+					
+					controllerInfo = LocateFromBaseTypes(action, type);
+				}
+				
+			}
 			return controllerInfo;
 		}
 		
@@ -100,20 +124,25 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			ControllerInfo controllerInfo = null;
 			
-			Type[] interfaceTypes = type.GetInterfaces();
-			
-			// Loop backwards through the interface types
-			for (int i = interfaceTypes.Length-1; i >= 0; i --)
+			using (LogGroup logGroup = AppLogger.StartGroup("Locating via interfaces the controller for the action '" + action + "' and type '" + type.Name + "'.", NLog.LogLevel.Debug))
 			{
-				Type interfaceType = interfaceTypes[i];
+				Type[] interfaceTypes = type.GetInterfaces();
 				
-				string key = Controllers.GetControllerKey(action, interfaceType.Name);
-				
-				if (Controllers.ControllerExists(key))
+				// Loop backwards through the interface types
+				for (int i = interfaceTypes.Length-1; i >= 0; i --)
 				{
-					controllerInfo = Controllers[key];
+					Type interfaceType = interfaceTypes[i];
 					
-					break;
+					string key = Controllers.GetControllerKey(action, interfaceType.Name);
+					
+					if (Controllers.ControllerExists(key))
+					{
+						AppLogger.Debug("Found match with key: " + key);
+						
+						controllerInfo = Controllers[key];
+						
+						break;
+					}
 				}
 			}
 			
@@ -130,27 +159,32 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			ControllerInfo controllerInfo = null;
 			
-			TypeNavigator navigator = new TypeNavigator(type);
-			
-			while (navigator.HasNext && controllerInfo == null)
+			using (LogGroup logGroup = AppLogger.StartGroup("Locating via base types the controller for the action '" + action + "' and type '" + type.Name + "'.", NLog.LogLevel.Debug))
 			{
-				Type nextType = navigator.Next();
+				TypeNavigator navigator = new TypeNavigator(type);
 				
-				string key = Controllers.GetControllerKey(action, nextType.Name);
-				
-				// If a controller exists for the base type then use it
-				if (Controllers.ControllerExists(key))
+				while (navigator.HasNext && controllerInfo == null)
 				{
-					controllerInfo = Controllers[key];
+					Type nextType = navigator.Next();
 					
-					break;
+					string key = Controllers.GetControllerKey(action, nextType.Name);
+					
+					// If a controller exists for the base type then use it
+					if (Controllers.ControllerExists(key))
+					{
+						AppLogger.Debug("Found match with key: " + key);
+						
+						controllerInfo = Controllers[key];
+						
+						break;
+					}
+					// TODO: Check if needed. It shouldn't be. The other call to LocateFromInterfaces in LocateFromHeirarchy should be sufficient
+					// Otherwise check the interfaces of that base type
+					//else
+					//{
+					//	controllerInfo = LocateFromInterfaces(action, nextType);
+					//}
 				}
-				// TODO: Check if needed. It shouldn't be. The other call to LocateFromInterfaces in LocateFromHeirarchy should be sufficient
-				// Otherwise check the interfaces of that base type
-				//else
-				//{
-				//	controllerInfo = LocateFromInterfaces(action, nextType);
-				//}
 			}
 			
 			return controllerInfo;

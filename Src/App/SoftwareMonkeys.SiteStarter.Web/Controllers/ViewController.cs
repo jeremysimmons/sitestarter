@@ -153,7 +153,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		public void View<T>(T entity)
 			where T : IEntity
 		{
-			if (Container.EnsureAuthorised())
+			if (EnsureAuthorised())
 			{
 				StartView();
 				

@@ -166,32 +166,34 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Initializing the business projections.", NLog.LogLevel.Debug))
 			{
-				ProjectionInfo[] projections = new ProjectionInfo[]{};
-				
-				bool pageIsAccessible = Page != null;
-				
-				// Only scan for projections if the page component is accessible (otherwise they can't be loaded through LoadControl)
-				// and when the projections have NOT yet been mapped
-				if (pageIsAccessible && !IsMapped)
+				if (StateAccess.IsInitialized && Configuration.Config.IsInitialized)
 				{
-					AppLogger.Debug("Is not mapped. Scanning from type attributes.");
+					ProjectionInfo[] projections = new ProjectionInfo[]{};
 					
-					projections = FindProjections();
+					bool pageIsAccessible = Page != null;
 					
-					SaveInfoToFile(projections);
-					
-					Initialize(projections);
+					// Only scan for projections if the page component is accessible (otherwise they can't be loaded through LoadControl)
+					// and when the projections have NOT yet been mapped
+					if (pageIsAccessible && !IsMapped)
+					{
+						AppLogger.Debug("Is not mapped. Scanning from type attributes.");
+						
+						projections = FindProjections();
+						
+						SaveInfoToFile(projections);
+						
+						Initialize(projections);
+					}
+					else if(IsMapped)
+					{
+						AppLogger.Debug("Is mapped. Loading from XML.");
+						
+						projections = LoadProjections();
+						
+						Initialize(projections);
+					}
+					// Otherwise just skip it, as it's likely before setup has run and just needs to wait
 				}
-				else if(IsMapped)
-				{
-					AppLogger.Debug("Is mapped. Loading from XML.");
-					
-					projections = LoadProjections();
-					
-					Initialize(projections);
-				}
-				// Otherwise just skip it, as it's likely before setup has run and just needs to wait
-				
 			}
 		}
 		
