@@ -7,7 +7,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 	/// <summary>
 	/// Used to check whether the current user is authorised to retrieve an entity.
 	/// </summary>
-	[Strategy("AuthoriseDelete", "IEntity")]
+	[AuthoriseStrategy("Delete", "IEntity")]
 	public class AuthoriseDeleteStrategy : BaseAuthoriseStrategy, IAuthoriseDeleteStrategy
 	{
 		/// <summary>
@@ -18,6 +18,9 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		public override bool Authorise(string shortTypeName)
 		{
 			if (!AuthenticationState.IsAuthenticated)
+				return false;
+			
+			if (!AuthenticationState.UserIsInRole("Administrator"))
 				return false;
 			
 			return true;

@@ -5,10 +5,10 @@ using System.Collections.Generic;
 namespace SoftwareMonkeys.SiteStarter.Business.Security
 {
 	/// <summary>
-	/// Used to check whether the current user is authorised to create an entity.
+	/// Used to check whether the current user is authorised to create a user.
 	/// </summary>
-	[Strategy("AuthoriseCreate", "IEntity")]
-	public class AuthoriseCreateStrategy : BaseAuthoriseStrategy, IAuthoriseCreateStrategy
+	[AuthoriseStrategy("Create", "User")]
+	public class AuthoriseCreateUserStrategy : AuthoriseCreateStrategy
 	{
 		/// <summary>
 		/// Checks whether the current user is authorised to create an entity of the specified type.
@@ -17,10 +17,12 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// <returns>A value indicating whether the current user is authorised to create an entity of the specified type.</returns>
 		public override bool Authorise(string shortTypeName)
 		{
-			if (!AuthenticationState.IsAuthenticated)
-				return false;
+			bool isAuthenticated = AuthenticationState.IsAuthenticated;
 			
-			return true;
+			bool allowRegistration = Configuration.Config.Application.Settings.GetBool("EnableUserRegistration");
+			
+			return isAuthenticated
+				|| allowRegistration;
 		}
 		
 		/// <summary>
@@ -32,32 +34,18 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		{
 			if (entity == null)
 				throw new ArgumentNullException("entity");
-			
-			if (!AuthenticationState.IsAuthenticated)
-				return false;
-			
-			if (!AuthenticationState.UserIsInRole("Administrator"))
-				return false;
-			
-			return true;
+		
+			return Authorise(entity.ShortTypeName);	
 		}
 		
 		#region New functions
-		/// <summary>
-		/// Creates a new strategy for authorising the retrieval of an entity of the specified type.
-		/// </summary>
-		static public IAuthoriseCreateStrategy New<T>()
-		{
-			return StrategyState.Strategies.Creator.New<IAuthoriseCreateStrategy>("AuthoriseCreate", typeof(T).Name);
-		}
 		
 		/// <summary>
 		/// Creates a new strategy for authorising the create of an entity of the specified type.
 		/// </summary>
-		/// <param name="typeName">The short name of the type involved in the strategy.</param>
-		static public IAuthoriseCreateStrategy New(string typeName)
+		static public IAuthoriseCreateStrategy New()
 		{
-			return StrategyState.Strategies.Creator.New<IAuthoriseCreateStrategy>("AuthoriseCreate", typeName);
+			return StrategyState.Strategies.Creator.New<IAuthoriseCreateStrategy>("AuthoriseCreate", "User");
 		}
 		#endregion
 	}

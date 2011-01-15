@@ -5,10 +5,10 @@ using System.Collections.Generic;
 namespace SoftwareMonkeys.SiteStarter.Business.Security
 {
 	/// <summary>
-	/// Used to check whether the current user is authorised to save an entity.
+	/// Used to check whether the current user is authorised to save a user.
 	/// </summary>
-	[AuthoriseStrategy("Save", "IEntity")]
-	public class AuthoriseSaveStrategy : BaseAuthoriseStrategy, IAuthoriseSaveStrategy
+	[AuthoriseStrategy("Save", "User")]
+	public class AuthoriseSaveUserStrategy : AuthoriseSaveStrategy
 	{
 		/// <summary>
 		/// Checks whether the current user is authorised to save an entity of the specified type.
@@ -17,13 +17,14 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// <returns>A value indicating whether the current user is authorised to save an entity of the specified type.</returns>
 		public override bool Authorise(string shortTypeName)
 		{
-			if (!AuthenticationState.IsAuthenticated)
-				return false;
+			bool isAuthenticated = AuthenticationState.IsAuthenticated;
 			
-			if (!AuthenticationState.UserIsInRole("Administrator"))
-				return false;
+			bool isAdministrator = AuthenticationState.UserIsInRole("Administrator");
 			
-			return true;
+			bool allowRegistration = Configuration.Config.Application.Settings.GetBool("EnableUserRegistration");
+			
+			return (isAuthenticated && isAdministrator) // Administrators
+				|| (allowRegistration && !isAuthenticated); // New users registering
 		}
 		
 		/// <summary>
@@ -35,8 +36,8 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		{
 			if (entity == null)
 				throw new ArgumentNullException("entity");
-			
-			return Authorise(entity.ShortTypeName);
+		
+			return Authorise(entity.ShortTypeName);	
 		}
 		
 		

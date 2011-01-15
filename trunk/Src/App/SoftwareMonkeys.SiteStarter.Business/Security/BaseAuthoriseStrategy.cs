@@ -42,7 +42,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 				throw new ArgumentNullException("entity");
 			
 			if (!Authorise(entity))
-				throw new UnauthorisedException(GetRestrictedAction(), entity.ShortTypeName);
+				throw new UnauthorisedException(GetRestrictedAction(), entity);
 		}
 		
 		/// <summary>
