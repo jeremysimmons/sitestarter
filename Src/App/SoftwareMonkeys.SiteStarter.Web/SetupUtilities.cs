@@ -3,31 +3,42 @@ using System.Web;
 using System.IO;
 using SoftwareMonkeys.SiteStarter.Data;
 using SoftwareMonkeys.SiteStarter.Configuration;
+using SoftwareMonkeys.SiteStarter.State;
 
 namespace SoftwareMonkeys.SiteStarter.Web
 {
 	/// <summary>
-	/// Description of SetupUtilities.
+	///
 	/// </summary>
 	public class SetupUtilities
-	{		
-		static public bool UseExistingData
+	{
+		
+		/// <summary>
+		/// Gets a value indicating whether the /App_Data/Import/ directory exists.
+		/// </summary>
+		static public bool RequiresImport
 		{
 			get
 			{
-				if (HttpContext.Current.Request.QueryString["ExistingData"] != null)
-				{
-					return Convert.ToBoolean(HttpContext.Current.Request.QueryString["ExistingData"]);
-				}
-				else
-					return LegacyDataExists();
+				string path = StateAccess.State.PhysicalApplicationPath + Path.DirectorySeparatorChar +
+					"App_Data" + Path.DirectorySeparatorChar + "Import";
+				
+				return Directory.Exists(path);
 			}
 		}
 		
-		
-		static public bool LegacyDataExists()
+		/// <summary>
+		/// Gets a value indicating whether the /App_Data/Legacy/ directory exists.
+		/// </summary>
+		static public bool RequiresRestore
 		{
-			return Directory.Exists(DataAccess.Data.Importer.ImportableDirectoryPath);
+			get
+			{
+				string path = StateAccess.State.PhysicalApplicationPath + Path.DirectorySeparatorChar +
+					"App_Data" + Path.DirectorySeparatorChar + "Legacy";
+				
+				return Directory.Exists(path);
+			}
 		}
 	}
 }
