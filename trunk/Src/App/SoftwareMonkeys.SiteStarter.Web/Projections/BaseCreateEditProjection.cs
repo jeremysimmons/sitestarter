@@ -290,12 +290,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			bool success = false;
 			using (LogGroup logGroup = AppLogger.StartGroup("Saving the entity from the form.", NLog.LogLevel.Debug))
 			{
-				PrepareSave();
-				
-				if (DataSource == null)
-					throw new Exception("DataSource == null. Call PrepareSave().");
-				
-				success = CreateController.Save(DataSource);
+				if (Page.IsValid)
+				{
+					PrepareSave();
+					
+					if (DataSource == null)
+						throw new Exception("DataSource == null. Call PrepareSave().");
+					
+					success = CreateController.Save(DataSource);
+				}
 				
 			}
 			return success;
@@ -312,7 +315,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			bool success = false;
 			using (LogGroup logGroup = AppLogger.StartGroup("Saving the provided entity.", NLog.LogLevel.Debug))
 			{
-				success = CreateController.Save(entity);
+				if (Page.IsValid)
+				{
+					success = CreateController.Save(entity);
+				}
 			}
 			return success;
 		}
@@ -396,11 +402,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			bool success = false;
 			using (LogGroup logGroup = AppLogger.StartGroup("Updating the entity on the form.", NLog.LogLevel.Debug))
 			{
-				DataSource = PrepareUpdate();
-				
-				Form.ReverseBind(DataSource);
-				
-				Update(DataSource);
+				if (Page.IsValid)
+				{
+					DataSource = PrepareUpdate();
+					
+					Form.ReverseBind(DataSource);
+					
+					Update(DataSource);
+				}
 				
 			}
 			return success;
@@ -416,7 +425,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			bool success = false;
 			using (LogGroup logGroup = AppLogger.StartGroup("Updating the provided entity.", NLog.LogLevel.Debug))
 			{
-				success = EditController.Update(entity);
+				if (Page.IsValid)
+				{
+					success = EditController.Update(entity);
+				}
 			}
 			return success;
 		}
