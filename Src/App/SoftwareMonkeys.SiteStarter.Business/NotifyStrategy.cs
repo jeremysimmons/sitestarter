@@ -3,6 +3,7 @@ using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Business;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using System.Configuration;
+using System.Net.Mail;
 
 namespace SoftwareMonkeys.SiteStarter.Business
 {
@@ -39,25 +40,29 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			{
 				if (user != null)
 				{
-					User administrator = RetrieveStrategy.New<User>().Retrieve<User>("ID", Configuration.Config.Application.PrimaryAdministratorID);
+					User administrator = RetrieveStrategy.New<User>(false).Retrieve<User>("ID", Configuration.Config.Application.PrimaryAdministratorID);
 					
 					try
 					{
-						System.Net.Mail.MailMessage mm = new System.Net.Mail.MailMessage(administrator.Email,
+						MailMessage mm = new MailMessage(administrator.Email,
 						                                                                 user.Email,
 						                                                                 PrepareNotificationText(subject, entity),
 						                                                                 PrepareNotificationText(message, entity));
 						
-						new System.Net.Mail.SmtpClient(SmtpServer).Send(mm);
+						new SmtpClient(SmtpServer).Send(mm);
 					}
 					catch(FormatException ex)
 					{
-						AppLogger.Error(ex.ToString());
+						LogWriter.Error(ex.ToString());
+					}
+					catch(SmtpFailedRecipientException ex)
+					{
+						LogWriter.Error(ex.ToString());
 					}
 					//new SmtpClient(EmailFactory.SmtpServer).Send(mm);
 				}
 				else
-					throw new InvalidOperationException("No primary administrator configured.");
+					throw new InvalidOperationException("No primary administrator configured on Config.Application.PrimaryAdministratorID.");
 				//AppLogger.Error("No primary administrator is configured.");
 			}
 		}
