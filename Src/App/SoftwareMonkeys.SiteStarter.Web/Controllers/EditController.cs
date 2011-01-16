@@ -290,11 +290,21 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		}
 		
 		/// <summary>
-		/// Updates the entity from the form back to the data store.
+		/// Updates the provided entity back to the data store.
 		/// </summary>
 		/// <param name="entity"></param>
 		/// <returns>A bool value indicating the success of the update. If it fails it's due to the unique key being in use already.</returns>
 		public virtual bool Update(IEntity entity)
+		{
+			return ExecuteUpdate(entity);
+		}
+		
+		/// <summary>
+		/// Updates the provided entity back to the data store.
+		/// </summary>
+		/// <param name="entity"></param>
+		/// <returns>A bool value indicating the success of the update. If it fails it's due to the unique key being in use already.</returns>
+		public virtual bool ExecuteUpdate(IEntity entity)
 		{
 			bool didSucceed = false;
 			
