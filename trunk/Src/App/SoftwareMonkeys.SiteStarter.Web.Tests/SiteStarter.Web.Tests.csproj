@@ -141,6 +141,7 @@
     <Compile Include="BaseWebTestFixture.cs" />
     <Compile Include="Controllers\ControllerLocatorTests.cs" />
     <Compile Include="Controllers\ControllerScannerTests.cs" />
+    <Compile Include="Controllers\CreateSubEntityControllerTests.cs" />
     <Compile Include="Controllers\IndexControllerTests.cs" />
     <Compile Include="Controllers\MockController.cs" />
     <Compile Include="Controllers\ViewControllerTests.cs" />
