@@ -206,10 +206,14 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <returns></returns>
 		public IEntity Release(IEntity entity)
 		{
+			IEntity output = null;
+			
 			if (!AutoRelease)
-				return entity;
+				output = entity;
 			else
-				return entity.Clone();
+				output = entity.Clone();
+						
+			return output;
 		}
 		
 		/// <summary>
