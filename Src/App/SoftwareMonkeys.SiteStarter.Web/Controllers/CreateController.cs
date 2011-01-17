@@ -177,6 +177,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// </summary>
 		public virtual void NavigateAfterSave()
 		{
+			if (DataSource == null)
+				throw new InvalidOperationException("The DataSource property wasn't set.");
+			
 			Navigation.Navigator.Current.NavigateAfterOperation(ActionOnSuccess, DataSource);
 		}
 		
@@ -212,6 +215,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				
 				controller.Container = container;
 				controller.UniquePropertyName = uniquePropertyName;
+				controller.TypeName = type.Name;
 				
 				AppLogger.Debug("Type name: " + type.Name);
 				AppLogger.Debug("Unique property name: " + uniquePropertyName);
