@@ -117,7 +117,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <returns>An instance of the corresponding controller.</returns>
 		public IController New()
 		{
-			return Creator.CreateController(this);
+			IController controller = Creator.CreateController(this);
+			
+			return controller;
 		}
 		
 		
@@ -128,7 +130,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		public T New<T>()
 			where T : IController
 		{
-			return New<T>(TypeName);
+			T controller = New<T>(TypeName);
+			
+			return controller;
 		}
 		
 		/// <summary>
@@ -147,7 +151,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				AppLogger.Debug("Controller type: " + typeof(T).FullName);
 				
 				controller = (T)New();
-			}
+				
+				controller.TypeName = entityTypeName;
+			};
 			
 			return controller;
 		}
