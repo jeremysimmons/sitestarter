@@ -7,5 +7,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	/// </summary>
 	public interface IController
 	{
+		string TypeName {get;set;}
+		string Action {get;}
 	}
 }
