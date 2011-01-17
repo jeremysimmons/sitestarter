@@ -320,7 +320,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		static public IIndexStrategy New<T>(bool requiresAuthorisation)
 		{
 			IIndexStrategy strategy = StrategyState.Strategies.Creator.NewIndexer(typeof(T).Name);
-			strategy.RequireAuthorisation = false;
+			strategy.RequireAuthorisation = requiresAuthorisation;
 			return strategy;
 		}
 		
@@ -332,7 +332,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		static public IIndexStrategy New(string typeName, bool requiresAuthorisation)
 		{
 			IIndexStrategy strategy = StrategyState.Strategies.Creator.NewIndexer(typeName);
-			strategy.RequireAuthorisation = false;
+			strategy.RequireAuthorisation = requiresAuthorisation;
 			return strategy;
 		}
 		

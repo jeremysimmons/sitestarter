@@ -103,6 +103,35 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		}
 		
 		/// <summary>
+		/// Creates a new strategy for saving the provided type.
+		/// </summary>
+		/// <param name="entity"></param>
+		/// <returns>A save strategy for the provided type.</returns>
+		static public ISaveStrategy New(IEntity entity)
+		{
+			if (entity == null)
+				throw new ArgumentNullException("entity");
+			
+			return StrategyState.Strategies.Creator.NewSaver(entity.ShortTypeName);
+		}
+		
+		/// <summary>
+		/// Creates a new strategy for saving the provided type.
+		/// </summary>
+		/// <param name="entity"></param>
+		/// <param name="requireAuthorisation"></param>
+		/// <returns>A save strategy for the provided type.</returns>
+		static public ISaveStrategy New(IEntity entity, bool requireAuthorisation)
+		{
+			if (entity == null)
+				throw new ArgumentNullException("entity");
+			
+			ISaveStrategy strategy = StrategyState.Strategies.Creator.NewSaver(entity.ShortTypeName);
+			strategy.RequireAuthorisation = requireAuthorisation;
+			return strategy;
+		}
+		
+		/// <summary>
 		/// Creates a new strategy for saving the specified type.
 		/// </summary>
 		/// <param name="typeName">The short name of the type involved in the strategy.</param>

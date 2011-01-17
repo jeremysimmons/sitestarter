@@ -153,6 +153,23 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			}
 			return strategy;
 		}
+		
+		/// <summary>
+		/// Creates a new strategy for updating the specified type.
+		/// </summary>
+		/// <param name="typeName">The short name of the type involved in the strategy.</param>
+		/// <param name="requiresAuthorisation">A value indicating whether the strategy requires authorisation.</param>
+		static public IUpdateStrategy New(IEntity entity, bool requiresAuthorisation)
+		{
+			IUpdateStrategy strategy = null;
+			using (LogGroup logGroup = AppLogger.StartGroup("Creating new update strategy.", NLog.LogLevel.Debug))
+			{
+				AppLogger.Debug("Type name: " + entity.ShortTypeName);
+				strategy = StrategyState.Strategies.Creator.NewUpdater(entity.ShortTypeName);
+				strategy.RequireAuthorisation = requiresAuthorisation;
+			}
+			return strategy;
+		}
 		#endregion
 	}
 }
