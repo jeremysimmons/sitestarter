@@ -25,7 +25,8 @@
 		
 		<if test="${directory::exists(Solution.RootPath + '\WWW\')}">	
 		
-  		<call target="Common.Jobs.ArchiveLogs"/>
+		<!-- disabled because archived logs end up slowing the build down -->
+  		<!--call target="Common.Jobs.ArchiveLogs"/-->
   		<call target="Common.Jobs.InstallModules"/>
   		<call target="Common.Jobs.ImportLibrariesToWWW"/>
   		<!--call target="Common.Jobs.ResetSiteMap"/-->

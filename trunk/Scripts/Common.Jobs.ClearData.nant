@@ -1,8 +1,12 @@
 <?xml version="1.0"?>
 <project name="Common.Jobs.ClearData" default="Common.Jobs.ClearData" xmlns="http://nant.sf.net/schemas/nant.xsd">
 
+<include buildfile="Common.Jobs.KillDBServer.nant"/>
 	
 <target name="Common.Jobs.ClearData">
+
+		<call target="Common.Jobs.KillDBServer"/>
+
 		<delete>
 	    		<fileset basedir="${path::get-full-path(Solution.RootPath)}/">
 	        		<include name="WWW/App_Data/**.config" />
