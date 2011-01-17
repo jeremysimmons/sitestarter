@@ -61,15 +61,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				if (controllerType == null)
 					throw new Exception("Can't get type '" + controllerInfo.ControllerType);
 				
-				Type entityType = EntityState.GetType(controllerInfo.TypeName);
-				
-				if (entityType == null)
-					throw new Exception("Can't get type '" + controllerInfo.TypeName);
+				Type entityType = null;
+				if (EntityState.IsType(controllerInfo.TypeName))
+					entityType = EntityState.GetType(controllerInfo.TypeName);
 				
 				AppLogger.Debug("Controller type: " + controllerType.FullName);
-				AppLogger.Debug("Entity type: " + entityType.FullName);
+				AppLogger.Debug("Entity type: " + (entityType != null ? entityType.FullName : String.Empty));
 				
-				if (controllerType.IsGenericTypeDefinition)
+				if (entityType != null && controllerType.IsGenericTypeDefinition)
 				{
 					AppLogger.Debug("Is generic type definition.");
 					
@@ -88,6 +87,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				
 				AppLogger.Debug("Controller created.");
 			}
+			
 			return controller;
 		}
 		
@@ -101,7 +101,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		public T New<T>(string action, string typeName)
 			where T : IController
 		{
-			return Controllers[action, typeName].New<T>();
+			
+			T controller = Controllers[action, typeName].New<T>();
+			controller.TypeName = typeName;
+			
+			return controller;
 		}
 		
 		/// <summary>
