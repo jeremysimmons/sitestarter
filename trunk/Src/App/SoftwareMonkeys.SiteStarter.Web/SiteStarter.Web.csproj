@@ -77,9 +77,12 @@
     <Compile Include="Controllers\ControllerState.cs" />
     <Compile Include="Controllers\ControllerStateCollection.cs" />
     <Compile Include="Controllers\CreateController.cs" />
+    <Compile Include="Controllers\CreateSubEntityController.cs" />
     <Compile Include="Controllers\CreateUserController.cs" />
     <Compile Include="Controllers\DeleteController.cs" />
+    <Compile Include="Controllers\DeleteSubEntityController.cs" />
     <Compile Include="Controllers\EditController.cs" />
+    <Compile Include="Controllers\EditSubEntityController.cs" />
     <Compile Include="Controllers\EditUserController.cs" />
     <Compile Include="Controllers\IController.cs" />
     <Compile Include="Controllers\IndexController.cs" />
