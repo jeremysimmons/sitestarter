@@ -56,7 +56,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		static public IDeleteStrategy New<T>(bool requiresAuthorisation)
 		{
 			IDeleteStrategy strategy = StrategyState.Strategies.Creator.NewDeleter(typeof(T).Name);
-			strategy.RequireAuthorisation = false;
+			strategy.RequireAuthorisation = requiresAuthorisation;
 			return strategy;
 		}
 		
@@ -68,7 +68,35 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		static public IDeleteStrategy New(string typeName, bool requiresAuthorisation)
 		{
 			IDeleteStrategy strategy = StrategyState.Strategies.Creator.NewDeleter(typeName);
-			strategy.RequireAuthorisation = false;
+			strategy.RequireAuthorisation = requiresAuthorisation;
+			return strategy;
+		}
+		
+		/// <summary>
+		/// Creates a new strategy for deleting the specified type.
+		/// </summary>
+		/// <param name="enitity">The entity to create the strategy for.</param>
+		static public IDeleteStrategy New(IEntity entity)
+		{
+			if (entity == null)
+				throw new ArgumentNullException("entity");
+			
+			IDeleteStrategy strategy = StrategyState.Strategies.Creator.NewDeleter(entity.ShortTypeName);
+			return strategy;
+		}
+		
+		/// <summary>
+		/// Creates a new strategy for deleting the specified type.
+		/// </summary>
+		/// <param name="enitity">The entity to create the strategy for.</param>
+		/// <param name="requiresAutorisation">A value indicating whether or not the strategy requires authorisation.</param>
+		static public IDeleteStrategy New(IEntity entity, bool requiresAuthorisation)
+		{
+			if (entity == null)
+				throw new ArgumentNullException("entity");
+			
+			IDeleteStrategy strategy = StrategyState.Strategies.Creator.NewDeleter(entity.ShortTypeName);
+			strategy.RequireAuthorisation = requiresAuthorisation;
 			return strategy;
 		}
 		#endregion

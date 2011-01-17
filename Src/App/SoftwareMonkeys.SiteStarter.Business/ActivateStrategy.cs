@@ -83,6 +83,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <summary>
 		/// Creates a new strategy for activating the specified type.
 		/// </summary>
+		/// <returns></returns>
 		static public IActivateStrategy New<T>()
 		{
 			return StrategyState.Strategies.Creator.NewActivator(typeof(T).Name);
@@ -92,6 +93,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// Creates a new strategy for activating the specified type.
 		/// </summary>
 		/// <param name="typeName">The short name of the type involved in the strategy.</param>
+		/// <returns></returns>
 		static public IActivateStrategy New(string typeName)
 		{
 			return StrategyState.Strategies.Creator.NewActivator(typeName);
@@ -101,6 +103,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// Creates a new strategy for activating the specified type.
 		/// </summary>
 		/// <param name="entity">The entity involved in the strategy.</param>
+		/// <returns></returns>
 		static public IActivateStrategy New(IEntity entity)
 		{
 			return StrategyState.Strategies.Creator.NewActivator(entity.ShortTypeName);
@@ -109,7 +112,24 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <summary>
 		/// Creates a new strategy for activating the specified type.
 		/// </summary>
+		/// <param name="entity">The entity involved in the strategy.</param>
 		/// <param name="requiresAuthorisation">A value indicating whether the strategy requires authorisation.</param>
+		/// <returns></returns>
+		static public IActivateStrategy New(IEntity entity, bool requiresAuthorisation)
+		{
+			if (entity == null)
+				throw new ArgumentNullException("entity");
+			
+			IActivateStrategy strategy = StrategyState.Strategies.Creator.NewActivator(entity.ShortTypeName);
+			strategy.RequireAuthorisation = requiresAuthorisation;
+			return strategy;
+		}
+		
+		/// <summary>
+		/// Creates a new strategy for activating the specified type.
+		/// </summary>
+		/// <param name="requiresAuthorisation">A value indicating whether the strategy requires authorisation.</param>
+		/// <returns></returns>
 		static public IActivateStrategy New<T>(bool requiresAuthorisation)
 		{
 			IActivateStrategy strategy = StrategyState.Strategies.Creator.NewActivator(typeof(T).Name);
@@ -122,6 +142,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="typeName">The short name of the type involved in the strategy.</param>
 		/// <param name="requiresAuthorisation">A value indicating whether the strategy requires authorisation.</param>
+		/// <returns></returns>
 		static public IActivateStrategy New(string typeName, bool requiresAuthorisation)
 		{
 			IActivateStrategy strategy = StrategyState.Strategies.Creator.NewActivator(typeName);
