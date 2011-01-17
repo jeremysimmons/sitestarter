@@ -56,7 +56,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// Deletes the provided entity.
 		/// </summary>
 		/// <param name="entity"></param>
-		public void Delete(IEntity entity)
+		public virtual void Delete(IEntity entity)
+		{
+			ExecuteDelete(entity);
+		}
+		
+		/// <summary>
+		/// Deletes the provided entity.
+		/// </summary>
+		/// <param name="entity"></param>
+		public virtual void ExecuteDelete(IEntity entity)
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Deleting the provided entity.", NLog.LogLevel.Debug))
 			{
@@ -82,7 +91,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <summary>
 		/// Deletes the entity specified by the query string.
 		/// </summary>
-		public void Delete()
+		public virtual void Delete()
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Deleting the entity specified in the query string.", NLog.LogLevel.Debug))
 			{
@@ -102,7 +111,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// Loads the entity specified by the query string.
 		/// </summary>
 		/// <returns></returns>
-		public IEntity Load()
+		public virtual IEntity Load()
 		{
 			Container.CheckType();
 			
@@ -115,7 +124,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// Loads the entity specified by the query string.
 		/// </summary>
 		/// <returns></returns>
-		public T Load<T>()
+		public virtual T Load<T>()
 			where T : IEntity
 		{
 			T entity = default(T);
