@@ -8,7 +8,7 @@ using SoftwareMonkeys.SiteStarter.Configuration;
 namespace SoftwareMonkeys.SiteStarter.Tests.Entities
 {
 	[Serializable]
-    public class TestArticlePage : BaseTestEntity
+    public class TestArticlePage : BaseTestEntity, ISubEntity
     {
         private string title;
         public string Title
@@ -27,6 +27,45 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
         {
             get { return article; }
             set { article = value; }
+        }
+        
+        private int pageNumber;
+        public int PageNumber
+        {
+        	get { return pageNumber; }
+        	set { pageNumber = value; }
+        }
+        
+        IEntity ISubEntity.Parent
+        {
+        	get { return Article; }
+        	set { Article = (TestArticle)value; }
+        }
+        
+        string ISubEntity.ParentPropertyName
+        {
+        	get { return "Article"; }
+        }
+        
+        string ISubEntity.ParentTypeName
+        {
+        	get { return "TestArticle"; }
+        }
+        
+        string ISubEntity.NumberPropertyName
+        {
+        	get { return "PageNumber"; }
+        }
+        
+        string ISubEntity.ItemsPropertyName
+        {
+        	get { return "Pages"; }
+        }
+        
+        int ISubEntity.Number
+        {
+        	get { return PageNumber; }
+        	set { PageNumber = value; }
         }
     }
 }
