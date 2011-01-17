@@ -129,24 +129,39 @@ namespace SoftwareMonkeys.SiteStarter.Web.Navigation
 		
 		public void NavigateAfterOperation(string action, IEntity entity)
 		{
-			
 			string url = String.Empty;
-			if (action == "Index")
+				
+			using (LogGroup logGroup = LogGroup.Start("Navigating after performing an operation.", NLog.LogLevel.Debug))
 			{
-				url = UrlCreator.Current.CreateUrl(action, entity.ShortTypeName);
-			}
-			else
-			{
-				if (typeof(IUniqueEntity).IsAssignableFrom(entity.GetType()))
+				if (entity == null)
+					throw new ArgumentNullException("entity");
+				
+				if (action == null)
+					throw new ArgumentNullException("action");
+				
+				if (action == string.Empty)
+					throw new ArgumentException("An action must be provided.");
+				
+				LogWriter.Debug("Action: " + action);
+				
+				if (action == "Index")
 				{
-					string uniqueKey = ((IUniqueEntity)entity).UniqueKey;
-					
-					url = UrlCreator.Current.CreateUrl(action, entity.ShortTypeName, "UniqueKey",  uniqueKey);
+					url = UrlCreator.Current.CreateUrl(action, entity.ShortTypeName);
 				}
 				else
-					url = UrlCreator.Current.CreateUrl(action, entity.ShortTypeName, "ID", entity.ID.ToString());
+				{
+					if (typeof(IUniqueEntity).IsAssignableFrom(entity.GetType()))
+					{
+						string uniqueKey = ((IUniqueEntity)entity).UniqueKey;
+						
+						url = UrlCreator.Current.CreateUrl(action, entity.ShortTypeName, "UniqueKey",  uniqueKey);
+					}
+					else
+						url = UrlCreator.Current.CreateUrl(action, entity.ShortTypeName, "ID", entity.ID.ToString());
+				}	
+				
+				LogWriter.Debug("URL: " + url);
 			}
-			
 			HttpContext.Current.Response.Redirect(url);
 		}
 	}
