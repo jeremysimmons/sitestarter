@@ -89,6 +89,7 @@
     <Compile Include="Entities\IKeyword.cs" />
     <Compile Include="Entities\IPagingLocation.cs" />
     <Compile Include="Entities\ISimple.cs" />
+    <Compile Include="Entities\ISubEntity.cs" />
     <Compile Include="Entities\IUniqueEntity.cs" />
     <Compile Include="Entities\IUser.cs" />
     <Compile Include="Entities\IUserPermission.cs" />
