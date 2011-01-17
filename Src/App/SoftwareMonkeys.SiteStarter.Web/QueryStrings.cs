@@ -108,6 +108,13 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			}
 		}
         
+		static public string GetUniqueKey()
+		{
+			if (HttpContext.Current.Request.QueryString["UniqueKey"] != null)
+				return HttpContext.Current.Request.QueryString["UniqueKey"];
+			else
+				return String.Empty;
+		}
         
 		static public string GetUniqueKey(string typeName)
 		{
@@ -121,6 +128,20 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				return String.Empty;
 		}
 		
+		static public Guid GetID()
+		{
+			string value = String.Empty;
+			
+			if (HttpContext.Current.Request.QueryString["ID"] != null)
+				value = HttpContext.Current.Request.QueryString["ID"];
+			else
+				value = String.Empty;
+			
+			if (value != String.Empty)
+				return new Guid(value);
+			else
+				return Guid.Empty;
+		}
 		
 		static public Guid GetID(string typeName)
 		{
