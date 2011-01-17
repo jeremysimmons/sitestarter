@@ -25,7 +25,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			set { autoNavigate = value; }
 		}
 		
-		private string unauthorisedUrl;
+		private string unauthorisedUrl = String.Empty;
 		/// <summary>
 		/// Gets/sets the URL of the page that unauthorised users are sent to.
 		/// </summary>
@@ -35,7 +35,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			set { unauthorisedUrl = value; }
 		}
 		
-		private string actionOnSuccess;
+		private string actionOnSuccess = String.Empty;
 		/// <summary>
 		/// Gets/sets the action that is performed once the controller is successful.
 		/// </summary>
@@ -49,6 +49,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// Gets/sets the action being performed.
 		/// </summary>
 		public abstract string Action {get;}
+		
+		private string typeName = String.Empty;
+		/// <summary>
+		/// Gets/sets the action that is performed once the controller is successful.
+		/// </summary>
+		public string TypeName
+		{
+			get { return typeName; }
+			set { typeName = value; }
+		}
 		
 		
 		/// <summary>
