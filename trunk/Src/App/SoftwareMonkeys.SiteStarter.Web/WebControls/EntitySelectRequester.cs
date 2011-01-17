@@ -188,13 +188,21 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			
 			string height = WindowHeight.ToString().Replace("px", "");
 			string width = WindowWidth.ToString().Replace("px", "");
-
+			
 			builder.Append("\n");
 			builder.Append("function NewItem_" + ClientID + "(){\n");
 			builder.Append("	var url = '" + WebUtilities.EncodeJsString(CreateNavigateUrl()) + "';\n");
 			builder.Append("	var settings = 'Location=0,Scrollbars=1,Height=" + height + ",Width=" + width + "';\n");
+			
 			builder.Append("	var win = window.open(url, 'AddItem_" + Guid.NewGuid().ToString().Replace("-", "_") + "', settings);\n");
+			
+			// TODO: Check if the following line should be used instead of the one above. The one above makes every window
+			// title unique so that new windows aren't prevented from opening (by ID being in use)
+			// The following line uses a predictable title which is good for integration testing but means windows could be blocked from opening
+			//builder.Append("	var win = window.open(url, 'AddItemTo" + EntityType + "', settings);\n");
+
 			//builder.Append("	var url = " + CreateNavigateUrl() + "\n");
+			
 			builder.Append("}\n");
 			
 			builder.Append("\n");
