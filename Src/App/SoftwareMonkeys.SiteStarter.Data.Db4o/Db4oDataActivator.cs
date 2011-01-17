@@ -141,7 +141,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				PropertyInfo property = EntitiesUtilities.GetProperty(entity.GetType(), propertyName, propertyType);
 				
 				if (property == null)
-					throw new Exception("Cannot find property with name '" + propertyName + "' and type '" + (propertyType == null ? "[null]" : propertyType.ToString()) + "'.");
+					throw new Exception("Cannot find property with name '" + propertyName + "' and type '" + (propertyType == null ? "[null]" : propertyType.ToString()) + "' on the type '" + entity.ShortTypeName + "'.");
 				
 				
 				Type referenceType = DataUtilities.GetEntityType(entity, property);
