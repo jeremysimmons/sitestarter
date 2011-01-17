@@ -112,7 +112,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
 			if (entities == null || entities.Length == 0)
 			{
-				TreeNode node = new TreeNode("<i>" + NoDataText + "</i>");
+				TreeNode node = new TreeNode("<span class='NoDataText'>" + NoDataText + "</span>");
 				node.SelectAction = TreeNodeSelectAction.None;
 				Nodes.Add(node); // This should be in the language file
 			}
