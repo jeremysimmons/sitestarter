@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftwareMonkeys.SiteStarter.Entities;
 
 namespace SoftwareMonkeys.SiteStarter.Data
 {
@@ -22,5 +23,18 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// Imports the data from the XML files found in the provided directory (each in their own type specific subdirectory).
 		/// </summary>
 		void ImportFromXml();
+		
+		/// <summary>
+		/// Checks whether the provided entity is valid and can be imported.
+		/// </summary>
+		/// <param name="entity"></param>
+		/// <returns></returns>
+		bool IsValid(IEntity entity);
+		
+		/// <summary>
+		/// Retrieves the previous version (indicated in either the legacy or import directory).
+		/// </summary>
+		/// <returns></returns>
+		Version GetPreviousVersion();
 	}
 }

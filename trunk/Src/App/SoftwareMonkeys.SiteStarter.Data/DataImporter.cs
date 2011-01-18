@@ -46,6 +46,16 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			set { importedDirectoryPath = value; }
 		}
 		
+		private string failedDirectoryPath;
+		/// <summary>
+		/// Gets/sets the path to the directory containing failed/invalid data.
+		/// </summary>
+		public string FailedDirectoryPath
+		{
+			get { return failedDirectoryPath;  }
+			set { failedDirectoryPath = value; }
+		}
+		
 		/// <summary>
 		/// Configures the default imported directory path.
 		/// </summary>
@@ -57,10 +67,13 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					"App_Data" + Path.DirectorySeparatorChar;
 				
 				// Importable directory
-				ImportableDirectoryPath = basePath + "Importable";
+				ImportableDirectoryPath = basePath + "Import";
 				
 				// Imported directory
 				ImportedDirectoryPath = basePath + "Imported";
+				
+				// Failed directory
+				FailedDirectoryPath = basePath + "FailedImport";
 			}
 		}
 		
@@ -79,19 +92,28 @@ namespace SoftwareMonkeys.SiteStarter.Data
 						IEntity entity = LoadEntityFromFile(file);
 						
 						AppLogger.Debug("Entity type: " + entity.GetType().ToString());
-
-						if (!DataAccess.Data.IsStored((IEntity)entity))
+						
+						if (IsValid(entity))
 						{
-							AppLogger.Debug("New entity. Importing.");
+							if (!DataAccess.Data.IsStored((IEntity)entity))
+							{
+								AppLogger.Debug("New entity. Importing.");
+								
+								DataAccess.Data.Saver.Save(entity);
+							}
+							else
+							{
+								AppLogger.Debug("Entity already exists in store. Skipping.");
+							}
 							
-							DataAccess.Data.Saver.Save(entity);
+							MoveToImported(entity, file);
 						}
 						else
 						{
-							AppLogger.Debug("Entity already exists in store. Skipping.");
+							AppLogger.Error("Cannot import invalid entity...\nID: " + entity.ID.ToString() + "\nType: " + entity.ShortTypeName);
+							
+							MoveToFailed(entity, file);
 						}
-
-						MoveToImported(entity, file);
 					}
 				}
 			}
@@ -221,6 +243,96 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				}
 			}
 		}
+		
+		/// <summary>
+		/// Moves the provided entity from the importable directory to the failed directory.
+		/// </summary>
+		/// <param name="entity">The entity to move.</param>
+		public void MoveToFailed(IEntity entity, string filePath)
+		{
+			
+			using (LogGroup logGroup = AppLogger.StartGroup("Marking the provided entity as failed by moving it to the failed import directory.", NLog.LogLevel.Debug))
+			{
+				if (entity == null)
+					throw new ArgumentNullException("entity", "The provided entity cannot be null.");
+
+				AppLogger.Debug("Entity type: " + entity.GetType());
+
+				string fileName = String.Empty;
+				string toFileName = String.Empty;
+
+
+				string typeName = entity.GetType().ToString();
+				
+
+				//fileName = CreateImportableEntityPath(entity);
+				fileName = filePath;
+				toFileName = CreateFailedEntityPath(entity);
+				
+				AppLogger.Debug("Failed directory specified. Continuing.");
+				
+
+				AppLogger.Debug("From path: " + fileName);
+				AppLogger.Debug("To path: " + toFileName);
+
+				if (!Directory.Exists(Path.GetDirectoryName(toFileName)))
+					Directory.CreateDirectory(Path.GetDirectoryName(toFileName));
+
+
+				if (File.Exists(fileName))
+				{
+					if (File.Exists(toFileName))
+						File.Delete(toFileName);
+
+					File.Move(fileName, toFileName);
+
+					AppLogger.Debug("Moved");
+				}
+				else
+				{
+					throw new Exception("File not found: " + fileName);
+					//AppLogger.Debug("File not found. Not moved.");
+				}
+			}
+		}
+		
+		public bool IsValid(IEntity entity)
+		{
+			if (entity is EntityIDReference)
+			{
+				return IsValidReference((EntityIDReference)entity);
+			}
+			else
+				return IsValidEntity(entity);
+		}
+		
+		public bool IsValidReference(EntityIDReference reference)
+		{
+			if (reference.Entity1ID == Guid.Empty)
+				return false;
+			
+			if (reference.Entity2ID == Guid.Empty)
+				return false;
+			
+			if ((reference.Property1Name == null || reference.Property1Name == String.Empty)
+			    && (reference.Property2Name == null || reference.Property2Name == String.Empty))
+				return false;
+			
+			if (reference.Type1Name == null || reference.Type1Name == String.Empty)
+				return false;
+			
+			if (reference.Type2Name == null || reference.Type2Name == String.Empty)
+				return false;
+			
+			return true;
+		}
+		
+		public bool IsValidEntity(IEntity entity)
+		{			
+			return entity.ID != Guid.Empty
+				&& EntityState.IsType(entity.ShortTypeName);
+		}
+		
 		// TODO: Remove if not needed
 		/*
 		/// <summary>
@@ -242,12 +354,27 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <returns>The file path for the provided entity.</returns>
 		public string CreateImportedEntityPath(IEntity entity)
 		{
-			string basePath = ImportedDirectoryPath + Path.DirectorySeparatorChar + Provider.Schema.LegacyVersion.ToString().Replace(".", "-");
+			string basePath = ImportedDirectoryPath + Path.DirectorySeparatorChar + GetPreviousVersion().Replace(".", "-");
 
 			string fullPath = new EntityFileNamer(entity, basePath).CreateFilePath();
 			
 			return fullPath;
 		}
+		
+		/// <summary>
+		/// Creates the file path for the provided entity in the folder specified by the FailedDirectoryPath property.
+		/// </summary>
+		/// <param name="entity">The entity to create the file path for.</param>
+		/// <returns>The file path for the provided entity.</returns>
+		public string CreateFailedEntityPath(IEntity entity)
+		{
+			string basePath = FailedDirectoryPath + Path.DirectorySeparatorChar + GetPreviousVersion().Replace(".", "-");
+
+			string fullPath = new EntityFileNamer(entity, basePath).CreateFilePath();
+			
+			return fullPath;
+		}
+		
 		/// <summary>
 		/// Creates the file path for the provided entity in the folder specified by the ImportableDirectoryPath property.
 		/// </summary>
@@ -262,6 +389,22 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			string fullPath = new EntityFileNamer(entity, basePath).CreateFilePath();
 			
 			return fullPath;
+		}
+		
+		public Version GetPreviousVersion()
+		{
+			
+			Version legacyVersion = VersionUtilities.GetLegacyVersion(State.StateAccess.State.PhysicalApplicationPath);
+			Version importVersion = VersionUtilities.GetImportVersion(State.StateAccess.State.PhysicalApplicationPath);
+			
+			Version version = null;
+			
+			if (legacyVersion > new Version())
+				version = legacyVersion;
+			else
+				version = importVersion;
+			
+			return version;			
 		}
 	}
 }

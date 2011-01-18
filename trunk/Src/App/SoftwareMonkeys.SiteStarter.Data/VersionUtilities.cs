@@ -38,6 +38,19 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				return LoadVersionFromFile(versionFilePath);
 		}
 		
+		public static Version GetImportVersion(string applicationPath)
+		{			
+			string versionFilePath = applicationPath + Path.DirectorySeparatorChar
+				+ "App_Data" + Path.DirectorySeparatorChar
+				+ "Import" + Path.DirectorySeparatorChar
+				+ GetVersionFileName();
+			
+			if (!File.Exists(versionFilePath))
+				return new Version("0.0.0.0");
+			else
+				return LoadVersionFromFile(versionFilePath);
+		}
+		
 		public static Version GetCurrentVersion(string applicationPath)
 		{
 			string versionFilePath = applicationPath + Path.DirectorySeparatorChar
