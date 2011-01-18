@@ -68,6 +68,7 @@
     <Compile Include="LogThreader.cs" />
     <Compile Include="LogUtilities.cs" />
     <Compile Include="LogWriter.cs" />
+    <Compile Include="ModeDetector.cs" />
     <Compile Include="Reflector.cs" />
     <Compile Include="TypeNavigator.cs" />
   </ItemGroup>

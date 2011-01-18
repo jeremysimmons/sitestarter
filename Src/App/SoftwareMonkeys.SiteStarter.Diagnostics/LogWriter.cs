@@ -61,7 +61,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			StringBuilder logEntry = new StringBuilder();
 			
 			// If the callingMethod property is null then logging must be disabled, so skip the output
-			if (callingMethod != null && LogSupervisor.LoggingEnabled(callingMethod, logLevel))
+			if (callingMethod != null && new LogSupervisor().LoggingEnabled(callingMethod, logLevel))
 			{
 				//if (indent > 0 && parentID == Guid.Empty)
 				//	throw new Exception("Couldn't detect parent group of an entry at indent '" + indent + "' with data '" + message + "' from method '" + callingMethod.DeclaringType.ToString() + "." + callingMethod.Name + "'.");
@@ -128,7 +128,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		[ Conditional("DEBUG") ]
 		public static void Debug(string message, MethodBase callingMethod)
 		{
-			if (LogSupervisor.LoggingEnabled(callingMethod, LogLevel.Debug))
+			if (new LogSupervisor().LoggingEnabled(callingMethod, LogLevel.Debug))
 			{
 				string entry = CreateLogEntry(LogLevel.Debug, message, callingMethod, Guid.NewGuid(), DiagnosticState.CurrentGroupID, DiagnosticState.GroupIndent);
 				if (entry != null && entry.Trim() != String.Empty)
