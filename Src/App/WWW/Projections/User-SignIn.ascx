@@ -9,6 +9,7 @@
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Entities" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business.Security" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Configuration" %>
 <%@ Import Namespace="System.Collections.Generic" %>
 <script runat="server">
 	public void Page_Load(object sender, EventArgs e)
@@ -31,6 +32,9 @@
 	<h1><%= Resources.Language.SignIn %></h1>
     <cc:Result runat="server"/>
 	<p><%= Resources.Language.SignInIntro %></p>
+    <% if (Config.Application.Settings.GetBool("EnableUserRegistration")) { %>
+    <p><%= Resources.Language.DontHaveAnAccount %> <a href='<%= Navigator.GetLink("Register", "User") %>'><%= Resources.Language.RegisterNow %> &raquo;</a></p>
+    <% } %>
     <asp:Login ID="Login" runat="server" DestinationPageUrl="Default.aspx" OnLoggingIn="Login_LoggingIn" titletext='<%# Resources.Language.SignInDetails %>'>
         <TitleTextStyle CssClass="Heading2" HorizontalAlign="Left" />
     </asp:Login>
