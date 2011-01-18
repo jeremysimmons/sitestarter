@@ -5,6 +5,9 @@ using System.IO;
 
 namespace SoftwareMonkeys.SiteStarter.Entities
 {
+	/// <summary>
+	/// Used to clone an object.
+	/// </summary>
 	public static class ObjectCloner
 	{
 		
