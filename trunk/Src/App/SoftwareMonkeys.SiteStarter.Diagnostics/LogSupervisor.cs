@@ -7,14 +7,27 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 	/// <summary>
 	/// 
 	/// </summary>
-	public static class LogSupervisor
+	public class LogSupervisor
 	{
+		private ModeDetector modeDetector;
+		/// <summary>
+		/// Gets/sets the component used to detect the current build mode.
+		/// </summary>
+		public ModeDetector ModeDetector
+		{
+			get {
+				if (modeDetector == null)
+					modeDetector = new ModeDetector();
+				return modeDetector; }
+			set { modeDetector = value; }
+		}
+		
 		/// <summary>
 		/// Checks whether the logging is enabled for the specified log level.
 		/// </summary>
 		/// <param name="level"></param>
 		/// <returns></returns>
-		static public bool LoggingEnabled(NLog.LogLevel level)
+		public bool LoggingEnabled(NLog.LogLevel level)
 		{
 			if (level == NLog.LogLevel.Debug && !IsDebug())
 				return false;
@@ -37,12 +50,13 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		/// <param name="callingMethod"></param>
 		/// <param name="level"></param>
 		/// <returns></returns>
-		static public bool LoggingEnabled(MethodBase callingMethod, NLog.LogLevel level)
+		public bool LoggingEnabled(MethodBase callingMethod, NLog.LogLevel level)
 		{
 			object value = ConfigurationSettings.AppSettings["Logging." + level.ToString() + ".Enabled"];
 			if (value != null)
 			{
-				bool allLoggingEnabled = Convert.ToBoolean(value.ToString()) != false;
+				bool allLoggingEnabled = value == null
+					|| Convert.ToBoolean(value.ToString()) != false;
 				
 				if (allLoggingEnabled && IsModeEnabled(level) && IsEnabled(level, callingMethod))
 				{
@@ -63,14 +77,9 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		/// Checks whether the application is currently compiled in debug mode.
 		/// </summary>
 		/// <returns></returns>
-		static private bool IsDebug()
+		private bool IsDebug()
 		{
-			bool isDebug = false;
-			#if (DEBUG)
-			isDebug = true;
-			#else
-			isDebug = false;
-			#endif
+			bool isDebug = ModeDetector.IsDebug;
 			
 			return isDebug;
 		}
@@ -81,7 +90,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		/// <param name="level"></param>
 		/// <param name="callingMethod"></param>
 		/// <returns></returns>
-		static public bool IsEnabled(NLog.LogLevel level, MethodBase callingMethod)
+		public bool IsEnabled(NLog.LogLevel level, MethodBase callingMethod)
 		{
 			// If the callingMethod parameter is null then logging is disabled
 			if (callingMethod == null)
@@ -98,7 +107,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		/// <param name="level"></param>
 		/// <param name="typeName"></param>
 		/// <returns></returns>
-		static public bool IsEnabled(NLog.LogLevel level, string typeName)
+		public bool IsEnabled(NLog.LogLevel level, string typeName)
 		{
 			object value = ConfigurationSettings.AppSettings["Logging." + level.ToString() + "." + typeName + ".Enabled"];
 			
@@ -111,11 +120,15 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 					return false;
 			}
 			
-			// Defaults to true if no setting was found in the web.config
-			return true;
+			return IsModeEnabled(level);
 		}
 		
-		static public bool IsModeEnabled(NLog.LogLevel level)
+		/// <summary>
+		/// Checks whether logging for the current build mode is enabled.
+		/// </summary>
+		/// <param name="level"></param>
+		/// <returns></returns>
+		public bool IsModeEnabled(NLog.LogLevel level)
 		{
 			if (level == NLog.LogLevel.Debug)
 				return IsDebug();

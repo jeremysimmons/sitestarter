@@ -121,13 +121,13 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			this.callingMethod = callingMethod;
 		}
 		
-		public void Write(string message, LogLevel logLevel)
+		private void Write(string message, LogLevel logLevel)
 		{
 			MethodBase callingMethod = Reflector.GetCallingMethod();
 			Write(message, logLevel, callingMethod);
 		}
 
-		public void Write(string message, LogLevel logLevel, MethodBase callingMethod)
+		private void Write(string message, LogLevel logLevel, MethodBase callingMethod)
 		{
 			if (logLevel < this.LogLevel)
 				throw new ArgumentException("The provided log level " + logLevel + " must be equal or greater than the log level of the group, which is " + logLevel + ".");
@@ -139,14 +139,10 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		internal void Start(MethodBase callingMethod, NLog.LogLevel logLevel)
 		{
 			DiagnosticState.PushGroup(this);
-			
-			if (LogSupervisor.LoggingEnabled(callingMethod, logLevel))
-			{				
+						
 				CallingMethod = callingMethod;
 				
 				Start(callingMethod);
-
-			}
 		}
 		
 		private void Start(MethodBase callingMethod)
@@ -161,7 +157,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			if (!HasEnded)
 			{
 				
-				if (LogSupervisor.LoggingEnabled(CallingMethod, LogLevel))
+				if (new LogSupervisor().LoggingEnabled(CallingMethod, LogLevel))
 				{
 					End(CallingMethod);
 
@@ -236,7 +232,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			MethodBase callingMethod = null;
 			
 			// Don't get the calling method if its not
-			if (LogSupervisor.LoggingEnabled(logLevel))
+			if (new LogSupervisor().LoggingEnabled(logLevel))
 				callingMethod = Reflector.GetCallingMethod();
 			
 			return Start(summary, logLevel, callingMethod);
