@@ -21,6 +21,8 @@
 			<copy todir="${Solution.ImportPath}" overwrite="true">
 			    <fileset basedir="${Solution.DefaultImportPath}">
 			        <include name="**.xml" />
+			        <include name="**.config" />
+			        <include name="**.number" />
 			    </fileset>
 			</copy>
 		</if>
