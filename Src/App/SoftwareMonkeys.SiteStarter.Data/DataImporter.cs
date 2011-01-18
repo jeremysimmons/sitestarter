@@ -354,7 +354,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <returns>The file path for the provided entity.</returns>
 		public string CreateImportedEntityPath(IEntity entity)
 		{
-			string basePath = ImportedDirectoryPath + Path.DirectorySeparatorChar + GetPreviousVersion().Replace(".", "-");
+			string basePath = ImportedDirectoryPath + Path.DirectorySeparatorChar + GetPreviousVersion().ToString().Replace(".", "-");
 
 			string fullPath = new EntityFileNamer(entity, basePath).CreateFilePath();
 			
@@ -368,7 +368,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <returns>The file path for the provided entity.</returns>
 		public string CreateFailedEntityPath(IEntity entity)
 		{
-			string basePath = FailedDirectoryPath + Path.DirectorySeparatorChar + GetPreviousVersion().Replace(".", "-");
+			string basePath = FailedDirectoryPath + Path.DirectorySeparatorChar + GetPreviousVersion().ToString().Replace(".", "-");
 
 			string fullPath = new EntityFileNamer(entity, basePath).CreateFilePath();
 			
@@ -399,7 +399,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			
 			Version version = null;
 			
-			if (legacyVersion > new Version())
+			if (legacyVersion.ToString() != new Version(0,0,0,0).ToString())
 				version = legacyVersion;
 			else
 				version = importVersion;
