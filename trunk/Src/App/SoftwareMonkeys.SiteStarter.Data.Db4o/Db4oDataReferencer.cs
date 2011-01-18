@@ -42,6 +42,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			if (referenceType == null)
 				throw new ArgumentNullException("referenceType");
 			
+			if (referenceEntityID == Guid.Empty)
+				throw new ArgumentException("A reference entity ID must be provided.", "referenceEntityID");
+			
 			//	AppLogger.Debug("Entity type: " + entityType.ToString());
 			//	AppLogger.Debug("Reference type: " + referenceType.ToString());
 			
