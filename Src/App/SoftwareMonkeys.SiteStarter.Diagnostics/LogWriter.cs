@@ -26,7 +26,17 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		/// <param name="parentID">The ID of the parent group.</param>
 		public static void WriteGroup(string message, MethodBase callingMethod, NLog.LogLevel level, Guid groupID, Guid parentID)
 		{
-			logger.Info(CreateLogEntry(level, message, callingMethod, groupID, parentID, DiagnosticState.GroupIndent-1));
+			string entry = CreateLogEntry(level, message, callingMethod, groupID, parentID, DiagnosticState.GroupIndent-1);
+			if (entry != null && entry.Trim() != String.Empty)
+			{
+				if (level == NLog.LogLevel.Debug)
+					logger.Debug(entry);
+				else if (level == NLog.LogLevel.Error)
+					logger.Error(entry);
+				else if (level == NLog.LogLevel.Info)
+					logger.Info(entry);
+				
+			}
 			
 		}
 		
@@ -48,7 +58,6 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			Guid parentID,
 			int indent)
 		{
-			
 			StringBuilder logEntry = new StringBuilder();
 			
 			// If the callingMethod property is null then logging must be disabled, so skip the output
@@ -75,10 +84,10 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 				logEntry.Append("</Entry>\r\n");
 				
 				logEntry.AppendLine();
+				
+				SaveStackTrace(id);
 			}
 			
-			SaveStackTrace(id);
-
 			return logEntry.ToString();
 		}
 		
@@ -91,7 +100,9 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 
 		public static void Error(string message, MethodBase callingMethod)
 		{
-			logger.Error(CreateLogEntry(LogLevel.Error, message, callingMethod, Guid.NewGuid(), DiagnosticState.CurrentGroupID, DiagnosticState.GroupIndent));
+			string entry = CreateLogEntry(LogLevel.Error, message, callingMethod, Guid.NewGuid(), DiagnosticState.CurrentGroupID, DiagnosticState.GroupIndent);
+			if (entry != null && entry.Trim() != String.Empty)
+				logger.Error(entry);
 		}
 
 		public static void Info(string message)
@@ -102,7 +113,9 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 
 		public static void Info(string message, MethodBase callingMethod)
 		{
-			logger.Info(CreateLogEntry(LogLevel.Info, message, callingMethod, Guid.NewGuid(), DiagnosticState.CurrentGroupID, DiagnosticState.GroupIndent));
+			string entry = CreateLogEntry(LogLevel.Info, message, callingMethod, Guid.NewGuid(), DiagnosticState.CurrentGroupID, DiagnosticState.GroupIndent);
+			if (entry != null && entry.Trim() != String.Empty)
+				logger.Info(entry);
 		}
 
 		[ Conditional("DEBUG") ]
@@ -117,7 +130,9 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		{
 			if (LogSupervisor.LoggingEnabled(callingMethod, LogLevel.Debug))
 			{
-				logger.Info(CreateLogEntry(LogLevel.Debug, message, callingMethod, Guid.NewGuid(), DiagnosticState.CurrentGroupID, DiagnosticState.GroupIndent));
+				string entry = CreateLogEntry(LogLevel.Debug, message, callingMethod, Guid.NewGuid(), DiagnosticState.CurrentGroupID, DiagnosticState.GroupIndent);
+				if (entry != null && entry.Trim() != String.Empty)
+					logger.Debug(entry);
 			}
 		}
 		
