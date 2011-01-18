@@ -803,4 +803,10 @@ ${WebSite.Title}&lt;br /&gt;
   <data name="Message" xml:space="preserve">
     <value>Message</value>
   </data>
+  <data name="DontHaveAnAccount" xml:space="preserve">
+    <value>Dont have an account?</value>
+  </data>
+  <data name="RegisterNow" xml:space="preserve">
+    <value>Register Now</value>
+  </data>
 </root>
