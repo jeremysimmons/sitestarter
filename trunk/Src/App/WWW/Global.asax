@@ -32,9 +32,12 @@
         
     void Application_Error(object sender, EventArgs e) 
     { 
-        // Code that runs when an unhandled error occurs
-	   // Exception lastException = Server.GetLastError();
-   	   // AppLogger.Error(lastException.ToString());
+    	using (LogGroup logGroup = LogGroup.Start("Handling application error.", NLog.LogLevel.Error))
+	    {
+	        // Code that runs when an unhandled error occurs
+		    Exception lastException = Server.GetLastError();
+	   	    LogWriter.Error(lastException.ToString());
+   	    }
     }
 
     void Session_Start(object sender, EventArgs e) 
