@@ -121,6 +121,14 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			return (foundCommands.Count == 0);
 		}
 		
+		/// <summary>
+		/// Retrieves the version of the data in the import folder.
+		/// </summary>
+		/// <returns>The version of the legacy data.</returns>
+		public Version GetImportVersion()
+		{
+			return VersionUtilities.GetImportVersion(Configuration.Config.Application.PhysicalApplicationPath);
+		}
 		
 		/// <summary>
 		/// Retrieves the version of the data in the legacy folder.
