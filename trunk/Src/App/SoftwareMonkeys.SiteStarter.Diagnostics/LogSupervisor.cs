@@ -42,10 +42,9 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			object value = ConfigurationSettings.AppSettings["Logging." + level.ToString() + ".Enabled"];
 			if (value != null)
 			{
-				bool allLoggingEnabled = ((string)value).ToLower() == "true"
-					|| level != NLog.LogLevel.Debug;
+				bool allLoggingEnabled = Convert.ToBoolean(value.ToString()) != false;
 				
-				if (allLoggingEnabled && IsEnabled(level, callingMethod))
+				if (allLoggingEnabled && IsModeEnabled(level) && IsEnabled(level, callingMethod))
 				{
 					return true;
 				}
@@ -53,9 +52,11 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 				// Defaults to false
 				return false;
 			}
-			else // Defaults to true if no setting was found in the web.config.
+			else 
+			{
+				// Defaults to true if no setting was found in the web.config.
 				return true;
-			
+			}
 		}
 		
 		/// <summary>
@@ -112,6 +113,14 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			
 			// Defaults to true if no setting was found in the web.config
 			return true;
+		}
+		
+		static public bool IsModeEnabled(NLog.LogLevel level)
+		{
+			if (level == NLog.LogLevel.Debug)
+				return IsDebug();
+			else
+				return true;
 		}
 
 	}
