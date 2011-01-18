@@ -150,7 +150,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			//using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the provided entity is included in the reference.", NLog.LogLevel.Debug))
 			//{
 			if (id == Guid.Empty)
-				throw new ArgumentException("entity");
+				throw new ArgumentException("The provided ID is Guid.Empty","id");
 			
 			//AppLogger.Debug("Provided entity ID: " + id.ToString());
 			//AppLogger.Debug("Provided property name: " + propertyName);
