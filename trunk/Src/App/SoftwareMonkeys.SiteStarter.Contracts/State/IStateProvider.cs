@@ -1,5 +1,4 @@
 ﻿using System;
-using SoftwareMonkeys.SiteStarter.Configuration;
 
 namespace SoftwareMonkeys.SiteStarter.State
 {
