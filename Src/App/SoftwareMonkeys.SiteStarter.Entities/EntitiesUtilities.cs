@@ -645,7 +645,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				.Replace(":", "-")
 				.Replace(".", "_")
 				.Replace("<", "-")
-				.Replace(">", "-");
+				.Replace(">", "-")
+				.Replace("*", "-");
 			
 			if (originalData.Length > 100)
 				return originalData.Substring(0, 100);
