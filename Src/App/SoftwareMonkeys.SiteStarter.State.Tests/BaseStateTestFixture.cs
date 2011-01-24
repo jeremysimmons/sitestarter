@@ -51,9 +51,9 @@ namespace SoftwareMonkeys.SiteStarter.State.Tests
 		/// Creates a mock state provider for using during testing.
 		/// </summary>
 		/// <returns>The mock StateProvider ready for use.</returns>
-		public StateProvider CreateMockState()
+		public BaseStateProvider CreateMockState()
         {
-        	StateProvider config = new MockStateProvider(this);
+        	BaseStateProvider config = new MockStateProvider(this);
         	
         	return config;
         }

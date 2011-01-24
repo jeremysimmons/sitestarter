@@ -5,7 +5,6 @@ using System.Configuration.Provider;
 using SoftwareMonkeys.SiteStarter.State;
 using SoftwareMonkeys.SiteStarter.Entities;
 using System.IO;
-using SoftwareMonkeys.SiteStarter.Configuration;
 using System.Web;
 using SoftwareMonkeys.SiteStarter.Web.State.Cookies;
 
@@ -14,7 +13,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
 	/// <summary>
 	/// Initializes and acts as the the state management provider
 	/// </summary>
-    public class WebStateProvider : StateProvider 
+    public class WebStateProvider : BaseStateProvider 
     {
     	private string physicalApplicationPath = String.Empty;
     	/// <summary>
@@ -131,6 +130,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
         #endregion
         
         #region Request state
+        
+        [Obsolete("Use ContainsOperation function instead.")]
         public override bool ContainsRequest(string key)
         {
         	if (key == String.Empty)
@@ -145,6 +146,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
 	        	return false;
         }
         
+        [Obsolete("Use SetOperation function instead.")]
         public override void SetRequest(string key, object value)
         {
         	if (key == String.Empty)
@@ -158,6 +160,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
             }
         }
 
+        [Obsolete("Use GetOperation function instead.")]
         public override object GetRequest(string key)
         {
         	if (key == String.Empty)
@@ -169,9 +172,58 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
 	        	return null;
         }
         
+        [Obsolete("Use RemoveOperation function instead.")]
 		public override void RemoveRequest(string key)
 		{
 			if (ContainsRequest(key))
+			{
+				HttpContext.Current.Items.Remove(key);
+			}
+		}
+        #endregion
+        
+        #region Operation state
+        public override bool ContainsOperation(string key)
+        {
+        	if (key == String.Empty)
+        		throw new ArgumentException("The provided key cannot be null or String.Empty.");
+        	
+       		if (key != String.Empty
+        	    && HttpContext.Current != null
+                && HttpContext.Current.Items != null
+        	    && HttpContext.Current.Items[key] != null)
+	            return true;
+	        else
+	        	return false;
+        }
+        
+        public override void SetOperation(string key, object value)
+        {
+        	if (key == String.Empty)
+        		throw new ArgumentException("The provided key cannot be null or String.Empty.");
+        	
+            if (key != String.Empty
+                && HttpContext.Current != null
+                && HttpContext.Current.Request != null)
+            {
+                HttpContext.Current.Items[key] = value;
+            }
+        }
+
+        public override object GetOperation(string key)
+        {
+        	if (key == String.Empty)
+        		throw new ArgumentException("The provided key cannot be null or String.Empty.");
+        	
+        	if (key != String.Empty && HttpContext.Current != null && HttpContext.Current.Items != null)
+	            return HttpContext.Current.Items[key];
+	        else
+	        	return null;
+        }
+        
+		public override void RemoveOperation(string key)
+		{
+			if (ContainsOperation(key))
 			{
 				HttpContext.Current.Items.Remove(key);
 			}
