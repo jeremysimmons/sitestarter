@@ -31,11 +31,11 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		}
 		
 		/// <summary>
-		/// Saves the provided strategy.
+		/// Saves the provided entity.
 		/// </summary>
 		/// <param name="entity">The entity to save.</param>
 		/// <returns>A value indicating whether the entity was valid and was therefore saved.</returns>
-		public bool Save(IEntity entity)
+		public virtual bool Save(IEntity entity)
 		{
 			bool saved = false;
 			using (LogGroup logGroup = AppLogger.StartGroup("Saving the provided entity.", NLog.LogLevel.Debug))
