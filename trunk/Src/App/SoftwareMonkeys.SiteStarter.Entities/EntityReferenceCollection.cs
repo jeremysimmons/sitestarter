@@ -32,7 +32,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			
 		}
 		
-		public EntityReferenceCollection(EntityIDReference[] references) : base(references)
+		public EntityReferenceCollection(EntityReference[] references) : base(Collection<EntityIDReference>.ConvertAll(references))
 		{
 		}
 		
