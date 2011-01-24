@@ -14,14 +14,14 @@ namespace SoftwareMonkeys.SiteStarter.Data
 	/// <summary>
 	/// Represents a group of data filters.
 	/// </summary>
-	public class FilterGroup : IFilterGroup
+	public class FilterGroup : IDataFilterGroup
 	{
 		
-		private FilterOperator _operator = FilterOperator.And;
+		private FilterGroupOperator _operator = FilterGroupOperator.And;
 		/// <summary>
 		/// Gets/sets the base log level for this group.
 		/// </summary>
-		public FilterOperator Operator
+		public FilterGroupOperator Operator
 		{
 			get { return _operator; }
 			set { _operator = value; }
@@ -59,7 +59,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="filterValues"></param>
 		public FilterGroup(Type type, IDictionary<string, object> filterValues)
 		{
-			Operator = FilterOperator.And;
+			Operator = FilterGroupOperator.And;
 			
 			foreach (string key in filterValues.Keys)
 			{
@@ -170,7 +170,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					}
 				}
 				
-				if (Operator == FilterOperator.Or)
+				if (Operator == FilterGroupOperator.Or)
 				{
 					//		AppLogger.Debug("Filter operator is OR. Using value of anyMatch variable.");
 					
