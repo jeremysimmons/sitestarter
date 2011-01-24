@@ -36,13 +36,14 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{}
 		
 		/// <summary>
-		/// Updates the provided strategy.
+		/// Updates the provided entity.
 		/// </summary>
 		/// <param name="entity">The entity to update.</param>
 		/// <returns>A value indicating whether the entity was valid and was therefore saved.</returns>
-		public bool Update(IEntity entity)
+		public virtual bool Update(IEntity entity)
 		{
 			bool didSucceed = false;
+			
 			using (LogGroup logGrop = AppLogger.StartGroup("Updating the provided entity.", NLog.LogLevel.Debug))
 			{
 				if (entity == null)
