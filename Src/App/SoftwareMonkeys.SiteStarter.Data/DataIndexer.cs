@@ -68,6 +68,15 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		public abstract T[] GetEntitiesWithReference<T>(string propertyName, Type referencedEntityType, Guid referencedEntityID)
 			where T : IEntity;
 		
+		/// <summary>
+		/// Retrieves all the entities of the specified type with a reference to any of the provided entities.
+		/// </summary>
+		/// <param name="propertyName">The name of the property containing the reference.</param>
+		/// <param name="referencedEntities">An array of entities to check the reference to.</param>
+		/// <returns>An array of the references retrieved.</returns>
+		public abstract T[] GetEntitiesWithReference<T>(string propertyName, IEntity[] referencedEntities)
+			where T : IEntity;
+		
 		public abstract IEntity[] GetEntities(Type type, string propertyName, object propertyValue);
 		
 		public abstract T[] GetEntities<T>(string propertyName, object propertyValue)
@@ -81,6 +90,15 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <returns>The entities of the specified type found in the data store.</returns>
 		public abstract IEntity[] GetEntities(IDataFilter filter);
 
-
+		/// <summary>
+		/// Retrieves the specified page of entities from the data store.
+		/// </summary>
+		/// <param name="propertyName">The name of the property containing the reference.</param>
+		/// <param name="referencedEntities">An array of entities to check the reference to.</param>
+		/// <param name="location"></param>
+		/// <param name="sortExpression">The sort expression to apply before retrieving the page.</param>
+		/// <returns>An array of the objects retrieved.</returns>
+		public abstract T[] GetPageOfEntitiesWithReference<T>(string propertyName, IEntity[] referencedEntities, PagingLocation location, string sortExpression)
+			where T : IEntity;
 	}
 }
