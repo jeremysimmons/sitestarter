@@ -54,8 +54,16 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			if (!Contains(reference))
 			{
 				referenceTypeName = reference.Type2Name;
-			
+				
 				base.Add(reference);
+			}
+		}
+		
+		public void AddRange(EntityIDReference[] references)
+		{
+			foreach (EntityIDReference reference in references)
+			{
+				Add(reference);
 			}
 		}
 		
@@ -83,5 +91,30 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			return match;
 		}
 		
+		/// <summary>
+		/// Retrieves all the IDs of the entities from the collection that are associated with the specified entity.
+		/// </summary>
+		/// <param name="sourceEntityID">The entity that the referenced IDs are being retrieved for. If this is Guid.Empty then all IDs from both sides of the reference are returned.</param>
+		/// <returns>The IDs of the referenced entities.</returns>
+		public Guid[] GetEntityIDs(Guid sourceEntityID)
+		{
+			List<Guid> list = new List<Guid>();
+			foreach (EntityReference reference in this)
+			{
+				if (sourceEntityID == Guid.Empty || reference.Entity1ID == sourceEntityID)
+				{
+					if (!list.Contains(reference.Entity2ID))
+						list.Add(reference.Entity2ID);
+				}
+				
+				if (sourceEntityID == Guid.Empty || reference.Entity2ID == sourceEntityID)
+				{
+					if (!list.Contains(reference.Entity1ID))
+						list.Add(reference.Entity1ID);
+				}
+			}
+			
+			return list.ToArray();
+		}
 	}
 }
