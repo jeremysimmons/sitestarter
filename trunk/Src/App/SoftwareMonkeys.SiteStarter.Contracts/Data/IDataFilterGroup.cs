@@ -17,6 +17,8 @@ namespace SoftwareMonkeys.SiteStarter.Data
         IDataFilter[] Filters { get;set;}
 
         void Add(IDataFilter filter);
+        
+        bool IsMatch(IEntity entity);
 
     }
 
