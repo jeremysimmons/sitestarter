@@ -101,6 +101,31 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			return entities;
 		}
 		
+		/// <summary>
+		/// Indexes the entity with a reference to one of the provided entities.
+		/// </summary>
+		/// <param name="propertyName">The name of the property containing the references.</param>
+		/// <param name="referencedEntities">The entities to look for a reference to.</param>
+		/// <returns>The entity matching the provided parameters.</returns>
+		public virtual T[] IndexWithReference<T>(string propertyName, IEntity[] referencedEntities)
+			where T : IEntity
+		{
+			T[] entities = new T[] {};
+			
+			if (EnablePaging)
+			{
+				entities = (T[])DataAccess.Data.Indexer.GetPageOfEntitiesWithReference<T>(propertyName, referencedEntities, Location, sortExpression);
+			}
+			else
+			{
+				entities = (T[])DataAccess.Data.Indexer.GetEntitiesWithReference<T>(propertyName, referencedEntities);
+			}
+			
+			if (RequireAuthorisation)
+				AuthoriseIndexStrategy.New<T>().EnsureAuthorised<T>(ref entities);
+			
+			return entities;
+		}
 		
 		/// <summary>
 		/// Retrieves the entities with the specified IDs.
@@ -234,7 +259,19 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="group"></param>
 		/// <returns></returns>
-		public virtual T[] Index<T>(FilterGroup group)
+		public virtual IEntity[] Index(IDataFilterGroup group)
+		{
+			return (IEntity[])Reflector.InvokeGenericMethod(this, "Index",
+			                                     new Type[] { EntityState.GetType(TypeName) },
+			                                     new object[] {group});
+		}
+		
+		/// <summary>
+		/// Retrieves the entities matching the provided filter group.
+		/// </summary>
+		/// <param name="group"></param>
+		/// <returns></returns>
+		public virtual T[] Index<T>(IDataFilterGroup group)
 			where T : IEntity
 		{
 			T[] entities = new T[]{};
@@ -262,7 +299,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="group"></param>
 		/// <returns></returns>
-		T[] IIndexStrategy.Index<T>(IFilterGroup group)
+		T[] IIndexStrategy.Index<T>(IDataFilterGroup group)
 		{
 			return this.Index<T>((FilterGroup)group);
 		}
