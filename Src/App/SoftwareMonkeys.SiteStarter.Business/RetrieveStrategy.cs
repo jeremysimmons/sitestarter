@@ -51,7 +51,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="group"></param>
 		/// <returns></returns>
-		T IRetrieveStrategy.Retrieve<T>(IFilterGroup group)
+		T IRetrieveStrategy.Retrieve<T>(IDataFilterGroup group)
 		{
 			return Retrieve<T>((FilterGroup)group);
 		}
@@ -61,7 +61,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="group"></param>
 		/// <returns></returns>
-		IEntity IRetrieveStrategy.Retrieve(Type type, IFilterGroup group)
+		IEntity IRetrieveStrategy.Retrieve(Type type, IDataFilterGroup group)
 		{
 			return Retrieve(type, (FilterGroup)group);
 		}
