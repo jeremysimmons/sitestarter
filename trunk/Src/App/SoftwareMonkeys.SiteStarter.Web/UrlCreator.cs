@@ -370,6 +370,37 @@ namespace SoftwareMonkeys.SiteStarter.Web
 
 		#endregion
 		
+		#region Current URL functions
+		
+		public string CreateUrl()
+		{
+			string action = QueryStrings.Action;
+			string typeName = QueryStrings.Type;
+			string uniqueKey = QueryStrings.GetUniqueKey(typeName);
+			Guid id = QueryStrings.GetID(typeName);
+			
+			string url = string.Empty;
+			
+			if (action == String.Empty ||
+			    typeName == String.Empty)
+			{
+				url = WebUtilities.ConvertAbsoluteUrlToApplicationRelativeUrl(HttpContext.Current.Request.Url.ToString());
+			}
+			else if (uniqueKey != String.Empty)
+			{
+				url = CreateUrl(action, typeName, "UniqueKey", uniqueKey);
+			}
+			else if (id != Guid.Empty)
+			{
+				url = CreateUrl(action, typeName, "ID", id.ToString());
+			}
+			else
+				url = CreateUrl(action, typeName);
+			
+			return url;
+		}
+		#endregion
+		
 		/// <summary>
 		/// Retrieves the current EnableFriendlyURLs setting from the Web.config file.
 		/// </summary>
