@@ -48,6 +48,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Navigation
 		{
 		}
 		
+		public string GetLink()
+		{
+			return UrlCreator.CreateUrl();
+		}
+		
 		public string GetLink(string action, string type, string uniqueKey)
 		{
 			return GetLink(action, type, "UniqueKey", uniqueKey);

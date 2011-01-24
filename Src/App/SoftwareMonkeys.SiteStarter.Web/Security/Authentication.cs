@@ -1,6 +1,7 @@
 ﻿using System;
 using SoftwareMonkeys.SiteStarter.Business;
 using SoftwareMonkeys.SiteStarter.Business.Security;
+using System.Web;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Security
 {
@@ -9,6 +10,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 	/// </summary>
 	public static class Authentication
 	{
+		/// <summary>
+		/// Ensures that the current user is authenticated, and redirects them to the sign in page if they aren't.
+		/// </summary>
+		public static void EnsureIsAuthenticated()
+		{
+			if (HttpContext.Current != null && !AuthenticationState.IsAuthenticated)
+				HttpContext.Current.Response.Redirect(HttpContext.Current.Request.ApplicationPath + "/User/SignIn.aspx?ReturnUrl=" + GetReturnUrl());
+		}
+		
 		/// <summary>
 		/// Gets a value indicating whether the current user is authenticated.
 		/// </summary>
@@ -61,6 +71,42 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		}
 		
 		/// <summary>
+		/// Authenticates and the user with the provided username and password and signs them in, then redirects them back to the URL they came from.
+		/// </summary>
+		/// <param name="username">The username of the user to authenticate and sign in.</param>
+		/// <param name="password">The unencrypted password of the user to authenticate and sign in.</param>
+		/// <returns>A value indicating whether the user's credentials are authentic.</returns>
+		public static bool SignInAndRedirect(string username, string password)
+		{
+			if (SignIn(username, password))
+			{
+				ReturnUser();
+				return true;
+			}
+			else
+				return false;
+		}
+		
+		
+		/// <summary>
+		/// Authenticates and the user with the provided username and password and signs them in, then redirects them back to the URL they came from.
+		/// </summary>
+		/// <param name="username">The username of the user to authenticate and sign in.</param>
+		/// <param name="password">The unencrypted password of the user to authenticate and sign in.</param>
+		/// <param name="persistAuthentication">A value that indicates whether to persist the authentication (ie. remember the user).</param>
+		/// <returns>A value indicating whether the user's credentials are authentic.</returns>
+		public static bool SignInAndRedirect(string username, string password, bool persistAuthentication)
+		{
+			if (SignIn(username, password, persistAuthentication))
+			{
+				ReturnUser();
+				return true;
+			}
+			else
+				return false;
+		}
+		
+		/// <summary>
 		/// Signs the current user out.
 		/// </summary>
 		public static void SignOut()
@@ -99,6 +145,30 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 			else
 				System.Web.Security.FormsAuthentication.SignOut();
 			
+		}
+		
+		public static void ReturnUser()
+		{
+			string returnUrl = GetReturnUrl();
+			
+			if (returnUrl != null && returnUrl.Trim() != String.Empty)
+				HttpContext.Current.Response.Redirect(returnUrl);
+		}
+		
+		public static string GetReturnUrl()
+		{
+			string returnUrl = HttpContext.Current.Request.QueryString["ReturnUrl"];
+			
+			returnUrl = HttpContext.Current.Server.UrlDecode(returnUrl);
+			
+			return returnUrl;
+		}
+		
+		public static string GetUrl()
+		{
+			string returnUrl = UrlCreator.Current.CreateUrl();
+			
+			return returnUrl;
 		}
 		
 		public static int GetPersistDurationDays()

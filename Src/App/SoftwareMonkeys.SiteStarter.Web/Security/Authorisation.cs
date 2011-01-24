@@ -169,14 +169,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 			
 			Result.DisplayError(Language.Unauthorised);
 			
-			// TODO: This shouldn't be hard coded
-			HttpContext.Current.Response.Redirect("~/User/SignIn.aspx");
+			// TODO: This shouldn't be hard coded.
+			HttpContext.Current.Response.Redirect("~/User/SignIn.aspx?ReturnUrl=" + Authentication.GetUrl());
 		}
 
 		public static void EnsureIsAuthenticated()
 		{
-			if (HttpContext.Current != null && !AuthenticationState.IsAuthenticated)
-				HttpContext.Current.Response.Redirect(HttpContext.Current.Request.ApplicationPath + "/User/SignIn.aspx");
+			Authentication.EnsureIsAuthenticated();
 		}
 
 		public static void EnsureIsInRole(string role)
