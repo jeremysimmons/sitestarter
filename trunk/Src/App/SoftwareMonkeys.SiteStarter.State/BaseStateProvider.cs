@@ -8,9 +8,9 @@ using SoftwareMonkeys.SiteStarter.Configuration;
 namespace SoftwareMonkeys.SiteStarter.State
 {
     /// <summary>
-    /// Defines the interface required for all data providers.
+    /// Defines the interface required for all state providers.
     /// </summary>
-    public abstract class StateProvider : ProviderBase, IStateProvider
+    public abstract class BaseStateProvider : ProviderBase, IStateProvider
     {
         public abstract bool ContainsApplication(string key);
         public abstract void SetApplication(string key, object value);
@@ -22,9 +22,18 @@ namespace SoftwareMonkeys.SiteStarter.State
         public abstract object GetSession(string key);
         public abstract void RemoveSession(string key);
         
+        public abstract bool ContainsOperation(string key);
+        public abstract void SetOperation(string key, object value);
+        public abstract object GetOperation(string key);
+        public abstract void RemoveOperation(string key);
+        
+        [Obsolete("Use ContainsOperation function instead.")]
         public abstract bool ContainsRequest(string key);
+        [Obsolete("Use SetOperation function instead.")]
         public abstract void SetRequest(string key, object value);
+        [Obsolete("Use GetOperation function instead.")]
         public abstract object GetRequest(string key);
+        [Obsolete("Use RemoveOperation function instead.")]
         public abstract void RemoveRequest(string key);
         
         public abstract bool ContainsUser(string key);

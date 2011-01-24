@@ -6,11 +6,11 @@ namespace SoftwareMonkeys.SiteStarter.State
 {
     sealed public class StateAccess
     {
-        private static StateProvider state;
+        private static BaseStateProvider state;
         /// <summary>
         /// Gets/sets the current StateProvider instance.
         /// </summary>
-        public static StateProvider State
+        public static BaseStateProvider State
         {
             get { return state; }
             set { state = value; }

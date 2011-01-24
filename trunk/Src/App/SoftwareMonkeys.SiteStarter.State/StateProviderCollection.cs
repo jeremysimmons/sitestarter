@@ -13,18 +13,18 @@ namespace SoftwareMonkeys.SiteStarter.State
             if (provider == null)
                 throw new ArgumentNullException("provider", "The provider parameter cannot be null.");
 
-            if (!(provider is StateProvider))
+            if (!(provider is BaseStateProvider))
                 throw new ArgumentException("provider", "The provider parameter must be of type StateProvider.");
 
             base.Add(provider);
         }
 
-        new public StateProvider this[string name]
+        new public BaseStateProvider this[string name]
         {
-            get { return (StateProvider)base[name]; }
+            get { return (BaseStateProvider)base[name]; }
         }
 
-        public void CopyTo(StateProvider[] array, int index)
+        public void CopyTo(BaseStateProvider[] array, int index)
         {
             base.CopyTo(array, index);
         }

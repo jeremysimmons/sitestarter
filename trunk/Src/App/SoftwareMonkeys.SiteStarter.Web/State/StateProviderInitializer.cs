@@ -1,4 +1,4 @@
-using System;
+ using System;
 using System.Configuration;
 using System.Configuration.Provider;
 using System.Web.Configuration;
@@ -58,7 +58,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
 
 				//Instantiate the providers
 				providerCollection = new StateProviderCollection();
-				ProvidersHelper.InstantiateProviders(qc.Providers, providerCollection, typeof(StateProvider));
+				ProvidersHelper.InstantiateProviders(qc.Providers, providerCollection, typeof(BaseStateProvider));
 				providerCollection.SetReadOnly();
 				defaultProvider = providerCollection[qc.DefaultProvider];
 				if (defaultProvider == null)
@@ -78,10 +78,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
 		}
 
 		//Public feature API
-		private static StateProvider defaultProvider;
+		private static BaseStateProvider defaultProvider;
 		private static StateProviderCollection providerCollection;
 
-		public static StateProvider Provider
+		public static BaseStateProvider Provider
 		{
 			get
 			{

@@ -11,7 +11,7 @@ namespace SoftwareMonkeys.SiteStarter.State.Tests
 	/// <summary>
 	/// A mock state provider for use during testing.
 	/// </summary>
-	public class MockStateProvider : StateProvider
+	public class MockStateProvider : BaseStateProvider
 	{
 		private BaseTestFixture fixture;
 		public BaseTestFixture Fixture
@@ -62,14 +62,14 @@ namespace SoftwareMonkeys.SiteStarter.State.Tests
 		}
 		
 		
-		private Dictionary<string, object> requestData;
-		public Dictionary<string, object> RequestData
+		private Dictionary<string, object> operationData;
+		public Dictionary<string, object> OperationData
 		{
 			get {
-				if (requestData == null)
-					requestData = new Dictionary<string, object>();
-				return requestData; }
-			set { requestData = value; }
+				if (operationData == null)
+					operationData = new Dictionary<string, object>();
+				return operationData; }
+			set { operationData = value; }
 		}
 		
 		private Dictionary<string, object> userData;
@@ -149,34 +149,56 @@ namespace SoftwareMonkeys.SiteStarter.State.Tests
 		#endregion
 
 
-		#region Request state
-		public override bool ContainsRequest(string key)
+		#region Operation state
+		public override bool ContainsOperation(string key)
 		{
-			return RequestData.ContainsKey(key);
+			return OperationData.ContainsKey(key);
 		}
 		
-		public override void SetRequest(string key, object value)
+		public override void SetOperation(string key, object value)
 		{
-			RequestData[key] = value;
+			OperationData[key] = value;
 		}
 
-		public override object GetRequest(string key)
+		public override object GetOperation(string key)
 		{
-			if (!ContainsRequest(key))
+			if (!ContainsOperation(key))
 			{
 				return null;
 				//throw new ArgumentException("No request state data found with the key '" + key + "'.");
 			}
 			
-			return RequestData[key];
+			return OperationData[key];
+		}
+		
+		public override void RemoveOperation(string key)
+		{
+			if (ContainsOperation(key))
+			{
+				OperationData.Remove(key);
+			}
+		}
+		#endregion
+		
+		#region Request state
+		public override bool ContainsRequest(string key)
+		{
+			return ContainsOperation(key);
+		}
+		
+		public override void SetRequest(string key, object value)
+		{
+			SetOperation(key, value);
+		}
+
+		public override object GetRequest(string key)
+		{
+			return GetOperation(key);
 		}
 		
 		public override void RemoveRequest(string key)
 		{
-			if (ContainsRequest(key))
-			{
-				RequestData.Remove(key);
-			}
+			RemoveOperation(key);
 		}
 		#endregion
 		
@@ -203,7 +225,7 @@ namespace SoftwareMonkeys.SiteStarter.State.Tests
 				return null;
 			}
 			
-			return RequestData[key];
+			return UserData[key];
 		}
 		
 		public override void RemoveUser(string key)
@@ -230,7 +252,7 @@ namespace SoftwareMonkeys.SiteStarter.State.Tests
 						keys.Add(key);
 					break;
 				case StateScope.Operation:
-					foreach (string key in RequestData.Keys)
+					foreach (string key in OperationData.Keys)
 						keys.Add(key);
 					break;
 			}
