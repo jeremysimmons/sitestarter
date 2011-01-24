@@ -282,6 +282,97 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			}
 		}
 		
+		[Test]
+		public void Test_GetEntitiesMatchReference_MultipleReferencedEntities()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetEntitiesMatchReference function and passing multiple referenced entities to ensure it finds entities properly.", NLog.LogLevel.Debug))
+			{
+				TestArticle article = new TestArticle();
+				article.ID = Guid.NewGuid();
+				article.Title = "Test Article";
+				
+				TestArticle article2 = new TestArticle();
+				article.ID = Guid.NewGuid();
+				article.Title = "Test Article 2";
+				
+				TestCategory category = new TestCategory();
+				category.ID = Guid.NewGuid();
+				category.Name = "Test Category";
+				
+				TestCategory category2 = new TestCategory();
+				category.ID = Guid.NewGuid();
+				category.Name = "Test Category 2";
+				
+				article.Categories = new TestCategory[] { category2 };
+				article2.Categories = new TestCategory[] { category };
+				
+				DataAccess.Data.Saver.Save(article);
+				DataAccess.Data.Saver.Save(article2);
+				DataAccess.Data.Saver.Save(category);
+				DataAccess.Data.Saver.Save(category2);
+				
+				
+				IEntity[] categories = new TestCategory[] { category, category2 };
+				
+				TestArticle[] results = DataAccess.Data.Indexer.GetEntitiesWithReference<TestArticle>("Categories", categories);
+				
+				Assert.IsNotNull(results, "The results were null.");
+				
+				
+				if (results != null)
+				{
+					Assert.AreEqual(2, results.Length, "Incorrect number of results found.");
+					
+					IEntity entity = results[0];
+					
+					Assert.AreEqual(article.GetType().FullName, entity.GetType().FullName, "The types don't match.");
+				}
+			}
+		}
+		
+		
+		[Test]
+		public void Test_GetEntitiesMatchReference_MultipleReferencedEntities_NoMatch()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetEntitiesMatchReference function and passing multiple referenced entities to ensure it finds entities properly.", NLog.LogLevel.Debug))
+			{
+				TestArticle article = new TestArticle();
+				article.ID = Guid.NewGuid();
+				article.Title = "Test Article";
+				
+				TestArticle article2 = new TestArticle();
+				article.ID = Guid.NewGuid();
+				article.Title = "Test Article 2";
+				
+				TestCategory category = new TestCategory();
+				category.ID = Guid.NewGuid();
+				category.Name = "Test Category";
+				
+				TestCategory category2 = new TestCategory();
+				category.ID = Guid.NewGuid();
+				category.Name = "Test Category 2";
+				
+				
+				DataAccess.Data.Saver.Save(article);
+				DataAccess.Data.Saver.Save(article2);
+				DataAccess.Data.Saver.Save(category);
+				DataAccess.Data.Saver.Save(category2);
+				
+				
+				IEntity[] categories = new TestCategory[] { category, category2 };
+				
+				TestArticle[] results = DataAccess.Data.Indexer.GetEntitiesWithReference<TestArticle>("Categories", categories);
+				
+				Assert.IsNotNull(results, "The results were null.");
+				
+				
+				if (results != null)
+				{
+					Assert.AreEqual(0, results.Length, "Incorrect number of results found.");
+				}
+			}
+		}
+		
 
 		[Test]
 		public void Test_GetEntitiesPageMatchReference()
@@ -669,5 +760,85 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			//Assert.AreEqual(article2.Title, entities[1].Title, "Sorting failed #2.");
 			//Assert.AreEqual(article3.Title, entities[2].Title, "Sorting failed #3.");
 		}
+		
+		
+		[Test]
+		public void Test_GetPageOfEntitiesWithReference_EmptyReferencedEntityID_Found()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing the index retrieval of entities that don't have any references on a particular property.", NLog.LogLevel.Debug))
+			{
+								
+				TestUser user = new TestUser();
+				Guid userID = user.ID = Guid.NewGuid();
+				user.FirstName = "Test";
+				user.LastName = "User";
+				
+				TestRole role = new TestRole();
+				Guid roleID = role.ID = Guid.NewGuid();
+				role.Name = "Test Role";
+				
+				
+				user.Roles = Collection<TestRole>.Add(user.Roles, role);
+				
+				DataAccess.Data.Saver.Save(role);
+				
+				
+				PagingLocation location = new PagingLocation(0, 10);
+				string sortExpression = "UsernameAscending";
+				
+				TestRole[] foundRoles = DataAccess.Data.Indexer.GetPageOfEntitiesWithReference<TestRole>("Users", typeof(TestUser), Guid.Empty, location, sortExpression);
+				
+				
+				
+				
+				Assert.IsNotNull(foundRoles, "The found roles object returned was null.");
+				
+				Assert.AreEqual(1, foundRoles.Length, "Invalid number of roles found.");
+				
+				
+			}
+		}
+		
+		
+		[Test]
+		public void Test_GetPageOfEntitiesWithReference_EmptyReferencedEntityID_NotFound()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing the index retrieval of entities that don't have any references on a particular property.", NLog.LogLevel.Debug))
+			{
+								
+				TestUser user = new TestUser();
+				Guid userID = user.ID = Guid.NewGuid();
+				user.FirstName = "Test";
+				user.LastName = "User";
+				
+				TestRole role = new TestRole();
+				Guid roleID = role.ID = Guid.NewGuid();
+				role.Name = "Test Role";
+				
+				
+				user.Roles = Collection<TestRole>.Add(user.Roles, role);
+				
+				DataAccess.Data.Saver.Save(user);
+				
+				DataAccess.Data.Saver.Save(role);
+				
+				
+				PagingLocation location = new PagingLocation(0, 10);
+				string sortExpression = "UsernameAscending";
+				
+				TestRole[] foundRoles = DataAccess.Data.Indexer.GetPageOfEntitiesWithReference<TestRole>("Users", typeof(TestUser), Guid.Empty, location, sortExpression);
+				
+				
+				
+				
+				Assert.IsNotNull(foundRoles, "The found roles object returned was null.");
+				
+				Assert.AreEqual(0, foundRoles.Length, "Invalid number of roles found.");
+				
+				
+			}
+		}
+		
+		
 	}
 }
