@@ -15,7 +15,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="group"></param>
 		/// <returns></returns>
-		T Retrieve<T>(IFilterGroup group)
+		T Retrieve<T>(IDataFilterGroup group)
 			where T : IEntity;
 		
 		/// <summary>
@@ -23,7 +23,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="group"></param>
 		/// <returns></returns>
-		IEntity Retrieve(Type type, IFilterGroup group);
+		IEntity Retrieve(Type type, IDataFilterGroup group);
 		
 		/// <summary>
 		/// Retrieves the entity of the specified type with the provided unique key.

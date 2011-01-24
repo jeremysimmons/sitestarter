@@ -21,27 +21,10 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		bool EnablePaging {get;set;}
 		
-		// TODO: Clean up
-		/*/// <summary>
-		/// Gets/sets the index of the current page.
-		/// </summary>
-		int CurrentPageIndex {get;set;}
-		
 		/// <summary>
-		/// Gets/sets the number of entities on each page.
+		/// Gets/sets the current paging location.
 		/// </summary>
-		int PageSize {get;set;}
-		
-		/// <summary>
-		/// Gets/sets the absolute total number of entities found (including those on other pages).
-		/// </summary>
-		int AbsoluteTotal {get;set;}
-		*/
-			
-			/// <summary>
-			/// Gets/sets the current paging location.
-			/// </summary>
-			IPagingLocation Location { get;set; }
+		IPagingLocation Location { get;set; }
 		
 		/// <summary>
 		/// Retrieves the entities of the specified type.
@@ -94,8 +77,18 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="propertyName">The name of the property containing the references.</param>
 		/// <param name="referencedEntityType">The type of the entity being referenced.</param>
 		/// <param name="referencedEntityID">The ID of the entity being referenced.</param>
-		/// <returns>The entity matching the provided parameters.</returns>
+		/// <returns>The entities matching the provided parameters.</returns>
 		T[] IndexWithReference<T>(string propertyName, string referencedEntityType, Guid referencedEntityID)
+			where T : IEntity;
+		
+		
+		/// <summary>
+		/// Indexes the entity with a reference to one of the provided entities.
+		/// </summary>
+		/// <param name="propertyName">The name of the property containing the references.</param>
+		/// <param name="referencedEntities">The entities to look for a reference to.</param>
+		/// <returns>The entity matching the provided parameters.</returns>
+		T[] IndexWithReference<T>(string propertyName, IEntity[] referencedEntities)
 			where T : IEntity;
 		
 		/// <summary>
@@ -113,8 +106,14 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="group"></param>
 		/// <returns></returns>
-		T[] Index<T>(IFilterGroup group)
+		T[] Index<T>(IDataFilterGroup group)
 			where T : IEntity;
 		
+		/// <summary>
+		/// Retrieves the entities matching the provided filter group.
+		/// </summary>
+		/// <param name="group"></param>
+		/// <returns></returns>
+		IEntity[] Index(IDataFilterGroup group);
 	}
 }
