@@ -40,7 +40,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// </summary>
 		/// <param name="group">The group of filters to apply to the query.</param>
 		/// <returns>The entities of the specified type found in the data store.</returns>
-		public abstract IEntity[] GetEntities(FilterGroup group);
+		public abstract IEntity[] GetEntities(IDataFilterGroup group);
 		
 		public abstract T[] GetPageOfEntitiesWithReference<T>(string propertyName, Type referencedEntityType, Guid referencedEntityID, PagingLocation location, string sortExpression)
 			where T : IEntity;
@@ -53,14 +53,14 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		
 		public abstract IEntity[] GetPageOfEntities(Type type, PagingLocation location, string sortExpression);
 		
-		public abstract IEntity[] GetPageOfEntities(Type type, FilterGroup filterGroup, PagingLocation location, string sortExpression);
+		public abstract IEntity[] GetPageOfEntities(Type type, IDataFilterGroup filterGroup, PagingLocation location, string sortExpression);
 		
-		public abstract T[] GetPageOfEntities<T>(FilterGroup filterGroup, PagingLocation location, string sortExpression)
+		public abstract T[] GetPageOfEntities<T>(IDataFilterGroup filterGroup, PagingLocation location, string sortExpression)
 			where T : IEntity;
 		
-		public abstract IEntity[] GetEntities(Type type, FilterGroup filterGroup, string sortExpression);
+		public abstract IEntity[] GetEntities(Type type, IDataFilterGroup filterGroup, string sortExpression);
 		
-		public abstract T[] GetEntities<T>(FilterGroup filterGroup, string sortExpression)
+		public abstract T[] GetEntities<T>(IDataFilterGroup filterGroup, string sortExpression)
 			where T : IEntity;
 		
 		public abstract IEntity[] GetPageOfEntities(Type type, string fieldName, object fieldValue, PagingLocation location, string sortExpression);

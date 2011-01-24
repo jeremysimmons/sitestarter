@@ -72,7 +72,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// </summary>
 		/// <param name="group">The group of filters to apply to the query.</param>
 		/// <returns>The entities of the specified type found in the data store.</returns>
-		public override IEntity[] GetEntities(FilterGroup group)
+		public override IEntity[] GetEntities(IDataFilterGroup group)
 		{
 			List<IEntity> entities = new List<IEntity>();
 
@@ -684,11 +684,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <summary>
 		/// Retrieves the specified page of objects from the provided IObjectSet.
 		/// </summary>
-		/// <param name="type">The type of entities to retrieve.</param>
 		/// <param name="filterGroup">The group to filter the query by.</param>
 		/// <param name="sortExpression">The sort expression to apply before retrieving the page.</param>
 		/// <returns>An array of the objects retrieved.</returns>
-		public override T[] GetEntities<T>(FilterGroup filterGroup, string sortExpression)
+		public override T[] GetEntities<T>(IDataFilterGroup filterGroup, string sortExpression)
 		{
 			return Collection<T>.ConvertAll(GetEntities(typeof(T), filterGroup, sortExpression));
 		}
@@ -700,7 +699,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <param name="filterGroup">The group to filter the query by.</param>
 		/// <param name="sortExpression">The sort expression to apply before retrieving the page.</param>
 		/// <returns>An array of the objects retrieved.</returns>
-		public override IEntity[] GetEntities(Type type, FilterGroup filterGroup, string sortExpression)
+		public override IEntity[] GetEntities(Type type, IDataFilterGroup filterGroup, string sortExpression)
 		{
 			Db4oDataStore store = (Db4oDataStore)GetDataStore(type);
 			
@@ -727,12 +726,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <summary>
 		/// Retrieves the specified page of objects from the provided IObjectSet.
 		/// </summary>
-		/// <param name="type">The type of entities to retrieve.</param>
 		/// <param name="filterGroup">The group to filter the query by.</param>
 		/// <param name="location">The paging location to filter the query by.</param>
 		/// <param name="sortExpression">The sort expression to apply before retrieving the page.</param>
 		/// <returns>An array of the objects retrieved.</returns>
-		public override T[] GetPageOfEntities<T>(FilterGroup filterGroup, PagingLocation location, string sortExpression)
+		public override T[] GetPageOfEntities<T>(IDataFilterGroup filterGroup, PagingLocation location, string sortExpression)
 		{
 			return Collection<T>.ConvertAll(GetPageOfEntities(typeof(T), filterGroup, location, sortExpression));
 		}
@@ -745,7 +743,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <param name="location">The paging location to filter the query by.</param>
 		/// <param name="sortExpression">The sort expression to apply before retrieving the page.</param>
 		/// <returns>An array of the objects retrieved.</returns>
-		public override IEntity[] GetPageOfEntities(Type type, FilterGroup filterGroup, PagingLocation location, string sortExpression)
+		public override IEntity[] GetPageOfEntities(Type type, IDataFilterGroup filterGroup, PagingLocation location, string sortExpression)
 		{
 			Db4oDataStore store = (Db4oDataStore)GetDataStore(type);
 			

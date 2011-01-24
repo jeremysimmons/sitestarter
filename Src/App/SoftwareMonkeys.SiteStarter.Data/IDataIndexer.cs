@@ -44,7 +44,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// </summary>
 		/// <param name="group">The group of filters to apply to the query.</param>
 		/// <returns>The entities of the specified type found in the data store.</returns>
-		IEntity[] GetEntities(FilterGroup group);
+		IEntity[] GetEntities(IDataFilterGroup group);
 		
 		T[] GetPageOfEntitiesWithReference<T>(string propertyName, Type referencedEntityType, Guid referencedEntityID, PagingLocation location, string sortExpression)
 			where T : IEntity;
@@ -59,9 +59,9 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		
 		IEntity[] GetPageOfEntities(Type type, string propertyName, object fieldValue, PagingLocation location, string sortExpression);
 		
-		IEntity[] GetPageOfEntities(Type type, FilterGroup filterGroup, PagingLocation location, string sortExpression);
+		IEntity[] GetPageOfEntities(Type type, IDataFilterGroup filterGroup, PagingLocation location, string sortExpression);
 		
-		T[] GetPageOfEntities<T>(FilterGroup filterGroup, PagingLocation location, string sortExpression)
+		T[] GetPageOfEntities<T>(IDataFilterGroup filterGroup, PagingLocation location, string sortExpression)
 			where T : IEntity;
 
 		T[] GetEntitiesWithReference<T>(string propertyName, Type referencedEntityType, Guid referencedEntityID)
@@ -78,9 +78,9 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		
 		IEntity[] GetEntities(Type type, string propertyName, object propertyValue);
 		
-		IEntity[] GetEntities(Type type, FilterGroup filterGroup, string sortExpression);
+		IEntity[] GetEntities(Type type, IDataFilterGroup filterGroup, string sortExpression);
 		
-		T[] GetEntities<T>(FilterGroup filterGroup, string sortExpression)
+		T[] GetEntities<T>(IDataFilterGroup filterGroup, string sortExpression)
 			where T : IEntity;
 		
 		/// <summary>
