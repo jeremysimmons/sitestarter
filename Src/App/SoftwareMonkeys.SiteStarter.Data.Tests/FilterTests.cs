@@ -27,7 +27,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				e1.Name = "Test E1";
 				
 				FilterGroup filterGroup = new FilterGroup();
-				filterGroup.Operator = FilterOperator.Or;
+				filterGroup.Operator = FilterGroupOperator.Or;
 				
 				PropertyFilter filter1 = (PropertyFilter)DataAccess.Data.CreateFilter(typeof(PropertyFilter));
 				filter1.PropertyName = "Name";
@@ -64,7 +64,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				e1.Name = "Test E1";
 				
 				FilterGroup filterGroup = new FilterGroup();
-				filterGroup.Operator = FilterOperator.And;
+				filterGroup.Operator = FilterGroupOperator.And;
 				
 				PropertyFilter filter1 = (PropertyFilter)DataAccess.Data.CreateFilter(typeof(PropertyFilter));
 				filter1.PropertyName = "Name";

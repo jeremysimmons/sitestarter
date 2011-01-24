@@ -55,7 +55,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			// Outer group
 			FilterGroup group = new FilterGroup();
-			group.Operator = FilterOperator.And; // BOTH child groups MUST match
+			group.Operator = FilterGroupOperator.And; // BOTH child groups MUST match
 			
 			FilterGroup subGroup1 = new MockFailingFilterGroup();
 			FilterGroup subGroup2 = new MockMatchingFilterGroup();
@@ -80,7 +80,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			// Outer group
 			FilterGroup group = new FilterGroup();
-			group.Operator = FilterOperator.And; // BOTH child groups MUST match
+			group.Operator = FilterGroupOperator.And; // BOTH child groups MUST match
 			
 			FilterGroup subGroup1 = new MockMatchingFilterGroup();
 			FilterGroup subGroup2 = new MockMatchingFilterGroup();
@@ -163,7 +163,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			article.Title = "Article1";
 			
 			FilterGroup group = new FilterGroup();
-			group.Operator = FilterOperator.Or;
+			group.Operator = FilterGroupOperator.Or;
 			
 			PropertyFilter filter1 = new PropertyFilter();
 			filter1.AddType(typeof(TestArticle));
@@ -195,7 +195,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			article.Title = "Article1";
 			
 			FilterGroup group = new FilterGroup();
-			group.Operator = FilterOperator.Or;
+			group.Operator = FilterGroupOperator.Or;
 			
 			PropertyFilter filter1 = new PropertyFilter();
 			filter1.AddType(typeof(TestArticle));
