@@ -200,7 +200,69 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 		}
 		
+		[Test]
+		public void Test_IsValid_ReferenceParameter_False()
+		{
+			EntityIDReference reference = new EntityIDReference();
+			
+			bool isValid = DataAccess.Data.Importer.IsValid(reference);
+			
+			Assert.IsFalse(isValid, "Should have returned false.");
+		}
 		
+		[Test]
+		public void Test_IsValid_ReferenceParameter_True()
+		{
+			EntityIDReference reference = new EntityIDReference();
+			reference.Entity1ID = Guid.NewGuid();
+			reference.Entity2ID = Guid.NewGuid();
+			reference.Type2Name = "TestArticle";
+			reference.Type1Name = "TestCategory";
+			reference.Property1Name = "Title";
+			reference.Property2Name = "Name";
+			
+			bool isValid = DataAccess.Data.Importer.IsValid(reference);
+			
+			Assert.IsTrue(isValid, "Should have returned true.");
+		}
+		
+		[Test]
+		public void Test_IsValid_EntityParameter_False()
+		{
+			EntityIDReference reference = new EntityIDReference();
+			
+			bool isValid = DataAccess.Data.Importer.IsValid(reference);
+			
+			Assert.IsFalse(isValid, "Should have returned false.");
+		}
+		
+		[Test]
+		public void Test_IsValid_EntityParameter_True()
+		{
+			TestArticle article = new TestArticle();
+			article.ID = Guid.NewGuid();
+			article.Title = "Test title";
+			
+			bool isValid = DataAccess.Data.Importer.IsValid(article);
+			
+			Assert.IsTrue(isValid, "Should have returned true.");
+		}
+		
+		public void Test_GetPreviousVersion_Legacy()
+		{
+			throw new NotImplementedException();
+			
+			Version version = DataAccess.Data.Importer.GetPreviousVersion();
+			
+			Version expected = new Version(1,2,3,4);
+			
+			Assert.AreEqual(expected.ToString(), version.ToString());
+		}
+		
+		public void Test_GetPreviousVersion_Import()
+		{
+			throw new NotImplementedException();
+		}
 		
 		[Test]
 		public void Test_LoadEntitiesFileList()

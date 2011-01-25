@@ -54,6 +54,47 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		}
 		
 		[Test]
+		public void Test_GetReference_EmptyReferencedEntityID_Found()
+		{
+			using (LogGroup logGroup = AppLogger.StartGroup("Testing the retrieval of references for an entity when specifying a Guid.Empty referenced entity ID.", NLog.LogLevel.Debug))
+			{
+								
+				TestUser user = new TestUser();
+				Guid userID = user.ID = Guid.NewGuid();
+				user.FirstName = "Test";
+				user.LastName = "User";
+				
+				TestRole role = new TestRole();
+				Guid roleID = role.ID = Guid.NewGuid();
+				role.Name = "Test Role";
+				
+				
+				user.Roles = Collection<TestRole>.Add(user.Roles, role);
+				
+				DataAccess.Data.Saver.Save(user);
+				
+				
+				
+				
+				EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences(user.GetType(), user.ID, "Roles", typeof(TestRole), false);
+				
+				
+				
+				
+				Assert.IsNotNull(references, "The references object returned was null.");
+				
+				if (references != null)
+				{
+					Assert.AreEqual(1, references.Count, "Wrong number of references returned.");
+					
+					Assert.IsTrue(references[0].Includes(userID, "Roles"), "The user ID wasn't found on the reference.");
+				}
+				
+				
+			}
+		}
+		
+		[Test]
 		public void Test_GetReferences_2References()
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Testing the retrieval of references for an entity.", NLog.LogLevel.Debug))
