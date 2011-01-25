@@ -37,7 +37,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			set { format = value; }
 		}
 		
-		public ProjectionNotFoundException(string action, string typeName, ProjectionFormat format) : base("A projection could not be found to carry out with action '" + action + "', entity type '" + typeName + "' and output format '" + format + "'.")
+		public ProjectionNotFoundException(string action, string typeName, ProjectionFormat format) : base("A projection could not be found to carry out action '" + action + "', entity type '" + typeName + "' and output format '" + format + "'.")
 		{
 			Action = action;
 			TypeName = typeName;
