@@ -10,6 +10,7 @@ using SoftwareMonkeys.SiteStarter.Web.WebControls;
 using System.Reflection;
 using SoftwareMonkeys.SiteStarter.Web.Properties;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using SoftwareMonkeys.SiteStarter.Web.Security;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 {
@@ -112,9 +113,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			return property.GetValue(DataSource, null);
 		}
 		
-		
 		/// <summary>
-		/// Ensures that the user is authorised to index entities of the specified type.
+		/// Ensures that the user is authorised to perform the desired operation.
 		/// </summary>
 		/// <returns>A value indicating whether the user is authorised.</returns>
 		public virtual bool EnsureAuthorised(IEntity entity)
@@ -130,7 +130,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				
 				if (Container.RequireAuthorisation)
 				{
-					bool isAuthorised = Security.Authorisation.UserCan(Action, entity);
+					bool isAuthorised = AuthoriseStrategies();
 					
 					AppLogger.Debug("Is authorised: " + isAuthorised);
 					
@@ -145,11 +145,21 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				
 				AppLogger.Debug("Output: " + output.ToString());
 			}
-			return true;
+			return output;
+		}
+		
+		public virtual bool AuthoriseStrategies(IEntity entity)
+		{
+			return Security.Authorisation.UserCan(Action, entity);
+		}
+		
+		public virtual bool AuthoriseStrategies()
+		{
+			return Security.Authorisation.UserCan(Action, Container.Type.Name);
 		}
 		
 		/// <summary>
-		/// Ensures that the user is authorised to index entities of the specified type.
+		/// Ensures that the user is authorised to perform the desired operation.
 		/// </summary>
 		/// <returns>A value indicating whether the user is authorised.</returns>
 		public virtual bool EnsureAuthorised()
@@ -167,7 +177,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				
 				if (Container.RequireAuthorisation)
 				{
-					isAuthorised = Security.Authorisation.UserCan(Action, Container.Type.Name);
+					isAuthorised = AuthoriseStrategies();
 					
 					AppLogger.Debug("Is authorised: " + isAuthorised);
 					
@@ -186,7 +196,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		}
 		
 		/// <summary>
-		/// Ensures that the user is authorised to index entities of the specified type.
+		/// Ensures that the user is authorised to perform the desired action.
 		/// </summary>
 		/// <param name="entity">The entity involved in the authorisation check.</param>
 		/// <returns>A value indicating whether the user is authorised.</returns>
@@ -219,10 +229,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			{
 				if (HttpContext.Current != null && HttpContext.Current.Request != null)
 				{
-					Result.DisplayError(Language.Unauthorised);
-					
-					if (HttpContext.Current != null && HttpContext.Current.Request != null)
-						HttpContext.Current.Response.Redirect(UnauthorisedUrl);
+					Authorisation.InvalidPermissionsRedirect();
 				}
 				else
 				{

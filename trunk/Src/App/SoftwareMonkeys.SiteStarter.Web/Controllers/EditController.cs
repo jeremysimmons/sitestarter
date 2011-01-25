@@ -349,6 +349,18 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			return didSucceed;
 		}
 		
+		public override bool AuthoriseStrategies()
+		{
+			return Security.Authorisation.UserCan("Edit", TypeName)
+				&& Security.Authorisation.UserCan("Update", TypeName);
+		}
+		
+		public override bool AuthoriseStrategies(IEntity entity)
+		{
+			return Security.Authorisation.UserCan("Edit", entity)
+				&& Security.Authorisation.UserCan("Update", entity);
+		}
+		
 		/// <summary>
 		/// Navigates to the appropriate page after saving the entity from the form.
 		/// </summary>

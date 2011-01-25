@@ -68,9 +68,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			
 			using (LogGroup logGroup = AppLogger.StartGroup("Creating a new entity."))
 			{
-				entity = CreateStrategy.New(Container.Type.Name).Create();
-				
-				ExecuteCreate(entity);
+				if (EnsureAuthorised())
+				{
+					entity = CreateStrategy.New(Container.Type.Name).Create();
+					
+					ExecuteCreate(entity);
+				}
 			}
 			
 			return entity;
@@ -89,27 +92,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		}
 		
 		/// <summary>
-		/// Begins the create process with the provided entity.
+		/// Executes the create process with the provided entity.
 		/// </summary>
 		/// <param name="entity"></param>
 		public virtual void ExecuteCreate(IEntity entity)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Creating a new entity."))
+			using (LogGroup logGroup = AppLogger.StartGroup("Starting the create entity process.", NLog.LogLevel.Debug))
 			{
 				DataSource = entity;
 				
-				Start();
-			}
-		}
-		
-		/// <summary>
-		/// Starts the create process.
-		/// </summary>
-		public virtual void Start()
-		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Starting the create entity process.", NLog.LogLevel.Debug))
-			{
-				if (EnsureAuthorised())
+				if (EnsureAuthorised(entity))
 					OperationManager.StartOperation("Create" + Container.Type.Name, null);
 			}
 		}
@@ -170,6 +162,18 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				AppLogger.Debug("Saved: " + saved.ToString());
 			}
 			return saved;
+		}
+		
+		public override bool AuthoriseStrategies()
+		{
+			return Security.Authorisation.UserCan("Create", TypeName)
+				&& Security.Authorisation.UserCan("Save", TypeName);
+		}
+		
+		public override bool AuthoriseStrategies(IEntity entity)
+		{
+			return Security.Authorisation.UserCan("Create", entity)
+				&& Security.Authorisation.UserCan("Save", entity);
 		}
 		
 		/// <summary>
