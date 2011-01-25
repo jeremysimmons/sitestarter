@@ -484,7 +484,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			
 			return panel;
 		}
-	
+		
 		private Panel CreateRightPanel()
 		{
 			// Outer panel
@@ -573,21 +573,27 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			
 			using (LogGroup logGroup = AppLogger.StartGroup("Customizing a footer item.", NLog.LogLevel.Debug))
 			{
-				// Reduce to a single cell in the header
-				e.Item.Cells[0].ColumnSpan = 1;
-				while (e.Item.Cells.Count > 1)
+				e.Item.Visible = ShowFooter;
+				
+				if (ShowFooter)
 				{
-					e.Item.Cells.Remove(e.Item.Cells[1]);
-					e.Item.Cells[0].ColumnSpan++;
+					// Reduce to a single cell in the header
+					e.Item.Cells[0].ColumnSpan = 1;
+					while (e.Item.Cells.Count > 1)
+					{
+						e.Item.Cells.Remove(e.Item.Cells[1]);
+						e.Item.Cells[0].ColumnSpan++;
+					}
+
+					if (e.Item.Cells[0].Controls.Count > 0)
+						e.Item.Cells[0].Controls.RemoveAt(0);
+					
+					e.Item.Cells[0].HorizontalAlign = HorizontalAlign.Right;
+
+					e.Item.Visible = ShowFooter;
+					
+					e.Item.Cells[0].Controls.Add(CreatePagingPanel());
 				}
-
-				if (e.Item.Cells[0].Controls.Count > 0)
-					e.Item.Cells[0].Controls.RemoveAt(0);
-				
-				e.Item.Cells[0].HorizontalAlign = HorizontalAlign.Right;
-
-				e.Item.Cells[0].Controls.Add(CreatePagingPanel());
-				
 			}
 		}
 		
@@ -702,6 +708,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			textCell.Controls.Add(new LiteralControl("<div class='" + NoDataTextCssClass + "'>" + NoDataText + "</div>"));
 			
 			DataGridItem textRow = new DataGridItem(Items.Count, 0, ListItemType.Item);
+			//textRow.CssClass = NoDataTextCssClass;
 			textRow.Cells.Add(textCell);
 			
 			table.Rows.Add(textRow);
@@ -878,31 +885,36 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		private PlaceHolder CreatePagingPanel()
 		{
 			PlaceHolder panel = new PlaceHolder();
-						
-			panel.Controls.Add(new LiteralControl(Language.Pages + ":&nbsp;"));
-
-			for (int i = 0; i < PageCount; i++)
+			
+			
+			panel.Visible = AllowPaging || AllowCustomPaging;
+			
+			if (AllowPaging)
 			{
-				if (i != CurrentPageIndex)
+				panel.Controls.Add(new LiteralControl(Language.Pages + ":&nbsp;"));
+	
+				for (int i = 0; i < PageCount; i++)
 				{
-					
-					string url = CompileNavigateUrl(i, CurrentSort);
-					
-					HyperLink link = new HyperLink();
-					link.Text = (i+1).ToString();
-					//button.CommandName = "Page";
-					//button.CommandArgument = (i+1).ToString();
-					link.NavigateUrl = url;
-					panel.Controls.Add(link);
+					if (i != CurrentPageIndex)
+					{
+						string url = CompileNavigateUrl(i, CurrentSort);
+						
+						HyperLink link = new HyperLink();
+						link.Text = (i+1).ToString();
+						
+						link.NavigateUrl = url;
+						panel.Controls.Add(link);
+					}
+					else
+					{
+						panel.Controls.Add(new LiteralControl("<b>" + (i+1) + "</b>"));
+					}
+	
+					if (i < PageCount-1)
+						panel.Controls.Add(new LiteralControl(" | "));
 				}
-				else
-				{
-					panel.Controls.Add(new LiteralControl("<b>" + (i+1) + "</b>"));
-				}
-
-				if (i < PageCount-1)
-					panel.Controls.Add(new LiteralControl(" | "));
 			}
+			
 			return panel;
 		}
 		
