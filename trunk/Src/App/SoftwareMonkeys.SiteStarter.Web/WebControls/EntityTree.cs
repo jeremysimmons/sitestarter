@@ -56,10 +56,26 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			set { ViewState["NoDataText"] = value; }
 		}
 		
-		/*protected override void OnInit(EventArgs e)
+		/// <summary>
+		/// Gets/sets the CSS class of the text displayed when the data is empty.
+		/// </summary>
+		public string NoDataTextCssClass
 		{
+			get
+			{
+				if (ViewState["NoDataTextCssClass"] == null)
+					ViewState["NoDataTextCssClass"] = "NoDataText";
+				return (string)ViewState["NoDataTextCssClass"];
+			}
+			set { ViewState["NoDataTextCssClass"] = value; }
+		}
+		
+		protected override void OnInit(EventArgs e)
+		{
+			if (CssClass == String.Empty)
+				CssClass = "EntityTree";
 			base.OnInit(e);
-		}*/
+		}
 	}
 
 	/// <summary>
@@ -112,7 +128,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
 			if (entities == null || entities.Length == 0)
 			{
-				TreeNode node = new TreeNode("<span class='NoDataText'>" + NoDataText + "</span>");
+				TreeNode node = new TreeNode("<div class='NoDataText'>" + NoDataText + "</div>");
+
 				node.SelectAction = TreeNodeSelectAction.None;
 				Nodes.Add(node); // This should be in the language file
 			}
