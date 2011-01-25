@@ -35,7 +35,6 @@
     {
         PageViews.SetActiveView(Step2View);
     }
-    
 
 </script>
 <asp:Content ID="Content1" ContentPlaceHolderID="Body" Runat="Server">
