@@ -60,7 +60,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			IQuery query1 = dataStore.ObjectContainer.Query();
 			query1.Constrain(typeof(EntityIDReference));
-			//query1.Constrain(query1.Descend("entity1ID").Constrain(entityID).Equal());
 			
 			query1.Descend("entity1ID").Constrain(entityID).Equal().And(
 				query1.Descend("property1Name").Constrain(propertyName).Equal().And(
@@ -69,13 +68,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 							query1.Descend("property2Name").Constrain(mirrorPropertyName).Equal().And(
 								query1.Descend("type2Name").Constrain(EntitiesUtilities.GetShortType(referenceType.Name)).Equal())))));
 			
-			
-			//query1.Descend("entity1ID").Constrain(entityID).Equal().And(
-			//	query1.Descend("entity2ID").Constrain(referenceEntityID).Equal());
-			
 			IQuery query2 = dataStore.ObjectContainer.Query();
 			query2.Constrain(typeof(EntityIDReference));
-			//query2.Constrain(query2.Descend("entity2ID").Constrain(entityID).Equal());
 			
 			query2.Descend("entity2ID").Constrain(entityID).Equal().And(
 				query2.Descend("property2Name").Constrain(propertyName).Equal().And(
@@ -236,9 +230,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			if (entityType == null)
 				throw new ArgumentNullException("entityType");
 			
-			if (entityID == Guid.Empty)
-				throw new ArgumentNullException("entityID");
-			
 			if (referenceType == null)
 				throw new ArgumentNullException("referenceType");
 			
@@ -249,58 +240,46 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			if(dataStore.DoesExist)
 			{
-				// Load the references from the data store
-				/*IList<EntityIDReference> list = dataStore.ObjectContainer.Query<EntityIDReference>(
-						delegate(EntityIDReference reference)
-						{
-							return (entityID.Equals(reference.Entity1ID) && propertyName.Equals(reference.Property1Name))
-								|| (entityID.Equals(reference.Entity2ID) && propertyName.Equals(reference.Property2Name));
-						//	return reference.Includes(entityID, propertyName);
-						});*/
-				
 				EntityIDReferenceCollection list = new EntityIDReferenceCollection();
 				
 				IQuery query1 = dataStore.ObjectContainer.Query();
 				query1.Constrain(typeof(EntityIDReference));
-				//query1.Constrain(query1.Descend("entity1ID").Constrain(entityID).Equal());
 				
-				query1.Descend("entity1ID").Constrain(entityID).Equal().And(
-					query1.Descend("property1Name").Constrain(propertyName).Equal().And(
-						query1.Descend("type1Name").Constrain(EntitiesUtilities.GetShortType(entityType.Name)).Equal().And(
-							query1.Descend("type2Name").Constrain(EntitiesUtilities.GetShortType(referenceType.Name)).Equal())));
+				IConstraint constraint1 = query1.Descend("property1Name").Constrain(propertyName).Equal().And(
+					query1.Descend("type1Name").Constrain(EntitiesUtilities.GetShortType(entityType.Name)).Equal().And(
+						query1.Descend("type2Name").Constrain(EntitiesUtilities.GetShortType(referenceType.Name)).Equal()));
 				
-				
-				//query1.Descend("entity1ID").Constrain(entityID).Equal().And(
-				//	query1.Descend("entity2ID").Constrain(referenceEntityID).Equal());
+				if (entityID != Guid.Empty)
+					constraint1.And(query1.Descend("entity1ID").Constrain(entityID).Equal());
 				
 				IQuery query2 = dataStore.ObjectContainer.Query();
 				query2.Constrain(typeof(EntityIDReference));
-				//query2.Constrain(query2.Descend("entity2ID").Constrain(entityID).Equal());
 				
-				query2.Descend("entity2ID").Constrain(entityID).Equal().And(
-					query2.Descend("property2Name").Constrain(propertyName).Equal().And(
-						query2.Descend("type2Name").Constrain(EntitiesUtilities.GetShortType(entityType.Name)).Equal().And(
-							query2.Descend("type1Name").Constrain(EntitiesUtilities.GetShortType(referenceType.Name)).Equal())));
+				IConstraint constraint2 = query2.Descend("property2Name").Constrain(propertyName).Equal().And(
+					query2.Descend("type2Name").Constrain(EntitiesUtilities.GetShortType(entityType.Name)).Equal().And(
+						query2.Descend("type1Name").Constrain(EntitiesUtilities.GetShortType(referenceType.Name)).Equal()));
 				
-				
-				
+				if (entityID != Guid.Empty)
+					constraint2.And(query2.Descend("entity2ID").Constrain(entityID).Equal());
+								
 				IObjectSet os1 = query1.Execute();
 				
 				while (os1.HasNext())
 				{
 					EntityIDReference reference = (EntityIDReference)os1.Next();
-					if (reference != null)
-					{
-						if (reference.Includes(entityID, propertyName))
-						{
+					// TODO: Check if commented out code is needed
+				//	if (reference != null)
+				//	{
+				//		if (reference.Includes(entityID, propertyName))
+				//		{
 							//				AppLogger.Debug("1 Reference matches expected. Adding to the list.");
 							list.Add(reference);
-						}
-						else
-						{
+				//		}
+				//		else
+				//		{
 							//				AppLogger.Debug("1 Reference failed match. Skipping. IMPORTANT!!! IT SHOULD NOT HAVE FAILED!!!");
-						}
-					}
+				//		}
+				//	}
 				}
 				
 				IObjectSet os2 = query2.Execute();
@@ -308,18 +287,19 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				while (os2.HasNext())
 				{
 					EntityIDReference reference = (EntityIDReference)os2.Next();
-					if (reference != null)
-					{
-						if (reference.Includes(entityID, propertyName))
-						{
-							//				AppLogger.Debug("2 Reference matches expected. Adding to the list.");
+					// TODO: Check if commented out code is needed
+				//	if (reference != null)
+				//	{
+				//		if (reference.Includes(entityID, propertyName))
+				//		{
+				//			//				AppLogger.Debug("2 Reference matches expected. Adding to the list.");
 							list.Add(reference);
-						}
-						else
-						{
+				//		}
+				//		else
+				//		{
 							//				AppLogger.Debug("2 Reference failed match. Skipping. IMPORTANT!!! IT SHOULD NOT HAVE FAILED!!!");
-						}
-					}
+				//		}
+				//	}
 				}
 				
 				if (list.Count == 0)
