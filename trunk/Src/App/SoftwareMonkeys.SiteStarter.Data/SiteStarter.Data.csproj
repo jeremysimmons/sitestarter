@@ -88,15 +88,12 @@
     <Compile Include="IDataAdapter.cs" />
     <Compile Include="IDataExporter.cs" />
     <Compile Include="IDataDeleter.cs" />
-    <Compile Include="IDataFilterGroup.cs" />
-    <Compile Include="IDataFilter.cs" />
     <Compile Include="DataAccess.cs" />
     <Compile Include="DataProvider.cs" />
     <Compile Include="DataProviderCollection.cs" />
     <Compile Include="DataProviderConfiguration.cs" />
     <Compile Include="DataStoreCollection.cs" />
     <Compile Include="FilterGroup.cs" />
-    <Compile Include="FilterOperator.cs" />
     <Compile Include="IDataImporter.cs" />
     <Compile Include="IDataIndexer.cs" />
     <Compile Include="IDataProviderInitializer.cs" />
