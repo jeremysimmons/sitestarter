@@ -183,7 +183,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	/// <summary>
 	/// Loads and displays an index of entities.
 	/// </summary>
-	public void Index()
+	public virtual void Index()
 	{
 		CheckInitialized();
 		
@@ -196,7 +196,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	/// Displays the provided index of entities.
 	/// </summary>
 	/// <param name="entities"></param>
-	public void Index(IEntity[] entities)
+	public virtual void Index(IEntity[] entities)
 	{
 		DataSource = entities;
 		
@@ -221,7 +221,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	/// Displays an index of entities matching the provided filter values.
 	/// </summary>
 	/// <param name="filterValues"></param>
-	public void Index(Dictionary<string, object> filterValues)
+	public virtual void Index(Dictionary<string, object> filterValues)
 	{
 		using (LogGroup logGroup = AppLogger.StartGroup("Preparing to load an index of enitities for display."))
 		{
@@ -250,7 +250,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	/// Loads the entities for the index.
 	/// </summary>
 	/// <returns></returns>
-	public IEntity[] PrepareIndex()
+	public virtual IEntity[] PrepareIndex()
 	{
 		if (EnsureAuthorised())
 		{
@@ -266,7 +266,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	/// <param name="propertyName"></param>
 	/// <param name="propertyValue"></param>
 	/// <returns></returns>
-	public IEntity[] PrepareIndex(string propertyName, object propertyValue)
+	public virtual IEntity[] PrepareIndex(string propertyName, object propertyValue)
 	{
 		Dictionary<string, object> filterValues = new Dictionary<string, object>();
 		filterValues.Add(propertyName, propertyValue);
@@ -279,7 +279,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	/// </summary>
 	/// <param name="filterValues"></param>
 	/// <returns></returns>
-	public IEntity[] PrepareIndex(Dictionary<string, object> filterValues)
+	public virtual IEntity[] PrepareIndex(Dictionary<string, object> filterValues)
 	{
 		if (EnsureAuthorised())
 		{
@@ -293,7 +293,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	/// Executes the index operation using the provided entities.
 	/// </summary>
 	/// <param name="entities"></param>
-	protected void ExecuteIndex(IEntity[] entities)
+	protected virtual void ExecuteIndex(IEntity[] entities)
 	{
 		using (LogGroup logGroup = AppLogger.StartGroup("Preparing to display an index of entities.", NLog.LogLevel.Debug))
 		{
@@ -314,7 +314,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		}
 	}
 	
-	public void CheckInitialized()
+	public virtual void CheckInitialized()
 	{
 		
 		if (Container.Type == null)
