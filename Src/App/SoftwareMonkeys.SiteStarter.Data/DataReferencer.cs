@@ -24,7 +24,11 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			EntityIDReference[] entities =
 				Provider.Stores[dataStoreName].Indexer.GetEntities<EntityIDReference>();
 			
-			return new EntityReferenceCollection(entities);
+			EntityReferenceCollection references = new EntityReferenceCollection();
+			
+			references.AddRange(entities);
+			
+			return references;
 		}
 		
 		/// <summary>
