@@ -62,7 +62,17 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		}
 		
 		/// <summary>
-		/// Initializes the view page, the controller, and the form.
+		/// Initializes the projection.
+		/// </summary>
+		/// <param name="type">The type of entity being viewed.</param>
+		/// <param name="form">The form used to display entity data.</param>
+		public void Initialize(Type type)
+		{
+			Initialize(type, null);
+		}
+				
+		/// <summary>
+		/// Initializes the projection.
 		/// </summary>
 		/// <param name="type">The type of entity being viewed.</param>
 		/// <param name="form">The form used to display entity data.</param>
@@ -71,7 +81,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			Type = type;
 			controller = ViewController.New(this);
 			Form = form;
-			Form.EntityCommand += new EntityFormEventHandler(Form_EntityCommand);
+			if (Form != null)
+				Form.EntityCommand += new EntityFormEventHandler(Form_EntityCommand);
 		}
 
 		void Form_EntityCommand(object sender, EntityFormEventArgs e)
@@ -213,7 +224,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				
 				Controller.View(entity);
 				
-				Form.DataSource = entity;
+				if (Form != null)
+					Form.DataSource = entity;
 				
 				DataBind();
 			}
