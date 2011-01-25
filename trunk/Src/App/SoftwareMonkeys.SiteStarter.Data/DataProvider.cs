@@ -348,6 +348,16 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		}
 		
 		/// <summary>
+		/// Creates a filter object used to match entities by checking that a specified property matches a specified value.
+		/// </summary>
+		/// <returns></returns>
+		public virtual FilterGroup CreateFilterGroup()
+		{
+			return new FilterGroup();
+		}
+		
+		
+		/// <summary>
 		/// Disposes the data provider and suspends the data stores by moving them to a save location outside the application.
 		/// Note: This is used during an update to safely clear the data stores and allow the updated data to be imported without conflicts.
 		/// </summary>
