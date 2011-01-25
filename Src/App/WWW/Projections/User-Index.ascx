@@ -36,6 +36,11 @@
   {
   		Navigator.Go("Create");
   }
+  
+  private void SettingsButton_Click(object sender, EventArgs e)
+  {
+  		Navigator.Go("Edit", "UserSettings");
+  }
                     
 </script>
             <h1>
@@ -49,6 +54,8 @@
                         <div id="ActionButtons">
                         	<asp:Button ID="CreateButton" runat="server" Text='<%# Resources.Language.CreateUser %>'
                                 CssClass="Button" OnClick="CreateButton_Click"></asp:Button>
+                                <asp:Button ID="SettingsButton" runat="server" Text='<%# Resources.Language.Settings %>'
+                                CssClass="Button" OnClick="SettingsButton_Click"></asp:Button>
                                 </div>
 				<p>
                 <cc:IndexGrid ID="IndexGrid" runat="server" AllowPaging="True" DefaultSort="UsernameAscending" HeaderStyle-CssClass="Heading2" AllowSorting="True"
