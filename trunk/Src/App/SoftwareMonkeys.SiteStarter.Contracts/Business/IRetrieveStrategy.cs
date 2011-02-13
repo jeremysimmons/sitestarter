@@ -23,7 +23,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="group"></param>
 		/// <returns></returns>
-		IEntity Retrieve(Type type, IDataFilterGroup group);
+		IEntity Retrieve(IDataFilterGroup group);
 		
 		/// <summary>
 		/// Retrieves the entity of the specified type with the provided unique key.

@@ -26,7 +26,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public virtual T Retrieve<T>(FilterGroup group)
 			where T : IEntity
 		{
-			T entity = (T)Retrieve(typeof(T), group);
+			T entity = (T)Retrieve(group);
 			
 			return entity;
 		}
@@ -36,12 +36,12 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="group"></param>
 		/// <returns></returns>
-		public virtual IEntity Retrieve(Type type, FilterGroup group)
+		public virtual IEntity Retrieve(FilterGroup group)
 		{
 			IEntity entity = DataAccess.Data.Reader.GetEntity(group);
 			
 			if (RequireAuthorisation && entity != null)
-				AuthoriseRetrieveStrategy.New(type.Name).EnsureAuthorised(entity);
+				AuthoriseRetrieveStrategy.New(TypeName).EnsureAuthorised(entity);
 			
 			return entity;
 		}
@@ -61,9 +61,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="group"></param>
 		/// <returns></returns>
-		IEntity IRetrieveStrategy.Retrieve(Type type, IDataFilterGroup group)
+		IEntity IRetrieveStrategy.Retrieve(IDataFilterGroup group)
 		{
-			return Retrieve(type, (FilterGroup)group);
+			return Retrieve((FilterGroup)group);
 		}
 		
 		/// <summary>
