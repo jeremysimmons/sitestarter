@@ -135,6 +135,50 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			else
 				return true;
 		}
-
+		
+		/// <summary>
+		/// Checks whether the provided group can be popped from the list.
+		/// </summary>
+		/// <param name="endingGroup"></param>
+		/// <param name="currentGroup"></param>
+		/// <returns></returns>
+		public bool CanPop(LogGroup endingGroup, LogGroup currentGroup)
+		{
+			if (endingGroup == null)
+				throw new ArgumentNullException("endingGroup");
+			
+			return currentGroup != null
+				&& DiagnosticState.GroupStack.Count > 0
+				&& currentGroup.ID != Guid.Empty
+				&& endingGroup.ParentID != currentGroup.ID
+				&& HasParent(currentGroup, endingGroup.ID); // If the ending group is a parent of the current group then it matches
+		}
+		
+		
+		/// <summary>
+		/// Checks wether the provided log group has a parent with the specified ID.
+		/// </summary>
+		/// <param name="logGroup"></param>
+		/// <param name="parentID"></param>
+		/// <returns></returns>
+		public bool HasParent(LogGroup logGroup, Guid parentID)
+		{
+			if (logGroup == null)
+				throw new ArgumentNullException("logGroup");
+			
+			bool hasParent = false;
+			
+			LogGroup l = logGroup;
+			
+			while (l != null && hasParent == false)
+			{
+				if (l != null && l.ID == parentID)
+					hasParent = true;
+				
+				l = l.Parent;
+			}
+			
+			return hasParent;
+		}
 	}
 }
