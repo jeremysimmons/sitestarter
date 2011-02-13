@@ -77,7 +77,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			get
 			{
 				if (!StateAccess.State.ContainsApplication(ObjectServerKey)
-				    || StateAccess.State.GetApplication(ObjectContainerKey) == null)
+				    || StateAccess.State.GetApplication(ObjectServerKey) == null)
 					OpenServer();
 				
 				return (IObjectServer)StateAccess.State.GetApplication(ObjectServerKey);
@@ -85,6 +85,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			set {
 				StateAccess.State.SetApplication(ObjectServerKey, value);}
 		}
+		
+		public int MaxOpenRetries = 10;
 		
 		/// <summary>
 		/// Gets the key that represents the object server when held in the state store.
@@ -211,29 +213,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Opening data server.", NLog.LogLevel.Info))
 			{
-				Db4oFactory.Configure().ActivationDepth(2);
-				Db4oFactory.Configure().UpdateDepth(0);
-				
-				Db4oFactory.Configure().ObjectClass(typeof(IEntity)).ObjectField("id").Indexed(true);
-				
-				Db4oFactory.Configure().ObjectClass(typeof(EntityIDReference)).ObjectField("property1Name").Indexed(true);
-				Db4oFactory.Configure().ObjectClass(typeof(EntityIDReference)).ObjectField("type1Name").Indexed(true);
-				Db4oFactory.Configure().ObjectClass(typeof(EntityIDReference)).ObjectField("entity1ID").Indexed(true);
-				Db4oFactory.Configure().ObjectClass(typeof(EntityIDReference)).ObjectField("property2Name").Indexed(true);
-				Db4oFactory.Configure().ObjectClass(typeof(EntityIDReference)).ObjectField("type2Name").Indexed(true);
-				Db4oFactory.Configure().ObjectClass(typeof(EntityIDReference)).ObjectField("entity2ID").Indexed(true);
-				
-
-				string fullName = GetStoreFileName();
-				
-				
-				AppLogger.Debug("Full file name: " + fullName);
-				
-				if (!Directory.Exists(Path.GetDirectoryName(fullName)))
-					Directory.CreateDirectory(Path.GetDirectoryName(fullName));
-				
-				ObjectServer = Db4oFactory.OpenServer(Db4oFactory.NewConfiguration(),
-				                                      fullName, 0);
+				ObjectServer = new Db4oDataStoreOpener().TryOpenServer(GetStoreFileName(), MaxOpenRetries);
 				
 				AppLogger.Debug("Server opened");
 				//objectContainer = ObjectServer.OpenClient();
@@ -281,6 +261,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			ObjectContainer.Rollback();
 			
 			ObjectContainer.Dispose(); 
+			
 			ObjectServer.Close(); // ObjectServer must be closed to unlock files.
 			ObjectServer = null;
 			
@@ -343,55 +324,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			query.Constrain(typeof(T));
 			return query;
 		}
-
-		/*public IEntity GetEntity(IObjectSet os)
-		{
-			throw new NotImplementedException();
-		}*/
 		#endregion
-
-		/*static public string ToCamelCase(string text)
-		{
-			// TODO: Check if this is done properly
-			if (text == string.Empty)
-				return String.Empty;
-
-			string firstChar = text.Substring(0, 1);
-
-			text = text.Substring(1, text.Length - 1);
-
-			text = firstChar.ToLower() + text;
-
-			return text;
-		}*/
-
-		
-		/*public T[] GetEntitiesPage<T>(PagingLocation location, string sortExpression)
-			where T : IEntity
-		{
-			int total = 0;
-			
-			T[] output = GetEntitiesPage<T>(location.PageIndex, location.PageSize, sortExpression, out total);
-			
-			location.AbsoluteTotal = total;
-			
-			return output;
-		}*/
-		/*
-		public T[] GetEntitiesPage<T>(string fieldName, object fieldValue, PagingLocation location, string sortExpression)
-			where T : IEntity
-		{
-			
-			int total = 0;
-			
-			
-			T[] output = GetEntitiesPage<T>(fieldName, fieldValue, location.PageIndex, location.PageSize, sortExpression, out total);
-			
-			location.AbsoluteTotal = total;
-			
-			return output;
-		}*/
-		
 		
 		public override void Commit()
 		{
