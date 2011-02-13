@@ -11,37 +11,37 @@ namespace SoftwareMonkeys.SiteStarter.Data
 	/// <summary>
 	/// Defines the base field filter class that all field filter objects inherit.
 	/// </summary>
-    public class PropertyFilter : BaseFilter
-    {
-        private FilterOperator _operator = FilterOperator.Equal;
-        /// <summary>
-        /// Gets/sets the base log level for this group.
-        /// </summary>
-        public FilterOperator Operator
-        {
-            get { return _operator; }
-            set { _operator = value; }
-        }
+	public class PropertyFilter : BaseFilter
+	{
+		private FilterOperator _operator = FilterOperator.Equal;
+		/// <summary>
+		/// Gets/sets the base log level for this group.
+		/// </summary>
+		public FilterOperator Operator
+		{
+			get { return _operator; }
+			set { _operator = value; }
+		}
 
-        private string propertyName = String.Empty;
-        /// <summary>
-        /// Gets/sets the name of the property being matched.
-        /// </summary>
-        public string PropertyName
-        {
-            get { return propertyName; }
-            set { propertyName = value; }
-        }
+		private string propertyName = String.Empty;
+		/// <summary>
+		/// Gets/sets the name of the property being matched.
+		/// </summary>
+		public string PropertyName
+		{
+			get { return propertyName; }
+			set { propertyName = value; }
+		}
 
-        private object propertyValue;
-        /// <summary>
-        /// Gets/sets the value of the property being matched.
-        /// </summary>
-        public object PropertyValue
-        {
-            get { return propertyValue; }
-            set { propertyValue = value; }
-        }
+		private object propertyValue;
+		/// <summary>
+		/// Gets/sets the value of the property being matched.
+		/// </summary>
+		public object PropertyValue
+		{
+			get { return propertyValue; }
+			set { propertyValue = value; }
+		}
 
 		/// <summary>
 		/// Sets the provided property name and property value to the filter.
@@ -52,18 +52,21 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			PropertyName = propertyName;
 			PropertyValue= propertyValue;
 		}
-	
+		
 		/// <summary>
 		/// Empty constructor.
 		/// </summary>
 		public PropertyFilter()
 		{
 		}
-	
+		
 		public override bool IsMatch(IEntity entity)
 		{
 			if (entity == null)
 				throw new ArgumentNullException("entity");
+			
+			if (Types == null || Types.Length == 0)
+				throw new InvalidOperationException("No types have been added to the filter.");
 			
 			bool typeMatches = false;
 			Type entityType = entity.GetType();
@@ -90,7 +93,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			
 			return typeMatches && valueMatches;
 		}
-	
-    }
+		
+	}
 
 }

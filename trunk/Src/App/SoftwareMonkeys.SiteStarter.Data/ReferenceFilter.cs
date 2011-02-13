@@ -14,7 +14,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 	/// </summary>
 	public class ReferenceFilter : BaseFilter
 	{
-		private FilterOperator _operator;
+		private FilterOperator _operator = FilterOperator.Equal;
 		/// <summary>
 		/// Gets/sets the base log level for this group.
 		/// </summary>
@@ -96,6 +96,9 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				
 				if (entity == null)
 					throw new ArgumentNullException("entity");
+			
+				if (Types == null || Types.Length == 0)
+					throw new InvalidOperationException("No types have been added to the filter.");
 				
 				if (this.ReferencedEntityID == Guid.Empty)
 					throw new InvalidOperationException("ReferencedEntityID is not set.");
