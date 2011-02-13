@@ -17,7 +17,7 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
 			get { return name; }
 			set { name = value; }
 		}
-		
+		/*
 		[NonSerialized]
 		private IUserPermission[] permissions;
         /// <summary>
@@ -30,7 +30,7 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
                 return permissions;
             }
             set { permissions = value; }
-        }
+        }*/
         
         [NonSerialized]
         private TestUser[] users;
