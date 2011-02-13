@@ -52,6 +52,17 @@ namespace SoftwareMonkeys.SiteStarter.State.Tests
 			Assert.AreEqual(1, foundCollection.Count);
 			
 		}
+		
+		[Test]
+		public void Test_Remove_Empty()
+		{
+			string group = "TestGroup";
+			
+			StateCollection<string> collection = StateCollection<string>.Current(StateScope.Application, group);
+			
+			collection.Remove("Test");
+			
+		}
 		/*
 		[Test]
 		public void Test_ResetKeys()
