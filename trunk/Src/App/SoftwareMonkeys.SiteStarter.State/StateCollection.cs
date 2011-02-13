@@ -35,7 +35,12 @@ namespace SoftwareMonkeys.SiteStarter.State
 		public new T this[int index]
 		{
 			get { return base[index]; }
-			set { base[index] = value;
+			set {
+				if (value != null)
+					base[index] = value;
+				else
+					RemoveAt(index);
+				
 				Commit();
 			}
 		}
@@ -49,16 +54,20 @@ namespace SoftwareMonkeys.SiteStarter.State
 		
 		public new void Remove(T item)
 		{
-			base.Remove(item);
+			if (Contains(item))
+				RemoveAt(IndexOf(item));
 			
 			Commit();
 		}
 		
 		public new void RemoveAt(int index)
 		{
-			base.RemoveAt(index);
-			
-			Commit();
+			if (index > -1 && index < base.Count)
+			{
+				base.RemoveAt(index);
+				
+				Commit();
+			}
 		}
 		
 		/*/// <summary>
@@ -75,13 +84,13 @@ namespace SoftwareMonkeys.SiteStarter.State
 			
 			SetStateValue(newPosition, value);
 		}*/
-		
-		/// <summary>
-		/// Sets the scope and group key used by this collection.
-		/// </summary>
-		/// <param name="scope"></param>
-		/// <param name="groupKey"></param>
-		public StateCollection(StateScope scope, string groupKey)
+			
+			/// <summary>
+			/// Sets the scope and group key used by this collection.
+			/// </summary>
+			/// <param name="scope"></param>
+			/// <param name="groupKey"></param>
+			public StateCollection(StateScope scope, string groupKey)
 		{
 			Scope = scope;
 			GroupKey = groupKey;
@@ -113,13 +122,13 @@ namespace SoftwareMonkeys.SiteStarter.State
 			
 			return value;
 		}*/
-		
-		/*/// <summary>
-		/// Sets the provided value in the state to correspond with the provided key, in the scope indicated by the Scope property, and in the group indicated by the GroupKey property.
-		/// </summary>
-		/// <param name="index">The index of the item.</param>
-		/// <param name="value">The value to save to state along with the provided key, prefixed by scope and group key.</param>
-		public void SetStateValue(int index, T value)
+			
+			/*/// <summary>
+			/// Sets the provided value in the state to correspond with the provided key, in the scope indicated by the Scope property, and in the group indicated by the GroupKey property.
+			/// </summary>
+			/// <param name="index">The index of the item.</param>
+			/// <param name="value">The value to save to state along with the provided key, prefixed by scope and group key.</param>
+			public void SetStateValue(int index, T value)
 		{
 			string fullKey = GetStateKey(groupKey, index);
 			
@@ -145,8 +154,8 @@ namespace SoftwareMonkeys.SiteStarter.State
 					break;
 			}
 		}*/
-		
-		/*
+			
+			/*
 		/// <summary>
 		/// Checks whether a state value exists at the specified index.
 		/// </summary>
@@ -178,12 +187,12 @@ namespace SoftwareMonkeys.SiteStarter.State
 			
 			return exists;
 		}*/
-		
-		/// <summary>
-		/// Creates the key used to store the collection in state.
-		/// </summary>
-		/// <returns>The state key.</returns>
-		public string GetStateKey()
+			
+			/// <summary>
+			/// Creates the key used to store the collection in state.
+			/// </summary>
+			/// <returns>The state key.</returns>
+			public string GetStateKey()
 		{
 			string key  = groupKey;
 			
@@ -225,7 +234,7 @@ namespace SoftwareMonkeys.SiteStarter.State
 				throw new NotImplementedException();
 			}
 		}
-	/*	
+		/*
 		public int IndexOf(T item)
 		{
 			for (int i = 0; i < Count; i ++)
@@ -330,7 +339,7 @@ namespace SoftwareMonkeys.SiteStarter.State
 					StateAccess.State.SetSession(key, this);
 					break;
 				case StateScope.Operation:
-					StateAccess.State.SetRequest(key, this);
+					StateAccess.State.SetOperation(key, this);
 					break;
 			}
 		}
@@ -351,8 +360,8 @@ namespace SoftwareMonkeys.SiteStarter.State
 					              :  new StateCollection<T>(scope, group));
 					break;
 				case StateScope.Operation:
-					collection = (StateAccess.State.ContainsRequest(group)
-					              ? (StateCollection<T>)StateAccess.State.GetRequest(group)
+					collection = (StateAccess.State.ContainsOperation(group)
+					              ? (StateCollection<T>)StateAccess.State.GetOperation(group)
 					              :  new StateCollection<T>(scope, group));
 					break;
 			}
