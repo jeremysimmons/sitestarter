@@ -164,20 +164,31 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 					
 				}
 				
-				DiagnosticState.PopGroup();
+				
+				LogSupervisor supervisor = new LogSupervisor();
+				
+				// If the ending group is still marked as the current group then pop it
+				//while (DiagnosticState.CurrentGroupID != Guid.Empty
+				//    && DiagnosticState.CurrentGroupID != this.ParentID
+				//    && HasParent(this, DiagnosticState.CurrentGroupID))
+				while (supervisor.CanPop(this, DiagnosticState.CurrentGroup))
+					DiagnosticState.PopGroup();
 				
 				// Ensure that the log is still properly formatted
 				// If the current group ID is not the ID of this group's parent after this group has ended then the log is corrupt
-				if (DiagnosticState.CurrentGroupID != this.ParentID)
-					throw new CorruptLogException(this);
+				// TODO: Check if needed
+				//if (DiagnosticState.CurrentGroupID != this.ParentID)
+				//	throw new CorruptLogException(this);
 				
 				HasEnded = true;
 
 			}
 		}
+		
 
 		private void End(MethodBase callingMethod)
 		{
+			// Nothing is written to the log when the group ends
 		}
 
 		public void Append(LogGroup group)

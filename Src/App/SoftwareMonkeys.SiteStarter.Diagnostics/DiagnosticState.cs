@@ -30,7 +30,13 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 				if (StateAccess.State.ContainsRequest("AppLogger_CurrentGroup"))
 					return (LogGroup)StateAccess.State.GetRequest("AppLogger_CurrentGroup");
 				return null; }
-			set { StateAccess.State.SetRequest("AppLogger_CurrentGroup", value); }
+			set {
+				if (value != null)
+					StateAccess.State.SetRequest("AppLogger_CurrentGroup", value);
+				else
+					StateAccess.State.RemoveRequest("AppLogger_CurrentGroup");
+				
+			}
 		}
 		
 		/// <summary>
@@ -66,12 +72,18 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		/// <param name="group">The group to add to the stack.</param>
 		static public void PushGroup(LogGroup group)
 		{
+			if (group == null)
+				throw new ArgumentNullException("group");
+			
 			group.Parent = DiagnosticState.CurrentGroup;
 			
 			if (CurrentGroup != null)
 				CurrentGroup.Append(group);
 			
 			CurrentGroup = group;
+			
+			// TODO: Check if needed. Should be obsolete.
+			// The ParentID property being Guid.Empty should indicate that it's a thread title
 			if (GroupStack.Count == 0)
 				group.IsThreadTitle = true;
 			

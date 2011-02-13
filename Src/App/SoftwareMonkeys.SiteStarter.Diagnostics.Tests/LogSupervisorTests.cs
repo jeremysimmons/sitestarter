@@ -75,5 +75,37 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics.Tests
 			
 			Assert.IsTrue(isEnabled, "Should have been true.");
 		}
+		
+		[Test]
+		public void Test_CanPop_False()
+		{
+			LogGroup logGroup1 = LogGroup.Start("Test");
+			
+			LogGroup logGroup2 = LogGroup.Start("Test2");
+			
+			logGroup2.Parent = logGroup1;
+			
+			LogSupervisor supervisor = new LogSupervisor();
+			bool canPop = supervisor.CanPop(logGroup2, logGroup1);
+			
+			Assert.IsFalse(canPop);
+		}
+		
+		
+		[Test]
+		public void Test_CanPop_True()
+		{
+			LogGroup logGroup1 = LogGroup.Start("Test");
+			
+			LogGroup logGroup2 = LogGroup.Start("Test2");
+			
+			logGroup2.Parent = logGroup1;
+			
+			LogSupervisor supervisor = new LogSupervisor();
+			
+			bool canPop = supervisor.CanPop(logGroup2, logGroup2);
+			
+			Assert.IsTrue(canPop);
+		}
 	}
 }
