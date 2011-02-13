@@ -189,6 +189,33 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			return isMatch;
 
 		}
+		
+		static public FilterGroup New(Type type, string referencePropertyName, IEntity referencedEntity, string propertyName, object propertyValue)
+		{
+			return New(type, referencePropertyName, referencedEntity.ShortTypeName, referencedEntity.ID, propertyName, propertyValue);
+		}
+		
+		static public FilterGroup New(Type type, string referencePropertyName, string referenceType, Guid referencedEntityID, string propertyName, object propertyValue)
+		{
+			FilterGroup group = DataAccess.Data.CreateFilterGroup();
+			
+			PropertyFilter propertyFilter = DataAccess.Data.CreatePropertyFilter();
+			propertyFilter.AddType(type);
+			propertyFilter.PropertyName = propertyName;
+			propertyFilter.PropertyValue = propertyValue;
+			
+			group.Add(propertyFilter);
+			
+			ReferenceFilter referenceFilter = DataAccess.Data.CreateReferenceFilter();
+			referenceFilter.AddType(type);
+			referenceFilter.ReferencedEntityID = referencedEntityID;
+			referenceFilter.PropertyName = referencePropertyName;
+			referenceFilter.ReferenceType = EntityState.GetType(referenceType);
+			
+			group.Add(referenceFilter);
+			
+			return group;
+		}
 	}
 
 
