@@ -74,7 +74,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <summary>
 		/// Displays the page for viewing an entity.
 		/// </summary>
-		public void View<T>()
+		public virtual void View<T>()
 			where T : IEntity
 		{
 			Guid id = QueryStrings.GetID(Container.Type.Name);
@@ -91,7 +91,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <summary>
 		/// Displays the page for viewing the entity with the provided ID.
 		/// </summary>
-		public void View(Guid entityID)
+		public virtual void View(Guid entityID)
 		{
 			Reflector.InvokeGenericMethod(this,
 			                              "View",
@@ -102,10 +102,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <summary>
 		/// Displays the page for viewing the entity with the provided ID.
 		/// </summary>
-		public T View<T>(Guid entityID)
+		public virtual T View<T>(Guid entityID)
 			where T : IEntity
 		{
-			IEntity entity = PrepareView(entityID);
+			IEntity entity = LoadEntity(entityID);
 			
 			View(entity);
 			
@@ -115,7 +115,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <summary>
 		/// Displays the page for viewing an entity with the provided unique key.
 		/// </summary>
-		public IEntity View(string uniqueKey)
+		public virtual IEntity View(string uniqueKey)
 		{
 			return (IEntity)Reflector.InvokeGenericMethod(this,
 			                                              "View",
@@ -126,10 +126,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <summary>
 		/// Displays the page for viewing the entity with the provided unique key.
 		/// </summary>
-		public T View<T>(string uniqueKey)
+		public virtual T View<T>(string uniqueKey)
 			where T : IEntity
 		{
-			T entity = PrepareView<T>(uniqueKey);
+			T entity = LoadEntity<T>(uniqueKey);
 			
 			View(entity);
 			
@@ -139,7 +139,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <summary>
 		/// Displays the page for viewing the provided entity.
 		/// </summary>
-		public void View(IEntity entity)
+		public virtual void View(IEntity entity)
 		{
 			Reflector.InvokeGenericMethod(this,
 			                              "View",
@@ -150,7 +150,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <summary>
 		/// Displays the page for viewing an entity.
 		/// </summary>
-		public void View<T>(T entity)
+		public virtual void View<T>(T entity)
 			where T : IEntity
 		{
 			if (EnsureAuthorised())
@@ -164,7 +164,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		
 		#region Utility functions
 		
-		public void StartView()
+		public virtual void StartView()
 		{
 			OperationManager.StartOperation("View" + Container.Type.Name, null);
 		}
@@ -173,7 +173,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// Loads the entity specified by the query string and prepares it for viewing.
 		/// </summary>
 		/// <returns>The entity specified by the query string.</returns>
-		public IEntity PrepareView()
+		public virtual IEntity PrepareView()
 		{
 			return (IEntity)Reflector.InvokeGenericMethod(this, "PrepareView",
 			                                              new Type[] { Container.Type },
@@ -184,7 +184,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// Loads the entity specified by the query string and prepares it for viewing.
 		/// </summary>
 		/// <returns>The entity specified by the query string.</returns>
-		public T PrepareView<T>()
+		public virtual T PrepareView<T>()
 			where T : IEntity
 		{
 			
@@ -192,9 +192,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			string goalKey = QueryStrings.GetUniqueKey(Container.Type.Name);
 			
 			if (goalID != Guid.Empty)
-				return (T)PrepareView<T>(goalID);
+				return (T)LoadEntity<T>(goalID);
 			else if (goalKey != String.Empty)
-				return (T)PrepareView<T>(goalKey);
+				return (T)LoadEntity<T>(goalKey);
 			else
 				throw new InvalidOperationException("Cannot find entity ID or unique key in query string.");
 		}
@@ -204,9 +204,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// </summary>
 		/// <param name="id">The ID of the entity to load and prepare.</param>
 		/// <returns>The entity with the specified ID.</returns>
-		public T PrepareView<T>(Guid id)
+		public virtual T LoadEntity<T>(Guid id)
 		{
-			return (T)PrepareView(id);
+			return (T)LoadEntity(id);
 		}
 		
 		/// <summary>
@@ -214,9 +214,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// </summary>
 		/// <param name="uniqueKey">The unique key of the entity to load and prepare.</param>
 		/// <returns>The entity with the specified unique key.</returns>
-		public T PrepareView<T>(string uniqueKey)
+		public virtual T LoadEntity<T>(string uniqueKey)
 		{
-			return (T)PrepareView(uniqueKey);
+			return (T)LoadEntity(uniqueKey);
 		}
 		
 		/// <summary>
@@ -224,7 +224,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// </summary>
 		/// <param name="uniqueKey">The unique key of the entity to load and prepare.</param>
 		/// <returns>The entity with the specified unique key.</returns>
-		public IEntity PrepareView(string uniqueKey)
+		public virtual IEntity LoadEntity(string uniqueKey)
 		{
 			IEntity entity = null;
 			using (LogGroup logGroup = AppLogger.StartGroup("Loading entity from unique key.", NLog.LogLevel.Debug))
@@ -236,7 +236,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				if (entity == null)
 					throw new ArgumentException("Entity of type '" + Container.Type.Name + "' not found with unique key '" + uniqueKey + "'. Check that the entity and the factory retrieve method are properly configured.");
 				
-				PrepareView(entity);
+				LoadEntity(entity);
 			}
 			return entity;
 		}
@@ -246,7 +246,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// </summary>
 		/// <param name="id">The ID of the entity to load and prepare.</param>
 		/// <returns>The entity with the specified ID.</returns>
-		public IEntity PrepareView(Guid id)
+		public virtual IEntity LoadEntity(Guid id)
 		{
 			IEntity entity = null;
 			using (LogGroup logGroup = AppLogger.StartGroup("Loading entity from unique key.", NLog.LogLevel.Debug))
@@ -260,7 +260,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				
 				AppLogger.Debug("Entity: " + entity.ToString());
 				
-				PrepareView(entity);
+				LoadEntity(entity);
 			}
 			return entity;
 		}
@@ -269,7 +269,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// Prepares the provided entity for viewing.
 		/// </summary>
 		/// <param name="entity">The entity to prepare for viewing.</param>
-		public void PrepareView(IEntity entity)
+		public virtual void LoadEntity(IEntity entity)
 		{
 			Activator.Activate(entity);
 			
