@@ -1,6 +1,8 @@
 ﻿using System;
-using SoftwareMonkeys.SiteStarter.Data;
 using System.IO;
+
+using SoftwareMonkeys.SiteStarter.Data;
+using SoftwareMonkeys.SiteStarter.State;
 
 namespace SoftwareMonkeys.SiteStarter.Business
 {
@@ -18,8 +20,12 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			get {
 				if (strategiesDirectoryPath == null || strategiesDirectoryPath == String.Empty)
 				{
-					if (DataAccess.IsInitialized)
-						strategiesDirectoryPath = DataAccess.Data.DataDirectoryPath + Path.DirectorySeparatorChar + "Strategies";
+					if (StateAccess.IsInitialized)
+					{
+						strategiesDirectoryPath = StateAccess.State.PhysicalApplicationPath
+							+ Path.DirectorySeparatorChar + "App_Data"
+							+ Path.DirectorySeparatorChar + "Strategies";
+					}
 				}
 				return strategiesDirectoryPath;
 			}
