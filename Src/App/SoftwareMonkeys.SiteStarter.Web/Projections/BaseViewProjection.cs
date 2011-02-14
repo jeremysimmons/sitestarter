@@ -124,7 +124,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		public virtual T PrepareView<T>(Guid id)
 			where T : IEntity
 		{
-			T entity = Controller.PrepareView<T>(id);
+			T entity = Controller.LoadEntity<T>(id);
 			
 			return entity;
 		}
@@ -136,7 +136,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <returns>The entity specified by the unique key.</returns>
 		public virtual T PrepareView<T>(string uniqueKey)
 		{
-			T entity = Controller.PrepareView<T>(uniqueKey);
+			T entity = Controller.LoadEntity<T>(uniqueKey);
 			
 			return entity;
 		}
@@ -148,7 +148,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <returns>The entity specified by the unique key.</returns>
 		public virtual IEntity PrepareView(Guid id)
 		{
-			IEntity entity = Controller.PrepareView(id);
+			IEntity entity = Controller.LoadEntity(id);
 			
 			return entity;
 		}
@@ -160,7 +160,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <returns>The entity specified by the unique key.</returns>
 		public virtual IEntity PrepareView(string uniqueKey)
 		{
-			IEntity entity = Controller.PrepareView(uniqueKey);
+			IEntity entity = Controller.LoadEntity(uniqueKey);
 			
 			return entity;
 		}
@@ -235,6 +235,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			if (controller == null)
 				throw new InvalidOperationException("Controller has not be initialized. Call Initialize().");
+		}
+		
+		/// <summary>
+		/// Evaluates the provided expression against the data source and returns the corresponding value.
+		/// </summary>
+		/// <param name="expression"></param>
+		/// <returns></returns>
+		public object Eval(string expression)
+		{
+			return Controller.Eval(expression);
 		}
 	}
 }
