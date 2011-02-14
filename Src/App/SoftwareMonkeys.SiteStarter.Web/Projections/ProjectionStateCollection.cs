@@ -98,6 +98,29 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		}
 		
 		/// <summary>
+		/// Checks whether a projection exists.
+		/// </summary>
+		/// <param name="action"></param>
+		/// <param name="typeName"></param>
+		/// <returns>A value indicating whether the projection exists.</returns>
+		public bool ProjectionExists(string action, string typeName)
+		{
+			return ProjectionExists(action, typeName, ProjectionFormat.Html);
+		}
+		
+		/// <summary>
+		/// Checks whether a projection exists.
+		/// </summary>
+		/// <param name="action"></param>
+		/// <param name="typeName"></param>
+		/// <param name="format"></param>
+		/// <returns>A value indicating whether the projection exists.</returns>
+		public bool ProjectionExists(string action, string typeName, ProjectionFormat format)
+		{
+			return StateValueExists(GetProjectionKey(action, typeName, format));
+		}
+		
+		/// <summary>
 		/// Retrieves the projection with the provided action and type.
 		/// </summary>
 		/// <param name="action">The action that the projection performs.</param>
