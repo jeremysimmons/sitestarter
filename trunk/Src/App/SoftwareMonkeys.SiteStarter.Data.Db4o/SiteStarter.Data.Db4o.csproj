@@ -1,4 +1,5 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -72,6 +73,7 @@
     <Compile Include="Db4oDataStore.cs" />
     <Compile Include="Db4oDataProvider.cs" />
     <Compile Include="Db4oDataStoreFactory.cs" />
+    <Compile Include="Db4oDataStoreOpener.cs" />
     <Compile Include="Db4oDataUpdater.cs" />
     <Compile Include="Db4oPropertyFilter.cs" />
     <Compile Include="Db4oReferenceFilter.cs" />
