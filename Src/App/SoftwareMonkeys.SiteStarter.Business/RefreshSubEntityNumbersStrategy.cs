@@ -25,23 +25,29 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			if (itemsPropertyName == String.Empty)
 				throw new ArgumentException("An items property name must be provided.", "itemsPropertyName");
 			
+			// Activate the items property
 			ActivateStrategy.New(parentEntity).Activate(parentEntity, itemsPropertyName);
 			
+			// Get the items property
 			PropertyInfo property = parentEntity.GetType().GetProperty(itemsPropertyName);
 			
 			if (property == null)
 				throw new ArgumentException("No property with the name '" + itemsPropertyName + "' found on the type '" + parentEntity.ShortTypeName + "'.");
 			
+			// Get the value of the items property
 			ISubEntity[] items = (ISubEntity[])Collection<ISubEntity>.ConvertAll(property.GetValue(parentEntity, null));
 			
 			string numberPropertyName = String.Empty;
 			
+			// If items were found
 			if (items.Length > 0)
 			{
 				numberPropertyName = items[0].NumberPropertyName;
 				
+				// Sort by number
 				items = Collection<ISubEntity>.Sort(items, numberPropertyName + "Ascending");
 				
+				// Refresh the numbers
 				Refresh(items, true);
 			}
 		}
