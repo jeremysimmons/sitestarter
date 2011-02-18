@@ -12,8 +12,15 @@ namespace SoftwareMonkeys.SiteStarter.Tests
 		[SetUp]
 		public void Start()
 		{
+			TestUtilities.ClearTestingDirectory(this);
 			// Create a new ID for the current test
 			testID = Guid.NewGuid();
+		}
+		
+		[TearDown]
+		public void End()
+		{
+			TestUtilities.ClearTestingDirectory(this);
 		}
 		
 		private Guid testID;

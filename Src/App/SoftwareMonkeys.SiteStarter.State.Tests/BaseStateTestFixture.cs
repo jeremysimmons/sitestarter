@@ -16,7 +16,6 @@ namespace SoftwareMonkeys.SiteStarter.State.Tests
 		[SetUp]
 		public void Start()
 		{
-			TestUtilities.ClearTestingDirectory(this);
 			InitializeMockState();
 		}
 		
@@ -27,7 +26,6 @@ namespace SoftwareMonkeys.SiteStarter.State.Tests
 		public void End()
 		{
 			DisposeMockState();
-			TestUtilities.ClearTestingDirectory(this);
 		}
 	
 		
