@@ -6,6 +6,7 @@
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Security" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Properties" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Configuration" %>
 <script runat="server">
     #region Main functions
@@ -15,15 +16,18 @@
     /// </summary>
     private void EditSettings()
     {        
-        // Start the operation
-        OperationManager.StartOperation("EditSettings", SettingsFormView);
-
-        AppConfig config = (AppConfig)Config.Application;
-
-        Authorisation.EnsureUserCan("Edit", "Settings");
-
-        // Bind the form
-        SettingsFormView.DataBind();
+    	using (LogGroup logGroup = LogGroup.Start("Displaying the form to edit the user settings.", NLog.LogLevel.Debug))
+    	{
+	        // Start the operation
+	        OperationManager.StartOperation("EditSettings", SettingsFormView);
+	
+	        AppConfig config = (AppConfig)Config.Application;
+	
+	        Authorisation.EnsureUserCan("Edit", "Settings");
+	
+	        // Bind the form
+	        SettingsFormView.DataBind();
+        }
     }
 
     /// <summary>
@@ -31,23 +35,25 @@
     /// </summary>
     private void UpdateSettings()
     {
-        // Get a fresh copy of the config object
-        AppConfig config = (AppConfig)Config.Application;
-
-        config.Settings["EnableUserRegistration"] = EnableUserRegistration.Checked;
-        config.Settings["AutoApproveNewUsers"] = AutoApproveNewUsers.Checked;
-    
-        // Update the config
-        config.Save();
-        //SoftwareMonkeys.SiteStarter.Configuration.ConfigFactory<AppConfig>.SaveConfig(Request.MapPath(Request.ApplicationPath + "/App_Data"), config, WebUtilities.GetLocationVariation(Request.Url));
-
-		Config.Application = config;
-
-        // Display the result to the config
-        Result.Display(Resources.Language.SettingsUpdated);
-
-        // Show the index again
-            Navigator.Go("Index", "Settings");
+    	using (LogGroup logGroup = LogGroup.Start("Updating the user settings.", NLog.LogLevel.Debug))
+    	{
+		    // Get a fresh copy of the config object
+		    AppConfig config = (AppConfig)Config.Application;
+		
+		    config.Settings["EnableUserRegistration"] = EnableUserRegistration.Checked;
+		    config.Settings["AutoApproveNewUsers"] = AutoApproveNewUsers.Checked;
+		
+		    // Update the config
+		    config.Save();
+		    
+			Config.Application = config;
+		
+		    // Display the result to the config
+		    Result.Display(Resources.Language.SettingsUpdated);
+		
+		    // Show the index again
+		    Navigator.Go("Index", "Settings");
+        }
     }
 
     #endregion
@@ -55,31 +61,23 @@
     #region Event handlers
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (!IsPostBack)
-        {
-            EditSettings();
+    	using (LogGroup logGroup = LogGroup.Start("Loading the edit user settings page.", NLog.LogLevel.Debug))
+    	{
+	        if (!IsPostBack)
+	        {
+	            EditSettings();
+	        }
         }
-    }
-
-    private void SettingsForm_EntityCommand(object sender, EntityFormEventArgs e)
-    {
-        if (e.CommandName == "Update")
-        {
-            UpdateSettings();
-        }
-        else
-            Navigator.Go("Index", "Settings");
     }
 
     private void UpdateButton_Click(object sender, EventArgs e)
     {
-        UpdateSettings();
+    	using (LogGroup logGroup = LogGroup.Start("Handling the click event of the update button.", NLog.LogLevel.Debug))
+    	{
+        	UpdateSettings();
+        }
     }
 
-    private void CancelButton_Click(object sender, EventArgs e)
-    {
-        Response.Redirect("Settings.aspx");
-    }
     #endregion
 
 </script>
