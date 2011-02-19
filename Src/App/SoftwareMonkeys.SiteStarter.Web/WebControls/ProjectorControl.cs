@@ -5,6 +5,7 @@ using SoftwareMonkeys.SiteStarter.Web.Controllers;
 using SoftwareMonkeys.SiteStarter.Web.Parts;
 using System.Web.UI;
 using System.ComponentModel;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 
 namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 {
@@ -84,21 +85,35 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		/// <param name="e"></param>
 		protected override void OnInit(EventArgs e)
 		{
-			InitializeProjections();
-			
-			Control control = ProjectionState.Projections[Action, TypeName, Format].Load(Page);
-			
-			if (control != null)
+			using (LogGroup logGroup = LogGroup.Start("Initializing the projector control.", NLog.LogLevel.Debug))
 			{
-				Controls.Add(control);
-				FoundProjection = true;
+				LogWriter.Debug("Url: " + Page.Request.Url.ToString());
+				LogWriter.Debug("Action: " + Action);
+				LogWriter.Debug("Type Name: " + TypeName);
+				LogWriter.Debug("Format: " + Format);
+				
+				InitializeProjections();
+				
+				ProjectionInfo projection = ProjectionState.Projections[Action, TypeName, Format];
+				
+				Control control = projection.Load(Page);
+				
+				if (control != null)
+				{
+					LogWriter.Debug("Projection control found: " + projection.ProjectionFilePath);
+					
+					Controls.Add(control);
+					FoundProjection = true;
+				}
+				else
+				{
+					LogWriter.Debug("No projection found.");
+					
+					FoundProjection = false;
+				}
+				
+				base.OnInit(e);
 			}
-			else
-			{
-				FoundProjection = false;
-			}
-			
-			base.OnInit(e);
 		}
 		
 		public void InitializeProjections()
