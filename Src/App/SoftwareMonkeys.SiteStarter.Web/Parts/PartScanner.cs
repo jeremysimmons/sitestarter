@@ -13,27 +13,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 	/// </summary>
 	public class PartScanner : BasePartScanner
 	{
-		// TODO: Tidy up
-		
-		/*private string partsDirectoryName;
-		/// <summary>
-		/// Gets/sets the name of the directory containing the parts.
-		/// </summary>
-		public string PartsDirectoryName
-		{
-			get { return partsDirectoryName; }
-			set { partsDirectoryName = value; }
-		}
-		
-		/// <summary>
-		/// Gets/sets the full path of the directory containing the parts.
-		/// </summary>
-		public string PartsDirectoryPath
-		{
-			get { return partsDirectoryName; }
-			set { partsDirectoryName = value; }
-		}*/
-		
 		private PartFileNamer fileNamer;
 		/// <summary>
 		/// Gets/sets the file namer used for generating part file names and paths.
@@ -87,13 +66,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 			
 			using (LogGroup logGroup = AppLogger.StartGroup("Finding parts by scanning the attributes of the available type.", NLog.LogLevel.Debug))
 			{
-				foreach (string file in Directory.GetFiles(FileNamer.PartsDirectoryPath))
+				if (Directory.Exists(FileNamer.PartsDirectoryPath))
 				{
-					if (IsPart(file))
+					foreach (string file in Directory.GetFiles(FileNamer.PartsDirectoryPath))
 					{
-						foreach (PartInfo info in ExtractPartInfo(file))
+						if (IsPart(file))
 						{
-							parts.Add(info);
+							foreach (PartInfo info in ExtractPartInfo(file))
+							{
+								parts.Add(info);
+							}
 						}
 					}
 				}

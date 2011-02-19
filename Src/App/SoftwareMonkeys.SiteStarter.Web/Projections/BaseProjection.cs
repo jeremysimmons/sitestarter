@@ -181,22 +181,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			// override to set menu properties such as MenuTitle, MenuCategory, and ShowOnMenu
 		}
 		
-		// TODO: Check if needed.
-		// Should be obsolete
-		/*protected override void OnInit(EventArgs e)
+		protected override void OnInit(EventArgs e)
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Initializing the projection.", NLog.LogLevel.Debug))
 			{
-				try
-				{
-					base.OnInit(e);
-				}
-				catch(UnauthorisedException)
-				{
-					FailAuthorisation();
-				}
+				LogWriter.Debug("Url: " + Request.Url.ToString());
 				
-				InitializeMenu();
+				base.OnInit(e);
 			}
 		}
 		
@@ -204,14 +195,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Loading the projection.", NLog.LogLevel.Debug))
 			{
-				try
-				{
-					base.OnLoad(e);
-				}
-				catch(UnauthorisedException)
-				{
-					FailAuthorisation();
-				}
+				LogWriter.Debug("Url: " + Request.Url.ToString());
+				
+				base.OnLoad(e);
 			}
 		}
 		
@@ -219,16 +205,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			using (LogGroup logGroup = AppLogger.StartGroup("Data binding the projection.", NLog.LogLevel.Debug))
 			{
-				try
-				{
-					base.DataBind();
-				}
-				catch(UnauthorisedException)
-				{
-					FailAuthorisation();
-				}
+				LogWriter.Debug("Url: " + Request.Url.ToString());
+				
+				base.DataBind();
 			}
-		}*/
+		}
 		
 		// TODO: Check if needed. Moved to BaseController.
 		/*
