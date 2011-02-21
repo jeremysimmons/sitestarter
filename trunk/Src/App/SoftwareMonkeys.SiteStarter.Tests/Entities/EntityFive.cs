@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using SoftwareMonkeys.SiteStarter.Entities;
@@ -7,7 +7,7 @@ using SoftwareMonkeys.SiteStarter.Configuration;
 namespace SoftwareMonkeys.SiteStarter.Tests.Entities
 {
 	[Serializable]
-	public class EntityFour : BaseTestEntity
+	public class EntityFive : BaseTestEntity
 	{
 		private string name;
 		public string Name
@@ -16,15 +16,13 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
 			set { name = value; }
 		}
 
-		private EntityThree[] referencedEntities;
+		private EntitySix[] referencedEntities;
 		[Reference]
-		public EntityThree[] ReferencedEntities
+		public EntitySix[] ReferencedEntities
 		{
 			get { return referencedEntities; }
 			set { referencedEntities = value;
-				//	referencedEntityIDs = Collection<BaseEntity>.GetIDs(referencedEntities);
 			}
 		}
-		
 	}
 }
