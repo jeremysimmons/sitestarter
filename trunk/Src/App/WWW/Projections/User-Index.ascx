@@ -87,14 +87,14 @@
                                         	enabled='<%# AuthoriseUpdateStrategy.New<User>().Authorise((User)Container.DataItem) %>'
                                         	ToolTip='<%# DynamicLanguage.GetEntityText("EditThisEntity", QueryStrings.Type) %>'
                                         	text='<%# Resources.Language.Edit %>'
-                                        	navigateurl='<%# Navigator.GetLink("Edit", "User", Eval("UniqueKey").ToString()) %>'>
+                                        	navigateurl='<%# Navigator.GetLink("Edit", (IEntity)Container.DataItem) %>'>
 										</ASP:Hyperlink>&nbsp;
 										<cc:DeleteLink id=DeleteButton runat="server"
 											text='<%# Resources.Language.Delete %>'
 											ConfirmMessage='<%# DynamicLanguage.GetEntityText("ConfirmDeleteEntity", QueryStrings.Type) %>'
 											enabled='<%# AuthoriseDeleteStrategy.New<User>().Authorise((User)Container.DataItem) %>'
 											ToolTip='<%# DynamicLanguage.GetEntityText("DeleteThisEntity", QueryStrings.Type) %>'
-											navigateurl='<%# Navigator.GetLink("Delete", "User", Eval("UniqueKey").ToString()) %>'>
+											navigateurl='<%# Navigator.GetLink("Delete", (IEntity)Container.DataItem) %>'>
 										</cc:DeleteLink>	
 </itemtemplate>
                                     </asp:TemplateColumn>
