@@ -33,7 +33,7 @@
     /// </summary>
     public override void Create()
     {
-    	using (LogGroup logGroup = AppLogger.StartGroup("Registering a new user.", NLog.LogLevel.Debug))
+    	using (LogGroup logGroup = LogGroup.Start("Registering a new user.", NLog.LogLevel.Debug))
     	{	    	
 	    	PageViews.SetActiveView(FormView);
 	    
@@ -48,7 +48,7 @@
     public override bool Save()
     {
     	bool success = false;
-    	using (LogGroup logGroup = AppLogger.StartGroup("Saving a newly registered user.", NLog.LogLevel.Debug))
+    	using (LogGroup logGroup = LogGroup.Start("Saving a newly registered user.", NLog.LogLevel.Debug))
     	{	    	
     		CreateController.AutoNavigate = Config.Application.Settings.GetBool("AutoApproveNewUsers");
     	

@@ -10,11 +10,11 @@
 <p>For assistance creating new features or whole new applications base on or with some of the functionality of SiteStarter please use the <a href="http://www.softwaremonkeys.net/discuss.aspx" target="_blank">discussion boards</a>.</p>
 <p>Some of the important pages in this starter kit are listed below.</p>
 <ul>
-    <li><strong><a href='<%= Request.ApplicationPath + "/User/SignIn.aspx" %>'>Login</a></strong> (/User/SignIn.aspx) - The login page allows registered users to
+    <li><strong><a href='<%= Request.ApplicationPath + "/User-SignIn.aspx" %>'>Login</a></strong> (/User-SignIn.aspx) - The login page allows registered users to
         log in to the system and interact with their account and data.</li>
-    <li><strong><a href='<%= Request.ApplicationPath + "/User/Index.aspx" %>'>Users</a></strong> (/User/Index.aspx) - The users page is used by authorised administrators to manage user accounts.</li>
-    <li><strong><a href='<%= Request.ApplicationPath + "/UserRole/Index.aspx" %>'>Roles</a></strong> (/UserRole/Index.aspx) - The roles is used by authorised administrators to manage user/security roles.</li>
-    <li><strong><a href='<%= Request.ApplicationPath + "/Settings/Index.aspx" %>'>Settings</a></strong> (/Settings/Index.aspx) - The administration settings can be used to configure certain parts of the application.</li>
+    <li><strong><a href='<%= Request.ApplicationPath + "/User-Index.aspx" %>'>Users</a></strong> (/User-Index.aspx) - The users page is used by authorised administrators to manage user accounts.</li>
+    <li><strong><a href='<%= Request.ApplicationPath + "/UserRole-Index.aspx" %>'>Roles</a></strong> (/UserRole-Index.aspx) - The roles is used by authorised administrators to manage user/security roles.</li>
+    <li><strong><a href='<%= Request.ApplicationPath + "/Settings-Index.aspx" %>'>Settings</a></strong> (/Settings-Index.aspx) - The administration settings can be used to configure certain parts of the application.</li>
      <li><strong><a href='<%= Request.ApplicationPath + "/Admin/Backup.aspx" %>'>Backup</a></strong> (/Admin/Backup.aspx) - Used to back up data from the stores to serialized XML files and then zip them into a single file.</li>
     <li><strong><a href='<%= Request.ApplicationPath + "/Admin/Log.aspx" %>'>Log</a></strong> (/Admin/Log.aspx) - The log includes application exceptions and other important information.</li>
     <li><strong><a href='<%= Request.ApplicationPath + "/Admin/Update.aspx" %>'>Update</a></strong> (/Admin/Update.aspx) - Prepares the application to be updated. Important as it ensures the new version can use the existing data.</li>

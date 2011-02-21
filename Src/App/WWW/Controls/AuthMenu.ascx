@@ -12,12 +12,12 @@ private void Page_Load(object sender, EventArgs e)
 <asp:placeholder runat="server" id="AuthenticationHolder">
         	<asp:placeholder runat="server" visible='<%# AuthenticationState.IsAuthenticated %>'>
                 <%= Resources.Language.YouAreLoggedInAs %>:
-                <%= AuthenticationState.IsAuthenticated ? AuthenticationState.Username : String.Empty %>&nbsp;- <a href='<%= Request.ApplicationPath + "/User/Account.aspx" %>' id='MyAccountLink'><%= Resources.Language.MyAccount %></a> - <a href='<%= Request.ApplicationPath + "/User/SignOut.aspx" %>' id='SignOutLink'><%= Resources.Language.SignOut %></a>
+                <%= AuthenticationState.IsAuthenticated ? AuthenticationState.Username : String.Empty %>&nbsp;- <a href='<%= Request.ApplicationPath + "/User-Account.aspx" %>' id='MyAccountLink'><%= Resources.Language.MyAccount %></a> - <a href='<%= Request.ApplicationPath + "/User-SignOut.aspx" %>' id='SignOutLink'><%= Resources.Language.SignOut %></a>
             </asp:placeholder>
             <asp:placeholder runat="server" visible='<%# !AuthenticationState.IsAuthenticated %>'>
-                <a href='<%= Request.ApplicationPath + "/User/SignIn.aspx" %>' id='SignInLink'>Sign In</a>
+                <a href='<%= Request.ApplicationPath + "/User-SignIn.aspx" %>' id='SignInLink'>Sign In</a>
                 <asp:placeholder runat="server" visible='<%# Config.IsInitialized && Config.Application.Settings.GetBool("EnableUserRegistration") %>'>-
-                	<a href='<%= Request.ApplicationPath + "/User/Register.aspx" %>' id='RegisterLink'>Register</a>
+                	<a href='<%= Request.ApplicationPath + "/User-Register.aspx" %>' id='RegisterLink'>Register</a>
                 </asp:placeholder>
             </asp:placeholder>
         </asp:placeholder>
