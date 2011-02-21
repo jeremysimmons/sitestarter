@@ -13,6 +13,101 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
 	public class UrlRewriterTests : BaseWebTestFixture
 	{
 		[Test]
+		public void Test_GetAction_First()
+		{
+			string action = "TestAction";
+			string typeName = "TestArticle";
+			
+			string friendlyUrl = "http://localhost/test/" + action + "-" + typeName + ".aspx";
+			
+			string applicationPath = "/test";
+			IFileMapper fileMapper = new MockFileMapper(this,TestUtilities.GetTestingPath(this));
+			
+			UrlRewriter rewriter = new UrlRewriter(applicationPath, fileMapper);
+			
+			string foundAction = rewriter.GetAction(friendlyUrl);
+			
+			Assert.AreEqual(action, foundAction, "Didn't detect the action.");
+		}
+		
+		[Test]
+		public void Test_GetAction_Second()
+		{
+			string action = "TestAction";
+			string typeName = "TestArticle";
+			
+			string friendlyUrl = "http://localhost/test/" + typeName + "-" + action + ".aspx";
+			
+			string applicationPath = "/test";
+			IFileMapper fileMapper = new MockFileMapper(this,TestUtilities.GetTestingPath(this));
+			
+			UrlRewriter rewriter = new UrlRewriter(applicationPath, fileMapper);
+			
+			string foundAction = rewriter.GetAction(friendlyUrl);
+			
+			Assert.AreEqual(action, foundAction, "Didn't detect the action.");
+		}
+		
+		
+		[Test]
+		public void Test_GetTypeName_First()
+		{
+			
+			string action = "TestAction";
+			string typeName = "TestArticle";
+			
+			string friendlyUrl = "http://localhost/test/" + typeName + "-" + action + ".aspx";
+			
+			string applicationPath = "/test";
+			IFileMapper fileMapper = new MockFileMapper(this,TestUtilities.GetTestingPath(this));
+			
+			UrlRewriter rewriter = new UrlRewriter(applicationPath, fileMapper);
+			
+			string foundTypeName = rewriter.GetTypeName(friendlyUrl);
+			
+			Assert.AreEqual(typeName, foundTypeName, "Didn't detect the type name.");
+		}
+		
+		[Test]
+		public void Test_GetTypeName_Second()
+		{
+			string action = "TestAction";
+			string typeName = "TestArticle";
+			
+			string friendlyUrl = "http://localhost/test/" + action + "-" + typeName + ".aspx";
+			
+			string applicationPath = "/test";
+			IFileMapper fileMapper = new MockFileMapper(this,TestUtilities.GetTestingPath(this));
+			
+			UrlRewriter rewriter = new UrlRewriter(applicationPath, fileMapper);
+			
+			string foundTypeName = rewriter.GetTypeName(friendlyUrl);
+			
+			Assert.AreEqual(typeName, foundTypeName, "Didn't detect the type name.");
+		}
+		
+		[Test]
+		public void Test_GetCommand()
+		{
+			string action = "TestAction";
+			string typeName = "TestArticle";
+			
+			string command = action + "-" + typeName;
+			
+			string friendlyUrl = "http://localhost/test/" + command + ".aspx";
+			
+			string applicationPath = "/test";
+			IFileMapper fileMapper = new MockFileMapper(this,TestUtilities.GetTestingPath(this));
+			
+			UrlRewriter rewriter = new UrlRewriter(applicationPath, fileMapper);
+			
+			string foundCommand = rewriter.GetCommand(friendlyUrl);
+			
+			Assert.AreEqual(command, foundCommand, "Didn't detect the type name.");
+		}
+		
+		
+		[Test]
 		public void Test_GetShortUrl()
 		{
 			string original = "http://localhost/test/testpage.aspx?a=test&t=testtype";
@@ -93,16 +188,43 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
 		
 		
         [Test]
-        public void Test_RewriteUrl_Module_Action()
+        public void Test_RewriteUrl_InvalidCommand()
         {
             InitializeMockProjections();
             
             string fullApplicationUrl = "http://localhost/SiteStarter";
             string applicationPath = "/SiteStarter";
 
-            string original = fullApplicationUrl + "/TestType/TestCommand.aspx";
+            string action = "Action";
+            string typeName = "Type";
+            
+            string original = fullApplicationUrl + "/" + action + ".aspx";
 
-            string expected = applicationPath + "/Projector.aspx?a=TestCommand&t=TestType&f=Html";
+            string expected = applicationPath + "/Projector.aspx?a=" + action + "&t=" + typeName + "&f=Html";
+
+            IFileMapper fileMapper = new MockFileMapper(this, TestUtilities.GetTestingPath(this));
+            
+            UrlRewriter rewriter = new UrlRewriter(applicationPath, fileMapper);
+            
+            string generated = rewriter.RewriteUrl(original, applicationPath, false);
+
+            Assert.AreEqual("", generated.ToLower(), "Result doesn't match expected.");
+        }
+		
+        [Test]
+        public void Test_RewriteUrl_Action_Type()
+        {
+            InitializeMockProjections();
+            
+            string fullApplicationUrl = "http://localhost/SiteStarter";
+            string applicationPath = "/SiteStarter";
+
+            string action = "Action";
+            string typeName = "Type";
+            
+            string original = fullApplicationUrl + "/" + action + "-" + typeName + ".aspx";
+
+            string expected = applicationPath + "/Projector.aspx?a=" + action + "&t=" + typeName + "&f=Html";
 
             IFileMapper fileMapper = new MockFileMapper(this, TestUtilities.GetTestingPath(this));
             
@@ -114,18 +236,22 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
         }
 
         [Test]
-        public void Test_RewriteUrl_Module_ViewEntityByID()
+        public void Test_RewriteUrl_Action_Type_ID()
         {
             InitializeMockProjections();
 
             string entityID = "A1FC7BA3-3832-467f-8989-058BF420D1D9";
+            string title = "TestTitle";
 
             string fullApplicationUrl = "http://localhost/SiteStarter";
             string applicationPath = "/SiteStarter";
+            
+            string action = "Action";
+            string typeName = "Type";
 
-            string original = fullApplicationUrl + "/TestType/TestCommand/ID/" + entityID + ".aspx";
+            string original = fullApplicationUrl + "/" + action + "-" + typeName + "/" + entityID + ".aspx";
 
-            string expected = applicationPath + "/Projector.aspx?a=TestCommand&t=TestType&f=Html&TestType-ID=" + entityID;
+            string expected = applicationPath + "/Projector.aspx?a=" + action + "&t=" + typeName + "&" + typeName + "-ID=" + entityID + "&f=Html";
 
             IFileMapper fileMapper = new MockFileMapper(this, TestUtilities.GetTestingPath(this));
             
@@ -137,19 +263,51 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
         }
 
         [Test]
-        public void Test_RewriteUrl_Module_ViewEntityByName()
+        public void Test_RewriteUrl_Action_Type_ID_IgnoreText()
         {
         	
             InitializeMockProjections();
 
             string entityName = "TestProject";
+            string entityID = "A1FC7BA3-3832-467f-8989-058BF420D1D9";
 
             string fullApplicationUrl = "http://localhost/SiteStarter";
             string applicationPath = "/SiteStarter";
+            
+            string action = "Action";
+            string typeName = "TypeName";
 
-            string original = fullApplicationUrl + "/TestType/TestCommand/Name/" + entityName + ".aspx";
+            string original = fullApplicationUrl + "/" + action + "-" + typeName + "/" + entityID + "/I-" + entityName + ".aspx";
 
-            string expected = applicationPath + "/Projector.aspx?a=TestCommand&t=TestType&f=Html&TestType-Name=" + entityName;
+            string expected = applicationPath + "/Projector.aspx?a=" + action + "&t=" + typeName + "&" + typeName + "-ID=" + entityID + "&f=Html";
+
+            IFileMapper fileMapper = new MockFileMapper(this, TestUtilities.GetTestingPath(this));
+            
+            UrlRewriter rewriter = new UrlRewriter(applicationPath, fileMapper);
+            
+            string generated = rewriter.RewriteUrl(original, applicationPath, false);
+
+            Assert.AreEqual(expected.ToLower(), generated.ToLower(), "Result doesn't match expected.");
+        }
+        
+        [Test]
+        public void Test_RewriteUrl_Action_Type_ID_Key()
+        {
+        	
+            InitializeMockProjections();
+
+            string entityName = "TestProject";
+            string entityID = "A1FC7BA3-3832-467f-8989-058BF420D1D9";
+
+            string fullApplicationUrl = "http://localhost/SiteStarter";
+            string applicationPath = "/SiteStarter";
+            
+            string action = "Action";
+            string typeName = "TypeName";
+
+            string original = fullApplicationUrl + "/" + action + "-" + typeName + "/" + entityID + "/K-" + entityName + ".aspx";
+
+            string expected = applicationPath + "/Projector.aspx?a=" + action + "&t=" + typeName + "&" + typeName + "-ID=" + entityID + "&" + typeName + "-UniqueKey=" + entityName + "&f=Html";
 
             IFileMapper fileMapper = new MockFileMapper(this, TestUtilities.GetTestingPath(this));
             
@@ -181,7 +339,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
         	Assert.AreEqual(expected, fullPath, "The mapped path does match expected.");
         }
         
-        [Test]
         public void InitializeMockProjections()
         {
         	string appName = "MockApplication";

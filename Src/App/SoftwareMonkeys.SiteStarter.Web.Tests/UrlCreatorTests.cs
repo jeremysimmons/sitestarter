@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using System.Web;
 using SoftwareMonkeys.SiteStarter.Configuration;
+using SoftwareMonkeys.SiteStarter.Tests.Entities;
 using SoftwareMonkeys.SiteStarter.Web.Projections;
 using System.IO;
 using SoftwareMonkeys.SiteStarter.Business.Tests;
@@ -12,6 +13,31 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
 	[TestFixture]
 	public class UrlCreatorTests : BaseWebTestFixture
 	{
+		[Test]
+		public void Test_CreateFriendlyUrl_IEntityParameter_UniqueEntity()
+		{
+
+			string applicationPath = "/Test";
+			string originalUrl = "http://localhost/Test";
+			
+			string action = "View";
+			
+			TestArticle article = new TestArticle();
+			article.ID = Guid.NewGuid();
+			article.Title = "Test article";
+			
+			
+			UrlCreator creator = new UrlCreator(applicationPath, originalUrl);
+			creator.EnableFriendlyUrls = true;
+			
+			string url = creator.CreateFriendlyUrl(action, article);
+			
+			string expectedUrl = "/Test/" + action + "-" + article.ShortTypeName + "/" + article.ID.ToString() + "/I-" + creator.PrepareForUrl(article.Title) + ".aspx";
+			
+			Assert.AreEqual(expectedUrl, url, "The URL doesn't match what's expected.");
+		
+		}
+		
 		[Test]
 		public void Test_CreateFriendlyUrl()
 		{
@@ -28,7 +54,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
 			
 			string url = creator.CreateFriendlyUrl(action, typeName);
 			
-			string expectedUrl = "/Test/" + typeName + "/" + action + ".aspx";
+			string expectedUrl = "/Test/" + action + "-" + typeName + ".aspx";
 			
 			Assert.AreEqual(expectedUrl, url, "The URL doesn't match what's expected.");
 		
@@ -52,7 +78,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
 			
 			string url = creator.CreateFriendlyUrl(action, typeName, propertyName, dataKey);
 			
-			string expectedUrl = "/Test/" + creator.PrepareForUrl(typeName) + "/" + creator.PrepareForUrl(action) + "/" + creator.PrepareForUrl(propertyName) + "/" + creator.PrepareForUrl(dataKey) + ".aspx";
+			string expectedUrl = "/Test/" + creator.PrepareForUrl(action) + "-" + creator.PrepareForUrl(typeName) + "/" + creator.PrepareForUrl(propertyName) + "-" + creator.PrepareForUrl(dataKey) + ".aspx";
 			
 			Assert.AreEqual(expectedUrl, url, "The URL doesn't match what's expected.");
 		
@@ -74,7 +100,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
 			
 			string url = creator.CreateXmlUrl(action, typeName);
 			
-			string expectedUrl = "/Test/" + typeName + "/" + action + ".xml.aspx";
+			string expectedUrl = "/Test/" + action + "-" + typeName + ".xml.aspx";
 			
 			Assert.AreEqual(expectedUrl, url, "The URL doesn't match what's expected.");
 		}
@@ -96,7 +122,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
 			
 			string url = creator.CreateExternalXmlUrl(action, typeName);
 			
-			string expectedUrl = originalUrl + "/" + typeName + "/" + action + ".xml.aspx";
+			string expectedUrl = originalUrl + "/" + action + "-" + typeName + ".xml.aspx";
 			
 			Assert.AreEqual(expectedUrl, url, "The URL doesn't match what's expected.");
 		

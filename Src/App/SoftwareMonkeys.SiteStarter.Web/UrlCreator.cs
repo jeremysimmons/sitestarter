@@ -115,18 +115,18 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			EnableFriendlyUrls = enableFriendlyUrls;
 			CurrentUrl = currentUrl;
 		}
-			
-			#region Friendly URL functions
-			
-			/// <summary>
-			/// Creates a friendly URL to the page corresponding with the specified action and specified type.
-			/// </summary>
-			/// <param name="action">The action to be performed at the target page.</param>
-			/// <param name="typeName">The name of the type being acted upon at the target page.</param>
-			/// <returns>The URL to the page handling the provided action in relation to the provided type.</returns>
-			public string CreateFriendlyUrl(string action, string typeName)
+		
+		#region Friendly URL functions
+		
+		/// <summary>
+		/// Creates a friendly URL to the page corresponding with the specified action and specified type.
+		/// </summary>
+		/// <param name="action">The action to be performed at the target page.</param>
+		/// <param name="typeName">The name of the type being acted upon at the target page.</param>
+		/// <returns>The URL to the page handling the provided action in relation to the provided type.</returns>
+		public string CreateFriendlyUrl(string action, string typeName)
 		{
-			string link = ApplicationPath + "/" + PrepareForUrl(typeName) + "/" + PrepareForUrl(action) + ".aspx";
+			string link = ApplicationPath + "/" + PrepareForUrl(action) + "-" + PrepareForUrl(typeName) + ".aspx";
 			link = AddResult(link);
 			return link;
 		}
@@ -141,12 +141,41 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <returns>The URL to the page handling the provided action in relation to the provided type.</returns>
 		public string CreateFriendlyUrl(string action, string typeName, string propertyName, string dataKey)
 		{
-			string link = ApplicationPath + "/" + PrepareForUrl(typeName) + "/" + PrepareForUrl(action);
+			string link = ApplicationPath + "/" + PrepareForUrl(action) + "-" + PrepareForUrl(typeName);
 			
-			if (propertyName != "UniqueKey")
-				link = link + "/" + PrepareForUrl(propertyName);
+			link = link + "/";
 			
-			link = link + "/" + PrepareForUrl(dataKey) + ".aspx";
+			if (propertyName == "UniqueKey")
+				link = link + "K";
+			else
+				link = link + PrepareForUrl(propertyName);
+			
+			link = link + "--" + PrepareForUrl(dataKey) + ".aspx";
+			
+			link = AddResult(link);
+			return link;
+		}
+		
+		/// <summary>
+		/// Creates a friendly URL to the page corresponding with the specified action and specified type.
+		/// </summary>
+		/// <param name="action">The action to be performed at the target page.</param>
+		/// <param name="typeName">The name of the type being acted upon at the target page.</param>
+		/// <param name="propertyName">The name of the property to filter the type by.</param>
+		/// <param name="entity">The entity to link to.</param>
+		/// <returns>The URL to the page handling the provided action in relation to the provided type.</returns>
+		public string CreateFriendlyUrl(string action, IEntity entity)
+		{
+			string link = ApplicationPath
+				+ "/" + PrepareForUrl(action)
+				+ "-" + PrepareForUrl(entity.ShortTypeName);
+			
+			link = link + "/" + entity.ID.ToString();
+			
+			if (entity is IUniqueEntity)
+				link = link + "/I--" + PrepareForUrl(((IUniqueEntity)entity).UniqueKey);
+			
+			link = link + ".aspx";
 			
 			link = AddResult(link);
 			return link;
@@ -173,6 +202,31 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		public string CreateStandardUrl(string action, string typeName)
 		{
 			return CreateStandardUrl(action, typeName, ProjectionFormat.Html);
+		}
+		
+		/// <summary>
+		/// Creates a raw/standard URL to the page corresponding with the specified action and entity.
+		/// </summary>
+		/// <param name="action">The action to be performed at the target page.</param>
+		/// <param name="entity">The entity involved in the action.</param>
+		/// <returns>The URL to the page handling the provided action in relation to the provided type.</returns>
+		public string CreateStandardUrl(string action, IEntity entity)
+		{
+			return CreateStandardUrl(action, entity, ProjectionFormat.Html);
+		}
+		
+		/// <summary>
+		/// Creates a raw/standard URL to the page corresponding with the specified action and entity.
+		/// </summary>
+		/// <param name="action">The action to be performed at the target page.</param>
+		/// <param name="entity">The entity involved in the action.</param>
+		/// <param name="format">The format of the target projection.</param>
+		/// <returns>The URL to the page handling the provided action in relation to the provided type.</returns>
+		public string CreateStandardUrl(string action, IEntity entity, ProjectionFormat format)
+		{
+			string link = ApplicationPath + "/Projector.aspx?a=" + PrepareForUrl(action) + "&t=" + PrepareForUrl(entity.ShortTypeName) + "&f=" + PrepareForUrl(format.ToString()) + "&" + PrepareForUrl(entity.ShortTypeName) + "-ID=" + PrepareForUrl(entity.ID.ToString());
+			link = AddResult(link);
+			return link;
 		}
 		
 		
@@ -210,6 +264,20 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		public virtual string CreateUrl(string action, Type type)
 		{
 			return CreateUrl(action, type.Name);
+		}
+		
+		/// <summary>
+		/// Creates a URL to the specified action and entity.
+		/// </summary>
+		/// <param name="action">The action to be performed by following the link.</param>
+		/// <param name="entity">The entity involved in the action.</param>
+		/// <returns>The rewritten raw URL to be used behind the scenes.</returns>
+		public virtual string CreateUrl(string action, IEntity entity)
+		{
+			if (EnableFriendlyUrls)
+				return CreateFriendlyUrl(action, entity);
+			else
+				return CreateStandardUrl(action, entity);
 		}
 		
 		/// <summary>
@@ -285,7 +353,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		public virtual string CreateUrl(string action, string typeName, string propertyName, string dataKey)
 		{
 			string link = String.Empty;
-			using (LogGroup logGroup = AppLogger.StartGroup("Creating a link to a module.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Creating a link to a module.", NLog.LogLevel.Debug))
 			{
 				if (EnableFriendlyUrls)
 					link = CreateFriendlyUrl(action, typeName, propertyName, dataKey);
@@ -294,7 +362,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 
 				link = AddResult(link);
 				
-				AppLogger.Debug("Link: " + link);
+				LogWriter.Debug("Link: " + link);
 			}
 
 			return link;
@@ -356,7 +424,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		public string CreateXmlUrl(string action, string type)
 		{
 			if (EnableFriendlyUrls)
-				return ApplicationPath + "/" + PrepareForUrl(type) + "/" + PrepareForUrl(action) + ".xml.aspx";
+				return ApplicationPath + "/" + PrepareForUrl(action) + "-" + PrepareForUrl(type) + ".xml.aspx";
 			else
 			{
 				/*string moduleID = ModuleState.GetModuleID(action, type);
@@ -434,17 +502,17 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		{
 			string newUrl = originalUrl;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Adding the result text to the link.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Adding the result text to the link.", NLog.LogLevel.Debug))
 			{
-				AppLogger.Debug("Link before: " + originalUrl);
+				LogWriter.Debug("Link before: " + originalUrl);
 				
-				AppLogger.Debug("Result text: " + resultText);
-				AppLogger.Debug("Result is error: " + resultIsError.ToString());
+				LogWriter.Debug("Result text: " + resultText);
+				LogWriter.Debug("Result is error: " + resultIsError.ToString());
 				
 				// Don't add it if it's already found
 				if (!ResultAlreadyExists(resultText))
 				{
-					AppLogger.Debug("Result doesn't yet exist. Adding.");
+					LogWriter.Debug("Result doesn't yet exist. Adding.");
 					
 					if (resultText != String.Empty)
 					{
@@ -452,18 +520,18 @@ namespace SoftwareMonkeys.SiteStarter.Web
 						if (originalUrl.IndexOf('?') > -1)
 							separator = "&";
 						
-						AppLogger.Debug("Separator: " + separator);
+						LogWriter.Debug("Separator: " + separator);
 						
 						newUrl = newUrl + separator + "Result=" + PrepareForUrl(resultText) + "&ResultIsError=" + resultIsError.ToString();
 					}
 					else{
-						AppLogger.Debug("Result text is String.Empty. Skipping add.");
+						LogWriter.Debug("Result text is String.Empty. Skipping add.");
 					}
 				}
 				else
-					AppLogger.Debug("Result already exists. Skipping add.");
+					LogWriter.Debug("Result already exists. Skipping add.");
 				
-				AppLogger.Debug("Link after: " + newUrl);
+				LogWriter.Debug("Link after: " + newUrl);
 			}
 			return newUrl;
 		}
@@ -476,31 +544,31 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		public bool ResultAlreadyExists(string resultText)
 		{
 			bool exists = false;
-			using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the result already exists in the URL.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Checking whether the result already exists in the URL.", NLog.LogLevel.Debug))
 			{
 				Uri uri = new Uri(CurrentUrl);
 				
 				NameValueCollection qs = HttpUtility.ParseQueryString(uri.Query);
 				
-				AppLogger.Debug("Checking for result: " + resultText);
+				LogWriter.Debug("Checking for result: " + resultText);
 				
-				AppLogger.Debug("Result found in query string: " + qs["Result"]);
+				LogWriter.Debug("Result found in query string: " + qs["Result"]);
 				
 				bool existsInQueryString = qs["Result"] != null
 					&& qs["Result"] != String.Empty
 					&& qs["Result"] == resultText;
 				
 				
-				AppLogger.Debug("Result found in result control: " + Result.Text);
+				LogWriter.Debug("Result found in result control: " + Result.Text);
 				
 				bool existsInResultControl = Result.Text == resultText;
 				
-				AppLogger.Debug("Found result in existing URL query string: " + existsInQueryString.ToString());
-				AppLogger.Debug("Found result in existing result control: " + existsInResultControl.ToString());
+				LogWriter.Debug("Found result in existing URL query string: " + existsInQueryString.ToString());
+				LogWriter.Debug("Found result in existing result control: " + existsInResultControl.ToString());
 				
 				exists = (existsInQueryString || existsInResultControl);
 				
-				AppLogger.Debug("Result exists: " + exists.ToString());
+				LogWriter.Debug("Result exists: " + exists.ToString());
 				
 			}
 			return exists;

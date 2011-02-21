@@ -3,9 +3,11 @@ using System.Web;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using System.IO;
 using SoftwareMonkeys.SiteStarter.Configuration;
+using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.IO;
 using System.Configuration;
 using SoftwareMonkeys.SiteStarter.State;
+using System.Collections.Generic;
 
 namespace SoftwareMonkeys.SiteStarter.Web
 {
@@ -21,7 +23,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		{
 			if (StateAccess.IsInitialized)
 			{
-				using (LogGroup logGroup = AppLogger.StartGroup("Initializes the URL cloaking.", NLog.LogLevel.Debug))
+				using (LogGroup logGroup = LogGroup.Start("Initializes the URL cloaking.", NLog.LogLevel.Debug))
 				{
 					UrlRewriter rewriter = new UrlRewriter();
 					
@@ -29,24 +31,24 @@ namespace SoftwareMonkeys.SiteStarter.Web
 					{
 						if (rewriter.EnableFriendlyUrls)
 						{
-							AppLogger.Debug("Url cloaking is enabled.");
+							LogWriter.Debug("Url cloaking is enabled.");
 
 							string uri = HttpContext.Current.Request.Url.ToString();
 
-							AppLogger.Debug("Url: " + uri);
+							LogWriter.Debug("Url: " + uri);
 
 							if (!rewriter.IsRealFile(uri) && !rewriter.IsExcluded(uri))
 							{
-								AppLogger.Debug("Application path: " + HttpContext.Current.Request.ApplicationPath);
+								LogWriter.Debug("Application path: " + HttpContext.Current.Request.ApplicationPath);
 								
 								rewriter.RewriteUrl(uri, HttpContext.Current.Request.ApplicationPath, true);
 							}
 						}
 						else
-							AppLogger.Debug("Url cloaking is disabled.");
+							LogWriter.Debug("Url cloaking is disabled.");
 					}
 					else
-						AppLogger.Debug("Application is not initialized. Skipping cloaking.");
+						LogWriter.Debug("Application is not initialized. Skipping cloaking.");
 				}
 			}
 		}
@@ -129,37 +131,21 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		public bool IsRealFile(string url)
 		{
 			bool isReal = false;
-			using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the specified URL points to a real file.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Checking whether the specified URL points to a real file.", NLog.LogLevel.Debug))
 			{
-				/*if (url.ToLower().IndexOf("//") > -1)
-				{
-					AppLogger.Debug("Provided URL: " + url);
-					
-					AppLogger.Debug("URL is absolute. Converting to relative.");
-					
-					Uri uri = new Uri(url);
-					
-					string host = uri.Host;
-					bool isSecure = uri.Scheme == Uri.UriSchemeHttps;
-					
-					url = WebUtilities.ConvertAbsoluteUrlToRelativeUrl(url,
-					                                                   WebUtilities.ConvertRelativeUrlToAbsoluteUrl(ApplicationPath, host, isSecure));
-					
-				}*/
-
-				AppLogger.Debug("Provided URL: " + url);
+				LogWriter.Debug("Provided URL: " + url);
 				
 				string shortUrl = GetShortUrl(url);
 				
-				AppLogger.Debug("Short URL: " + shortUrl);
+				LogWriter.Debug("Short URL: " + shortUrl);
 				
 				string physicalFile = MapPath(shortUrl);
 				
-				AppLogger.Debug("Physical file: " + physicalFile);
+				LogWriter.Debug("Physical file: " + physicalFile);
 				
 				isReal = (File.Exists(physicalFile));
 				
-				AppLogger.Debug("Is real? " + isReal.ToString());
+				LogWriter.Debug("Is real? " + isReal.ToString());
 			}
 			return isReal;
 		}
@@ -172,9 +158,9 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		public string GetShortUrl(string url)
 		{
 			string shortUrl = String.Empty;
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the short URL to the current page.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving the short URL to the current page.", NLog.LogLevel.Debug))
 			{
-				AppLogger.Debug("Url: " + url);
+				LogWriter.Debug("Url: " + url);
 				
 				if (url.IndexOf("//") >-1)
 				{
@@ -186,27 +172,27 @@ namespace SoftwareMonkeys.SiteStarter.Web
 					url = WebUtilities.ConvertAbsoluteUrlToRelativeUrl(url,
 					                                                   WebUtilities.ConvertRelativeUrlToAbsoluteUrl(ApplicationPath, host, isSecure));
 					
-					AppLogger.Debug("Relative url: " + url);
+					LogWriter.Debug("Relative url: " + url);
 				}
 				
 				int pos = url.IndexOf("?");
 				
-				AppLogger.Debug("Position of ? character: " + pos.ToString());
+				LogWriter.Debug("Position of ? character: " + pos.ToString());
 				
 				string filePart = url;
 				
 				if (pos > -1)
 				{
-					AppLogger.Debug("Query string (ie. ? character) found. Stripping from url.");
+					LogWriter.Debug("Query string (ie. ? character) found. Stripping from url.");
 					
 					filePart = filePart.Substring(0, pos);
 					
-					AppLogger.Debug("Part used: " + filePart);
+					LogWriter.Debug("Part used: " + filePart);
 				}
 
-				shortUrl = filePart;//WebUtilities.ConvertAbsoluteUrlToRelativeUrl(filePart, HttpContext.Current.Request.ApplicationPath);
+				shortUrl = filePart;
 				
-				AppLogger.Debug("Short URL: " + shortUrl);
+				LogWriter.Debug("Short URL: " + shortUrl);
 			}
 			
 			return shortUrl;
@@ -233,7 +219,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		public string RewriteUrl(string friendlyUrl, string applicationPath, bool commit)
 		{
 			string newUrl = String.Empty;
-			using (LogGroup logGroup = AppLogger.StartGroup("Attempting to interpret and rewrite the provided cloaked URL.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Attempting to interpret and rewrite the provided cloaked URL.", NLog.LogLevel.Debug))
 			{
 				if (friendlyUrl == null)
 					throw new ArgumentNullException("friendlyUrl");
@@ -241,8 +227,8 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				if (applicationPath == null)
 					throw new ArgumentNullException("applicationPath");
 
-				AppLogger.Debug("Original path: " + friendlyUrl);
-				AppLogger.Debug("Application path: " + applicationPath);
+				LogWriter.Debug("Original path: " + friendlyUrl);
+				LogWriter.Debug("Application path: " + applicationPath);
 
 				//string applicationUrl = applicationPath;
 				//if (applicationUrl.ToLower().IndexOf("http://") == -1)
@@ -250,58 +236,63 @@ namespace SoftwareMonkeys.SiteStarter.Web
 
 				string shortPath = GetShortUrl(friendlyUrl);//.Replace(applicationUrl, String.Empty);
 				shortPath = shortPath.Trim('/');
-
+				
 				if (shortPath == null)
 					throw new Exception("shortPath == null");
 
-				AppLogger.Debug("Short path: " + shortPath);
+				LogWriter.Debug("Short path: " + shortPath);
 
 				string[] parts = shortPath.Split('/');
 
 				if (parts != null)
-					AppLogger.Debug("# parts: " + parts.Length);
+					LogWriter.Debug("# parts: " + parts.Length);
 
 				string lastPart = parts[parts.Length-1];
 
 				if (parts.Length > 0)
 					parts[parts.Length - 1] = lastPart.Substring(0, lastPart.IndexOf("."));
-
+				
 				// If there aren't enough parts then it's not cloaked and can't be rewritten.
-				if (parts != null && parts.Length > 1)
+				if (parts != null && parts.Length >= 1)
 				{
-					newUrl = RewriteToEntityAction(friendlyUrl, applicationPath, parts, commit);
+					newUrl = SmartRewrite(friendlyUrl, applicationPath, parts, commit);
 				}
 				
-				string existingQueryString = String.Empty;
-				int pos = friendlyUrl.IndexOf("?");
-				
-				AppLogger.Debug("? pos: " + pos);
-				
-				if (pos > -1)
+				// If a new URL was created
+				if (newUrl != String.Empty)
 				{
-					existingQueryString = friendlyUrl.Substring(pos+1, friendlyUrl.Length-pos-1);
+					string existingQueryString = String.Empty;
+					int pos = friendlyUrl.IndexOf("?");
 					
-					AppLogger.Debug("Existing query string: " + existingQueryString);
+					LogWriter.Debug("? pos: " + pos);
 					
-					string separator = "?";
-					if (friendlyUrl.IndexOf("?") > -1)
-						separator = "&";
+					if (pos > -1)
+					{
+						existingQueryString = friendlyUrl.Substring(pos+1, friendlyUrl.Length-pos-1);
+						
+						LogWriter.Debug("Existing query string: " + existingQueryString);
+						
+						string separator = "?";
+						if (friendlyUrl.IndexOf("?") > -1)
+							separator = "&";
+						
+						LogWriter.Debug("Separator: " + separator);
+						
+						newUrl = newUrl + separator + existingQueryString;
+					}
+					LogWriter.Debug("New URL: " + newUrl);
 					
-					AppLogger.Debug("Separator: " + separator);
-					
-					newUrl = newUrl + separator + existingQueryString;
+					if (commit)
+						CommitRewrite(newUrl);
 				}
-				AppLogger.Debug("New URL: " + newUrl);
-				
-				if (commit)
-					CommitRewrite(newUrl);
+				// Otherwise skip the rewrite
 			}
 
 
 			return newUrl;
 		}
 		
-		/// <summary>
+		/*/// <summary>
 		/// Rewrites the friendly URL to the corresponding raw URL. Used for entity action URLs.
 		/// </summary>
 		/// <param name="friendlyUrl">The friendly URL to rewrite.</param>
@@ -313,7 +304,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		{
 			string newUrl = String.Empty;
 
-			using (LogGroup logGroup = AppLogger.StartGroup("Rewriting path to an entity action.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Rewriting path to an entity action.", NLog.LogLevel.Debug))
 			{
 				if (parts == null)
 					throw new ArgumentNullException("parts");
@@ -321,8 +312,8 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				if (parts.Length < 2)
 					throw new InvalidOperationException("Not enough parts. Expected 2. Was " + parts.Length);
 
-				//AppLogger.Debug("Original path: " + friendlyUrl);
-				//AppLogger.Debug("Application path: " + applicationPath);
+				//LogWriter.Debug("Original path: " + friendlyUrl);
+				//LogWriter.Debug("Application path: " + applicationPath);
 				
 				string type = parts[0];
 				string action = parts[1];
@@ -350,62 +341,297 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				string pageType = "Html";
 				string originalFileName = Path.GetFileName(GetShortUrl(friendlyUrl));
 				
-				//AppLogger.Debug("Original file name: " + originalFileName);
+				//LogWriter.Debug("Original file name: " + originalFileName);
 				
 				int pos = originalFileName.IndexOf(".");
 
 				string ext = originalFileName.Substring(pos, originalFileName.Length - pos);
 				
-				//AppLogger.Debug("Extension: " + ext);
+				//LogWriter.Debug("Extension: " + ext);
 				
 				if (ext.ToLower().Trim('.') == "xml.aspx")
 					pageType = "Xml";
 				else if (ext.ToLower().Trim('.') == "xslt.aspx")
 					pageType = "Xslt";
 				
-				//AppLogger.Debug("Page type: " + pageType.ToString());
+				//LogWriter.Debug("Page type: " + pageType.ToString());
 
 
-				//AppLogger.Debug("Action: " + action);
-				//AppLogger.Debug("Type: " + type);
-				//AppLogger.Debug("Property name: " + propertyName);
-				//AppLogger.Debug("Data: " + data);
+				//LogWriter.Debug("Action: " + action);
+				//LogWriter.Debug("Type: " + type);
+				//LogWriter.Debug("Property name: " + propertyName);
+				//LogWriter.Debug("Data: " + data);
 
 				string realPageName = "Projector.aspx";
 				if (pageType == "Xml"
 				    || pageType == "Xslt")
 					realPageName = "XmlProjector.aspx";
 				
-				//AppLogger.Debug("Real page name: " + realPageName);
+				//LogWriter.Debug("Real page name: " + realPageName);
 
 				newUrl = applicationPath + "/" + realPageName
 					+ "?a=" + action
 					+ "&t=" + type
 					+ "&f=" + pageType;
 				
-				//AppLogger.Debug("New url: " + newUrl);
+				//LogWriter.Debug("New url: " + newUrl);
 
 				// TODO: Remove comment
 				//if (propertyName.ToLower() == "ID".ToLower())
 				propertyName = type + "-" + propertyName;
 				
-				//AppLogger.Debug("Property name: " + propertyName);
+				//LogWriter.Debug("Property name: " + propertyName);
 
 				if (propertyName != String.Empty
 				    && data != String.Empty)
 				{
 					string qs = "&" + propertyName + "=" + data;
 					
-				//	AppLogger.Debug("Adding query string: " + qs);
+					//	LogWriter.Debug("Adding query string: " + qs);
 					
 					newUrl = newUrl + qs;
 					
-				//	AppLogger.Debug("New url: " + newUrl);
+					//	LogWriter.Debug("New url: " + newUrl);
+					
 				}
 			}
 
 
 			return newUrl;
+		}*/
+			
+			/// <summary>
+			/// Rewrites the friendly URL to the corresponding raw URL. Used for entity action URLs.
+			/// </summary>
+			/// <param name="friendlyUrl">The friendly URL to rewrite.</param>
+			/// <param name="applicationPath">The relative path to the root of the application.</param>
+			/// <param name="parts">The parts of the URL.</param>
+			/// <param name="commit">A boolean value indicating whether to commit the rewrite (ie. actually redirect the request to the rewritten path).</param>
+			/// <returns>The rewritten URL that corresponds with the friendly URL provided.</returns>
+			public string SmartRewrite(string friendlyUrl, string applicationPath, string[] parts, bool commit)
+		{
+			string command = parts[0];
+			
+			string rewrittenUrl = String.Empty;
+			
+			string action = GetAction(friendlyUrl);
+			string typeName = GetTypeName(friendlyUrl);
+			
+			if (action != String.Empty && typeName != String.Empty)
+			{
+				Dictionary<string, string> queryStrings = new Dictionary<string, string>();
+				
+				for (int i = 1; i < parts.Length; i++)
+				{
+					ExtractQueryString(typeName, parts[i], queryStrings);
+				}
+				
+				ExtractFormatQueryString(friendlyUrl, queryStrings);
+				
+				string realPageName = GetRealPageName(friendlyUrl);
+				
+				rewrittenUrl = applicationPath + "/" + realPageName + "?a=" + action + "&t=" + typeName;
+				
+				UrlCreator urlCreator = new UrlCreator(ApplicationPath, friendlyUrl);
+				
+				foreach (string key in queryStrings.Keys)
+				{
+					rewrittenUrl = rewrittenUrl + "&" +  urlCreator.PrepareForUrl(key)
+						+ "=" + urlCreator.PrepareForUrl(queryStrings[key]);
+				}
+			}
+			
+			return rewrittenUrl;
+		}
+		
+		/// <summary>
+		/// Extracts the command string from the provided friendly URL.
+		/// </summary>
+		/// <param name="friendlyUrl"></param>
+		/// <returns></returns>
+		public string GetCommand(string friendlyUrl)
+		{
+			string shortUrl = GetShortUrl(friendlyUrl);
+			
+			string[] parts = shortUrl.Trim('/').Split('/');
+			
+			string command = parts[0];
+			
+			if (command.IndexOf(".") > -1)
+				command = command.Substring(0, command.IndexOf("."));
+			
+			return command;
+		}
+		
+		/// <summary>
+		/// Extracts the action from the provided friendly URL.
+		/// </summary>
+		/// <param name="friendlyUrl"></param>
+		/// <returns></returns>
+		public string GetAction(string friendlyUrl)
+		{
+			string commandString = GetCommand(friendlyUrl);
+			
+			string[] commandParts = commandString.Trim('/').Split('-');
+			
+			string action = String.Empty;
+			
+			// If there are two parts to the command string
+			if (commandParts.Length == 2)
+			{
+				// If the first part is an entity type name
+				if (EntityState.IsType(commandParts[0]))
+					// then the action is the second part
+					action = commandParts[1];
+				// Otherwise
+				else
+					// the action is the first part
+					action = commandParts[0];
+			}
+			
+			return action;
+		}
+		
+		/// <summary>
+		/// Extracts the type name from the provided friendly URL.
+		/// </summary>
+		/// <param name="friendlyUrl"></param>
+		/// <returns></returns>
+		public string GetTypeName(string friendlyUrl)
+		{
+			string commandString = GetCommand(friendlyUrl);
+			
+			string[] commandParts = commandString.Trim('/').Split('-');
+			
+			string typeName = String.Empty;
+			
+			// If there are two parts to the command string
+			if (commandParts.Length == 2)
+			{
+				if (EntityState.IsType(commandParts[0]))
+					typeName = commandParts[0];
+				else
+					typeName = commandParts[1];
+			}
+			
+			return typeName;
+		}
+		
+		/// <summary>
+		/// Extracts the page format from teh provided URL and adds it to the query strings dictionary.
+		/// </summary>
+		/// <param name="friendlyUrl"></param>
+		/// <param name="queryStrings"></param>
+		/// <returns></returns>
+		public void ExtractFormatQueryString(string friendlyUrl, Dictionary<string, string> queryStrings)
+		{
+			string format = GetPageFormat(GetExtension(friendlyUrl));
+			
+			queryStrings.Add("f", format);
+		}
+		
+		public string GetPageFormat(string extension)
+		{
+			string pageFormat = "Html";
+			
+			if (extension.ToLower().Trim('.') == "xml.aspx")
+				pageFormat = "Xml";
+			else if (extension.ToLower().Trim('.') == "xslt.aspx")
+				pageFormat = "Xslt";
+			
+			return pageFormat;
+		}
+		
+		public string GetRealPageName(string friendlyUrl)
+		{
+
+			string ext = GetExtension(friendlyUrl);
+
+			string pageType = GetPageFormat(ext);
+			
+			string realPageName = "Projector.aspx";
+			if (pageType == "Xml"
+			    || pageType == "Xslt")
+				realPageName = "XmlProjector.aspx";
+			
+			return realPageName;
+		}
+		
+		/// <summary>
+		/// Retrieves the file extension from the provided friendly URL.
+		/// </summary>
+		/// <param name="friendlyUrl"></param>
+		/// <returns></returns>
+		public string GetExtension(string friendlyUrl)
+		{
+			string originalFileName = Path.GetFileName(GetShortUrl(friendlyUrl));
+			
+			//LogWriter.Debug("Original file name: " + originalFileName);
+			
+			int pos = originalFileName.IndexOf(".");
+
+			string ext = originalFileName.Substring(pos, originalFileName.Length - pos);
+			
+			return ext;
+		}
+		
+		/// <summary>
+		/// Extracts the query string from the provided part and adds it to the dictionary.
+		/// </summary>
+		/// <param name="typeName"></param>
+		/// <param name="part">The part/section of the URL to extract the query string from.</param>
+		/// <param name="queryStrings"></param>
+		public void ExtractQueryString(string typeName, string part, Dictionary<string, string> queryStrings)
+		{
+			// If it's a GUID then it's the ID of an entity
+			if (GuidValidator.IsValidGuid(part))
+				ExtractGuidQueryString(typeName, part, queryStrings);
+			// Otherwise it's a dynamic query string
+			else
+				ExtractDynamicQueryString(typeName, part, queryStrings);
+		}
+		
+		/// <summary>
+		/// Extracts a GUID query string from the provided part and adds it to the dictionary.
+		/// </summary>
+		/// <param name="typeName"></param>
+		/// <param name="part">The part/section of the URL to extract the query string from.</param>
+		/// <param name="queryStrings"></param>
+		public void ExtractGuidQueryString(string typeName, string part, Dictionary<string, string> queryStrings)
+		{
+			// If it's a GUID then it's the ID of an entity
+			if (GuidValidator.IsValidGuid(part))
+			{
+				queryStrings.Add(typeName + "-ID", part);
+			}
+			else
+				throw new ArgumentException("The provided part is not a valid GUID.");
+		}
+		
+		/// <summary>
+		/// Extracts a dynamic query string from the provided part and adds it to the dictionary.
+		/// </summary>
+		/// <param name="typeName"></param>
+		/// <param name="part">The part/section of the URL to extract the query string from.</param>
+		/// <param name="queryStrings"></param>
+		public void ExtractDynamicQueryString(string typeName, string part, Dictionary<string, string> queryStrings)
+		{
+			// Replace the "--" with "|" then split it
+			string[] subParts = part.Replace("--", "|").Split('|');
+			
+			if (subParts.Length < 2)
+				throw new ArgumentException("The provided part '" + part + "' is not in the correct format of [PropertyName]-[Value].", "part");
+			
+			string propertyName = subParts[0];
+			string value = subParts[1];
+			
+			// If the property name is "K" it's short for "UniqueKey"
+			if (propertyName == "K")
+				propertyName = typeName + "-UniqueKey";
+			
+			// If it's not an ignored property then add it
+			if (propertyName != "I")
+				queryStrings.Add(propertyName, value);
 		}
 		
 		/// <summary>
@@ -414,9 +640,9 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <param name="url">The URL to rewrite to.</param>
 		public void CommitRewrite(string url)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Committing rewrite to new URL.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Committing rewrite to new URL.", NLog.LogLevel.Debug))
 			{
-				AppLogger.Debug("Url: " + url);
+				LogWriter.Debug("Url: " + url);
 
 				if (HttpContext.Current.Items != null)
 					HttpContext.Current.Items["RewrittenUrl"] = url;
