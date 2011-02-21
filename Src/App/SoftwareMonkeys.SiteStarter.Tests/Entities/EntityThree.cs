@@ -16,28 +16,12 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
 			set { name = value; }
 		}
 
-		private Guid[] referencedEntityIDs = new Guid[] {};
-		[Reference]
-		public Guid[] ReferencedEntityIDs
-		{
-			get {
-				if (referencedEntities != null)
-					return Collection<BaseEntity>.GetIDs(referencedEntities);
-				return referencedEntityIDs; }
-			set {
-				referencedEntityIDs = value;
-				if (referencedEntityIDs == null || (referencedEntities != null && !referencedEntityIDs.Equals(Collection<BaseEntity>.GetIDs(referencedEntities))))
-					referencedEntities = null;
-			}
-		}
-
 		private EntityFour[] referencedEntities;
 		[Reference]
 		public EntityFour[] ReferencedEntities
 		{
 			get { return referencedEntities; }
 			set { referencedEntities = value;
-				//	referencedEntityIDs = Collection<BaseEntity>.GetIDs(referencedEntities);
 			}
 		}
 	}

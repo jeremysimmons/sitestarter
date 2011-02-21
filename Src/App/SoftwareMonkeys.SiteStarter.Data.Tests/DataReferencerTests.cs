@@ -13,7 +13,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_GetReferences_Basic()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the retrieval of references for an entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the retrieval of references for an entity.", NLog.LogLevel.Debug))
 			{
 								
 				TestUser user = new TestUser();
@@ -56,7 +56,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_GetReference_EmptyReferencedEntityID_Found()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the retrieval of references for an entity when specifying a Guid.Empty referenced entity ID.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the retrieval of references for an entity when specifying a Guid.Empty referenced entity ID.", NLog.LogLevel.Debug))
 			{
 								
 				TestUser user = new TestUser();
@@ -97,7 +97,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_GetReferences_2References()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the retrieval of references for an entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the retrieval of references for an entity.", NLog.LogLevel.Debug))
 			{
 				
 				TestUser user = new TestUser();
@@ -164,7 +164,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_GetReferences_FullyActivated()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the retrieval of references for an entity with the entities activated as well.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the retrieval of references for an entity with the entities activated as well.", NLog.LogLevel.Debug))
 			{
 				TestUser user = new TestUser();
 				Guid userID = user.ID = Guid.NewGuid();
@@ -208,44 +208,44 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_GetReference_Async()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetReference function with an asynchronous reference to ensure it retrieves the correct reference.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the GetReference function with an asynchronous reference to ensure it retrieves the correct reference.", NLog.LogLevel.Debug))
 			{
-				TestAction action = new TestAction();
-				action.ID = Guid.NewGuid();
-				action.Title = "Test Action";
+				EntityFive e5 = new EntityFive();
+				e5.ID = Guid.NewGuid();
+				e5.Name = "Test Entity 5";
 				
-				TestCategory category = new TestCategory();
-				category.ID = Guid.NewGuid();
-				category.Name = "Test Category";
+				EntitySix e6 = new EntitySix();
+				e6.ID = Guid.NewGuid();
+				e6.Name = "Test Entity 6";
 				
-				action.Categories = new TestCategory[] {category};
+				e5.ReferencedEntities = new EntitySix[] {e6};
 				
-				DataAccess.Data.Saver.Save(action);
-				DataAccess.Data.Saver.Save(category);
+				DataAccess.Data.Saver.Save(e5);
+				DataAccess.Data.Saver.Save(e6);
 				
-				EntityReference reference = DataAccess.Data.Referencer.GetReference(action.GetType(),
-				                                                                    action.ID,
-				                                                                    "Categories",
-				                                                                    category.GetType(),
-				                                                                    category.ID,
+				EntityReference reference = DataAccess.Data.Referencer.GetReference(e5.GetType(),
+				                                                                    e5.ID,
+				                                                                    "ReferencedEntities",
+				                                                                    e6.GetType(),
+				                                                                    e6.ID,
 				                                                                    String.Empty,
 				                                                                    false);
 				
 				
 				Assert.IsNotNull(reference, "The return value is null.");
 				
-				Assert.IsTrue(reference.Includes(action.ID, "Categories"), "The returned reference is invalid. (#1)");
-				Assert.IsTrue(reference.Includes(category.ID, ""), "The returned reference is invalid. (#2)");
+				Assert.IsTrue(reference.Includes(e5.ID, "ReferencedEntities"), "The returned reference is invalid. (#1)");
+				Assert.IsTrue(reference.Includes(e6.ID, ""), "The returned reference is invalid. (#2)");
 				
-				DataAccess.Data.Deleter.Delete(action);
-				DataAccess.Data.Deleter.Delete(category);
+				DataAccess.Data.Deleter.Delete(e5);
+				DataAccess.Data.Deleter.Delete(e6);
 			}
 		}
 		
 		[Test]
 		public void Test_GetReference_Sync()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetReference function with a synchronous reference to ensure it retrieves the correct reference.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the GetReference function with a synchronous reference to ensure it retrieves the correct reference.", NLog.LogLevel.Debug))
 			{
 				
 				TestUtilities.CreateDummyReferences(100);
@@ -276,12 +276,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				EntityReference originalReference = DataAccess.Data.Referencer.GetActiveReferences(user)[0];
 				
-				AppLogger.Debug("Original reference - Entity 1 ID: " + originalReference.Entity1ID.ToString());
-				AppLogger.Debug("Original reference - Entity 2 ID: " + originalReference.Entity2ID.ToString());
-				AppLogger.Debug("Original reference - Property 1 name: " + originalReference.Property1Name);
-				AppLogger.Debug("Original reference - Property 2 name: " + originalReference.Property2Name);
-				AppLogger.Debug("Original reference - Type 1 name: " + originalReference.Type1Name);
-				AppLogger.Debug("Original reference - Type 2 name: " + originalReference.Type2Name);
+				LogWriter.Debug("Original reference - Entity 1 ID: " + originalReference.Entity1ID.ToString());
+				LogWriter.Debug("Original reference - Entity 2 ID: " + originalReference.Entity2ID.ToString());
+				LogWriter.Debug("Original reference - Property 1 name: " + originalReference.Property1Name);
+				LogWriter.Debug("Original reference - Property 2 name: " + originalReference.Property2Name);
+				LogWriter.Debug("Original reference - Type 1 name: " + originalReference.Type1Name);
+				LogWriter.Debug("Original reference - Type 2 name: " + originalReference.Type2Name);
 				
 				foreach (EntityIDReference r in DataAccess.Data.Referencer.GetActiveReferences(user))
 					DataAccess.Data.Saver.Save(r);
@@ -303,12 +303,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				Assert.IsNotNull(reference, "The return value is null.");
 				
-				AppLogger.Debug("Found reference - Entity 1 ID: " + reference.Entity1ID.ToString());
-				AppLogger.Debug("Found reference - Entity 2 ID: " + reference.Entity2ID.ToString());
-				AppLogger.Debug("Found reference - Property 1 name: " + reference.Property1Name);
-				AppLogger.Debug("Found reference - Property 2 name: " + reference.Property2Name);
-				AppLogger.Debug("Found reference - Type 1 name: " + reference.Type1Name);
-				AppLogger.Debug("Found reference - Type 2 name: " + reference.Type2Name);
+				LogWriter.Debug("Found reference - Entity 1 ID: " + reference.Entity1ID.ToString());
+				LogWriter.Debug("Found reference - Entity 2 ID: " + reference.Entity2ID.ToString());
+				LogWriter.Debug("Found reference - Property 1 name: " + reference.Property1Name);
+				LogWriter.Debug("Found reference - Property 2 name: " + reference.Property2Name);
+				LogWriter.Debug("Found reference - Type 1 name: " + reference.Type1Name);
+				LogWriter.Debug("Found reference - Type 2 name: " + reference.Type2Name);
 				
 				Assert.IsTrue(originalReference.Entity1ID.ToString() == reference.Entity1ID.ToString()
 				              || originalReference.Entity2ID.ToString() == reference.Entity1ID.ToString(), "Entity 1 ID doesn't match expected.");
@@ -336,7 +336,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_GetReference_Sync_Exclude()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetReference function with a synchronous reference to ensure it retrieves the correct reference.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the GetReference function with a synchronous reference to ensure it retrieves the correct reference.", NLog.LogLevel.Debug))
 			{
 				
 				TestUtilities.CreateDummyReferences(100);
@@ -366,10 +366,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				user2.Roles = new TestRole[] { role2 };
 				//role2.Users = new TestUser[] {user, user2};
 				
-				AppLogger.Debug("User 1 ID: " + user.ID.ToString());
-				AppLogger.Debug("User 2 ID: " + user2.ID.ToString());
-				AppLogger.Debug("Role 1 ID: " + role.ID.ToString());
-				AppLogger.Debug("Role 2 ID: " + role2.ID.ToString());
+				LogWriter.Debug("User 1 ID: " + user.ID.ToString());
+				LogWriter.Debug("User 2 ID: " + user2.ID.ToString());
+				LogWriter.Debug("Role 1 ID: " + role.ID.ToString());
+				LogWriter.Debug("Role 2 ID: " + role2.ID.ToString());
 				
 				EntityReferenceCollection userReferences = DataAccess.Data.Referencer.GetActiveReferences(user);
 				EntityReferenceCollection user2References = DataAccess.Data.Referencer.GetActiveReferences(user2);
@@ -380,12 +380,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				EntityReference originalReference1 = userReferences[0];
 				EntityReference originalReference2 = user2References[0];
 				
-				AppLogger.Debug("Original reference - Entity 1 ID: " + originalReference1.Entity1ID.ToString());
-				AppLogger.Debug("Original reference - Entity 2 ID: " + originalReference1.Entity2ID.ToString());
-				AppLogger.Debug("Original reference - Property 1 name: " + originalReference1.Property1Name);
-				AppLogger.Debug("Original reference - Property 2 name: " + originalReference1.Property2Name);
-				AppLogger.Debug("Original reference - Type 1 name: " + originalReference1.Type1Name);
-				AppLogger.Debug("Original reference - Type 2 name: " + originalReference1.Type2Name);
+				LogWriter.Debug("Original reference - Entity 1 ID: " + originalReference1.Entity1ID.ToString());
+				LogWriter.Debug("Original reference - Entity 2 ID: " + originalReference1.Entity2ID.ToString());
+				LogWriter.Debug("Original reference - Property 1 name: " + originalReference1.Property1Name);
+				LogWriter.Debug("Original reference - Property 2 name: " + originalReference1.Property2Name);
+				LogWriter.Debug("Original reference - Type 1 name: " + originalReference1.Type1Name);
+				LogWriter.Debug("Original reference - Type 2 name: " + originalReference1.Type2Name);
 				
 				/*foreach (EntityIDReference r in EntitiesUtilities.GetReferences(user))
 					DataAccess.Data.Saver.Save(r);
@@ -479,7 +479,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_MatchReference()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the MatchReference function to ensure matches properly.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the MatchReference function to ensure matches properly.", NLog.LogLevel.Debug))
 			{
 				
 				TestArticle article = new TestArticle();
@@ -508,12 +508,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				EntityReference originalReference = DataAccess.Data.Referencer.GetActiveReferences(article)[0];
 				
-				AppLogger.Debug("Original reference - Entity 1 ID: " + originalReference.Entity1ID.ToString());
-				AppLogger.Debug("Original reference - Entity 2 ID: " + originalReference.Entity2ID.ToString());
-				AppLogger.Debug("Original reference - Property 1 name: " + originalReference.Property1Name);
-				AppLogger.Debug("Original reference - Property 2 name: " + originalReference.Property2Name);
-				AppLogger.Debug("Original reference - Type 1 name: " + originalReference.Type1Name);
-				AppLogger.Debug("Original reference - Type 2 name: " + originalReference.Type2Name);
+				LogWriter.Debug("Original reference - Entity 1 ID: " + originalReference.Entity1ID.ToString());
+				LogWriter.Debug("Original reference - Entity 2 ID: " + originalReference.Entity2ID.ToString());
+				LogWriter.Debug("Original reference - Property 1 name: " + originalReference.Property1Name);
+				LogWriter.Debug("Original reference - Property 2 name: " + originalReference.Property2Name);
+				LogWriter.Debug("Original reference - Type 1 name: " + originalReference.Type1Name);
+				LogWriter.Debug("Original reference - Type 2 name: " + originalReference.Type2Name);
 				
 				foreach (EntityIDReference r in DataAccess.Data.Referencer.GetActiveReferences(article))
 					DataAccess.Data.Saver.Save(r);
@@ -545,7 +545,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_MatchReference_Opposite()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the MatchReference function to ensure matches properly.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the MatchReference function to ensure matches properly.", NLog.LogLevel.Debug))
 			{
 				TestArticle article = new TestArticle();
 				article.ID = Guid.NewGuid();
@@ -580,7 +580,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_MatchReference_Exclusion()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the MatchReference function to ensure excludes properly.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the MatchReference function to ensure excludes properly.", NLog.LogLevel.Debug))
 			{
 				TestArticle article = new TestArticle();
 				article.ID = Guid.NewGuid();
