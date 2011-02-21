@@ -74,7 +74,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 			List<EntityInfo> entities = new List<EntityInfo>();
 			
-			//using (LogGroup logGroup = AppLogger.StartGroup("Finding entities by scanning the attributes of the available type.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = LogGroup.Start("Finding entities by scanning the attributes of the available type.", NLog.LogLevel.Debug))
 			//{
 				foreach (string assemblyPath in AssemblyPaths)
 				{
@@ -86,13 +86,13 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 						{
 							if (IsEntity(type))
 							{
-								//AppLogger.Debug("Found entity type: " + type.ToString());
+								//LogWriter.Debug("Found entity type: " + type.ToString());
 								
 								EntityInfo entityInfo = new EntityInfo(type);
 								
 								if (entityInfo.TypeName != null && entityInfo.TypeName != String.Empty)
 								{
-									//AppLogger.Debug("Found match.");
+									//LogWriter.Debug("Found match.");
 									
 									entities.Add(entityInfo);
 								}
@@ -101,7 +101,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 					}
 					catch(ReflectionTypeLoadException ex)
 					{
-						AppLogger.Error(ex.ToString());
+						LogWriter.Error(ex.ToString());
 					}
 					
 				}
@@ -122,16 +122,16 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			//bool isNotInterface = false;
 			//bool isNotBaseEntity = false;
 			
-			//using (LogGroup logGroup = AppLogger.StartGroup("Checks whether the provided type is a entity.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = LogGroup.Start("Checks whether the provided type is a entity.", NLog.LogLevel.Debug))
 			//{
-			//	AppLogger.Debug("Type: " + type.ToString());
+			//	LogWriter.Debug("Type: " + type.ToString());
 				
 				matchesInterface = typeof(IEntity).IsAssignableFrom(type)
 					|| type.GetInterface("IEntity") != null
 					|| type.Name == "IEntity";
 				
 				
-			//	AppLogger.Debug("Matches interface: " + matchesInterface);
+			//	LogWriter.Debug("Matches interface: " + matchesInterface);
 			//}
 			
 			return matchesInterface;

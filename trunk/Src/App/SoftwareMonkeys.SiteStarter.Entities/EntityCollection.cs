@@ -219,19 +219,19 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// </summary>
 		public void SetIDs(Guid[] ids)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Setting entity IDs on the collection.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Setting entity IDs on the collection.", NLog.LogLevel.Debug))
 			{
-				AppLogger.Debug("The following IDs were passed:");
+				LogWriter.Debug("The following IDs were passed:");
 				if (ids != null && ids.Length > 0)
 				{
 					foreach (Guid id in ids)
 					{
-						AppLogger.Debug(id.ToString());
+						LogWriter.Debug(id.ToString());
 					}
 				}
 				else
 				{
-					AppLogger.Debug("None");
+					LogWriter.Debug("None");
 				}
 				
 				// Remove obsolete entities
@@ -239,7 +239,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				{
 					if (Array.IndexOf(ids, this[i].ID) == -1)
 					{
-						AppLogger.Debug("Removing obsolete enitity: " + this[i].ID.ToString());
+						LogWriter.Debug("Removing obsolete enitity: " + this[i].ID.ToString());
 						RemoveAt(i);
 						i--;
 					}
@@ -250,24 +250,24 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				{
 					if (!Contains(ids[i]))
 					{
-						AppLogger.Debug("Adding enitity: " + ids[i].ToString());
+						LogWriter.Debug("Adding enitity: " + ids[i].ToString());
 						E pointer = (E)Activator.CreateInstance(typeof(E), new object[]{ids[i]});
 						
 						Add(pointer);
 					}
 				}
 				
-				AppLogger.Debug("The following IDs are now in the collection:");
+				LogWriter.Debug("The following IDs are now in the collection:");
 				if (ids != null && ids.Length > 0)
 				{
 					foreach (E e in this)
 					{
-						AppLogger.Debug(e.ID.ToString());
+						LogWriter.Debug(e.ID.ToString());
 					}
 				}
 				else
 				{
-					AppLogger.Debug("None");
+					LogWriter.Debug("None");
 				}
 			}
 		}

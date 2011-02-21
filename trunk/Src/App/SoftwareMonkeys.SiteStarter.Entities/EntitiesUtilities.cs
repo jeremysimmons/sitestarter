@@ -62,10 +62,10 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				throw new ArgumentNullException("sourceType");
 			
 			// Logging disabled simply to reduce the size of the logs
-			//using (LogGroup logGroup = AppLogger.StartGroup("Checking if the specified property is an entity reference.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = LogGroup.Start("Checking if the specified property is an entity reference.", NLog.LogLevel.Debug))
 			//{
-			//	AppLogger.Debug("Entity: " + sourceType.ToString());
-			//	AppLogger.Debug("Property name: " + property.Name);
+			//	LogWriter.Debug("Entity: " + sourceType.ToString());
+			//	LogWriter.Debug("Property name: " + property.Name);
 			
 			ReferenceAttribute reference = GetReferenceAttribute(property);
 			
@@ -79,7 +79,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				}
 			}*/
 			
-			//	AppLogger.Debug("Is reference? " + isReference.ToString());
+			//	LogWriter.Debug("Is reference? " + isReference.ToString());
 			//}
 			
 			return isReference;
@@ -90,7 +90,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			bool isReference = false;
 			
 			// Logging disabled simply to reduce the size of the logs
-			//using (LogGroup logGroup = AppLogger.StartGroup("Checking if the specified property is an entity reference.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = LogGroup.Start("Checking if the specified property is an entity reference.", NLog.LogLevel.Debug))
 			//{
 			
 			isReference = type.Name.IndexOf("EntityReferenceCollection") > -1
@@ -98,7 +98,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				|| type.Name.IndexOf("EntityReference") > -1
 				|| type.Name.IndexOf("EntityIDReference") > -1;
 			
-			//	AppLogger.Debug("Is reference? " + isReference.ToString());
+			//	LogWriter.Debug("Is reference? " + isReference.ToString());
 			//}
 			
 			return isReference;
@@ -109,12 +109,12 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			bool isReference = false;
 			
 			// Logging disabled simply to reduce the size of the logs
-			//using (LogGroup logGroup = AppLogger.StartGroup("Checking if the specified property is an entity reference.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = LogGroup.Start("Checking if the specified property is an entity reference.", NLog.LogLevel.Debug))
 			//{
 			
 			isReference = type.FullName.IndexOf("EntityReference") > -1
 				|| type.FullName.IndexOf("EntityIDReference") > -1;
-			//	AppLogger.Debug("Is reference? " + isReference.ToString());
+			//	LogWriter.Debug("Is reference? " + isReference.ToString());
 			//}
 			
 			return isReference;
@@ -125,16 +125,16 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			ReferenceAttribute attribute = null;
 			
 			// Logging disabled simply to reduce the size of the logs
-			//using (LogGroup logGroup = AppLogger.StartGroup("...", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = LogGroup.Start("...", NLog.LogLevel.Debug))
 			//{
 			PropertyInfo property = entity.GetType().GetProperty(propertyName, returnType);
 			
-			//	AppLogger.Debug("Entity: " + entity.GetType().ToString());
-			//	AppLogger.Debug("Property name: " + propertyName);
+			//	LogWriter.Debug("Entity: " + entity.GetType().ToString());
+			//	LogWriter.Debug("Property name: " + propertyName);
 			
 			attribute = GetReferenceAttribute(property);
 			
-			//	AppLogger.Debug("Is reference? " + isReference.ToString());
+			//	LogWriter.Debug("Is reference? " + isReference.ToString());
 			//}
 			
 			return attribute;
@@ -148,12 +148,12 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			ReferenceAttribute attribute = null;
 			
 			// Logging disabled simply to reduce the size of the logs
-			//using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the reference attribute for the specified property.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = LogGroup.Start("Retrieving the reference attribute for the specified property.", NLog.LogLevel.Debug))
 			//{
 			
-			//	AppLogger.Debug("Entity: " + sourceType.ToString());
-			//	AppLogger.Debug("Property name: " + property.Name);
-			//	AppLogger.Debug("Property type: " + property.PropertyType.ToString());
+			//	LogWriter.Debug("Entity: " + sourceType.ToString());
+			//	LogWriter.Debug("Property name: " + property.Name);
+			//	LogWriter.Debug("Property type: " + property.PropertyType.ToString());
 			
 			foreach (Attribute a in property.GetCustomAttributes(true))
 			{
@@ -163,7 +163,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				}
 			}
 			
-			//	AppLogger.Debug("Attribute found: " + (attribute != null).ToString());
+			//	LogWriter.Debug("Attribute found: " + (attribute != null).ToString());
 			//}
 			
 			return attribute;
@@ -194,7 +194,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 			Type type = null;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the referenced entity type.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving the referenced entity type.", NLog.LogLevel.Debug))
 			{
 				if (sourceType == null)
 					throw new ArgumentNullException("sourceType");
@@ -202,9 +202,9 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				if (property == null)
 					throw new ArgumentNullException("property");
 				
-				AppLogger.Debug("Entity type: " + sourceType.ToString());
-				AppLogger.Debug("Property name: " + property.Name);
-				AppLogger.Debug("Property type: " + property.PropertyType.ToString());
+				LogWriter.Debug("Entity type: " + sourceType.ToString());
+				LogWriter.Debug("Property name: " + property.Name);
+				LogWriter.Debug("Property type: " + property.PropertyType.ToString());
 				
 				ReferenceAttribute attribute = GetReferenceAttribute(property);
 				
@@ -213,25 +213,25 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				
 				if (attribute.TypeName != String.Empty)
 				{
-					AppLogger.Debug("attribute.TypeName != String.Empty");
-					AppLogger.Debug("attribute.TypeName == " + attribute.TypeName);
+					LogWriter.Debug("attribute.TypeName != String.Empty");
+					LogWriter.Debug("attribute.TypeName == " + attribute.TypeName);
 					
 					type = EntitiesUtilities.GetType(attribute.TypeName);
 				}
 				else
 				{
-					AppLogger.Debug("attribute.TypeName == String.Empty");
+					LogWriter.Debug("attribute.TypeName == String.Empty");
 					
 					// If the property is a single entity instance
 					if (IsSingleReference(sourceType, property))
 					{
-						AppLogger.Debug("Is a single entity");
+						LogWriter.Debug("Is a single entity");
 						
 						type = property.PropertyType;
 					} // Otherwise the property is a collection/array
 					else
 					{
-						AppLogger.Debug("Is a collection/array");
+						LogWriter.Debug("Is a collection/array");
 						
 						// If it's an array this should work
 						type = property.PropertyType.GetElementType();
@@ -243,7 +243,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				}
 				
 				if (type != null)
-					AppLogger.Debug("Type: " + type.ToString());
+					LogWriter.Debug("Type: " + type.ToString());
 			}
 			
 			return type;
@@ -270,7 +270,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			
 			/*Type returnType = null;
 			
-			//using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the actual type based on the specified type/alias.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = LogGroup.Start("Retrieving the actual type based on the specified type/alias.", NLog.LogLevel.Debug))
 			//{
 			if (typeName == null || typeName == String.Empty)
 				throw new ArgumentNullException("typeName");
@@ -280,7 +280,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			if (typeName == "IUniqueEntity")
 				return typeof(IUniqueEntity);
 			
-			//AppLogger.Debug("Type name: " + typeName);
+			//LogWriter.Debug("Type name: " + typeName);
 			
 			// If a short type name was provided (eg. User)
 			if (typeName.IndexOf('.') == -1
@@ -301,14 +301,14 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 						alias = (string)mappingItem.Settings["Alias"];
 					
 					//if (mappingItem.Settings == null || mappingItem.Settings.Count == 0)
-					//AppLogger.Debug("No settings defined for this mapping item.");
+					//LogWriter.Debug("No settings defined for this mapping item.");
 					//else
-					//AppLogger.Debug(mappingItem.Settings.Count.ToString() + " settings found for this mapping item.");
+					//LogWriter.Debug(mappingItem.Settings.Count.ToString() + " settings found for this mapping item.");
 					
 					// If no alias is specified then use the FullName specified
 					if (alias == null || alias == String.Empty)
 					{
-						//AppLogger.Debug("No alias. This is the actual type.");
+						//LogWriter.Debug("No alias. This is the actual type.");
 						
 						string fullTypeName = String.Empty;
 						if (mappingItem.Settings.ContainsKey("FullName"))
@@ -325,12 +325,12 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 						
 						returnType = Type.GetType(fullTypeName + ", " + assemblyName);
 						
-						//AppLogger.Debug("Returning type: " + returnType.ToString());
+						//LogWriter.Debug("Returning type: " + returnType.ToString());
 						
 					}
 					else
 					{
-						//AppLogger.Debug("Alias: " + alias);
+						//LogWriter.Debug("Alias: " + alias);
 						// Use the alias if specified
 						returnType = GetType(alias);
 					}
@@ -470,24 +470,24 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 			string mirrorPropertyName = String.Empty;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving mirror property name using reverse method.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving mirror property name using reverse method.", NLog.LogLevel.Debug))
 			{
 				foreach (PropertyInfo property in referencedEntityType.GetProperties())
 				{
-					using (LogGroup logGroup2 = AppLogger.StartGroup("Checking property: " + property.Name, NLog.LogLevel.Debug))
+					using (LogGroup logGroup2 = LogGroup.Start("Checking property: " + property.Name, NLog.LogLevel.Debug))
 					{
 						
 						if (IsReference(entityType, property))
 						{
-							AppLogger.Debug("Is reference == true");
+							LogWriter.Debug("Is reference == true");
 							
 							//string m = GetMirrorPropertyName(referencedEntityType, property);
 							
-							//AppLogger.Debug("Possible mirror property name: " + m);
+							//LogWriter.Debug("Possible mirror property name: " + m);
 							
 							Type reverseReferenceType = GetReferenceType(referencedEntityType, property);
 							
-							AppLogger.Debug("reverseReferenceType: " + reverseReferenceType.ToString());
+							LogWriter.Debug("reverseReferenceType: " + reverseReferenceType.ToString());
 							
 							ReferenceAttribute attribute = GetReferenceAttribute(property);
 							
@@ -495,14 +495,14 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 							     && attribute.AutoDiscoverMirror)
 							    || attribute.MirrorPropertyName == propertyName)
 							{
-								AppLogger.Debug("Mirror property name decided: " + property.Name);
+								LogWriter.Debug("Mirror property name decided: " + property.Name);
 								mirrorPropertyName = property.Name;
 							}
 						}
 					}
 				}
 				
-				AppLogger.Debug("Mirror property name: " + mirrorPropertyName);
+				LogWriter.Debug("Mirror property name: " + mirrorPropertyName);
 			}
 			
 			return mirrorPropertyName;
@@ -512,7 +512,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 			string mirror = String.Empty;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the name of the mirror property that corresponds with the specified property.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving the name of the mirror property that corresponds with the specified property.", NLog.LogLevel.Debug))
 			{
 				if (sourceType == null)
 					throw new ArgumentNullException("sourceType");
@@ -531,7 +531,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 			string mirrorPropertyName = String.Empty;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the name of the mirror property that corresponds with the specified property.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving the name of the mirror property that corresponds with the specified property.", NLog.LogLevel.Debug))
 			{
 				if (sourceType == null)
 					throw new ArgumentNullException("sourceType");
@@ -572,7 +572,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 					}
 				}
 				
-				AppLogger.Debug("Mirror property name: " + mirrorPropertyName);
+				LogWriter.Debug("Mirror property name: " + mirrorPropertyName);
 			}
 			
 			return mirrorPropertyName;
@@ -587,7 +587,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		 */
 		/*foreach (Guid id in ids)
 			{
-				AppLogger.Debug("Post contains ID: " + id.ToString());
+				LogWriter.Debug("Post contains ID: " + id.ToString());
 								
 				if (id != Guid.Empty)
 				{
@@ -599,29 +599,29 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 					//if (DataSource != null)
 					//{
 					
-					//AppLogger.Debug("DataSource != null");
+					//LogWriter.Debug("DataSource != null");
 					
-					AppLogger.Debug("Getting entity from DataSource");
+					LogWriter.Debug("Getting entity from DataSource");
 					
 					entity = Collection<IEntity>.GetByID(source, id);
 					
 					if (entity == null)
 						throw new Exception("Entity could not be retrieved from DataSource property.");
 					
-					AppLogger.Debug("Found entity from post ID: " + entity.GetType().ToString());
+					LogWriter.Debug("Found entity from post ID: " + entity.GetType().ToString());
 					//}
 					//else
 					//{
-					//	AppLogger.Debug("DataSource == null");
+					//	LogWriter.Debug("DataSource == null");
 					
-					//	AppLogger.Debug("Getting entity from EntityFactory");
+					//	LogWriter.Debug("Getting entity from EntityFactory");
 					
 					//	entity = (E)EntityFactory.GetEntity<E>(id);
 					
-					//	AppLogger.Debug("Found entity from post ID: " + typeof(E).ToString());
+					//	LogWriter.Debug("Found entity from post ID: " + typeof(E).ToString());
 					//}
 					
-					AppLogger.Debug("Adding entity to list.");
+					LogWriter.Debug("Adding entity to list.");
 					entities.Add(entity);
 				}
 			}*/

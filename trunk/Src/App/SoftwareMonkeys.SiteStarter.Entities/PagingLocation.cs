@@ -68,11 +68,11 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			// Create the return flag
 			bool isInPage = false;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the specified position is within the specified page.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Checking whether the specified position is within the specified page.", NLog.LogLevel.Debug))
 			{
-				AppLogger.Debug("Position (i): " + i.ToString());
-				AppLogger.Debug("Page index: " + pageIndex);
-				AppLogger.Debug("Page size: " + pageSize);
+				LogWriter.Debug("Position (i): " + i.ToString());
+				LogWriter.Debug("Page index: " + pageIndex);
+				LogWriter.Debug("Page size: " + pageSize);
 				
 				// Calculate the position of the first item on the page
 				int first = (pageIndex * pageSize); // 0 based
@@ -80,15 +80,15 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				// Calculate the position of the last item on the page
 				int last = ((pageIndex * pageSize) + pageSize) -1; // -1 to make it the last of the page, instead of first item on next page
 				
-				AppLogger.Debug("First position: " + first.ToString());
-				AppLogger.Debug("Last position: " + last.ToString());
+				LogWriter.Debug("First position: " + first.ToString());
+				LogWriter.Debug("Last position: " + last.ToString());
 				
 				// The position is in the current page if it is between or equal
 				// to the first and last items on the page
 				isInPage = i >= first
 					&& i <= last;
 				
-				AppLogger.Debug("Is in page? " + isInPage.ToString());
+				LogWriter.Debug("Is in page? " + isInPage.ToString());
 			}
 			
 			return isInPage;

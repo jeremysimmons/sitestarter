@@ -143,11 +143,11 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 			T entity = default(T);
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Creating a new entity for the type: " + entityTypeName, NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Creating a new entity for the type: " + entityTypeName, NLog.LogLevel.Debug))
 			{
-				AppLogger.Debug("Entity type name: " + entityTypeName);
+				LogWriter.Debug("Entity type name: " + entityTypeName);
 				
-				AppLogger.Debug("Entity type: " + typeof(T).FullName);
+				LogWriter.Debug("Entity type: " + typeof(T).FullName);
 				
 				entity = (T)Creator.NewEntity(entityTypeName);
 			}
