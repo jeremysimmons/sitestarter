@@ -44,7 +44,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		// TODO: Remove
 		/*public void Add(IEntity entity)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Adding entity to the reference collection: " + entity.GetType().ToString()))
+			using (LogGroup logGroup = LogGroup.Start("Adding entity to the reference collection: " + entity.GetType().ToString()))
 			{
 				if (sourceEntity == null)
 					throw new InvalidOperationException("The SourceEntity property needs to be set before entities can be added.");
@@ -137,7 +137,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		
 		protected new void Add(EntityReference<E1, E2> reference)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Adding a reference to the collection.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Adding a reference to the collection.", NLog.LogLevel.Debug))
 			{
 				if (reference == null)
 					throw new ArgumentNullException("reference");
@@ -160,7 +160,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		
 		public void Add(E2 entity)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Adding entity to the reference collection: " + entity.GetType().ToString()))
+			using (LogGroup logGroup = LogGroup.Start("Adding entity to the reference collection: " + entity.GetType().ToString()))
 			{
 				if (SourceEntity == null)
 					throw new InvalidOperationException("The SourceEntity property needs to be set before entities can be added.");
@@ -212,11 +212,11 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 			List<Guid> list = new List<Guid>();
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving IDs of referenced entities.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving IDs of referenced entities.", NLog.LogLevel.Debug))
 			{
 				foreach (object reference in this)
 				{
-					AppLogger.Debug("ID: " + ((EntityReference)reference).GetOtherEntity(SourceEntity).ID);
+					LogWriter.Debug("ID: " + ((EntityReference)reference).GetOtherEntity(SourceEntity).ID);
 					list.Add(((EntityReference)reference).GetOtherEntity(SourceEntity).ID);
 				}
 			}
@@ -232,7 +232,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			
 			
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Setting IDs of referenced entities.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Setting IDs of referenced entities.", NLog.LogLevel.Debug))
 			{
 				
 				// Add all references to the obsolete list. They'll be removed one by one if they're still in use.
@@ -243,13 +243,13 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 
 				foreach (Guid id in ids)
 				{
-					AppLogger.Debug("ID: " + id.ToString());
+					LogWriter.Debug("ID: " + id.ToString());
 					
 					EntityReference reference = this.GetReference(id);
 					
 					if (reference != null)
 					{
-						AppLogger.Debug("Reference already exists.");
+						LogWriter.Debug("Reference already exists.");
 						
 //						// Change the reference entity ID
 //						reference.EntityIDs[1] = id;
@@ -261,7 +261,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 					}
 					else
 					{
-						AppLogger.Debug("Creating new reference.");
+						LogWriter.Debug("Creating new reference.");
 						
 						// Add a new reference with the specified ID
 						reference = new EntityReference<E1, E2>();
@@ -275,12 +275,12 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				//  Remove any obsolete references from the current list.
 				foreach (EntityReference reference in obsoleteReferences)
 				{
-					AppLogger.Debug("Removing obsolete reference: " + reference.ID.ToString());
+					LogWriter.Debug("Removing obsolete reference: " + reference.ID.ToString());
 					
 					this.Remove(reference);
 				}
 				
-				AppLogger.Debug("# of obsolete references: " +
+				LogWriter.Debug("# of obsolete references: " +
 				                (obsoleteReferences == null
 				                 ? "0"
 				                 : obsoleteReferences.Count.ToString()));
@@ -294,11 +294,11 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 			List<Guid> list = new List<Guid>();
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving IDs of referenced entities.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving IDs of referenced entities.", NLog.LogLevel.Debug))
 			{
 				foreach (object reference in this)
 				{
-					AppLogger.Debug("ID: " + ((EntityReference)reference).ID);
+					LogWriter.Debug("ID: " + ((EntityReference)reference).ID);
 					list.Add(((EntityReference)reference).ID);
 				}
 			}

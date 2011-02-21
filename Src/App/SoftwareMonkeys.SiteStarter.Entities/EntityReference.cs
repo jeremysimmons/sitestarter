@@ -28,26 +28,26 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			}
 			set
 			{
-				//using (LogGroup logGroup = AppLogger.StartGroup("Setting EntityReference.SourceEntity value", NLog.LogLevel.Debug))
+				//using (LogGroup logGroup = LogGroup.Start("Setting EntityReference.SourceEntity value", NLog.LogLevel.Debug))
 				//{
 					sourceEntity = value;
 					if (sourceEntity != null)
 					{
-						//AppLogger.Debug("sourceEntity != null");
+						//LogWriter.Debug("sourceEntity != null");
 						
-						//AppLogger.Debug("Short type name: " + sourceEntity.ShortTypeName);
-						//AppLogger.Debug("Entity ID: " + sourceEntity.ID);
+						//LogWriter.Debug("Short type name: " + sourceEntity.ShortTypeName);
+						//LogWriter.Debug("Entity ID: " + sourceEntity.ID);
 						
 						base.Type1Name = sourceEntity.ShortTypeName;
 						base.Entity1ID = sourceEntity.ID;
 					}
 					else
 					{
-						//AppLogger.Debug("sourceEntity == null");
+						//LogWriter.Debug("sourceEntity == null");
 						
-						//AppLogger.Debug("ID: Guid.Empty");
+						//LogWriter.Debug("ID: Guid.Empty");
 						//if (base.TypeNames.Length > 0)
-						//	AppLogger.Debug("Short type name remains: " + base.TypeNames[0]);
+						//	LogWriter.Debug("Short type name remains: " + base.TypeNames[0]);
 						
 						//base.TypeNames[0] = String.Empty;
 						base.Entity1ID = Guid.Empty;
@@ -94,26 +94,26 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			}
 			set
 			{
-				//using (LogGroup logGroup = AppLogger.StartGroup("Setting EntityReference.ReferenceEntity value", NLog.LogLevel.Debug))
+				//using (LogGroup logGroup = LogGroup.Start("Setting EntityReference.ReferenceEntity value", NLog.LogLevel.Debug))
 				//{
 					referenceEntity = value;
 					if (referenceEntity != null)
 					{
-						//AppLogger.Debug("referenceEntity != null");
+						//LogWriter.Debug("referenceEntity != null");
 						
-						//AppLogger.Debug("Short type name: " + referenceEntity.ShortTypeName);
-						//AppLogger.Debug("Type ID: " + referenceEntity.ID);
+						//LogWriter.Debug("Short type name: " + referenceEntity.ShortTypeName);
+						//LogWriter.Debug("Type ID: " + referenceEntity.ID);
 						
 						base.Type2Name = referenceEntity.ShortTypeName;
 						base.Entity2ID = referenceEntity.ID;
 					}
 					else
 					{
-						//AppLogger.Debug("referenceEntity == null");
+						//LogWriter.Debug("referenceEntity == null");
 						
-						//AppLogger.Debug("ID: Guid.Empty");
+						//LogWriter.Debug("ID: Guid.Empty");
 						//if (base.TypeNames.Length > 0)
-						//		AppLogger.Debug("Short type name remains: " + base.TypeNames[1]);
+						//		LogWriter.Debug("Short type name remains: " + base.TypeNames[1]);
 						
 						//base.TypeNames[1] = String.Empty;
 						base.Entity2ID = Guid.Empty;
@@ -147,7 +147,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 			IEntity otherEntity = null;
 			
-			//using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the entity from the reference that is not the one provided (ie. the other entity).", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = LogGroup.Start("Retrieving the entity from the reference that is not the one provided (ie. the other entity).", NLog.LogLevel.Debug))
 			//{
 				if (entity == null)
 					throw new ArgumentNullException("entity");
@@ -165,8 +165,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				else
 					throw new InvalidOperationException("Can't get the other entity. Both entities match.");
 				
-				//AppLogger.Debug("Other entity type: " + otherEntity.GetType().ToString());
-				//AppLogger.Debug("Other entity ID: " + otherEntity.ID.ToString());
+				//LogWriter.Debug("Other entity type: " + otherEntity.GetType().ToString());
+				//LogWriter.Debug("Other entity ID: " + otherEntity.ID.ToString());
 			//}
 			
 			return otherEntity;

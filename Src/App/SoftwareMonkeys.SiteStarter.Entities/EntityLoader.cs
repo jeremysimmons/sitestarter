@@ -55,11 +55,11 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 			List<EntityInfo> entities = new List<EntityInfo>();
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Loading the entities from the XML files.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Loading the entities from the XML files.", NLog.LogLevel.Debug))
 			{
 				foreach (string file in Directory.GetFiles(EntitiesDirectoryPath))
 				{
-					AppLogger.Debug("File: " + file);
+					LogWriter.Debug("File: " + file);
 					
 					entities.Add(LoadFromFile(file));
 				}
@@ -77,12 +77,12 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 			EntityInfo info = null;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Loading the entity from the specified path.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Loading the entity from the specified path.", NLog.LogLevel.Debug))
 			{
 				if (!File.Exists(entityPath))
 					throw new ArgumentException("The specified file does not exist.");
 				
-				AppLogger.Debug("Path: " + entityPath);
+				LogWriter.Debug("Path: " + entityPath);
 				
 				
 				using (StreamReader reader = new StreamReader(File.OpenRead(entityPath)))

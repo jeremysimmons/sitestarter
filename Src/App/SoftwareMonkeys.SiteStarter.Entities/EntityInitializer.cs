@@ -130,18 +130,18 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// </summary>
 		public void Initialize()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Initializing the business entities.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Initializing the business entities.", NLog.LogLevel.Debug))
 			{
 				EntityInfo[] entities = new EntityInfo[]{};
 				if (IsMapped)
 				{
-					AppLogger.Debug("Is mapped. Loading from XML.");
+					LogWriter.Debug("Is mapped. Loading from XML.");
 					
 					entities = LoadEntities();
 				}
 				else
 				{
-					AppLogger.Debug("Is not mapped. Scanning from type attributes.");
+					LogWriter.Debug("Is not mapped. Scanning from type attributes.");
 					
 					entities = FindEntities();
 					SaveToFile(entities);
@@ -157,7 +157,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <param name="entities">The entities to save to file.</param>
 		public void SaveToFile(EntityInfo[] entities)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Saving the provided entities to XML.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Saving the provided entities to XML.", NLog.LogLevel.Debug))
 			{
 				foreach (EntityInfo entity in entities)
 				{

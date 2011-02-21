@@ -51,14 +51,14 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <param name="entity">The entity to save to file.</param>
 		public void SaveToFile(EntityInfo entity)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Saving the provided entity to file.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Saving the provided entity to file.", NLog.LogLevel.Debug))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");
 				
 				string path = FileNamer.CreateFilePath(entity);
 				
-				AppLogger.Debug("Path : " + path);
+				LogWriter.Debug("Path : " + path);
 				
 				if (!Directory.Exists(Path.GetDirectoryName(path)))
 					Directory.CreateDirectory(Path.GetDirectoryName(path));
@@ -78,7 +78,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <param name="entities">An array of the entities to save to file.</param>
 		public void SaveToFile(EntityInfo[] entities)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Saving the provided entities to XML files.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Saving the provided entities to XML files.", NLog.LogLevel.Debug))
 			{
 				foreach (EntityInfo entity in entities)
 				{
