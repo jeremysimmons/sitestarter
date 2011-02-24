@@ -32,14 +32,14 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 			
 			T config = default(T);
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Loading configuration file: " + configPath))
+			using (LogGroup logGroup = LogGroup.Start("Loading configuration file: " + configPath))
 			{
 
 				if (!File.Exists(configPath))
 				{
 					// Exception not needed. Just return a default config to allow the setup page to run
 					//throw new Exception("Configuration file not found: " + configPath);
-					AppLogger.Debug("Configuration file not found.");
+					LogWriter.Debug("Configuration file not found.");
 					config = default(T);
 				}
 				else

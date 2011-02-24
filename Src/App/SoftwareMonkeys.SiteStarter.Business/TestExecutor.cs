@@ -239,7 +239,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		public void RunTests(string fixtureName, string testName)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Running unit tests.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Running unit tests.", NLog.LogLevel.Debug))
 			{
 
 				// Check that some test fixtures have been found
@@ -266,7 +266,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				if (fixtureName == String.Empty
 				    || type.FullName == fixtureName)
 				{
-					AppLogger.Debug("Test fixture found: " + type.ToString());
+					LogWriter.Debug("Test fixture found: " + type.ToString());
 
 					if (!table.ContainsKey(type.ToString()))
 						table.Add(type.ToString(), Activator.CreateInstance(type));
@@ -358,11 +358,11 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			}
 			catch (Exception ex)
 			{
-				using (LogGroup logGroup2 = AppLogger.StartGroup("Handling unit test error.", NLog.LogLevel.Error))
+				using (LogGroup logGroup2 = LogGroup.Start("Handling unit test error.", NLog.LogLevel.Error))
 				{
 					string innerMessage = String.Empty;
 
-					AppLogger.Error(ex.ToString());
+					LogWriter.Error(ex.ToString());
 
 					// Move to the first inner exception. The outer exception can be skipped.
 					if (ex.InnerException != null)
@@ -373,10 +373,10 @@ namespace SoftwareMonkeys.SiteStarter.Business
 
 					while (subEx != null)
 					{
-						using (LogGroup logGroup3 = AppLogger.StartGroup("Output inner exception.", NLog.LogLevel.Error))
+						using (LogGroup logGroup3 = LogGroup.Start("Output inner exception.", NLog.LogLevel.Error))
 						{
 
-							AppLogger.Error(subEx.ToString());
+							LogWriter.Error(subEx.ToString());
 
 							if (innerMessage.Length > 0)
 								innerMessage += "========== Inner Exception =========\n";

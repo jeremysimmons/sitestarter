@@ -62,7 +62,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			List<ProjectionInfo> projections = new List<ProjectionInfo>();
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Finding projections by scanning the attributes of the available type.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Finding projections by scanning the attributes of the available type.", NLog.LogLevel.Debug))
 			{
 				foreach (string file in Directory.GetFiles(FileNamer.ProjectionsDirectoryPath))
 				{

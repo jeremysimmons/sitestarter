@@ -99,7 +99,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// </summary>
 		public void Dispose()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Disposing the projections.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Disposing the projections.", NLog.LogLevel.Debug))
 			{
 				ProjectionInfo[] projections = new ProjectionInfo[]{};
 				
@@ -116,7 +116,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// </summary>
 		public void Dispose(ProjectionInfo[] projections)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Disposing the projections.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Disposing the projections.", NLog.LogLevel.Debug))
 			{
 				foreach (ProjectionInfo projection in projections)
 				{

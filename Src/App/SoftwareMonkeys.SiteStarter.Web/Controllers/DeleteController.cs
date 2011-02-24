@@ -67,19 +67,19 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <param name="entity"></param>
 		public virtual void ExecuteDelete(IEntity entity)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Deleting the provided entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Deleting the provided entity.", NLog.LogLevel.Debug))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");
 				
 				if (entity == null)
-					AppLogger.Debug("Entity: [null]");
+					LogWriter.Debug("Entity: [null]");
 				else
-					AppLogger.Debug("Entity: " + entity.GetType().FullName);
+					LogWriter.Debug("Entity: " + entity.GetType().FullName);
 				
 				Deleter.Delete(entity);
 				
-				AppLogger.Debug("Done");
+				LogWriter.Debug("Done");
 				
 				// Display the result
 				Result.Display(DynamicLanguage.GetEntityText("EntityDeleted", entity.ShortTypeName));
@@ -93,16 +93,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// </summary>
 		public virtual void Delete()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Deleting the entity specified in the query string.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Deleting the entity specified in the query string.", NLog.LogLevel.Debug))
 			{
 				IEntity entity = Load();
 				
 				Delete(entity);
 				
 				if (entity == null)
-					AppLogger.Debug("Entity: [null]");
+					LogWriter.Debug("Entity: [null]");
 				else
-					AppLogger.Debug("Entity: " + entity.GetType().FullName);
+					LogWriter.Debug("Entity: " + entity.GetType().FullName);
 			}
 			
 		}
@@ -129,13 +129,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			T entity = default(T);
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Loading the entity specified in the query string.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Loading the entity specified in the query string.", NLog.LogLevel.Debug))
 			{
 				Guid id = QueryStrings.GetID(typeof(T).Name);
 				string uniqueKey = QueryStrings.GetUniqueKey(typeof(T).Name);
 			
-				AppLogger.Debug("Entity ID: " + id.ToString());
-				AppLogger.Debug("Unique key: " + uniqueKey);
+				LogWriter.Debug("Entity ID: " + id.ToString());
+				LogWriter.Debug("Unique key: " + uniqueKey);
 				
 				if (id != Guid.Empty)
 					entity = Retriever.Retrieve<T>(id);
@@ -143,9 +143,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 					entity = Retriever.Retrieve<T>(uniqueKey);
 				
 				if (entity == null)
-					AppLogger.Debug("Entity: [null]");
+					LogWriter.Debug("Entity: [null]");
 				else
-					AppLogger.Debug("Entity: " + entity.GetType().FullName);
+					LogWriter.Debug("Entity: " + entity.GetType().FullName);
 			}
 			return entity;
 		}

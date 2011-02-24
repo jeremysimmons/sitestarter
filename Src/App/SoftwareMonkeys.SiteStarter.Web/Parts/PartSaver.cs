@@ -52,11 +52,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		/// <param name="part">The part info to save to file.</param>
 		public void SaveInfoToFile(PartInfo part)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Saving the provided part to file.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Saving the provided part to file.", NLog.LogLevel.Debug))
 			{
 				string path = FileNamer.CreateInfoFilePath(part);
 				
-				AppLogger.Debug("Path : " + path);
+				LogWriter.Debug("Path : " + path);
 				
 				if (!Directory.Exists(Path.GetDirectoryName(path)))
 					Directory.CreateDirectory(Path.GetDirectoryName(path));
@@ -76,7 +76,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		/// <param name="parts">An array of the parts to save to file.</param>
 		public void SaveInfoToFile(PartInfo[] parts)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Saving the provided parts to XML files.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Saving the provided parts to XML files.", NLog.LogLevel.Debug))
 			{
 				foreach (PartInfo part in parts)
 				{

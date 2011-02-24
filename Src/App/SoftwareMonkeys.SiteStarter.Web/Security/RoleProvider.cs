@@ -234,7 +234,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 
 		public override void CreateRole(string rolename)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Creating new role: " + rolename, NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Creating new role: " + rolename, NLog.LogLevel.Debug))
 			{
 				if (rolename.Contains(","))
 				{
@@ -248,7 +248,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 
 				IUserRole role = new UserRole();
 				role.ID = Guid.NewGuid();
-				AppLogger.Debug("Role ID: " + role.ID);
+				LogWriter.Debug("Role ID: " + role.ID);
 				role.Name = rolename;
 
 				SaveStrategy.New<UserRole>().Save(role);

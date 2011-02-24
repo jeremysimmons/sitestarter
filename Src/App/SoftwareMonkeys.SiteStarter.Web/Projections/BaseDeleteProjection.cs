@@ -44,7 +44,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		
 		public virtual void Delete()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Deleting the entity specified in the query string.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Deleting the entity specified in the query string.", NLog.LogLevel.Debug))
 			{
 				Controller.Delete();
 			}
@@ -52,7 +52,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		
 		public virtual void Delete(IEntity entity)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Deleting the entity provided.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Deleting the entity provided.", NLog.LogLevel.Debug))
 			{
 				Controller.Delete(entity);
 			}

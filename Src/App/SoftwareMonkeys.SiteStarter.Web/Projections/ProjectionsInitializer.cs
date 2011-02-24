@@ -164,7 +164,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// </summary>
 		public void Initialize()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Initializing the business projections.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Initializing the business projections.", NLog.LogLevel.Debug))
 			{
 				if (StateAccess.IsInitialized && Configuration.Config.IsInitialized)
 				{
@@ -176,7 +176,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 					// and when the projections have NOT yet been mapped
 					if (pageIsAccessible && !IsMapped)
 					{
-						AppLogger.Debug("Is not mapped. Scanning from type attributes.");
+						LogWriter.Debug("Is not mapped. Scanning from type attributes.");
 						
 						projections = FindProjections();
 						
@@ -186,7 +186,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 					}
 					else if(IsMapped)
 					{
-						AppLogger.Debug("Is mapped. Loading from XML.");
+						LogWriter.Debug("Is mapped. Loading from XML.");
 						
 						projections = LoadProjections();
 						
@@ -203,7 +203,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <param name="projections">The projections to save to file.</param>
 		public void SaveInfoToFile(ProjectionInfo[] projections)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Saving the provided projections to XML.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Saving the provided projections to XML.", NLog.LogLevel.Debug))
 			{
 				foreach (ProjectionInfo projection in projections)
 				{
@@ -230,9 +230,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			List<ProjectionInfo> projections = new List<ProjectionInfo>();
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Finding projections.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Finding projections.", NLog.LogLevel.Debug))
 			{
-				AppLogger.Debug("# of scanners: " + Scanners.Length);
+				LogWriter.Debug("# of scanners: " + Scanners.Length);
 				
 				foreach (BaseProjectionScanner scanner in Scanners)
 				{

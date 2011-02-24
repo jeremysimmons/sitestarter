@@ -35,7 +35,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			bool isTaken = false;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Validating the provided entity by ensuring the specified property value is unique.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Validating the provided entity by ensuring the specified property value is unique.", NLog.LogLevel.Debug))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");
@@ -43,26 +43,26 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				if (propertyName == null || propertyName == String.Empty)
 					throw new ArgumentNullException("propertyName");
 				
-				AppLogger.Debug("Property name: " + propertyName);
+				LogWriter.Debug("Property name: " + propertyName);
 				
-				AppLogger.Debug("Entity: " + entity.GetType().FullName);
+				LogWriter.Debug("Entity: " + entity.GetType().FullName);
 				
 				IRetrieveStrategy strategy = RetrieveStrategy.New(entity.ShortTypeName, false);
 				
 				object propertyValue = EntitiesUtilities.GetPropertyValue(entity, propertyName);
 				
-				AppLogger.Debug("Property value: " + propertyValue.ToString());
+				LogWriter.Debug("Property value: " + propertyValue.ToString());
 				
 				IEntity existingEntity = (IEntity)strategy.Retrieve(propertyName, propertyValue);
 				
-				AppLogger.Debug("Existing entity found: " + (existingEntity != null).ToString());
+				LogWriter.Debug("Existing entity found: " + (existingEntity != null).ToString());
 				
-				AppLogger.Debug("Provided entity ID: " + entity.ID.ToString());
-				AppLogger.Debug("Existing entity ID: " + (existingEntity == null ? "[null]" : existingEntity.ID.ToString()));
+				LogWriter.Debug("Provided entity ID: " + entity.ID.ToString());
+				LogWriter.Debug("Existing entity ID: " + (existingEntity == null ? "[null]" : existingEntity.ID.ToString()));
 				
 				isTaken = (existingEntity != null && !existingEntity.ID.Equals(entity.ID));
 				
-				AppLogger.Debug("Is taken: " + isTaken);
+				LogWriter.Debug("Is taken: " + isTaken);
 			}
 			
 			return !isTaken;
@@ -72,7 +72,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			UniqueValidateStrategy strategy = null;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Creating a new validator strategy.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Creating a new validator strategy.", NLog.LogLevel.Debug))
 			{
 				strategy = (UniqueValidateStrategy)StrategyState.Strategies.Creator.NewValidator(typeName);
 			}
@@ -83,7 +83,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			UniqueValidateStrategy strategy = null;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Creating a new validator strategy.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Creating a new validator strategy.", NLog.LogLevel.Debug))
 			{
 				strategy = (UniqueValidateStrategy)StrategyState.Strategies.Creator.NewValidator(typeName);
 				

@@ -20,13 +20,13 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		public override bool Authorise(string shortTypeName)
 		{
 			bool isAuthorised = false;
-			using (LogGroup logGroup = AppLogger.StartGroup("Checking whether current user is authorised to update entities of type '" + shortTypeName + "'.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Checking whether current user is authorised to update entities of type '" + shortTypeName + "'.", NLog.LogLevel.Debug))
 			{
 				if (AuthenticationState.IsAuthenticated
 				    && AuthenticationState.UserIsInRole("Administrator"))
 					isAuthorised = true;
 				
-				AppLogger.Debug("Is authorised: " + isAuthorised);
+				LogWriter.Debug("Is authorised: " + isAuthorised);
 			}
 			return isAuthorised;
 		}
@@ -39,7 +39,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		public override bool Authorise(IEntity entity)
 		{
 			bool isAuthorised = false;
-			using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the current user is authorised to update the provided entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Checking whether the current user is authorised to update the provided entity.", NLog.LogLevel.Debug))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");
@@ -47,7 +47,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 				if (AuthenticationState.IsAuthenticated)
 					isAuthorised = true;
 				
-				AppLogger.Debug("Is authorised: " + isAuthorised);
+				LogWriter.Debug("Is authorised: " + isAuthorised);
 				
 			}
 			return isAuthorised;

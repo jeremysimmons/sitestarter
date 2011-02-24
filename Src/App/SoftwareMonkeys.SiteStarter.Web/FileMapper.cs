@@ -47,20 +47,20 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		{
 			string output = String.Empty;
 		
-			using (LogGroup logGroup = AppLogger.StartGroup("Mapping the provided path.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Mapping the provided path.", NLog.LogLevel.Debug))
 			{
 				if (ApplicationPath == String.Empty)
 					throw new InvalidOperationException("The ApplicationPath property has not been set.");
 				
-				AppLogger.Debug("Application relative path: " + relativeUrl);
+				LogWriter.Debug("Application relative path: " + relativeUrl);
 				
 				string serverRelativePath = ApplicationPath + "/" + relativeUrl.Trim('/');
 				
-				AppLogger.Debug("Server relative path: " + serverRelativePath);
+				LogWriter.Debug("Server relative path: " + serverRelativePath);
 				
 				output = MapPath(serverRelativePath);
 				
-				AppLogger.Debug("Output: " + output);
+				LogWriter.Debug("Output: " + output);
 			}
 			
 			return output;
@@ -75,14 +75,14 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		{
 			string output = String.Empty;
 		
-			using (LogGroup logGroup = AppLogger.StartGroup("Mapping the provided server root relative path.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Mapping the provided server root relative path.", NLog.LogLevel.Debug))
 			{
 				
-				AppLogger.Debug("Server relative path: " + relativeUrl);
+				LogWriter.Debug("Server relative path: " + relativeUrl);
 				
 				output = HttpContext.Current.Server.MapPath(relativeUrl);
 				
-				AppLogger.Debug("Output: " + output);
+				LogWriter.Debug("Output: " + output);
 			}
 			
 			return output;

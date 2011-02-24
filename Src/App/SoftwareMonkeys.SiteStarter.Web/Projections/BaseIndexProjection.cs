@@ -166,14 +166,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// </summary>
 		public virtual void Index()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Displaying an index of entities.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Displaying an index of entities.", NLog.LogLevel.Debug))
 			{
 				if (controller == null)
 					throw new InvalidOperationException("Controller has not be initialized. Call IndexPage.Initialize().");
 				
 				IEntity[] entities = Controller.PrepareIndex();
 				
-				AppLogger.Debug("Count: " + entities.Length.ToString());
+				LogWriter.Debug("Count: " + entities.Length.ToString());
 				
 				Index(entities);
 			}
@@ -184,7 +184,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// </summary>
 		public void Index(IEntity[] entities)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Displaying an index of the provided entities.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Displaying an index of the provided entities.", NLog.LogLevel.Debug))
 			{
 				if (entities == null)
 					throw new ArgumentNullException("entities");
@@ -202,9 +202,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				
 				Grid.VirtualItemCount = Location.AbsoluteTotal;
 				
-				AppLogger.Debug("Count: " + entities.Length);
+				LogWriter.Debug("Count: " + entities.Length);
 				
-				AppLogger.Debug("Absolute total: " + Location.AbsoluteTotal.ToString());
+				LogWriter.Debug("Absolute total: " + Location.AbsoluteTotal.ToString());
 				
 				DataBind();
 			}

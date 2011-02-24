@@ -124,7 +124,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			string outputFile = String.Empty;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Backing up the application.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Backing up the application.", NLog.LogLevel.Debug))
 			{
 				// Export data to XML
 				Export();
@@ -141,7 +141,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				// Prepare for application update
 				if (PrepareForUpdate)
 				{
-					AppLogger.Debug("Prepare for update");
+					LogWriter.Debug("Prepare for update");
 					
 					MoveToLegacy();
 					
@@ -150,7 +150,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				// Delete the exported files (now that they've been zipped up)
 				else
 				{
-					AppLogger.Debug("Prepare for update == false");
+					LogWriter.Debug("Prepare for update == false");
 					
 					DeleteExportFiles();
 				}
@@ -250,7 +250,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		public void Suspend()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Suspending the application (ready for update).", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Suspending the application (ready for update).", NLog.LogLevel.Debug))
 			{
 				DataAccess.Data.Suspend();
 				
@@ -259,7 +259,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				string toDirectory = DataAccess.Data.SuspendedDirectoryPath + Path.DirectorySeparatorChar
 					+ DataAccess.Data.Schema.ApplicationVersion.ToString().Replace(".", "-");
 				
-				AppLogger.Debug("To directory: " + toDirectory);
+				LogWriter.Debug("To directory: " + toDirectory);
 				
 				foreach (string file in Directory.GetFiles(DataAccess.Data.DataDirectoryPath))
 				{
@@ -268,11 +268,11 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					// If the file extension is in the suspendable types array then suspend it
 					if (Array.IndexOf(suspendableTypes, ext) > -1)
 					{
-						AppLogger.Debug("Suspending file: " + file);
+						LogWriter.Debug("Suspending file: " + file);
 						
 						string toFile = toDirectory + Path.DirectorySeparatorChar + Path.GetFileName(file);
 						
-						AppLogger.Debug("To: " + toFile);
+						LogWriter.Debug("To: " + toFile);
 						
 						if (!Directory.Exists(Path.GetDirectoryName(toFile)))
 							Directory.CreateDirectory(Path.GetDirectoryName(toFile));

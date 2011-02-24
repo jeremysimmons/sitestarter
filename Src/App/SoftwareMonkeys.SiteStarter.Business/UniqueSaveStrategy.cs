@@ -51,7 +51,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			bool valid = false;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Validating the provided entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Validating the provided entity.", NLog.LogLevel.Debug))
 			{				
 				if (UniqueValidator == null)
 					throw new InvalidOperationException("The validation strategy can't be found. Check the Strategy attribute on the validation strategy class.");
@@ -59,9 +59,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				if (UniquePropertyName == null || UniquePropertyName == String.Empty)
 					throw new InvalidOperationException("The UniquePropertyName property hasn't been set.");
 				
-				AppLogger.Debug("Entity type: " + entity.GetType().FullName);
+				LogWriter.Debug("Entity type: " + entity.GetType().FullName);
 				
-				AppLogger.Debug("Unique property name: " + UniquePropertyName);
+				LogWriter.Debug("Unique property name: " + UniquePropertyName);
 				
 				valid = UniqueValidator.Validate(entity, UniquePropertyName);
 				

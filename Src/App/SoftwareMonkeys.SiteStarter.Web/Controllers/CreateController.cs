@@ -66,7 +66,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			IEntity entity = null;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Creating a new entity."))
+			using (LogGroup logGroup = LogGroup.Start("Creating a new entity."))
 			{
 				if (EnsureAuthorised())
 				{
@@ -85,7 +85,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <param name="entity"></param>
 		public virtual void Create(IEntity entity)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Creating a new entity."))
+			using (LogGroup logGroup = LogGroup.Start("Creating a new entity."))
 			{
 				ExecuteCreate(entity);
 			}
@@ -97,7 +97,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <param name="entity"></param>
 		public virtual void ExecuteCreate(IEntity entity)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Starting the create entity process.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Starting the create entity process.", NLog.LogLevel.Debug))
 			{
 				DataSource = entity;
 				
@@ -110,7 +110,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			bool success = false;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Saving the provided entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Saving the provided entity.", NLog.LogLevel.Debug))
 			{
 				success = ExecuteSave(entity);
 			}
@@ -125,7 +125,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		public virtual bool ExecuteSave(IEntity entity)
 		{
 			bool saved = false;
-			using (LogGroup logGroup = AppLogger.StartGroup("Saving data from form.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Saving data from form.", NLog.LogLevel.Debug))
 			{
 				
 				if (EnsureAuthorised(entity))
@@ -159,7 +159,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 						saved = false;
 					}
 				}
-				AppLogger.Debug("Saved: " + saved.ToString());
+				LogWriter.Debug("Saved: " + saved.ToString());
 			}
 			return saved;
 		}
@@ -209,7 +209,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			CreateController controller = null;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Instantiating a new create controller.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Instantiating a new create controller.", NLog.LogLevel.Debug))
 			{
 				
 				if (type.Name == "IEntity")
@@ -221,8 +221,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				controller.UniquePropertyName = uniquePropertyName;
 				controller.TypeName = type.Name;
 				
-				AppLogger.Debug("Type name: " + type.Name);
-				AppLogger.Debug("Unique property name: " + uniquePropertyName);
+				LogWriter.Debug("Type name: " + type.Name);
+				LogWriter.Debug("Unique property name: " + uniquePropertyName);
 			}
 			
 			return controller;

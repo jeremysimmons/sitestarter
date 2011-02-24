@@ -64,7 +64,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		{
 			List<PartInfo> parts = new List<PartInfo>();
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Finding parts by scanning the attributes of the available type.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Finding parts by scanning the attributes of the available type.", NLog.LogLevel.Debug))
 			{
 				if (Directory.Exists(FileNamer.PartsDirectoryPath))
 				{

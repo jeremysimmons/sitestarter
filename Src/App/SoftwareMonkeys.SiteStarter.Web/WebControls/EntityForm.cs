@@ -127,7 +127,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
 		protected override void OnInit(EventArgs e)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Initializing the EntityForm control.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Initializing the EntityForm control.", NLog.LogLevel.Debug))
 			{
 				//Controls.Add(table);
 				//table.Width = Unit.Percentage(100);
@@ -142,13 +142,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				TableRow newButtonsRow = null;
 				foreach (TableRow row in Rows)
 				{
-					AppLogger.Debug("Row type: " + row.GetType().ToString());
+					LogWriter.Debug("Row type: " + row.GetType().ToString());
 
 					if (row is EntityFormButtonsItem)
 					{
 						EntityFormButtonsItem item = (EntityFormButtonsItem)row;
 
-						AppLogger.Debug("Binding item with field control ID: " + item.FieldControlID);
+						LogWriter.Debug("Binding item with field control ID: " + item.FieldControlID);
 						
 						newButtonsRow = CopyButtonsRow(item);
 						
@@ -175,7 +175,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 					{
 						EntityFormItem item = (EntityFormItem)row;
 
-						AppLogger.Debug("Binding item with field control ID: " + item.FieldControlID);
+						LogWriter.Debug("Binding item with field control ID: " + item.FieldControlID);
 						
 						// If a custom CSS class hasn't been set on the object use the default one
 						if (item.TextCssClass != String.Empty)
@@ -236,7 +236,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
 		public override void DataBind()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Binding the DataSource data to the values of the fields in the EntityForm.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Binding the DataSource data to the values of the fields in the EntityForm.", NLog.LogLevel.Debug))
 			{
 				base.DataBind();
 
@@ -244,35 +244,35 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				{
 					if (DataSource != null)
 					{
-						AppLogger.Debug("DataSource != null");
+						LogWriter.Debug("DataSource != null");
 						
 						if (row is EntityFormItem)
 						{
-							AppLogger.Debug("row is EntityFormItem");
+							LogWriter.Debug("row is EntityFormItem");
 							
 							EntityFormItem item = (EntityFormItem)row;
 							string propertyName = ((EntityFormItem)item).PropertyName;
 							
 							if (item.AutoBind && propertyName != String.Empty)
 							{
-								using (LogGroup logGroup2 = AppLogger.StartGroup("Property: " + propertyName, NLog.LogLevel.Debug))
+								using (LogGroup logGroup2 = LogGroup.Start("Property: " + propertyName, NLog.LogLevel.Debug))
 								{
-									AppLogger.Debug("Field control ID: " + item.FieldControlID);
+									LogWriter.Debug("Field control ID: " + item.FieldControlID);
 									
 									object propertyValue = Reflector.GetPropertyValue(DataSource, propertyName);
 									Type propertyType = Reflector.GetPropertyType(DataSource, propertyName);
 									
-									AppLogger.Debug("Property type: " + propertyType.ToString());
+									LogWriter.Debug("Property type: " + propertyType.ToString());
 
 									if (propertyValue == null)
-										AppLogger.Debug("PropertyValue: [null]");
+										LogWriter.Debug("PropertyValue: [null]");
 									else
 									{
-										AppLogger.Debug("Property value: " + propertyValue.ToString());
+										LogWriter.Debug("Property value: " + propertyValue.ToString());
 										
 										if (propertyValue is Array)
 										{
-											AppLogger.Debug("Property array length: " + ((Array)propertyValue).Length.ToString());
+											LogWriter.Debug("Property array length: " + ((Array)propertyValue).Length.ToString());
 										}
 									}
 									
@@ -283,10 +283,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 							}
 						}
 						else
-							AppLogger.Debug("!(row is EntityFormItem)");
+							LogWriter.Debug("!(row is EntityFormItem)");
 					}
 					else
-						AppLogger.Debug("DataSource == null");
+						LogWriter.Debug("DataSource == null");
 				}
 			}
 		}
@@ -329,11 +329,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
 		public void ReverseBind()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Transferring data from form fields to entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Transferring data from form fields to entity.", NLog.LogLevel.Debug))
 			{
 				if (DataSource == null)
 				{
-					AppLogger.Debug("DataSource == null - Reverse bind skipped");
+					LogWriter.Debug("DataSource == null - Reverse bind skipped");
 				}
 				else
 				{
@@ -349,12 +349,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 								
 								if (item.AutoBind && item.PropertyName != null && item.PropertyName != String.Empty)
 								{
-									AppLogger.Debug("Property name: " + item.PropertyName);
-									//AppLogger.Debug("Property type: " + property.PropertyType.ToString());
+									LogWriter.Debug("Property name: " + item.PropertyName);
+									//LogWriter.Debug("Property type: " + property.PropertyType.ToString());
 									
 									//if (property != null)
 									//{
-									//	AppLogger.Debug("Property found");
+									//	LogWriter.Debug("Property found");
 									
 									WebControl field = (WebControl)FindControl(item.FieldControlID);
 									// Skip label fields, they're not editable
@@ -363,12 +363,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 									{
 										Type propertyType = Reflector.GetPropertyType(DataSource, item.PropertyName);
 										
-										AppLogger.Debug("Property type: " + (propertyType == null ? "[null]" : propertyType.ToString()));
+										LogWriter.Debug("Property type: " + (propertyType == null ? "[null]" : propertyType.ToString()));
 										
 										object value = EntityFormHelper.GetFieldValue(field, item.ControlValuePropertyName, propertyType);
 										
-										AppLogger.Debug("Field value type: " + (value == null ? "[null]" : value.GetType().ToString()));
-										AppLogger.Debug("Field value: " + (value == null ? "[null]" : value.ToString()));
+										LogWriter.Debug("Field value type: " + (value == null ? "[null]" : value.GetType().ToString()));
+										LogWriter.Debug("Field value: " + (value == null ? "[null]" : value.ToString()));
 										
 										object castValue = EntityFormHelper.Convert(value, propertyType);
 										
@@ -376,7 +376,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 									}
 									//}
 									//else
-									//	AppLogger.Debug("Property not found.");
+									//	LogWriter.Debug("Property not found.");
 								}
 							}
 						}

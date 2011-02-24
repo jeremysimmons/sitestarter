@@ -23,7 +23,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			get
 			{
 				bool isInstalled = false;
-				using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the application has been installed.", NLog.LogLevel.Debug))
+				using (LogGroup logGroup = LogGroup.Start("Checking whether the application has been installed.", NLog.LogLevel.Debug))
 				{
 					CheckFileMapper();
 					
@@ -31,11 +31,11 @@ namespace SoftwareMonkeys.SiteStarter.Business
 										
 					string path = ConfigFactory<AppConfig>.CreateConfigPath(FileMapper.MapPath(ApplicationPath + "/" + DataDirectory), "Application", PathVariation);
 					
-					AppLogger.Debug("Is installed if file exists: " + path);
+					LogWriter.Debug("Is installed if file exists: " + path);
 					
 					isInstalled = File.Exists(path);
 					
-					AppLogger.Debug("Is installed: " + isInstalled);
+					LogWriter.Debug("Is installed: " + isInstalled);
 				}
 				return isInstalled;
 			}
@@ -159,7 +159,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="settings">General and custom application settings.</param>
 		public void Setup(Dictionary<string, object> settings)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Performing install/setup.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Performing install/setup.", NLog.LogLevel.Debug))
 			{
 				CheckApplicationPath();
 				
@@ -169,23 +169,23 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				
 				config.Save(); // Needs to be saved here but will be updated again during setup
 				
-				AppLogger.Debug("Created application configuration object.");
+				LogWriter.Debug("Created application configuration object.");
 				
 				Initialize();
 				
-				AppLogger.Debug("Initialized config and data.");
+				LogWriter.Debug("Initialized config and data.");
 				
 				InitializeSiteMap();
 				
-				AppLogger.Debug("Initialized site map.");
+				LogWriter.Debug("Initialized site map.");
 				
 				InitializeDefaultData();
 				
-				AppLogger.Debug("Initialized default data/entities.");
+				LogWriter.Debug("Initialized default data/entities.");
 				
 				InitializeVersion();
 				
-				AppLogger.Debug("Initialized application version.");
+				LogWriter.Debug("Initialized application version.");
 			}
 		}
 		
@@ -194,29 +194,29 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		public void InitializeDefaultData()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Initializing the default data/entities.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Initializing the default data/entities.", NLog.LogLevel.Debug))
 			{
 				if (!UseLegacyData)
 				{
-					AppLogger.Debug("Not using existing data. Creating default user and administrator.");
+					LogWriter.Debug("Not using existing data. Creating default user and administrator.");
 					
 					CheckAdministrator();
 					
 					User user = Administrator;
 					
-					AppLogger.Debug("Created/retrieved primary administrator.");
+					LogWriter.Debug("Created/retrieved primary administrator.");
 					
 					UserRole role = CreateAdministratorRole(user);
 					
-					AppLogger.Debug("Created administrator role.");
+					LogWriter.Debug("Created administrator role.");
 					
 					Save(user, role);
 					
-					AppLogger.Debug("Saved administrator user and administrator role.");
+					LogWriter.Debug("Saved administrator user and administrator role.");
 				}
 				else
 				{
-					AppLogger.Debug("Using existing data. Skipping creation. Data will be imported instead.");
+					LogWriter.Debug("Using existing data. Skipping creation. Data will be imported instead.");
 				}
 			}
 		}
@@ -230,7 +230,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			UserRole administratorRole = null;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Creating the administrator role.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Creating the administrator role.", NLog.LogLevel.Debug))
 			{
 				administratorRole = new UserRole();
 				administratorRole.ID = Guid.NewGuid();
@@ -251,7 +251,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="administratorRole">The administrator role.</param>
 		private void Save(User administrator, UserRole administratorRole)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Saving the provided user, role, and config.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Saving the provided user, role, and config.", NLog.LogLevel.Debug))
 			{
 				AuthenticationState.Username = administrator.Username;
 				
@@ -269,7 +269,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					Config.Application.Save();
 				}
 				else
-					AppLogger.Debug("User already exists. Skipping save.");
+					LogWriter.Debug("User already exists. Skipping save.");
 			}
 		}
 
@@ -282,7 +282,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			AppConfig config = null;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Creating the default application config.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Creating the default application config.", NLog.LogLevel.Debug))
 			{
 				CheckFileMapper();
 				
@@ -298,13 +298,13 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					config.Settings[key] = settings[key];
 				}
 				
-				AppLogger.Debug("Application path: " + config.ApplicationPath);
-				AppLogger.Debug("Physical application path: " + config.PhysicalApplicationPath);
+				LogWriter.Debug("Application path: " + config.ApplicationPath);
+				LogWriter.Debug("Physical application path: " + config.PhysicalApplicationPath);
 				
 				// TODO: Check if needed
 				//config.Settings["ApplicationVersion"] = Utilities.GetVersion();
 				
-				AppLogger.Debug("Version: " + config.Settings["ApplicationVersion"]);
+				LogWriter.Debug("Version: " + config.Settings["ApplicationVersion"]);
 			}
 			return config;
 			
@@ -315,7 +315,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		public void Initialize()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Initializing the configuration and data access.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Initializing the configuration and data access.", NLog.LogLevel.Debug))
 			{
 				InitializeConfig();
 				
@@ -362,17 +362,17 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		private void InitializeSiteMap()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Initializing the site map.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Initializing the site map.", NLog.LogLevel.Debug))
 			{
 				string pathVariation = Config.Application.PathVariation;
 				
-				AppLogger.Debug("Path variation: " + pathVariation);
+				LogWriter.Debug("Path variation: " + pathVariation);
 
 				string siteMapFile = "Menu.sitemap";
 				if (pathVariation != String.Empty)
 					siteMapFile = "Menu." + pathVariation + ".sitemap";
 				
-				AppLogger.Debug("Site map file: " + siteMapFile);
+				LogWriter.Debug("Site map file: " + siteMapFile);
 
 				string defaultSiteMapPath = State.StateAccess.State.PhysicalApplicationPath + Path.DirectorySeparatorChar +
 					"App_Data" + Path.DirectorySeparatorChar + "Menu.default.sitemap";
@@ -380,12 +380,12 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				string siteMapPath = State.StateAccess.State.PhysicalApplicationPath + Path.DirectorySeparatorChar +
 					"App_Data" + Path.DirectorySeparatorChar + siteMapFile;
 				
-				AppLogger.Debug("Default site map path: " + defaultSiteMapPath);
-				AppLogger.Debug("Site map path: " + siteMapPath);
+				LogWriter.Debug("Default site map path: " + defaultSiteMapPath);
+				LogWriter.Debug("Site map path: " + siteMapPath);
 				
 				if (!File.Exists(defaultSiteMapPath))
 				{
-					AppLogger.Error("Default site map file not found.");
+					LogWriter.Error("Default site map file not found.");
 					throw new Exception("The default site map couldn't be found at: " + defaultSiteMapPath);
 				}
 

@@ -89,7 +89,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		
 		protected override void OnLoad(EventArgs e)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Loading the base create/edit projection.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Loading the base create/edit projection.", NLog.LogLevel.Debug))
 			{
 				if (!IsPostBack)
 				{
@@ -105,13 +105,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		
 		public void Initialize(Type type, EntityForm form, string uniquePropertyName)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Initializing the base create/edit projection.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Initializing the base create/edit projection.", NLog.LogLevel.Debug))
 			{
 				UniquePropertyName = uniquePropertyName;
 				
-				AppLogger.Debug("Unique property name: " + uniquePropertyName);
+				LogWriter.Debug("Unique property name: " + uniquePropertyName);
 				
-				AppLogger.Debug("Type: " + type.ToString());
+				LogWriter.Debug("Type: " + type.ToString());
 				
 				Type = type;
 				Form = form;
@@ -130,7 +130,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 
 		void Form_EntityCommand(object sender, EntityFormEventArgs e)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Handling entity form command.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Handling entity form command.", NLog.LogLevel.Debug))
 			{
 				if (e.CommandName == "Save")
 					Save();
@@ -146,7 +146,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// </summary>
 		public virtual void Create()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Creating a new entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Creating a new entity.", NLog.LogLevel.Debug))
 			{
 				CheckCreateController();
 				
@@ -160,7 +160,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <param name="entity"></param>
 		public virtual void Create(IEntity entity)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Preparing a create action.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Preparing a create action.", NLog.LogLevel.Debug))
 			{
 				CheckCreateController();
 				
@@ -180,7 +180,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		public virtual T PrepareEdit<T>()
 			where T : IEntity
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Preparing an edit action.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Preparing an edit action.", NLog.LogLevel.Debug))
 			{
 				if (EditController == null)
 					throw new InvalidOperationException("Controller has not be initialized. Call FormPage.Initialize().");
@@ -199,7 +199,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			IEntity entity = null;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Preparing an edit action.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Preparing an edit action.", NLog.LogLevel.Debug))
 			{
 				if (EditController == null)
 					throw new InvalidOperationException("Controller has not be initialized. Call FormPage.Initialize().");
@@ -218,7 +218,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			IEntity entity = null;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Preparing an edit action.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Preparing an edit action.", NLog.LogLevel.Debug))
 			{
 				if (EditController == null)
 					throw new InvalidOperationException("Controller has not be initialized. Call FormPage.Initialize().");
@@ -237,7 +237,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		public virtual IEntity PrepareEdit(string uniqueKey)
 		{
 			IEntity entity = null;
-			using (LogGroup logGroup = AppLogger.StartGroup("Preparing an edit action.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Preparing an edit action.", NLog.LogLevel.Debug))
 			{
 				if (EditController == null)
 					throw new InvalidOperationException("Controller has not be initialized. Call FormPage.Initialize().");
@@ -252,7 +252,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// </summary>
 		public virtual void Edit()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Editing an entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Editing an entity.", NLog.LogLevel.Debug))
 			{
 				IEntity entity = EditController.PrepareEdit();
 				
@@ -267,7 +267,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <param name="entity"></param>
 		public virtual void Edit(IEntity entity)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Starting an edit action.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Starting an edit action.", NLog.LogLevel.Debug))
 			{
 				if (EditController == null)
 					throw new InvalidOperationException("Controller has not be initialized. Call FormPage.Initialize().");
@@ -288,7 +288,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		public virtual bool Save()
 		{
 			bool success = false;
-			using (LogGroup logGroup = AppLogger.StartGroup("Saving the entity from the form.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Saving the entity from the form.", NLog.LogLevel.Debug))
 			{
 				if (Page.IsValid)
 				{
@@ -313,7 +313,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		public virtual bool Save(IEntity entity)
 		{
 			bool success = false;
-			using (LogGroup logGroup = AppLogger.StartGroup("Saving the provided entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Saving the provided entity.", NLog.LogLevel.Debug))
 			{
 				if (Page.IsValid)
 				{
@@ -329,7 +329,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		public virtual T PrepareUpdate<T>()
 		{
 			T entity = default(T);
-			using (LogGroup logGroup = AppLogger.StartGroup("Preparing to update an entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Preparing to update an entity.", NLog.LogLevel.Debug))
 			{
 				entity = (T)PrepareUpdate();
 			}
@@ -343,7 +343,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		public virtual IEntity PrepareUpdate()
 		{
 			IEntity entity = null;
-			using (LogGroup logGroup = AppLogger.StartGroup("Preparing to update an entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Preparing to update an entity.", NLog.LogLevel.Debug))
 			{
 				Form.ReverseBind();
 				
@@ -360,7 +360,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		public virtual T PrepareSave<T>()
 		{
 			T entity = default(T);
-			using (LogGroup logGroup = AppLogger.StartGroup("Preparing to save the data from the form.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Preparing to save the data from the form.", NLog.LogLevel.Debug))
 			{
 				entity = (T)PrepareSave();
 			}
@@ -375,7 +375,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			IEntity entity = null;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Preparing to save the data from the form.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Preparing to save the data from the form.", NLog.LogLevel.Debug))
 			{
 				if (Form == null)
 					throw new Exception("Form == null");
@@ -400,7 +400,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		public virtual bool Update()
 		{
 			bool success = false;
-			using (LogGroup logGroup = AppLogger.StartGroup("Updating the entity on the form.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Updating the entity on the form.", NLog.LogLevel.Debug))
 			{
 				if (Page.IsValid)
 				{
@@ -423,7 +423,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		public virtual bool Update(IEntity entity)
 		{
 			bool success = false;
-			using (LogGroup logGroup = AppLogger.StartGroup("Updating the provided entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Updating the provided entity.", NLog.LogLevel.Debug))
 			{
 				if (Page.IsValid)
 				{

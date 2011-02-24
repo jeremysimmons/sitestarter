@@ -52,11 +52,11 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="strategy">The strategy to save to file.</param>
 		public void SaveToFile(StrategyInfo strategy)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Saving the provided strategy to file.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Saving the provided strategy to file.", NLog.LogLevel.Debug))
 			{
 				string path = FileNamer.CreateFilePath(strategy);
 				
-				AppLogger.Debug("Path : " + path);
+				LogWriter.Debug("Path : " + path);
 				
 				if (!Directory.Exists(Path.GetDirectoryName(path)))
 					Directory.CreateDirectory(Path.GetDirectoryName(path));
@@ -76,7 +76,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="strategies">An array of the strategies to save to file.</param>
 		public void SaveToFile(StrategyInfo[] strategies)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Saving the provided strategies to XML files.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Saving the provided strategies to XML files.", NLog.LogLevel.Debug))
 			{
 				foreach (StrategyInfo strategy in strategies)
 				{

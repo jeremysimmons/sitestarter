@@ -227,9 +227,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		public virtual IEntity LoadEntity(string uniqueKey)
 		{
 			IEntity entity = null;
-			using (LogGroup logGroup = AppLogger.StartGroup("Loading entity from unique key.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Loading entity from unique key.", NLog.LogLevel.Debug))
 			{
-				AppLogger.Debug("Unique key: " + uniqueKey);
+				LogWriter.Debug("Unique key: " + uniqueKey);
 				
 				DataSource = entity = Retriever.Retrieve(uniqueKey);
 				
@@ -249,16 +249,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		public virtual IEntity LoadEntity(Guid id)
 		{
 			IEntity entity = null;
-			using (LogGroup logGroup = AppLogger.StartGroup("Loading entity from unique key.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Loading entity from unique key.", NLog.LogLevel.Debug))
 			{
-				AppLogger.Debug("ID: " + id.ToString());
+				LogWriter.Debug("ID: " + id.ToString());
 				
 				entity = Retriever.Retrieve(id);
 				
 				if (entity == null)
 					throw new ArgumentException("Entity of type '" + Container.Type.Name + "' not found with ID '" + id.ToString() + "'. Check that the entity and the factory retrieve method are properly configured.");
 				
-				AppLogger.Debug("Entity: " + entity.ToString());
+				LogWriter.Debug("Entity: " + entity.ToString());
 				
 				LoadEntity(entity);
 			}

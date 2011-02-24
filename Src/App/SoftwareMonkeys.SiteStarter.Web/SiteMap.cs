@@ -341,7 +341,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <param name="item">The item to add to the site map.</param>
 		public void Add(ISiteMapNode item)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Adding item to site map.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Adding item to site map.", NLog.LogLevel.Debug))
 			{
 				if (UrlCreator == null)
 					throw new InvalidOperationException("The UrlCreator property has not been initialized.");
@@ -354,7 +354,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				if (node.Url == String.Empty)
 					node.Url = UrlCreator.CreateUrl(item.Action, item.TypeName);
 				
-				AppLogger.Debug("URL: " + node.Url);
+				LogWriter.Debug("URL: " + node.Url);
 
 				SiteMapNode rootNode = ChildNodes.Count > 0 ? ChildNodes[0] : null;
 				
@@ -374,7 +374,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 						SiteMapNode categoryNode = GetNodeByTitle(rootNode.ChildNodes, item.Category);
 						if (categoryNode == null)
 						{
-							AppLogger.Debug("Creating/adding category node: " + item.Category);
+							LogWriter.Debug("Creating/adding category node: " + item.Category);
 							categoryNode = new SiteMapNode();
 							categoryNode.Title = item.Category;
 							rootNode.ChildNodes.Add(categoryNode);
@@ -382,17 +382,17 @@ namespace SoftwareMonkeys.SiteStarter.Web
 						categoryNode.SelectAction = TreeNodeSelectAction.None;
 						categoryNode.ChildNodes.Add(node);
 
-						AppLogger.Debug("Added node to category.");
+						LogWriter.Debug("Added node to category.");
 					}
 					else
 					{
-						AppLogger.Debug("Added node to root.");
+						LogWriter.Debug("Added node to root.");
 						childNodes.Add(node);
 					}
 				}
 				else
 				{
-					AppLogger.Debug("Node exists. Skipping add.");
+					LogWriter.Debug("Node exists. Skipping add.");
 				}
 			}
 		}
@@ -406,11 +406,11 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			if (UrlCreator == null)
 				throw new InvalidOperationException("The UrlCreator property has not been initialized.");
 			
-			AppLogger.Debug("Page: " + item.Title);
+			LogWriter.Debug("Page: " + item.Title);
 			
 			string url = UrlCreator.CreateUrl(item.Action, item.TypeName);
 
-			AppLogger.Debug("URL: " + url);
+			LogWriter.Debug("URL: " + url);
 			
 			
 			SiteMapNode rootNode = ChildNodes.Count > 0 ? ChildNodes[0] : null;
@@ -434,18 +434,18 @@ namespace SoftwareMonkeys.SiteStarter.Web
 					if (categoryNode.ChildNodes.Count == 0)
 						rootNode.ChildNodes.Remove(categoryNode);
 
-					AppLogger.Debug("Removed node from category.");
+					LogWriter.Debug("Removed node from category.");
 				}
 				else
 				{
-					AppLogger.Debug("Removed node from root.");
+					LogWriter.Debug("Removed node from root.");
 					
 					rootNode.ChildNodes.Remove(existingNode);
 				}
 			}
 			else
 			{
-				AppLogger.Debug("Node not found. Skipping remove.");
+				LogWriter.Debug("Node not found. Skipping remove.");
 				
 				throw new Exception("No existing node found with URL '" + url + "'.");
 			}

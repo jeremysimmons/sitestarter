@@ -51,7 +51,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		public IController CreateController(ControllerInfo controllerInfo)
 		{
 			IController controller = null;
-			using (LogGroup logGroup = AppLogger.StartGroup("Creating a new controller based on the provided info.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Creating a new controller based on the provided info.", NLog.LogLevel.Debug))
 			{
 				if (controllerInfo == null)
 					throw new ArgumentNullException("controllerInfo");
@@ -65,19 +65,19 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				if (EntityState.IsType(controllerInfo.TypeName))
 					entityType = EntityState.GetType(controllerInfo.TypeName);
 				
-				AppLogger.Debug("Controller type: " + controllerType.FullName);
-				AppLogger.Debug("Entity type: " + (entityType != null ? entityType.FullName : String.Empty));
+				LogWriter.Debug("Controller type: " + controllerType.FullName);
+				LogWriter.Debug("Entity type: " + (entityType != null ? entityType.FullName : String.Empty));
 				
 				if (entityType != null && controllerType.IsGenericTypeDefinition)
 				{
-					AppLogger.Debug("Is generic type definition.");
+					LogWriter.Debug("Is generic type definition.");
 					
 					Type gType = controllerType.MakeGenericType(new Type[]{entityType});
 					controller = (IController)Activator.CreateInstance(gType);
 				}
 				else
 				{
-					AppLogger.Debug("Is not generic type definition.");
+					LogWriter.Debug("Is not generic type definition.");
 					
 					controller = (IController)Activator.CreateInstance(controllerType);
 				}
@@ -85,7 +85,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				if (controller == null)
 					throw new ArgumentException("Unable to create instance of controller: " + entityType.ToString(), "controllerInfo");
 				
-				AppLogger.Debug("Controller created.");
+				LogWriter.Debug("Controller created.");
 			}
 			
 			return controller;

@@ -26,7 +26,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		{
 			bool isAuthorised = false;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the user can perform the action '" + action + "' with the entity type '" + typeName + "'."))
+			using (LogGroup logGroup = LogGroup.Start("Checking whether the user can perform the action '" + action + "' with the entity type '" + typeName + "'."))
 			{
 				string internalAction = GetInternalAction(action);
 				
@@ -43,7 +43,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		{
 			bool isAuthorised = false;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the user can perform the action '" + action + "' with the entity type '" + type.Name + "'."))
+			using (LogGroup logGroup = LogGroup.Start("Checking whether the user can perform the action '" + action + "' with the entity type '" + type.Name + "'."))
 			{
 				string internalAction = GetInternalAction(action);
 				
@@ -59,11 +59,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		{
 			bool can = false;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the user can perform the action '" + action + "' with the entity type '" + entity.ShortTypeName + "'."))
+			using (LogGroup logGroup = LogGroup.Start("Checking whether the user can perform the action '" + action + "' with the entity type '" + entity.ShortTypeName + "'."))
 			{
 				string internalAction = GetInternalAction(action);
 				
-				AppLogger.Debug("Internal action: " + internalAction);
+				LogWriter.Debug("Internal action: " + internalAction);
 				
 				IAuthoriseStrategy strategy = StrategyState.Strategies.Creator.New<IAuthoriseStrategy>("Authorise" + internalAction, entity.GetType().Name);
 				
@@ -78,7 +78,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		{
 			bool can = false;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the user can perform the action '" + action + "'."))
+			using (LogGroup logGroup = LogGroup.Start("Checking whether the user can perform the action '" + action + "'."))
 			{
 				if (entities == null || entities.Length == 0)
 				{
@@ -88,7 +88,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 				{
 					string internalAction = GetInternalAction(action);
 					
-					AppLogger.Debug("Internal action: " + internalAction);
+					LogWriter.Debug("Internal action: " + internalAction);
 					
 					string shortTypeName = entities[0].ShortTypeName;
 					
@@ -114,9 +114,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		{
 			string internalAction = action;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Getting the internal action that corresponds with the one provided.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Getting the internal action that corresponds with the one provided.", NLog.LogLevel.Debug))
 			{
-				AppLogger.Debug("Action: " + action);
+				LogWriter.Debug("Action: " + action);
 				
 				switch (action)
 				{
@@ -165,12 +165,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		
 		public static void InvalidPermissionsRedirect()
 		{
-			AppLogger.Debug("Invalid permissions. Redirecting.");
+			LogWriter.Debug("Invalid permissions. Redirecting.");
 			
 			Result.DisplayError(Language.Unauthorised);
 			
 			// TODO: This shouldn't be hard coded.
-			HttpContext.Current.Response.Redirect("~/User/SignIn.aspx?ReturnUrl=" + Authentication.GetUrl());
+			HttpContext.Current.Response.Redirect("~/User-SignIn.aspx?ReturnUrl=" + Authentication.GetUrl());
 		}
 
 		public static void EnsureIsAuthenticated()
@@ -191,7 +191,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		static public bool IsInRole(string roleName)
 		{
 			bool isInRole = false;
-			using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the current user is in the specified role.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Checking whether the current user is in the specified role.", NLog.LogLevel.Debug))
 			{
 				if (!AuthenticationState.IsAuthenticated)
 					isInRole = false;

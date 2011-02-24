@@ -164,7 +164,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		/// </summary>
 		public void Initialize()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Initializing the business parts.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Initializing the business parts.", NLog.LogLevel.Debug))
 			{
 				if (StateAccess.IsInitialized && Configuration.Config.IsInitialized)
 				{
@@ -176,7 +176,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 					// and when the parts have NOT yet been mapped
 					if (pageIsAccessible && !IsMapped)
 					{
-						AppLogger.Debug("Is not mapped. Scanning from type attributes.");
+						LogWriter.Debug("Is not mapped. Scanning from type attributes.");
 						
 						parts = FindParts();
 						
@@ -186,7 +186,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 					}
 					else if(IsMapped)
 					{
-						AppLogger.Debug("Is mapped. Loading from XML.");
+						LogWriter.Debug("Is mapped. Loading from XML.");
 						
 						parts = LoadParts();
 						
@@ -202,7 +202,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		/// <param name="parts">The parts to save to file.</param>
 		public void SaveInfoToFile(PartInfo[] parts)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Saving the provided parts to XML.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Saving the provided parts to XML.", NLog.LogLevel.Debug))
 			{
 				foreach (PartInfo part in parts)
 				{
@@ -229,9 +229,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		{
 			List<PartInfo> parts = new List<PartInfo>();
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Finding parts.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Finding parts.", NLog.LogLevel.Debug))
 			{
-				AppLogger.Debug("# of scanners: " + Scanners.Length);
+				LogWriter.Debug("# of scanners: " + Scanners.Length);
 				
 				foreach (BasePartScanner scanner in Scanners)
 				{

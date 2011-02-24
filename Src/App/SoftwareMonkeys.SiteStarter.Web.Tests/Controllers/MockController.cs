@@ -32,7 +32,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// </summary>
 		public void Mock()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Creating a new entity."))
+			using (LogGroup logGroup = LogGroup.Start("Creating a new entity."))
 			{
 				Start();
 			}
@@ -45,7 +45,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <param name="entity"></param>
 		public void Mock(IEntity entity)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Creating a new entity."))
+			using (LogGroup logGroup = LogGroup.Start("Creating a new entity."))
 			{
 				DataSource = entity;
 				

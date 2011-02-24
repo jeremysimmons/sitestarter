@@ -223,7 +223,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	/// <param name="filterValues"></param>
 	public virtual void Index(Dictionary<string, object> filterValues)
 	{
-		using (LogGroup logGroup = AppLogger.StartGroup("Preparing to load an index of enitities for display."))
+		using (LogGroup logGroup = LogGroup.Start("Preparing to load an index of enitities for display."))
 		{
 			if (filterValues == null)
 				filterValues = new Dictionary<string, object>();
@@ -295,12 +295,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	/// <param name="entities"></param>
 	protected virtual void ExecuteIndex(IEntity[] entities)
 	{
-		using (LogGroup logGroup = AppLogger.StartGroup("Preparing to display an index of entities.", NLog.LogLevel.Debug))
+		using (LogGroup logGroup = LogGroup.Start("Preparing to display an index of entities.", NLog.LogLevel.Debug))
 		{
 			if (entities == null)
 				throw new ArgumentNullException("entities");
 			
-			AppLogger.Debug("# of entities: " + entities.Length);
+			LogWriter.Debug("# of entities: " + entities.Length);
 			
 			Type type = entities.GetType().GetElementType();
 			

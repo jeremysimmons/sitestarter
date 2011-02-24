@@ -20,7 +20,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
 		static public void SetFieldValue(Control field, object value, string controlValuePropertyName, Type valueType)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Dynamically sets the provided value to the specified field on the form.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Dynamically sets the provided value to the specified field on the form.", NLog.LogLevel.Debug))
 			{
 				try
 				{
@@ -30,8 +30,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
 					if (controlValuePropertyName != String.Empty)
 					{
-						AppLogger.Debug("ControlValuePropertyName: " + controlValuePropertyName);
-						AppLogger.Debug("Value: " + (value == null ? "[null]" : value.ToString()));
+						LogWriter.Debug("ControlValuePropertyName: " + controlValuePropertyName);
+						LogWriter.Debug("Value: " + (value == null ? "[null]" : value.ToString()));
 						
 						PropertyInfo property =
 							(valueType != null
@@ -45,13 +45,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 					}
 					else
 					{
-						AppLogger.Debug("No ControlValuePropertyName specified for the field '" + field.ID + "'.");
+						LogWriter.Debug("No ControlValuePropertyName specified for the field '" + field.ID + "'.");
 						
 						// todo: add the rest of the field types
 						if (value == null)
 							value = String.Empty;
 						
-						AppLogger.Debug("Value: " + value.ToString());
+						LogWriter.Debug("Value: " + value.ToString());
 
 						if (IsType(field, typeof(TextBox)))
 							((TextBox)field).Text = value.ToString();
@@ -71,7 +71,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				{
 					// TODO: Check if error should be thrown or logged
 					throw ex;
-					//AppLogger.Error(ex.ToString());
+					//LogWriter.Error(ex.ToString());
 				}
 			}
 		}
@@ -98,16 +98,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		{
 			object returnValue = null;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Converting the provided value to the specified type.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Converting the provided value to the specified type.", NLog.LogLevel.Debug))
 			{
 				if (value == null)
-					AppLogger.Debug("Value: [null]");
+					LogWriter.Debug("Value: [null]");
 				else
-					AppLogger.Debug("Value: " + value.ToString());
+					LogWriter.Debug("Value: " + value.ToString());
 				
 				if (type.FullName == typeof(Int32).FullName)
 				{
-					AppLogger.Debug("Value is Int32");
+					LogWriter.Debug("Value is Int32");
 					
 					if (value != null)
 						returnValue = System.Convert.ToInt32(value);
@@ -116,7 +116,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				}
 				else if (type.FullName == typeof(double).FullName)
 				{
-					AppLogger.Debug("Value is Double");
+					LogWriter.Debug("Value is Double");
 					
 					if (value != null)
 					{
@@ -127,7 +127,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				}
 				else if (type.FullName == typeof(decimal).FullName)
 				{
-					AppLogger.Debug("Value is Decimal");
+					LogWriter.Debug("Value is Decimal");
 					
 					if (value != null)
 					{
@@ -138,7 +138,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				}
 				else if (type.FullName == typeof(String).FullName)
 				{
-					AppLogger.Debug("Value is String");
+					LogWriter.Debug("Value is String");
 					
 					if (value != null)
 					{

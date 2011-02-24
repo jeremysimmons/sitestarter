@@ -170,7 +170,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// </summary>
 		public virtual void View()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Starting a view action.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Starting a view action.", NLog.LogLevel.Debug))
 			{
 				CheckController();
 				
@@ -186,7 +186,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <param name="entityID">The ID of the entity to display.</param>
 		public virtual void View(Guid entityID)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Starting a view action.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Starting a view action.", NLog.LogLevel.Debug))
 			{
 				CheckController();
 				
@@ -202,7 +202,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <param name="uniqueKey">The unique key of the entity to display.</param>
 		public virtual void View(string uniqueKey)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Starting a view action.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Starting a view action.", NLog.LogLevel.Debug))
 			{
 				CheckController();
 				
@@ -218,7 +218,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <param name="entity"></param>
 		public virtual void View(IEntity entity)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Starting a view action.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Starting a view action.", NLog.LogLevel.Debug))
 			{
 				CheckController();
 				

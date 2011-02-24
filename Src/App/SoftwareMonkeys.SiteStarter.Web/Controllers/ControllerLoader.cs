@@ -73,11 +73,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			List<ControllerInfo> controllers = new List<ControllerInfo>();
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Loading the controllers from the XML files.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Loading the controllers from the XML files.", NLog.LogLevel.Debug))
 			{
 				foreach (string file in Directory.GetFiles(ControllersDirectoryPath))
 				{
-					AppLogger.Debug("File: " + file);
+					LogWriter.Debug("File: " + file);
 					
 					controllers.Add(LoadFromFile(file));
 				}
@@ -94,11 +94,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			List<ControllerInfo> controllers = new List<ControllerInfo>();
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Loading the controllers info from the XML files.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Loading the controllers info from the XML files.", NLog.LogLevel.Debug))
 			{
 				foreach (string file in Directory.GetFiles(ControllersInfoDirectoryPath))
 				{
-					AppLogger.Debug("File: " + file);
+					LogWriter.Debug("File: " + file);
 					
 					controllers.Add(LoadFromFile(file));
 				}
@@ -116,12 +116,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			ControllerInfo info = null;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Loading the controller from the specified path.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Loading the controller from the specified path.", NLog.LogLevel.Debug))
 			{
 				if (!File.Exists(controllerPath))
 					throw new ArgumentException("The specified file does not exist.");
 				
-				AppLogger.Debug("Path: " + controllerPath);
+				LogWriter.Debug("Path: " + controllerPath);
 				
 				
 				using (StreamReader reader = new StreamReader(File.OpenRead(controllerPath)))

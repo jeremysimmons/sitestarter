@@ -51,7 +51,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public IStrategy CreateStrategy(StrategyInfo strategyInfo)
 		{
 			IStrategy strategy = null;
-			using (LogGroup logGroup = AppLogger.StartGroup("Creating a new strategy based on the provided info.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Creating a new strategy based on the provided info.", NLog.LogLevel.Debug))
 			{
 				Type strategyType = Type.GetType(strategyInfo.StrategyType);
 				
@@ -62,21 +62,21 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				if (EntityState.IsType(strategyInfo.TypeName))
 					entityType = EntityState.GetType(strategyInfo.TypeName);
 				
-				AppLogger.Debug("Strategy type: " + strategyType.FullName);
-				AppLogger.Debug("Entity type: " + (entityType != null ? entityType.FullName : String.Empty));
+				LogWriter.Debug("Strategy type: " + strategyType.FullName);
+				LogWriter.Debug("Entity type: " + (entityType != null ? entityType.FullName : String.Empty));
 				
-				AppLogger.Debug("Action: " + strategyInfo.Action);
+				LogWriter.Debug("Action: " + strategyInfo.Action);
 				
 				if (entityType != null && strategyType.IsGenericTypeDefinition)
 				{
-					AppLogger.Debug("Is generic type definition.");
+					LogWriter.Debug("Is generic type definition.");
 					
 					Type gType = strategyType.MakeGenericType(new Type[]{entityType});
 					strategy = (IStrategy)Activator.CreateInstance(gType);
 				}
 				else
 				{
-					AppLogger.Debug("Is not generic type definition.");
+					LogWriter.Debug("Is not generic type definition.");
 					
 					strategy = (IStrategy)Activator.CreateInstance(strategyType);
 				}
@@ -84,7 +84,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				if (strategy == null)
 					throw new ArgumentException("Unable to create instance of strategy: " + entityType.ToString(), "strategyInfo");
 				
-				AppLogger.Debug("Strategy created.");
+				LogWriter.Debug("Strategy created.");
 			}
 			return strategy;
 		}
@@ -296,11 +296,11 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			IValidateStrategy strategy = null;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Creating a new validator strategy.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Creating a new validator strategy.", NLog.LogLevel.Debug))
 			{				
 				CheckType(typeName);
 				
-				AppLogger.Debug("Type name: " + typeName);
+				LogWriter.Debug("Type name: " + typeName);
 				
 				strategy = Strategies["Validate", typeName]
 					.New<IValidateStrategy>(typeName);

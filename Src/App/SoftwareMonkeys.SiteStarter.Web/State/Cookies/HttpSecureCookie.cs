@@ -57,7 +57,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.State.Cookies {
         	}
         	catch (InvalidCypherTextException ex)
         	{
-        		AppLogger.Error(ex.ToString());
+        		LogWriter.Error(ex.ToString());
         	}
         	return null;
         }

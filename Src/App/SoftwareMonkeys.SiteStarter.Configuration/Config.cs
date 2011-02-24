@@ -108,18 +108,18 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 		/// <param name="variation">The path variation applied to configuration files.</param>
 		static public void Initialize(string physicalApplicationPath, string variation)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Initializing the application configuration settings.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Initializing the application configuration settings.", NLog.LogLevel.Debug))
 			{
 				if (!IsInitialized)
 				{
-					AppLogger.Debug("Looking for configs in: " + physicalApplicationPath);
+					LogWriter.Debug("Looking for configs in: " + physicalApplicationPath);
 					
 					string fullPath = physicalApplicationPath.TrimEnd('\\') + Path.DirectorySeparatorChar + "App_Data";
 					
 					All.Add(ConfigFactory<AppConfig>.LoadConfig(fullPath, "Application", variation));
 				}
 				else
-					AppLogger.Debug("Already initialized. Skipping.");
+					LogWriter.Debug("Already initialized. Skipping.");
 			}
 		}
 

@@ -46,7 +46,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 
 		public void Render(HtmlTextWriter writer)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Rendering an XML entity page.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Rendering an XML entity page.", NLog.LogLevel.Debug))
 			{
 				if (DataSource != null)
 				{
@@ -61,7 +61,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 
 					XmlDocument doc = new XmlDocument();
 					
-					AppLogger.Debug("Xslt file: " + XsltFile);
+					LogWriter.Debug("Xslt file: " + XsltFile);
 					
 					
 					doc.LoadXml(stringWriter.ToString());
@@ -78,7 +78,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				}
 				else
 				{
-					AppLogger.Debug("DataSource == null. Skipped render.");
+					LogWriter.Debug("DataSource == null. Skipped render.");
 				}
 			}
 
