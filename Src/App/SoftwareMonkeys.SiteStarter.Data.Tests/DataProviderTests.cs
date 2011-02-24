@@ -38,7 +38,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_IsStored_Reference()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the IsStored function on a reference object", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the IsStored function on a reference object", NLog.LogLevel.Debug))
 			{
 
 				TestArticle article = new TestArticle();
@@ -78,7 +78,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_IsStored_Reference_NotStored()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the IsStored function on a reference object", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the IsStored function on a reference object", NLog.LogLevel.Debug))
 			{
 
 				TestArticle article = new TestArticle();

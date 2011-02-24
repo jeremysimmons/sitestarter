@@ -38,7 +38,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			Db4oDataReader reader = null;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Initializing a new data reader adapter.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Initializing a new data reader adapter.", NLog.LogLevel.Debug))
 			{
 				reader = new Db4oDataReader(this, null);
 			}
@@ -193,26 +193,26 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// </summary>
 		public override IDataFilter CreateFilter(Type filterType)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Creating filter", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Creating filter", NLog.LogLevel.Debug))
 			{
-				AppLogger.Debug("Type: " + filterType.ToString());
+				LogWriter.Debug("Type: " + filterType.ToString());
 
 				if (filterType.Equals(typeof(PropertyFilter)))
 				{
 					
-					AppLogger.Debug("Filter type supported.");
+					LogWriter.Debug("Filter type supported.");
 
 					return new Db4oPropertyFilter();
 				}
 				else if (filterType.Equals(typeof(ReferenceFilter)))
 				{
-					AppLogger.Debug("Filter type supported.");
+					LogWriter.Debug("Filter type supported.");
 
 					return new Db4oReferenceFilter();
 				}
 				else
 				{
-					AppLogger.Debug("Creation failed. " + filterType.ToString() + " isn't a supported filter.");
+					LogWriter.Debug("Creation failed. " + filterType.ToString() + " isn't a supported filter.");
 					throw new NotSupportedException(filterType.ToString() + " isn't yet supported.");
 				}
 			}
@@ -226,16 +226,16 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		public override bool IsStored(IEntity entity)
 		{
 			bool isStored = false;
-			using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the provided entity has already been stored.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Checking whether the provided entity has already been stored.", NLog.LogLevel.Debug))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");
 
-				AppLogger.Debug("Entity type: " + entity.GetType());
+				LogWriter.Debug("Entity type: " + entity.GetType());
 
 				if (EntitiesUtilities.IsReference(entity.GetType()))
 				{
-					AppLogger.Debug("Is reference == true");
+					LogWriter.Debug("Is reference == true");
 					
 					EntityIDReference reference = (EntityIDReference)entity;
 					
@@ -244,8 +244,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					Type type = EntitiesUtilities.GetType(reference.Type1Name);
 					Type type2 = EntitiesUtilities.GetType(reference.Type2Name);
 
-					AppLogger.Debug("Type 1: " + type.ToString());
-					AppLogger.Debug("Type 2: " + type2.ToString());
+					LogWriter.Debug("Type 1: " + type.ToString());
+					LogWriter.Debug("Type 2: " + type2.ToString());
 					
 					isStored = Referencer.MatchReference(
 						type,
@@ -257,13 +257,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				}
 				else
 				{
-					AppLogger.Debug("Is reference != true");
+					LogWriter.Debug("Is reference != true");
 					
 					isStored = Stores[entity].IsStored(entity);
 				}
 			}
 			
-			AppLogger.Debug("Is stored: " + isStored.ToString());
+			LogWriter.Debug("Is stored: " + isStored.ToString());
 			
 			return isStored;
 		}
@@ -273,11 +273,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// </summary>
 		public override void Dispose()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Disposing the data provider and data stores.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Disposing the data provider and data stores.", NLog.LogLevel.Debug))
 			{
 				foreach (Db4oDataStore store in Stores)
 				{
-					AppLogger.Debug("Suspending store: " + store.Name);
+					LogWriter.Debug("Suspending store: " + store.Name);
 					
 					store.Dispose();
 				}
@@ -290,7 +290,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// </summary>
 		public override void Suspend()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Suspending the data provider and data stores.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Suspending the data provider and data stores.", NLog.LogLevel.Debug))
 			{
 				// Dispose the data access system to unlock the files
 				Dispose();
@@ -299,16 +299,16 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				string toDirectory = SuspendedDirectoryPath + Path.DirectorySeparatorChar
 					+ DataAccess.Data.Schema.ApplicationVersion.ToString().Replace(".", "-");
 				
-				AppLogger.Debug("To directory: " + toDirectory);
+				LogWriter.Debug("To directory: " + toDirectory);
 				
 				// Move each .yap file to the suspended directory.
 				foreach (string file in Directory.GetFiles(DataDirectoryPath, "*.yap"))
 				{
-					AppLogger.Debug("Moving data store: " + file);
+					LogWriter.Debug("Moving data store: " + file);
 					
 					string toFile = toDirectory + Path.DirectorySeparatorChar + Path.GetFileName(file);
 					
-					AppLogger.Debug("To: " + toFile);
+					LogWriter.Debug("To: " + toFile);
 					
 					if (!Directory.Exists(Path.GetDirectoryName(toFile)))
 						Directory.CreateDirectory(Path.GetDirectoryName(toFile));

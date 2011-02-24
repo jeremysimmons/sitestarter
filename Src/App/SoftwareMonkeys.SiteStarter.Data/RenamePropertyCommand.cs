@@ -48,7 +48,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="document">The reference serialized to an XML document.</param>
 		public override void ExecuteOnReference(XmlDocument document)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Executing the rename property command on the provided entity reference (as an XML document).", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Executing the rename property command on the provided entity reference (as an XML document).", NLog.LogLevel.Debug))
 			{
 				XmlNode type1Node = document.DocumentElement.SelectSingleNode("Type1Name");
 				XmlNode property1Node = document.DocumentElement.SelectSingleNode("Property1Name");
@@ -87,7 +87,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="document">The entity serialized to an XML document.</param>
 		public override void ExecuteOnEntity(XmlDocument document)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Executing the rename property command on the provided serialized entity (as an XML document).", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Executing the rename property command on the provided serialized entity (as an XML document).", NLog.LogLevel.Debug))
 			{
 				for (int i = 0; i < document.DocumentElement.ChildNodes.Count; i++)
 				{
@@ -95,7 +95,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					
 					if (node.Name == PropertyName)
 					{
-						AppLogger.Debug("Found matching node '" + node.Name + "'...renaming.");
+						LogWriter.Debug("Found matching node '" + node.Name + "'...renaming.");
 						XmlUtilities.RenameNode(node, NewPropertyName);
 					}
 				}

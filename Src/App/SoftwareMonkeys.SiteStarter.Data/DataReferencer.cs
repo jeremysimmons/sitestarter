@@ -62,7 +62,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			// Logging disabled to boost performance
 			
 			// TODO: Comment out logging to improve performance
-			//using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the provided entity and specified property matches the specified referenced entity ID.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = LogGroup.Start("Checking whether the provided entity and specified property matches the specified referenced entity ID.", NLog.LogLevel.Debug))
 			//{
 			if (entityType == null)
 				throw new ArgumentNullException("entityType");
@@ -77,11 +77,11 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					throw new ArgumentException("referencedEntityID");*/
 
 			
-			/*AppLogger.Debug("Entity type: " + entityType);
-				AppLogger.Debug("Entity ID: " + entityID);
-				AppLogger.Debug("Property name: " + propertyName);
-				AppLogger.Debug("Referenced entity type: " + referencedEntityType.ToString());
-				AppLogger.Debug("Referenced entity ID: " + referencedEntityID.ToString());
+			/*LogWriter.Debug("Entity type: " + entityType);
+				LogWriter.Debug("Entity ID: " + entityID);
+				LogWriter.Debug("Property name: " + propertyName);
+				LogWriter.Debug("Referenced entity type: " + referencedEntityType.ToString());
+				LogWriter.Debug("Referenced entity ID: " + referencedEntityID.ToString());
 			 */
 			string mirrorPropertyName = String.Empty;
 			if (propertyName == String.Empty)
@@ -92,13 +92,13 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			EntityReference reference = DataAccess.Data.Referencer.GetReference(entityType, entityID, propertyName, referencedEntityType, referencedEntityID, mirrorPropertyName, false);
 			
 			//if (reference == null)
-			//	AppLogger.Debug("reference == null");
+			//	LogWriter.Debug("reference == null");
 			//else
-			//	AppLogger.Debug("reference != null");
+			//	LogWriter.Debug("reference != null");
 			
 			matches = (reference != null);
 			
-			//AppLogger.Debug("Matches: " + matches.ToString());
+			//LogWriter.Debug("Matches: " + matches.ToString());
 			//}
 			return matches;
 		}
@@ -189,24 +189,24 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="references">The collection of entity references to persist.</param>
 		public virtual void PersistReferences(EntityReferenceCollection references)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Persisting the provided references.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Persisting the provided references.", NLog.LogLevel.Debug))
 			{
 				if (references != null)
 				{
 					
-					AppLogger.Debug("Reference count: " + references.Count.ToString());
+					LogWriter.Debug("Reference count: " + references.Count.ToString());
 					
 					foreach (EntityReference reference in references)
 					{
 						if (!DataAccess.Data.IsStored(reference))
 						{
-							//AppLogger.Debug("Reference is new. Saving.");
+							//LogWriter.Debug("Reference is new. Saving.");
 							
 							DataAccess.Data.Saver.Save(reference);
 						}
 						else
 						{
-							//AppLogger.Debug("Reference already exists. Updating.");
+							//LogWriter.Debug("Reference already exists. Updating.");
 							
 							DataAccess.Data.Updater.Update(reference);
 						}
@@ -222,9 +222,9 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="references">The array of references to delete.</param>
 		public virtual void DeleteObsoleteReferences(EntityReferenceCollection references)
 		{
-			using (LogGroup logGroup2 = AppLogger.StartGroup("Deleting all references that need to be deleted.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup2 = LogGroup.Start("Deleting all references that need to be deleted.", NLog.LogLevel.Debug))
 			{
-				AppLogger.Debug("Reference #: " + references.Count);
+				LogWriter.Debug("Reference #: " + references.Count);
 				
 				foreach (IEntity reference in references)
 				{
@@ -243,7 +243,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="entity">The entity to maintain the references for.</param>
 		public virtual void MaintainReferences(IEntity entity)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Maintaining the references for the provided entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Maintaining the references for the provided entity.", NLog.LogLevel.Debug))
 			{
 				EntityReferenceCollection updateList = new EntityReferenceCollection();
 				EntityReferenceCollection deleteList = new EntityReferenceCollection();
@@ -261,13 +261,13 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				}
 				
 				// Delete the removed references
-				AppLogger.Debug("References to delete: " + deleteList.Count);
+				LogWriter.Debug("References to delete: " + deleteList.Count);
 				
 				this.DeleteObsoleteReferences(deleteList);
 				
 				
 				// Update/save the current references
-				AppLogger.Debug("References to update: " + updateList.Count);
+				LogWriter.Debug("References to update: " + updateList.Count);
 				
 				this.PersistReferences(updateList);
 			}
@@ -283,20 +283,20 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			Collection<IEntity> collection = new Collection<IEntity>();
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the referenced entities indicated by the provided reference collection, and from the perspective of the provided entity.",NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving the referenced entities indicated by the provided reference collection, and from the perspective of the provided entity.",NLog.LogLevel.Debug))
 			{
 				
 				if (entity == null)
 					throw new ArgumentNullException("entity");
 				
-				AppLogger.Debug("# of references provided: " + references.Count.ToString());
+				LogWriter.Debug("# of references provided: " + references.Count.ToString());
 				
 				foreach (EntityReference reference in references)
 				{
-					AppLogger.Debug("Reference type #1: " + reference.Type1Name);
-					AppLogger.Debug("Reference ID #1: " + reference.Entity1ID.ToString());
-					AppLogger.Debug("Reference type #2: " + reference.Type2Name);
-					AppLogger.Debug("Reference ID #2: " + reference.Entity2ID.ToString());
+					LogWriter.Debug("Reference type #1: " + reference.Type1Name);
+					LogWriter.Debug("Reference ID #1: " + reference.Entity1ID.ToString());
+					LogWriter.Debug("Reference type #2: " + reference.Type2Name);
+					LogWriter.Debug("Reference ID #2: " + reference.Entity2ID.ToString());
 					
 					DataAccess.Data.Activator.ActivateReference(reference);
 					
@@ -307,15 +307,15 @@ namespace SoftwareMonkeys.SiteStarter.Data
 						
 						if (otherEntity != null)
 						{
-							AppLogger.Debug("Other entity type: " + otherEntity.GetType().ToString());
-							AppLogger.Debug("Other entity ID: " + otherEntity.ID.ToString());
+							LogWriter.Debug("Other entity type: " + otherEntity.GetType().ToString());
+							LogWriter.Debug("Other entity ID: " + otherEntity.ID.ToString());
 							
 							collection.Add(otherEntity);
 						}
 						else
 						{
 							throw new Exception("otherEntity == null");
-							AppLogger.Debug("Other entity == null");
+							LogWriter.Debug("Other entity == null");
 						}
 					}
 				}
@@ -335,7 +335,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			EntityReferenceCollection references = new EntityReferenceCollection();
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the references associated with the provided entity."))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving the references associated with the provided entity."))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");
@@ -382,22 +382,22 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			// Loop through all the properties on the entity class
 			foreach (PropertyInfo property in entity.GetType().GetProperties())
 			{
-				AppLogger.Debug("Checking property: " + property.Name);
+				LogWriter.Debug("Checking property: " + property.Name);
 				
 				if (EntitiesUtilities.IsReference(entity.GetType(), property.Name, property.PropertyType))
 				{
-					AppLogger.Debug("Property is a reference.");
+					LogWriter.Debug("Property is a reference.");
 					
 					foreach (EntityIDReference reference in GetActiveReferences(entity, property.Name, property.PropertyType))
 					{
 						
-						AppLogger.Debug("Saving reference.");
+						LogWriter.Debug("Saving reference.");
 						
 						collection.Add(reference);
 					}
 				}
 				else
-					AppLogger.Debug("Property is NOT a reference.");
+					LogWriter.Debug("Property is NOT a reference.");
 				
 			}
 			
@@ -420,7 +420,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			// Loop through all the properties on the entity class
 			foreach (PropertyInfo property in entity.GetType().GetProperties())
 			{
-				AppLogger.Debug("Checking property: " + property.Name);
+				LogWriter.Debug("Checking property: " + property.Name);
 				
 				
 				if (property.PropertyType.IsSubclassOf(typeof(EntityIDReferenceCollection)))
@@ -447,16 +447,16 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			EntityReferenceCollection collection = new EntityReferenceCollection();
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the reference entities from the specified property on the provided entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving the reference entities from the specified property on the provided entity.", NLog.LogLevel.Debug))
 			{
 				Type entityType = entity.GetType();
 				
 				PropertyInfo property = EntitiesUtilities.GetProperty(entityType, propertyName, returnType);
 				
 				if (property == null)
-					AppLogger.Debug("Property: [null]");
+					LogWriter.Debug("Property: [null]");
 				else
-					AppLogger.Debug("Property name: " + property.Name);
+					LogWriter.Debug("Property name: " + property.Name);
 				
 				if (property != null)
 				{
@@ -486,7 +486,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					else
 						throw new ArgumentException("The specified property is not a reference.");
 					
-					AppLogger.Debug("References found: " + collection.Count.ToString());
+					LogWriter.Debug("References found: " + collection.Count.ToString());
 				}
 				else
 				{
@@ -508,9 +508,9 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			EntityReferenceCollection collection = new EntityReferenceCollection();
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the reference from a single reference property.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving the reference from a single reference property.", NLog.LogLevel.Debug))
 			{
-				AppLogger.Debug("Single reference property.");
+				LogWriter.Debug("Single reference property.");
 				
 				IEntity[] referencedEntities = EntitiesUtilities.GetReferencedEntities(entity, property);
 				
@@ -524,18 +524,18 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					
 					//foreach (EntityIDReference r in references)
 					//{
-					//AppLogger.Debug("Adding reference with ID: " + r.ID.ToString());
+					//LogWriter.Debug("Adding reference with ID: " + r.ID.ToString());
 					
-					//AppLogger.Debug("Source entity ID: " + r.Entity1ID.ToString());
-					//AppLogger.Debug("Referenced entity ID: " + r.Entity2ID.ToString());
+					//LogWriter.Debug("Source entity ID: " + r.Entity1ID.ToString());
+					//LogWriter.Debug("Referenced entity ID: " + r.Entity2ID.ToString());
 					
-					//AppLogger.Debug("Source entity name: " + r.Type1Name);
-					//AppLogger.Debug("Referenced entity name: " + r.Type2Name);
+					//LogWriter.Debug("Source entity name: " + r.Type1Name);
+					//LogWriter.Debug("Referenced entity name: " + r.Type2Name);
 					
 					//}
 				}
 				else
-					AppLogger.Debug("referencedEntities == null || referencedEntities.Length = 0");
+					LogWriter.Debug("referencedEntities == null || referencedEntities.Length = 0");
 				
 				// Ensure the references are bound with those stored
 				BindReferences(collection);
@@ -558,13 +558,13 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			EntityReferenceCollection collection = new EntityReferenceCollection();
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the references from a multiple reference property.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving the references from a multiple reference property.", NLog.LogLevel.Debug))
 			{
-				AppLogger.Debug("Multiple reference property.");
+				LogWriter.Debug("Multiple reference property.");
 				
 				object propertyValue = property.GetValue(entity, null);
 				
-				AppLogger.Debug("Property value: " + (propertyValue == null ? "[null]" : propertyValue.ToString()));
+				LogWriter.Debug("Property value: " + (propertyValue == null ? "[null]" : propertyValue.ToString()));
 				
 				Collection<IEntity> referencedEntities = new Collection<IEntity>();
 				
@@ -580,25 +580,25 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				///	}
 				//}
 				
-				AppLogger.Debug("# of referenced entities found: " + referencedEntities.Count);
+				LogWriter.Debug("# of referenced entities found: " + referencedEntities.Count);
 				
 				EntityReferenceCollection references = new EntityReferenceCollection(entity, property.Name, referencedEntities.ToArray(), mirrorPropertyName);
 
 				
-				AppLogger.Debug("Reference objects created.");
+				LogWriter.Debug("Reference objects created.");
 				
 				foreach (EntityIDReference reference in references)
 				{
-					AppLogger.Debug("Adding reference with ID: " + reference.ID.ToString());
+					LogWriter.Debug("Adding reference with ID: " + reference.ID.ToString());
 
-					AppLogger.Debug("Source entity ID: " + reference.Entity1ID.ToString());
-					AppLogger.Debug("Referenced entity ID: " + reference.Entity2ID.ToString());
+					LogWriter.Debug("Source entity ID: " + reference.Entity1ID.ToString());
+					LogWriter.Debug("Referenced entity ID: " + reference.Entity2ID.ToString());
 					
-					AppLogger.Debug("Source entity name: " + reference.Type1Name);
-					AppLogger.Debug("Referenced entity name: " + reference.Type2Name);
+					LogWriter.Debug("Source entity name: " + reference.Type1Name);
+					LogWriter.Debug("Referenced entity name: " + reference.Type2Name);
 					
-					AppLogger.Debug("Source property name: " + reference.Property1Name);
-					AppLogger.Debug("Mirror property name: " + reference.Property2Name);
+					LogWriter.Debug("Source property name: " + reference.Property1Name);
+					LogWriter.Debug("Mirror property name: " + reference.Property2Name);
 					
 					
 					collection.Add(reference.ToData());
@@ -618,7 +618,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		public virtual void BindReferences(EntityReferenceCollection references)
 		{
 			// Logging commented out to boost performance
-			//using (LogGroup logGroup = AppLogger.StartGroup("Binding the provided references with those in the data storer.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = LogGroup.Start("Binding the provided references with those in the data storer.", NLog.LogLevel.Debug))
 			//{
 			if (references == null)
 				throw new ArgumentNullException("references");
@@ -631,7 +631,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				
 				if (exists)
 				{
-					//AppLogger.Debug("Already exists: " + exists.ToString());
+					//LogWriter.Debug("Already exists: " + exists.ToString());
 					
 					Type type1 = EntitiesUtilities.GetType(reference.Type1Name);
 					Type type2 = EntitiesUtilities.GetType(reference.Type2Name);

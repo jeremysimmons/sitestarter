@@ -15,7 +15,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_GetEntity_ByTypeAndPropertyValue()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
 			{
 				TestUser user = new TestUser();
 				Guid userID = user.ID = Guid.NewGuid();
@@ -55,7 +55,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_GetEntity_Generic_ByPropertyValue()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
 			{
 				TestUser user = new TestUser();
 				Guid userID = user.ID = Guid.NewGuid();
@@ -89,7 +89,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_GetEntity_Bound()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
 			{
 				TestUser user = new TestUser();
 				Guid userID = user.ID = Guid.NewGuid();

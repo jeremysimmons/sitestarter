@@ -175,7 +175,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_Save_2References_CheckLocationOfReferencedEntities()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the Save function and checking that the references are created successfully.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the Save function and checking that the references are created successfully.", NLog.LogLevel.Debug))
 			{
 				
 				TestUser user = new TestUser();
@@ -278,7 +278,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		public void Test_Save_EntityIDReference()
 		{
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing saving of an EntityIDReference.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing saving of an EntityIDReference.", NLog.LogLevel.Debug))
 			{
 				EntityIDReference reference = new EntityIDReference();
 				reference.ID = Guid.NewGuid();

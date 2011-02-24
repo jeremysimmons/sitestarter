@@ -89,7 +89,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			bool referenceMatches = false;
 			
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Checking whether provided entity matches this filter.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Checking whether provided entity matches this filter.", NLog.LogLevel.Debug))
 			{
 				if (referenceType == null)
 					throw new InvalidOperationException("ReferenceType property has not been set.");
@@ -103,17 +103,17 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				if (this.ReferencedEntityID == Guid.Empty)
 					throw new InvalidOperationException("ReferencedEntityID is not set.");
 				
-				AppLogger.Debug("Property name: " + propertyName);
-				AppLogger.Debug("Referenced entity ID: " + referencedEntityID.ToString());
+				LogWriter.Debug("Property name: " + propertyName);
+				LogWriter.Debug("Referenced entity ID: " + referencedEntityID.ToString());
 				
 				
 				
-				AppLogger.Debug("Referenced type: " + referenceType.ToString());
+				LogWriter.Debug("Referenced type: " + referenceType.ToString());
 				
 				Type entityType = entity.GetType();
 				
-				AppLogger.Debug("Checking entity type: " + entityType.ToString());
-				AppLogger.Debug("Checking entity with ID: " + entity.ID);
+				LogWriter.Debug("Checking entity type: " + entityType.ToString());
+				LogWriter.Debug("Checking entity with ID: " + entity.ID);
 				
 				foreach (Type type in Types)
 				{
@@ -133,8 +133,8 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				//bool referenceMatches = DataAccess.Data.Referencer.MatchReference(entity.GetType(), entity.ID, propertyName, property.Type, referencedEntityType, referencedEntityID);
 				
 				
-				AppLogger.Debug("Type matches: " + typeMatches.ToString());
-				AppLogger.Debug("Reference matches: " + referenceMatches.ToString());
+				LogWriter.Debug("Type matches: " + typeMatches.ToString());
+				LogWriter.Debug("Reference matches: " + referenceMatches.ToString());
 				
 			}
 			return typeMatches && referenceMatches;

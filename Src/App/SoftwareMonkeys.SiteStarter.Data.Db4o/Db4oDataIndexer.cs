@@ -34,14 +34,14 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			List<IEntity> entities = new List<IEntity>();
 
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving entities by type and filter.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving entities by type and filter.", NLog.LogLevel.Debug))
 			{
-				AppLogger.Debug("Filter type: " + filter.GetType().ToString());
+				LogWriter.Debug("Filter type: " + filter.GetType().ToString());
 				
 				foreach (Type type in filter.Types)
 				{
 					
-					AppLogger.Debug("Includes type: " + type.ToString());
+					LogWriter.Debug("Includes type: " + type.ToString());
 					
 					entities.AddRange(((Db4oDataStore)GetDataStore(type)).ObjectContainer.Query<IEntity>(delegate(IEntity entity)
 					                                                                                     {
@@ -52,15 +52,15 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 
 				foreach (IEntity entity in entities)
 				{
-					using (LogGroup logGroup2 = AppLogger.StartGroup("Entity found.", NLog.LogLevel.Debug))
+					using (LogGroup logGroup2 = LogGroup.Start("Entity found.", NLog.LogLevel.Debug))
 					{
-						AppLogger.Debug("Entity ID: " + entity.ID);
-						AppLogger.Debug("Entity .ToString(): " + entity.ToString());
+						LogWriter.Debug("Entity ID: " + entity.ID);
+						LogWriter.Debug("Entity .ToString(): " + entity.ToString());
 					}
 				}
 
 				if (entities.Count == 0)
-					AppLogger.Debug("No entities retrieved.");
+					LogWriter.Debug("No entities retrieved.");
 			}
 
 			return Release((IEntity[])entities.ToArray());
@@ -76,13 +76,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			List<IEntity> entities = new List<IEntity>();
 
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving entities by type and filter.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving entities by type and filter.", NLog.LogLevel.Debug))
 			{
 
 				if (group != null && group.Filters != null && group.Filters.Length > 0)
 				{
 
-					AppLogger.Debug("Group operator: " + group.Operator.ToString());
+					LogWriter.Debug("Group operator: " + group.Operator.ToString());
 
 					List<Type> allTypes = new List<Type>();
 
@@ -96,7 +96,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					foreach (Type type in allTypes)
 					{
 
-						AppLogger.Debug("Includes type: " + type.ToString());
+						LogWriter.Debug("Includes type: " + type.ToString());
 
 						Db4oDataStore store = (Db4oDataStore)GetDataStore(type);
 
@@ -110,16 +110,16 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 
 					foreach (IEntity entity in entities)
 					{
-						using (LogGroup logGroup2 = AppLogger.StartGroup("Entity found.", NLog.LogLevel.Debug))
+						using (LogGroup logGroup2 = LogGroup.Start("Entity found.", NLog.LogLevel.Debug))
 						{
 							//IEntity entity = (IEntity)os.Next();
-							AppLogger.Debug("Entity ID: " + entity.ID);
-							AppLogger.Debug("Entity .ToString(): " + entity.ToString());
+							LogWriter.Debug("Entity ID: " + entity.ID);
+							LogWriter.Debug("Entity .ToString(): " + entity.ToString());
 						}
 					}
 
 					if (entities.Count == 0)
-						AppLogger.Debug("No entities retrieved.");
+						LogWriter.Debug("No entities retrieved.");
 				}
 				else
 					throw new ArgumentException("The provided filter group is empty.", "group");
@@ -168,7 +168,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			ArrayList list = new ArrayList();
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving entities of the specified type.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving entities of the specified type.", NLog.LogLevel.Debug))
 			{
 				IObjectContainer objectContainer = ((Db4oDataStore)GetDataStore(type)).ObjectContainer;
 				
@@ -184,7 +184,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 						list.Add(os.Next());
 					}
 					
-					AppLogger.Debug("Total: " + list.Count.ToString());
+					LogWriter.Debug("Total: " + list.Count.ToString());
 				}
 			}
 
@@ -269,10 +269,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			Collection<T> page = new Collection<T>();
 			
-			//using (LogGroup logGroup = AppLogger.StartGroup("Querying the data store based on the provided parameters.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = LogGroup.Start("Querying the data store based on the provided parameters.", NLog.LogLevel.Debug))
 			//{
-			//AppLogger.Debug("Property name: " + propertyName);
-			//AppLogger.Debug("Referenced entity ID: " + referencedEntityID);
+			//LogWriter.Debug("Property name: " + propertyName);
+			//LogWriter.Debug("Referenced entity ID: " + referencedEntityID);
 			
 			if (location == null)
 				throw new ArgumentNullException("location");
@@ -309,11 +309,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					bool matches = true;
 					bool isInPage = false;
 					
-					//using (LogGroup logGroup2 = AppLogger.StartGroup("Querying entity.", NLog.LogLevel.Debug))
+					//using (LogGroup logGroup2 = LogGroup.Start("Querying entity.", NLog.LogLevel.Debug))
 					//{
 
-					//AppLogger.Debug("Checking type " + e.GetType().ToString());
-					//AppLogger.Debug("Entity ID: " + e.ID);
+					//LogWriter.Debug("Checking type " + e.GetType().ToString());
+					//LogWriter.Debug("Entity ID: " + e.ID);
 					
 					bool foundReference = Array.IndexOf(entityIDs, e.ID) > -1;
 					
@@ -329,7 +329,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					// IMPORTANT: Only increment if it matches, regardless of what page it's on
 					if (matches)
 						i++;
-					//AppLogger.Debug("Matches: " + matches);
+					//LogWriter.Debug("Matches: " + matches);
 					//}
 					
 					
@@ -342,7 +342,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			location.AbsoluteTotal = i;
 			
 
-			//AppLogger.Debug("Absolute total objects: " + location.AbsoluteTotal);
+			//LogWriter.Debug("Absolute total objects: " + location.AbsoluteTotal);
 			//}
 
 			return Release((T[])page.ToArray());
@@ -361,10 +361,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			Collection<T> page = new Collection<T>();
 			
-			//using (LogGroup logGroup = AppLogger.StartGroup("Querying the data store based on the provided parameters.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = LogGroup.Start("Querying the data store based on the provided parameters.", NLog.LogLevel.Debug))
 			//{
-			//AppLogger.Debug("Property name: " + propertyName);
-			//AppLogger.Debug("Referenced entity ID: " + referencedEntityID);
+			//LogWriter.Debug("Property name: " + propertyName);
+			//LogWriter.Debug("Referenced entity ID: " + referencedEntityID);
 			
 			if (location == null)
 				throw new ArgumentNullException("location");
@@ -405,11 +405,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					bool matches = true;
 					bool isInPage = false;
 					
-					//using (LogGroup logGroup2 = AppLogger.StartGroup("Querying entity.", NLog.LogLevel.Debug))
+					//using (LogGroup logGroup2 = LogGroup.Start("Querying entity.", NLog.LogLevel.Debug))
 					//{
 
-					//AppLogger.Debug("Checking type " + e.GetType().ToString());
-					//AppLogger.Debug("Entity ID: " + e.ID);
+					//LogWriter.Debug("Checking type " + e.GetType().ToString());
+					//LogWriter.Debug("Entity ID: " + e.ID);
 					
 					bool foundReference = Array.IndexOf(entityIDs, e.ID) > -1;
 					
@@ -425,7 +425,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					// IMPORTANT: Increment if it matches, regardless of what page it's on
 					if (matches)
 						i++;
-					//AppLogger.Debug("Matches: " + matches);
+					//LogWriter.Debug("Matches: " + matches);
 					//}
 					
 					
@@ -438,7 +438,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			location.AbsoluteTotal = i;
 			
 
-			//AppLogger.Debug("Absolute total objects: " + location.AbsoluteTotal);
+			//LogWriter.Debug("Absolute total objects: " + location.AbsoluteTotal);
 			//}
 
 			return Release((T[])page.ToArray());
@@ -455,18 +455,18 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			List<T> entities = null;
 			
-			//using (LogGroup logGroup = AppLogger.StartGroup("Querying the data store based on the provided parameters.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = LogGroup.Start("Querying the data store based on the provided parameters.", NLog.LogLevel.Debug))
 			//{
-			//	AppLogger.Debug("Property name: " + propertyName);
-			//	AppLogger.Debug("Referenced entity ID: " + referencedEntityID);
+			//	LogWriter.Debug("Property name: " + propertyName);
+			//	LogWriter.Debug("Referenced entity ID: " + referencedEntityID);
 			
 			//Type referencedEntityType = EntitiesUtilities.GetReferenceType(typeof(T), propertyName);
 			
 			
 			//	if (referencedEntityType != null)
-			//		AppLogger.Debug("Referenced entity type: " + referencedEntityType.ToString());
+			//		LogWriter.Debug("Referenced entity type: " + referencedEntityType.ToString());
 			//	else
-			//		AppLogger.Debug("Referenced entity type: [null]");
+			//		LogWriter.Debug("Referenced entity type: [null]");
 			
 			Type type = typeof(T);
 			
@@ -490,11 +490,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					{
 						bool matches = true;
 						
-						//using (LogGroup logGroup2 = AppLogger.StartGroup("Querying entity.", NLog.LogLevel.Debug))
+						//using (LogGroup logGroup2 = LogGroup.Start("Querying entity.", NLog.LogLevel.Debug))
 						//{
 
-						//AppLogger.Debug("Checking type " + e.GetType().ToString());
-						//AppLogger.Debug("Entity ID: " + e.ID);
+						//LogWriter.Debug("Checking type " + e.GetType().ToString());
+						//LogWriter.Debug("Entity ID: " + e.ID);
 						
 						bool foundReference = Array.IndexOf(entityIDs, e.ID) > -1;
 						
@@ -505,7 +505,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 						else
 							matches = !foundReference;
 						
-						//	AppLogger.Debug("Matches: " + matches);
+						//	LogWriter.Debug("Matches: " + matches);
 						//}
 						return matches;
 					}));
@@ -514,14 +514,14 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			//if (entities != null)
 			//{
-			//AppLogger.Debug("entities != null");
+			//LogWriter.Debug("entities != null");
 			//}
 			//else
 			//{
-			//AppLogger.Debug("entities == null");
+			//LogWriter.Debug("entities == null");
 			//}
 			
-			//AppLogger.Debug("Total objects: " + entities.Count);
+			//LogWriter.Debug("Total objects: " + entities.Count);
 			//}
 
 			return Release(entities.ToArray());
@@ -538,18 +538,18 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			List<T> entities = null;
 			
-			//using (LogGroup logGroup = AppLogger.StartGroup("Querying the data store based on the provided parameters.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = LogGroup.Start("Querying the data store based on the provided parameters.", NLog.LogLevel.Debug))
 			//{
-			//	AppLogger.Debug("Property name: " + propertyName);
-			//	AppLogger.Debug("Referenced entity ID: " + referencedEntityID);
+			//	LogWriter.Debug("Property name: " + propertyName);
+			//	LogWriter.Debug("Referenced entity ID: " + referencedEntityID);
 			
 			//Type referencedEntityType = EntitiesUtilities.GetReferenceType(typeof(T), propertyName);
 			
 			
 			//	if (referencedEntityType != null)
-			//		AppLogger.Debug("Referenced entity type: " + referencedEntityType.ToString());
+			//		LogWriter.Debug("Referenced entity type: " + referencedEntityType.ToString());
 			//	else
-			//		AppLogger.Debug("Referenced entity type: [null]");
+			//		LogWriter.Debug("Referenced entity type: [null]");
 			
 			Type type = typeof(T);
 			
@@ -578,11 +578,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					{
 						bool matches = true;
 						
-						//using (LogGroup logGroup2 = AppLogger.StartGroup("Querying entity.", NLog.LogLevel.Debug))
+						//using (LogGroup logGroup2 = LogGroup.Start("Querying entity.", NLog.LogLevel.Debug))
 						//{
 
-						//AppLogger.Debug("Checking type " + e.GetType().ToString());
-						//AppLogger.Debug("Entity ID: " + e.ID);
+						//LogWriter.Debug("Checking type " + e.GetType().ToString());
+						//LogWriter.Debug("Entity ID: " + e.ID);
 						
 						bool foundReference = Array.IndexOf(entityIDs, e.ID) > -1;
 						
@@ -593,7 +593,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 						else
 							matches = !foundReference;
 						
-						//	AppLogger.Debug("Matches: " + matches);
+						//	LogWriter.Debug("Matches: " + matches);
 						//}
 						return matches;
 					}));
@@ -602,14 +602,14 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			//if (entities != null)
 			//{
-			//AppLogger.Debug("entities != null");
+			//LogWriter.Debug("entities != null");
 			//}
 			//else
 			//{
-			//AppLogger.Debug("entities == null");
+			//LogWriter.Debug("entities == null");
 			//}
 			
-			//AppLogger.Debug("Total objects: " + entities.Count);
+			//LogWriter.Debug("Total objects: " + entities.Count);
 			//}
 
 			return Release(entities.ToArray());
@@ -802,7 +802,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			List<IEntity> entities = new List<IEntity>();
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Querying the data store based on the provided type and parameters.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Querying the data store based on the provided type and parameters.", NLog.LogLevel.Debug))
 			{
 				
 				if (parameters == null)
@@ -815,12 +815,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					
 					entities = new List<IEntity>(store.ObjectContainer.Query<IEntity>(delegate(IEntity e)
 					                                                                  {
-					                                                                  	AppLogger.Debug("Checking type " + e.GetType().ToString());
+					                                                                  	LogWriter.Debug("Checking type " + e.GetType().ToString());
 					                                                                  	
 					                                                                  	bool matches = true;
 					                                                                  	foreach (string key in parameters.Keys)
 					                                                                  	{
-					                                                                  		AppLogger.Debug("Checking parameter '" + key + "' for value '" + parameters[key].ToString() + "'");
+					                                                                  		LogWriter.Debug("Checking parameter '" + key + "' for value '" + parameters[key].ToString() + "'");
 					                                                                  		
 					                                                                  		PropertyInfo property = e.GetType().GetProperty(key, parameters[key].GetType());
 					                                                                  		if (property == null)
@@ -829,16 +829,16 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					                                                                  		{
 					                                                                  			object value = property.GetValue(e, null);
 					                                                                  			
-					                                                                  			AppLogger.Debug("Actual value is: " + (value == null ? "null" : value.ToString()));
+					                                                                  			LogWriter.Debug("Actual value is: " + (value == null ? "null" : value.ToString()));
 					                                                                  			
 					                                                                  			if (parameters[key] != value && parameters[key] != null && !parameters[key].Equals(value))
 					                                                                  			{
-					                                                                  				AppLogger.Debug("Parameter match failed for '" + key + "'.");
+					                                                                  				LogWriter.Debug("Parameter match failed for '" + key + "'.");
 					                                                                  				matches = false;
 					                                                                  			}
 					                                                                  		}
 					                                                                  	}
-					                                                                  	AppLogger.Debug("Matches: " + matches.ToString());
+					                                                                  	LogWriter.Debug("Matches: " + matches.ToString());
 					                                                                  	return matches;
 					                                                                  }));
 					
@@ -846,7 +846,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					
 				}
 				
-				AppLogger.Debug("Total: " + entities.Count.ToString());
+				LogWriter.Debug("Total: " + entities.Count.ToString());
 
 			}
 			return Release((IEntity[])entities.ToArray());
@@ -861,7 +861,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		public override T[] GetEntities<T>(Dictionary<string, object> parameters)
 		{
 			Collection<T> list = new Collection<T>();
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving entities of the specified type matching the provided parameters.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving entities of the specified type matching the provided parameters.", NLog.LogLevel.Debug))
 			{
 				foreach (IEntity entity in GetEntities(typeof(T), parameters))
 				{
@@ -871,7 +871,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 						throw new InvalidOperationException("Invalid type. Expected '" + typeof(T).ToString() + "' but was '" + entity.ToString() + "'.");
 				}
 				
-				AppLogger.Debug("Total: " + list.Count);
+				LogWriter.Debug("Total: " + list.Count);
 			}
 			return Release(list.ToArray());
 		}
@@ -888,16 +888,16 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			// Create the collection
 			List<IEntity> entities = new List<IEntity>();
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving a page of entities.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving a page of entities.", NLog.LogLevel.Debug))
 			{
 				if (location == null)
 					throw new ArgumentNullException("location");
 				
 				// Output the parameters to the log
-				AppLogger.Debug("Type: " + type.ToString());
-				AppLogger.Debug("Page index: " + location.PageIndex);
-				AppLogger.Debug("Page size: " + location.PageSize);
-				AppLogger.Debug("Sort expression: " + sortExpression);
+				LogWriter.Debug("Type: " + type.ToString());
+				LogWriter.Debug("Page index: " + location.PageIndex);
+				LogWriter.Debug("Page size: " + location.PageSize);
+				LogWriter.Debug("Sort expression: " + sortExpression);
 				
 				// Get the corresponding data store
 				Db4oDataStore store = (Db4oDataStore)GetDataStore(type);
@@ -931,9 +931,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				// This is the total count including items on ALL pages, not just the current one
 				location.AbsoluteTotal = i;
 				
-				AppLogger.Debug("Absolute count: " + location.AbsoluteTotal.ToString());
+				LogWriter.Debug("Absolute count: " + location.AbsoluteTotal.ToString());
 				
-				AppLogger.Debug("Entities count (single page): " + entities.Count.ToString());
+				LogWriter.Debug("Entities count (single page): " + entities.Count.ToString());
 			}
 			
 			// Return the entities
@@ -952,11 +952,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			Type type = typeof(T);
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the entities of the specified type with a property matching the provided name and value.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving the entities of the specified type with a property matching the provided name and value.", NLog.LogLevel.Debug))
 			{
-				AppLogger.Debug("Type: " + type.ToString());
-				AppLogger.Debug("Property name: " + propertyName);
-				AppLogger.Debug("Property value: " + (propertyValue == null ? "[null]" : propertyValue.ToString()));
+				LogWriter.Debug("Type: " + type.ToString());
+				LogWriter.Debug("Property name: " + propertyName);
+				LogWriter.Debug("Property value: " + (propertyValue == null ? "[null]" : propertyValue.ToString()));
 				
 				if (type.Name == "EntityIDReference"
 				    || type.Name == "EntityReference")
@@ -981,13 +981,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					}
 				}
 				
-				AppLogger.Debug("Entities #: " + results.Count.ToString());
+				LogWriter.Debug("Entities #: " + results.Count.ToString());
 				
 				// TODO: See if performance can be improved by switching to SODA using the code below.
 				// Won't work because it can't pick up UniqueKeys, as they don't have a private field corresponding with them
 				/*
 				string fieldName = EntitiesUtilities.GetFieldName(type, propertyName);
-				AppLogger.Debug("Field name: " + fieldName);
+				LogWriter.Debug("Field name: " + fieldName);
 				
 				IQuery query = ((Db4oDataStore)GetDataStore(type)).ObjectContainer.Query();
 				query.Constrain(type).And(
@@ -1004,17 +1004,17 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 						
 						//if (propertyValue == v || (propertyValue != null && propertyValue.Equals(v)))
 						//{
-						AppLogger.Debug("Adding entity of type: " + obj.GetType().ToString() + " and with ID " + ((IEntity)obj).ID.ToString());
+						LogWriter.Debug("Adding entity of type: " + obj.GetType().ToString() + " and with ID " + ((IEntity)obj).ID.ToString());
 						results.Add((IEntity)obj);
 						//}
 						//else
-						//	AppLogger.Error("Entity loaded when it doesn't match. Expected '" + propertyValue.ToString() + "' but was '" + v.ToString() + ".");
+						//	LogWriter.Error("Entity loaded when it doesn't match. Expected '" + propertyValue.ToString() + "' but was '" + v.ToString() + ".");
 					}
 					else
 						throw new InvalidOperationException("Invalid type found. Expected '" + type.ToString() + "' but was '" + obj.GetType().ToString() + "'.");
 				}
 				 */
-				AppLogger.Debug("Results: " + results.Count.ToString());
+				LogWriter.Debug("Results: " + results.Count.ToString());
 			}
 			return Release<T>((T[])results.ToArray());
 		}

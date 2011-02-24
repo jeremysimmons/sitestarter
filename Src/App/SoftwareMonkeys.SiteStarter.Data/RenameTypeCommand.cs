@@ -38,7 +38,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="document">The reference serialized to an XML document.</param>
 		public override void ExecuteOnReference(XmlDocument document)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Renaming the type on the provided reference.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Renaming the type on the provided reference.", NLog.LogLevel.Debug))
 			{
 				XmlNode type1Node = document.DocumentElement.SelectSingleNode("Type1Name");
 				
@@ -52,13 +52,13 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				
 				if (type1Node.InnerText == TypeName)
 				{
-					AppLogger.Debug("Found matching node '" + type1Node.InnerText + "'...replacing with '" + newTypeName + "'.");
+					LogWriter.Debug("Found matching node '" + type1Node.InnerText + "'...replacing with '" + newTypeName + "'.");
 					type1Node.InnerText = newTypeName;
 				}
 				
 				if (type2Node.InnerText == TypeName)
 				{
-					AppLogger.Debug("Found matching node '" + type2Node.InnerText + "'...replacing with '" + newTypeName + "'.");
+					LogWriter.Debug("Found matching node '" + type2Node.InnerText + "'...replacing with '" + newTypeName + "'.");
 					type2Node.InnerText = newTypeName;
 				}
 			}
@@ -70,15 +70,15 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="document">The entity serialized to an XML document.</param>
 		public override void ExecuteOnEntity(XmlDocument document)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Executing the rename type command on the provided entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Executing the rename type command on the provided entity.", NLog.LogLevel.Debug))
 			{
 				string typeName = document.DocumentElement.Name;
 				
-				AppLogger.Debug("Type name: " + typeName);
+				LogWriter.Debug("Type name: " + typeName);
 				
 				if (typeName == TypeName)
 				{
-					AppLogger.Debug("Type name matches. Renaming to: " + NewTypeName);
+					LogWriter.Debug("Type name matches. Renaming to: " + NewTypeName);
 					
 					XmlUtilities.RenameNode(document.DocumentElement, NewTypeName);
 				}

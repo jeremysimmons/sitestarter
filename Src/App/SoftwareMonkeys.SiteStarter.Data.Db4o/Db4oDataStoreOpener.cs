@@ -32,7 +32,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				
 				//configuration.AutomaticShutDown(false);
 				
-				AppLogger.Debug("Full file name: " + yapFilePath);
+				LogWriter.Debug("Full file name: " + yapFilePath);
 				
 				if (!Directory.Exists(Path.GetDirectoryName(yapFilePath)))
 					Directory.CreateDirectory(Path.GetDirectoryName(yapFilePath));

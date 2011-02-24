@@ -38,7 +38,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_GetType_AliasName()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the DataUtilities.GetType function.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the DataUtilities.GetType function.", NLog.LogLevel.Debug))
 			{
 				TestArticle e1 = new TestArticle();
 				e1.ID = Guid.NewGuid();
@@ -63,7 +63,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		/*[Test]
 	public void Test_GetDataStoreNameForReference_Many_Null()
 	{
-		using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetDataStoreNameForReference function for a multiple reference.", NLog.LogLevel.Debug))
+		using (LogGroup logGroup = LogGroup.Start("Testing the GetDataStoreNameForReference function for a multiple reference.", NLog.LogLevel.Debug))
 		{
 	        	TestArticle e1 = new TestArticle();
 			e1.ID = Guid.NewGuid();
@@ -86,7 +86,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 	public void Test_GetDataStoreNameForReference_Many_NotNull()
 	{
-		using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetDataStoreNameForReference function for a multiple reference.", NLog.LogLevel.Debug))
+		using (LogGroup logGroup = LogGroup.Start("Testing the GetDataStoreNameForReference function for a multiple reference.", NLog.LogLevel.Debug))
 		{
 	        	TestArticle e1 = new TestArticle();
 			e1.ID = Guid.NewGuid();
@@ -109,7 +109,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_GetEntityType()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the DataUtilities.GetEntityType function.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the DataUtilities.GetEntityType function.", NLog.LogLevel.Debug))
 			{
 				
 				TestUser user = new TestUser();
@@ -189,7 +189,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_GetDataStoreName_FromType()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetDataStoreName function from a provided type.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the GetDataStoreName function from a provided type.", NLog.LogLevel.Debug))
 			{
 				TestArticle e1 = new TestArticle();
 				e1.ID = Guid.NewGuid();
@@ -212,7 +212,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_GetDataStoreName_FromEntity()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetDataStoreName function from a provided type.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the GetDataStoreName function from a provided type.", NLog.LogLevel.Debug))
 			{
 				TestArticle e1 = new TestArticle();
 				e1.ID = Guid.NewGuid();
@@ -235,7 +235,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_GetDataStoreName_FromNames()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetDataStoreName function from a provided type.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the GetDataStoreName function from a provided type.", NLog.LogLevel.Debug))
 			{
 				TestArticle e1 = new TestArticle();
 				e1.ID = Guid.NewGuid();

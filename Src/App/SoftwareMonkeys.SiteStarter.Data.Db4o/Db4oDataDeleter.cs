@@ -28,7 +28,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <param name="entity">The entity to prepare for deletion.</param>
 		public override void PreDelete(IEntity entity)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Preparing to delete the provided entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Preparing to delete the provided entity.", NLog.LogLevel.Debug))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");

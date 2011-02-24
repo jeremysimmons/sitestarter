@@ -14,25 +14,25 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			PropertyInfo property = null;
 			object value = obj;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving property '" + propertyName + "' from type '" + obj.GetType(), NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving property '" + propertyName + "' from type '" + obj.GetType(), NLog.LogLevel.Debug))
 			{
 				string[] parts = propertyName.Split('.');
 				
 				foreach (string part in parts)
 				{
-					AppLogger.Debug("Stepping to property '" + part + "' of type '" + value.GetType().ToString() + "'.");
+					LogWriter.Debug("Stepping to property '" + part + "' of type '" + value.GetType().ToString() + "'.");
 					
 					property = value.GetType().GetProperty(part);
 					
 					if (property == null)
 						throw new ArgumentException("The property '" + part + "' wasn't found on the type '" + value.GetType().ToString() + "'.");
 					
-					AppLogger.Debug("Property type: " + property.PropertyType.FullName);
+					LogWriter.Debug("Property type: " + property.PropertyType.FullName);
 					
 					value = property.GetValue(value, null);
 					
 					if (value == null)
-						AppLogger.Debug("[null]");
+						LogWriter.Debug("[null]");
 				}
 			}
 			
@@ -53,27 +53,27 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			if (obj == null)
 				throw new ArgumentException("obj cannot be null");
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving property '" + propertyName + "' from type '" + obj.GetType(), NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving property '" + propertyName + "' from type '" + obj.GetType(), NLog.LogLevel.Debug))
 			{
 				string[] parts = propertyName.Split('.');
 				
 				foreach (string part in parts)
 				{
-					AppLogger.Debug("Stepping to property '" + part + "' of type '" + value.GetType().ToString() + "'.");
+					LogWriter.Debug("Stepping to property '" + part + "' of type '" + value.GetType().ToString() + "'.");
 					
 					property = value.GetType().GetProperty(part);
 					
 					if (property == null)
 						throw new ArgumentException("The property '" + part + "' wasn't found on the type '" + value.GetType().ToString() + "'.");
 					
-					AppLogger.Debug("Property type: " + property.PropertyType.FullName);
+					LogWriter.Debug("Property type: " + property.PropertyType.FullName);
 					
 					value = property.GetValue(value, null);
 					
 					returnType = property.PropertyType;
 					
 					if (value == null)
-						AppLogger.Debug("[null]");
+						LogWriter.Debug("[null]");
 				}
 			}
 			
@@ -90,21 +90,21 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			PropertyInfo property = null;
 			object parent = obj;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Setting value of property '" + propertyName + "' on type '" + obj.GetType() + "'.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Setting value of property '" + propertyName + "' on type '" + obj.GetType() + "'.", NLog.LogLevel.Debug))
 			{
 				string[] parts = propertyName.Split('.');
 				
 				foreach (string part in parts)
 				{
-					AppLogger.Debug("Stepping to property '" + part + "'.");
-					AppLogger.Debug("Value type: '" + (value == null ? "[null]" : value.GetType().ToString()) + "'.");
+					LogWriter.Debug("Stepping to property '" + part + "'.");
+					LogWriter.Debug("Value type: '" + (value == null ? "[null]" : value.GetType().ToString()) + "'.");
 					
 					property = parent.GetType().GetProperty(part);
 					
 					if (property == null)
 						throw new ArgumentException("The property '" + part + "' wasn't found on the type '" + value.GetType().ToString() + "'.");
 					
-					AppLogger.Debug("Property type: " + property.PropertyType.FullName);
+					LogWriter.Debug("Property type: " + property.PropertyType.FullName);
 					
 					// If it's the last part then set the value
 					if (Array.IndexOf(parts, part) == parts.Length -1)
@@ -257,7 +257,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		{
 			bool argumentsMatch = true;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the provided arguments match those on the provided method.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Checking whether the provided arguments match those on the provided method.", NLog.LogLevel.Debug))
 			{
 				
 				if (method == null)
@@ -266,14 +266,14 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 				if (expectedArgumentTypes == null)
 					throw new ArgumentNullException("expectedArgumentTypes");
 				
-				AppLogger.Debug("Method name: " + method.Name);
-				AppLogger.Debug("Method parent object: " + method.DeclaringType.FullName);
+				LogWriter.Debug("Method name: " + method.Name);
+				LogWriter.Debug("Method parent object: " + method.DeclaringType.FullName);
 				
 				
 				Type[] argumentTypes = method.GetGenericArguments();
 				
-				AppLogger.Debug("Arguments on method: " + argumentTypes.Length);
-				AppLogger.Debug("Arguments expected: " + expectedArgumentTypes);
+				LogWriter.Debug("Arguments on method: " + argumentTypes.Length);
+				LogWriter.Debug("Arguments expected: " + expectedArgumentTypes);
 				
 				if (argumentTypes.Length == expectedArgumentTypes.Length)
 				{
@@ -288,13 +288,13 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 						if (actualType.FullName == string.Empty)
 							throw new Exception("actualType.FullName == String.Empty");
 						
-						AppLogger.Debug("Comparing expected argument type '" + expectedArgumentTypes[i].FullName + "' with actual type '" + actualType.FullName + "'.");
+						LogWriter.Debug("Comparing expected argument type '" + expectedArgumentTypes[i].FullName + "' with actual type '" + actualType.FullName + "'.");
 						
 						bool match = actualType.FullName == expectedArgumentTypes[i].FullName;
 						bool isAssignable = actualType.IsAssignableFrom(expectedArgumentTypes[i]);
 						
-						AppLogger.Debug("Match: " + match);
-						AppLogger.Debug("Is assignable: " + isAssignable);
+						LogWriter.Debug("Match: " + match);
+						LogWriter.Debug("Is assignable: " + isAssignable);
 						
 						if (!(match || isAssignable))
 							argumentsMatch = false;
@@ -303,7 +303,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 				else
 					argumentsMatch = false;
 				
-				AppLogger.Debug("Parameters match: " + argumentsMatch.ToString());
+				LogWriter.Debug("Parameters match: " + argumentsMatch.ToString());
 			}
 			return argumentsMatch;
 		}
@@ -317,7 +317,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		static public bool ParametersMatch(MethodInfo method, Type[] expectedArgumentTypes, Type[] expectedParameters)
 		{
 			bool parametersMatch = true;
-			using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the provide parameter types match those on the provided method.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Checking whether the provide parameter types match those on the provided method.", NLog.LogLevel.Debug))
 			{
 				if (method == null)
 					throw new ArgumentNullException("method");
@@ -328,19 +328,19 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 				if (!method.IsGenericMethod)
 					throw new ArgumentException("The provided method is not a constructed generic method.");
 				
-				AppLogger.Debug("Method name: " + method.Name);
-				AppLogger.Debug("Method parent object: " + method.DeclaringType.FullName);
+				LogWriter.Debug("Method name: " + method.Name);
+				LogWriter.Debug("Method parent object: " + method.DeclaringType.FullName);
 				
 				ParameterInfo[] parameters = method.GetParameters();
 				
-				AppLogger.Debug("Parameters on method: " + parameters.Length);
-				AppLogger.Debug("Parameters expected: " + expectedParameters);
+				LogWriter.Debug("Parameters on method: " + parameters.Length);
+				LogWriter.Debug("Parameters expected: " + expectedParameters);
 				
 				if (parameters.Length == expectedParameters.Length)
 				{
 					for (int i = 0; i < expectedParameters.Length; i++)
 					{
-						AppLogger.Debug("Parameter: " + parameters[i].ToString());
+						LogWriter.Debug("Parameter: " + parameters[i].ToString());
 						
 						Type parameter = parameters[i].ParameterType;
 						
@@ -352,13 +352,13 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 						
 						Type expectedParameter = expectedParameters[i];
 						
-						AppLogger.Debug("Comparing expected parameter type '" + expectedParameter.FullName + "' with actual type '" + parameter.FullName + "'.");
+						LogWriter.Debug("Comparing expected parameter type '" + expectedParameter.FullName + "' with actual type '" + parameter.FullName + "'.");
 						
 						bool match = expectedParameter.FullName == parameter.FullName;
 						bool isAssignable = parameter.IsAssignableFrom(expectedParameter);
 						
-						AppLogger.Debug("Match: " + match);
-						AppLogger.Debug("Is assignable: " + isAssignable);
+						LogWriter.Debug("Match: " + match);
+						LogWriter.Debug("Is assignable: " + isAssignable);
 						
 						if (!(match || isAssignable))
 							parametersMatch = false;
@@ -367,7 +367,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 				else
 					parametersMatch = false;
 				
-				AppLogger.Debug("Parameters match: " + parametersMatch.ToString());
+				LogWriter.Debug("Parameters match: " + parametersMatch.ToString());
 			}
 			return parametersMatch;
 		}

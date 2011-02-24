@@ -20,7 +20,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 		public void Initialize()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Initializing data provider", NLog.LogLevel.Info))
+			using (LogGroup logGroup = LogGroup.Start("Initializing data provider", NLog.LogLevel.Info))
 			{
 					Db4oDataProvider provider = new Db4oDataProvider();
 					provider.Initialize("Db4oDataProvider", null);
