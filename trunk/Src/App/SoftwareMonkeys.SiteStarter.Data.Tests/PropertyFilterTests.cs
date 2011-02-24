@@ -41,7 +41,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_IsMatch_PropertyTypeGuid()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the PropertyFilter.IsMatch function.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the PropertyFilter.IsMatch function.", NLog.LogLevel.Debug))
 			{
 				
 				TestArticle article = new TestArticle();
@@ -67,7 +67,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_IsMatch()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the PropertyFilter.IsMatch function.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the PropertyFilter.IsMatch function.", NLog.LogLevel.Debug))
 			{
 				
 				TestArticle article = new TestArticle();
@@ -98,7 +98,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_IsMatch_Exclude()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the PropertyFilter.IsMatch function.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the PropertyFilter.IsMatch function.", NLog.LogLevel.Debug))
 			{				
 				TestArticle article = new TestArticle();
 				article.ID = Guid.NewGuid();

@@ -87,11 +87,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		public override IEntity GetEntity(Type type, Dictionary<string, object> parameters)
 		{
 			IEntity entity = null;
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the entity of the specified type matching the provided parameters.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving the entity of the specified type matching the provided parameters.", NLog.LogLevel.Debug))
 			{
 				foreach (string key in parameters.Keys)
 				{
-					AppLogger.Debug("Parameter: " + key + " = " + parameters[key].ToString());
+					LogWriter.Debug("Parameter: " + key + " = " + parameters[key].ToString());
 				}
 				
 				IDataIndexer indexer = Provider.InitializeDataIndexer();
@@ -121,7 +121,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		public override IEntity GetEntity(Type type, string propertyName, object propertyValue)
 		{
 			IEntity entity = null;
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the entity of the specified type with a property matching the provided property name and value.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving the entity of the specified type with a property matching the provided property name and value.", NLog.LogLevel.Debug))
 			{
 				IDataIndexer indexer = Provider.InitializeDataIndexer();
 				indexer.AutoRelease = AutoRelease;
@@ -132,9 +132,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					entity = entities[0];
 				
 				if (entity == null)
-					AppLogger.Debug("Entity: [null]");
+					LogWriter.Debug("Entity: [null]");
 				else
-					AppLogger.Debug("Entity ID: " + entity.ID.ToString());
+					LogWriter.Debug("Entity ID: " + entity.ID.ToString());
 			}
 			
 			return entity;
@@ -149,7 +149,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		public override T GetEntity<T>(string propertyName, object propertyValue)
 		{
 			T entity = default(T);
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the entity of the specified type matching the provided property value.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving the entity of the specified type matching the provided property value.", NLog.LogLevel.Debug))
 			{
 				
 				IDataIndexer indexer = Provider.InitializeDataIndexer();
@@ -194,7 +194,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		public override T GetEntity<T>(Dictionary<string, object> parameters)
 		{
 			T entity = default(T);
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the entity of the specified type matching the provided entities.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving the entity of the specified type matching the provided entities.", NLog.LogLevel.Debug))
 			{
 				
 				IDataIndexer indexer = Provider.InitializeDataIndexer();

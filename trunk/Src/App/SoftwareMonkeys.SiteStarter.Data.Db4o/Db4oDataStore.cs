@@ -147,9 +147,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// </summary>
 		public Db4oDataStore()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Constructing a Db4oDataStore object.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Constructing a Db4oDataStore object.", NLog.LogLevel.Debug))
 			{
-				AppLogger.Debug("Empty constructor.");
+				LogWriter.Debug("Empty constructor.");
 			}
 		}
 		
@@ -160,9 +160,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		// TODO: See if this is necessary. If not, remove it
 		public Db4oDataStore(IConfiguration db4oConfiguration)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Constructing a Db4oDataStore object.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Constructing a Db4oDataStore object.", NLog.LogLevel.Debug))
 			{
-				AppLogger.Debug("Setting the db4o configuration object.");
+				LogWriter.Debug("Setting the db4o configuration object.");
 				this.db4oConfiguration = db4oConfiguration;
 			}
 		}
@@ -175,11 +175,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			string path = String.Empty;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the file name for the data store.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving the file name for the data store.", NLog.LogLevel.Debug))
 			{
 				string fileName = Name;
 				
-				AppLogger.Debug("Store name: " + Name);
+				LogWriter.Debug("Store name: " + Name);
 				
 				// Add the path variation
 				if (Config.Application.PathVariation != String.Empty)
@@ -191,7 +191,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				path = DataAccess.Data.DataDirectoryPath + Path.DirectorySeparatorChar
 					+ fileName;
 				
-				AppLogger.Debug("Path: " + path);
+				LogWriter.Debug("Path: " + path);
 				
 			}
 			return path;
@@ -211,11 +211,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// </summary>
 		public void OpenServer()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Opening data server.", NLog.LogLevel.Info))
+			using (LogGroup logGroup = LogGroup.Start("Opening data server.", NLog.LogLevel.Info))
 			{
 				ObjectServer = new Db4oDataStoreOpener().TryOpenServer(GetStoreFileName(), MaxOpenRetries);
 				
-				AppLogger.Debug("Server opened");
+				LogWriter.Debug("Server opened");
 				//objectContainer = ObjectServer.OpenClient();
 			}
 		}
@@ -226,23 +226,23 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// </summary>
 		public void OpenContainer()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Opening data container.", NLog.LogLevel.Info))
+			using (LogGroup logGroup = LogGroup.Start("Opening data container.", NLog.LogLevel.Info))
 			{
 				string fileName = Name;
 				
-				AppLogger.Debug("Name: " + Name);
+				LogWriter.Debug("Name: " + Name);
 
 
 				string fullName = GetStoreFileName();
 				
-				AppLogger.Debug("Full file name: " + fullName);
+				LogWriter.Debug("Full file name: " + fullName);
 				
 				if (!Directory.Exists(Path.GetDirectoryName(fullName)))
 					Directory.CreateDirectory(Path.GetDirectoryName(fullName));
 				//ObjectServer = Db4oFactory.OpenServer(fullName, 0);
 				ObjectContainer = ObjectServer.OpenClient();//Db4oFactory.OpenFile(fullName);
 				
-				AppLogger.Debug("Container opened");
+				LogWriter.Debug("Container opened");
 			}
 		}
 
@@ -334,12 +334,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		
 		public override void Commit(bool forceCommit)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Committing the data store (or adding to batch for later).", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Committing the data store (or adding to batch for later).", NLog.LogLevel.Debug))
 			{
 				// Only commit if there's no batch running
 				if (forceCommit || !BatchState.IsRunning)
 				{
-					AppLogger.Debug("No batch running. Committing immediately.");
+					LogWriter.Debug("No batch running. Committing immediately.");
 					
 					if (ObjectContainer != null)
 					{
@@ -352,7 +352,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				// If a batch is running then the commit should be skipped. It'll be commit once the batch is complete.
 				else
 				{
-					AppLogger.Debug("Batch running. Adding data source to batch. It will be committed when the batch is over.");
+					LogWriter.Debug("Batch running. Adding data source to batch. It will be committed when the batch is over.");
 					
 					BatchState.Handle(this);
 				}

@@ -37,13 +37,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			Db4oDataStore store = null;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Initializing data store.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Initializing data store.", NLog.LogLevel.Debug))
 			{
 				if (!Config.IsInitialized)
 					throw new InvalidOperationException("The application config file is not present. Run the setup process and try again.");
 				
-				AppLogger.Debug("Data store name: " + dataStoreName);
-				AppLogger.Debug("Virtual server ID: " + virtualServerID);
+				LogWriter.Debug("Data store name: " + dataStoreName);
+				LogWriter.Debug("Virtual server ID: " + virtualServerID);
 				
 				string fullName = String.Empty;
 				
@@ -54,7 +54,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				else
 					fullName = dataStoreName;
 				
-				AppLogger.Debug("Full name: " + fullName);
+				LogWriter.Debug("Full name: " + fullName);
 				
 				// Create a new data store
 				store = new Db4oDataStore(Db4oFactory.CloneConfiguration());
@@ -71,12 +71,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			Db4oDataStore store = null;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Initializing data store.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Initializing data store.", NLog.LogLevel.Debug))
 			{
 				if (!Config.IsInitialized)
 					throw new InvalidOperationException("The application config file is not present. Run the setup process and try again.");
 				
-				AppLogger.Debug("Data store name: " + dataStoreName);
+				LogWriter.Debug("Data store name: " + dataStoreName);
 				
 				// Create a new data store
 				store = new Db4oDataStore(Db4oFactory.CloneConfiguration());

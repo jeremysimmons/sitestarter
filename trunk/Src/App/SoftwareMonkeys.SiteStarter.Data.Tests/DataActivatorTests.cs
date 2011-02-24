@@ -19,7 +19,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_Activate()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the Active function.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the Active function.", NLog.LogLevel.Debug))
 			{
 				
 				TestUser user = new TestUser();
@@ -62,7 +62,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_Activate_SingleReference()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the activate function with a single reference.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the activate function with a single reference.", NLog.LogLevel.Debug))
 			{
 				TestArticle article = new TestArticle();
 				Guid articleID = article.ID = Guid.NewGuid();
@@ -103,7 +103,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_Activate_2References()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the Activate function with 2 references.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the Activate function with 2 references.", NLog.LogLevel.Debug))
 			{				
 				TestArticle article = new TestArticle();
 				article.ID = Guid.NewGuid();
@@ -181,7 +181,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_Activate_2References_Async_Converging()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the Activate function with 2 asynchronous, converging references.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the Activate function with 2 asynchronous, converging references.", NLog.LogLevel.Debug))
 			{
 				
 				
@@ -265,7 +265,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_Activate_ReverseReference()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the activate function with a reverse reference.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the activate function with a reverse reference.", NLog.LogLevel.Debug))
 			{
 				TestUser user = new TestUser();
 				Guid userID = user.ID = Guid.NewGuid();

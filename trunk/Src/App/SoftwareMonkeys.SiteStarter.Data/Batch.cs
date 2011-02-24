@@ -60,16 +60,16 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// </summary>
 		public void Commit()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Committing data stores in batch.",NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Committing data stores in batch.",NLog.LogLevel.Debug))
 			{
-				AppLogger.Debug("# of stores: " + DataStores.Count.ToString());
+				LogWriter.Debug("# of stores: " + DataStores.Count.ToString());
 				
 				// If the batch has ended then commit
 				if (!BatchState.IsRunning)
 				{
 					foreach (IDataStore dataStore in DataStores)
 					{
-						AppLogger.Debug("Committing store: " + dataStore.Name);
+						LogWriter.Debug("Committing store: " + dataStore.Name);
 						dataStore.Commit(true);
 					}
 					
@@ -79,12 +79,12 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					// Raise the committed event
 					RaiseCommitted();
 					
-					AppLogger.Debug("Commit complete.");
+					LogWriter.Debug("Commit complete.");
 					
 				}
 				else
 				{
-					AppLogger.Debug("Outer batch still running. Skipping commit.");
+					LogWriter.Debug("Outer batch still running. Skipping commit.");
 					
 				}
 				
@@ -103,13 +103,13 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="disposing">A value indicating whether the component is actually disposing.</param>
 		protected override void Dispose(bool disposing)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Disposing the batch and finishing operations.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Disposing the batch and finishing operations.", NLog.LogLevel.Debug))
 			{
 				
 				// Get rid of this batch and all others within it from the stack
 				while (BatchState.Batches.Contains(this))
 				{
-					AppLogger.Debug("This batch is in the stack. Removing top item.");
+					LogWriter.Debug("This batch is in the stack. Removing top item.");
 					
 					BatchState.Batches.Pop();
 				}

@@ -15,9 +15,9 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="store">The data store being handled as part of the batch.</param>
 		public static void Handle(IDataStore store)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Adding a data store to the batch.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Adding a data store to the batch.", NLog.LogLevel.Debug))
 			{
-				AppLogger.Debug("Batch stack: " + BatchState.Batches.Count.ToString());
+				LogWriter.Debug("Batch stack: " + BatchState.Batches.Count.ToString());
 				
 				if (BatchState.IsRunning)
 				{
@@ -32,7 +32,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					
 					if (!batch.DataStores.Contains(store))
 					{
-						AppLogger.Debug("Data store added.");
+						LogWriter.Debug("Data store added.");
 						batch.DataStores.Add(store);
 						
 						// Commit the batch stack to state
@@ -40,7 +40,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					}
 					else
 					{
-						AppLogger.Debug("Data store already found. Not added.");
+						LogWriter.Debug("Data store already found. Not added.");
 					}
 				}
 				else
@@ -69,11 +69,11 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		static public Batch StartBatch()
 		{
 			Batch batch = null;
-			using (LogGroup logGroup = AppLogger.StartGroup("Starting a batch of data operations.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Starting a batch of data operations.", NLog.LogLevel.Debug))
 			{
 				batch = new Batch();
 				
-				AppLogger.Debug("New batch added to the stack.");
+				LogWriter.Debug("New batch added to the stack.");
 				
 				Batches.Push(batch);
 			}

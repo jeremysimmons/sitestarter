@@ -21,7 +21,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_FilterGroup_Or()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing a filter group query with the OR operator.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing a filter group query with the OR operator.", NLog.LogLevel.Debug))
 			{
 				TestEntity e1 = new TestEntity();
 				e1.Name = "Test E1";
@@ -58,7 +58,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_FilterGroup_And_Exclusion()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing a filter group query with the AND operator.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing a filter group query with the AND operator.", NLog.LogLevel.Debug))
 			{
 				TestEntity e1 = new TestEntity();
 				e1.Name = "Test E1";

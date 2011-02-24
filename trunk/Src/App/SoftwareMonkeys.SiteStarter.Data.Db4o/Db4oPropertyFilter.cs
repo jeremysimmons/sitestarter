@@ -21,34 +21,34 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
         {
             bool isMatch = false;
 
-            //using (LogGroup logGroup2 = AppLogger.StartGroup("Checking whether the filter matches the provided entity.", NLog.LogLevel.Debug))
+            //using (LogGroup logGroup2 = LogGroup.Start("Checking whether the filter matches the provided entity.", NLog.LogLevel.Debug))
             //{
-            //    AppLogger.Debug("Field Name: " + PropertyName);
-            //    AppLogger.Debug("Field Value: " + PropertyValue);
+            //    LogWriter.Debug("Field Name: " + PropertyName);
+            //    LogWriter.Debug("Field Value: " + PropertyValue);
 
                 Type type = entity.GetType();
 
-            //    AppLogger.Debug("Entity type: " + type.ToString());
+            //    LogWriter.Debug("Entity type: " + type.ToString());
 
                 if (Types == null)
                 {
-            //        AppLogger.Debug("No filter types have been specified. Match failed.");
+            //        LogWriter.Debug("No filter types have been specified. Match failed.");
                 }
                 else if (Array.IndexOf(Types, type) == -1)
                 {
-            //        AppLogger.Debug("The provided entity type isn't allowed by the filter. Match failed.");
+            //        LogWriter.Debug("The provided entity type isn't allowed by the filter. Match failed.");
                 }
                 else
                 {
                     PropertyInfo property = type.GetProperty(PropertyName);
 
-            //        AppLogger.Debug("Property name: " + property.Name);
+            //        LogWriter.Debug("Property name: " + property.Name);
 
                     isMatch = property.GetValue(entity, null).Equals(PropertyValue);
                 }
 
 
-            //    AppLogger.Debug("Is match? " + isMatch.ToString());
+            //    LogWriter.Debug("Is match? " + isMatch.ToString());
             //}
 
             return isMatch;

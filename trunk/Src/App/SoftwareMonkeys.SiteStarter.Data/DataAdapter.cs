@@ -48,7 +48,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="provider">The provider for the adapater to use.</param>
 		public DataAdapter(DataProvider provider)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Constructing the data adapter.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Constructing the data adapter.", NLog.LogLevel.Debug))
 			{
 				Initialize(provider, null);
 			}
@@ -61,7 +61,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="store">The data store for the adapter to use.</param>
 		public DataAdapter(DataProvider provider, IDataStore store)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Constructing the data adapter.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Constructing the data adapter.", NLog.LogLevel.Debug))
 			{
 				Initialize(provider, store);
 			}
@@ -74,11 +74,11 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="store">The data store that the adapter is tied to, or [null] to let it automatically select the appropriate store.</param>
 		protected void Initialize(DataProvider provider, IDataStore store)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Initializing the data adapter.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Initializing the data adapter.", NLog.LogLevel.Debug))
 			{
-				AppLogger.Debug("Set the provider for the adapter to use.");
+				LogWriter.Debug("Set the provider for the adapter to use.");
 				this.provider = provider;
-				AppLogger.Debug("Set the store for the adapter to use.");
+				LogWriter.Debug("Set the store for the adapter to use.");
 				this.DataStore = store;
 			}
 		}
@@ -92,23 +92,23 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		public IDataStore GetDataStore(string dataStoreName)
 		{
 			IDataStore store = null;
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the data store for the provided entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving the data store for the provided entity.", NLog.LogLevel.Debug))
 			{
 				if (DataStore == null)
 				{
 					store = DataAccess.Data.Stores[dataStoreName];
-					AppLogger.Debug("Dynamically selected data store.");
+					LogWriter.Debug("Dynamically selected data store.");
 				}
 				else
 				{
 					store = DataStore;
-					AppLogger.Debug("Using the data store tied to the adapter.");
+					LogWriter.Debug("Using the data store tied to the adapter.");
 				}
 				
 				if (store.IsClosed)
 					store = DataAccess.Data.InitializeDataStore(dataStoreName);
 				
-				AppLogger.Debug("Data store name: " + store.Name);
+				LogWriter.Debug("Data store name: " + store.Name);
 			}
 			return store;
 		}
@@ -121,23 +121,23 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		public IDataStore GetDataStore(IEntity entity)
 		{
 			IDataStore store = null;
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the data store for the provided entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving the data store for the provided entity.", NLog.LogLevel.Debug))
 			{
 				if (DataStore == null)
 				{
 					store = DataAccess.Data.Stores[entity];
-					AppLogger.Debug("Dynamically selected data store.");
+					LogWriter.Debug("Dynamically selected data store.");
 				}
 				else
 				{
 					store = DataStore;
-					AppLogger.Debug("Using the data store tied to the adapter.");
+					LogWriter.Debug("Using the data store tied to the adapter.");
 				}
 				
 				if (store.IsClosed)
 					store = DataAccess.Data.InitializeDataStore(DataUtilities.GetDataStoreName(entity));
 				
-				AppLogger.Debug("Data store name: " + store.Name);
+				LogWriter.Debug("Data store name: " + store.Name);
 			}
 			return store;
 		}
@@ -150,20 +150,20 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		public IDataStore GetDataStore(Type type)
 		{
 			IDataStore store = null;
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the data store for the provided entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving the data store for the provided entity.", NLog.LogLevel.Debug))
 			{
 				if (DataStore == null)
 				{
 					store = DataAccess.Data.Stores[type];
-					AppLogger.Debug("Dynamically selected data store.");
+					LogWriter.Debug("Dynamically selected data store.");
 				}
 				else
 				{
 					store = DataStore;
-					AppLogger.Debug("Using the data store tied to the adapter.");
+					LogWriter.Debug("Using the data store tied to the adapter.");
 				}
 				
-				AppLogger.Debug("Data store name: " + store.Name);
+				LogWriter.Debug("Data store name: " + store.Name);
 			}
 			return store;
 		}
@@ -177,7 +177,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		public IDataStore GetDataStore(string type1Name, string type2Name)
 		{
 			IDataStore store = null;
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the data store for the provided entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving the data store for the provided entity.", NLog.LogLevel.Debug))
 			{
 				
 				// TODO: Clean up
@@ -186,15 +186,15 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				//if (dataStore == null)
 				//{
 					store = DataAccess.Data.Stores[DataUtilities.GetDataStoreName(type1Name, type2Name)];
-					AppLogger.Debug("Dynamically selected data store.");
+					LogWriter.Debug("Dynamically selected data store.");
 				//}
 				//else
 				//{
 					//store = dataStore;
-					//AppLogger.Debug("Using the data store tied to the adapter.");
+					//LogWriter.Debug("Using the data store tied to the adapter.");
 				//}
 				
-				AppLogger.Debug("Data store name: " + store.Name);
+				LogWriter.Debug("Data store name: " + store.Name);
 			}
 			return store;
 		}

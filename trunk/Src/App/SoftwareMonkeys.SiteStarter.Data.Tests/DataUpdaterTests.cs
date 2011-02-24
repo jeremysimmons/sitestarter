@@ -61,7 +61,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_Update()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the DataAccess.Data.Updater.Update function.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the DataAccess.Data.Updater.Update function.", NLog.LogLevel.Debug))
 			{
 				TestUser user = new TestUser();
 				user.ID = Guid.NewGuid();
@@ -191,7 +191,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		public void Test_Update_MaintainReferences()
 		{
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing saving of an EntityIDReference.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing saving of an EntityIDReference.", NLog.LogLevel.Debug))
 			{
 				TestUser user = new TestUser();
 				user.ID = Guid.NewGuid();

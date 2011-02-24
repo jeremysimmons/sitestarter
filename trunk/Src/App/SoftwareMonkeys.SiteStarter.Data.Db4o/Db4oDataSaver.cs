@@ -27,7 +27,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <param name="entity">The entity to prepare for saving.</param>
 		public override void PreSave(IEntity entity)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Preparing entity for saving: " + entity.GetType().ToString(), NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Preparing entity for saving: " + entity.GetType().ToString(), NLog.LogLevel.Debug))
 			{
 				entity.PreStore();
 				
@@ -36,11 +36,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				
 				Type entityType = entity.GetType();
 				
-				AppLogger.Debug("Entity type: " + entityType.ToString());
+				LogWriter.Debug("Entity type: " + entityType.ToString());
 				
 				Provider.Referencer.MaintainReferences(entity);
 				
-				AppLogger.Debug("Presave complete.");
+				LogWriter.Debug("Presave complete.");
 			}
 		}
 			
@@ -50,7 +50,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <param name="entity">The entity to save to the data store.</param>
 		public override void Save(IEntity entity)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Saving entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Saving entity.", NLog.LogLevel.Debug))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");
@@ -67,7 +67,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				{
 					if (EntitiesUtilities.IsReference(entity.GetType()) && DataAccess.Data.IsStored(entity))
 					{
-						AppLogger.Debug("Existing reference found. Skipping save.");
+						LogWriter.Debug("Existing reference found. Skipping save.");
 						// Just skip the saving altogether, if the reference already exists
 					}
 					else
@@ -75,8 +75,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 						if (entity == null)
 							throw new ArgumentNullException("entity");
 						
-						AppLogger.Debug("Entity type: " + entity.GetType().ToString());
-						AppLogger.Debug("Entity ID: " + entity.ID.ToString());
+						LogWriter.Debug("Entity type: " + entity.GetType().ToString());
+						LogWriter.Debug("Entity ID: " + entity.ID.ToString());
 						
 						PreSave(entity);
 						
@@ -88,11 +88,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 							store.ObjectContainer.Store(entity);
 							store.Commit();
 							
-							AppLogger.Debug("Entity stored in '" + store.Name + "' store.");
+							LogWriter.Debug("Entity stored in '" + store.Name + "' store.");
 						}
 						else
 						{
-							AppLogger.Debug("Cloned entity == null. Not stored.");
+							LogWriter.Debug("Cloned entity == null. Not stored.");
 							
 						}
 					}

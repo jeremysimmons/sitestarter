@@ -62,7 +62,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		protected string CreateReferencePath()
 		{
 			string referenceFileName = String.Empty;
-			using (LogGroup logGroup = AppLogger.StartGroup("Creating the path to the specified reference file.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Creating the path to the specified reference file.", NLog.LogLevel.Debug))
 			{
 				EntityIDReference reference = (EntityIDReference)entity;
 				
@@ -73,12 +73,12 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				string property1Name = reference.Property1Name;
 				string property2Name = reference.Property2Name;
 				
-				AppLogger.Debug("Type 1 name: " + type1Name);
-				AppLogger.Debug("Type 2 name: " + type2Name);
-				AppLogger.Debug("Entity 1 ID: " + entity1ID);
-				AppLogger.Debug("Entity 2 ID: " + entity2ID);
-				AppLogger.Debug("Property 1 name: " + property1Name);
-				AppLogger.Debug("Property 2 name: " + property2Name);
+				LogWriter.Debug("Type 1 name: " + type1Name);
+				LogWriter.Debug("Type 2 name: " + type2Name);
+				LogWriter.Debug("Entity 1 ID: " + entity1ID);
+				LogWriter.Debug("Entity 2 ID: " + entity2ID);
+				LogWriter.Debug("Property 1 name: " + property1Name);
+				LogWriter.Debug("Property 2 name: " + property2Name);
 
 				// Sort the names alphabetically
 				string[] typeNames = new String[] { type1Name, type2Name };
@@ -87,7 +87,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				// If the type name order changed then switch the other variables too
 				if (type1Name != typeNames[0])
 				{
-					AppLogger.Debug("Switched order of entity type names.");
+					LogWriter.Debug("Switched order of entity type names.");
 
 					type1Name = typeNames[0];
 					type2Name = typeNames[1];
@@ -106,12 +106,12 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					entity1ID = b;
 					entity2ID = a;
 
-					AppLogger.Debug("Type 1 name: " + type1Name);
-					AppLogger.Debug("Type 2 name: " + type2Name);
-					AppLogger.Debug("Entity 1 ID: " + entity1ID);
-					AppLogger.Debug("Entity 2 ID: " + entity2ID);
-					AppLogger.Debug("Property 1 name: " + property1Name);
-					AppLogger.Debug("Property 2 name: " + property2Name);
+					LogWriter.Debug("Type 1 name: " + type1Name);
+					LogWriter.Debug("Type 2 name: " + type2Name);
+					LogWriter.Debug("Entity 1 ID: " + entity1ID);
+					LogWriter.Debug("Entity 2 ID: " + entity2ID);
+					LogWriter.Debug("Property 1 name: " + property1Name);
+					LogWriter.Debug("Property 2 name: " + property2Name);
 				}
 
 				string typeName = typeNames[0] + "-" + typeNames[1];
@@ -121,7 +121,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					referenceFileName += typeName + Path.DirectorySeparatorChar;
 				referenceFileName += entity1ID + "-" + property1Name + "---" + entity2ID + "-" + property2Name + ".xml";
 
-				AppLogger.Debug("Reference file name: " + referenceFileName);
+				LogWriter.Debug("Reference file name: " + referenceFileName);
 			}
 			return referenceFileName;
 		}

@@ -32,7 +32,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 
         public void AddType(Type type)
         {
-		AppLogger.Debug("Adding type " + type.ToString() + " to filter.");
+		LogWriter.Debug("Adding type " + type.ToString() + " to filter.");
 
             if (type != null)
             {

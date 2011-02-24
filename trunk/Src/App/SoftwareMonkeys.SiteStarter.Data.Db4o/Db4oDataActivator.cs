@@ -23,27 +23,27 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		
 		public override void ActivateReference(EntityReference reference)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Activating reference.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Activating reference.", NLog.LogLevel.Debug))
 			{
 				if (reference.Type1Name == string.Empty)
 					throw new ArgumentNullException("reference.Type1Name");
 				if (reference.Type2Name == string.Empty)
 					throw new ArgumentNullException("reference.Type2Name");
 				
-				AppLogger.Debug("Type 1: " + reference.Type1Name);
-				AppLogger.Debug("Type 2: " + reference.Type2Name);
-				AppLogger.Debug("ID 1: " + reference.Entity1ID);
-				AppLogger.Debug("ID 2: " + reference.Entity2ID);
+				LogWriter.Debug("Type 1: " + reference.Type1Name);
+				LogWriter.Debug("Type 2: " + reference.Type2Name);
+				LogWriter.Debug("ID 1: " + reference.Entity1ID);
+				LogWriter.Debug("ID 2: " + reference.Entity2ID);
 				
 				Type type1 = EntitiesUtilities.GetType(reference.Type1Name);
 				Type type2 = EntitiesUtilities.GetType(reference.Type2Name);
 				
-				AppLogger.Debug("Full type 1: " + type1.ToString());
-				AppLogger.Debug("Full type 2: " + type2.ToString());
+				LogWriter.Debug("Full type 1: " + type1.ToString());
+				LogWriter.Debug("Full type 2: " + type2.ToString());
 				
 				if (reference.Entity1ID == Guid.Empty || reference.Entity2ID == Guid.Empty)
 				{
-					AppLogger.Debug("Skipped activation because both IDs weren't found.");
+					LogWriter.Debug("Skipped activation because both IDs weren't found.");
 				}
 				else
 				{
@@ -71,14 +71,14 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				}
 				
 				//if (reference.SourceEntity == null)
-				//	AppLogger.Debug("reference.SourceEntity == null");
+				//	LogWriter.Debug("reference.SourceEntity == null");
 				//else
-				//	AppLogger.Debug("reference.SourceEntity is " + reference.SourceEntity.GetType().ToString());
+				//	LogWriter.Debug("reference.SourceEntity is " + reference.SourceEntity.GetType().ToString());
 				
 				//if (reference.ReferenceEntity == null)
-				//	AppLogger.Debug("reference.ReferenceEntity == null");
+				//	LogWriter.Debug("reference.ReferenceEntity == null");
 				//else
-				//	AppLogger.Debug("reference.ReferenceEntity is " + reference.ReferenceEntity.GetType().ToString());
+				//	LogWriter.Debug("reference.ReferenceEntity is " + reference.ReferenceEntity.GetType().ToString());
 				
 			}
 		}
@@ -106,7 +106,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			if (entity == null)
 				throw new ArgumentNullException("entity");
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Activating the references on type: " + entity.GetType().ToString(), NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Activating the references on type: " + entity.GetType().ToString(), NLog.LogLevel.Debug))
 			{
 				Type entityType = entity.GetType();
 				
@@ -114,8 +114,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				{
 					if (EntitiesUtilities.IsReference(entityType, property.Name, property.PropertyType))
 					{
-						AppLogger.Debug("Found reference property: " + property.Name);
-						AppLogger.Debug("Property type: " + property.PropertyType.ToString());
+						LogWriter.Debug("Found reference property: " + property.Name);
+						LogWriter.Debug("Property type: " + property.PropertyType.ToString());
 						
 						Activate(entity, property.Name, property.PropertyType, depth);
 					}
@@ -130,7 +130,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		
 		public override void Activate(IEntity entity, string propertyName, Type propertyType, int depth)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Activating property: " + propertyName, NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Activating property: " + propertyName, NLog.LogLevel.Debug))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");
@@ -149,14 +149,14 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				if (referenceType == null)
 					throw new Exception("referenceType == null");
 				
-				AppLogger.Debug("Reference entity type: " + referenceType.ToString());
+				LogWriter.Debug("Reference entity type: " + referenceType.ToString());
 				
 				// Multiple references.
 				if (EntitiesUtilities.IsMultipleReference(entity.GetType(), property))
 				{
-					AppLogger.Debug("Multiple reference property");
+					LogWriter.Debug("Multiple reference property");
 					
-					using (LogGroup logGroup2 = AppLogger.StartGroup("Retrieving the references.", NLog.LogLevel.Debug))
+					using (LogGroup logGroup2 = LogGroup.Start("Retrieving the references.", NLog.LogLevel.Debug))
 					{
 						EntityReferenceCollection references = Provider.Referencer.GetReferences(entity.GetType(),
 						                                                                         entity.ID,
@@ -167,13 +167,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 						if (references == null)
 							throw new Exception("references == null");
 						
-						AppLogger.Debug("References #: " + references.Count);
+						LogWriter.Debug("References #: " + references.Count);
 						
 						//	references.SwitchFor(entity);
 						
 						IEntity[] referencedEntities = Provider.Referencer.GetReferencedEntities(references, entity);
 						
-						AppLogger.Debug("Referenced entities #: " + referencedEntities.Length);
+						LogWriter.Debug("Referenced entities #: " + referencedEntities.Length);
 						
 						// If the activation depth is greater than 1
 						if (depth > 1)
@@ -182,9 +182,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 						}
 						
 						if (referencedEntities == null)
-							AppLogger.Debug("# of entities found: [null]");
+							LogWriter.Debug("# of entities found: [null]");
 						else
-							AppLogger.Debug("# of entities found:" + referencedEntities.Length);
+							LogWriter.Debug("# of entities found:" + referencedEntities.Length);
 						
 						object value = Collection<IEntity>.ConvertAll(referencedEntities, referenceType);
 						
@@ -195,10 +195,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				// Single reference.
 				else
 				{
-					AppLogger.Debug("Single reference property");
+					LogWriter.Debug("Single reference property");
 					
 					
-					AppLogger.Debug("Reference entity type: " + referenceType.ToString());
+					LogWriter.Debug("Reference entity type: " + referenceType.ToString());
 					
 					EntityReferenceCollection references = Provider.Referencer.GetReferences(entity.GetType(),
 					                                                                         entity.ID,
@@ -214,9 +214,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					//	                                             new Object[] {referencedEntities});
 					//
 					if (referencedEntities == null)
-						AppLogger.Debug("# of entities found: [null]");
+						LogWriter.Debug("# of entities found: [null]");
 					else
-						AppLogger.Debug("# of entities found:" + referencedEntities.Length);
+						LogWriter.Debug("# of entities found:" + referencedEntities.Length);
 					
 					//references.SwitchFor(entity);
 					
@@ -233,7 +233,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 
 		public override void Activate(IEntity entity, string propertyName, int depth)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Activating property: " + propertyName, NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Activating property: " + propertyName, NLog.LogLevel.Debug))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");

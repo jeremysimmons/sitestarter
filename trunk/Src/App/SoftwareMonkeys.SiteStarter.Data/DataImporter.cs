@@ -83,7 +83,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// </summary>
 		public void ImportFromXml()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Importing all objects in the working directory.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Importing all objects in the working directory.", NLog.LogLevel.Debug))
 			{
 				using (Batch batch = BatchState.StartBatch())
 				{
@@ -91,26 +91,26 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					{
 						IEntity entity = LoadEntityFromFile(file);
 						
-						AppLogger.Debug("Entity type: " + entity.GetType().ToString());
+						LogWriter.Debug("Entity type: " + entity.GetType().ToString());
 						
 						if (IsValid(entity))
 						{
 							if (!DataAccess.Data.IsStored((IEntity)entity))
 							{
-								AppLogger.Debug("New entity. Importing.");
+								LogWriter.Debug("New entity. Importing.");
 								
 								DataAccess.Data.Saver.Save(entity);
 							}
 							else
 							{
-								AppLogger.Debug("Entity already exists in store. Skipping.");
+								LogWriter.Debug("Entity already exists in store. Skipping.");
 							}
 							
 							MoveToImported(entity, file);
 						}
 						else
 						{
-							AppLogger.Error("Cannot import invalid entity...\nID: " + entity.ID.ToString() + "\nType: " + entity.ShortTypeName);
+							LogWriter.Error("Cannot import invalid entity...\nID: " + entity.ID.ToString() + "\nType: " + entity.ShortTypeName);
 							
 							MoveToFailed(entity, file);
 						}
@@ -130,13 +130,13 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			
 			List<string> list = new List<string>();
 
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving a list of importable entities from the specified directory.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving a list of importable entities from the specified directory.", NLog.LogLevel.Debug))
 			{
-				AppLogger.Debug("Directory: " + directory);
+				LogWriter.Debug("Directory: " + directory);
 				
 				if (Directory.Exists(directory))
 				{
-					AppLogger.Debug("Directory exists");
+					LogWriter.Debug("Directory exists");
 					
 					foreach (string subDirectory in Directory.GetDirectories(directory))
 					{
@@ -160,7 +160,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			IEntity entity = null;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Loading an entity from XML file.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Loading an entity from XML file.", NLog.LogLevel.Debug))
 			{
 				XmlDocument doc = new XmlDocument();
 				doc.Load(filePath);
@@ -180,7 +180,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					if (type == null)
 						throw new Exception("Cannot find object type with corresponding short type name of '" + shortTypeName + "'.");
 
-					AppLogger.Debug("Loading type: " + type.ToString());
+					LogWriter.Debug("Loading type: " + type.ToString());
 
 					entity = (IEntity)XmlUtilities.DeserializeFromDocument(doc, type);
 					
@@ -199,12 +199,12 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		public void MoveToImported(IEntity entity, string filePath)
 		{
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Marking the provided entity as imported by moving it to the imported directory.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Marking the provided entity as imported by moving it to the imported directory.", NLog.LogLevel.Debug))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity", "The provided entity cannot be null.");
 
-				AppLogger.Debug("Entity type: " + entity.GetType());
+				LogWriter.Debug("Entity type: " + entity.GetType());
 
 				string fileName = String.Empty;
 				string toFileName = String.Empty;
@@ -217,11 +217,11 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				fileName = filePath;
 				toFileName = CreateImportedEntityPath(entity);
 				
-				AppLogger.Debug("Imported directory specified. Continuing.");
+				LogWriter.Debug("Imported directory specified. Continuing.");
 				
 
-				AppLogger.Debug("From path: " + fileName);
-				AppLogger.Debug("To path: " + toFileName);
+				LogWriter.Debug("From path: " + fileName);
+				LogWriter.Debug("To path: " + toFileName);
 
 				if (!Directory.Exists(Path.GetDirectoryName(toFileName)))
 					Directory.CreateDirectory(Path.GetDirectoryName(toFileName));
@@ -234,12 +234,12 @@ namespace SoftwareMonkeys.SiteStarter.Data
 
 					File.Move(fileName, toFileName);
 
-					AppLogger.Debug("Moved");
+					LogWriter.Debug("Moved");
 				}
 				else
 				{
 					throw new Exception("File not found: " + fileName);
-					//AppLogger.Debug("File not found. Not moved.");
+					//LogWriter.Debug("File not found. Not moved.");
 				}
 			}
 		}
@@ -251,12 +251,12 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		public void MoveToFailed(IEntity entity, string filePath)
 		{
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Marking the provided entity as failed by moving it to the failed import directory.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Marking the provided entity as failed by moving it to the failed import directory.", NLog.LogLevel.Debug))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity", "The provided entity cannot be null.");
 
-				AppLogger.Debug("Entity type: " + entity.GetType());
+				LogWriter.Debug("Entity type: " + entity.GetType());
 
 				string fileName = String.Empty;
 				string toFileName = String.Empty;
@@ -269,11 +269,11 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				fileName = filePath;
 				toFileName = CreateFailedEntityPath(entity);
 				
-				AppLogger.Debug("Failed directory specified. Continuing.");
+				LogWriter.Debug("Failed directory specified. Continuing.");
 				
 
-				AppLogger.Debug("From path: " + fileName);
-				AppLogger.Debug("To path: " + toFileName);
+				LogWriter.Debug("From path: " + fileName);
+				LogWriter.Debug("To path: " + toFileName);
 
 				if (!Directory.Exists(Path.GetDirectoryName(toFileName)))
 					Directory.CreateDirectory(Path.GetDirectoryName(toFileName));
@@ -286,12 +286,12 @@ namespace SoftwareMonkeys.SiteStarter.Data
 
 					File.Move(fileName, toFileName);
 
-					AppLogger.Debug("Moved");
+					LogWriter.Debug("Moved");
 				}
 				else
 				{
 					throw new Exception("File not found: " + fileName);
-					//AppLogger.Debug("File not found. Not moved.");
+					//LogWriter.Debug("File not found. Not moved.");
 				}
 			}
 		}
@@ -342,7 +342,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="reference">The reference to move.</param>
 		public void MoveReferenceToImported(string importedDirectoryPath, EntityReference reference)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Moving the provided entity to the imported directory.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Moving the provided entity to the imported directory.", NLog.LogLevel.Debug))
 			{
 			}
 		}*/

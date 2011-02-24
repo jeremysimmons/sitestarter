@@ -54,7 +54,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		/*[Test]
 		public void Test_PreSave_IDsToIDsReference()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing a the preparation for saving entities IDs references.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing a the preparation for saving entities IDs references.", NLog.LogLevel.Debug))
 			{
 				EntityThree e3 = new EntityThree();
 				e3.ID = Guid.NewGuid();
@@ -97,13 +97,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 					Assert.IsNotNull(entity.ReferencedEntityIDs, "The mirror entity ID references property has not been set. The automatic preparation failed.");
 					if (entity.ReferencedEntityIDs != null)
 					{
-						AppLogger.Debug("entity.ReferencedEntityIDs != null");
+						LogWriter.Debug("entity.ReferencedEntityIDs != null");
 
 						Assert.AreEqual(1, entity.ReferencedEntityIDs.Length, "Incorrect number of reference entity IDs.");
 					}
 					else
 					{
-						AppLogger.Debug("entity.ReferencedEntityIDs == null");
+						LogWriter.Debug("entity.ReferencedEntityIDs == null");
 					}
 				}
 				else
@@ -117,7 +117,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		/*	[Test]
 		public void Test_PreSave_IDsToIDReference()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing a the preparation for saving entities IDs references.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing a the preparation for saving entities IDs references.", NLog.LogLevel.Debug))
 			{
 				TestArticle article = new TestArticle();
 				article.ID = Guid.NewGuid();
@@ -155,13 +155,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 					Assert.IsNotNull(articlePageFound.ArticleID, "The mirror article ID reference property has not been set. The automatic preparation failed.");
 					if (articlePageFound.ArticleID != Guid.Empty)
 					{
-						AppLogger.Debug("articlePageFound.ArticleID != Guid.Empty");
+						LogWriter.Debug("articlePageFound.ArticleID != Guid.Empty");
 
 						Assert.AreEqual(article.ID, articlePageFound.ArticleID, "The article ID wasn't set to the article page.");
 					}
 					else
 					{
-						AppLogger.Debug("articlePageFound.ArticleID == Guid.Empty");
+						LogWriter.Debug("articlePageFound.ArticleID == Guid.Empty");
 					}
 				}
 				else
@@ -175,7 +175,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		/*[Test]
 		public void Test_PreSave_IDToIDsReference()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing a the preparation for saving entities IDs references.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing a the preparation for saving entities IDs references.", NLog.LogLevel.Debug))
 			{
 				TestArticle article = new TestArticle();
 				article.ID = Guid.NewGuid();
@@ -204,13 +204,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 					Assert.IsNotNull(articleFound.PageIDs, "The mirror article ID references property has not been set. The automatic preparation failed.");
 					if (articleFound.PageIDs != null)
 					{
-						AppLogger.Debug("articleFound.PageIDs != null");
+						LogWriter.Debug("articleFound.PageIDs != null");
 						
 						Assert.AreEqual(1, article.PageIDs.Length, "Incorrect number of page IDs.");
 					}
 					else
 					{
-						AppLogger.Debug("articleFound.PageIDs == null");
+						LogWriter.Debug("articleFound.PageIDs == null");
 					}
 				}
 				else
@@ -225,7 +225,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_PreUpdate_IDsToIDsReference()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing a the preparation for saving entities IDs references.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing a the preparation for saving entities IDs references.", NLog.LogLevel.Debug))
 			{
 				EntityThree e3 = new EntityThree();
 				e3.ID = Guid.NewGuid();
@@ -279,7 +279,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 //				Assert.IsNotNull(entity.ReferencedEntityIDs, "The mirror entity ID references property has not been set. The automatic preparation failed.");
 //				if (entity.ReferencedEntityIDs != null)
 //				{
-//					AppLogger.Debug("entity.ReferencedEntityIDs != null");
+//					LogWriter.Debug("entity.ReferencedEntityIDs != null");
 //
 //					Assert.AreEqual(1, entity.ReferencedEntityIDs.Length, "Incorrect number of reference entity IDs.");
 //
@@ -287,7 +287,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 //				}
 //				else
 //				{
-//					AppLogger.Debug("entity.ReferencedEntityIDs == null");
+//					LogWriter.Debug("entity.ReferencedEntityIDs == null");
 //				}
 				}
 				else
@@ -303,7 +303,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		/*[Test]
 	public void Test_PreUpdate_EntitiesToEntitiesReference()
 	{
-		using (LogGroup logGroup = AppLogger.StartGroup("Testing a the preparation for saving entities IDs references.", NLog.LogLevel.Debug))
+		using (LogGroup logGroup = LogGroup.Start("Testing a the preparation for saving entities IDs references.", NLog.LogLevel.Debug))
 		{
 	        	EntityThree e3 = new EntityThree();
 			e3.ID = Guid.NewGuid();
@@ -371,7 +371,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 	//			Assert.IsNotNull(entity.ReferencedEntityIDs, "The mirror entity ID references property has not been set. The automatic preparation failed.");
 	//			if (entity.ReferencedEntityIDs != null)
 	//			{
-	//				AppLogger.Debug("entity.ReferencedEntityIDs != null");
+	//				LogWriter.Debug("entity.ReferencedEntityIDs != null");
 //
 	//				Assert.AreEqual(1, entity.ReferencedEntityIDs.Length, "Incorrect number of reference entity IDs.");
 //
@@ -379,7 +379,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 	//			}
 	//			else
 	//			{
-	//				AppLogger.Debug("entity.ReferencedEntityIDs == null");
+	//				LogWriter.Debug("entity.ReferencedEntityIDs == null");
 	//			}
 			}
 			else
@@ -394,7 +394,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		/*[Test]
 		public void Test_PreUpdate_IDsToIDReference()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing a the preparation for saving entities IDs references.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing a the preparation for saving entities IDs references.", NLog.LogLevel.Debug))
 			{
 				TestArticle article = new TestArticle();
 				article.ID = Guid.NewGuid();
@@ -462,7 +462,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 //				Assert.IsNotNull(entity.ReferencedEntityIDs, "The mirror entity ID references property has not been set. The automatic preparation failed.");
 //				if (entity.ReferencedEntityIDs != null)
 //				{
-//					AppLogger.Debug("entity.ReferencedEntityIDs != null");
+//					LogWriter.Debug("entity.ReferencedEntityIDs != null");
 //
 //					Assert.AreEqual(1, entity.ReferencedEntityIDs.Length, "Incorrect number of reference entity IDs.");
 //
@@ -470,7 +470,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 //				}
 //				else
 //				{
-//					AppLogger.Debug("entity.ReferencedEntityIDs == null");
+//					LogWriter.Debug("entity.ReferencedEntityIDs == null");
 //				}
 				}
 				else
@@ -485,7 +485,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		/*[Test]
 		public void Test_PreUpdate_IDToIDsReference()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing a the preparation for saving entity ID references.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing a the preparation for saving entity ID references.", NLog.LogLevel.Debug))
 			{
 				TestArticle article = new TestArticle();
 				article.ID = Guid.NewGuid();
@@ -531,7 +531,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 				if (toUpdate != null && toUpdate.Count > 0)
 				{
-					AppLogger.Debug("# of items to update: " + toUpdate.Count.ToString());
+					LogWriter.Debug("# of items to update: " + toUpdate.Count.ToString());
 
 					// Ensure that the original referenced entity was modified properly
 					Assert.AreEqual(true, toUpdate.Contains(article.ID), "The original referenced entity wasn't properly modified.");
@@ -539,7 +539,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 					Assert.IsTrue(toUpdate.Contains(article.ID), "The original referenced entity wasn't found in the toUpdate list.");
 					if (toUpdate.Contains(article.ID))
 					{
-						AppLogger.Debug("Old reference found in toUpdate list. As intended.");
+						LogWriter.Debug("Old reference found in toUpdate list. As intended.");
 
 						TestArticle foundOriginal = (TestArticle)toUpdate[article.ID];
 
@@ -549,20 +549,20 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 						Assert.IsTrue(Array.IndexOf(foundOriginal.PageIDs, page.ID) == -1, "The old referenced entity wasn't properly modified.");
 					}
 					else
-						AppLogger.Debug("The old referenced entity wasn't found in the toUpdate list.");
+						LogWriter.Debug("The old referenced entity wasn't found in the toUpdate list.");
 
 
 					Assert.IsTrue(toUpdate.Contains(article2.ID), "The new referenced entity wasn't found in the toUpdate list.");
 
 					if (toUpdate.Contains(article2.ID))
 					{
-						AppLogger.Debug("New reference found in toUpdate list. As intended.");
+						LogWriter.Debug("New reference found in toUpdate list. As intended.");
 
 						TestArticle foundNew = (TestArticle)toUpdate[article2.ID];
 						Assert.IsTrue(Array.IndexOf(foundNew.PageIDs, page.ID) > -1, "The new referenced entity wasn't properly added.");
 					}
 					else
-						AppLogger.Debug("The new referenced entity wasn't found in the toUpdate list.");
+						LogWriter.Debug("The new referenced entity wasn't found in the toUpdate list.");
 
 
 //					Assert.Greater(found.Length, 0, "No results found.");
@@ -571,7 +571,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 //				Assert.IsNotNull(entity.ReferencedEntityIDs, "The mirror entity ID references property has not been set. The automatic preparation failed.");
 //				if (entity.ReferencedEntityIDs != null)
 //				{
-//					AppLogger.Debug("entity.ReferencedEntityIDs != null");
+//					LogWriter.Debug("entity.ReferencedEntityIDs != null");
 //
 //					Assert.AreEqual(1, entity.ReferencedEntityIDs.Length, "Incorrect number of reference entity IDs.");
 //
@@ -579,7 +579,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 //				}
 //				else
 //				{
-//					AppLogger.Debug("entity.ReferencedEntityIDs == null");
+//					LogWriter.Debug("entity.ReferencedEntityIDs == null");
 //				}
 				}
 				else
@@ -594,7 +594,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		/*  [Test]
         public void Test_PreSave_EntitiesToEntityReference()
         {
-            using (LogGroup logGroup = AppLogger.StartGroup("Testing a the preparation for saving entities IDs references.", NLog.LogLevel.Debug))
+            using (LogGroup logGroup = LogGroup.Start("Testing a the preparation for saving entities IDs references.", NLog.LogLevel.Debug))
             {
                 TestArticle article = new TestArticle();
                 article.ID = Guid.NewGuid();
@@ -637,13 +637,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
                     Assert.IsNotNull(articlePageFound.ArticleID, "The mirror article ID reference property has not been set. The automatic preparation failed.");
                     if (articlePageFound.ArticleID != Guid.Empty)
                     {
-                        AppLogger.Debug("articlePageFound.ArticleID != Guid.Empty");
+                        LogWriter.Debug("articlePageFound.ArticleID != Guid.Empty");
 
                         Assert.AreEqual(article.ID, articlePageFound.ArticleID, "The article ID wasn't set to the article page.");
                     }
                     else
                     {
-                        AppLogger.Debug("articlePageFound.ArticleID == Guid.Empty");
+                        LogWriter.Debug("articlePageFound.ArticleID == Guid.Empty");
                     }
                 }
                 else
@@ -657,7 +657,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 [Test]
         public void Test_PreSave_EntityToEntitiesReference()
         {
-            using (LogGroup logGroup = AppLogger.StartGroup("Testing a the preparation for saving entities IDs references.", NLog.LogLevel.Debug))
+            using (LogGroup logGroup = LogGroup.Start("Testing a the preparation for saving entities IDs references.", NLog.LogLevel.Debug))
             {
                 TestArticle article = new TestArticle();
                 article.ID = Guid.NewGuid();
@@ -700,13 +700,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		                Assert.IsNotNull(articleFound.PageIDs, "The mirror article ID references property has not been set. The automatic preparation failed.");
 		                if (articleFound.PageIDs != null)
 				{
-	                   		 AppLogger.Debug("articleFound.PageIDs != null");
+	                   		 LogWriter.Debug("articleFound.PageIDs != null");
 	
 	                    			Assert.AreEqual(1, article.PageIDs.Length, "Incorrect number of page IDs.");
 				}
 				else
 				{
-                    			AppLogger.Debug("articleFound.PageIDs == null");
+                    			LogWriter.Debug("articleFound.PageIDs == null");
 				}
 			}
 			else
@@ -720,7 +720,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		/*[Test]
 		public void Test_PreSave_EntitiesReference()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing a the preparation for saving entities references.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing a the preparation for saving entities references.", NLog.LogLevel.Debug))
 			{
 				EntityThree e3 = new EntityThree();
 				e3.ID = Guid.NewGuid();
@@ -763,13 +763,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 					Assert.IsNotNull(entity.ReferencedEntityIDs, "The mirror entity ID references property has not beed set. The automatic preparation failed.");
 					if (entity.ReferencedEntityIDs != null)
 					{
-						AppLogger.Debug("entity.ReferencedEntityIDs != null");
+						LogWriter.Debug("entity.ReferencedEntityIDs != null");
 
 						Assert.AreEqual(1, entity.ReferencedEntityIDs.Length, "Incorrect number of reference entity IDs.");
 					}
 					else
 					{
-						AppLogger.Debug("entity.ReferencedEntities == null");
+						LogWriter.Debug("entity.ReferencedEntities == null");
 					}
 				}
 				else

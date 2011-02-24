@@ -15,7 +15,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_GetEntitiesByPropertyFilter()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
 			{
 				
 				TestEntity e1 = new TestEntity();
@@ -41,7 +41,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_GetEntitiesByReferenceFilter()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
 			{
 				TestUser user = new TestUser();
 				user.ID = Guid.NewGuid();
@@ -86,7 +86,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_GetEntitiesByReferenceFilter_Exclusion()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
 			{
 
 				TestUser user = new TestUser();
@@ -134,7 +134,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_GetEntitiesByFilterGroup_ReferenceFilterAndPropertyFilter()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
 			{
 				TestUser user = new TestUser();
 				user.ID = Guid.NewGuid();
@@ -190,7 +190,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[ExpectedException("System.ArgumentException")]
 		public void Test_GetEntitiesByFilterGroup_EmptyGroup()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing a simple query with the PropertyFilter.", NLog.LogLevel.Debug))
 			{
 				TestUser user = new TestUser();
 				user.ID = Guid.NewGuid();
@@ -246,7 +246,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_GetEntitiesMatchReference()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetEntitiesMatchReference function to ensure it finds entities properly.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the GetEntitiesMatchReference function to ensure it finds entities properly.", NLog.LogLevel.Debug))
 			{
 				TestArticle article = new TestArticle();
 				article.ID = Guid.NewGuid();
@@ -285,7 +285,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_GetEntitiesMatchReference_MultipleReferencedEntities()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetEntitiesMatchReference function and passing multiple referenced entities to ensure it finds entities properly.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the GetEntitiesMatchReference function and passing multiple referenced entities to ensure it finds entities properly.", NLog.LogLevel.Debug))
 			{
 				TestArticle article = new TestArticle();
 				article.ID = Guid.NewGuid();
@@ -334,7 +334,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_GetEntitiesMatchReference_MultipleReferencedEntities_NoMatch()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetEntitiesMatchReference function and passing multiple referenced entities to ensure it finds entities properly.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the GetEntitiesMatchReference function and passing multiple referenced entities to ensure it finds entities properly.", NLog.LogLevel.Debug))
 			{
 				TestArticle article = new TestArticle();
 				article.ID = Guid.NewGuid();
@@ -377,7 +377,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_GetEntitiesPageMatchReference()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetEntitiesPageMatchReference function to ensure it finds entities properly.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the GetEntitiesPageMatchReference function to ensure it finds entities properly.", NLog.LogLevel.Debug))
 			{
 				
 				TestArticle article = new TestArticle();
@@ -434,7 +434,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_GetEntitiesByPropertyValue()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing data retrieval with the GetEntities by property value function.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing data retrieval with the GetEntities by property value function.", NLog.LogLevel.Debug))
 			{
 				
 				EntityOne e1 = new EntityOne();
@@ -457,7 +457,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_GetEntitiesByPropertyValue_Exclusion()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing exclusion with the GetEntities by property value function.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing exclusion with the GetEntities by property value function.", NLog.LogLevel.Debug))
 			{
 				
 				EntityOne e1 = new EntityOne();
@@ -487,7 +487,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_GetEntitiesByParameterDictionary()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetEntities<T>(IDictionary<string, object>) function.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the GetEntities<T>(IDictionary<string, object>) function.", NLog.LogLevel.Debug))
 			{
 				EntityOne e1 = new EntityOne();
 				e1.Name = "Test E1";
@@ -513,7 +513,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_GetEntitiesByParameterDictionary_Exclude()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the GetEntities<T>(IDictionary<string, object>) function to ensure it excludes entities properly.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the GetEntities<T>(IDictionary<string, object>) function to ensure it excludes entities properly.", NLog.LogLevel.Debug))
 			{
 				EntityOne e1 = new EntityOne();
 				e1.Name = "Test E1";
@@ -765,7 +765,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_GetPageOfEntitiesWithReference_EmptyReferencedEntityID_Found()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the index retrieval of entities that don't have any references on a particular property.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the index retrieval of entities that don't have any references on a particular property.", NLog.LogLevel.Debug))
 			{
 								
 				TestUser user = new TestUser();
@@ -803,7 +803,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_GetPageOfEntitiesWithReference_EmptyReferencedEntityID_NotFound()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Testing the index retrieval of entities that don't have any references on a particular property.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the index retrieval of entities that don't have any references on a particular property.", NLog.LogLevel.Debug))
 			{
 								
 				TestUser user = new TestUser();

@@ -21,7 +21,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <returns>The data store that the provided entity is stored in.</returns>
 		/*static public string GetDataStoreNameForReference(IEntity entity, PropertyInfo property)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the data store name for a particulary entity property reference.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving the data store name for a particulary entity property reference.", NLog.LogLevel.Debug))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");
@@ -29,10 +29,10 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				if (property == null)
 					throw new ArgumentNullException("property");
 				
-				AppLogger.Debug("Entity type: " + entity.GetType());
-				AppLogger.Debug("Entity ID: " + entity.ID.ToString());
-				AppLogger.Debug("Property name: " + property.Name);
-				AppLogger.Debug("Property type: " + property.GetType().ToString());
+				LogWriter.Debug("Entity type: " + entity.GetType());
+				LogWriter.Debug("Entity ID: " + entity.ID.ToString());
+				LogWriter.Debug("Property name: " + property.Name);
+				LogWriter.Debug("Property type: " + property.GetType().ToString());
 				
 				object value = property.GetValue(entity, null);
 				
@@ -41,8 +41,8 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				BaseEntityReferenceAttribute attribute = DataUtilities.GetReferenceAttribute(property);
 				
 				
-				AppLogger.Debug("Property value: " + (value == null ? "[null]" :value.ToString()));
-				AppLogger.Debug("Reference type: " + referenceType != null ? referenceType.ToString() : "[null]");
+				LogWriter.Debug("Property value: " + (value == null ? "[null]" :value.ToString()));
+				LogWriter.Debug("Reference type: " + referenceType != null ? referenceType.ToString() : "[null]");
 				
 				if (attribute == null)
 					throw new InvalidOperationException("No reference attribute found for this property on this entity.");
@@ -54,14 +54,14 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				{
 					string name = String.Empty;
 					
-					using (LogGroup logGroup2 = AppLogger.StartGroup("The specified property is not an entities reference. Retrieving the corresponding entities property now.", NLog.LogLevel.Debug))
+					using (LogGroup logGroup2 = LogGroup.Start("The specified property is not an entities reference. Retrieving the corresponding entities property now.", NLog.LogLevel.Debug))
 					{
 						PropertyInfo entitiesProperty = GetEntitiesProperty(property);
 						
 						if (entitiesProperty == null)
-							AppLogger.Debug("The entities property is null.");
+							LogWriter.Debug("The entities property is null.");
 						else
-							AppLogger.Debug("Entities property type: " + entitiesProperty.GetType().ToString());
+							LogWriter.Debug("Entities property type: " + entitiesProperty.GetType().ToString());
 						
 						name = GetDataStoreNameForReference(entity, entitiesProperty);
 					}
@@ -70,28 +70,28 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				}
 				else
 				{
-					AppLogger.Debug("The property is an entities reference.");
+					LogWriter.Debug("The property is an entities reference.");
 					
 					if (value == null || (value is Array && ((Array)value).Length == 0))
 					{
-						AppLogger.Debug("The property value is an array. Using reference type to determine data store name.");
+						LogWriter.Debug("The property value is an array. Using reference type to determine data store name.");
 						
 						return GetDataStoreName(referenceType);
 					}
 					else
 					{
-						AppLogger.Debug("The value is not null.");
-						AppLogger.Debug("The value is not a 0 length array");
+						LogWriter.Debug("The value is not null.");
+						LogWriter.Debug("The value is not a 0 length array");
 						
 						Type type = value.GetType();
 						if (type.IsSubclassOf(typeof(Array)))
 						{
-							AppLogger.Debug("The value type is an array.");
+							LogWriter.Debug("The value type is an array.");
 							return GetDataStoreName(type.GetElementType(), true);
 						}
 						else
 						{
-							AppLogger.Debug("The value type is not an array.");
+							LogWriter.Debug("The value type is not an array.");
 							return GetDataStoreName(value.GetType(), true);
 						}
 					}
@@ -137,7 +137,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			return type.Name;
 			/*string dataStoreName = String.Empty;
-			//using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the name of the data store.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = LogGroup.Start("Retrieving the name of the data store.", NLog.LogLevel.Debug))
 			// {
 			if (type == null)
 				throw new ArgumentNullException("type");
@@ -151,7 +151,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			if (actualType == null)
 				actualType = type;
 
-			// AppLogger.Debug("Actual type: " + actualType.ToString());
+			// LogWriter.Debug("Actual type: " + actualType.ToString());
 
 			MappingItem item = Config.Mappings.GetItem(actualType, false);
 			if (item == null)
@@ -159,12 +159,12 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				throw new InvalidOperationException("No mappings found for the type " + actualType.ToString() + ".");
 			}
 			//else
-			//AppLogger.Debug("Item found: " + item.TypeName);
+			//LogWriter.Debug("Item found: " + item.TypeName);
 
 			if (!item.Settings.ContainsKey("DataStoreName"))
 				throw new InvalidOperationException("No data store name has been declared in the mappings for the '" + actualType.ToString() + "' type.");
 			//else
-			//AppLogger.Debug("Data store: " + item.Settings["DataStoreName"]);
+			//LogWriter.Debug("Data store: " + item.Settings["DataStoreName"]);
 
 			dataStoreName = (string)item.Settings["DataStoreName"];
 
@@ -186,7 +186,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			string dataStoreName = String.Empty;
 			Type type = entity.GetType();
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving data store name for entity of type '" + type.ToString() + "'.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving data store name for entity of type '" + type.ToString() + "'.", NLog.LogLevel.Debug))
 			{
 				if (EntitiesUtilities.IsReference(entity.GetType()))
 				{
@@ -208,7 +208,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			string returnName;
 			
-			//using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the data store name for provided types.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = LogGroup.Start("Retrieving the data store name for provided types.", NLog.LogLevel.Debug))
 			//{
 			if (typeNames == null)
 				throw new ArgumentNullException("typeNames");
@@ -222,22 +222,22 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				if (typeNames[1].Trim().Length == 0)
 					throw new ArgumentException("The type name at position 1 is empty.");
 				
-				//AppLogger.Debug("Type name 0: " + typeNames[0]);
-				//AppLogger.Debug("Type name 1: " + typeNames[1]);
+				//LogWriter.Debug("Type name 0: " + typeNames[0]);
+				//LogWriter.Debug("Type name 1: " + typeNames[1]);
 			}
 			
 			Array.Sort(typeNames);
 			
-			//AppLogger.Debug("Sorted names.");
+			//LogWriter.Debug("Sorted names.");
 			
-			//AppLogger.Debug("Type name 0: " + typeNames[0]);
-			//AppLogger.Debug("Type name 1: " + typeNames[1]);
+			//LogWriter.Debug("Type name 0: " + typeNames[0]);
+			//LogWriter.Debug("Type name 1: " + typeNames[1]);
 			
 			Type type0 = EntitiesUtilities.GetType(typeNames[0]);
 			Type type1 = EntitiesUtilities.GetType(typeNames[1]);
 			
-			//AppLogger.Debug("Type 0: " + type0.ToString());
-			//AppLogger.Debug("Type 1: " + type1.ToString());
+			//LogWriter.Debug("Type 0: " + type0.ToString());
+			//LogWriter.Debug("Type 1: " + type1.ToString());
 			
 			string[] dataStoreNames = new String[]{
 				GetDataStoreName(type0),
@@ -246,7 +246,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			
 			returnName = dataStoreNames[0] + "-" + dataStoreNames[1];
 			
-			//AppLogger.Debug("Data store name: " + returnName);
+			//LogWriter.Debug("Data store name: " + returnName);
 			//}
 			
 			return returnName;
@@ -256,7 +256,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			Type type = null;
 
-			using (LogGroup group = AppLogger.StartGroup("Retrieving the type of entity being referenced by the provided property.", NLog.LogLevel.Debug))
+			using (LogGroup group = LogGroup.Start("Retrieving the type of entity being referenced by the provided property.", NLog.LogLevel.Debug))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");
@@ -264,20 +264,20 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				if (property == null)
 					throw new ArgumentNullException("property");
 				
-				AppLogger.Debug("Entity type: " + entity.GetType().ToString());
-				AppLogger.Debug("Property name: " + property.Name);
-				AppLogger.Debug("Property type: " + property.PropertyType.Name);
+				LogWriter.Debug("Entity type: " + entity.GetType().ToString());
+				LogWriter.Debug("Property name: " + property.Name);
+				LogWriter.Debug("Property type: " + property.PropertyType.Name);
 				
 				type = EntitiesUtilities.GetReferenceType(entity.GetType(), property);
 				
 				/*if (typeof(IEntity).IsAssignableFrom(property.PropertyType))
 				{
-					AppLogger.Debug("typeof(IEntity).IsAssignableFrom(property.PropertyType)");
+					LogWriter.Debug("typeof(IEntity).IsAssignableFrom(property.PropertyType)");
 					type = property.PropertyType;
 				}
 				else
 				{
-					AppLogger.Debug("!typeof(IEntity).IsAssignableFrom(property.PropertyType)");
+					LogWriter.Debug("!typeof(IEntity).IsAssignableFrom(property.PropertyType)");
 					
 					EntityReference reference = EntitiesUtilities.GetReferen
 					
@@ -289,10 +289,10 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				{
 					EntityIDReference reference = (EntityIDReference)property.GetValue(entity, null);
 					
-					AppLogger.Debug("Reference - Source entity ID: " + reference.EntityIDs[0]);
-					AppLogger.Debug("Reference - Reference entity ID: " + reference.EntityIDs[1]);
-					AppLogger.Debug("Reference - Source entity type: " + reference.TypeNames[0]);
-					AppLogger.Debug("Reference - Reference entity type: " + reference.TypeNames[1]);
+					LogWriter.Debug("Reference - Source entity ID: " + reference.EntityIDs[0]);
+					LogWriter.Debug("Reference - Reference entity ID: " + reference.EntityIDs[1]);
+					LogWriter.Debug("Reference - Source entity type: " + reference.TypeNames[0]);
+					LogWriter.Debug("Reference - Reference entity type: " + reference.TypeNames[1]);
 					
 					if (reference.TypeNames == null || reference.TypeNames.Length < 2)
 						throw new InvalidOperationException("The reference doesn't have the correct number of type names specified.");
@@ -308,10 +308,10 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					
 					//EntityIDReference reference = collection[0];
 					
-	//				AppLogger.Debug("Reference - Source entity ID: " + reference.EntityIDs[0]);
-	//				AppLogger.Debug("Reference - Reference entity ID: " + reference.EntityIDs[1]);
-	//				AppLogger.Debug("Reference - Source entity type: " + reference.TypeNames[0]);
-	//				AppLogger.Debug("Reference - Reference entity type: " + reference.TypeNames[1]);
+	//				LogWriter.Debug("Reference - Source entity ID: " + reference.EntityIDs[0]);
+	//				LogWriter.Debug("Reference - Reference entity ID: " + reference.EntityIDs[1]);
+	//				LogWriter.Debug("Reference - Source entity type: " + reference.TypeNames[0]);
+	//				LogWriter.Debug("Reference - Reference entity type: " + reference.TypeNames[1]);
 					
 					//if (reference.TypeNames == null || reference.TypeNames.Length < 2)
 					//	throw new InvalidOperationException("The reference doesn't have the correct number of type names specified.");
@@ -330,36 +330,36 @@ namespace SoftwareMonkeys.SiteStarter.Data
 
 				//BaseEntityReferenceAttribute attribute = DataUtilities.GetReferenceAttribute(property);
 
-				AppLogger.Debug("Property name: " + property.Name);
+				LogWriter.Debug("Property name: " + property.Name);
 
 				type = property.PropertyType;
 
-				AppLogger.Debug("Property type: " + property.PropertyType.ToString());
+				LogWriter.Debug("Property type: " + property.PropertyType.ToString());
 
 				if (type.IsSubclassOf(typeof(Array)))
 				{
-					AppLogger.Debug("type.IsSubclassOf(typeof(Array))");
+					LogWriter.Debug("type.IsSubclassOf(typeof(Array))");
 					type = type.GetElementType();
 				}
 				else if (type.IsSubclassOf(typeof(IEntity)))
 				{
-					AppLogger.Debug("type.IsSubclassOf(typeof(IEntity))");
+					LogWriter.Debug("type.IsSubclassOf(typeof(IEntity))");
 					type = property.PropertyType;
 				}*/
 
 			}
 
 			if (type == null)
-				AppLogger.Debug("return type == null");
+				LogWriter.Debug("return type == null");
 			else
-				AppLogger.Debug("return type == " + type.ToString());
+				LogWriter.Debug("return type == " + type.ToString());
 			
 			return type;
 		}
 		
 		static public void StripReferences(IEntity entity)
 		{
-			using (LogGroup logGroup2 = AppLogger.StartGroup("Clearing all the object references so that they don't cascade automatically.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup2 = LogGroup.Start("Clearing all the object references so that they don't cascade automatically.", NLog.LogLevel.Debug))
 			{
 				if (entity is EntityReference)
 				{
@@ -370,14 +370,14 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					//  Clear all the references from the entity once they're ready to be saved separately
 					foreach (PropertyInfo property in entity.GetType().GetProperties())
 					{
-						AppLogger.Debug("Property name: " + property.Name);
-						AppLogger.Debug("Property type: " + property.PropertyType.ToString());
+						LogWriter.Debug("Property name: " + property.Name);
+						LogWriter.Debug("Property type: " + property.PropertyType.ToString());
 						
 						// If the property is a reference
 						// OR the actual provided entity is a reference AND the property holds an IEntity instance
 						if (EntitiesUtilities.IsReference(entity.GetType(), property.Name, property.PropertyType))
 						{
-							AppLogger.Debug("Cleared property. (Set to null)");
+							LogWriter.Debug("Cleared property. (Set to null)");
 							Reflector.SetPropertyValue(entity, property.Name, null);
 						}
 					}

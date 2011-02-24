@@ -30,19 +30,19 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			EntityReferenceCollection toUpdate = new EntityReferenceCollection();
 			EntityReferenceCollection toDelete = new EntityReferenceCollection();
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Preparing entity to be updated.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Preparing entity to be updated.", NLog.LogLevel.Debug))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");
 				
-				AppLogger.Debug("Entity type: " + entity.GetType().ToString());
-				AppLogger.Debug("Entity ID : " + entity.ID);
+				LogWriter.Debug("Entity type: " + entity.GetType().ToString());
+				LogWriter.Debug("Entity ID : " + entity.ID);
 				
 				entity.PreStore();
 				
 				EntityReferenceCollection latestReferences = Provider.Referencer.GetActiveReferences(entity);
 				
-				using (LogGroup logGroup2 = AppLogger.StartGroup("Creating list of deletable obsolete references.", NLog.LogLevel.Debug))
+				using (LogGroup logGroup2 = LogGroup.Start("Creating list of deletable obsolete references.", NLog.LogLevel.Debug))
 				{
 					// Delete the old references
 					//foreach (EntityIDReference reference in DataAccess.Data.GetObsoleteReferences(entity, new Collection<IEntity>(DataUtilities.GetReferencedEntities(latestReferences, entity)).IDs))
@@ -50,10 +50,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					{
 						DataAccess.Data.Activator.ActivateReference((EntityReference)reference);
 						
-						AppLogger.Debug("Reference type #1: " + reference.Type1Name);
-						AppLogger.Debug("Reference ID #1: " + reference.Entity1ID.ToString());
-						AppLogger.Debug("Reference type #2: " + reference.Type2Name);
-						AppLogger.Debug("Reference ID #2: " + reference.Entity2ID.ToString());
+						LogWriter.Debug("Reference type #1: " + reference.Type1Name);
+						LogWriter.Debug("Reference ID #1: " + reference.Entity1ID.ToString());
+						LogWriter.Debug("Reference type #2: " + reference.Type2Name);
+						LogWriter.Debug("Reference ID #2: " + reference.Entity2ID.ToString());
 						
 						toDelete.Add(reference);
 					}
@@ -61,16 +61,16 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				
 				Provider.Referencer.DeleteObsoleteReferences(toDelete);
 				
-				AppLogger.Debug("# to delete: " + toDelete.Count);
+				LogWriter.Debug("# to delete: " + toDelete.Count);
 				
-				using (LogGroup logGroup2 = AppLogger.StartGroup("Creating list of references to be updated.", NLog.LogLevel.Debug))
+				using (LogGroup logGroup2 = LogGroup.Start("Creating list of references to be updated.", NLog.LogLevel.Debug))
 				{
 					foreach (EntityIDReference reference in latestReferences)
 					{
-						AppLogger.Debug("Reference type #1: " + reference.Type1Name);
-						AppLogger.Debug("Reference ID #1: " + reference.Entity1ID.ToString());
-						AppLogger.Debug("Reference type #2: " + reference.Type2Name);
-						AppLogger.Debug("Reference ID #2: " + reference.Entity2ID.ToString());
+						LogWriter.Debug("Reference type #1: " + reference.Type1Name);
+						LogWriter.Debug("Reference ID #1: " + reference.Entity1ID.ToString());
+						LogWriter.Debug("Reference type #2: " + reference.Type2Name);
+						LogWriter.Debug("Reference ID #2: " + reference.Entity2ID.ToString());
 						
 						/*EntityReference existingReference = DataAccess.Data.Referencer.GetReference(
 							EntitiesUtilites.GetType(reference.Type1Name),
@@ -93,7 +93,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					}
 				}
 				
-				AppLogger.Debug("# to update: " + toUpdate.Count);
+				LogWriter.Debug("# to update: " + toUpdate.Count);
 				
 				Provider.Referencer.PersistReferences(toUpdate);
 			}
@@ -105,7 +105,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <param name="entity">The entity to update.</param>
 		public override void Update(IEntity entity)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Updating the provided entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Updating the provided entity.", NLog.LogLevel.Debug))
 			{
 				Db4oDataStore store = (Db4oDataStore)GetDataStore(entity);
 				
@@ -127,8 +127,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					if (entity == null)
 						throw new ArgumentNullException("entity");
 					
-					AppLogger.Debug("Entity type: " + entity.GetType().ToString());
-					AppLogger.Debug("Entity ID: " + entity.ID);
+					LogWriter.Debug("Entity type: " + entity.GetType().ToString());
+					LogWriter.Debug("Entity ID: " + entity.ID);
 					
 					if (entity == null)
 						throw new ArgumentException("The provided entity hasn't been saved so it cannot be updated.");
@@ -157,10 +157,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 						// so the Store call shouldn't be necessary
 						// The entity in the store should already reflect the changes
 						store.ObjectContainer.Store(existingEntity);
-						AppLogger.Debug("Entity updated.");
+						LogWriter.Debug("Entity updated.");
 						
 						store.Commit();
-						AppLogger.Debug("ObjectContainer committed.");
+						LogWriter.Debug("ObjectContainer committed.");
 						
 					}
 				}
