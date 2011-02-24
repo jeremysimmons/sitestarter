@@ -94,7 +94,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="type">The strategy type with the Strategy attribute to get the strategy information from.</param>
 		public StrategyInfo(Type type)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Analyzing the provided type to extract the info.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Analyzing the provided type to extract the info.", NLog.LogLevel.Debug))
 			{
 				StrategyAttribute attribute = null;
 				foreach (Attribute a in type.GetCustomAttributes(true))
@@ -113,9 +113,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				TypeName = attribute.TypeName;
 				StrategyType = type.FullName + ", " + type.Assembly.GetName().Name;
 				
-				AppLogger.Debug("Action: " + Action);
-				AppLogger.Debug("Type name: " + TypeName);
-				AppLogger.Debug("Strategy type: " + StrategyType);
+				LogWriter.Debug("Action: " + Action);
+				LogWriter.Debug("Type name: " + TypeName);
+				LogWriter.Debug("Strategy type: " + StrategyType);
 			}
 		}
 		
@@ -133,13 +133,13 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public IStrategy New()
 		{
 			IStrategy strategy = null;
-			using (LogGroup logGroup = AppLogger.StartGroup("Creating a new strategy."))
+			using (LogGroup logGroup = LogGroup.Start("Creating a new strategy."))
 			{
-				AppLogger.Debug("Type name: " + TypeName);
+				LogWriter.Debug("Type name: " + TypeName);
 				
-				AppLogger.Debug("Action: " + Action);
+				LogWriter.Debug("Action: " + Action);
 				
-				AppLogger.Debug("Key: " + Key);
+				LogWriter.Debug("Key: " + Key);
 				
 				return Creator.CreateStrategy(this);
 			}
@@ -164,11 +164,11 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			T strategy = default(T);
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Creating a new strategy for the type '" + entityTypeName + "' and action '" + Action + "'.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Creating a new strategy for the type '" + entityTypeName + "' and action '" + Action + "'.", NLog.LogLevel.Debug))
 			{
-				AppLogger.Debug("Entity type name: " + entityTypeName);
+				LogWriter.Debug("Entity type name: " + entityTypeName);
 				
-				AppLogger.Debug("Strategy type: " + typeof(T).FullName);
+				LogWriter.Debug("Strategy type: " + typeof(T).FullName);
 				
 				strategy = (T)New();
 				strategy.TypeName = entityTypeName;

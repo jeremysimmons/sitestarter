@@ -44,12 +44,12 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			bool didSucceed = false;
 			
-			using (LogGroup logGrop = AppLogger.StartGroup("Updating the provided entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGrop = LogGroup.Start("Updating the provided entity.", NLog.LogLevel.Debug))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");
 				
-				AppLogger.Debug("Type: " + entity.ShortTypeName);
+				LogWriter.Debug("Type: " + entity.ShortTypeName);
 				
 				if (RequireAuthorisation)
 					AuthoriseUpdateStrategy.New(entity.ShortTypeName).EnsureAuthorised(entity);
@@ -62,7 +62,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				else
 					didSucceed = false;
 				
-				AppLogger.Debug("Did succeed: " + didSucceed);
+				LogWriter.Debug("Did succeed: " + didSucceed);
 			}
 			return didSucceed;
 		}
@@ -75,14 +75,14 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public virtual bool Validate(IEntity entity)
 		{
 			bool valid = false;
-			using (LogGroup logGroup = AppLogger.StartGroup("Validating the provided entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Validating the provided entity.", NLog.LogLevel.Debug))
 			{
 				if (Validator == null)
 					throw new InvalidOperationException("The validation strategy can't be found.");
 				
 				valid = Validator.Validate(entity);
 				
-				AppLogger.Debug("Is valid: " + valid.ToString());
+				LogWriter.Debug("Is valid: " + valid.ToString());
 			}
 			return valid;
 		}
@@ -114,9 +114,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		static public IUpdateStrategy New(string typeName)
 		{
 			IUpdateStrategy strategy = null;
-			using (LogGroup logGroup = AppLogger.StartGroup("Creating new update strategy.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Creating new update strategy.", NLog.LogLevel.Debug))
 			{
-				AppLogger.Debug("Type name: " + typeName);
+				LogWriter.Debug("Type name: " + typeName);
 				strategy = StrategyState.Strategies.Creator.NewUpdater(typeName);
 			}
 			return strategy;
@@ -129,9 +129,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		static public IUpdateStrategy New<T>(bool requiresAuthorisation)
 		{
 			IUpdateStrategy strategy = null;
-			using (LogGroup logGroup = AppLogger.StartGroup("Creating new update strategy.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Creating new update strategy.", NLog.LogLevel.Debug))
 			{
-				AppLogger.Debug("Type name: " + typeof(T).Name);
+				LogWriter.Debug("Type name: " + typeof(T).Name);
 				strategy = StrategyState.Strategies.Creator.NewUpdater(typeof(T).Name);
 				strategy.RequireAuthorisation = requiresAuthorisation;
 			}
@@ -146,9 +146,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		static public IUpdateStrategy New(string typeName, bool requiresAuthorisation)
 		{
 			IUpdateStrategy strategy = null;
-			using (LogGroup logGroup = AppLogger.StartGroup("Creating new update strategy.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Creating new update strategy.", NLog.LogLevel.Debug))
 			{
-				AppLogger.Debug("Type name: " + typeName);
+				LogWriter.Debug("Type name: " + typeName);
 				strategy = StrategyState.Strategies.Creator.NewUpdater(typeName);
 				strategy.RequireAuthorisation = requiresAuthorisation;
 			}
@@ -163,9 +163,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		static public IUpdateStrategy New(IEntity entity, bool requiresAuthorisation)
 		{
 			IUpdateStrategy strategy = null;
-			using (LogGroup logGroup = AppLogger.StartGroup("Creating new update strategy.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Creating new update strategy.", NLog.LogLevel.Debug))
 			{
-				AppLogger.Debug("Type name: " + entity.ShortTypeName);
+				LogWriter.Debug("Type name: " + entity.ShortTypeName);
 				strategy = StrategyState.Strategies.Creator.NewUpdater(entity.ShortTypeName);
 				strategy.RequireAuthorisation = requiresAuthorisation;
 			}

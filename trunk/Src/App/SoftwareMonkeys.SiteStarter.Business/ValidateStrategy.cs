@@ -23,9 +23,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			bool isValid = true;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Validating the provided entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Validating the provided entity.", NLog.LogLevel.Debug))
 			{
-				AppLogger.Debug("No validation rules applied.");
+				LogWriter.Debug("No validation rules applied.");
 			}
 			
 			return isValid;

@@ -63,7 +63,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				}
 				else
 					throw new InvalidOperationException("No primary administrator configured on Config.Application.PrimaryAdministratorID.");
-				//AppLogger.Error("No primary administrator is configured.");
+				//LogWriter.Error("No primary administrator is configured.");
 			}
 		}
 		

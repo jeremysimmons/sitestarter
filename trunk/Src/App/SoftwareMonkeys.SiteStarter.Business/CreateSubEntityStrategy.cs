@@ -34,7 +34,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				
 				Type type = EntityState.GetType(TypeName);
 				
-				AppLogger.Debug("Authorisation required: " + RequireAuthorisation.ToString());
+				LogWriter.Debug("Authorisation required: " + RequireAuthorisation.ToString());
 				
 				if (RequireAuthorisation)
 				{

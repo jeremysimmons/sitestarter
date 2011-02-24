@@ -21,15 +21,15 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			get {
 				bool does = false;
-				using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the application requires restoration.", NLog.LogLevel.Debug))
+				using (LogGroup logGroup = LogGroup.Start("Checking whether the application requires restoration.", NLog.LogLevel.Debug))
 				{
 					CheckLegacyDirectoryPath();
 					
-					AppLogger.Debug("Does if directory is found: " + LegacyDirectoryPath);
+					LogWriter.Debug("Does if directory is found: " + LegacyDirectoryPath);
 					
 					does = Directory.Exists(LegacyDirectoryPath);
 					
-					AppLogger.Debug("Requires restore: " + does.ToString());
+					LogWriter.Debug("Requires restore: " + does.ToString());
 				}
 				return does;
 			}
@@ -91,7 +91,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				{
 					string versionFilePath = LegacyDirectoryPath + Path.DirectorySeparatorChar + VersionUtilities.GetVersionFileName(Config.Application.PathVariation);
 					
-					AppLogger.Debug("Version file path: " + versionFilePath);
+					LogWriter.Debug("Version file path: " + versionFilePath);
 					
 					legacyVersion = VersionUtilities.LoadVersionFromFile(versionFilePath);
 				}
@@ -177,7 +177,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		public void ImportConfigs()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Importing the legacy configuration settings.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Importing the legacy configuration settings.", NLog.LogLevel.Debug))
 			{
 				if (Config.Application == null)
 					throw new InvalidOperationException("Config.Application has not been initialized.");
@@ -204,13 +204,13 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				
 				foreach (string file in Directory.GetFiles(LegacyDirectoryPath))
 				{
-					AppLogger.Debug("Moving file: " + file);
+					LogWriter.Debug("Moving file: " + file);
 					
 					string toFile = importedDirectory + Path.DirectorySeparatorChar
 						+ LegacyVersion.ToString().Replace(".", "-") + Path.DirectorySeparatorChar
 						+ Path.GetFileName(file);
 					
-					AppLogger.Debug("To: " + toFile);
+					LogWriter.Debug("To: " + toFile);
 					
 					if (!Directory.Exists(Path.GetDirectoryName(toFile)))
 						Directory.CreateDirectory(Path.GetDirectoryName(toFile));

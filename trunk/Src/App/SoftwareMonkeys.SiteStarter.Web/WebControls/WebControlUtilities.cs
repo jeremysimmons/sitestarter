@@ -17,7 +17,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		
 		static public object GetFieldValue(Control field, string controlValuePropertyName, Type returnType)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Dynamically retrieves the value of the specified field on the form.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Dynamically retrieves the value of the specified field on the form.", NLog.LogLevel.Debug))
 			{
 				if (field == null)
 					throw new ArgumentNullException("field");
@@ -25,13 +25,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				if (returnType == null)
 					throw new ArgumentNullException("returnType");
 				
-				AppLogger.Debug("Field control ID: " + field.ID);
+				LogWriter.Debug("Field control ID: " + field.ID);
 
-				AppLogger.Debug("Field type: " + field.GetType().ToString());
+				LogWriter.Debug("Field type: " + field.GetType().ToString());
 
 				if (controlValuePropertyName != String.Empty)
 				{
-					AppLogger.Debug("Name of value property on the field control: " + controlValuePropertyName);
+					LogWriter.Debug("Name of value property on the field control: " + controlValuePropertyName);
 
 					PropertyInfo property = field.GetType().GetProperty(controlValuePropertyName, returnType);
 					if (property == null)
@@ -41,16 +41,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 					object fieldValue = property.GetValue(field, null);
 
 					if (fieldValue == null)
-						AppLogger.Debug("Field value: [null]");
+						LogWriter.Debug("Field value: [null]");
 					else
-						AppLogger.Debug("Field value: " + fieldValue.ToString());
+						LogWriter.Debug("Field value: " + fieldValue.ToString());
 					
 
 					return fieldValue;
 				}
 				else
 				{
-					AppLogger.Debug("No name specified for the value property on the control");
+					LogWriter.Debug("No name specified for the value property on the control");
 
 					object fieldValue = null;
 
@@ -68,7 +68,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 					else
 						throw new NotSupportedException(field.GetType().Name + " type is not supported by the GetFieldValue function.");
 
-					AppLogger.Debug("Field value: " + fieldValue.ToString());
+					LogWriter.Debug("Field value: " + fieldValue.ToString());
 
 					return fieldValue;
 				}

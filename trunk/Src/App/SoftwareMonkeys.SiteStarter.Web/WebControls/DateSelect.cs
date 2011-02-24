@@ -53,7 +53,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		public bool LoadPostData(string postKey, NameValueCollection postData)
 		{
 			bool dataPosted = false;
-			using (LogGroup logGroup = AppLogger.StartGroup("Loading post data for the DateSelect control.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Loading post data for the DateSelect control.", NLog.LogLevel.Debug))
 			{
 				/*if (Page.Request.Form[UniqueID + "_Year"] != null && Page.Request.Form[UniqueID + "_Month"] != null && Page.Request.Form[UniqueID + "_Day"] != null)
 				{
@@ -68,21 +68,21 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				{
 					DateTime newValue = new DateTime(Int32.Parse(Page.Request.Form[ClientID + "_Year"]), Int32.Parse(Page.Request.Form[ClientID + "_Month"]), Int32.Parse(Page.Request.Form[ClientID + "_Day"]));
 
-					AppLogger.Debug("Old value: " + SelectedDate.ToString());
-					AppLogger.Debug("New value: " + newValue.ToString());
+					LogWriter.Debug("Old value: " + SelectedDate.ToString());
+					LogWriter.Debug("New value: " + newValue.ToString());
 
 					if (newValue != SelectedDate)
 					{
 						SelectedDate = newValue;
 						dataPosted = true;
 
-						AppLogger.Debug("New value has been posted.");
+						LogWriter.Debug("New value has been posted.");
 					}
 					else
-						AppLogger.Debug("Value hasn't changed. Skipped.");
+						LogWriter.Debug("Value hasn't changed. Skipped.");
 				}
 				else
-					AppLogger.Debug("Form request items not found. Skipped.");
+					LogWriter.Debug("Form request items not found. Skipped.");
 			}
 			return dataPosted;
 		}

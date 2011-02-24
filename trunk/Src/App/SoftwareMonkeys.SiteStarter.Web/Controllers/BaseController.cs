@@ -121,18 +121,18 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			bool output = false;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Ensuring that the current user is authorised to performed the desired action.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Ensuring that the current user is authorised to performed the desired action.", NLog.LogLevel.Debug))
 			{
 				Container.CheckAction();
 				Container.CheckType();
 				
-				AppLogger.Debug("Require authorisation: " + Container.RequireAuthorisation.ToString());
+				LogWriter.Debug("Require authorisation: " + Container.RequireAuthorisation.ToString());
 				
 				if (Container.RequireAuthorisation)
 				{
 					bool isAuthorised = AuthoriseStrategies();
 					
-					AppLogger.Debug("Is authorised: " + isAuthorised);
+					LogWriter.Debug("Is authorised: " + isAuthorised);
 					
 					if (!isAuthorised)
 						FailAuthorisation();
@@ -143,7 +143,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				else
 					output = true;
 				
-				AppLogger.Debug("Output: " + output.ToString());
+				LogWriter.Debug("Output: " + output.ToString());
 			}
 			return output;
 		}
@@ -166,12 +166,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			bool output = false;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Ensuring that the current user is authorised to performed the desired action.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Ensuring that the current user is authorised to performed the desired action.", NLog.LogLevel.Debug))
 			{
 				Container.CheckAction();
 				Container.CheckType();
 				
-				AppLogger.Debug("Require authorisation: " + Container.RequireAuthorisation.ToString());
+				LogWriter.Debug("Require authorisation: " + Container.RequireAuthorisation.ToString());
 				
 				bool isAuthorised = false;
 				
@@ -179,7 +179,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				{
 					isAuthorised = AuthoriseStrategies();
 					
-					AppLogger.Debug("Is authorised: " + isAuthorised);
+					LogWriter.Debug("Is authorised: " + isAuthorised);
 					
 					if (!isAuthorised)
 						FailAuthorisation();
@@ -190,7 +190,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 					output = true;
 				
 				
-				AppLogger.Debug("Return value: " + output.ToString());
+				LogWriter.Debug("Return value: " + output.ToString());
 			}
 			return output;
 		}
@@ -204,16 +204,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			bool output = false;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the current user is authorised to perform the desired action.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Checking whether the current user is authorised to perform the desired action.", NLog.LogLevel.Debug))
 			{
 				bool isAuthorised = Security.Authorisation.UserCan(Action, entity);
 				
-				AppLogger.Debug("Is authorised: " + isAuthorised.ToString());
-				AppLogger.Debug("Require authorisation: " + Container.RequireAuthorisation.ToString());
+				LogWriter.Debug("Is authorised: " + isAuthorised.ToString());
+				LogWriter.Debug("Require authorisation: " + Container.RequireAuthorisation.ToString());
 				
 				output = (!Container.RequireAuthorisation || isAuthorised);
 				
-				AppLogger.Debug("Output: " + output.ToString());
+				LogWriter.Debug("Output: " + output.ToString());
 			}
 			
 			return output;
@@ -225,7 +225,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// </summary>
 		public virtual void FailAuthorisation()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("User failed authorisation.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("User failed authorisation.", NLog.LogLevel.Debug))
 			{
 				if (HttpContext.Current != null && HttpContext.Current.Request != null)
 				{

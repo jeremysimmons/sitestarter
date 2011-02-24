@@ -151,10 +151,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 
 		public BaseProjection(string action, Type type)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Constructing projection object.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Constructing projection object.", NLog.LogLevel.Debug))
 			{
-				AppLogger.Debug("Action: " + Action);
-				AppLogger.Debug("Type: " + Type);
+				LogWriter.Debug("Action: " + Action);
+				LogWriter.Debug("Type: " + Type);
 				
 				Action = action;
 				Type = type;
@@ -164,11 +164,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		
 		public BaseProjection(string action, Type type, bool requireAuthorisation)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Constructing projection object.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Constructing projection object.", NLog.LogLevel.Debug))
 			{
-				AppLogger.Debug("Action: " + Action);
-				AppLogger.Debug("Type: " + Type);
-				AppLogger.Debug("RequireAuthorisation: " + RequireAuthorisation.ToString());
+				LogWriter.Debug("Action: " + Action);
+				LogWriter.Debug("Type: " + Type);
+				LogWriter.Debug("RequireAuthorisation: " + RequireAuthorisation.ToString());
 				
 				Action = action;
 				Type = type;
@@ -183,7 +183,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		
 		protected override void OnInit(EventArgs e)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Initializing the projection.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Initializing the projection.", NLog.LogLevel.Debug))
 			{
 				LogWriter.Debug("Url: " + Request.Url.ToString());
 				
@@ -193,7 +193,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		
 		protected override void OnLoad(EventArgs e)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Loading the projection.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Loading the projection.", NLog.LogLevel.Debug))
 			{
 				LogWriter.Debug("Url: " + Request.Url.ToString());
 				
@@ -203,7 +203,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		
 		public override void DataBind()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Data binding the projection.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Data binding the projection.", NLog.LogLevel.Debug))
 			{
 				LogWriter.Debug("Url: " + Request.Url.ToString());
 				
@@ -218,7 +218,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// </summary>
 		public virtual void FailAuthorisation()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("User failed authorisation.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("User failed authorisation.", NLog.LogLevel.Debug))
 			{
 				if (HttpContext.Current != null && HttpContext.Current.Request != null)
 				{
@@ -242,18 +242,18 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			bool output = false;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Ensuring that the current user is authorised to performed the desired action.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Ensuring that the current user is authorised to performed the desired action.", NLog.LogLevel.Debug))
 			{
 				CheckAction();
 				CheckType();
 				
-				AppLogger.Debug("Require authorisation: " + requireAuthorisation.ToString());
+				LogWriter.Debug("Require authorisation: " + requireAuthorisation.ToString());
 				
 				if (RequireAuthorisation)
 				{
 					bool isAuthorised = Security.Authorisation.UserCan(Action, entity);
 					
-					AppLogger.Debug("Is authorised: " + isAuthorised);
+					LogWriter.Debug("Is authorised: " + isAuthorised);
 					
 					if (!isAuthorised)
 						FailAuthorisation();
@@ -261,7 +261,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 					output = (!RequireAuthorisation || isAuthorised);
 				}
 				
-				AppLogger.Debug("Output: " + output.ToString());
+				LogWriter.Debug("Output: " + output.ToString());
 			}
 			return true;
 		}
@@ -274,18 +274,18 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			bool output = false;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Ensuring that the current user is authorised to performed the desired action.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Ensuring that the current user is authorised to performed the desired action.", NLog.LogLevel.Debug))
 			{
 				CheckAction();
 				CheckType();
 				
-				AppLogger.Debug("Require authorisation: " + requireAuthorisation.ToString());
+				LogWriter.Debug("Require authorisation: " + requireAuthorisation.ToString());
 				
 				if (RequireAuthorisation)
 				{
 					bool isAuthorised = Security.Authorisation.UserCan(Action, Type.Name);
 					
-					AppLogger.Debug("Is authorised: " + isAuthorised);
+					LogWriter.Debug("Is authorised: " + isAuthorised);
 					
 					if (!isAuthorised)
 						FailAuthorisation();
@@ -293,7 +293,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 					output = (!RequireAuthorisation || isAuthorised);
 				}
 				
-				AppLogger.Debug("Output: " + output.ToString());
+				LogWriter.Debug("Output: " + output.ToString());
 			}
 			return true;
 		}
@@ -307,16 +307,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			bool output = false;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the current user is authorised to perform the desired action.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Checking whether the current user is authorised to perform the desired action.", NLog.LogLevel.Debug))
 			{
 				bool isAuthorised = Security.Authorisation.UserCan(Action, entity);
 				
-				AppLogger.Debug("Is authorised: " + isAuthorised.ToString());
-				AppLogger.Debug("Require authorisation: " + RequireAuthorisation.ToString());
+				LogWriter.Debug("Is authorised: " + isAuthorised.ToString());
+				LogWriter.Debug("Require authorisation: " + RequireAuthorisation.ToString());
 				
 				output = (!RequireAuthorisation || isAuthorised);
 				
-				AppLogger.Debug("Output: " + output.ToString());
+				LogWriter.Debug("Output: " + output.ToString());
 			}
 			
 			return output;

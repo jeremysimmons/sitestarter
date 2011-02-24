@@ -119,20 +119,20 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// </summary>
 		public void Initialize()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Initializing the business controllers.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Initializing the business controllers.", NLog.LogLevel.Debug))
 			{
 				if (StateAccess.IsInitialized && Configuration.Config.IsInitialized)
 				{
 					ControllerInfo[] controllers = new ControllerInfo[]{};
 					if (IsMapped)
 					{
-						AppLogger.Debug("Is mapped. Loading from XML.");
+						LogWriter.Debug("Is mapped. Loading from XML.");
 						
 						controllers = LoadControllers();
 					}
 					else
 					{
-						AppLogger.Debug("Is not mapped. Scanning from type attributes.");
+						LogWriter.Debug("Is not mapped. Scanning from type attributes.");
 						
 						controllers = FindControllers();
 						SaveInfoToFile(controllers);
@@ -149,7 +149,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <param name="controllers">The controllers to save to file.</param>
 		public void SaveInfoToFile(ControllerInfo[] controllers)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Saving the provided controllers to XML.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Saving the provided controllers to XML.", NLog.LogLevel.Debug))
 			{
 				foreach (ControllerInfo controller in controllers)
 				{
@@ -176,9 +176,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			List<ControllerInfo> controllers = new List<ControllerInfo>();
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Finding controllers.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Finding controllers.", NLog.LogLevel.Debug))
 			{
-				AppLogger.Debug("# of scanners: " + Scanners.Length);
+				LogWriter.Debug("# of scanners: " + Scanners.Length);
 				
 				foreach (BaseControllerScanner scanner in Scanners)
 				{

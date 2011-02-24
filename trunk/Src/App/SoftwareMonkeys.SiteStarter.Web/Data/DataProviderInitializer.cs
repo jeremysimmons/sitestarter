@@ -26,7 +26,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Data
 
 		public DataProvider Initialize()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Initializing data provider", NLog.LogLevel.Info))
+			using (LogGroup logGroup = LogGroup.Start("Initializing data provider", NLog.LogLevel.Info))
 			{
 				if (StateAccess.IsInitialized && Config.IsInitialized
 				    && !isInitialized)
@@ -64,7 +64,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Data
 					}
 					catch (Exception ex)
 					{
-						AppLogger.Error(ex.ToString());
+						LogWriter.Error(ex.ToString());
 						
 						initializationException = ex;
 						isInitialized = true;

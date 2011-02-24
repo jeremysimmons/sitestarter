@@ -99,13 +99,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// </summary>
 		public void StartEdit()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Starting the edit process.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Starting the edit process.", NLog.LogLevel.Debug))
 			{
 				if (EnsureAuthorised())
 				{
 					string typeName = Container.Type.Name;
 					
-					AppLogger.Debug("Type name: " + typeName);
+					LogWriter.Debug("Type name: " + typeName);
 					
 					OperationManager.StartOperation("Edit" + typeName, null);
 				}
@@ -120,9 +120,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		public virtual T PrepareEdit<T>()
 		{
 			T entity = default(T);
-			using (LogGroup logGroup = AppLogger.StartGroup("Preparing to edit an entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Preparing to edit an entity.", NLog.LogLevel.Debug))
 			{
-				AppLogger.Debug("Type name: " + typeof(T).Name);
+				LogWriter.Debug("Type name: " + typeof(T).Name);
 				entity = (T)PrepareEdit();
 			}
 			return entity;
@@ -135,19 +135,19 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		public virtual IEntity PrepareEdit()
 		{
 			IEntity entity = null;
-			using (LogGroup logGroup = AppLogger.StartGroup("Preparing to edit an entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Preparing to edit an entity.", NLog.LogLevel.Debug))
 			{
 				Guid id = QueryStrings.GetID(Container.Type.Name);
 				string uniqueKey = QueryStrings.GetUniqueKey(Container.Type.Name);
 				
 				if (id != Guid.Empty)
 				{
-					AppLogger.Debug("ID: " + id.ToString());
+					LogWriter.Debug("ID: " + id.ToString());
 					entity = PrepareEdit(id);
 				}
 				else if (uniqueKey != String.Empty)
 				{
-					AppLogger.Debug("Unique key: " + uniqueKey);
+					LogWriter.Debug("Unique key: " + uniqueKey);
 					entity = PrepareEdit(uniqueKey);
 				}
 				else
@@ -163,11 +163,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		public virtual IEntity PrepareEdit(Guid entityID)
 		{
 			IEntity entity = null;
-			using (LogGroup logGroup = AppLogger.StartGroup("Preparing to edit an entity with the ID: " + entityID, NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Preparing to edit an entity with the ID: " + entityID, NLog.LogLevel.Debug))
 			{
 				if (EnsureAuthorised())
 				{
-					AppLogger.Debug("Entity ID: " + entityID);
+					LogWriter.Debug("Entity ID: " + entityID);
 					
 					IEntity e = Load(entityID);
 					
@@ -187,11 +187,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		public virtual IEntity PrepareEdit(string uniqueKey)
 		{
 			IEntity entity = null;
-			using (LogGroup logGroup = AppLogger.StartGroup("Preparing to edit an entity with the unique key: " + uniqueKey, NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Preparing to edit an entity with the unique key: " + uniqueKey, NLog.LogLevel.Debug))
 			{
 				if (EnsureAuthorised())
 				{
-					AppLogger.Debug("Unique key: " + uniqueKey);
+					LogWriter.Debug("Unique key: " + uniqueKey);
 					
 					entity = Load(uniqueKey);
 					
@@ -207,7 +207,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		public virtual IEntity PrepareEdit(IEntity entity)
 		{
 			IEntity output = null;
-			using (LogGroup logGroup = AppLogger.StartGroup("Preparing to edit the provided entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Preparing to edit the provided entity.", NLog.LogLevel.Debug))
 			{
 				if (EnsureAuthorised(entity))
 					output = entity;
@@ -218,7 +218,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		public virtual IEntity Edit(IEntity entity)
 		{
 			IEntity e = null;
-			using (LogGroup logGroup = AppLogger.StartGroup("Editing the provided entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Editing the provided entity.", NLog.LogLevel.Debug))
 			{
 				e = ExecuteEdit(entity);
 			}
@@ -231,7 +231,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <returns>The entity provided.</returns>
 		public virtual IEntity ExecuteEdit(IEntity entity)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Editing the provided entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Editing the provided entity.", NLog.LogLevel.Debug))
 			{
 				if (EnsureAuthorised(entity))
 				{
@@ -252,7 +252,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <returns>The assigned entity.</returns>
 		public IEntity Load(IEntity entity)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Loading the provided entity onto DataSource and activating it.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Loading the provided entity onto DataSource and activating it.", NLog.LogLevel.Debug))
 			{
 				DataSource = entity;
 				
@@ -268,7 +268,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <returns>The loaded and activated entity.</returns>
 		public IEntity Load(string uniqueKey)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Loading entity with the unique key: " + uniqueKey))
+			using (LogGroup logGroup = LogGroup.Start("Loading entity with the unique key: " + uniqueKey))
 			{
 				Load(Retriever.Retrieve("UniqueKey", uniqueKey));
 			}
@@ -282,7 +282,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <returns>The loaded and activated entity.</returns>
 		public IEntity Load(Guid id)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Loading entity with the ID: " + id.ToString()))
+			using (LogGroup logGroup = LogGroup.Start("Loading entity with the ID: " + id.ToString()))
 			{
 				Load(Retriever.Retrieve("ID", id));
 			}
@@ -308,7 +308,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			bool didSucceed = false;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Updating the provided entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Updating the provided entity.", NLog.LogLevel.Debug))
 			{
 				if (EnsureAuthorised())
 				{
@@ -344,7 +344,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 					}
 				}
 				
-				AppLogger.Debug("Did succeed: " + didSucceed.ToString());
+				LogWriter.Debug("Did succeed: " + didSucceed.ToString());
 			}
 			return didSucceed;
 		}
@@ -377,15 +377,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		public static EditController New(IControllable container, Type type, string uniquePropertyName)
 		{
 			EditController controller = null;
-			using (LogGroup logGroup = AppLogger.StartGroup("Instantiating a new edit controller.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Instantiating a new edit controller.", NLog.LogLevel.Debug))
 			{
 				controller = ControllerState.Controllers.Creator.NewEditor(type.Name);
 				
 				controller.Container = container;
 				controller.UniquePropertyName = uniquePropertyName;
 				
-				AppLogger.Debug("Type name: " + type.Name);
-				AppLogger.Debug("Unique property name: " + uniquePropertyName);
+				LogWriter.Debug("Type name: " + type.Name);
+				LogWriter.Debug("Unique property name: " + uniquePropertyName);
 			}
 			return controller;
 		}

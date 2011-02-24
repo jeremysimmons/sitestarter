@@ -38,31 +38,31 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public virtual bool Save(IEntity entity)
 		{
 			bool saved = false;
-			using (LogGroup logGroup = AppLogger.StartGroup("Saving the provided entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Saving the provided entity.", NLog.LogLevel.Debug))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");
 				
-				AppLogger.Debug("Entity type: " + entity.GetType().FullName);
+				LogWriter.Debug("Entity type: " + entity.GetType().FullName);
 				
 				if (RequireAuthorisation)
 					AuthoriseSaveStrategy.New(entity.ShortTypeName).EnsureAuthorised(entity);
 				
 				if (Validate(entity))
 				{
-					AppLogger.Debug("Is valid.");
+					LogWriter.Debug("Is valid.");
 					
 					DataAccess.Data.Saver.Save(entity);
 					saved = true;
 				}
 				else
 				{
-					AppLogger.Debug("Is not valid.");
+					LogWriter.Debug("Is not valid.");
 					
 					saved = false;
 				}
 				
-				AppLogger.Debug("Saved: " + saved.ToString());
+				LogWriter.Debug("Saved: " + saved.ToString());
 			}
 			return saved;
 		}
@@ -76,7 +76,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			bool valid = false;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Validating the provided entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Validating the provided entity.", NLog.LogLevel.Debug))
 			{
 				if (Validator == null)
 					throw new InvalidOperationException("The validation strategy can't be found.");
@@ -84,11 +84,11 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				if (entity == null)
 					throw new ArgumentNullException("entity");
 				
-				AppLogger.Debug("Entity type: " + entity.GetType().FullName);
+				LogWriter.Debug("Entity type: " + entity.GetType().FullName);
 				
 				valid = Validator.Validate(entity);
 				
-				AppLogger.Debug("Valid: " + valid.ToString());
+				LogWriter.Debug("Valid: " + valid.ToString());
 			}
 			return valid;
 		}

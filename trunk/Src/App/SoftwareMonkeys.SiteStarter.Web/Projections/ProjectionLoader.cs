@@ -74,11 +74,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			List<ProjectionInfo> projections = new List<ProjectionInfo>();
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Loading the projections from the XML files.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Loading the projections from the XML files.", NLog.LogLevel.Debug))
 			{
 				foreach (string file in Directory.GetFiles(ProjectionsDirectoryPath))
 				{
-					AppLogger.Debug("File: " + file);
+					LogWriter.Debug("File: " + file);
 					
 					projections.Add(LoadFromFile(file));
 				}
@@ -105,11 +105,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			List<ProjectionInfo> projections = new List<ProjectionInfo>();
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Loading the projections info from the XML files.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Loading the projections info from the XML files.", NLog.LogLevel.Debug))
 			{
 				foreach (string file in Directory.GetFiles(ProjectionsInfoDirectoryPath))
 				{
-					AppLogger.Debug("File: " + file);
+					LogWriter.Debug("File: " + file);
 					
 					ProjectionInfo projection = LoadFromFile(file);
 					if (projection.Enabled || includeDisabled)
@@ -129,12 +129,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			ProjectionInfo info = null;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Loading the projection from the specified path.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Loading the projection from the specified path.", NLog.LogLevel.Debug))
 			{
 				if (!File.Exists(projectionPath))
 					throw new ArgumentException("The specified file does not exist.");
 				
-				AppLogger.Debug("Path: " + projectionPath);
+				LogWriter.Debug("Path: " + projectionPath);
 				
 				
 				using (StreamReader reader = new StreamReader(File.OpenRead(projectionPath)))

@@ -66,7 +66,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			List<ControllerInfo> controllers = new List<ControllerInfo>();
 			
-			//using (LogGroup logGroup = AppLogger.StartGroup("Finding controllers by scanning the attributes of the available type.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = LogGroup.Start("Finding controllers by scanning the attributes of the available type.", NLog.LogLevel.Debug))
 			//{
 				foreach (string assemblyPath in AssemblyPaths)
 				{
@@ -76,14 +76,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 					{
 						if  (IsController(type))
 						{
-							//AppLogger.Debug("Found controller type: " + type.ToString());
+							//LogWriter.Debug("Found controller type: " + type.ToString());
 							
 							ControllerInfo controllerInfo = new ControllerInfo(type);
 							
 							if (controllerInfo.TypeName != null && controllerInfo.TypeName != String.Empty
 							    && controllerInfo.Action != null && controllerInfo.Action != String.Empty)
 							{
-								//AppLogger.Debug("Found match.");
+								//LogWriter.Debug("Found match.");
 								
 								controllers.Add(controllerInfo);
 							}
@@ -106,9 +106,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			bool isNotInterface = false;
 			bool isNotAbstract = false;
 			
-			//using (LogGroup logGroup = AppLogger.StartGroup("Checks whether the provided type is a controller.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = LogGroup.Start("Checks whether the provided type is a controller.", NLog.LogLevel.Debug))
 			//{
-			//	AppLogger.Debug("Type: " + type.ToString());
+			//	LogWriter.Debug("Type: " + type.ToString());
 				
 				matchesInterface = (type.GetInterface("IController") != null);
 				
@@ -116,8 +116,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				
 				isNotAbstract = !type.IsAbstract;
 			//	
-			//	AppLogger.Debug("Matches interface: " + matchesInterface);
-			//	AppLogger.Debug("Is not controller interface: " + isNotInterface);
+			//	LogWriter.Debug("Matches interface: " + matchesInterface);
+			//	LogWriter.Debug("Is not controller interface: " + isNotInterface);
 			//}
 			
 			return matchesInterface

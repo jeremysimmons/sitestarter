@@ -91,18 +91,18 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		
 		protected override void OnLoad(EventArgs e)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Loading an EntitySelectDeliverer control with the ID: " + ID, NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Loading an EntitySelectDeliverer control with the ID: " + ID, NLog.LogLevel.Debug))
 			{
 				// Script is always registered in OnLoad so that it transfers values to the form even when not loaded on the same PageView
 				if (!Page.IsPostBack
 				    && Page.Request.QueryString["RequesterID"] != null)
 				{
-					AppLogger.Debug(@"!Page.IsPostBack && Page.Request.QueryString[""RequesterID""] != null");
+					LogWriter.Debug(@"!Page.IsPostBack && Page.Request.QueryString[""RequesterID""] != null");
 					RegisterScript();
 				}
 				else
 				{
-					AppLogger.Debug("Skipping register script.");
+					LogWriter.Debug("Skipping register script.");
 				}
 				
 				base.OnLoad(e);
@@ -112,25 +112,25 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		
 		protected override void OnPreRender(EventArgs e)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Pre rendering the EntitySelectDeliverer with the ID: " + ID, NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Pre rendering the EntitySelectDeliverer with the ID: " + ID, NLog.LogLevel.Debug))
 			{
 				if (Page.IsPostBack)
 				{
-					AppLogger.Debug("Page.IsPostBack.");
+					LogWriter.Debug("Page.IsPostBack.");
 					
 					if (Page.Request.QueryString["AutoReturn"] != null
 					    && Page.Request.QueryString["AutoReturn"].ToLower() == "true")
 					{
-						AppLogger.Debug("AutoReturn query string == true. Pre rendering.");
+						LogWriter.Debug("AutoReturn query string == true. Pre rendering.");
 						
 						RegisterReturnScript();
 					}
 					else
-						AppLogger.Debug("AutoReturn query string != true. Skipping.");
+						LogWriter.Debug("AutoReturn query string != true. Skipping.");
 					
 				}
 				else
-					AppLogger.Debug("!Page.IsPostBack. Skipping.");
+					LogWriter.Debug("!Page.IsPostBack. Skipping.");
 			}
 			//else
 			
@@ -141,7 +141,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		
 		private void RegisterScript()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Registering EntitySelectDeliverer script.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Registering EntitySelectDeliverer script.", NLog.LogLevel.Debug))
 			{
 				//string url = CreateNavigateUrl();
 				
@@ -152,14 +152,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				
 				if (TransferFields != String.Empty)
 				{
-					AppLogger.Debug("Transfer fields: " + TransferFields);
+					LogWriter.Debug("Transfer fields: " + TransferFields);
 					
 					foreach (string fieldID in TransferFields.Split(','))
 					{
 						if (fieldID != String.Empty)
 						{
 							
-							AppLogger.Debug("Transfer fields include: " + fieldID);
+							LogWriter.Debug("Transfer fields include: " + fieldID);
 							
 							Control control = WebControlUtilities.FindControlRecursive(Page, fieldID);
 							if (control == null)
@@ -177,7 +177,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 					}
 				}
 				else
-					AppLogger.Debug("No transfer fields specified.");
+					LogWriter.Debug("No transfer fields specified.");
 				
 				builder.Append("}\n");
 				
@@ -206,7 +206,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		
 		private void RegisterReturnScript()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Registering EntitySelectDeliverer return script.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Registering EntitySelectDeliverer return script.", NLog.LogLevel.Debug))
 			{				
 				string text = (string)WebControlUtilities.GetFieldValue(WebControlUtilities.FindControlRecursive(Page,TextControlID), "Text", typeof(String));
 				
@@ -223,18 +223,18 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				if (!Page.ClientScript.IsClientScriptBlockRegistered("EntitySelectDelivererReturnScript"))
 					Page.ClientScript.RegisterClientScriptBlock(typeof(EntitySelectDeliverer), "EntitySelectDelivererReturnScript", builder.ToString());
 				else
-					AppLogger.Debug("Return script already registered.");
+					LogWriter.Debug("Return script already registered.");
 			}
 		}
 		
 		private string GetRequesterID()
 		{
 			string requesterID = string.Empty;
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the ID of the requester control from the query string.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving the ID of the requester control from the query string.", NLog.LogLevel.Debug))
 			{
 				requesterID = Page.Request.QueryString["RequesterID"];
 				
-				AppLogger.Debug("Requester ID: " + requesterID);
+				LogWriter.Debug("Requester ID: " + requesterID);
 			}
 			
 			return requesterID;

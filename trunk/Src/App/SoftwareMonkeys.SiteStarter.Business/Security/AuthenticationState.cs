@@ -87,7 +87,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 			using (LogGroup logGroup = LogGroup.Start("Checking to see whether the current user is in the specified role.", NLog.LogLevel.Debug))
 			{
 				
-				AppLogger.Debug("User is authenticated: " + IsAuthenticated.ToString());
+				LogWriter.Debug("User is authenticated: " + IsAuthenticated.ToString());
 				
 				if (IsAuthenticated)
 				{
@@ -96,7 +96,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 					
 					if (user != null)
 					{
-						AppLogger.Debug("Username: " + user.Username);
+						LogWriter.Debug("Username: " + user.Username);
 						
 						if (user.Roles == null || user.Roles.Length == 0)
 							ActivateStrategy.New<User>().Activate(user, "Roles");
@@ -105,7 +105,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 					}
 				}
 				
-				AppLogger.Debug("Is in role: " + isInRole);
+				LogWriter.Debug("Is in role: " + isInRole);
 			}
 			
 			return isInRole;
@@ -133,7 +133,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 				if (StateAccess.State == null)
 					throw new InvalidOperationException("The StateAccess.State provider has not been initialized. Use the WebStateInitializer.Initialize() function.");
 				
-				AppLogger.Debug("Username: " + username);
+				LogWriter.Debug("Username: " + username);
 				
 				StateAccess.State.SetUser(AuthenticationStateKey, username, expirationDate);
 				// Set the username in the request scope as well to get around hurdle with user scope values not being reflected until the next request

@@ -99,7 +99,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		/// </summary>
 		public void Dispose()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Disposing the parts.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Disposing the parts.", NLog.LogLevel.Debug))
 			{
 				PartInfo[] parts = new PartInfo[]{};
 				
@@ -116,7 +116,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		/// </summary>
 		public void Dispose(PartInfo[] parts)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Disposing the parts.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Disposing the parts.", NLog.LogLevel.Debug))
 			{
 				foreach (PartInfo part in parts)
 				{

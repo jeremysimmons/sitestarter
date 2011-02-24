@@ -109,18 +109,18 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		public void Initialize()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Initializing the business strategies.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Initializing the business strategies.", NLog.LogLevel.Debug))
 			{
 				StrategyInfo[] strategies = new StrategyInfo[]{};
 				if (IsMapped)
 				{
-					AppLogger.Debug("Is mapped. Loading from XML.");
+					LogWriter.Debug("Is mapped. Loading from XML.");
 					
 					strategies = LoadStrategies();
 				}
 				else
 				{
-					AppLogger.Debug("Is not mapped. Scanning from type attributes.");
+					LogWriter.Debug("Is not mapped. Scanning from type attributes.");
 					
 					strategies = FindStrategies();
 					SaveToFile(strategies);
@@ -136,7 +136,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="strategies">The strategies to save to file.</param>
 		public void SaveToFile(StrategyInfo[] strategies)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Saving the provided strategies to XML.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Saving the provided strategies to XML.", NLog.LogLevel.Debug))
 			{
 				foreach (StrategyInfo strategy in strategies)
 				{

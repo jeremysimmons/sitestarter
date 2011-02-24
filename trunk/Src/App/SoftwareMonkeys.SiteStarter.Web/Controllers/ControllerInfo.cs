@@ -144,11 +144,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			T controller = default(T);
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Creating a new controller for the type: " + entityTypeName, NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Creating a new controller for the type: " + entityTypeName, NLog.LogLevel.Debug))
 			{
-				AppLogger.Debug("Entity type name: " + entityTypeName);
+				LogWriter.Debug("Entity type name: " + entityTypeName);
 				
-				AppLogger.Debug("Controller type: " + typeof(T).FullName);
+				LogWriter.Debug("Controller type: " + typeof(T).FullName);
 				
 				controller = (T)New();
 				

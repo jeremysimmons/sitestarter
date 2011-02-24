@@ -57,7 +57,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			List<StrategyInfo> strategies = new List<StrategyInfo>();
 			
-			//using (LogGroup logGroup = AppLogger.StartGroup("Finding strategies by scanning the attributes of the available type.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = LogGroup.Start("Finding strategies by scanning the attributes of the available type.", NLog.LogLevel.Debug))
 			//{				
 				foreach (string assemblyPath in AssemblyPaths)
 				{
@@ -67,17 +67,17 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					{
 						if (IsStrategy(type))
 						{
-							//AppLogger.Debug("Found strategy type: " + type.ToString());
+							//LogWriter.Debug("Found strategy type: " + type.ToString());
 							
 							StrategyInfo strategyInfo = new StrategyInfo(type);
 							
 							if (strategyInfo.TypeName != null && strategyInfo.TypeName != String.Empty
 							    && strategyInfo.Action != null && strategyInfo.Action != String.Empty)
 							{
-								//AppLogger.Debug("Found match.");
+								//LogWriter.Debug("Found match.");
 								
-								//AppLogger.Debug("Type name: " + strategyInfo.TypeName);
-								//AppLogger.Debug("Action: " + strategyInfo.Action);
+								//LogWriter.Debug("Type name: " + strategyInfo.TypeName);
+								//LogWriter.Debug("Action: " + strategyInfo.Action);
 								
 								strategies.Add(strategyInfo);
 							}
@@ -100,9 +100,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			bool isNotInterface = false;
 			bool isNotAbstract = false;
 			
-			//using (LogGroup logGroup = AppLogger.StartGroup("Checks whether the provided type is a strategy.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = LogGroup.Start("Checks whether the provided type is a strategy.", NLog.LogLevel.Debug))
 			//{
-			//	AppLogger.Debug("Type: " + type.ToString());
+			//	LogWriter.Debug("Type: " + type.ToString());
 				
 				matchesInterface = typeof(IStrategy).IsAssignableFrom(type)
 					|| type.GetInterface("IStrategy") != null;
@@ -111,8 +111,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				
 				isNotAbstract = (!type.IsAbstract);
 				
-			//	AppLogger.Debug("Matches interface: " + matchesInterface);
-			//	AppLogger.Debug("Is not strategy interface: " + isNotInterface);
+			//	LogWriter.Debug("Matches interface: " + matchesInterface);
+			//	LogWriter.Debug("Is not strategy interface: " + isNotInterface);
 			//}
 			
 			return matchesInterface

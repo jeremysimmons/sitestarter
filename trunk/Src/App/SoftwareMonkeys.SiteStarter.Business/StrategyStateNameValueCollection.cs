@@ -103,7 +103,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			StrategyInfo foundStrategy = null;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the strategy for performing the action '" + action + "' with the type '" + typeName + "'.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving the strategy for performing the action '" + action + "' with the type '" + typeName + "'.", NLog.LogLevel.Debug))
 			{
 				StrategyLocator locator = new StrategyLocator(this);
 				
