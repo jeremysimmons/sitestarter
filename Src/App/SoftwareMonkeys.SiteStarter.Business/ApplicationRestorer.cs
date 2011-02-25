@@ -167,7 +167,11 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				foreach (string file in Directory.GetFiles(personalizationPath))
 				{
 					string toPath = toDirectoryPath + Path.DirectorySeparatorChar + Path.GetFileName(file);
-					File.Copy(file, toPath, true);
+					
+					if (File.Exists(toPath))
+						File.Delete(toPath);
+					
+					File.Move(file, toPath);
 				}
 			}
 		}
