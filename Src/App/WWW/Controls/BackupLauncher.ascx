@@ -10,13 +10,13 @@ private void Page_Load(object sender, EventArgs e)
 	    {
 	        bool enableAuto = GetEnableAuto();
 	
-			AppLogger.Debug("Enable auto backup: " + enableAuto.ToString());
+			LogWriter.Debug("Enable auto backup: " + enableAuto.ToString());
 	
 	        if (enableAuto)
 	        {
 	        	bool due = AutoBackupDue();
 	        	
-	        	AppLogger.Debug("Backup due: " + due.ToString());
+	        	LogWriter.Debug("Backup due: " + due.ToString());
 	        	
 	            if (due)
 	            {

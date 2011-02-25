@@ -21,7 +21,7 @@
 
     private void Page_Init(object sender, EventArgs e)
     {
-        using (LogGroup logGroup = AppLogger.StartGroup("Initializing the import page.", NLog.LogLevel.Debug))
+        using (LogGroup logGroup = LogGroup.Start("Initializing the import page.", NLog.LogLevel.Debug))
         {
 		        
         	EnsureRequiresRestore();
@@ -43,7 +43,7 @@
 
     private void Update()
     {
-        using (LogGroup logGroup = AppLogger.StartGroup("Starting the import.", NLog.LogLevel.Debug))
+        using (LogGroup logGroup = LogGroup.Start("Starting the import.", NLog.LogLevel.Debug))
         {
         	ExecuteSetup();
         
@@ -76,10 +76,10 @@
 
     private void ExecuteUpdate()
     {
-		using (LogGroup logGroup = AppLogger.StartGroup("Running the import process.", NLog.LogLevel.Debug))
+		using (LogGroup logGroup = LogGroup.Start("Running the import process.", NLog.LogLevel.Debug))
         {
             
-            AppLogger.Debug("Converting and importing core data.");
+            LogWriter.Debug("Converting and importing core data.");
 
            
             string dataDirectoryPath = Server.MapPath(Request.ApplicationPath) + Path.DirectorySeparatorChar + "App_Data";
