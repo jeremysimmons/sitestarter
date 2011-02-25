@@ -36,7 +36,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		static public string ConvertAbsoluteUrlToRelativeUrl(string originalUrl, string relatedPath)
 		{
 			string newPath = String.Empty;
-			using (LogGroup logGroup = AppLogger.StartGroup("Converting the provided absolute URL to one that's relative to the one provided.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Converting the provided absolute URL to one that's relative to the one provided.", NLog.LogLevel.Debug))
 			{
 				if (originalUrl == null)
 					throw new ArgumentNullException("originalUrl");
@@ -44,15 +44,15 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				if (relatedPath == null)
 					throw new ArgumentNullException("relatedPath");
 				
-				AppLogger.Debug("Original URL: " + originalUrl);
-				AppLogger.Debug("Related path: " + relatedPath);
+				LogWriter.Debug("Original URL: " + originalUrl);
+				LogWriter.Debug("Related path: " + relatedPath);
 				
 				if (relatedPath.ToLower().IndexOf("http://") == -1
 				    && relatedPath.ToLower().IndexOf("https://") == -1)
 				{
 					relatedPath = ConvertRelativeUrlToAbsoluteUrl(relatedPath);
 					
-					AppLogger.Debug("Related path changed to absolute: " + relatedPath);
+					LogWriter.Debug("Related path changed to absolute: " + relatedPath);
 				}
 				
 				if (originalUrl.ToLower().IndexOf("http://") == -1
@@ -60,7 +60,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				{
 					originalUrl = ConvertRelativeUrlToAbsoluteUrl(originalUrl);
 					
-					AppLogger.Debug("Original url changed to absolute: " + originalUrl);
+					LogWriter.Debug("Original url changed to absolute: " + originalUrl);
 				}
 				
 				string[] originalParts = originalUrl.Trim('/').Split('/');
@@ -76,7 +76,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				
 				newPath = "/" + String.Join("/", keptItems.ToArray());
 
-				AppLogger.Debug("New path: " + newPath);
+				LogWriter.Debug("New path: " + newPath);
 				
 			}
 			return newPath;
