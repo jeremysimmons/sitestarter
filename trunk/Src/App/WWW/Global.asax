@@ -16,7 +16,7 @@
     void Application_Start(object sender, EventArgs e) 
     {
     
-       // using (LogGroup logGroup = AppLogger.StartGroup("Preparing to start application.", LogLevel.Debug))
+       // using (LogGroup logGroup = LogGroup.Start("Preparing to start application.", LogLevel.Debug))
        // {
             // Attempt to initialize the config
             Initialize();
@@ -42,7 +42,7 @@
 
     void Session_Start(object sender, EventArgs e) 
     {
-       // using (LogGroup logGroup = AppLogger.StartGroup("Preparing to start session.", LogLevel.Debug))
+       // using (LogGroup logGroup = LogGroup.Start("Preparing to start session.", LogLevel.Debug))
        // {	        
 	        // Code that runs when a new session is started
 	        if (!StateAccess.IsInitialized || !Config.IsInitialized || !DataAccess.IsInitialized)
@@ -62,7 +62,7 @@
     
     void Application_BeginRequest(object sender, EventArgs e)
     {
-    	using (LogGroup logGroup = AppLogger.StartGroup("Beginning application request.", NLog.LogLevel.Debug))
+    	using (LogGroup logGroup = LogGroup.Start("Beginning application request.", NLog.LogLevel.Debug))
     	{
             // Initialize the URL rewriter to take care of friendly URLs
             UrlRewriter.Initialize();
@@ -71,7 +71,7 @@
 
     private void Initialize()
     {
-        //using (LogGroup logGroup = AppLogger.StartGroup("Initializing the state management, config, modules, and data.", LogLevel.Debug))
+        //using (LogGroup logGroup = LogGroup.Start("Initializing the state management, config, modules, and data.", LogLevel.Debug))
         //{
 	        if (!StateAccess.IsInitialized || !Config.IsInitialized)
 	        {

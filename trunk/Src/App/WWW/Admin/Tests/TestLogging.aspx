@@ -22,9 +22,9 @@ private void Page_Init(object sender, EventArgs e)
 private void Page_Load(object sender, EventArgs e)
 {
 	
-	using (LogGroup logGroup = AppLogger.StartGroup("Testing logging", NLog.LogLevel.Debug))
+	using (LogGroup logGroup = LogGroup.Start("Testing logging", NLog.LogLevel.Debug))
 	{
-		AppLogger.Debug("Test debug message");
+		LogWriter.Debug("Test debug message");
 		
 		DoSomething();
 	}
@@ -32,9 +32,9 @@ private void Page_Load(object sender, EventArgs e)
 
 private void DoSomething()
 {
-	using (LogGroup logGroup = AppLogger.StartGroup("Doing something", NLog.LogLevel.Debug))
+	using (LogGroup logGroup = LogGroup.Start("Doing something", NLog.LogLevel.Debug))
 	{
-		AppLogger.Debug("The 'Doing something' group should be a sub group of the 'Testing logging' group.");
+		LogWriter.Debug("The 'Doing something' group should be a sub group of the 'Testing logging' group.");
 		
 	}
 }
@@ -42,7 +42,7 @@ private void DoSomething()
 
     private void Initialize()
     {
-        //using (LogGroup logGroup = AppLogger.StartGroup("Initializing the state management, config, modules, and data.", LogLevel.Debug))
+        //using (LogGroup logGroup = LogGroup.Start("Initializing the state management, config, modules, and data.", LogLevel.Debug))
         //{
 	        if (!StateAccess.IsInitialized || !Config.IsInitialized)
 	        {

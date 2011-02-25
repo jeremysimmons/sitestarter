@@ -13,7 +13,7 @@
 <script runat="server">
 private void Page_Load(object sender, EventArgs e)
 {
-	using (LogGroup logGroup = AppLogger.StartGroup("Loading the Site.master page at URL: " + Request.Url.ToString()))
+	using (LogGroup logGroup = LogGroup.Start("Loading the Site.master page at URL: " + Request.Url.ToString()))
 	{
 		MenuSource.DataBind();
 		
@@ -24,7 +24,7 @@ private void Page_Load(object sender, EventArgs e)
 
 private void EnsureSetup()
 {
-	using (LogGroup logGroup = AppLogger.StartGroup("Ensuring that the application is set up and configured.", NLog.LogLevel.Debug))
+	using (LogGroup logGroup = LogGroup.Start("Ensuring that the application is set up and configured.", NLog.LogLevel.Debug))
 	{
 		SetupChecker setupChecker = new SetupChecker();
 		setupChecker.Check();
