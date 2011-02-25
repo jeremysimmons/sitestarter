@@ -167,10 +167,10 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 				
 				LogSupervisor supervisor = new LogSupervisor();
 				
-				// If the ending group is still marked as the current group then pop it
-				//while (DiagnosticState.CurrentGroupID != Guid.Empty
-				//    && DiagnosticState.CurrentGroupID != this.ParentID
-				//    && HasParent(this, DiagnosticState.CurrentGroupID))
+				// Keep popping groups from the stack until it reaches the correct level
+				// This loop ensures that if a parent group ends before a child group that the child group(s) will be popped
+				// as well and the stack won't become corrupted
+				// TODO: Check if this loop should be moved to DiagnosticState.PopGroup
 				while (supervisor.CanPop(this, DiagnosticState.CurrentGroup))
 					DiagnosticState.PopGroup();
 				
