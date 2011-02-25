@@ -216,6 +216,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
         protected override void OnInit(EventArgs e)
         {
             //Controls.Add(row);
+            
+            LabelCell.CssClass = "FieldLabel";
 
             Cells.Add(LabelCell);
             Cells.Add(FieldCell);
