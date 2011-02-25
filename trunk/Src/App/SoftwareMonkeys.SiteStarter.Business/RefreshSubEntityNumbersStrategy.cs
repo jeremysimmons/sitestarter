@@ -44,11 +44,14 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			{
 				numberPropertyName = items[0].NumberPropertyName;
 				
-				// Sort by number
-				items = Collection<ISubEntity>.Sort(items, numberPropertyName + "Ascending");
-				
-				// Refresh the numbers
-				Refresh(items, true);
+				if (numberPropertyName != null && numberPropertyName != String.Empty)
+				{
+					// Sort by number
+					items = Collection<ISubEntity>.Sort(items, numberPropertyName + "Ascending");
+					
+					// Refresh the numbers
+					Refresh(items, true);
+				}
 			}
 		}
 		
