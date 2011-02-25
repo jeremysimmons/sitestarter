@@ -27,18 +27,31 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <returns></returns>
 		public override IEntity Create()
 		{
-			Guid parentID = QueryStrings.GetID(TypeName);
-			string parentUniqueKey = QueryStrings.GetUniqueKey(TypeName);
+			IEntity entity = null;
 			
-			if (QueryStrings.Available)
+			using (LogGroup logGroup = LogGroup.Start("Preparing the form to create a new sub entity.", NLog.LogLevel.Debug))
 			{
-				parentID = QueryStrings.GetID(TypeName);
-				parentUniqueKey = QueryStrings.GetUniqueKey(TypeName);
+				if (EnsureAuthorised())
+				{
+					Guid parentID = Guid.Empty;
+					string parentUniqueKey = String.Empty;
+					
+					if (QueryStrings.Available)
+					{
+						parentID = QueryStrings.GetID("Parent");
+						parentUniqueKey = QueryStrings.GetUniqueKey("Parent");
+					}
+					else
+						throw new InvalidOperationException("Query strings aren't available. Provide parent ID or parent unique key manually.");
+					
+					LogWriter.Debug("Parent ID: " + parentID);
+					LogWriter.Debug("Parent unique key: " + parentUniqueKey);
+					
+					entity = Create(parentID, parentUniqueKey);
+				}
 			}
-			else
-				throw new InvalidOperationException("Query strings aren't available. Provide parent ID or parent unique key manually.");
 			
-			return Create(parentID, parentUniqueKey);
+			return entity;
 		}
 		
 		/// <summary>
@@ -78,9 +91,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				if (!(entity is ISubEntity))
 					throw new ArgumentException("Invalid type '" + entity.GetType() + "'. Expected 'ISubEntity'.");
 				
-				DataSource = entity;
-				
-				base.ExecuteCreate(entity);
+				if (EnsureAuthorised(entity))
+				{
+					DataSource = entity;
+					
+					base.ExecuteCreate(entity);
+				}
 			}
 		}
 		
@@ -98,7 +114,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			bool success = false;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Saving the new entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Saving the new entity.", NLog.LogLevel.Debug))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");
