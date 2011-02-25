@@ -97,11 +97,15 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		{
 			if (GroupStack.Count > 0)
 			{
-				LogGroup parentGroup = CurrentGroup.Parent;
+				LogGroup parentGroup = null;
+
+				if (CurrentGroup != null)
+					parentGroup = CurrentGroup.Parent;
 				
 				GroupStack.Pop();
 
-				CurrentGroup = parentGroup;
+				if (parentGroup != null)
+					CurrentGroup = parentGroup;
 			}
 		}
 	}
