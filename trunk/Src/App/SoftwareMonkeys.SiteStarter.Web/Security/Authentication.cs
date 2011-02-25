@@ -16,7 +16,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		public static void EnsureIsAuthenticated()
 		{
 			if (HttpContext.Current != null && !AuthenticationState.IsAuthenticated)
-				HttpContext.Current.Response.Redirect(HttpContext.Current.Request.ApplicationPath + "/User/SignIn.aspx?ReturnUrl=" + GetReturnUrl());
+				HttpContext.Current.Response.Redirect(HttpContext.Current.Request.ApplicationPath + "/User-SignIn.aspx?ReturnUrl=" + GetReturnUrl());
 		}
 		
 		/// <summary>
