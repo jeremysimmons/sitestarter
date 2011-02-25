@@ -277,7 +277,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
             string action = "Action";
             string typeName = "TypeName";
 
-            string original = fullApplicationUrl + "/" + action + "-" + typeName + "/" + entityID + "/I-" + entityName + ".aspx";
+            string original = fullApplicationUrl + "/" + action + "-" + typeName + "/" + entityID + "/I--" + entityName + ".aspx";
 
             string expected = applicationPath + "/Projector.aspx?a=" + action + "&t=" + typeName + "&" + typeName + "-ID=" + entityID + "&f=Html";
 
@@ -305,7 +305,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
             string action = "Action";
             string typeName = "TypeName";
 
-            string original = fullApplicationUrl + "/" + action + "-" + typeName + "/" + entityID + "/K-" + entityName + ".aspx";
+            string original = fullApplicationUrl + "/" + action + "-" + typeName + "/" + entityID + "/K--" + entityName + ".aspx";
 
             string expected = applicationPath + "/Projector.aspx?a=" + action + "&t=" + typeName + "&" + typeName + "-ID=" + entityID + "&" + typeName + "-UniqueKey=" + entityName + "&f=Html";
 

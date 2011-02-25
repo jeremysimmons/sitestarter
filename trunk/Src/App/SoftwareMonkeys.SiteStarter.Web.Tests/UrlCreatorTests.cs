@@ -32,7 +32,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
 			
 			string url = creator.CreateFriendlyUrl(action, article);
 			
-			string expectedUrl = "/Test/" + action + "-" + article.ShortTypeName + "/" + article.ID.ToString() + "/I-" + creator.PrepareForUrl(article.Title) + ".aspx";
+			string expectedUrl = "/Test/" + action + "-" + article.ShortTypeName + "/" + article.ID.ToString() + "/I--" + creator.PrepareForUrl(article.Title) + ".aspx";
 			
 			Assert.AreEqual(expectedUrl, url, "The URL doesn't match what's expected.");
 		
@@ -78,7 +78,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
 			
 			string url = creator.CreateFriendlyUrl(action, typeName, propertyName, dataKey);
 			
-			string expectedUrl = "/Test/" + creator.PrepareForUrl(action) + "-" + creator.PrepareForUrl(typeName) + "/" + creator.PrepareForUrl(propertyName) + "-" + creator.PrepareForUrl(dataKey) + ".aspx";
+			string expectedUrl = "/Test/" + creator.PrepareForUrl(action) + "-" + creator.PrepareForUrl(typeName) + "/" + creator.PrepareForUrl(propertyName) + "--" + creator.PrepareForUrl(dataKey) + ".aspx";
 			
 			Assert.AreEqual(expectedUrl, url, "The URL doesn't match what's expected.");
 		
