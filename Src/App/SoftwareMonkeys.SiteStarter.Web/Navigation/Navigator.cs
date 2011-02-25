@@ -58,6 +58,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Navigation
 			return GetLink(action, type, "UniqueKey", uniqueKey);
 		}
 		
+		public string GetLink(string action, IEntity entity)
+		{
+			return UrlCreator.CreateUrl(action, entity);
+		}
+		
 		public string GetLink(string action, string type, string propertyName, string dataKey)
 		{
 			return UrlCreator.CreateUrl(action, type, propertyName, dataKey);
@@ -99,15 +104,23 @@ namespace SoftwareMonkeys.SiteStarter.Web.Navigation
 			Redirect(link);
 		}
 		
+		public virtual void Go(string action, IEntity entity)
+		{
+			
+			string link = GetLink(action, entity);
+			
+			Redirect(link);
+		}
+		
 		public virtual void Go(string action)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Redirecting to carry out the specified action.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Redirecting to carry out the specified action.", NLog.LogLevel.Debug))
 			{
 				string type = GetEntityType();
 				string link = GetLink(action, type);
 				
-				AppLogger.Debug("Type: " + type);
-				AppLogger.Debug("Link: " + link);
+				LogWriter.Debug("Type: " + type);
+				LogWriter.Debug("Link: " + link);
 				
 				Redirect(link);
 			}
@@ -116,9 +129,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Navigation
 		
 		public virtual void Redirect(string link)
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Redirecting to the specified link.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Redirecting to the specified link.", NLog.LogLevel.Debug))
 			{
-				AppLogger.Debug("Link: " + link);
+				LogWriter.Debug("Link: " + link);
 				//string rewrittenUrl = CloakHandler.RewriteUrl(link, HttpContext.Current.Request.ApplicationPath);
 				//HttpContext.Current.Server.Transfer(link, false);
 				
@@ -155,18 +168,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Navigation
 				}
 				else
 				{
-					if (typeof(IUniqueEntity).IsAssignableFrom(entity.GetType()))
-					{
-						string uniqueKey = ((IUniqueEntity)entity).UniqueKey;
-						
-						url = UrlCreator.Current.CreateUrl(action, entity.ShortTypeName, "UniqueKey",  uniqueKey);
-					}
-					else
-						url = UrlCreator.Current.CreateUrl(action, entity.ShortTypeName, "ID", entity.ID.ToString());
+					url = UrlCreator.Current.CreateUrl(action, entity);
 				}	
 				
 				LogWriter.Debug("URL: " + url);
 			}
+			
+			// Redirect (outside the log group)
 			HttpContext.Current.Response.Redirect(url);
 		}
 	}
