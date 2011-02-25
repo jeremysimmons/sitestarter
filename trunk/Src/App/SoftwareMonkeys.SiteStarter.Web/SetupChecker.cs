@@ -150,19 +150,19 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// </summary>
 		public void Check()
 		{
-			using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the application needs to be set up or restored.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Checking whether the application needs to be set up or restored.", NLog.LogLevel.Debug))
 			{
 				string redirectPath = GetRedirectPath();
 				
 				if (redirectPath != String.Empty)
 				{
-					AppLogger.Debug("Redirecting to: " + redirectPath);
+					LogWriter.Debug("Redirecting to: " + redirectPath);
 					
 					HttpContext.Current.Response.Redirect(redirectPath);
 				}
 				else
 				{
-					AppLogger.Debug("No redirect required.");
+					LogWriter.Debug("No redirect required.");
 				}
 			}
 			
@@ -176,26 +176,26 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		{
 			string returnPath = String.Empty;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Retrieving the path to redirect the user to.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving the path to redirect the user to.", NLog.LogLevel.Debug))
 			{
 				CheckApplicationPath();
 				
 				if (!SkipPage())
 				{
-					AppLogger.Debug("Not skipping page.");
+					LogWriter.Debug("Not skipping page.");
 					
 					if (RequiresRestore())
 					{
 						// If the user is an administrator then go to the update ready page
 						if (AuthenticationState.IsAuthenticated && AuthenticationState.UserIsInRole("Administrator"))
 						{
-							AppLogger.Debug("Requires restore. Redirecting administrator to update ready page.");
+							LogWriter.Debug("Requires restore. Redirecting administrator to update ready page.");
 							
 							returnPath = ApplicationPath + "/Admin/UpdateReady.html";
 						}
 						else
 						{
-							AppLogger.Debug("Requires restore. Redirecting standard user to maintenance page.");
+							LogWriter.Debug("Requires restore. Redirecting standard user to maintenance page.");
 							
 							returnPath = ApplicationPath + "/Maintenance.html";
 						}
@@ -204,7 +204,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 					{
 						// If import is required then the user must be the administrator and should be sent to the import page.
 						
-						AppLogger.Debug("Requires import. Redirecting to import page.");
+						LogWriter.Debug("Requires import. Redirecting to import page.");
 						
 						returnPath = ApplicationPath + "/Admin/Import.aspx";
 					}
@@ -212,17 +212,17 @@ namespace SoftwareMonkeys.SiteStarter.Web
 					{
 						// If install is required then the user must be the administrator and should be sent to the setup page.
 						
-						AppLogger.Debug("Requires setup. Redirecting to setup page.");
+						LogWriter.Debug("Requires setup. Redirecting to setup page.");
 						
 						returnPath = ApplicationPath + "/Admin/Setup.aspx";
 					}
 				}
 				else
 				{
-					AppLogger.Debug("Skipping page.");
+					LogWriter.Debug("Skipping page.");
 				}
 				
-				AppLogger.Debug("Return path: " + returnPath);
+				LogWriter.Debug("Return path: " + returnPath);
 			}
 			
 			return returnPath;
@@ -270,13 +270,13 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		{
 			bool skip = true;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Checking whether the current page should be skipped.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Checking whether the current page should be skipped.", NLog.LogLevel.Debug))
 			{
 				CheckCurrentUrl();
 				
 				Uri url = CurrentUrl;
 				
-				AppLogger.Debug("URL: " + url.ToString());
+				LogWriter.Debug("URL: " + url.ToString());
 				
 				string[] skippable = new String[] {
 					"backup.aspx",
@@ -292,23 +292,36 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				if (url.Query != String.Empty)
 					urlString = urlString.Replace(url.Query, String.Empty);
 				
-				AppLogger.Debug("Adjusted URL string: " + urlString);
+				LogWriter.Debug("Adjusted URL string: " + urlString);
 				
 				string[] parts = urlString.ToLower().Split('/');
 				
 				string fileName = parts[parts.Length-1];
 				
-				AppLogger.Debug("File name: " + fileName.ToLower());
+				LogWriter.Debug("File name: " + fileName.ToLower());
 				
-				if (Array.IndexOf(skippable, fileName.ToLower()) > -1)
+				if (IsTestPage(urlString) || Array.IndexOf(skippable, fileName.ToLower()) > -1)
 					skip = true;
 				else
 					skip = false;
 				
-				AppLogger.Debug("Skip: " + skip);
+				LogWriter.Debug("Skip: " + skip);
 			}
 			
 			return skip;
+		}
+		
+		/// <summary>
+		/// Checks whether the provided URL points to an administration tests page.
+		/// </summary>
+		/// <param name="url"></param>
+		/// <returns></returns>
+		public bool IsTestPage(string url)
+		{
+			if (url.ToLower().IndexOf("/admin/tests/") > -1)
+				return true;
+			else
+				return false;
 		}
 
 		/// <summary>
