@@ -211,7 +211,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				
 				// TODO: Should the text displayed on the tree be customisable?
 				TreeNode node = new TreeNode(entity.ToString(), entity.ID.ToString());
-				//node.
 
 				// Choose an appropriate space character (? or &)
 				string spaceCharacter = String.Empty;
@@ -229,11 +228,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				}
 				else
 				{
-					if (NavigateUrl != String.Empty)
-					{
-						node.NavigateUrl = GetNavigateUrl(entity);
-					}
-					
+					node.NavigateUrl = GetNavigateUrl(entity);
+				
 					if (node.NavigateUrl != String.Empty)
 					{
 						LogWriter.Debug("Node navigate url: " + NavigateUrl);
