@@ -22,7 +22,7 @@
 
     private void Page_Init(object sender, EventArgs e)
     {
-        using (LogGroup logGroup = AppLogger.StartGroup("Initializing the import page.", NLog.LogLevel.Debug))
+        using (LogGroup logGroup = LogGroup.Start("Initializing the import page.", NLog.LogLevel.Debug))
         {
             if (!IsPostBack)
             {
@@ -34,7 +34,7 @@
 
     private void Import()
     {
-        using (LogGroup logGroup = AppLogger.StartGroup("Starting the import.", NLog.LogLevel.Debug))
+        using (LogGroup logGroup = LogGroup.Start("Starting the import.", NLog.LogLevel.Debug))
         {
         	ExecuteSetup();
         	
@@ -70,7 +70,7 @@
     
     private void ExecuteImport()
     {
-		using (LogGroup logGroup = AppLogger.StartGroup("Running the import process.", NLog.LogLevel.Debug))
+		using (LogGroup logGroup = LogGroup.Start("Running the import process.", NLog.LogLevel.Debug))
         {
             string dataDirectoryPath = Server.MapPath(Request.ApplicationPath) + Path.DirectorySeparatorChar + "App_Data";
             
@@ -91,7 +91,7 @@
 
 <div class="Heading1"><%= Resources.Language.ImportComplete%></div>
 <p><%= Resources.Language.ImportCompleteMessage %></p>
-<ul><li><a href='../User/SignIn.aspx'><%= Resources.Language.SignIn %></a></li></ul>
+<ul><li><a href='../User-SignIn.aspx'><%= Resources.Language.SignIn %></a></li></ul>
 
 </asp:View>
 </asp:MultiView>

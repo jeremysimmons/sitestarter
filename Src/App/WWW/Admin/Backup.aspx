@@ -38,7 +38,7 @@
     	}
     	catch (FormatException ex)
     	{
-    		AppLogger.Error(ex.ToString());
+    		LogWriter.Error(ex.ToString());
     		// Don't throw exception. An error here can be ignored and a standard backup will be performed
     	}
     }

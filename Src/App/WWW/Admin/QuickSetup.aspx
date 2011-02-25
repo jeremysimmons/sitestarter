@@ -16,7 +16,7 @@
 
 private void Page_Load(object sender, EventArgs e)
 {
-	using (LogGroup logGroup = AppLogger.StartGroup("Running setup script", NLog.LogLevel.Info))
+	using (LogGroup logGroup = LogGroup.Start("Running setup script", NLog.LogLevel.Info))
 	{
 		Setup();
 		//	Response.Redirect("Restore.aspx");
@@ -25,7 +25,7 @@ private void Page_Load(object sender, EventArgs e)
 
 	private void Setup()
 	{
-		using (LogGroup logGroup = AppLogger.StartGroup("Running setup.", NLog.LogLevel.Debug))
+		using (LogGroup logGroup = LogGroup.Start("Running setup.", NLog.LogLevel.Debug))
 		{
 			ApplicationInstaller installer = new ApplicationInstaller();
 			
@@ -71,7 +71,7 @@ private void Page_Load(object sender, EventArgs e)
 		{
 			User user = null;
 			
-			using (LogGroup logGroup = AppLogger.StartGroup("Creating the default administrator user.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Creating the default administrator user.", NLog.LogLevel.Debug))
 			{
 				user = new User();
 				user.ID = Guid.NewGuid();
@@ -83,7 +83,7 @@ private void Page_Load(object sender, EventArgs e)
 				user.IsLockedOut = false;
 				user.Email = "default@softwaremonkeys.net";
 				
-				AppLogger.Debug("Administrator name: " + user.Name);
+				LogWriter.Debug("Administrator name: " + user.Name);
 			}
 			
 			return user;
