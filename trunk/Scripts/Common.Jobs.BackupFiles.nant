@@ -81,11 +81,11 @@
 		<echo message="External net path: ${Backup.ExternalPath.Net}"/>
 		<echo message="External mono path: ${Backup.ExternalPath.Mono}"/>
     	
-		<if test="${nant.settings.currentframework == 'net-2.0'}">
+		<if test="${string::index-of(nant.settings.currentframework, 'net') > -1}">
 			<property name="Backup.ZipPath.Internal" value="${path::combine(path::combine(Project.RootPath, 'Backups'), Project.Name + '-' + Backup.Timestamp + '.zip')}"/>
 			<property name="Backup.ZipPath.External" value="${path::combine(string::trim(Backup.ExternalPath.Net), Project.Name + '-' + Backup.Timestamp + '.zip')}"/>
 		</if>
-		<if test="${nant.settings.currentframework == 'mono-2.0'}">
+		<if test="${string::index-of(nant.settings.currentframework, 'mono') > -1}">
 			<property name="Backup.ZipPath.Internal" value="${path::combine(path::combine(Project.RootPath, 'Backups'), Project.Name)}-${Backup.Timestamp}.zip"/>
 			<property name="Backup.ZipPath.External" value="${path::combine(Backup.ExternalPath.Mono, Project.Name + '-' + Backup.Timestamp + '.zip')}"/>
 		</if>
