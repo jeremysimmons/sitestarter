@@ -1,8 +1,9 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{FBB72693-0267-4DB0-98D5-9ECBC13E98DD}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -137,7 +138,6 @@
       <Project>{A5D49D94-D936-4123-BA9A-572AA7C7F426}</Project>
       <Name>SiteStarter.Web</Name>
     </ProjectReference>
-    <None Include="WebControls\_svn\entries" />
     <Compile Include="BaseWebTestFixture.cs" />
     <Compile Include="Controllers\ControllerLocatorTests.cs" />
     <Compile Include="Controllers\ControllerScannerTests.cs" />
@@ -146,16 +146,20 @@
     <Compile Include="Controllers\MockController.cs" />
     <Compile Include="Controllers\ViewControllerTests.cs" />
     <Compile Include="MockUrlCreator.cs" />
-    <Compile Include="MockUserControl.cs" />
-    <Compile Include="Parts\MockPart.cs" />
+    <Compile Include="MockUserControl.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Parts\MockPart.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="Parts\MockPartLoader.cs" />
     <Compile Include="Parts\MockPartScanner.cs" />
-    <Compile Include="Parts\PartLocatorTests.cs" />
     <Compile Include="Parts\PartScannerTests.cs" />
-    <Compile Include="Projections\MockProjection.cs" />
+    <Compile Include="Projections\MockProjection.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="Projections\MockProjectionLoader.cs" />
     <Compile Include="Projections\MockProjectionScanner.cs" />
-    <Compile Include="Projections\ProjectionLocatorTests.cs" />
     <Compile Include="Projections\ProjectionScannerTests.cs" />
     <Compile Include="SetupCheckerTests.cs" />
     <Compile Include="SiteMapTests.cs" />
@@ -164,18 +168,6 @@
     <Compile Include="WebControls\EntityFormHelperTests.cs" />
     <Compile Include="WebControls\IndexGridTests.cs" />
     <Compile Include="WebUtilitiesTests.cs" />
-    <Folder Include="Controllers" />
-    <Folder Include="Parts" />
-    <Folder Include="Projections" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
-    <Folder Include="WebControls\_svn\prop-base\" />
-    <Folder Include="WebControls\_svn\props\" />
-    <Folder Include="WebControls\_svn\text-base\" />
-    <Folder Include="WebControls\_svn\tmp\prop-base\" />
-    <Folder Include="WebControls\_svn\tmp\props\" />
-    <Folder Include="WebControls\_svn\tmp\text-base\" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -203,6 +195,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

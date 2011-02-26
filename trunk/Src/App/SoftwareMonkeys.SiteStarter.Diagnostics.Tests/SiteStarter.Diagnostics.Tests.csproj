@@ -111,7 +111,6 @@
     <Compile Include="LogGroupTests.cs" />
     <Compile Include="LogSupervisorTests.cs" />
     <Compile Include="LogThreaderTests.cs" />
-    <Compile Include="LogUtilitiesTests.cs" />
     <Compile Include="MockModeDetector.cs" />
     <Compile Include="ReflectorTests.cs" />
     <Compile Include="TypeNavigatorTests.cs" />

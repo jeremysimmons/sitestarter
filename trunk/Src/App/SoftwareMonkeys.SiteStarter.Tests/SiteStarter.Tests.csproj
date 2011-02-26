@@ -1,4 +1,5 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -63,15 +64,16 @@
     <Compile Include="BaseTestFixture.cs" />
     <Compile Include="Entities\BaseTestEntity.cs" />
     <Compile Include="Entities\BaseUniqueTestEntity.cs" />
+    <Compile Include="Entities\EntityFive.cs" />
     <Compile Include="Entities\EntityFour.cs" />
     <Compile Include="Entities\EntityOne.cs" />
+    <Compile Include="Entities\EntitySix.cs" />
     <Compile Include="Entities\EntityThree.cs" />
     <Compile Include="Entities\EntityTwo.cs" />
     <Compile Include="Entities\ITestArticle.cs" />
     <Compile Include="Entities\ITestRole.cs" />
     <Compile Include="Entities\ITestUser.cs" />
     <Compile Include="Entities\TestAccount.cs" />
-    <Compile Include="Entities\TestAction.cs" />
     <Compile Include="Entities\TestArticle.cs" />
     <Compile Include="Entities\TestArticlePage.cs" />
     <Compile Include="Entities\TestCategory.cs" />
