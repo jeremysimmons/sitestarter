@@ -7,11 +7,11 @@
 	<include buildfile="Common.Jobs.ClearData.nant"/>
 
 	<!-- Add a reference to the sharpziplib library even though it doesn't have tasks in it. -->
-<loadtasks>
+	<loadtasks>
             <fileset>
                         <include name="../Lib/ICSharpCode.SharpZipLib.dll" />
             </fileset>
-</loadtasks> 
+	</loadtasks> 
 	
 <target name="Common.Jobs.CreateReleaseZips">
 		<call target="Common.Jobs.ResetAll"/>
@@ -71,6 +71,7 @@
   <!-- Actions.ZipSourceRelease -->
   <target name="Common.Actions.ZipSourceRelease">
   	<property name="Solution.Alias" value="${path::get-file-name(Solution.RootPath)}"/>
+
   	<mkdir dir="${Solution.RootPath}\..\..\Releases\Source\"/>
   	<zip zipfile="${Solution.RootPath}\..\..\Releases\Source\${Solution.SourceReleaseName}.zip">
 	    <fileset basedir="${Project.RootPath}">
@@ -139,7 +140,7 @@
 
 	</zip>
 	
-	<property name="LatestReleasePath" value="${Project.RootPath}\..\${Project.Name}-SourceRelease"/>
+	<property name="LatestReleasePath" value="${Project.RootPath}\..\${Project.Name}-SourceRelease\${Solution.Alias}"/>
 	<if test="${directory::exists(LatestReleasePath) == true}">
 		<delete dir="${LatestReleasePath}"/>
 	</if>
@@ -166,8 +167,10 @@
   	</if>
   	
   	<echo message="${InstallablePath}"/>
+
+  	<property name="Solution.Alias" value="${path::get-file-name(Solution.RootPath)}"/>
   	
-  	<mkdir dir="${Solution.RootPath}\..\..\Releases\Install\"/>
+  	<mkdir dir="${Solution.RootPath}\..\..\Releases\Install"/>
   	<zip zipfile="${Solution.RootPath}\..\..\Releases\Install\${Solution.InstallReleaseName}.zip">
 	    <fileset basedir="${InstallablePath}">
 	        <exclude name="**/*.yap"/>
@@ -221,7 +224,7 @@
 	        <include name="${IncludeKey}" />
 	    </fileset>	   
 	</zip>
-	<property name="LatestReleasePath" value="${Project.RootPath}\..\${Project.Name}-InstallRelease"/>
+	<property name="LatestReleasePath" value="${Project.RootPath}\..\${Project.Name}-InstallRelease\${Solution.Alias}"/>
 	<if test="${directory::exists(LatestReleasePath) == true}">
 		<delete dir="${LatestReleasePath}"/>
 	</if>
