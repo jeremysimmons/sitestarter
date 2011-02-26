@@ -56,12 +56,15 @@
     <None Include="Admin\Import.aspx" />
     <None Include="Admin\Log.aspx" />
     <None Include="Admin\QuickSetup.aspx" />
+    <None Include="Admin\Tests\ClearData.aspx" />
+    <None Include="Admin\Tests\ResetDefaultData.aspx" />
     <None Include="Admin\Tests\TestBreakableLogging.aspx" />
     <None Include="Admin\Tests\TestContactForm.aspx" />
     <None Include="Admin\Tests\TestLogging.aspx" />
     <None Include="Admin\Tests\TestReset.aspx" />
     <None Include="Admin\Update.aspx" />
     <None Include="Admin\UpdateReady.html" />
+    <None Include="App_Data\Menu.default.sitemap" />
     <None Include="App_GlobalResources\_svn\all-wcprops" />
     <None Include="App_GlobalResources\_svn\entries" />
     <None Include="App_GlobalResources\_svn\format" />
@@ -107,6 +110,7 @@
   <ItemGroup>
     <Folder Include="Admin" />
     <Folder Include="Admin\Tests" />
+    <Folder Include="App_Data" />
     <Folder Include="App_GlobalResources" />
     <Folder Include="App_GlobalResources\_svn" />
     <Folder Include="App_GlobalResources\_svn\prop-base" />
