@@ -2,73 +2,102 @@
 using SoftwareMonkeys.SiteStarter.Web;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Web.Security;
+using SoftwareMonkeys.SiteStarter.Web.Controllers;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Projections
 {
 	/// <summary>
 	/// Used as the base of all XML projections.
 	/// </summary>
-	public class BaseXmlIndexProjection : BaseProjection
-	{
-		private string xsltFilePath = String.Empty;
+	public class BaseXmlIndexProjection : BaseXmlProjection
+	{		
+		private IndexController controller;
 		/// <summary>
-		/// Gets/sets the path to the XSLT file.
+		/// Gets the controller used to perform actions in relation to this page.
 		/// </summary>
-		public string XsltFilePath
+		public IndexController Controller
 		{
 			get {
-				if (xsltFilePath == String.Empty)
-					xsltFilePath = new UrlCreator().CreateXsltUrl(QueryStrings.Action, QueryStrings.Type);
-				return xsltFilePath; }
-			set { xsltFilePath = value; }
+				return controller; }
 		}
-		
-		private IEntity[] dataSource = new IEntity[] {};
-		/// <summary>
-		/// Gets/sets the data source being output by the projection.
-		/// </summary>
-		public IEntity[] DataSource
-		{
-			get { return dataSource; }
-			set { dataSource = value; }
-		}
-		
+				
 		public BaseXmlIndexProjection()
 		{
 		}
 		
 		/// <summary>
-		/// Loads the data to display on the projection.
+		/// Initializes the page and the controller for the specified type.
 		/// </summary>
-		/// <returns></returns>
-		public virtual void LoadData()
+		/// <param name="type"></param>
+		public void Initialize(Type type)
 		{
-			throw new InvalidOperationException("This method needs to be overridden by all XML projections.");
+			Initialize(type, false);
 		}
 		
-		protected override void OnInit(EventArgs e)
+		/// <summary>
+		/// Initializes the page and the controller for the specified type.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="isPaged"></param>
+		public void Initialize(Type type, bool isPaged)
 		{
-			Response.ContentType = "text/xml";
-			
-			base.OnInit(e);
-		}
-		
-		protected override void Render(System.Web.UI.HtmlTextWriter writer)
-		{
-			LoadData();
-			
-			if (DataSource != null)
-				Authorisation.EnsureUserCan("View", DataSource);
+			Type = type;
+			controller = IndexController.New(this);
 
-			XmlProjectionRenderer renderer = new XmlProjectionRenderer(QueryStrings.Type);
-			renderer.DataSource = DataSource;
-			renderer.XsltFile = XsltFilePath;
-			renderer.Render(writer);
 		}
 		
-		public string CreateXsltFilePath(string action, string type)
+		protected override void OnLoad(EventArgs e)
 		{
-			return new UrlCreator().CreateXsltUrl(action, type);
+			Index();
+			
+			base.OnLoad(e);
+		}
+		
+		/// <summary>
+		/// Displays an index of the entities.
+		/// </summary>
+		public virtual void Index()
+		{
+			using (LogGroup logGroup = LogGroup.Start("Displaying an index of entities.", NLog.LogLevel.Debug))
+			{
+				if (controller == null)
+					throw new InvalidOperationException("Controller has not be initialized. Call IndexPage.Initialize().");
+				
+				IEntity[] entities = Controller.PrepareIndex();
+				
+				LogWriter.Debug("Count: " + entities.Length.ToString());
+				
+				Index(entities);
+			}
+		}
+		
+		/// <summary>
+		/// Displays an index of the provided entities at the specified location.
+		/// </summary>
+		public void Index(IEntity[] entities)
+		{
+			using (LogGroup logGroup = LogGroup.Start("Displaying an index of the provided entities.", NLog.LogLevel.Debug))
+			{
+				if (entities == null)
+					throw new ArgumentNullException("entities");
+				
+				CheckController();
+				
+				DataSource = entities;
+				
+				Controller.Index(entities);
+								
+				LogWriter.Debug("Count: " + entities.Length);
+				
+				DataBind();
+			}
+		}
+		
+		private void CheckController()
+		{
+			if (controller == null)
+				throw new InvalidOperationException("Controller has not be initialized. Call Initialize().");
 		}
 	}
 }

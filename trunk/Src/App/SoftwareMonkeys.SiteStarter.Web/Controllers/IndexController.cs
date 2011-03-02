@@ -247,21 +247,21 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	
 	#region Specific functions
 	/// <summary>
-	/// Loads the entities for the index.
+	/// Loads the entities and prepares the index.
 	/// </summary>
 	/// <returns></returns>
 	public virtual IEntity[] PrepareIndex()
 	{
 		if (EnsureAuthorised())
 		{
-			DataSource = Indexer.Index();
+			DataSource = Load();
 		}
 		
 		return DataSource;
 	}
 	
 	/// <summary>
-	/// Loads the entities for the index based on the provided filter values.
+	/// Loads the entities and prepares the index based on the provided filter values.
 	/// </summary>
 	/// <param name="propertyName"></param>
 	/// <param name="propertyValue"></param>
@@ -283,8 +283,30 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	{
 		if (EnsureAuthorised())
 		{
-			DataSource = Indexer.Index(filterValues);
+			DataSource = Load(filterValues);
 		}
+		
+		return DataSource;
+	}
+	
+	protected virtual IEntity[] Load()
+	{
+    	IEntity[] entities = IndexStrategy.New(TypeName).Index();
+        
+        entities = Collection<IEntity>.Sort(entities, SortExpression);
+
+		DataSource = entities;
+		
+		return DataSource;
+	}
+	
+	protected virtual IEntity[] Load(Dictionary<string, object> filterValues)
+	{    
+    	IEntity[] entities = IndexStrategy.New(TypeName).Index(filterValues);
+        
+        entities = Collection<IEntity>.Sort(entities, SortExpression);
+
+		DataSource = entities;
 		
 		return DataSource;
 	}
@@ -336,6 +358,22 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		return !Container.RequireAuthorisation || isAuthorised;
 	}
 	
+	public static IndexController New(IControllable container)
+	{
+		container.CheckType();
+		
+		IndexController controller = ControllerState.Controllers.Creator.NewIndexer(container.Type.Name);
+		
+		controller.Container = container;
+		controller.EnablePaging = false;
+		if (QueryStrings.Available)
+		{
+			controller.CurrentPageIndex = QueryStrings.PageIndex;
+			controller.SortExpression = QueryStrings.Sort;
+		}
+		
+		return controller;
+	}
 	
 	public static IndexController New(IControllable container, bool enablePaging)
 	{
