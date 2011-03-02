@@ -88,6 +88,8 @@
     <None Include="Global.asax" />
     <None Include="Maintenance.html" />
     <None Include="Projections\IEntity-Delete.ascx" />
+    <None Include="Projections\IEntity-Index.xml.ascx" />
+    <None Include="Projections\IEntity-View.xml.ascx" />
     <None Include="Projections\Message-Send.ascx" />
     <None Include="Projections\Settings-Index.ascx" />
     <None Include="Projections\Smtp-Test.ascx" />

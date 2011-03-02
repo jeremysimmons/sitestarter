@@ -23,12 +23,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			set { xsltFile = value; }
 		}
 
-		private IEntity[] dataSource;
-		public IEntity[] DataSource
+		private object dataSource;
+		public object DataSource
 		{
 			get { return dataSource; }
 			set { dataSource = value;
-				ValidateDataSource(value);
+				// TODO: Check if validation is needed. Should be obsolete.
+				//ValidateDataSource(value);
 			}
 		}
 
@@ -56,8 +57,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 					
 					Type type = EntitiesUtilities.GetType(TypeName);
 
-					XmlSerializer serializer = new XmlSerializer(typeof(SerializableCollection), new Type[] {type});
-					serializer.Serialize(stringWriter, new SerializableCollection(DataSource));
+					if (DataSource is Array)
+						DataSource = new SerializableCollection((IEntity[])DataSource);
+					
+					XmlSerializer serializer = new XmlSerializer(DataSource.GetType(), new Type[] {type});
+					serializer.Serialize(stringWriter, DataSource);
 
 					XmlDocument doc = new XmlDocument();
 					
@@ -67,9 +71,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 					doc.LoadXml(stringWriter.ToString());
 
 
+					string piString = "type=\"text/xsl\"";
+					
+					// TODO: Re-enable XSLT. Was commented out due to an error.
+					//piString += "href=\"" + XsltFile + "\"";
+					
 					XmlProcessingInstruction pi =
 						doc.CreateProcessingInstruction("xml-stylesheet",
-						                                "type=\"text/xsl\" href=\"" + XsltFile + "\"");
+						                                piString);
 
 					doc.InsertBefore(pi, doc.DocumentElement);
 
