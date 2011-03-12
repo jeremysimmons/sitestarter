@@ -62,11 +62,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				// TODO: Clean up
 				//if (Indexer != null && Indexer.Location != null)
 				//{
-					if (QueryStrings.Available && QueryStrings.PageIndex != 0)
-					{
-						Indexer.Location.PageIndex = QueryStrings.PageIndex;
-					}
-					return Indexer.Location.PageIndex;
+				if (QueryStrings.Available && QueryStrings.PageIndex != 0)
+				{
+					Indexer.Location.PageIndex = QueryStrings.PageIndex;
+				}
+				return Indexer.Location.PageIndex;
 				//}
 			}
 			set
@@ -146,7 +146,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				else
 					return 0;
 			}
-			set 
+			set
 			{
 				
 				CheckInitialized();
@@ -156,253 +156,293 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				}
 			}
 		}
-	
-	
-	private IIndexStrategy indexer;
-	/// <summary>
-	/// Gets/sets the index strategy used to retrieve the entities for the index.
-	/// </summary>
-	public IIndexStrategy Indexer
-	{
-		get {
-			if (indexer== null)
+		
+		
+		private IIndexStrategy indexer;
+		/// <summary>
+		/// Gets/sets the index strategy used to retrieve the entities for the index.
+		/// </summary>
+		public IIndexStrategy Indexer
+		{
+			get {
+				if (indexer== null)
+				{
+					Container.CheckType();
+					
+					indexer = IndexStrategy.New(TypeName, Container.RequireAuthorisation);
+				}
+				return indexer; }
+			set { indexer = value; }
+		}
+		
+		public IndexController()
+		{
+		}
+		
+		#region Index functions
+		/// <summary>
+		/// Loads and displays an index of entities.
+		/// </summary>
+		public virtual void Index()
+		{
+			using (LogGroup logGroup = LogGroup.Start("Displaying an index of entities.", NLog.LogLevel.Debug))
 			{
-				Container.CheckType();
+				CheckInitialized();
 				
-				indexer = IndexStrategy.New(Container.Type.Name, Container.RequireAuthorisation);
+				LogWriter.Debug("Type name: " + TypeName);
+				
+				DataSource = PrepareIndex();
+				
+				Index(DataSource);
 			}
-			return indexer; }
-		set { indexer = value; }
-	}
-	
-	public IndexController()
-	{
-	}
-	
-	#region Index functions
-	/// <summary>
-	/// Loads and displays an index of entities.
-	/// </summary>
-	public virtual void Index()
-	{
-		CheckInitialized();
+		}
 		
-		DataSource = PrepareIndex();
-		
-		Index(DataSource);
-	}
-	
-	/// <summary>
-	/// Displays the provided index of entities.
-	/// </summary>
-	/// <param name="entities"></param>
-	public virtual void Index(IEntity[] entities)
-	{
-		DataSource = entities;
-		
-		if (entities == null)
-			entities = new IEntity[] {};
-		
-		// TODO: Check if needed. Should be obsolete.
-		/*if (AbsoluteTotal < entities.Length)
+		/// <summary>
+		/// Displays the provided index of entities.
+		/// </summary>
+		/// <param name="entities"></param>
+		public virtual void Index(IEntity[] entities)
+		{
+			using (LogGroup logGroup = LogGroup.Start("Display an index of the provided entities.", NLog.LogLevel.Debug))
 			{
-				AbsoluteTotal = entities.Length;
-			}*/
-		
-		
-		if (entities == null)
-			throw new ArgumentNullException("entities");
-		
-		
-		ExecuteIndex(entities);
-	}
-	
-	/// <summary>
-	/// Displays an index of entities matching the provided filter values.
-	/// </summary>
-	/// <param name="filterValues"></param>
-	public virtual void Index(Dictionary<string, object> filterValues)
-	{
-		using (LogGroup logGroup = LogGroup.Start("Preparing to load an index of enitities for display."))
-		{
-			if (filterValues == null)
-				filterValues = new Dictionary<string, object>();
-			
-			CheckInitialized();
-			
-			if (filterValues == null)
-				throw new ArgumentNullException("filterValues");
-			
-			if (filterValues.Count == 0)
-				throw new ArgumentNullException("No filter values specified. Use the other overload if not specifying filter values.");
-			
-			IEntity[] entities = null;
-			
-			entities = PrepareIndex(filterValues);
-			
-			Index(entities);
-		}
-	}
-	#endregion
-	
-	#region Specific functions
-	/// <summary>
-	/// Loads the entities and prepares the index.
-	/// </summary>
-	/// <returns></returns>
-	public virtual IEntity[] PrepareIndex()
-	{
-		if (EnsureAuthorised())
-		{
-			DataSource = Load();
+				LogWriter.Debug("Type name: " + TypeName);
+				
+				DataSource = entities;
+				
+				if (entities == null)
+					entities = new IEntity[] {};
+				
+				if (entities == null)
+					throw new ArgumentNullException("entities");
+				
+				ExecuteIndex(entities);
+			}
 		}
 		
-		return DataSource;
-	}
-	
-	/// <summary>
-	/// Loads the entities and prepares the index based on the provided filter values.
-	/// </summary>
-	/// <param name="propertyName"></param>
-	/// <param name="propertyValue"></param>
-	/// <returns></returns>
-	public virtual IEntity[] PrepareIndex(string propertyName, object propertyValue)
-	{
-		Dictionary<string, object> filterValues = new Dictionary<string, object>();
-		filterValues.Add(propertyName, propertyValue);
-		
-		return PrepareIndex(filterValues);
-	}
-	
-	/// <summary>
-	/// Loads the entities for the index based on the provided filter values.
-	/// </summary>
-	/// <param name="filterValues"></param>
-	/// <returns></returns>
-	public virtual IEntity[] PrepareIndex(Dictionary<string, object> filterValues)
-	{
-		if (EnsureAuthorised())
+		/// <summary>
+		/// Displays an index of entities matching the provided filter values.
+		/// </summary>
+		/// <param name="filterValues"></param>
+		public virtual void Index(Dictionary<string, object> filterValues)
 		{
-			DataSource = Load(filterValues);
+			using (LogGroup logGroup = LogGroup.Start("Preparing to load an index of enitities for display."))
+			{
+				LogWriter.Debug("Type name: " + TypeName);
+				
+				if (filterValues == null)
+					filterValues = new Dictionary<string, object>();
+				
+				CheckInitialized();
+				
+				if (filterValues == null)
+					throw new ArgumentNullException("filterValues");
+				
+				if (filterValues.Count == 0)
+					throw new ArgumentNullException("No filter values specified. Use the other overload if not specifying filter values.");
+				
+				IEntity[] entities = null;
+				
+				entities = PrepareIndex(filterValues);
+				
+				Index(entities);
+			}
+		}
+		#endregion
+		
+		#region Specific functions
+		/// <summary>
+		/// Loads the entities and prepares the index.
+		/// </summary>
+		/// <returns></returns>
+		public virtual IEntity[] PrepareIndex()
+		{
+			using (LogGroup logGroup = LogGroup.Start("Preparing to display an index of entities.", NLog.LogLevel.Debug))
+			{
+				if (EnsureAuthorised())
+				{
+					DataSource = Load();
+				}
+			}
+			
+			return DataSource;
 		}
 		
-		return DataSource;
-	}
-	
-	protected virtual IEntity[] Load()
-	{
-    	IEntity[] entities = IndexStrategy.New(TypeName).Index();
-        
-        entities = Collection<IEntity>.Sort(entities, SortExpression);
+		/// <summary>
+		/// Loads the entities and prepares the index based on the provided filter values.
+		/// </summary>
+		/// <param name="propertyName"></param>
+		/// <param name="propertyValue"></param>
+		/// <returns></returns>
+		public virtual IEntity[] PrepareIndex(string propertyName, object propertyValue)
+		{
+			IEntity[] entities = new IEntity[]{};
+			
+			using (LogGroup logGroup = LogGroup.Start("Preparing to display an index of entities with the specified property matching the provided value.", NLog.LogLevel.Debug))
+			{
+				Dictionary<string, object> filterValues = new Dictionary<string, object>();
+				filterValues.Add(propertyName, propertyValue);
+				
+				entities = PrepareIndex(filterValues);
+			}
+			
+			return entities;
+		}
+		
+		/// <summary>
+		/// Loads the entities for the index based on the provided filter values.
+		/// </summary>
+		/// <param name="filterValues"></param>
+		/// <returns></returns>
+		public virtual IEntity[] PrepareIndex(Dictionary<string, object> filterValues)
+		{
+			using (LogGroup logGroup = LogGroup.Start("Preparing to display an index of entities matching the provided filters.", NLog.LogLevel.Debug))
+			{
+				if (EnsureAuthorised())
+				{
+					DataSource = Load(filterValues);
+				}
+			}
+			
+			return DataSource;
+		}
+		
+		protected virtual IEntity[] Load()
+		{
+			using (LogGroup logGroup = LogGroup.Start("Loading entities to be displayed as an index.", NLog.LogLevel.Debug))
+			{
+				IEntity[] entities = IndexStrategy.New(TypeName).Index();
+				
+				entities = Collection<IEntity>.Sort(entities, SortExpression);
 
-		DataSource = entities;
+				DataSource = entities;
+			}
+			
+			return DataSource;
+		}
 		
-		return DataSource;
-	}
-	
-	protected virtual IEntity[] Load(Dictionary<string, object> filterValues)
-	{    
-    	IEntity[] entities = IndexStrategy.New(TypeName).Index(filterValues);
-        
-        entities = Collection<IEntity>.Sort(entities, SortExpression);
+		protected virtual IEntity[] Load(Dictionary<string, object> filterValues)
+		{
+			using (LogGroup logGroup = LogGroup.Start("Loading entities (matching the provided filter values) to be displayed as an index.", NLog.LogLevel.Debug))
+			{
+				IEntity[] entities = IndexStrategy.New(TypeName).Index(filterValues);
+				
+				entities = Collection<IEntity>.Sort(entities, SortExpression);
 
-		DataSource = entities;
-		
-		return DataSource;
-	}
-	
-	/// <summary>
-	/// Executes the index operation using the provided entities.
-	/// </summary>
-	/// <param name="entities"></param>
-	protected virtual void ExecuteIndex(IEntity[] entities)
-	{
-		using (LogGroup logGroup = LogGroup.Start("Preparing to display an index of entities.", NLog.LogLevel.Debug))
-		{
-			if (entities == null)
-				throw new ArgumentNullException("entities");
+				DataSource = entities;
+			}
 			
-			LogWriter.Debug("# of entities: " + entities.Length);
-			
-			Type type = entities.GetType().GetElementType();
-			
-			OperationManager.StartOperation("Index" + type.Name, null);
-			
-			// There will likely be an authorisation check before this function is called, checking based on just the type,
-			// but it's necessary to check the authorisation for the actual entities
-			Authorise(ref entities);
-			
-			DataSource = entities;
-		}
-	}
-	
-	public virtual void CheckInitialized()
-	{
-		
-		if (Container.Type == null)
-			throw new InvalidOperationException("Type not specified.");
-	}
-	#endregion
-	
-	
-	/// <summary>
-	/// Ensures that the user is authorised to index entities of the specified type.
-	/// </summary>
-	/// <param name="entities">The entities involved in the authorisation check.</param>
-	/// <returns>A value indicating whether the user is authorised.</returns>
-	public bool Authorise(ref IEntity[] entities)
-	{
-		bool isAuthorised = StrategyState.Strategies["Authorise" + Container.InternalAction, Container.Type.Name]
-			.New<IAuthoriseIndexStrategy>(Container.Type.Name).Authorise(ref entities);
-		
-		return !Container.RequireAuthorisation || isAuthorised;
-	}
-	
-	public static IndexController New(IControllable container)
-	{
-		container.CheckType();
-		
-		IndexController controller = ControllerState.Controllers.Creator.NewIndexer(container.Type.Name);
-		
-		controller.Container = container;
-		controller.EnablePaging = false;
-		if (QueryStrings.Available)
-		{
-			controller.CurrentPageIndex = QueryStrings.PageIndex;
-			controller.SortExpression = QueryStrings.Sort;
+			return DataSource;
 		}
 		
-		return controller;
-	}
-	
-	public static IndexController New(IControllable container, bool enablePaging)
-	{
-		container.CheckType();
-		
-		IndexController controller = ControllerState.Controllers.Creator.NewIndexer(container.Type.Name);
-		
-		controller.Container = container;
-		controller.EnablePaging = enablePaging;
-		if (QueryStrings.Available)
+		/// <summary>
+		/// Executes the index operation using the provided entities.
+		/// </summary>
+		/// <param name="entities"></param>
+		protected virtual void ExecuteIndex(IEntity[] entities)
 		{
-			controller.CurrentPageIndex = QueryStrings.PageIndex;
-			controller.SortExpression = QueryStrings.Sort;
+			using (LogGroup logGroup = LogGroup.Start("Preparing to display an index of entities.", NLog.LogLevel.Debug))
+			{
+				if (entities == null)
+					throw new ArgumentNullException("entities");
+				
+				LogWriter.Debug("# of entities: " + entities.Length);
+				
+				Type type = entities.GetType().GetElementType();
+				
+				OperationManager.StartOperation("Index" + type.Name, null);
+				
+				// There will likely be an authorisation check before this function is called, checking based on just the type,
+				// but it's necessary to check the authorisation for the actual entities
+				Authorise(ref entities);
+				
+				DataSource = entities;
+			}
 		}
 		
-		return controller;
+		public virtual void CheckInitialized()
+		{
+			
+			if (TypeName == String.Empty)
+				throw new InvalidOperationException("Type not specified.");
+		}
+		#endregion
+		
+		
+		/// <summary>
+		/// Ensures that the user is authorised to index entities of the specified type.
+		/// </summary>
+		/// <param name="entities">The entities involved in the authorisation check.</param>
+		/// <returns>A value indicating whether the user is authorised.</returns>
+		public bool Authorise(ref IEntity[] entities)
+		{
+			bool isAuthorised = StrategyState.Strategies["Authorise" + Container.InternalAction, TypeName]
+				.New<IAuthoriseIndexStrategy>(TypeName).Authorise(ref entities);
+			
+			return !Container.RequireAuthorisation || isAuthorised;
+		}
+		
+		public static IndexController New(IControllable container, string typeName)
+		{
+			IndexController controller = null;
+			
+			using (LogGroup logGroup = LogGroup.Start("Creating a new IndexController.", NLog.LogLevel.Debug))
+			{
+				LogWriter.Debug("Type name: " + typeName);
+				
+				container.CheckType();
+				
+				controller = ControllerState.Controllers.Creator.NewIndexer(typeName);
+				
+				controller.Container = container;
+				controller.EnablePaging = false;
+				
+				if (QueryStrings.Available)
+				{
+					controller.CurrentPageIndex = QueryStrings.PageIndex;
+					controller.SortExpression = QueryStrings.Sort;
+				}
+			}
+			
+			return controller;
+		}
+		
+		public static IndexController New(IControllable container)
+		{
+			container.CheckType();
+			
+			IndexController controller = New(container, false);
+			
+			return controller;
+		}
+		
+		public static IndexController New(IControllable container, bool enablePaging)
+		{
+			container.CheckType();
+			
+			IndexController controller = ControllerState.Controllers.Creator.NewIndexer(container.Type.Name);
+			
+			controller.Container = container;
+			controller.EnablePaging = enablePaging;
+			if (QueryStrings.Available)
+			{
+				controller.CurrentPageIndex = QueryStrings.PageIndex;
+				controller.SortExpression = QueryStrings.Sort;
+			}
+			
+			return controller;
+		}
+		
+		public static IndexController New(IControllable container, PagingLocation location)
+		{
+			container.CheckType();
+			
+			IndexController controller = ControllerState.Controllers.Creator.NewIndexer(container.Type.Name);
+			
+			controller.Container = container;
+			controller.EnablePaging = true;
+			controller.Indexer.Location = location;
+			
+			return controller;
+		}
 	}
-	
-	public static IndexController New(IControllable container, PagingLocation location)
-	{
-		container.CheckType();
-		
-		IndexController controller = ControllerState.Controllers.Creator.NewIndexer(container.Type.Name);
-		
-		controller.Container = container;
-		controller.EnablePaging = true;
-		controller.Indexer.Location = location;
-		
-		return controller;
-	}
-}
 }
