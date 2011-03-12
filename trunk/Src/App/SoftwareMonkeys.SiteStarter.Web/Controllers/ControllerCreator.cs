@@ -129,10 +129,19 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <returns></returns>
 		public IndexController NewIndexer(string typeName)
 		{
-			CheckType(typeName);
+			IndexController controller = null;
 			
-			return Controllers["Index", typeName]
-				.New<IndexController>(typeName);
+			using (LogGroup logGroup = LogGroup.Start("Creating a new IndexController.", NLog.LogLevel.Debug))
+			{
+				LogWriter.Debug("Type name: " + typeName);
+				
+				CheckType(typeName);
+			
+				controller = Controllers["Index", typeName]
+					.New<IndexController>(typeName);
+			}
+			
+			return controller;
 		}
 		
 		/// <summary>
