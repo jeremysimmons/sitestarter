@@ -157,12 +157,12 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			if (!HasEnded)
 			{
 				
-				if (new LogSupervisor().LoggingEnabled(CallingMethod, LogLevel))
-				{
-					End(CallingMethod);
-
-					
-				}
+				// Logging is always enabled for groups.
+				// TODO: Remove obsolete code if not needed
+				//if (new LogSupervisor().LoggingEnabled(CallingMethod, LogLevel))
+				//{
+					End(CallingMethod);					
+				//}
 				
 				
 				LogSupervisor supervisor = new LogSupervisor();
@@ -242,8 +242,9 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		{
 			MethodBase callingMethod = null;
 			
-			// Don't get the calling method if its not
-			if (new LogSupervisor().LoggingEnabled(logLevel))
+			// Logging is always enabled for groups
+			// TODO: Remove code if not needed
+			//if (new LogSupervisor().LoggingEnabled(logLevel))
 				callingMethod = Reflector.GetCallingMethod();
 			
 			return Start(summary, logLevel, callingMethod);

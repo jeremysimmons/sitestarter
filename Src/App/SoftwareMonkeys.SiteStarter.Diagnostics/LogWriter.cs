@@ -37,7 +37,6 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 					logger.Info(entry);
 				
 			}
-			
 		}
 		
 		/// <summary>
@@ -61,7 +60,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			StringBuilder logEntry = new StringBuilder();
 			
 			// If the callingMethod property is null then logging must be disabled, so skip the output
-			if (callingMethod != null && new LogSupervisor().LoggingEnabled(callingMethod, logLevel))
+			if (callingMethod != null)
 			{
 				//if (indent > 0 && parentID == Guid.Empty)
 				//	throw new Exception("Couldn't detect parent group of an entry at indent '" + indent + "' with data '" + message + "' from method '" + callingMethod.DeclaringType.ToString() + "." + callingMethod.Name + "'.");
@@ -76,7 +75,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 				logEntry.AppendFormat("<Component>{0}</Component>\r\n", EscapeLogData(callingMethod.DeclaringType.ToString()));
 				logEntry.AppendFormat("<Method>{0}</Method>\r\n", EscapeLogData(callingMethod.Name));
 				logEntry.AppendFormat("<Data>{0}</Data>\r\n", EscapeLogData(message));
-								
+				
 				logEntry.Append("</Entry>\r\n");
 				
 				logEntry.AppendLine();
@@ -100,9 +99,12 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 
 		public static void Error(string message, MethodBase callingMethod)
 		{
-			string entry = CreateLogEntry(LogLevel.Error, message, callingMethod, Guid.NewGuid(), DiagnosticState.CurrentGroupID, DiagnosticState.GroupIndent);
-			if (entry != null && entry.Trim() != String.Empty)
-				logger.Error(entry);
+			if (new LogSupervisor().LoggingEnabled(callingMethod, NLog.LogLevel.Error))
+			{
+				string entry = CreateLogEntry(LogLevel.Error, message, callingMethod, Guid.NewGuid(), DiagnosticState.CurrentGroupID, DiagnosticState.GroupIndent);
+				if (entry != null && entry.Trim() != String.Empty)
+					logger.Error(entry);
+			}
 		}
 
 		public static void Info(string message)
@@ -113,9 +115,12 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 
 		public static void Info(string message, MethodBase callingMethod)
 		{
-			string entry = CreateLogEntry(LogLevel.Info, message, callingMethod, Guid.NewGuid(), DiagnosticState.CurrentGroupID, DiagnosticState.GroupIndent);
-			if (entry != null && entry.Trim() != String.Empty)
-				logger.Info(entry);
+			if (new LogSupervisor().LoggingEnabled(callingMethod, NLog.LogLevel.Info))
+			{
+				string entry = CreateLogEntry(LogLevel.Info, message, callingMethod, Guid.NewGuid(), DiagnosticState.CurrentGroupID, DiagnosticState.GroupIndent);
+				if (entry != null && entry.Trim() != String.Empty)
+					logger.Info(entry);
+			}
 		}
 
 		[ Conditional("DEBUG") ]
