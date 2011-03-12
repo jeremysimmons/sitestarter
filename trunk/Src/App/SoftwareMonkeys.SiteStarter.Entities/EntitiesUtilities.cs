@@ -542,7 +542,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				ReferenceAttribute attribute = GetReferenceAttribute(property);
 				
 				if (attribute == null)
-					throw new Exception("No ReferenceAttribute found on the property '" + property.Name + "' of the type '" + sourceType.ToString() + "'.");
+					throw new Exception("No ReferenceAttribute found on the '" + property.Name + "' property of the type '" + sourceType.ToString() + "'.");
 				
 				// Is the mirror property name specified on the attribute?
 				if (attribute.MirrorPropertyName != String.Empty
