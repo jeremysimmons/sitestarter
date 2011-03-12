@@ -57,10 +57,17 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// </summary>
 		public string TypeName
 		{
-			get { return typeName; }
+			get {
+				if (typeName == String.Empty)
+				{
+					Container.CheckType();
+					
+					return Container.Type.Name;
+				}
+				else
+					return typeName; }
 			set { typeName = value; }
 		}
-		
 		
 		/// <summary>
 		/// Gets/sets the title displayed in the window.
