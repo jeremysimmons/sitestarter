@@ -119,7 +119,10 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		static public MethodBase GetCallingMethod()
 		{
 			string[] skipExpressions = new string[]{
-				"SiteStarter.Diagnostics"
+				"LogGroup",
+				"LogWriter",
+				"AppLogger",
+				"GetCallingMethod"
 			};
 
 			return GetCallingMethod(skipExpressions);
@@ -156,7 +159,8 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		{
 			foreach (string expression in skipExpressions)
 			{
-				if (method.ReflectedType.ToString().IndexOf(expression) > -1)
+				if (method.ReflectedType.ToString().IndexOf(expression) > -1
+				   || method.ToString().IndexOf(expression) > -1)
 					return false;
 			}
 
