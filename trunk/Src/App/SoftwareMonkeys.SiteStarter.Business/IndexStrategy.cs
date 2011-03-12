@@ -13,7 +13,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// </summary>
 	[Strategy("Index", "IEntity")]
 	public class IndexStrategy : BaseStrategy, IIndexStrategy
-	{		
+	{
 		private bool enablePaging;
 		/// <summary>
 		/// Gets/sets a value indicating whether paging is enabled on the index.
@@ -63,14 +63,30 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns>The entity matching the provided parameters.</returns>
 		public virtual IEntity[] IndexWithReference(string propertyName, string referencedEntityType, Guid referencedEntityID)
 		{
-			IEntity[] entities = (IEntity[])Reflector.InvokeGenericMethod(this,
-			                                                              "IndexWithReference",
-			                                                              new Type[] {EntityState.Entities[TypeName].GetEntityType()},
-			                                                              new object[] {propertyName, referencedEntityType, referencedEntityID});
+			IEntity[] entities = new IEntity[]{};
 			
-			if (RequireAuthorisation)
-				AuthoriseIndexStrategy.New(TypeName).EnsureAuthorised(ref entities);
-			
+			using (LogGroup logGroup = LogGroup.Start("Indexing entities that have the specified reference.", NLog.LogLevel.Debug))
+			{
+				LogWriter.Debug("Type name: " + TypeName);
+				
+				LogWriter.Debug("Property name: " + propertyName);
+				LogWriter.Debug("Reference entity type: " + referencedEntityType);
+				LogWriter.Debug("Referenced entity ID: " + referencedEntityID.ToString());
+				
+				LogWriter.Debug("Enable paging: " + EnablePaging.ToString());
+				
+				LogWriter.Debug("Require authorisation: " + RequireAuthorisation.ToString());
+				
+				entities = (IEntity[])Reflector.InvokeGenericMethod(this,
+				                                                    "IndexWithReference",
+				                                                    new Type[] {EntityState.Entities[TypeName].GetEntityType()},
+				                                                    new object[] {propertyName, referencedEntityType, referencedEntityID});
+				
+				if (RequireAuthorisation)
+					AuthoriseIndexStrategy.New(TypeName).EnsureAuthorised(ref entities);
+				
+				LogWriter.Debug("Entity count: " + entities.Length);
+			}
 			return entities;
 		}
 		
@@ -86,17 +102,31 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			T[] entities = new T[] {};
 			
-			if (EnablePaging)
+			using (LogGroup logGroup = LogGroup.Start("Indexing entities that have the specified reference.", NLog.LogLevel.Debug))
 			{
-				entities = (T[])DataAccess.Data.Indexer.GetPageOfEntitiesWithReference<T>(propertyName, EntitiesUtilities.GetType(referencedEntityType), referencedEntityID, Location, sortExpression);
+				LogWriter.Debug("Type name: " + typeof(T).ToString());
+				
+				LogWriter.Debug("Property name: " + propertyName);
+				LogWriter.Debug("Reference entity type: " + referencedEntityType);
+				LogWriter.Debug("Referenced entity ID: " + referencedEntityID.ToString());
+				
+				LogWriter.Debug("Enable paging: " + EnablePaging.ToString());
+				LogWriter.Debug("Require authorisation: " + RequireAuthorisation.ToString());
+				
+				if (EnablePaging)
+				{
+					entities = (T[])DataAccess.Data.Indexer.GetPageOfEntitiesWithReference<T>(propertyName, EntitiesUtilities.GetType(referencedEntityType), referencedEntityID, Location, sortExpression);
+				}
+				else
+				{
+					entities = (T[])DataAccess.Data.Indexer.GetEntitiesWithReference<T>(propertyName, EntitiesUtilities.GetType(referencedEntityType), referencedEntityID);
+				}
+				
+				if (RequireAuthorisation)
+					AuthoriseIndexStrategy.New<T>().EnsureAuthorised<T>(ref entities);
+				
+				LogWriter.Debug("Entity count: " + entities.Length);
 			}
-			else
-			{
-				entities = (T[])DataAccess.Data.Indexer.GetEntitiesWithReference<T>(propertyName, EntitiesUtilities.GetType(referencedEntityType), referencedEntityID);
-			}
-			
-			if (RequireAuthorisation)
-				AuthoriseIndexStrategy.New<T>().EnsureAuthorised<T>(ref entities);
 			
 			return entities;
 		}
@@ -112,17 +142,29 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			T[] entities = new T[] {};
 			
-			if (EnablePaging)
+			using (LogGroup logGroup = LogGroup.Start("Indexing entities that have the specified reference.", NLog.LogLevel.Debug))
 			{
-				entities = (T[])DataAccess.Data.Indexer.GetPageOfEntitiesWithReference<T>(propertyName, referencedEntities, Location, sortExpression);
+				LogWriter.Debug("Type name: " + typeof(T).ToString());
+				
+				LogWriter.Debug("Property name: " + propertyName);
+				
+				LogWriter.Debug("Enable paging: " + EnablePaging.ToString());
+				LogWriter.Debug("Require authorisation: " + RequireAuthorisation.ToString());
+				
+				if (EnablePaging)
+				{
+					entities = (T[])DataAccess.Data.Indexer.GetPageOfEntitiesWithReference<T>(propertyName, referencedEntities, Location, sortExpression);
+				}
+				else
+				{
+					entities = (T[])DataAccess.Data.Indexer.GetEntitiesWithReference<T>(propertyName, referencedEntities);
+				}
+				
+				if (RequireAuthorisation)
+					AuthoriseIndexStrategy.New<T>().EnsureAuthorised<T>(ref entities);
+				
+				LogWriter.Debug("Entity count: " + entities.Length);
 			}
-			else
-			{
-				entities = (T[])DataAccess.Data.Indexer.GetEntitiesWithReference<T>(propertyName, referencedEntities);
-			}
-			
-			if (RequireAuthorisation)
-				AuthoriseIndexStrategy.New<T>().EnsureAuthorised<T>(ref entities);
 			
 			return entities;
 		}
@@ -161,22 +203,29 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public virtual T[] Index<T>()
 			where T : IEntity
 		{
-			Collection<T> collection = new Collection<T>();
+			T[] entities = new T[]{};
 			
-			if (EnablePaging)
+			using (LogGroup logGroup = LogGroup.Start("Indexing entities that have the specified reference.", NLog.LogLevel.Debug))
 			{
-				collection.AddRange(DataAccess.Data.Indexer.GetPageOfEntities<T>(Location, SortExpression));
+				LogWriter.Debug("Type name: " + typeof(T).ToString());
+				
+				LogWriter.Debug("Enable paging: " + EnablePaging.ToString());
+				LogWriter.Debug("Require authorisation: " + RequireAuthorisation.ToString());
+				
+				if (EnablePaging)
+				{
+					entities = DataAccess.Data.Indexer.GetPageOfEntities<T>(Location, SortExpression);
+				}
+				else
+				{
+					entities = DataAccess.Data.Indexer.GetEntities<T>();
+				}
+				
+				if (RequireAuthorisation)
+					AuthoriseIndexStrategy.New<T>().EnsureAuthorised(ref entities);
+				
+				LogWriter.Debug("Entity count: " + entities.Length);
 			}
-			else
-			{
-				collection.AddRange(DataAccess.Data.Indexer.GetEntities<T>());
-			}
-			
-			
-			T[] entities = collection.ToArray();
-			
-			if (RequireAuthorisation)
-				AuthoriseIndexStrategy.New<T>().EnsureAuthorised(ref entities);
 			
 			return entities;
 		}
@@ -262,8 +311,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public virtual IEntity[] Index(IDataFilterGroup group)
 		{
 			return (IEntity[])Reflector.InvokeGenericMethod(this, "Index",
-			                                     new Type[] { EntityState.GetType(TypeName) },
-			                                     new object[] {group});
+			                                                new Type[] { EntityState.GetType(TypeName) },
+			                                                new object[] {group});
 		}
 		
 		/// <summary>
