@@ -56,31 +56,6 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			}
 		}
 		
-//		private Guid referenceEntityID;
-//		/// <summary>
-//		/// Gets/sets the ID of the entity being referenced.
-//		/// </summary>
-//		public Guid ReferenceEntityID
-//		{
-//			get { return referenceEntityID; }
-		/*set {
-//				// Remove the old ID
-				base.Remove(referenceEntityID);
-				referenceEntityID = value;
-				// Add the new ID
-				base.Add(value);
-			}*/
-		/*get {
-				if (ReferenceEntity != null)
-					return ReferenceEntity.ID;
-				else
-					return referenceEntityID; }
-			set { referenceEntityID = value;
-				if (ReferenceEntity != null && ReferenceEntity.ID != value)
-					ReferenceEntity = default(E2);
-			}*/
-//		}
-		
 		private IEntity referenceEntity;
 		/// <summary>
 		/// Gets/sets the entity being referenced.
@@ -163,7 +138,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				else if (sourceEntity.ID == entity.ID)
 					otherEntity = referenceEntity;
 				else
-					throw new InvalidOperationException("Can't get the other entity. Both entities match.");
+					throw new InvalidOperationException("Can't get the other entity. Neither entity matches.\nParameter entity type: " + entity.ToString() + "\nParameter entity ID: " + entity.ID.ToString() + "\nEntity #1 type: " + Type1Name + "\nEntity #2 type: " + Type2Name + "\nProperty #1 type: " + Property1Name + "\nProperty #2 type: " + Property2Name + "\nEntity #1 type: " + Entity1ID.ToString() + "\nEntity #2 type: " + Entity2ID.ToString());
 				
 				//LogWriter.Debug("Other entity type: " + otherEntity.GetType().ToString());
 				//LogWriter.Debug("Other entity ID: " + otherEntity.ID.ToString());
