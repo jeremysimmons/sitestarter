@@ -47,6 +47,17 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <summary>
 		/// Creates a new strategy for creating an instance of the specified type.
 		/// </summary>
+		/// <param name="requireAuthorisation">A flag indicating whether the strategy requires the current user to be authorised.</param>
+		static public ICreateStrategy New<T>(bool requireAuthorisation)
+		{
+			ICreateStrategy strategy = New<T>();
+			strategy.RequireAuthorisation = requireAuthorisation;
+			return strategy;
+		}
+		
+		/// <summary>
+		/// Creates a new strategy for creating an instance of the specified type.
+		/// </summary>
 		static public ICreateStrategy New<T>()
 		{
 			return StrategyState.Strategies.Creator.NewCreator(typeof(T).Name);
