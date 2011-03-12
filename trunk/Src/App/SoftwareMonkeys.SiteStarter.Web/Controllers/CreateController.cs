@@ -145,7 +145,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 					}
 					else
 					{
-						CheckUniquePropertyName();
+						// TODO: Should be obsolete. Remove if it is.
+						//CheckUniquePropertyName();
 						
 						// Get the "entity exists" language entry
 						string error = DynamicLanguage.GetEntityText(EntityPropertyTakenLanguageKey, Container.Type.Name);
@@ -228,6 +229,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			return controller;
 		}
 		
+		// TODO: Should be obsolete. Remove if it is.
 		public void CheckUniquePropertyName()
 		{
 			if (UniquePropertyName == null || UniquePropertyName == String.Empty)
