@@ -459,10 +459,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			//{
 			//	LogWriter.Debug("Property name: " + propertyName);
 			//	LogWriter.Debug("Referenced entity ID: " + referencedEntityID);
-			
-			//Type referencedEntityType = EntitiesUtilities.GetReferenceType(typeof(T), propertyName);
-			
-			
+						
 			//	if (referencedEntityType != null)
 			//		LogWriter.Debug("Referenced entity type: " + referencedEntityType.ToString());
 			//	else
