@@ -78,5 +78,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			
 			return success;
 		}
+		
+		public override void NavigateAfterSave()
+		{
+			Navigator.Current.Go("Index", "User");
+		}
 	}
 }
