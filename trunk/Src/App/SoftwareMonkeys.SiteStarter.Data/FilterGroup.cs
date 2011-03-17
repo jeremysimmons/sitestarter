@@ -192,11 +192,20 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		
 		static public FilterGroup New(Type type, string referencePropertyName, IEntity referencedEntity, string propertyName, object propertyValue)
 		{
+			if (type == null)
+				throw new ArgumentNullException("type");
+			
+			if (referencedEntity == null)
+				throw new ArgumentNullException("referencedEntity");
+			
 			return New(type, referencePropertyName, referencedEntity.ShortTypeName, referencedEntity.ID, propertyName, propertyValue);
 		}
 		
 		static public FilterGroup New(Type type, string referencePropertyName, string referenceType, Guid referencedEntityID, string propertyName, object propertyValue)
 		{
+			if (type == null)
+				throw new ArgumentNullException("type");
+			
 			FilterGroup group = DataAccess.Data.CreateFilterGroup();
 			
 			PropertyFilter propertyFilter = DataAccess.Data.CreatePropertyFilter();
