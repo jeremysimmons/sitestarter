@@ -102,13 +102,22 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			
 			foreach (string action in actions)
 			{
+				BaseProjection p = null;
+				
 				ProjectionInfo info = new ProjectionInfo();
 				info.Action = action;
 				info.TypeName = typeName;
 				info.ProjectionFilePath = relativeFilePath;
 				info.Format = GetFormatFromFileName(filePath);
 				
-				BaseProjection p = (BaseProjection)ControlLoader.LoadControl(filePath);
+				try
+				{
+					p = (BaseProjection)ControlLoader.LoadControl(filePath);
+				}
+				catch (Exception ex)
+				{
+					throw new Exception("Unable to load projection: " + filePath, ex);
+				}
 				
 				if (p == null)
 					throw new ArgumentException("Cannot find projection file at path: " + filePath);
