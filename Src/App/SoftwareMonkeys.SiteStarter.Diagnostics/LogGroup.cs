@@ -28,6 +28,17 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			set { id = value; }
 		}
 		
+		/// <summary>
+		/// A flag indicating whether the log group is marked to be output.
+		/// </summary>
+		public bool IsOutput
+		{
+			get
+			{
+				return new LogSupervisor().LoggingEnabled(CallingMethod, LogLevel);
+			}
+		}
+		
 		private bool isThreadTitle;
 		public bool IsThreadTitle
 		{
@@ -132,17 +143,20 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			if (logLevel < this.LogLevel)
 				throw new ArgumentException("The provided log level " + logLevel + " must be equal or greater than the log level of the group, which is " + logLevel + ".");
 
-			LogWriter.WriteGroup(message, callingMethod, LogLevel, ID, ParentID);
+			Guid parentID = GetOutputParentID();
+			
+			if (IsOutput)
+				LogWriter.WriteGroup(message, callingMethod, LogLevel, ID, parentID);
 		}
 
 
 		internal void Start(MethodBase callingMethod, NLog.LogLevel logLevel)
 		{
 			DiagnosticState.PushGroup(this);
-						
-				CallingMethod = callingMethod;
-				
-				Start(callingMethod);
+			
+			CallingMethod = callingMethod;
+			
+			Start(callingMethod);
 		}
 		
 		private void Start(MethodBase callingMethod)
@@ -161,7 +175,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 				// TODO: Remove obsolete code if not needed
 				//if (new LogSupervisor().LoggingEnabled(CallingMethod, LogLevel))
 				//{
-					End(CallingMethod);					
+				End(CallingMethod);
 				//}
 				
 				
@@ -216,6 +230,45 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 				Disposed(this,EventArgs.Empty);
 
 		}
+		
+		/// <summary>
+		/// Gets the ID of the parent but skips any groups not marked to be output.
+		/// </summary>
+		public Guid GetOutputParentID()
+		{
+			LogGroup parent = Parent;
+			Guid outputParentID = ParentID;
+			
+			if (parent != null && !parent.IsOutput)
+			{
+				parent = GetOutputParent(parent);
+			}
+			
+			if (parent != null)
+				outputParentID = parent.ID;
+			else
+				outputParentID = Guid.Empty;
+			
+			return outputParentID;
+		}
+		
+		/// <summary>
+		/// Gets the ID of the parent but skips any groups not marked to be output.
+		/// </summary>
+		public LogGroup GetOutputParent(LogGroup group)
+		{
+			if (group != null)
+			{
+				LogGroup parent = group.Parent;
+				
+				if (parent != null && !parent.IsOutput)
+					parent = GetOutputParent(parent);
+				
+				return parent;
+			}
+			else
+				return null;
+		}
 		#endregion
 		
 		#region Static functions
@@ -245,7 +298,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			// Logging is always enabled for groups
 			// TODO: Remove code if not needed
 			//if (new LogSupervisor().LoggingEnabled(logLevel))
-				callingMethod = Reflector.GetCallingMethod();
+			callingMethod = Reflector.GetCallingMethod();
 			
 			return Start(summary, logLevel, callingMethod);
 		}
@@ -281,7 +334,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 				DiagnosticState.CurrentGroup.End();
 			}
 		}*/
-		#endregion
+			#endregion
 	}
 
 }
