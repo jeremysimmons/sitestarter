@@ -6,6 +6,8 @@ using System.Web.UI.WebControls;
 using System.Reflection;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Entities;
+using SoftwareMonkeys.WorkHub.Web;
+using HtmlAgilityPack;
 
 namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 {
@@ -17,6 +19,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		
 		static public object GetFieldValue(Control field, string controlValuePropertyName, Type returnType)
 		{
+			object returnValue = null;
+			
 			using (LogGroup logGroup = LogGroup.Start("Dynamically retrieves the value of the specified field on the form.", NLog.LogLevel.Debug))
 			{
 				if (field == null)
@@ -46,7 +50,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 						LogWriter.Debug("Field value: " + fieldValue.ToString());
 					
 
-					return fieldValue;
+					returnValue = fieldValue;
 				}
 				else
 				{
@@ -70,9 +74,26 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
 					LogWriter.Debug("Field value: " + fieldValue.ToString());
 
-					return fieldValue;
+					returnValue = fieldValue;
+				}
+				
+				// Sanitize input
+				if (returnValue != null && returnValue is String)
+				{
+					returnValue = Sanitize((string)returnValue);
 				}
 			}
+			
+			return returnValue;
+		}
+		
+		static public string Sanitize(string input)
+		{
+			if(String.IsNullOrEmpty(input))
+				return "";
+            HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+            doc.LoadHtml(input);
+            return doc.DocumentNode.InnerText;
 		}
 		
 		static public bool IsType(Control field, Type type)
