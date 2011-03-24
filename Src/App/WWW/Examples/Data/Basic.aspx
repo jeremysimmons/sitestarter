@@ -15,10 +15,12 @@
 
 		AddMessage("New user created: " + user.Username);
 
+
 		// Save the new user object
 		SaveUser(user);
 
 		AddMessage("User saved to data store");
+
 
 		// Retrieve the newly saved user object
 		User loadedUser = LoadUser(user.ID);
@@ -31,15 +33,18 @@
 
 		AddMessage("User edited. New username: " + loadedUser.Username);
 
+
 		// Updated the edited user object
 		UpdateUser(editedUser);
 
 		AddMessage("User updated to data store");
 
+
 		// Get the updated user
 		User updatedUser = GetUserByUsername(user.Username);
 
 		AddMessage("Loaded from data store: " + user.Username);
+
 
 		// Delete the updated user
 		DeleteUser(updatedUser);
