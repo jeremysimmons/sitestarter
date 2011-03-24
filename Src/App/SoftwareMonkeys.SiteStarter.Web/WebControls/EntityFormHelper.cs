@@ -33,11 +33,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 						LogWriter.Debug("ControlValuePropertyName: " + controlValuePropertyName);
 						LogWriter.Debug("Value: " + (value == null ? "[null]" : value.ToString()));
 						
-						PropertyInfo property =
-							(valueType != null
-							 ? field.GetType().GetProperty(controlValuePropertyName, valueType)
-							 : field.GetType().GetProperty(controlValuePropertyName));
-						
+						PropertyInfo property = EntitiesUtilities.GetProperty(field.GetType(), controlValuePropertyName, valueType);
+
 						if (property == null)
 							throw new Exception("The property '" + controlValuePropertyName + "' was not found on the control '" + field.ID + "', type '" + field.GetType().ToString() + "'.");
 						
