@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<project name="Common.Jobs.ZipInstallRelease" default="Common.Jobs.ZipInstallRelease" xmlns="http://nant.sf.net/schemas/nant.xsd">
+  <target name="Common.Jobs.ZipInstallRelease">
+  	<mkdir dir="../../Releases/Install/"/>
+  	<zip zipfile="../../Releases/Install/${Global.InstallReleaseName}.zip">
+	    <fileset basedir="WWW" prefix="WWW">
+	        <exclude name="**/*.yap"/>
+	        <exclude name="**/*.local.config"/>
+	        <exclude name="_svn"/>
+	        <exclude name=".svn"/>
+	        <exclude name="**/obj/"/>
+	        <exclude name="**/Logs/**/*"/>
+	        <exclude name="**/LogsArchive/**/*"/>
+	        <exclude name="**/*.pdb"/>
+	        <exclude name="**/*.cs"/>
+	        <exclude name="**/*._cs"/>
+	        <exclude name="**/*.csexclude"/>
+	        <exclude name="**/*.excludecs"/>
+	        <exclude name="**/*.csproj.user"/>
+	        <exclude name="**/*.exclude"/>
+	        <include name="**/*" />
+	    </fileset>	   
+	</zip>
+  </target>
+</project>
+  	

@@ -1,0 +1,230 @@
+<?xml version="1.0"?>
+<project name="Common.Jobs.ImportTemplateFiles" default="Common.Jobs.ImportTemplateFiles" xmlns="http://nant.sf.net/schemas/nant.xsd">
+
+	
+  	<target name="Common.Jobs.ImportTemplateFiles">
+  	
+  	
+			<xmlpeek
+		    file="${Project.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Project.Name']/@value"
+		    property="Project.Name">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+
+			<xmlpeek
+		    file="${Project.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Project.BaseNamespace']/@value"
+		    property="Project.BaseNamespace">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+    	
+    		<call target="Common.Jobs.BackupFiles"/>
+    		
+    		<echo message="Project.RootPath: ${Project.RootPath}"/>
+
+			<foreach item="File" property="filename">
+		    <in>
+		        <items basedir="${Project.RootPath}">
+		            <include name="**\*.ImportTemplate.nant" />
+		        </items>
+		    </in>
+		    <do>
+
+	    		<echo message="Checking import file: ${filename}"/>
+		    
+				<xmlpeek
+				    file="${filename}"
+				    xpath="/x:project/x:property[@name = 'Import.FromProject']/@value"
+				    property="Import.FromProject">
+			        <namespaces>
+	        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+	    			</namespaces>
+	    		</xmlpeek>
+	    		
+				<xmlpeek
+				    file="${filename}"
+				    xpath="/x:project/x:property[@name = 'Import.From']/@value"
+				    property="Import.From">
+			        <namespaces>
+	        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+	    			</namespaces>
+	    		</xmlpeek>
+	    		
+				<xmlpeek
+				    file="${filename}"
+				    xpath="/x:project/x:property[@name = 'Import.Include']/@value"
+				    property="Import.Include">
+			        <namespaces>
+	        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+	    			</namespaces>
+	    		</xmlpeek>
+	    			    		
+				<xmlpeek
+				    file="${filename}"
+				    xpath="/x:project/x:property[@name = 'Import.Exclude']/@value"
+				    property="Import.Exclude" failonerror="false">
+			        <namespaces>
+	        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+	    			</namespaces>
+	    		</xmlpeek>
+	    		
+				<xmlpeek
+				    file="${filename}"
+				    xpath="/x:project/x:property[@name = 'Import.To']/@value"
+				    property="Import.To">
+			        <namespaces>
+	        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+	    			</namespaces>
+	    		</xmlpeek>
+	    		
+				<xmlpeek
+				    file="${filename}"
+				    xpath="/x:project/x:property[@name = 'Import.ReplaceBaseNamespace']/@value"
+				    property="Import.ReplaceBaseNamespace">
+			        <namespaces>
+	        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+	    			</namespaces>
+	    		</xmlpeek>
+	    		
+				<xmlpeek
+				    file="${filename}"
+				    xpath="/x:project/x:property[@name = 'Import.ReplaceName']/@value"
+				    property="Import.ReplaceName">
+			        <namespaces>
+	        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+	    			</namespaces>
+	    		</xmlpeek>
+	    		
+				<xmlpeek
+				    file="${filename}"
+				    xpath="/x:project/x:property[@name = 'Import.Flatten']/@value"
+				    property="Import.Flatten" failonerror="false">
+			        <namespaces>
+	        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+	    			</namespaces>
+	    		</xmlpeek>
+
+	    		
+				<xmlpeek
+				    file="${filename}"
+				    xpath="/x:project/x:property[@name = 'Import.RenameTo']/@value"
+				    property="Import.RenameTo" failonerror="false">
+			        <namespaces>
+	        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+	    			</namespaces>
+	    		</xmlpeek>
+
+
+		    		<xmlpeek
+					    file="${Solution.PropertiesPath}"
+					    xpath="/x:project/x:property[@name = 'Solution.BaseNamespace']/@value"
+					    property="Solution.BaseNamespace">
+				        <namespaces>
+		        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+		    			</namespaces>
+		    		</xmlpeek>	
+	    		
+	    		<property name="Import.To" value="${string::replace(Import.To, '${Project.RootPath}', Project.RootPath)}"/>
+	    		<property name="Import.To" if="${bool::parse(Import.ReplaceBaseNamespace) == true}" value="${string::replace(Import.To, '${Project.BaseNamespace}', Project.BaseNamespace)}"/>
+			<property name="Import.To" if="${bool::parse(Import.ReplaceBaseNamespace) == true}" value="${string::replace(Import.To, '${Solution.BaseNamespace}', Solution.BaseNamespace)}"/>
+	    		<property name="Import.To" if="${bool::parse(Import.ReplaceName) == true}" value="${string::replace(Import.To, '${Project.BaseNamespace}', Project.Name)}"/>
+			<property name="Import.To" if="${bool::parse(Import.ReplaceName) == true}" value="${string::replace(Import.To, '${Solution.BaseNamespace}', Solution.Name)}"/>
+			<property name="Import.To" value="${string::replace(Import.To, '${Solution.RootPath}', Solution.RootPath)}"/>
+	    			    		
+
+	    		<property name="Import.FromProject.RootPath" value="${path::get-full-path(Project.RootPath + '\..\' + Import.FromProject + '')}"/>
+	    		<!--property name="Import.FromProject.RootPath" value="${Project::GetRootPath(path::get-full-path(Import.FromProject.PropertiesPath))}"/-->
+	    		<property name="Import.FromProject.PropertiesPath" value="${Import.FromProject.RootPath}\${Import.FromProject}.Project.nant"/>
+
+				<echo message="Import.FromProject.RootPath: ${Import.FromProject.RootPath}"/>
+
+	    		<property name="Project.RootPath" value="${path::get-directory-name(Project.PropertiesPath)}"/>	    	    		
+	    			
+	    		<if test="${file::exists(Import.FromProject.PropertiesPath)}">
+					<xmlpeek
+					    file="${Import.FromProject.PropertiesPath}"
+					    xpath="/x:project/x:property[@name = 'Project.BaseNamespace']/@value"
+					    property="Import.FromProject.BaseNamespace">
+				        <namespaces>
+		        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+		    			</namespaces>
+		    		</xmlpeek>
+		    		
+		    		<xmlpeek
+					    file="${Import.FromProject.PropertiesPath}"
+					    xpath="/x:project/x:property[@name = 'Project.Name']/@value"
+					    property="Import.FromProject.ProjectName">
+				        <namespaces>
+		        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+		    			</namespaces>
+		    		</xmlpeek>		    		
+
+	    		<property name="Import.FromSolution.BaseNamespace" value="${Import.FromProject.BaseNamespace}"/>	
+
+
+		    		<echo message="Import.From: ${Import.From}"/>
+
+		    		<echo message="Solution.RootPath: ${Solution.RootPath}"/>
+		    		<echo message="Import.FromProject.RootPath: ${Import.FromProject.RootPath}"/>
+		    		
+
+
+	    		<property name="Import.FromSolution.RootPath" value="${Import.FromProject.RootPath}\Src\${Solution.Name}"/>
+
+		    		
+		    		<property name="Import.FromPath" value="${Import.From}"/>
+		    		
+		    		<property name="Import.FromPath" value="${string::replace(Import.FromPath, '${Project.RootPath}', Import.FromProject.RootPath)}"/>
+		    		<property name="Import.FromPath" value="${string::replace(Import.FromPath, '${Solution.RootPath}', Import.FromSolution.RootPath)}"/>
+
+	    		<property name="Import.FromPath" value="${string::replace(Import.FromPath, '${Project.BaseNamespace}', Import.FromProject.BaseNamespace)}"/>
+
+	    		<property name="Import.FromPath" value="${string::replace(Import.FromPath, '${Solution.BaseNamespace}', Import.FromSolution.BaseNamespace)}"/>
+
+		    		<if test="${string::index-of(Import.FromPath, ':') == -1}">
+			    		<property name="Import.FromPath" value="${path::get-full-path(Import.FromProject.RootPath + '\' + Import.FromPath)}"/>
+		    		</if>
+		    		
+		    		
+		    		<echo message="New Project root path: ${Project.RootPath}"/>
+		    		<echo message="Original Project root path: ${Import.FromProject.RootPath}"/>
+		    		<echo message="Original base namespace: ${Import.FromProject.BaseNamespace}"/>
+		    		<echo message="New base namespace: ${Project.BaseNamespace}"/>
+		    		<echo message="Import.From: ${Import.From}"/>
+		    		<echo message="Import.FromPath: ${Import.FromPath}"/>
+		    		<echo message="Import.To: ${Import.To}"/>
+		    		
+		    		<!-- Only import if the source project is not the destination -->
+		    		<!--if test="${Import.FromProject.BaseNamespace != Project.BaseNamespace}"-->
+		    			<!-- Loop through each folder in the specified query (likely only 1 folder) -->
+		    			
+										<nant
+											buildfile="${filename}"
+											target="Actions.Import.ImportTemplate"
+											>
+										</nant>
+
+
+					        <!--call target="Common.Actions.RemoveObsoleteFolders"/-->
+					<!--/if-->
+				</if>
+	    		<if test="${file::exists(Import.FromProject.PropertiesPath) != true}">
+	    			<echo message="Can't import. The project '${Import.FromProject}' wasn't found at: ${Import.FromProject.PropertiesPath}."/>
+	    		</if>
+	    		
+	    		
+	    		<!-- Reset import variables. -->
+	    		<property name="Import.RenameTo" value=""/>
+		    </do>
+		</foreach>
+
+  	</target>   
+ 
+
+</project>
+  	

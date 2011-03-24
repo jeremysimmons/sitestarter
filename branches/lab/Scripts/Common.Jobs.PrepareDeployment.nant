@@ -1,0 +1,128 @@
+<?xml version="1.0"?>
+<project name="Common.Jobs.PrepareDeployment" default="Common.Jobs.PrepareDeployment" xmlns="http://nant.sf.net/schemas/nant.xsd">
+
+	
+<target name="Common.Jobs.PrepareDeployment">
+
+    	
+    	<xmlpeek
+		    file="${Project.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Project.Name']/@value"
+		    property="Project.Name">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+    	
+    	
+    	<xmlpeek
+		    file="${Project.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Project.Name']/@value"
+		    property="Project.Name">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+    	
+    	    	
+    	
+    	<xmlpeek
+		    file="${Project.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Project.CompanyName']/@value"
+		    property="Project.CompanyName">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+
+
+
+		<call target="Common.Actions.CopyDeploymentFiles"/>
+	</target>
+
+  <target name="Common.Actions.CopyDeploymentFiles">
+  
+  	<property name="deploymentPath" value="${path::combine(path::combine(Project.RootPath, 'Deployment'), path::get-file-name(Solution.RootPath))}"/>
+  	<property name="sourcePath" value="${Solution.RootPath}"/>
+  	
+  	<!-- If a WWW folder exists then use it as the source folder -->
+  	<if test="${directory::exists(path::combine(sourcePath, 'WWW')) == true}">
+	  	<property name="sourcePath" value="${path::combine(sourcePath, 'WWW')}"/>
+  	</if>
+  	
+  	<echo message="Source path: ${sourcePath}"/>
+  	<echo message="Deployment path: ${deploymentPath}"/>
+  	
+  	<!-- Delete the old files -->
+  	<delete dir="${deploymentPath}"/>
+  	
+  	<!-- If the deployment directory doesn't exist then create it -->
+	<echo message="Deployment dir: ${deploymentPath}"/>
+  	<if test="${directory::exists(deploymentPath) == false}">
+  		<mkdir dir="${deploymentPath}"/>
+  	</if>
+  	
+  	<!-- Copy the files to the deployment directory -->
+  	<copy todir="${deploymentPath}" verbose="true">
+	    <fileset basedir="${sourcePath}">
+			<exclude name="**/*.yap"/>
+	        <exclude name="**/*.local.config"/>
+	        <exclude name="_svn"/>
+	        <exclude name=".svn"/>
+	        <exclude name="**/obj/**"/>
+	        <exclude name="**/Logs/**"/>
+	        <exclude name="**/LogsArchive/**"/>
+	        <exclude name="**/*.pdb"/>
+	        <exclude name="**/*.cs"/>
+	        <exclude name="**/*._cs"/>
+	        <exclude name="**/*._*"/>
+	        <exclude name="**/*.csexclude"/>
+	        <exclude name="**/*.excludecs"/>
+	        <exclude name="**/*.csproj.user"/>
+	        <exclude name="**/*.exclude"/>
+	        <exclude name="**/*.security"/>
+	        <exclude name="**/App_Data/VS/**"/>
+	        <exclude name="**/fckeditor/**"/>
+	        <exclude name="**/Backups/*.zip"/>
+	        <exclude name="**/App_Data/**.xml"/>
+	        <exclude name="**/App_Data/Testing/*"/>
+	        <exclude name="**/App_Data/*.yap"/>
+	        <exclude name="**/App_Data/Import/**"/>
+	        <exclude name="**/App_Data/ImportDefault/**"/>
+	        <exclude name="**/App_Data/Personalization_Data/**"/>
+	        <exclude name="**/App_Data/Logs"/>
+	        <exclude name="**/App_Data/LegacyDefault/**"/>
+	        <exclude name="**/App_Data/Legacy/**"/>
+	        <exclude name="**/App_Data/Imported/**"/>
+	        <exclude name="**/App_Data/LegacyConverted/**"/>
+	        <exclude name="**/App_Data/Suspended/**"/>
+	        <exclude name="**/App_Data/Entities/**"/>
+	        <exclude name="**/App_Data/Projections/**"/>
+	        <exclude name="**/App_Data/Controllers/**"/>
+	        <exclude name="**/App_Data/Strategies/**"/>
+	        <exclude name="**/App_Data/Parts/**"/>
+	        <exclude name="**/App_Data/Menu.local.sitemap"/>
+	        <exclude name="**/App_Data/Version.local.number"/>
+	        <exclude name="*.Import.nant"/>
+	        <exclude name="**/Releases/**"/>
+	        <exclude name="**/Backups/**"/>
+	        <exclude name="**/Backups"/>
+	        <exclude name="**.eqbak"/>
+	        <exclude name="**.eqconfig"/>
+	        <exclude name="**/*.csproj"/>
+	        <exclude name="*disabled*"/>
+	        <exclude name="**/bin/Debug/**"/>
+	        <exclude name="**/bin/Release/**"/>
+	        <exclude name="**.Tests.dll"/>
+	        <exclude name="**.refresh"/>
+	        <exclude name="**.nant"/>
+	        <exclude name="**/nunit**"/>
+	        <exclude name="**/tests/**"/>
+	        <include name="**/**" />
+	    </fileset>	   
+
+	</copy>
+  </target>
+
+</project>
+  	

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<project name="Common.Functions.Initialize" default="Private.Init" xmlns="http://nant.sf.net/schemas/nant.xsd">
+
+  <target name="Private.Init">
+    <nant buildfile="Common.Functions.Assemblies.nant"/>
+    <nant buildfile="Common.Functions.Projects.nant"/>
+    <nant buildfile="Common.Functions.Solutions.nant"/>
+  </target>
+</project>
+  	
