@@ -48,7 +48,7 @@ private string GetMenuDataFile()
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head runat="server">
     <title>SiteStarter</title>
-    <link href="App_Themes/Default/Styles.css" rel="stylesheet" type="text/css" />
+    <link href="Styles/Simple.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
     <form id="form1" runat="server">
