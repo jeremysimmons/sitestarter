@@ -85,6 +85,7 @@
     <None Include="Controls\Guide.ascx" />
     <None Include="Controls\Testing.ascx" />
     <None Include="Default.aspx" />
+    <None Include="Examples\Data\Basic.aspx" />
     <None Include="Global.asax" />
     <None Include="Maintenance.html" />
     <None Include="Projections\IEntity-Delete.ascx" />
@@ -150,6 +151,8 @@
     <Folder Include="App_Themes\_svn\tmp\props" />
     <Folder Include="App_Themes\_svn\tmp\text-base" />
     <Folder Include="Controls" />
+    <Folder Include="Examples" />
+    <Folder Include="Examples\Data" />
     <Folder Include="Projections" />
     <Folder Include="Styles" />
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Business.Tests\SiteStarter.Business.Tests.csproj">
