@@ -377,7 +377,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				property = entityType.GetProperty(propertyName, returnType);
 			else
 				property = entityType.GetProperty(propertyName);
-			
+		
 			return property;
 		}
 		
