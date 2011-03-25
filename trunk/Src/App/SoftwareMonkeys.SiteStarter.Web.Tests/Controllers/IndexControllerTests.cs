@@ -17,7 +17,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 {
 	[TestFixture]
 	public class IndexControllerTests : BaseWebTestFixture
-	{
+	{																		
 		[Test]
 		public void Test_Index_Default()
 		{
@@ -51,18 +51,17 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 			
 			BaseIndexProjection page = new BaseIndexProjection("Index", typeof(TestRecord), false);
 			
+			// Disable authorisation requirements for test
+			page.RequireAuthorisation = false;
+			
 			IndexController controller = IndexController.New(page, false);
 			
 			if (controller == null)
 				throw new Exception("Controller is null.");
 			
-			//controller.CurrentPageIndex = pageIndex;
-			//controller.PageSize = 20;
-			
 			controller.Index();
 			
 			Assert.IsNotNull(controller.DataSource, "The DataSource property on the controller wasn't set.");
-			
 			
 			Assert.AreEqual(4, controller.DataSource.Length, "Item count mismatch.");
 			
@@ -171,6 +170,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 			{
 				TestRecord record = new TestRecord();
 				record.ID = Guid.NewGuid();
+				record.Name = "Record " + i;
 				record.Text = "Record " + i;
 				
 				DataAccess.Data.Saver.Save(record);
