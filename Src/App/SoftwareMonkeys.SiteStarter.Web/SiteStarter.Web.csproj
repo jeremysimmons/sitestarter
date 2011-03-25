@@ -49,6 +49,9 @@
     <FileAlignment>4096</FileAlignment>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="HtmlAgilityPack">
+      <HintPath>..\..\..\lib\HtmlAgilityPack.dll</HintPath>
+    </Reference>
     <Reference Include="NLog">
       <HintPath>..\..\..\Lib\NLog.dll</HintPath>
     </Reference>
@@ -92,6 +95,7 @@
     <Compile Include="Data\DataProviderInitializer.cs" />
     <Compile Include="FileMapper.cs" />
     <Compile Include="GuidValidator.cs" />
+    <Compile Include="HtmlSanitizer.cs" />
     <Compile Include="Navigation\Navigator.cs" />
     <Compile Include="OperationManager.cs" />
     <Compile Include="Parts\BasePart.cs">
@@ -196,6 +200,7 @@
     <Compile Include="WebControls\EntitySelect.cs" />
     <Compile Include="WebControls\EntitySelectDeliverer.cs" />
     <Compile Include="WebControls\EntitySelectRequester.cs" />
+    <Compile Include="WebControls\EntitySelect[E].cs" />
     <Compile Include="WebControls\EntityTree.cs" />
     <Compile Include="WebControls\IndexGrid.cs" />
     <Compile Include="WebControls\ProjectorControl.cs" />
