@@ -310,7 +310,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			using (LogGroup logGroup = LogGroup.Start("Loading entities to be displayed as an index.", NLog.LogLevel.Debug))
 			{
-				IEntity[] entities = IndexStrategy.New(TypeName).Index();
+				IEntity[] entities = Indexer.Index();
 				
 				entities = Collection<IEntity>.Sort(entities, SortExpression);
 
