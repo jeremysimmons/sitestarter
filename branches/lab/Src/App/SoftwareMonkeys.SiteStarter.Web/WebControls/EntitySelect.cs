@@ -211,13 +211,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		public Guid[] SelectedEntityIDs
 		{
 			get
-			{
-				/*if (ViewState["SelectedEntityIDs"] == null)
-				{
-					ViewState["SelectedEntityIDs"] = new Guid[] { };
-				}
-				return (Guid[])ViewState["SelectedEntityIDs"];*/
-				
+			{				
 				Guid[] ids = new Guid[]{};
 				
 				if (DropDownList != null)
@@ -625,10 +619,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		/// <returns></returns>
 		public ListItemCollection GetItems()
 		{
-			if (SelectionMode == ListSelectionMode.Multiple)
+			// If the controls are not null then they're in use
+			if (CheckBoxesList != null)
 				return CheckBoxesList.Items;
-			else if (SelectionMode == ListSelectionMode.Multiple)
+			else if (RadioButtonsList != null)
 				return RadioButtonsList.Items;
+			else if (DropDownList != null)
+				return DropDownList.Items;
 			
 			return new ListItemCollection();
 		}
