@@ -34,7 +34,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <returns>An array of full file paths to the available assemblies.</returns>
 		public string[] GetAssemblyPaths()
-		{			
+		{
 			List<string> list = new List<string>();
 			
 			string binPath = StateAccess.State.PhysicalApplicationPath
@@ -58,32 +58,43 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			List<StrategyInfo> strategies = new List<StrategyInfo>();
 			
 			//using (LogGroup logGroup = LogGroup.Start("Finding strategies by scanning the attributes of the available type.", NLog.LogLevel.Debug))
-			//{				
-				foreach (string assemblyPath in AssemblyPaths)
+			//{
+			foreach (string assemblyPath in AssemblyPaths)
+			{
+				Assembly assembly = Assembly.LoadFrom(assemblyPath);
+				
+				Type[] types = new Type[] {};
+				
+				try
 				{
-					Assembly assembly = Assembly.LoadFrom(assemblyPath);
-					
-					foreach (Type type in assembly.GetTypes())
+					types = assembly.GetTypes();
+				}
+				catch (ReflectionTypeLoadException ex)
+				{
+					LogWriter.Error(ex);
+				}
+				
+				foreach (Type type in types)
+				{
+					if (IsStrategy(type))
 					{
-						if (IsStrategy(type))
+						//LogWriter.Debug("Found strategy type: " + type.ToString());
+						
+						StrategyInfo strategyInfo = new StrategyInfo(type);
+						
+						if (strategyInfo.TypeName != null && strategyInfo.TypeName != String.Empty
+						    && strategyInfo.Action != null && strategyInfo.Action != String.Empty)
 						{
-							//LogWriter.Debug("Found strategy type: " + type.ToString());
+							//LogWriter.Debug("Found match.");
 							
-							StrategyInfo strategyInfo = new StrategyInfo(type);
+							//LogWriter.Debug("Type name: " + strategyInfo.TypeName);
+							//LogWriter.Debug("Action: " + strategyInfo.Action);
 							
-							if (strategyInfo.TypeName != null && strategyInfo.TypeName != String.Empty
-							    && strategyInfo.Action != null && strategyInfo.Action != String.Empty)
-							{
-								//LogWriter.Debug("Found match.");
-								
-								//LogWriter.Debug("Type name: " + strategyInfo.TypeName);
-								//LogWriter.Debug("Action: " + strategyInfo.Action);
-								
-								strategies.Add(strategyInfo);
-							}
+							strategies.Add(strategyInfo);
 						}
 					}
 				}
+			}
 			//}
 			
 			return strategies.ToArray();
@@ -103,14 +114,14 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			//using (LogGroup logGroup = LogGroup.Start("Checks whether the provided type is a strategy.", NLog.LogLevel.Debug))
 			//{
 			//	LogWriter.Debug("Type: " + type.ToString());
-				
-				matchesInterface = typeof(IStrategy).IsAssignableFrom(type)
-					|| type.GetInterface("IStrategy") != null;
-				
-				isNotInterface = !type.IsInterface;
-				
-				isNotAbstract = (!type.IsAbstract);
-				
+			
+			matchesInterface = typeof(IStrategy).IsAssignableFrom(type)
+				|| type.GetInterface("IStrategy") != null;
+			
+			isNotInterface = !type.IsInterface;
+			
+			isNotAbstract = (!type.IsAbstract);
+			
 			//	LogWriter.Debug("Matches interface: " + matchesInterface);
 			//	LogWriter.Debug("Is not strategy interface: " + isNotInterface);
 			//}
