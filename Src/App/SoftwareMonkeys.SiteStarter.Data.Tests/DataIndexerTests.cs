@@ -551,9 +551,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			article3.ID = Guid.NewGuid();
 			article3.Title = "Article A";
 			
-			DataAccess.Data.Saver.Save(article1);
-			DataAccess.Data.Saver.Save(article2);
 			DataAccess.Data.Saver.Save(article3);
+			DataAccess.Data.Saver.Save(article2);
+			DataAccess.Data.Saver.Save(article1);
 			
 			string[] titles = new String[]
 			{
@@ -663,9 +663,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			article3.ID = Guid.NewGuid();
 			article3.Title = "Article A";
 			
-			DataAccess.Data.Saver.Save(article1);
-			DataAccess.Data.Saver.Save(article2);
 			DataAccess.Data.Saver.Save(article3);
+			DataAccess.Data.Saver.Save(article2);
+			DataAccess.Data.Saver.Save(article1);
 			
 			string[] titles = new String[]
 			{
@@ -713,7 +713,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			TestArticle article3 = new TestArticle();
 			article3.ID = Guid.NewGuid();
-			article3.Title = "Article A";
+			article3.Title = "article A";
 			
 			List<string> titles = new List<string>();
 			titles.Add(article1.Title);
@@ -725,9 +725,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			ids.Add(article2.ID);
 			ids.Add(article3.ID);			
 			
-			DataAccess.Data.Saver.Save(article1);
 			DataAccess.Data.Saver.Save(article2);
 			DataAccess.Data.Saver.Save(article3);
+			DataAccess.Data.Saver.Save(article1);
 			
 			PagingLocation pagingLocation = new PagingLocation(0, 1);
 			

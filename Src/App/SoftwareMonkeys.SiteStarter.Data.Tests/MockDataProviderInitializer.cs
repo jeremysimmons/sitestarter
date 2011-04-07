@@ -21,10 +21,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
         public static void Initialize()
         {
-        	throw new NotImplementedException();
+        	//throw new NotImplementedException();
         }
 
-        //Public feature API
         private static DataProvider defaultProvider;
         private static DataProviderCollection providerCollection;
 
