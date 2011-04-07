@@ -118,7 +118,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// <param name="username">The username of the current user.</param>
 		public static void SetAuthenticatedUsername(string username)
 		{
-			SetAuthenticatedUsername(username, DateTime.MinValue);
+			SetAuthenticatedUsername(username, DateTime.Now.AddHours(1));
 		}
 		
 		/// <summary>
