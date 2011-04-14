@@ -32,7 +32,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiteStarter.Diagnostics.Tes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiteStarter.Entities.Tests", "SoftwareMonkeys.SiteStarter.Entities.Tests\SiteStarter.Entities.Tests.csproj", "{C81C653C-6983-4401-A016-68586963DC9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WWW", "WWW\WWW.csproj", "{98CEC32C-68FB-4B7D-944B-1DD0E9F85D07}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiteStarterLab.WWW", "WWW\SiteStarterLab.WWW.csproj", "{98CEC32C-68FB-4B7D-944B-1DD0E9F85D07}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiteStarter.Tests", "SoftwareMonkeys.SiteStarter.Tests\SiteStarter.Tests.csproj", "3109EA47-5620-4C75-93E2-A552FC75EB8B"
 EndProject
