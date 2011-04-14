@@ -184,7 +184,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 			{
 				Result.DisplayError(Language.InvalidRole);
 				if (HttpContext.Current != null)
-					HttpContext.Current.Response.Redirect(HttpContext.Current.Request.ApplicationPath + "/User/Account.aspx");
+					HttpContext.Current.Response.Redirect(HttpContext.Current.Request.ApplicationPath + "/User-SignIn.aspx");
 			}
 		}
 
