@@ -19,14 +19,6 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
             }
         }
 
-        // TODO: Remove if not in use. References don't directly reference IDs
-        private Guid[] categoryIDs;
-        public Guid[] CategoryIDs
-        {
-            get { return categoryIDs; }
-            set { categoryIDs = value; }
-        }
-
         private TestCategory[] categories;
         [Reference(MirrorPropertyName="Articles")]
         public TestCategory[] Categories
@@ -49,13 +41,6 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
                 pages = value;
             }
         }
-
-      /*  private Guid[] sampleIDs;
-        public Guid[] SampleIDs
-        {
-            get { return sampleIDs; }
-            set { sampleIDs = value; }
-        }*/
 
         private TestSample[] samples;
         [Reference(MirrorPropertyName="Articles")]
