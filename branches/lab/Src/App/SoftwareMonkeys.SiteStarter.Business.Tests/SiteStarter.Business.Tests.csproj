@@ -1,4 +1,5 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -128,10 +129,6 @@
       <Project>{34129651-3B9F-4A0D-AEBF-7DE2098DD98F}</Project>
       <Name>SiteStarter.State</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Tests\SiteStarter.Tests.csproj">
-      <Project>3109EA47-5620-4C75-93E2-A552FC75EB8B</Project>
-      <Name>SiteStarter.Tests</Name>
-    </ProjectReference>
     <Compile Include="ActivateStrategyTests.cs" />
     <Compile Include="ApplicationBackupTests.cs" />
     <Compile Include="ApplicationInstallerTests.cs" />
@@ -147,7 +144,13 @@
     <Compile Include="MockIndexInterfaceStrategy.cs" />
     <Compile Include="MockIndexWidgetStrategy.cs" />
     <Compile Include="MockFileMapper.cs" />
+    <Compile Include="MockSaveTestArticleReaction.cs" />
+    <Compile Include="MockSaveTestArticleStrategy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReactionLocatorTests.cs" />
+    <Compile Include="ReactionScannerTests.cs" />
+    <Compile Include="ReactionInitializerTests.cs" />
+    <Compile Include="ReactionTests.cs" />
     <Compile Include="RetrieveStrategyTests.cs" />
     <Compile Include="SaveStrategyTests.cs" />
     <Compile Include="StrategyCreatorTests.cs" />
@@ -167,6 +170,10 @@
     <Compile Include="VersionTestUtilities.cs" />
     <Compile Include="ZipAnalyzerTests.cs" />
     <Folder Include="Entities" />
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Tests\SiteStarter.Tests.csproj">
+      <Project>3109EA47-5620-4C75-93E2-A552FC75EB8B</Project>
+      <Name>SiteStarter.Tests</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

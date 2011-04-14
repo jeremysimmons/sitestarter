@@ -81,12 +81,35 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					strategy = (IStrategy)Activator.CreateInstance(strategyType);
 				}
 				
+				strategy.TypeName = strategyInfo.TypeName;
+				
+				AttachReactions(strategyInfo.Action, strategy);
+				
 				if (strategy == null)
 					throw new ArgumentException("Unable to create instance of strategy: " + entityType.ToString(), "strategyInfo");
 				
 				LogWriter.Debug("Strategy created.");
 			}
 			return strategy;
+		}
+		
+		public void AttachReactions(string action, IStrategy strategy)
+		{
+			
+				if (action == null)
+					throw new ArgumentNullException("action");
+				
+				if (strategy.TypeName == null)
+					throw new ArgumentNullException("strategy.TypeName");
+				
+				if (action == String.Empty)
+					throw new ArgumentException("An action must be provided other than String.Empty.", "action");
+				
+				if (strategy.TypeName == String.Empty)
+					throw new ArgumentException("A type name must be provided other than String.Empty.", "strategy.TypeName");
+				
+			
+			strategy.Reactions = ReactionState.Reactions[action, strategy.TypeName].New(action, strategy.TypeName);
 		}
 		
 		#region Generic new function

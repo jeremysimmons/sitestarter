@@ -41,8 +41,11 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		{
 			
 			string businessAssemblyPath = Assembly.Load("SoftwareMonkeys.SiteStarter.Business").Location;
+			string businessTestsAssemblyPath = Assembly.Load("SoftwareMonkeys.SiteStarter.Business.Tests").Location;
 			
-			string[] assemblyPaths = new String[] {businessAssemblyPath};
+			string[] assemblyPaths = new String[] {businessAssemblyPath, businessTestsAssemblyPath};
+			
+			// Strategies
 			
 			StrategyInitializer initializer = new StrategyInitializer();
 			
@@ -50,6 +53,16 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			initializer.Scanner.AssemblyPaths = assemblyPaths;
 			
 			initializer.Initialize();
+			
+			
+			// Reactions
+			
+			ReactionInitializer reactionsInitializer = new ReactionInitializer();
+			
+			// Set the specific assemblies used during testing as it can't do it automatically in the mock environment
+			reactionsInitializer.Scanner.AssemblyPaths = assemblyPaths;
+			
+			reactionsInitializer.Initialize();
 			
 		}
 		
