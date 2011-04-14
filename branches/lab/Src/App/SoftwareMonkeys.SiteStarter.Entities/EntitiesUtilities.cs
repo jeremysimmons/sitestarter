@@ -12,6 +12,54 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 	/// </summary>
 	public class EntitiesUtilities
 	{
+		/// <summary>
+		/// Retrieves the types referenced by, and which reference, the specified entity.
+		/// </summary>
+		/// <param name="entityType"></param>
+		/// <param name="includeReverseReferences">A bool value indicating whether to include types which reference the specified entity, despite the entity not directly referencing them.</param>
+		/// <returns></returns>
+		static public Type[] GetReferenceTypes(Type entityType, bool includeReverseReferences)
+		{
+			List<Type> types = new List<Type>();
+			
+			foreach (PropertyInfo property in entityType.GetProperties())
+			{
+				if (EntitiesUtilities.IsReference(entityType, property))
+				{
+					Type referenceType = EntitiesUtilities.GetReferenceType(entityType, property.Name);
+					
+					if (!types.Contains(referenceType))
+						types.Add(referenceType);
+				}
+			}
+			
+			// Get the reverse references if specified
+			if (includeReverseReferences)
+			{
+				// Loop through all the entities in the system
+				foreach (EntityInfo info in EntityState.Entities)
+				{
+					Type type = info.GetEntityType();
+					
+					// Loop through the referenced types for each entity
+					foreach (Type reverseReferenceType in GetReferenceTypes(type, false))
+					{
+						// If the reverse reference type matches the entity parameter
+						if (reverseReferenceType.FullName == entityType.FullName)
+						{
+							if (!types.Contains(type))
+							{
+								// Add the type to the list, because it has a reference to the specified (by parameter) entity
+								types.Add(type);
+							}
+						}
+					}
+				}
+			}
+			
+			return types.ToArray();
+		}
+		
 		static public bool IsEntity(Type type)
 		{
 			return typeof(IEntity).IsAssignableFrom(type);
@@ -39,8 +87,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			PropertyInfo property = GetProperty(entityType, propertyName, returnType);
 			
 			if (property == null)
-			{
-				if (returnType == null)
+			{				if (returnType == null)
 					throw new ArgumentException("Cannot find property '" + propertyName + "' on type '" + entityType.ToString() + "'.");
 				else
 					throw new ArgumentException("Cannot find property '" + propertyName + "' on type '" + entityType.ToString() + "' with value type '" + returnType.ToString() + "'.");

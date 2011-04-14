@@ -20,6 +20,57 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 	public class EntitiesUtilitiesTests : BaseEntityTestFixture
 	{		
 		#region Tests
+		
+		[Test]
+		public void Test_GetReferenceTypes_IncludeReverse_Found()
+		{
+			Type[] types = EntitiesUtilities.GetReferenceTypes(typeof(EntitySix), true);
+			
+			Assert.AreEqual(1, types.Length, "Incorrect number of references found.");
+		}
+		
+		[Test]
+		public void Test_GetReferenceTypes_DontIncludeReverse_None()
+		{
+			Type[] types = EntitiesUtilities.GetReferenceTypes(typeof(EntitySix), false);
+			
+			Assert.AreEqual(0, types.Length, "Incorrect number of references found.");
+		}
+		
+		[Test]
+		public void Test_GetReferenceTypes_DontIncludeReverse_Found()
+		{
+			Type[] types = EntitiesUtilities.GetReferenceTypes(typeof(TestArticle), false);
+			
+			Assert.AreEqual(4, types.Length, "Incorrect number of references found.");
+		}
+		
+		[Test]
+		public void Test_GetReferenceTypes_Untyped_IncludeReverse_Found()
+		{
+			Type[] types = EntitiesUtilities.GetReferenceTypes(typeof(EntityFour), true);
+			
+			Assert.AreEqual(2, types.Length, "Incorrect number of references found.");
+			
+			Assert.IsTrue(Array.IndexOf(types, typeof(EntityFive)) > -1, "EntityFive type wasn't detected.");
+		}
+		
+		/*[Test]
+		public void Test_GetReferenceTypes_Untyped_DontIncludeReverse_None()
+		{
+			Type[] types = EntitiesUtilities.GetReferenceTypes(typeof(EntitySix), false);
+			
+			Assert.AreEqual(0, types.Length, "Incorrect number of references found.");
+		}
+		
+		[Test]
+		public void Test_GetReferenceTypes_Untyped_DontIncludeReverse_Found()
+		{
+			Type[] types = EntitiesUtilities.GetReferenceTypes(typeof(TestArticle), false);
+			
+			Assert.AreEqual(4, types.Length, "Incorrect number of references found.");
+		}
+		*/
 		[Test]
 		public void Test_IsReference_True()
 		{
