@@ -18,7 +18,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		public CreateUserController()
 		{
 		}
-			
+		
 		public override bool ExecuteSave(SoftwareMonkeys.SiteStarter.Entities.IEntity entity)
 		{
 			if (entity is User)
@@ -34,11 +34,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			bool success = false;
 			
 			using (LogGroup logGroup = LogGroup.Start("Saving the new user.", NLog.LogLevel.Debug))
-			{				
+			{
 				LogWriter.Debug("Auto navigate: " + AutoNavigate.ToString());
 				
 				user.Password = Crypter.EncryptPassword(user.Password);
-		
+				
 				// Cancel the base automatic navigation
 				AutoNavigate = false;
 				
@@ -62,13 +62,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 						
 						Authentication.SetAuthenticatedUsername(user.Username);
 						
-						if (AutoNavigate)
-						{
-							LogWriter.Debug("Automatically navigating after save.");
-							
-							NavigateAfterSave();
-						}
+						// Navigate only if automatically logged in
+						NavigateAfterSave();
 					}
+					
 				}
 				else
 				{
