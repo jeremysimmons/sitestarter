@@ -15,19 +15,19 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 	[ControlBuilder(typeof(EntitySelectControlBuilder))]
 	public class EntitySelect : WebControl
 	{
-		protected Panel MenuPanel;
-		protected Panel ExpansionPanel;
-		protected PlaceHolder ContentPanel;
+		public Panel MenuPanel;
+		public Panel ExpansionPanel;
+		public PlaceHolder ContentPanel;
 		
-		protected PlaceHolder CollapsedPanel;
+		public PlaceHolder CollapsedPanel;
 		
-		protected CheckBoxList CheckBoxesList;
-		protected RadioButtonList RadioButtonsList;
-		protected DropDownList DropDownList;
+		public CheckBoxList CheckBoxesList;
+		public RadioButtonList RadioButtonsList;
+		public DropDownList DropDownList;
 		
-		protected PlaceHolder CheckBoxesPanel;
-		protected PlaceHolder RadioButtonsPanel;
-		protected PlaceHolder DropDownPanel;
+		public PlaceHolder CheckBoxesPanel;
+		public PlaceHolder RadioButtonsPanel;
+		public PlaceHolder DropDownPanel;
 		
 		
 		private string entityType = typeof(SoftwareMonkeys.SiteStarter.Entities.IEntity).FullName;
@@ -389,10 +389,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			CreateCollapsedPanel();
 			CreateMenuPanel();
 			
-			RegisterScript();
+			RegisterExpansionScript();
 		}
 		
-		protected void RegisterScript()
+		protected void RegisterExpansionScript()
 		{
 			string script = @"
 				<script language='javascript'>
