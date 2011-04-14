@@ -31,6 +31,19 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			set { requireAuthorisation = value; }
 		}
 		
+		private IReaction[] reactions = new IReaction[]{};
+		public IReaction[] Reactions
+		{
+			get { return reactions; }
+			set { reactions = value; }
+		}
+		
+		/*ReactionInfo[] IStrategy.Reactions
+		{
+			get { return reactions; }
+			set { reactions = value; }
+		}*/
+		
 		/// <summary>
 		/// Empty constructor.
 		/// </summary>
@@ -79,6 +92,14 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			StrategyInfo info = new StrategyInfo(this);
 			
 			return info.TypeName;
+		}
+		
+		public void React(IEntity entity)
+		{
+			foreach (IReaction reaction in Reactions)
+			{
+				reaction.React(entity);
+			}
 		}
 	}
 }
