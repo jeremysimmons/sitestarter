@@ -298,8 +298,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			// Load the references all in one go, to avoid individual loads
 			EntityReferenceCollection references = Provider.Referencer.GetReferences(referencedEntityType, referencedEntityID, mirrorPropertyName, typeof(T), false);
-			// TODO: Clean up
-			//EntityReferenceCollection references = Provider.Referencer.GetReferences(typeof(T), , mirrorPropertyName, typeof(T), false);
 			
 			Guid[] entityIDs = references.GetEntityIDs(referencedEntityID);
 			
@@ -326,9 +324,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					
 					isInPage = location.IsInPage(i);
 					
-					// IMPORTANT: Only increment if it matches, regardless of what page it's on
+					// IMPORTANT: Increment if it matches, regardless of what page it's on
 					if (matches)
 						i++;
+					
 					//LogWriter.Debug("Matches: " + matches);
 					//}
 					
