@@ -173,7 +173,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		
 		public static int GetPersistDurationDays()
 		{
-			int duration = 0;
+			int duration = 1;
 			
 			try
 			{
@@ -189,7 +189,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		
 		public static int GetStandardDurationHours()
 		{
-			int duration = 0;
+			int duration = 1;
 			
 			try
 			{
