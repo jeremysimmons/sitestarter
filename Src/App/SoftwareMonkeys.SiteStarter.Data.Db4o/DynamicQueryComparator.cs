@@ -104,10 +104,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			if (property == null)
 				throw new MissingMemberException(objectType.ToString(), PropertyName);
 	
-			object t = property.GetValue(a, (object[])null);
-
-			IComparable c1 = (IComparable)property.GetValue(a, null);
-			IComparable c2 = (IComparable)property.GetValue(b, null);
+			IComparable c1 = (IComparable)GetPropertyValue(a, property);
+			IComparable c2 = (IComparable)GetPropertyValue(b, property);
 
 			if (SortDirection == SortDirection.Ascending)
 			{
@@ -123,6 +121,18 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 
 				return c2.CompareTo(c1);
 			}
+		}
+		
+		public object GetPropertyValue(T obj, PropertyInfo property)
+		{
+			object value = property.GetValue(obj, null);
+			
+			// If they are string values then convert to lowercase otherwise comparisons put lowercase "a" below uppercase "Z" in an ascending list
+			if (property.PropertyType == typeof(String))
+				value = ((string)value).ToLower();
+			
+			return value;
+			
 		}
 	}
 }
