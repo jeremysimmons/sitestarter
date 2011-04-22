@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<project name="Common.Jobs.Cycle" default="Common.Jobs.Cycle" xmlns="http://nant.sf.net/schemas/nant.xsd">
+	
+    	
+	
+  	<target name="Common.Jobs.Cycle">
+
+		<property name="Build.Mode" value="Release"/>	
+		<call target="Common.Jobs.BuildSolution"/>	
+		<call target="Common.Jobs.RunTests"/>
+		<call target="Common.Jobs.CreateReleaseZips"/>		
+		<call target="Common.Jobs.PrepareDeployment"/>
+		
+	</target>
+	
+  	
+     
+</project>
+  	
