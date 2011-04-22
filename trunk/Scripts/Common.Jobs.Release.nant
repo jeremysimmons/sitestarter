@@ -1,10 +1,6 @@
 <?xml version="1.0"?>
 <project name="Common.Jobs.CreateReleaseZips" default="Common.Jobs.CreateReleaseZips" xmlns="http://nant.sf.net/schemas/nant.xsd">
 
-	<include buildfile="Common.Jobs.Reset.nant"/>
-	<include buildfile="Common.Actions.CleanSolution.nant"/>
-	
-	<include buildfile="Common.Jobs.ClearData.nant"/>
 
 	<!-- Add a reference to the sharpziplib library even though it doesn't have tasks in it. -->
 	<loadtasks>
@@ -221,6 +217,7 @@
 	        <exclude name="**.refresh"/>
 	        <exclude name="**.nant"/>
 	        <exclude name="**/tests/**"/>
+	        <exclude name="*MockCreate.ascx"/><!-- Hide the mock/test create projections -->
 	        <include name="${IncludeKey}" />
 	    </fileset>	   
 	</zip>
