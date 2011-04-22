@@ -22,6 +22,7 @@
   		
   		<include buildfile="Common.Jobs.Cycle.nant"/>
   		
+	<include buildfile="Common.Jobs.ClearData.nant"/>
 	<include buildfile="Common.Jobs.ImportFiles.nant"/>
 	<include buildfile="Common.Jobs.BuildSolution.nant"/>
 	<include buildfile="Common.Jobs.BuildAssembly.nant"/>
