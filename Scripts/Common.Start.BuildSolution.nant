@@ -27,6 +27,10 @@
   		
   		
 	<include buildfile="Common.Jobs.BuildAssembly.nant"/>
+
+	<include buildfile="Common.Jobs.WWW.nant"/>
+	<include buildfile="Common.Jobs.Modules.nant"/>
+	<include buildfile="Common.Actions.CleanSolution.nant"/>
 		
 	
 <loadtasks>

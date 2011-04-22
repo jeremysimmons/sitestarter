@@ -27,13 +27,11 @@
   		
   		
 	<include buildfile="Common.Jobs.BuildAssembly.nant"/>
-	<!--include buildfile="Common.Actions.Compile.nant"/-->
 
-  		
-  		
-  		
-  		<!--property name="Solution.RelativePath" value=""/-->
-  		<!--property name="Solution.RootPath" value="${string::substring(string::trim(Project.RootPath, '\'), string::last-index-of('\'), string::get-length(Project.RootPath)}"/-->
+	<include buildfile="Common.Jobs.WWW.nant"/>
+	<include buildfile="Common.Jobs.Modules.nant"/>
+	<include buildfile="Common.Actions.CleanSolution.nant"/>
+
 		
 		
 	
