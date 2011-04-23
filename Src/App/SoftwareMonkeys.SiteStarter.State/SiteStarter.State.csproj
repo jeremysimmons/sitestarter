@@ -1,4 +1,5 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -59,8 +60,10 @@
   <ItemGroup>
     <Compile Include="StateAccess.cs" />
     <Compile Include="StateCollection.cs" />
+    <Compile Include="StateInitializer.cs" />
     <Compile Include="StateNameValueCollection.cs" />
     <Compile Include="BaseStateProvider.cs" />
+    <Compile Include="StateProvider.cs" />
     <Compile Include="StateProviderCollection.cs" />
     <Compile Include="StateProviderConfiguration.cs" />
     <Compile Include="StateScope.cs" />
