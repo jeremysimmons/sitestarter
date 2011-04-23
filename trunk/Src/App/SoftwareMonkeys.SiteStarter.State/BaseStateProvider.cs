@@ -46,5 +46,7 @@ namespace SoftwareMonkeys.SiteStarter.State
         
         public abstract string PhysicalApplicationPath { get;set; }
         public abstract string ApplicationPath { get;set; }
+        
+        public abstract void Initialize();
     }
 }
