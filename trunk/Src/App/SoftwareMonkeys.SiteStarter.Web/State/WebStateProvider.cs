@@ -326,12 +326,18 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
         
         public override void Initialize(string name, System.Collections.Specialized.NameValueCollection config)
         {
+        	Initialize ();
+            
+            base.Initialize(name, config);
+        }
+        
+        public override void Initialize()
+        {
+        	
             StateAccess.State = this;
             
             PhysicalApplicationPath = HttpContext.Current.Server.MapPath(HttpContext.Current.Request.ApplicationPath);
             ApplicationPath = HttpContext.Current.Request.ApplicationPath;
-            
-            base.Initialize(name, config);
         }
 
     }
