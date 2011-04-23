@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<project name="Common.Start.Cycle" default="Common.Start.Cycle" xmlns="http://nant.sf.net/schemas/nant.xsd">
+  		
+		<property name="Argument.SolutionPath" value=""/>
+		<property name="Argument.ProjectPath" value=""/>
+  		<!-- Arguments are passed in from Commander console. -->
+ 		
+  		
+  		<nant buildfile="Common.Functions.Initialize.nant"/>
+  		
+
+		
+		
+  		<property name="Solution.PropertiesPath" value="${Argument.SolutionPath}"/>
+  		<property name="Solution.RootPath" value="${path::get-directory-name(Solution.PropertiesPath)}"/>
+  		<property name="Project.PropertiesPath" value="${Argument.ProjectPath}"/>
+  		<property name="Project.RootPath" value="${path::get-directory-name(Project.PropertiesPath)}"/>
+  		
+  		<echo message="Solution.PropertiesPath: ${Solution.PropertiesPath}"/>
+  		<echo message="Solution.RootPath: ${Solution.RootPath}"/>
+  		
+  		
+  		<include buildfile="Common.Jobs.Cycle.nant"/>
+  		
+	<include buildfile="Common.Jobs.ClearData.nant"/>
+	<include buildfile="Common.Jobs.ImportFiles.nant"/>
+	<include buildfile="Common.Jobs.BuildSolution.nant"/>
+	<include buildfile="Common.Jobs.BuildAssembly.nant"/>
+	<include buildfile="Common.Jobs.RunTests.nant"/>
+	<include buildfile="Common.Jobs.PrepareDeployment.nant"/>
+	<include buildfile="Common.Jobs.Release.nant"/>
+	<include buildfile="Common.Jobs.Reset.nant"/>
+	<include buildfile="Common.Jobs.WWW.nant"/>
+	<include buildfile="Common.Jobs.Modules.nant"/>
+	<include buildfile="Common.Actions.CleanSolution.nant"/>
+	
+	<loadtasks>
+
+            <fileset>
+
+                        <include name="../Lib/nant/bin/tasks/NAnt.Contrib.Tasks.dll" />
+
+            </fileset>
+
+	</loadtasks> 
+		
+		
+  		
+	<target name="Common.Start.Cycle" description="Runs a complete build, test, release, and deploy cycle.">		
+	
+		
+		<call target="Common.Jobs.Cycle"/>
+  	</target>
+  	
+     
+</project>
+  	
