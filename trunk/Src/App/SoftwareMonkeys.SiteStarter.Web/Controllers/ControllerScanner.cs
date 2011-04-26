@@ -68,10 +68,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			
 			//using (LogGroup logGroup = LogGroup.Start("Finding controllers by scanning the attributes of the available type.", NLog.LogLevel.Debug))
 			//{
-				foreach (string assemblyPath in AssemblyPaths)
+			foreach (string assemblyPath in AssemblyPaths)
+			{
+				Assembly assembly = Assembly.LoadFrom(assemblyPath);
+				
+				try
 				{
-					Assembly assembly = Assembly.LoadFrom(assemblyPath);
-					
 					foreach (Type type in assembly.GetTypes())
 					{
 						if  (IsController(type))
@@ -90,6 +92,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 						}
 					}
 				}
+				catch (Exception ex)
+				{
+					LogWriter.Error("Error occurred while trying to scan for controllers.");
+					
+					LogWriter.Error(ex);
+				}
+			}
 			//}
 			
 			return controllers.ToArray();
@@ -109,13 +118,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			//using (LogGroup logGroup = LogGroup.Start("Checks whether the provided type is a controller.", NLog.LogLevel.Debug))
 			//{
 			//	LogWriter.Debug("Type: " + type.ToString());
-				
-				matchesInterface = (type.GetInterface("IController") != null);
-				
-				isNotInterface = !type.IsInterface;
-				
-				isNotAbstract = !type.IsAbstract;
-			//	
+			
+			matchesInterface = (type.GetInterface("IController") != null);
+			
+			isNotInterface = !type.IsInterface;
+			
+			isNotAbstract = !type.IsAbstract;
+			//
 			//	LogWriter.Debug("Matches interface: " + matchesInterface);
 			//	LogWriter.Debug("Is not controller interface: " + isNotInterface);
 			//}
