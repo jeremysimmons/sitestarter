@@ -36,7 +36,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		static public bool IsType(string typeName)
 		{
 			if (typeName == String.Empty)
-				throw new ArgumentException("typeName");
+				throw new ArgumentException("A type name must be provided.", "typeName");
 			
 			if (typeName == "IEntity"
 			    || typeName == "IUniqueEntity"
