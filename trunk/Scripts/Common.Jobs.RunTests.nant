@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <project name="Common.Jobs.RunTests" default="Common.Jobs.RunTests" xmlns="http://nant.sf.net/schemas/nant.xsd">
 	
-	<property name="Project.TestResultsDirectory" value="${Project.RootPath}\TestResults"/>
+	<property name="Project.TestResultsDirectory" value="${Project.RootPath}/TestResults"/>
 	<property name="Project.LibDirectory" value="${Project.RootPath}\lib"/>
 	
 	
@@ -60,7 +60,7 @@
   		
 		<foreach item="String" in="${Solution.TestOrder}" delim="," property="testName">
   			
-			<property name="resultsPath" value="${Project.TestResultsDirectory}\xml\${versionNumber}-${testName}-Tests-Results.xml"/>
+			<property name="resultsPath" value="${Project.TestResultsDirectory}/xml/Results.xml"/>
 			<echo message="Results path before: ${resultsPath}"/>
 			<property name="resultsPath" value="${path::get-full-path(resultsPath)}"/>
 
