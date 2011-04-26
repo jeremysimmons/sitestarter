@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <project name="SiteStarter.Solution" default="Private.InitSolution" xmlns="http://nant.sf.net/schemas/nant.xsd">
 		  
-		  <property name="Build.Mode" value="Release" />
 		  <property name="Solution.Name" value="SiteStarter" />
 		  <property name="Solution.BaseNamespace" value="SoftwareMonkeys.SiteStarter" />
 		<property name="Solution.VirtualDirectoryName" value="SiteStarter" />
