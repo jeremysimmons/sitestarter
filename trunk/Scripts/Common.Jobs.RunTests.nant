@@ -79,7 +79,13 @@
 			
 		</foreach>
 
-		<nunit2report out="${Project.TestResultsDirectory}\html\${versionNumber}.html">
+		<property name="htmlResultsPath" value="${Project.TestResultsDirectory}\html\${versionNumber}"/>
+  		<if test="${directory::exists(htmlResultsPath) == false}">
+  			<mkdir dir="${htmlResultsPath}"/>
+  		</if>
+  		
+
+		<nunit2report todir="${htmlResultsPath}">
 		  <fileset basedir="${Project.TestResultsDirectory}\xml">
 		    <include name="*.xml" />
 		  </fileset>
