@@ -6,7 +6,8 @@
   	<target name="Common.Jobs.Cycle">
 
 		<property name="Build.Mode" value="Release"/>
-		<call target="Common.Jobs.ImportFiles"/>
+		<!-- Import disabled because it's not working properly -->
+		<!--call target="Common.Jobs.ImportFiles"/-->
 		<call target="Common.Jobs.BuildSolution"/>	
 		<call target="Common.Jobs.RunTests"/>	
 		<call target="Common.Jobs.GenerateScreenshots"/>
