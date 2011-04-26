@@ -57,6 +57,8 @@
 		</if>
 
 		<property name="versionNumber" value="${string::replace(versionNumber, '.', '-')}"/>
+		<property name="versionNumber" value="${string::replace(versionNumber, '\n', '')}"/>
+		<property name="versionNumber" value="${string::replace(versionNumber, '\r', '')}"/>
   		
 		<foreach item="String" in="${Solution.TestOrder}" delim="," property="testName">
   			
@@ -66,7 +68,8 @@
 			<!-- IMPORTANT: Retrieving full path to eliminate any chance of forward slashes, as a forward slash is an illegal character in this situation -->
 			<property name="resultsPath" value="${path::get-full-path(resultsPath)}"/>
 
-			<property name="testLibraryPath" value="${Project.RootPath}/bin/${Build.Mode}/${Solution.BaseNamespace}.${testName}.Tests.dll"/>
+			<property name="testLibraryPath" value="${Project.RootPath}\bin\${Build.Mode}\${Solution.BaseNamespace}.${testName}.Tests.dll"/>
+			<property name="testLibraryPath" value="${path::get-full-path(testLibraryPath)}"/>
 
 			<echo message="Results path: ${resultsPath}"/>
 			<echo message="Test library path: ${testLibraryPath}"/>
