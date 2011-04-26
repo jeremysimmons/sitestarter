@@ -69,7 +69,9 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			
 			ReferenceAttribute reference = GetReferenceAttribute(property);
 			
-			isReference = reference != null;
+			isReference = reference != null
+				&& reference.TypeName != String.Empty
+				&& EntityState.IsType(reference.TypeName);
 			
 			/*foreach (Attribute attribute in property.GetCustomAttributes(true))
 			{
