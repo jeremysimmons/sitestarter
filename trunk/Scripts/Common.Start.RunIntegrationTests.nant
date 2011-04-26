@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<project name="Common.Start.RunIntegrationTests" default="Common.Start.RunIntegrationTests" xmlns="http://nant.sf.net/schemas/nant.xsd">
+  		
+  		
+  		<property name="Argument.ProjectPath" value=""/>
+  		<property name="Argument.SolutionPath" value=""/>
+  		
+  		<nant buildfile="Common.Functions.Initialize.nant"/>
+  		
+
+		
+  		<property name="Solution.PropertiesPath" value="${Argument.SolutionPath}"/>
+  		<property name="Solution.RootPath" value="${path::get-directory-name(Solution.PropertiesPath)}"/>
+  		
+  		<echo message="Solution.PropertiesPath: ${Solution.PropertiesPath}"/>
+  		<echo message="Solution.RootPath: ${Solution.RootPath}"/>
+
+		<property name="Project.PropertiesPath" value="${Argument.ProjectPath}"/>
+		<property name="Project.RootPath" value="${path::get-directory-name(Argument.ProjectPath)}"/>
+  		
+  		
+	<include buildfile="Common.Jobs.RunIntegrationTests.nant"/>
+
+	<target name="Common.Start.RunIntegrationTests" description="Runs the integration tests.">		
+		<call target="Common.Jobs.RunIntegrationTests"/>
+	</target>
+</project>
+  	
