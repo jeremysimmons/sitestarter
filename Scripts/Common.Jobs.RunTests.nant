@@ -63,7 +63,7 @@
   		
 		<foreach item="String" in="${Solution.TestOrder}" delim="," property="testName">
   			
-			<property name="resultsPath" value="${Project.TestResultsDirectory}/xml/${versionNumber}--${testName}-Tests-Results.xml"/>
+			<property name="resultsPath" value="${Project.TestResultsDirectory}\xml\${versionNumber}--${testName}-Tests-Results.xml"/>
 
 			<property name="testLibraryPath" value="${Project.RootPath}\bin\${Build.Mode}\${Solution.BaseNamespace}.${testName}.Tests.dll"/>
 
