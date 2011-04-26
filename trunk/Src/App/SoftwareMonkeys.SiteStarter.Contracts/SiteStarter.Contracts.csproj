@@ -1,4 +1,5 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -60,15 +61,18 @@
     <Compile Include="Business\IActivateStrategy.cs" />
     <Compile Include="Business\ICommandManager.cs" />
     <Compile Include="Business\ICreateStrategy.cs" />
+    <Compile Include="Business\IDeleteReaction.cs" />
     <Compile Include="Business\IDeleteStrategy.cs" />
     <Compile Include="Business\IIndexStrategy.cs" />
     <Compile Include="Business\INotifyStrategy.cs" />
+    <Compile Include="Business\IReaction.cs" />
     <Compile Include="Business\IRetrieveStrategy.cs" />
     <Compile Include="Business\IStrategy.cs" />
     <Compile Include="Business\ISaveStrategy.cs" />
     <Compile Include="Business\IUniqueSaveStrategy.cs" />
     <Compile Include="Business\IUniqueUpdateStrategy.cs" />
     <Compile Include="Business\IUniqueValidateStrategy.cs" />
+    <Compile Include="Business\IUpdateReaction.cs" />
     <Compile Include="Business\IUpdateStrategy.cs" />
     <Compile Include="Business\IValidateStrategy.cs" />
     <Compile Include="Business\Security\IAuthenticateStrategy.cs" />
