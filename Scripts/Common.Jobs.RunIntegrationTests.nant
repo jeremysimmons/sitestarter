@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<project name="Common.Jobs.RunIntegrationTests" default="Common.Jobs.RunIntegrationTests" xmlns="http://nant.sf.net/schemas/nant.xsd">
+
+
+	
+	<target name="Common.Jobs.RunIntegrationTests">
+		  
+    	
+
+			<call target="DoIntegrationTests"/>
+
+  	</target>
+  
+  
+  <target name="DoIntegrationTests">
+				    
+	
+				<call target="Common.Jobs.ClearData"/>	
+
+				<exec program="${Solution.RootPath}\IntegrationTests\Run.bat">
+				</exec>
+  </target>
+
+</project>
+  	

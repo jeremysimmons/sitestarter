@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<project name="Common.Jobs.InitializeCache" default="Common.Jobs.InitializeCache" xmlns="http://nant.sf.net/schemas/nant.xsd">
+
+
+	
+	<target name="Common.Jobs.InitializeCache">
+		  
+		  
+		<xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.VirtualDirectoryName']/@value"
+		    property="Solution.VirtualDirectoryName">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+    	
+
+
+	<property name="tmpFilePath" value="tmpfile.txt" />
+
+	<get src="http://localhost/${Solution.VirtualDirectoryName}/Admin/InitializeCache.aspx" dest="${tmpFilePath}"/>
+
+	<delete file="${tmpFilePath}"/>
+  </target>
+  
+  
+
+</project>
+  	

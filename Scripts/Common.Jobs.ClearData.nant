@@ -33,6 +33,7 @@
 		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Logs" />
 		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Legacy" />
 		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Import" />
+		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Reactions" />
 
 
   </target>
