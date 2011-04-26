@@ -60,8 +60,10 @@
   		
 		<foreach item="String" in="${Solution.TestOrder}" delim="," property="testName">
   			
-			<property name="resultsPath" value="${Project.TestResultsDirectory}/xml/Results.xml"/>
+			<property name="resultsPath" value="${Project.TestResultsDirectory}/xml/${versionNumber}-${testName}-Tests-Results.xml"/>
 			<echo message="Results path before: ${resultsPath}"/>
+
+			<!-- IMPORTANT: Retrieving full path to eliminate any chance of forward slashes, as a forward slash is an illegal character in this situation -->
 			<property name="resultsPath" value="${path::get-full-path(resultsPath)}"/>
 
 			<property name="testLibraryPath" value="${Project.RootPath}/bin/${Build.Mode}/${Solution.BaseNamespace}.${testName}.Tests.dll"/>
@@ -71,12 +73,12 @@
 
 	  		<exec program="${Project.LibDirectory}\nunit-console" basedir="${Project.LibDirectory}" failonerror="false">
 	    		<arg value="${testLibraryPath}" />
-	    		<arg value="/xml:${resultsPath}" />
+	    		<arg value="/xml:${resultsPath}" /><!-- IMPORTANT: Ensure 'resultsPath' does NOT have ANY forward slashes (\) because it can cause get an illegal character error -->
 			</exec>
 			
 		</foreach>
 
-		<nunit2report todir="${Project.TestResultsDirectory}\html" out="${versionNumber}.html">
+		<nunit2report out="${Project.TestResultsDirectory}\html\${versionNumber}.html">
 		  <fileset basedir="${Project.TestResultsDirectory}\xml">
 		    <include name="*.xml" />
 		  </fileset>
