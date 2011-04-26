@@ -27,7 +27,7 @@
   		<property name="Solution.PropertiesPath" value="${Argument.SolutionPath}"/>
   		<property name="Solution.RootPath" value="${path::get-directory-name(Solution.PropertiesPath)}"/>
   		
-  		
+
   		<property name="Build.Mode" value="${Argument.BuildMode}"/>
   		
   		
