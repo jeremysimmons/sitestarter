@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <project name="Common.Jobs.RunTests" default="Common.Jobs.RunTests" xmlns="http://nant.sf.net/schemas/nant.xsd">
 	
-	<property name="Project.TestResultsDirectory" value="${Project.RootPath}/TestResults"/>
+	<property name="Project.TestResultsDirectory" value="${Project.RootPath}\TestResults"/>
 	<property name="Project.LibDirectory" value="${Project.RootPath}\lib"/>
 	
 	
@@ -56,13 +56,11 @@
 			    property="versionNumber" />
 		</if>
 
-		<property name="versionNumber" value="${string::replace(versionNumber, '.', '-')}"/>
-		<property name="versionNumber" value="${string::replace(versionNumber, '\n', '')}"/>
-		<property name="versionNumber" value="${string::replace(versionNumber, '\r', '')}"/>
+		<property name="versionNumber" value="${string::trim-end(string::replace(versionNumber, '.', '-'))}"/>
   		
 		<foreach item="String" in="${Solution.TestOrder}" delim="," property="testName">
   			
-			<property name="resultsPath" value="${Project.TestResultsDirectory}/xml/${versionNumber}-${testName}-Tests-Results.xml"/>
+			<property name="resultsPath" value="${Project.TestResultsDirectory}\xml\${versionNumber}-${testName}-Tests-Results.xml"/>
 			<echo message="Results path before: ${resultsPath}"/>
 
 			<!-- IMPORTANT: Retrieving full path to eliminate any chance of forward slashes, as a forward slash is an illegal character in this situation -->
