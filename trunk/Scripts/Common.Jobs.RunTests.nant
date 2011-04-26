@@ -48,16 +48,27 @@
   		</if>
   		
   		
+		<property name="versionFile" value="${Solution.RootPath}\Version.number"/>
+
+		<if test="${file::exists(versionFile)}">
+			<loadfile
+			    file="${versionFile}"
+			    property="versionNumber" />
+		</if>
+
+		<property name="versionNumber" value="${string::replace(versionNumber, '.', '-')}"/>
+
+  		
 		<foreach item="String" in="${Solution.TestOrder}" delim="," property="testName">
   			
 	  		<exec program="${Project.LibDirectory}\nunit-console" basedir="${Project.LibDirectory}" failonerror="false">
 	    		<arg value="${Project.RootPath}\bin\${Build.Mode}\${Solution.BaseNamespace}.${testName}.Tests.dll" />
-	    		<arg value="/xml:${Project.TestResultsDirectory}/xml/${testName}.Tests.Results.xml" />
+	    		<arg value="/xml:${Project.TestResultsDirectory}/xml/${versionNumber}--${testName}.Tests.Results.xml" />
 			</exec>
 			
 		</foreach>
 
-		<nunit2report todir="${Project.TestResultsDirectory}/html">
+		<nunit2report todir="${Project.TestResultsDirectory}/html" out="${versionNumber}.html">
 		  <fileset basedir="${Project.TestResultsDirectory}/xml">
 		    <include name="*.xml" />
 		  </fileset>
