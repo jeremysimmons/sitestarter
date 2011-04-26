@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <project name="Common.Jobs.RunTests" default="Common.Jobs.RunTests" xmlns="http://nant.sf.net/schemas/nant.xsd">
 	
-	<property name="Project.TestResultsDirectory" value="${Project.RootPath}/TestResults"/>
-	<property name="Project.LibDirectory" value="${Project.RootPath}/lib"/>
+	<property name="Project.TestResultsDirectory" value="${Project.RootPath}\TestResults"/>
+	<property name="Project.LibDirectory" value="${Project.RootPath}\lib"/>
 	
 	
 	<loadtasks>
 	            <fileset>
-	                        <include name="${Project.RootPath}/lib/nant/bin/tasks/nunit2report/NAnt.NUnit2ReportTasks.dll" />
+	                        <include name="${Project.RootPath}\lib\nant\bin\tasks\nunit2report\NAnt.NUnit2ReportTasks.dll" />
 	            </fileset>
 	</loadtasks> 
 	
@@ -77,8 +77,8 @@
 			
 		</foreach>
 
-		<nunit2report todir="${Project.TestResultsDirectory}/html" out="${versionNumber}.html">
-		  <fileset basedir="${Project.TestResultsDirectory}/xml">
+		<nunit2report todir="${Project.TestResultsDirectory}\html" out="${versionNumber}.html">
+		  <fileset basedir="${Project.TestResultsDirectory}\xml">
 		    <include name="*.xml" />
 		  </fileset>
 		</nunit2report>
