@@ -29,7 +29,17 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		}
 		
 		/// <summary>
-		/// Checks whether the specified type exists.
+		/// Checks whether the specified type exists in the entity state.
+		/// </summary>
+		/// <param name="type">The type to check.</param>
+		/// <returns></returns>
+		static public bool IsType(Type type)
+		{
+			return IsType(type.Name);
+		}
+		
+		/// <summary>
+		/// Checks whether the specified type exists in the entity state.
 		/// </summary>
 		/// <param name="typeName">The short type name.</param>
 		/// <returns></returns>
