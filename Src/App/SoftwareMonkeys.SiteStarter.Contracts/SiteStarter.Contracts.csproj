@@ -67,6 +67,7 @@
     <Compile Include="Business\INotifyStrategy.cs" />
     <Compile Include="Business\IReaction.cs" />
     <Compile Include="Business\IRetrieveStrategy.cs" />
+    <Compile Include="Business\ISaveReaction.cs" />
     <Compile Include="Business\IStrategy.cs" />
     <Compile Include="Business\ISaveStrategy.cs" />
     <Compile Include="Business\IUniqueSaveStrategy.cs" />
