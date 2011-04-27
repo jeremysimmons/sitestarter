@@ -74,7 +74,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			
 			if (isReference)
 			{
-				Type referenceType = property.GetType();
+				Type referenceType = property.PropertyType;
 				
 				if (typeof(Array).IsAssignableFrom(referenceType))
 				{
