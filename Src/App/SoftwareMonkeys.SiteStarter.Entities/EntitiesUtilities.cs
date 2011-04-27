@@ -75,7 +75,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			if (isReference)
 			{
 				Type referenceType = property.GetType();
-				if (!referenceType.IsAssignableFrom(typeof(IEntity)))
+				
+				if (typeof(Array).IsAssignableFrom(referenceType))
 				{
 					// If it's an array this should work
 					referenceType = property.PropertyType.GetElementType();
