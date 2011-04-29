@@ -62,34 +62,39 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			if (sourceType == null)
 				throw new ArgumentNullException("sourceType");
 			
-			// Logging disabled simply to reduce the size of the logs
 			//using (LogGroup logGroup = LogGroup.Start("Checking if the specified property is an entity reference.", NLog.LogLevel.Debug))
 			//{
 			//	LogWriter.Debug("Entity: " + sourceType.ToString());
 			//	LogWriter.Debug("Property name: " + property.Name);
-			
-			ReferenceAttribute reference = GetReferenceAttribute(property);
-			
-			isReference = reference != null;
-			
-			if (isReference)
-			{
-				Type referenceType = property.PropertyType;
 				
-				if (typeof(Array).IsAssignableFrom(referenceType))
-				{
-					// If it's an array this should work
-					referenceType = property.PropertyType.GetElementType();
+				ReferenceAttribute reference = GetReferenceAttribute(property);
+				
+				isReference = reference != null;
+				
+				if (isReference)
+				{					
+					Type referenceType = property.PropertyType;
 					
-					// If it's not an array (ie. it's a collection) then this should work
-					if (referenceType == null)
-						referenceType = property.PropertyType.GetGenericArguments()[0];
+					if (typeof(Array).IsAssignableFrom(referenceType))
+					{
+						// If it's an array this should work
+						referenceType = property.PropertyType.GetElementType();
+						
+						// If it's not an array (ie. it's a collection) then this should work
+						if (referenceType == null)
+						{
+							//LogWriter.Debug("Property is a collection.");
+							referenceType = property.PropertyType.GetGenericArguments()[0];
+						}
+						//else
+						//	LogWriter.Debug("Property is an array.");
+					}
+					
+					validType = EntityState.IsType(referenceType);
 				}
 				
-				validType = EntityState.IsType(referenceType);
-			}
-			
 			//	LogWriter.Debug("Is reference? " + isReference.ToString());
+			//	LogWriter.Debug("Valid type? " + validType.ToString());
 			//}
 			
 			return isReference && validType;
@@ -234,34 +239,37 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			if (attribute == null)
 				throw new Exception("The reference attribute was not found on the '" + property.Name + "' property of the type '" + sourceType.ToString() + "'.");
 			
-			if (attribute.TypeName != String.Empty)
+			if (IsReference(sourceType, property))
 			{
-				LogWriter.Debug("attribute.TypeName != String.Empty");
-				LogWriter.Debug("attribute.TypeName == " + attribute.TypeName);
-				
-				type = EntitiesUtilities.GetType(attribute.TypeName);
-			}
-			else
-			{
-				LogWriter.Debug("attribute.TypeName == String.Empty");
-				
-				// If the property is a single entity instance
-				if (IsSingleReference(sourceType, property))
+				if (attribute.TypeName != String.Empty)
 				{
-					LogWriter.Debug("Is a single entity");
+					LogWriter.Debug("attribute.TypeName != String.Empty");
+					LogWriter.Debug("attribute.TypeName == " + attribute.TypeName);
 					
-					type = property.PropertyType;
-				} // Otherwise the property is a collection/array
+					type = EntitiesUtilities.GetType(attribute.TypeName);
+				}
 				else
 				{
-					LogWriter.Debug("Is a collection/array");
+					LogWriter.Debug("attribute.TypeName == String.Empty");
 					
-					// If it's an array this should work
-					type = property.PropertyType.GetElementType();
-					
-					// If it's not an array (ie. it's a collection) then this should work
-					if (type == null)
-						type = property.PropertyType.GetGenericArguments()[0];
+					// If the property is a single entity instance
+					if (IsSingleReference(sourceType, property))
+					{
+						LogWriter.Debug("Is a single entity");
+						
+						type = property.PropertyType;
+					} // Otherwise the property is a collection/array
+					else
+					{
+						LogWriter.Debug("Is a collection/array");
+						
+						// If it's an array this should work
+						type = property.PropertyType.GetElementType();
+						
+						// If it's not an array (ie. it's a collection) then this should work
+						if (type == null)
+							type = property.PropertyType.GetGenericArguments()[0];
+					}
 				}
 			}
 			
