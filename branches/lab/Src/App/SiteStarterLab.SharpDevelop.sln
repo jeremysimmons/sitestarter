@@ -48,6 +48,8 @@ Global
 		Release|.NET = Release|.NET
 		Release|Any CPU = Release|Any CPU
 		Release|Mixed Platforms = Release|Mixed Platforms
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{A5D49D94-D936-4123-BA9A-572AA7C7F426}.Debug|.NET.ActiveCfg = Debug|Any CPU
