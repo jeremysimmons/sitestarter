@@ -138,7 +138,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				else if (sourceEntity.ID == entity.ID)
 					otherEntity = referenceEntity;
 				else
-					throw new InvalidOperationException("Can't get the other entity. Neither entity matches.\nParameter entity type: " + entity.ToString() + "\nParameter entity ID: " + entity.ID.ToString() + "\nEntity #1 type: " + Type1Name + "\nEntity #2 type: " + Type2Name + "\nProperty #1 type: " + Property1Name + "\nProperty #2 type: " + Property2Name + "\nEntity #1 type: " + Entity1ID.ToString() + "\nEntity #2 type: " + Entity2ID.ToString());
+					throw new InvalidOperationException("Can't get the other entity. Neither entity matches.\nParameter entity type: " + entity.ToString() + "\nParameter entity ID: " + entity.ID.ToString() + "\nEntity #1 type: " + Type1Name + "\nEntity #2 type: " + Type2Name + "\nProperty #1 type: " + Property1Name + "\nProperty #2 type: " + Property2Name + "\nEntity #1 ID: " + Entity1ID.ToString() + "\nEntity #2 ID: " + Entity2ID.ToString());
 				
 				//LogWriter.Debug("Other entity type: " + otherEntity.GetType().ToString());
 				//LogWriter.Debug("Other entity ID: " + otherEntity.ID.ToString());
