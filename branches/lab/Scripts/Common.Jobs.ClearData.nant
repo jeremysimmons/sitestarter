@@ -22,13 +22,8 @@
 		</delete>
 
 		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Personalization_Data" />
-		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Entities" />
-		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Strategies" />
 		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Imported" />
 		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/FailedImport" />
-		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Parts" />
-		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Projections" />
-		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Controllers" />
 		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Suspended" />
 		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Logs" />
 		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Legacy" />
