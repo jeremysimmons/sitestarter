@@ -15,6 +15,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	[Controller("Create", "User")]
 	public class CreateUserController : CreateController
 	{
+		/// <summary>
+		/// Gets a value indicating whether the current user object belongs to the current user.
+		/// </summary>
+		public bool IsSelf
+		{
+			get { return ((User)DataSource).ID == AuthenticationState.User.ID; }
+		}
+		
 		public CreateUserController()
 		{
 		}
@@ -78,7 +86,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		
 		public override void NavigateAfterSave()
 		{
-			Navigator.Current.Go("Account", "User");
+			// If the user being saved was the logged in user then send them to their account
+			if (IsSelf)
+				Navigator.Current.Go("Account", "User");
+			// Otherwise send them to the users index to see the new user in the list
+			else
+				Navigator.Current.Go("Index", "User");
 		}
 	}
 }

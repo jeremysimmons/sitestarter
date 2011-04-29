@@ -2,6 +2,7 @@ using System;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using SoftwareMonkeys.SiteStarter.State;
 
 namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 {
@@ -9,13 +10,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 	/// Displays the result of an action.
 	/// </summary>
 	public class Result : Panel
-	{
-/*		public bool IsError
+	{		
+		public bool IsInAsyncPostBack
 		{
-			get { return Result.IsError; }
-			set { Result.IsError = value; }
-		}*/
-		
+			get
+			{
+				ScriptManager scriptManager = ScriptManager.GetCurrent(Page);
+				return scriptManager != null && scriptManager.IsInAsyncPostBack;
+			}
+		}
 		/// <summary>
 		/// Gets/sets a value indicating whether the result is an error.
 		/// </summary>
@@ -23,37 +26,22 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		{
 			get
 			{
-				if (HttpContext.Current == null || HttpContext.Current.Session == null)
+				if (!StateAccess.IsInitialized)
 					return false;
 				else
 				{
-					if (HttpContext.Current.Session["Result_IsError"] == null)
-						HttpContext.Current.Session["Result_IsError"] = false;
-					return (bool)HttpContext.Current.Session["Result_IsError"];
+					if (StateAccess.State.Session["Result_IsError"] == null)
+						StateAccess.State.Session["Result_IsError"] = false;
+					return (bool)StateAccess.State.Session["Result_IsError"];
 				}
 			}
 			set
 			{
-				if (HttpContext.Current != null && HttpContext.Current.Session != null)
-					HttpContext.Current.Session["Result_IsError"] = value;
+				if (StateAccess.IsInitialized)
+					StateAccess.State.Session["Result_IsError"] = value;
 			}
 		}
 		
-		/*/// <summary>
-		/// Gets/sets the text result.
-		/// </summary>
-		public string Text
-		{
-			get
-			{
-				return Result.Text;
-			}
-			set
-			{
-				Result.Text = value;
-			}
-		}*/
-
 		/// <summary>
 		/// Gets/sets the text result.
 		/// </summary>
@@ -61,26 +49,27 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		{
 			get
 			{
-				if (HttpContext.Current == null || HttpContext.Current.Session == null)
+				if (!StateAccess.IsInitialized)
 					return String.Empty;
 				else
 				{
-					if (HttpContext.Current.Session["Result_Text"] == null)
-						HttpContext.Current.Session["Result_Text"] = String.Empty;
-					return (string)HttpContext.Current.Session["Result_Text"];
+					if (StateAccess.State.Session["Result_Text"] == null)
+						StateAccess.State.Session["Result_Text"] = String.Empty;
+					return (string)StateAccess.State.Session["Result_Text"];
 				}
 			}
 			set
 			{
-				if (HttpContext.Current != null && HttpContext.Current.Session != null)
-					HttpContext.Current.Session["Result_Text"] = value;
+				if (StateAccess.IsInitialized)
+					StateAccess.State.Session["Result_Text"] = value;
 			}
 		}
 
 		protected override void Render(HtmlTextWriter writer)
 		{
+			
 			// Only display the control if it is marked as visible and a message is available
-			if (Visible && Text != String.Empty)
+			if (Visible && !IsInAsyncPostBack && Text != String.Empty)
 			{
 				// Use the correct CSS class depending on whether it is showing an error
 				if (IsError)
@@ -95,8 +84,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				base.Render(writer);
 
 				// Reset the text because it has been displayed now
-				HttpContext.Current.Session["Result_Text"] = String.Empty;
-				HttpContext.Current.Session["Result_IsError"] = false;
+				StateAccess.State.Session["Result_Text"] = String.Empty;
+				StateAccess.State.Session["Result_IsError"] = false;
 			}
 		}
 
@@ -107,11 +96,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		/// <param name="text">The text to display on the Result control.</param>
 		public static void Display(string text)
 		{
-			if (HttpContext.Current != null && HttpContext.Current.Session != null)
+			if (StateAccess.IsInitialized)
 			{
-				HttpContext.Current.Session["Result_Text"] = text;
-				HttpContext.Current.Session["Result_IsError"] = false;
+				StateAccess.State.Session["Result_Text"] = text;
+				StateAccess.State.Session["Result_IsError"] = false;
 			}
+			else
+				throw new InvalidOperationException("Can't use the result control when the state has not been initialized.");
 		}
 
 		/// <summary>
@@ -120,12 +111,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		/// <param name="error">The error to display on the Result control.</param>
 		public static void DisplayError(string error)
 		{
-
-			if (HttpContext.Current != null && HttpContext.Current.Session != null)
+			if (StateAccess.IsInitialized)
 			{
-				HttpContext.Current.Session["Result_Text"] = error;
-				HttpContext.Current.Session["Result_IsError"] = true;
+				StateAccess.State.Session["Result_Text"] = error;
+				StateAccess.State.Session["Result_IsError"] = true;
 			}
+			else
+				throw new InvalidOperationException("Can't use the result control when the state has not been initialized.");
 		}
 		#endregion
 	}
