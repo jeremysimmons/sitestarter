@@ -551,9 +551,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			article3.ID = Guid.NewGuid();
 			article3.Title = "Article A";
 			
-			DataAccess.Data.Saver.Save(article1);
-			DataAccess.Data.Saver.Save(article2);
 			DataAccess.Data.Saver.Save(article3);
+			DataAccess.Data.Saver.Save(article2);
+			DataAccess.Data.Saver.Save(article1);
 			
 			string[] titles = new String[]
 			{
@@ -648,6 +648,65 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			Assert.AreEqual(article2.Title, entities[1].Title, "Sorting failed #2.");
 		}
 		
+		
+		[Test]
+		public void Test_GetPageOfEntitiesWithReference_Page1_PageSize1_SortAscending()
+		{				
+			TestCategory category = new TestCategory();
+			category.ID = Guid.NewGuid();
+			category.Name = "Test Category";
+			
+			TestArticle article1 = new TestArticle();
+			article1.ID = Guid.NewGuid();
+			article1.Title = "Article C";
+			article1.Categories = new TestCategory[]{category};
+			
+			TestArticle article2 = new TestArticle();
+			article2.ID = Guid.NewGuid();
+			article2.Title = "Article B";
+			article2.Categories = new TestCategory[]{category};
+			
+			TestArticle article3 = new TestArticle();
+			article3.ID = Guid.NewGuid();
+			article3.Title = "Article A";
+			article3.Categories = new TestCategory[]{category};
+			
+			DataAccess.Data.Saver.Save(category);
+			DataAccess.Data.Saver.Save(article3);
+			DataAccess.Data.Saver.Save(article2);
+			DataAccess.Data.Saver.Save(article1);
+			
+			
+			string[] titles = new String[]
+			{
+				article1.Title,
+				article2.Title,
+				article3.Title
+			};
+			
+			PagingLocation pagingLocation = new PagingLocation(0, 1);
+			
+			string sortExpression = "TitleAscending";
+			
+			TestArticle[] entities = DataAccess.Data.Indexer.GetPageOfEntitiesWithReference<TestArticle>("Categories", typeof(TestCategory), category.ID, pagingLocation, sortExpression);
+			
+			Assert.IsNotNull(entities);
+			
+			foreach (TestArticle a in entities)
+			{
+				Assert.Greater(Array.IndexOf(titles, a.Title), -1, "The title of one of the retrieved entities doesn't match any of those expected.");
+			}
+			
+			Assert.AreEqual(1, entities.Length, "Invalid number found.");
+			
+			Assert.AreEqual(article3.Title, entities[0].Title, "Sorting failed #1.");
+			//Assert.AreEqual(article2.Title, entities[1].Title, "Sorting failed #2.");
+			//Assert.AreEqual(article1.Title, entities[1].Title, "Sorting failed #3.");
+			
+			Assert.AreEqual(3, pagingLocation.AbsoluteTotal, "Invalid total");
+			
+		}
+		
 		[Test]
 		public void Test_GetEntitiesPage_Page1_PageSize1_SortAscending()
 		{				
@@ -663,9 +722,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			article3.ID = Guid.NewGuid();
 			article3.Title = "Article A";
 			
-			DataAccess.Data.Saver.Save(article1);
-			DataAccess.Data.Saver.Save(article2);
 			DataAccess.Data.Saver.Save(article3);
+			DataAccess.Data.Saver.Save(article2);
+			DataAccess.Data.Saver.Save(article1);
 			
 			string[] titles = new String[]
 			{
@@ -713,7 +772,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			TestArticle article3 = new TestArticle();
 			article3.ID = Guid.NewGuid();
-			article3.Title = "Article A";
+			article3.Title = "article A";
 			
 			List<string> titles = new List<string>();
 			titles.Add(article1.Title);
@@ -725,9 +784,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			ids.Add(article2.ID);
 			ids.Add(article3.ID);			
 			
-			DataAccess.Data.Saver.Save(article1);
 			DataAccess.Data.Saver.Save(article2);
 			DataAccess.Data.Saver.Save(article3);
+			DataAccess.Data.Saver.Save(article1);
 			
 			PagingLocation pagingLocation = new PagingLocation(0, 1);
 			

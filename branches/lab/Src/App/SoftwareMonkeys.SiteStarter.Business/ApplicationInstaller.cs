@@ -186,6 +186,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				InitializeVersion();
 				
 				LogWriter.Debug("Initialized application version.");
+				
+				LogWriter.Info("The application has been installed and configured, ready to use.");
 			}
 		}
 		

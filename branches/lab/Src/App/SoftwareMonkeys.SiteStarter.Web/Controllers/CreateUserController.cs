@@ -15,10 +15,18 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	[Controller("Create", "User")]
 	public class CreateUserController : CreateController
 	{
+		/// <summary>
+		/// Gets a value indicating whether the current user object belongs to the current user.
+		/// </summary>
+		public bool IsSelf
+		{
+			get { return ((User)DataSource).ID == AuthenticationState.User.ID; }
+		}
+		
 		public CreateUserController()
 		{
 		}
-			
+		
 		public override bool ExecuteSave(SoftwareMonkeys.SiteStarter.Entities.IEntity entity)
 		{
 			if (entity is User)
@@ -34,11 +42,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			bool success = false;
 			
 			using (LogGroup logGroup = LogGroup.Start("Saving the new user.", NLog.LogLevel.Debug))
-			{				
+			{
 				LogWriter.Debug("Auto navigate: " + AutoNavigate.ToString());
 				
 				user.Password = Crypter.EncryptPassword(user.Password);
-		
+				
 				// Cancel the base automatic navigation
 				AutoNavigate = false;
 				
@@ -62,13 +70,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 						
 						Authentication.SetAuthenticatedUsername(user.Username);
 						
-						if (AutoNavigate)
-						{
-							LogWriter.Debug("Automatically navigating after save.");
-							
-							NavigateAfterSave();
-						}
+						// Navigate only if automatically logged in
+						NavigateAfterSave();
 					}
+					
 				}
 				else
 				{
@@ -78,10 +83,17 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			
 			return success;
 		}
-		
+
 		public override void NavigateAfterSave()
 		{
-			Navigator.Current.Go("Index", "User");
+			// If the user being saved was the logged in user then send them to their account
+			if (IsSelf)
+				Navigator.Current.Go("Account", "User");
+			// Otherwise send them to the users index to see the new user in the list
+			else
+				Navigator.Current.Go("Index", "User");
+			// TODO: If a new user was created by an administrator, and not registering their self, then they should be redirected back to the index after saving a new user
+			//Navigator.Current.Go("Index", "User");
 		}
 	}
 }

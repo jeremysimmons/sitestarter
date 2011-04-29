@@ -3,6 +3,7 @@ using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Business;
 using SoftwareMonkeys.SiteStarter.Business.Security;
 using SoftwareMonkeys.SiteStarter.Web.Navigation;
+using SoftwareMonkeys.SiteStarter.Web.WebControls;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 {
@@ -12,6 +13,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	[Controller("Edit", "User")]
 	public class EditUserController : EditController
 	{
+		/// <summary>
+		/// Gets a value indicating whether the current user object belongs to the current user.
+		/// </summary>
+		public bool IsSelf
+		{
+			get { return ((User)DataSource).ID == AuthenticationState.User.ID; }
+		}
+		
 		public EditUserController()
 		{
 		}
@@ -49,6 +58,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			    && user.Username != AuthenticationState.Username)
 				AuthenticationState.Username = user.Username;
 			
+			Result.Display(IsSelf
+			               ? Properties.Language.YourAccountUpdated
+			               : Properties.Language.UserUpdated);
+			
 			if (success)
 				NavigateAfterUpdate();
 			
@@ -57,7 +70,24 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		
 		public override void NavigateAfterUpdate()
 		{
-			Navigator.Current.Go("Index", "User");
+			// If the user being saved was the logged in user then send them to their account
+			if (IsSelf)
+				Navigator.Current.Go("Account", "User");
+			// Otherwise send them to the users index to see the new user in the list
+			else
+				Navigator.Current.Go("Index", "User");
+		}
+		
+		public override Guid GetID()
+		{
+			Guid id = base.GetID();
+			string uniqueKey = base.GetUniqueKey();
+			
+			// If no ID was specified in the URL then edit the currently logged in user
+			if (id == Guid.Empty && uniqueKey == String.Empty)
+				id = AuthenticationState.User.ID;
+			
+			return id;
 		}
 	}
 }

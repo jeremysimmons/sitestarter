@@ -2,6 +2,7 @@
 using SoftwareMonkeys.SiteStarter.Data;
 using System.IO;
 using SoftwareMonkeys.SiteStarter.IO;
+using SoftwareMonkeys.SiteStarter.State;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 {
@@ -20,7 +21,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				if (controllersDirectoryPath == null || controllersDirectoryPath == String.Empty)
 				{
 					if (DataAccess.IsInitialized)
-						controllersDirectoryPath = Configuration.Config.Application.PhysicalApplicationPath + Path.DirectorySeparatorChar + "Controllers";
+						controllersDirectoryPath = StateAccess.State.PhysicalApplicationPath + Path.DirectorySeparatorChar + "Controllers";
 				}
 				return controllersDirectoryPath;
 			}
@@ -37,7 +38,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				if (controllersInfoDirectoryPath == null || controllersInfoDirectoryPath == String.Empty)
 				{
 					if (DataAccess.IsInitialized)
-						controllersInfoDirectoryPath = DataAccess.Data.DataDirectoryPath + Path.DirectorySeparatorChar + "Controllers";
+						controllersInfoDirectoryPath =  StateAccess.State.PhysicalApplicationPath + Path.DirectorySeparatorChar + "App_Data" + Path.DirectorySeparatorChar + "Controllers";
 				}
 				return controllersInfoDirectoryPath;
 			}

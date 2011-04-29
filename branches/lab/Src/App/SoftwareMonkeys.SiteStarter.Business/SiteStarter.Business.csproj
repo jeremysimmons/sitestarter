@@ -85,8 +85,11 @@
     <Compile Include="ApplicationBackup.cs" />
     <Compile Include="ApplicationInstaller.cs" />
     <Compile Include="ApplicationRestorer.cs" />
+    <Compile Include="BaseDeleteReaction.cs" />
     <Compile Include="BaseReaction.cs" />
+    <Compile Include="BaseSaveReaction.cs" />
     <Compile Include="BaseStrategy.cs" />
+    <Compile Include="BaseUpdateReaction.cs" />
     <Compile Include="CreateStrategy.cs" />
     <Compile Include="CreateSubEntityStrategy.cs" />
     <Compile Include="CreateUserStrategy.cs" />
@@ -98,10 +101,10 @@
     <Compile Include="IndexStrategy.cs" />
     <Compile Include="NotifyStrategy.cs" />
     <Compile Include="ReactionAttribute.cs" />
-    <Compile Include="ReactionInfoCollection.cs" />
     <Compile Include="ReactionCreator.cs" />
     <Compile Include="ReactionFileNamer.cs" />
     <Compile Include="ReactionInfo.cs" />
+    <Compile Include="ReactionInfoCollection.cs" />
     <Compile Include="ReactionInitializer.cs" />
     <Compile Include="ReactionLoader.cs" />
     <Compile Include="ReactionLocator.cs" />

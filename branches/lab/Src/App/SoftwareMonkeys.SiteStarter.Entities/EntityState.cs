@@ -29,14 +29,24 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		}
 		
 		/// <summary>
-		/// Checks whether the specified type exists.
+		/// Checks whether the specified type exists in the entity state.
+		/// </summary>
+		/// <param name="type">The type to check.</param>
+		/// <returns></returns>
+		static public bool IsType(Type type)
+		{
+			return IsType(type.Name);
+		}
+		
+		/// <summary>
+		/// Checks whether the specified type exists in the entity state.
 		/// </summary>
 		/// <param name="typeName">The short type name.</param>
 		/// <returns></returns>
 		static public bool IsType(string typeName)
 		{
 			if (typeName == String.Empty)
-				throw new ArgumentException("typeName", "Must provided a type name other than String.Empty.");
+				throw new ArgumentException("A type name must be provided.", "typeName");
 			
 			if (typeName == "IEntity"
 			    || typeName == "IUniqueEntity"

@@ -5,6 +5,7 @@ using System.IO;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using System.Web.UI;
 using System.Web;
+using SoftwareMonkeys.SiteStarter.State;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Projections
 {
@@ -95,7 +96,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			
 			List<ProjectionInfo> projections = new List<ProjectionInfo>();
 			
-			string relativeFilePath = filePath.Replace(Configuration.Config.Application.PhysicalApplicationPath, "")
+			string relativeFilePath = filePath.Replace(StateAccess.State.PhysicalApplicationPath, "")
 				.Replace(@"\", "/")
 				.Trim('/');
 			
@@ -128,7 +129,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				info.MenuTitle = p.MenuTitle;
 				info.MenuCategory = p.MenuCategory;
 				info.ShowOnMenu = p.ShowOnMenu;
-				//info.Format = ConvertSubExtensionToFormat(subExtension);
 				
 				projections.Add(info);
 			}

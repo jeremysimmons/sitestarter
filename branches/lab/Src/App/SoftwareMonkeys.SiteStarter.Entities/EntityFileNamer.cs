@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using SoftwareMonkeys.SiteStarter.State;
 
 namespace SoftwareMonkeys.SiteStarter.Entities
 {
@@ -19,7 +20,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				{
 					if (Configuration.Config.IsInitialized)
 					{
-						entitiesDirectoryPath = Configuration.Config.Application.PhysicalApplicationPath
+						entitiesDirectoryPath = StateAccess.State.PhysicalApplicationPath
 							+ Path.DirectorySeparatorChar + "App_Data"
 							+ Path.DirectorySeparatorChar + "Entities";
 					}

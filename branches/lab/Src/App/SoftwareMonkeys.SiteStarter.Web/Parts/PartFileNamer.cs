@@ -2,6 +2,7 @@
 using SoftwareMonkeys.SiteStarter.Data;
 using System.IO;
 using SoftwareMonkeys.SiteStarter.IO;
+using SoftwareMonkeys.SiteStarter.State;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Parts
 {
@@ -20,7 +21,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 				if (partsDirectoryPath == null || partsDirectoryPath == String.Empty)
 				{
 					if (DataAccess.IsInitialized)
-						partsDirectoryPath = Configuration.Config.Application.PhysicalApplicationPath + Path.DirectorySeparatorChar + "Parts";
+						partsDirectoryPath = StateAccess.State.PhysicalApplicationPath + Path.DirectorySeparatorChar + "Parts";
 				}
 				return partsDirectoryPath;
 			}
@@ -37,7 +38,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 				if (partsInfoDirectoryPath == null || partsInfoDirectoryPath == String.Empty)
 				{
 					if (DataAccess.IsInitialized)
-						partsInfoDirectoryPath = DataAccess.Data.DataDirectoryPath + Path.DirectorySeparatorChar + "Parts";
+						partsInfoDirectoryPath = StateAccess.State.PhysicalApplicationPath + Path.DirectorySeparatorChar + "App_Data" + Path.DirectorySeparatorChar + "Parts";
 				}
 				return partsInfoDirectoryPath;
 			}

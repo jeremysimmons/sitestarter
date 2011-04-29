@@ -24,5 +24,6 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
 			set { referencedEntities = value;
 			}
 		}
+		
 	}
 }

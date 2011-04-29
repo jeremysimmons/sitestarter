@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using SoftwareMonkeys.SiteStarter.State;
 
 namespace SoftwareMonkeys.SiteStarter.Entities
 {
@@ -100,7 +101,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				if (binDirectoryPath == String.Empty)
 				{
 					if (Configuration.Config.IsInitialized)
-						binDirectoryPath = Configuration.Config.Application.PhysicalApplicationPath + Path.DirectorySeparatorChar + "bin";
+						binDirectoryPath = StateAccess.State.PhysicalApplicationPath + Path.DirectorySeparatorChar + "bin";
 				}
 				return binDirectoryPath; }
 			set { binDirectoryPath = value; }

@@ -39,6 +39,7 @@ private void Page_Load(object sender, EventArgs e)
 					
 							PendingHolder.Visible = false;
 							ExecutedHolder.Visible = true;
+							AutoBackupTimer.Enabled = false;
 						//}
 						//else
 						//	LogWriter.Debug("Is NOT update panel post back - Skipping");
@@ -49,6 +50,7 @@ private void Page_Load(object sender, EventArgs e)
 						
 						PendingHolder.Visible = true;
 						ExecutedHolder.Visible = false;
+						AutoBackupTimer.Enabled = true;
 					}
 				}
 			}

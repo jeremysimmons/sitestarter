@@ -55,6 +55,12 @@
                                       ValuePropertyName='Name' id="UserRoles" DisplayMode="Multiple" SelectionMode="Multiple"
                                       NoDataText='<%# "-- " + Resources.Language.NoRoles + " --" %>' OnDataLoading='UserRolesSelect_DataLoading'>
                                   </cc:EntitySelect>
+                                  <cc:EntitySelectRequester runat="server" id="RoleRequester" EntitySelectControlID="Roles"
+                                  	text='<%# Resources.Language.CreateUserRole + " &raquo;" %>'
+                                  	DeliveryPage='<%# UrlCreator.Current.CreateUrl("Create", "UserRole") %>'
+                                  	WindowWidth="650px" WindowHeight="650px"
+                                  	EntityType="User" EntityID='<%# DataForm.EntityID %>'
+                                  	/>
                                     </FieldTemplate>
                                     </cc:EntityFormItem>
                                    <cc:EntityFormButtonsItem ID="EntityFormButtonsItem1" runat="server"><FieldTemplate><asp:Button ID="SaveButton" runat="server" CausesValidation="True" CommandName="Save"

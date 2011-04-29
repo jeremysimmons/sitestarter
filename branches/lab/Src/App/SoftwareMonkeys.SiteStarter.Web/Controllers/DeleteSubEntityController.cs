@@ -4,7 +4,7 @@ using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Web.Controllers;
 using SoftwareMonkeys.SiteStarter.Web.Navigation;
 
-namespace SoftwareMonkeys.WorkHub.Modules.Planning.Web.Controllers
+namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 {
 	/// <summary>
 	/// 

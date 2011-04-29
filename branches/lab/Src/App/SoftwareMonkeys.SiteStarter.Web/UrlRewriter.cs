@@ -37,12 +37,16 @@ namespace SoftwareMonkeys.SiteStarter.Web
 
 							LogWriter.Debug("Url: " + uri);
 
-							if (!rewriter.IsRealFile(uri) && !rewriter.IsExcluded(uri))
+							if (!rewriter.IsExcluded(uri) && !rewriter.IsRealFile(uri))
 							{
+								LogWriter.Debug("Rewrite required. Rewriting.");
+								
 								LogWriter.Debug("Application path: " + HttpContext.Current.Request.ApplicationPath);
 								
 								rewriter.RewriteUrl(uri, HttpContext.Current.Request.ApplicationPath, true);
 							}
+							else
+								LogWriter.Debug("Rewrite not required. Skipping.");
 						}
 						else
 							LogWriter.Debug("Url cloaking is disabled.");
@@ -671,12 +675,24 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <returns>A boolean value indicating whether the specified URL is excluded from rewriting.</returns>
 		public bool IsExcluded(string url)
 		{
-			// WebResource.axd request
-			if (url.ToLower().IndexOf("webresource.axd") > -1)
-				return true;
+			bool isExcluded = false;
 			
+			using (LogGroup logGroup = LogGroup.Start("Checking whether the provided URL is excluded from rewriting.", NLog.LogLevel.Debug))
+			{
+				LogWriter.Debug("URL : " + url);
+				
+				// WebResource.axd request
+				if (url.ToLower().IndexOf("webresource.axd") > -1)
+					isExcluded = true;
+				
+				// ScriptResource.axd request
+				if (url.ToLower().IndexOf("scriptresource.axd") > -1)
+					isExcluded = true;
+				
+				LogWriter.Debug("Is excluded: " + isExcluded.ToString());
+			}
 			
-			return false;
+			return isExcluded;
 		}
 	}
 }

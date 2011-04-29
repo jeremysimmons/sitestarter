@@ -67,6 +67,15 @@ namespace SoftwareMonkeys.SiteStarter.State
 		}
 		
 		/// <summary>
+		/// Sets the scope used by this collection.
+		/// </summary>
+		/// <param name="scope"></param>
+		public StateNameValueCollection(StateScope scope)
+		{
+			Scope = scope;
+		}
+		
+		/// <summary>
 		/// Sets the scope and group key used by this collection.
 		/// </summary>
 		/// <param name="scope"></param>
@@ -242,7 +251,13 @@ namespace SoftwareMonkeys.SiteStarter.State
 		/// <returns>The full key; a combination of groupKey and key with an underscore _ between them.</returns>
 		public string GetStateKey(string groupKey, string key)
 		{
-			return groupKey + "_" + key;
+			string stateKey = key;
+			
+			// Only apply the group key if specified.
+			if (groupKey != null && groupKey != String.Empty)
+				stateKey = groupKey + "_" + stateKey;
+			
+			return stateKey;
 		}
 		
 		public int IndexOf(T item)

@@ -137,8 +137,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			IEntity entity = null;
 			using (LogGroup logGroup = LogGroup.Start("Preparing to edit an entity.", NLog.LogLevel.Debug))
 			{
-				Guid id = QueryStrings.GetID(Container.Type.Name);
-				string uniqueKey = QueryStrings.GetUniqueKey(Container.Type.Name);
+				Guid id = GetID();
+				string uniqueKey = GetUniqueKey();
 				
 				if (id != Guid.Empty)
 				{
@@ -154,6 +154,24 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 					throw new InvalidOperationException("Cannot edit entity. No identifier found.");
 			}
 			return entity;
+		}
+		
+		/// <summary>
+		/// Retrieves the ID of the entity being edited.
+		/// </summary>
+		/// <returns></returns>
+		public virtual Guid GetID()
+		{
+			return QueryStrings.GetID(Container.Type.Name);
+		}
+		
+		/// <summary>
+		/// Retrieves the unique key of the entity being edited.
+		/// </summary>
+		/// <returns></returns>
+		public virtual string GetUniqueKey()
+		{
+			return QueryStrings.GetUniqueKey(Container.Type.Name);
 		}
 		
 		/// <summary>

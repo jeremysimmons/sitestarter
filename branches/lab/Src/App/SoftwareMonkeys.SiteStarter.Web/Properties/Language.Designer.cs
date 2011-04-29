@@ -248,5 +248,23 @@ namespace SoftwareMonkeys.SiteStarter.Web.Properties {
 				return ResourceManager.GetString("UserDeleted", resourceCulture);
 			}
 		}
+		
+		/// <summary>
+		///   Looks up a localized string similar to The user was updated successfully..
+		/// </summary>
+		internal static string UserUpdated {
+			get {
+				return ResourceManager.GetString("UserUpdated", resourceCulture);
+			}
+		}
+		
+		/// <summary>
+		///   Looks up a localized string similar to Your account was updated successfully..
+		/// </summary>
+		internal static string YourAccountUpdated {
+			get {
+				return ResourceManager.GetString("YourAccountUpdated", resourceCulture);
+			}
+		}
 	}
 }

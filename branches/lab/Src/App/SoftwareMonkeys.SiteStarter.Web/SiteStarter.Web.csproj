@@ -60,6 +60,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
@@ -135,8 +138,12 @@
     <Compile Include="Projections\BaseXmlIndexProjection.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Projections\BaseXmlProjection.cs" />
-    <Compile Include="Projections\BaseXmlViewProjection.cs" />
+    <Compile Include="Projections\BaseXmlProjection.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Projections\BaseXmlViewProjection.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="Projections\IProjection.cs" />
     <Compile Include="Projections\ProjectionFileNamer.cs" />
     <Compile Include="Projections\ProjectionFormat.cs" />
@@ -176,6 +183,7 @@
     <Compile Include="State\WebStateProvider.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="StyleUtilities.cs" />
     <Compile Include="TextParser.cs" />
     <Compile Include="UrlCreator.cs" />
     <Compile Include="UrlRewriter.cs" />

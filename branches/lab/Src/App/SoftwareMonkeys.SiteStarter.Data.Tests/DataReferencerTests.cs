@@ -4,12 +4,14 @@ using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Tests.Entities;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Tests;
+using SoftwareMonkeys.SiteStarter.Data;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Tests
 {
 	[TestFixture]
 	public class DataReferencerTests : BaseDataTestFixture
 	{
+		
 		[Test]
 		public void Test_GetReferences_Basic()
 		{

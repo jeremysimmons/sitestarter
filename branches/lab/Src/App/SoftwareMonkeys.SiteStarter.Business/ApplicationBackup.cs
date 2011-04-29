@@ -154,6 +154,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					
 					DeleteExportFiles();
 				}
+				
+				LogWriter.Info("Backup completed: " + DateTime.Now.ToString());
+				LogWriter.Info("${AutoBackup}");
 			}
 			
 			return outputFile;

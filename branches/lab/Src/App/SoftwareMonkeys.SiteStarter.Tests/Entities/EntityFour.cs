@@ -26,5 +26,14 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
 			}
 		}
 		
+		private IEntity[] referencedEntities2;
+		[Reference(TypeName="EntityFive")]
+		public IEntity[] ReferencedEntities2
+		{
+			get { return referencedEntities2; }
+			set { referencedEntities2 = value;
+			}
+		}
+		
 	}
 }

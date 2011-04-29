@@ -52,8 +52,8 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		/// <returns></returns>
 		public bool LoggingEnabled(MethodBase callingMethod, NLog.LogLevel level)
 		{
-			object value = ConfigurationSettings.AppSettings["Logging." + level.ToString() + ".Enabled"];
-			if (value != null)
+			string value = ConfigurationSettings.AppSettings["Logging." + level.ToString() + ".Enabled"];
+			if (value != null && value != String.Empty)
 			{
 				bool allLoggingEnabled = value == null
 					|| Convert.ToBoolean(value.ToString()) != false;
@@ -109,12 +109,11 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		/// <returns></returns>
 		public bool IsEnabled(NLog.LogLevel level, string typeName)
 		{
-			object value = ConfigurationSettings.AppSettings["Logging." + level.ToString() + "." + typeName + ".Enabled"];
+			string value = ConfigurationSettings.AppSettings["Logging." + level.ToString() + "." + typeName + ".Enabled"];
 			
-			
-			if (value != null)
+			if (value != null && value != String.Empty)
 			{
-				string setting = ((string)value);
+				string setting = value;
 				
 				if (setting.ToLower() == false.ToString().ToLower())
 					return false;

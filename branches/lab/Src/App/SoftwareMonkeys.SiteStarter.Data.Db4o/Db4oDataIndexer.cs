@@ -298,8 +298,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			// Load the references all in one go, to avoid individual loads
 			EntityReferenceCollection references = Provider.Referencer.GetReferences(referencedEntityType, referencedEntityID, mirrorPropertyName, typeof(T), false);
-			// TODO: Clean up
-			//EntityReferenceCollection references = Provider.Referencer.GetReferences(typeof(T), , mirrorPropertyName, typeof(T), false);
 			
 			Guid[] entityIDs = references.GetEntityIDs(referencedEntityID);
 			
@@ -326,9 +324,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					
 					isInPage = location.IsInPage(i);
 					
-					// IMPORTANT: Only increment if it matches, regardless of what page it's on
+					// IMPORTANT: Increment if it matches, regardless of what page it's on
 					if (matches)
 						i++;
+					
 					//LogWriter.Debug("Matches: " + matches);
 					//}
 					
@@ -459,7 +458,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			//{
 			//	LogWriter.Debug("Property name: " + propertyName);
 			//	LogWriter.Debug("Referenced entity ID: " + referencedEntityID);
-						
+			
 			//	if (referencedEntityType != null)
 			//		LogWriter.Debug("Referenced entity type: " + referencedEntityType.ToString());
 			//	else
@@ -916,6 +915,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				// Loop through each index in the object set
 				for (i = 0; i < os.Count; i++)
 				{
+					// ONLY execute during debug because it slows the indexing down by loading and instantiating every
+					// entity in the index, instead of only those on the current page as is intended
+					if (new ModeDetector().IsDebug)
+					{
+						LogWriter.Debug("At absolute position " + i + ": " + ((IEntity)os[i]).ToString());
+					}
+					
 					// If it's not in the current page then skip it
 					if (location.IsInPage(i))
 					{
@@ -1026,41 +1032,73 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <param name="sortExpression">The sort expression to apply to the query.</param>
 		public void ApplySorting(IQuery query, Type type, string sortExpression)
 		{
-			if (query == null)
-				throw new ArgumentNullException("query");
+			// TODO: Clean up obsolete code
 			
-			// If there's no sort expression then skip it
-			if (sortExpression != null && sortExpression != String.Empty)
+			using (LogGroup logGroup = LogGroup.Start("Applying sorting to query.", NLog.LogLevel.Debug))
 			{
-				// If the sort expression contains the word "Descending" then handle it
-				if (sortExpression.IndexOf("Descending") > -1)
-				{
-					// Extract the name of the property
-					string propertyName = sortExpression.Replace("Descending", String.Empty);
-					
-					// Get the name of the field from the property name
-					string fieldName = EntitiesUtilities.GetFieldName(type, propertyName);
-					
-					// Apply the sorting to the field
-					query.Descend(fieldName).OrderDescending();
-				}
+				if (query == null)
+					throw new ArgumentNullException("query");
 				
-				// If the sort expression contains the word "Ascending" then handle it
-				else if (sortExpression.IndexOf("Ascending") > -1)
+				if (type == null)
+					throw new ArgumentNullException("type");
+				
+				SortDirection direction = SortDirection.Ascending;
+				string propertyName;
+				
+				LogWriter.Debug("Sort expression: " + sortExpression);
+				LogWriter.Debug("Type: " + type.ToString());
+				
+				// If there's no sort expression then skip it
+				if (sortExpression != null && sortExpression != String.Empty)
 				{
-					// Extract the name of the property
-					string propertyName = sortExpression.Replace("Ascending", String.Empty);
+					// If the sort expression contains the word "Descending" then handle it
+					if (sortExpression.IndexOf("Descending") > -1)
+					{
+						direction = SortDirection.Descending;
+						
+						// Extract the name of the property
+						propertyName = sortExpression.Replace("Descending", String.Empty);
+						
+						LogWriter.Debug("Property name: " + propertyName);
+						
+						// Get the name of the field from the property name
+						/*string fieldName = EntitiesUtilities.GetFieldName(type, propertyName);
+						
+						LogWriter.Debug("Field name: " + fieldName);
+						
+						// Apply the sorting to the field
+						query.Descend(fieldName).OrderDescending();
+						
+						LogWriter.Debug("Ordered descending");*/
+					}
 					
-					// Get the name of the field from the property name
-					string fieldName = EntitiesUtilities.GetFieldName(type, propertyName);
+					// If the sort expression contains the word "Ascending" then handle it
+					else if (sortExpression.IndexOf("Ascending") > -1)
+					{
+						direction = SortDirection.Ascending;
+						
+						// Extract the name of the property
+						propertyName = sortExpression.Replace("Ascending", String.Empty);
+						
+						/*LogWriter.Debug("Property name: " + propertyName);
+						
+						// Get the name of the field from the property name
+						string fieldName = EntitiesUtilities.GetFieldName(type, propertyName);
+						
+						LogWriter.Debug("Field name: " + fieldName);
+						
+						// Apply the sorting to the field
+						query.Descend(fieldName).OrderAscending();
+						
+						LogWriter.Debug("Ordered ascending");*/
+					}
+					else
+					{
+						// The sort expression is invalid
+						throw new ArgumentException("The provided sort expression is invalid: " + sortExpression, "sortExpression");
+					}
 					
-					// Apply the sorting to the field
-					query.Descend(fieldName).OrderAscending();
-				}
-				else
-				{
-					// The sort expression is invalid
-					throw new ArgumentException("The provided sort expression is invalid: " + sortExpression, "sortExpression");
+					query.SortBy(new DynamicQueryComparator<IEntity>(type, propertyName, direction));
 				}
 			}
 		}

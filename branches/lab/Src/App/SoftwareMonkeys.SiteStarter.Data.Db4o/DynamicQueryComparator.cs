@@ -1,14 +1,16 @@
 ﻿using System;
+using Db4objects.Db4o.Query;
+using SoftwareMonkeys.SiteStarter.Data;
+using SoftwareMonkeys.SiteStarter.Entities;
 using System.Reflection;
-using System.Collections.Generic;
 
-namespace SoftwareMonkeys.SiteStarter.Entities
+namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 {
-
 	/// <summary>
-	/// Provides a way to dynamically create comparers for any property of any object.
+	/// 
 	/// </summary>
-	public class DynamicComparer<E> : IComparer<E>
+	public class DynamicQueryComparator<T> : IQueryComparator
+		where T : IEntity
 	{
 		private Type objectType;
 		/// <summary>
@@ -39,14 +41,19 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			get { return sortDirection; }
 			set { sortDirection = value; }
 		}
-
+		
+		int IQueryComparator.Compare(object obj1, object obj2)
+		{
+			return Compare((T)obj1, (T)obj2);
+		}
+		
 		/// <summary>
 		/// Initializes settings of the comparer.
 		/// </summary>
 		/// <param name="objectType">The type of object being compared.</param>
 		/// <param name="propertyName">The name of the property being compared.</param>
 		/// <param name="sortDirection">The sort direction.</param>
-		public DynamicComparer(Type objectType, string propertyName, SortDirection sortDirection)
+		public DynamicQueryComparator(Type objectType, string propertyName, SortDirection sortDirection)
 		{
 			ObjectType = objectType;
 			PropertyName = propertyName;
@@ -58,7 +65,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// </summary>
 		/// <param name="sortExpression">The sort expression being applied.</param>
 		/// <param name="sortDirection">The sort direction.</param>
-		public DynamicComparer(Type objectType, string sortExpression)
+		public DynamicQueryComparator(Type objectType, string sortExpression)
 		{
 			ObjectType = objectType;
 			
@@ -90,7 +97,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <param name="a">The first object to compare.</param>
 		/// <param name="b">The second object to compare.</param>
 		/// <returns>The comparison value.</returns>
-		public int Compare(E a, E b)
+		public int Compare(T a, T b)
 		{
 			PropertyInfo property = ObjectType.GetProperty(PropertyName);
 
@@ -116,7 +123,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			}
 		}
 		
-		public object GetPropertyValue(E obj, PropertyInfo property)
+		public object GetPropertyValue(T obj, PropertyInfo property)
 		{
 			object value = property.GetValue(obj, null);
 			
@@ -128,5 +135,4 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			
 		}
 	}
-
 }

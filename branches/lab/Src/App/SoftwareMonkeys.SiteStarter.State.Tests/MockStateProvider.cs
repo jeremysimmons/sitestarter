@@ -266,7 +266,7 @@ namespace SoftwareMonkeys.SiteStarter.State.Tests
 			Initialize();
 		}
 		
-		public void Initialize()
+		public override void Initialize()
 		{
 
 			SoftwareMonkeys.SiteStarter.State.StateAccess.State = this;
