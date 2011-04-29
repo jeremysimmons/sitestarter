@@ -33,8 +33,9 @@ namespace SoftwareMonkeys.SiteStarter.State
     		set { applicationPath = value; }
     	}
 		
+    	#region Data properties
 		private Dictionary<string, object> sessionData;
-		public Dictionary<string, object> SessionData
+		protected Dictionary<string, object> SessionData
 		{
 			get
 			{
@@ -45,7 +46,7 @@ namespace SoftwareMonkeys.SiteStarter.State
 		}
 		
 		private Dictionary<string, object> applicationData;
-		public Dictionary<string, object> ApplicationData
+		protected Dictionary<string, object> ApplicationData
 		{
 			get {
 				if (applicationData == null)
@@ -56,7 +57,7 @@ namespace SoftwareMonkeys.SiteStarter.State
 		
 		
 		private Dictionary<string, object> operationData;
-		public Dictionary<string, object> OperationData
+		protected Dictionary<string, object> OperationData
 		{
 			get {
 				if (operationData == null)
@@ -66,7 +67,7 @@ namespace SoftwareMonkeys.SiteStarter.State
 		}
 		
 		private Dictionary<string, object> userData;
-		public Dictionary<string, object> UserData
+		protected Dictionary<string, object> UserData
 		{
 			get {
 				if (userData == null)
@@ -74,6 +75,7 @@ namespace SoftwareMonkeys.SiteStarter.State
 				return userData; }
 			set { userData = value; }
 		}
+		#endregion
 		
 		public StateProvider()
 		{
