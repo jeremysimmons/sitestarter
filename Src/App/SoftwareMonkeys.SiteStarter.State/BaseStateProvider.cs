@@ -12,6 +12,48 @@ namespace SoftwareMonkeys.SiteStarter.State
     /// </summary>
     public abstract class BaseStateProvider : ProviderBase, IStateProvider
     {
+		private StateNameValueCollection<object> session;
+		public StateNameValueCollection<object> Session
+		{
+			get
+			{
+				if (session == null)
+					session = new StateNameValueCollection<object>(StateScope.Session);
+				return session; }
+			set { session = value; }
+		}
+		
+		private StateNameValueCollection<object> application;
+		public StateNameValueCollection<object> Application
+		{
+			get {
+				if (application == null)
+					application = new StateNameValueCollection<object>(StateScope.Application);
+				return application; }
+			set { application = value; }
+		}
+		
+		
+		private StateNameValueCollection<object> operation;
+		public StateNameValueCollection<object> Operation
+		{
+			get {
+				if (operation == null)
+					operation = new StateNameValueCollection<object>(StateScope.Operation);
+				return operation; }
+			set { operation = value; }
+		}
+		
+		private StateNameValueCollection<object> user;
+		public StateNameValueCollection<object> User
+		{
+			get {
+				if (user == null)
+					user = new StateNameValueCollection<object>(StateScope.User);
+				return user; }
+			set { user = value; }
+		}
+    	
         public abstract bool ContainsApplication(string key);
         public abstract void SetApplication(string key, object value);
         public abstract object GetApplication(string key);

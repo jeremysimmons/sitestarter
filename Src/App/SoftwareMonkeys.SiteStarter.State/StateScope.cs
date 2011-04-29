@@ -9,6 +9,7 @@ namespace SoftwareMonkeys.SiteStarter.State
 	{
 		Application = 1,
 		Session = 2,
-		Operation = 3
+		Operation = 3,
+		User = 4
 	}
 }
