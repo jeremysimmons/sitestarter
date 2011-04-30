@@ -43,7 +43,7 @@ private bool LogContains(string query)
 
 private string LoadLog()
 {
-	string path = Request.ApplicationPath + "/App_Data/Logs/" + DateTime.Now.Year + "-" + DateTime.Now.ToString("MM") + "-" + DateTime.Now.Day + "/Log.xml";
+	string path = Request.ApplicationPath + "/App_Data/Logs/" + DateTime.Now.Year + "-" + DateTime.Now.ToString("MM") + "-" + DateTime.Now.ToString("dd") + "/Log.xml";
 	path = Server.MapPath(path);
 	
 	string content = String.Empty;
