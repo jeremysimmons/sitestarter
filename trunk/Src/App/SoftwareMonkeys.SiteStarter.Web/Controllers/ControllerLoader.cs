@@ -116,12 +116,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			ControllerInfo info = null;
 			
-			using (LogGroup logGroup = LogGroup.Start("Loading the controller from the specified path.", NLog.LogLevel.Debug))
-			{
+			// Disabled logging to boost performance
+			//using (LogGroup logGroup = LogGroup.Start("Loading the controller from the specified path.", NLog.LogLevel.Debug))
+			//{
 				if (!File.Exists(controllerPath))
 					throw new ArgumentException("The specified file does not exist.");
 				
-				LogWriter.Debug("Path: " + controllerPath);
+			//	LogWriter.Debug("Path: " + controllerPath);
 				
 				
 				using (StreamReader reader = new StreamReader(File.OpenRead(controllerPath)))
@@ -132,7 +133,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 					
 					reader.Close();
 				}
-			}
+			//}
 			
 			return info;
 		}

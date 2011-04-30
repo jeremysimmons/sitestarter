@@ -94,8 +94,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="type">The strategy type with the Strategy attribute to get the strategy information from.</param>
 		public StrategyInfo(Type type)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Analyzing the provided type to extract the info.", NLog.LogLevel.Debug))
-			{
+			// Logging disabled to boost performance
+			//using (LogGroup logGroup = LogGroup.Start("Analyzing the provided type to extract the info.", NLog.LogLevel.Debug))
+			//{
 				StrategyAttribute attribute = null;
 				foreach (Attribute a in type.GetCustomAttributes(true))
 				{
@@ -113,10 +114,10 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				TypeName = attribute.TypeName;
 				StrategyType = type.FullName + ", " + type.Assembly.GetName().Name;
 				
-				LogWriter.Debug("Action: " + Action);
-				LogWriter.Debug("Type name: " + TypeName);
-				LogWriter.Debug("Strategy type: " + StrategyType);
-			}
+			//	LogWriter.Debug("Action: " + Action);
+			//	LogWriter.Debug("Type name: " + TypeName);
+			//	LogWriter.Debug("Strategy type: " + StrategyType);
+			//}
 		}
 		
 		/// <summary>

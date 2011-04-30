@@ -261,8 +261,9 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		{
 			bool argumentsMatch = true;
 			
-			using (LogGroup logGroup = LogGroup.Start("Checking whether the provided arguments match those on the provided method.", NLog.LogLevel.Debug))
-			{
+			// Disabled logging to boost performance
+			//using (LogGroup logGroup = LogGroup.Start("Checking whether the provided arguments match those on the provided method.", NLog.LogLevel.Debug))
+			//{
 				
 				if (method == null)
 					throw new ArgumentNullException("method");
@@ -270,14 +271,14 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 				if (expectedArgumentTypes == null)
 					throw new ArgumentNullException("expectedArgumentTypes");
 				
-				LogWriter.Debug("Method name: " + method.Name);
-				LogWriter.Debug("Method parent object: " + method.DeclaringType.FullName);
+			//	LogWriter.Debug("Method name: " + method.Name);
+			//	LogWriter.Debug("Method parent object: " + method.DeclaringType.FullName);
 				
 				
 				Type[] argumentTypes = method.GetGenericArguments();
 				
-				LogWriter.Debug("Arguments on method: " + argumentTypes.Length);
-				LogWriter.Debug("Arguments expected: " + expectedArgumentTypes);
+			//	LogWriter.Debug("Arguments on method: " + argumentTypes.Length);
+			//	LogWriter.Debug("Arguments expected: " + expectedArgumentTypes);
 				
 				if (argumentTypes.Length == expectedArgumentTypes.Length)
 				{
@@ -292,13 +293,13 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 						if (actualType.FullName == string.Empty)
 							throw new Exception("actualType.FullName == String.Empty");
 						
-						LogWriter.Debug("Comparing expected argument type '" + expectedArgumentTypes[i].FullName + "' with actual type '" + actualType.FullName + "'.");
+			//			LogWriter.Debug("Comparing expected argument type '" + expectedArgumentTypes[i].FullName + "' with actual type '" + actualType.FullName + "'.");
 						
 						bool match = actualType.FullName == expectedArgumentTypes[i].FullName;
 						bool isAssignable = actualType.IsAssignableFrom(expectedArgumentTypes[i]);
 						
-						LogWriter.Debug("Match: " + match);
-						LogWriter.Debug("Is assignable: " + isAssignable);
+			//			LogWriter.Debug("Match: " + match);
+			//			LogWriter.Debug("Is assignable: " + isAssignable);
 						
 						if (!(match || isAssignable))
 							argumentsMatch = false;
@@ -307,8 +308,8 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 				else
 					argumentsMatch = false;
 				
-				LogWriter.Debug("Parameters match: " + argumentsMatch.ToString());
-			}
+			//	LogWriter.Debug("Parameters match: " + argumentsMatch.ToString());
+			//}
 			return argumentsMatch;
 		}
 		
