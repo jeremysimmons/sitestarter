@@ -322,8 +322,8 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		static public bool ParametersMatch(MethodInfo method, Type[] expectedArgumentTypes, Type[] expectedParameters)
 		{
 			bool parametersMatch = true;
-			using (LogGroup logGroup = LogGroup.Start("Checking whether the provide parameter types match those on the provided method.", NLog.LogLevel.Debug))
-			{
+			//using (LogGroup logGroup = LogGroup.Start("Checking whether the provide parameter types match those on the provided method.", NLog.LogLevel.Debug))
+			//{
 				if (method == null)
 					throw new ArgumentNullException("method");
 				
@@ -333,19 +333,19 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 				if (!method.IsGenericMethod)
 					throw new ArgumentException("The provided method is not a constructed generic method.");
 				
-				LogWriter.Debug("Method name: " + method.Name);
-				LogWriter.Debug("Method parent object: " + method.DeclaringType.FullName);
+			//	LogWriter.Debug("Method name: " + method.Name);
+			//	LogWriter.Debug("Method parent object: " + method.DeclaringType.FullName);
 				
 				ParameterInfo[] parameters = method.GetParameters();
 				
-				LogWriter.Debug("Parameters on method: " + parameters.Length);
-				LogWriter.Debug("Parameters expected: " + expectedParameters);
+			//	LogWriter.Debug("Parameters on method: " + parameters.Length);
+			//	LogWriter.Debug("Parameters expected: " + expectedParameters);
 				
 				if (parameters.Length == expectedParameters.Length)
 				{
 					for (int i = 0; i < expectedParameters.Length; i++)
 					{
-						LogWriter.Debug("Parameter: " + parameters[i].ToString());
+			//			LogWriter.Debug("Parameter: " + parameters[i].ToString());
 						
 						Type parameter = parameters[i].ParameterType;
 						
@@ -357,13 +357,13 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 						
 						Type expectedParameter = expectedParameters[i];
 						
-						LogWriter.Debug("Comparing expected parameter type '" + expectedParameter.FullName + "' with actual type '" + parameter.FullName + "'.");
+			//			LogWriter.Debug("Comparing expected parameter type '" + expectedParameter.FullName + "' with actual type '" + parameter.FullName + "'.");
 						
 						bool match = expectedParameter.FullName == parameter.FullName;
 						bool isAssignable = parameter.IsAssignableFrom(expectedParameter);
 						
-						LogWriter.Debug("Match: " + match);
-						LogWriter.Debug("Is assignable: " + isAssignable);
+			//			LogWriter.Debug("Match: " + match);
+			//			LogWriter.Debug("Is assignable: " + isAssignable);
 						
 						if (!(match || isAssignable))
 							parametersMatch = false;
@@ -372,8 +372,8 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 				else
 					parametersMatch = false;
 				
-				LogWriter.Debug("Parameters match: " + parametersMatch.ToString());
-			}
+			//	LogWriter.Debug("Parameters match: " + parametersMatch.ToString());
+			//}
 			return parametersMatch;
 		}
 		

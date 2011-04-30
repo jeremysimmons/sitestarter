@@ -955,11 +955,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			Type type = typeof(T);
 			
-			using (LogGroup logGroup = LogGroup.Start("Retrieving the entities of the specified type with a property matching the provided name and value.", NLog.LogLevel.Debug))
-			{
-				LogWriter.Debug("Type: " + type.ToString());
-				LogWriter.Debug("Property name: " + propertyName);
-				LogWriter.Debug("Property value: " + (propertyValue == null ? "[null]" : propertyValue.ToString()));
+			//using (LogGroup logGroup = LogGroup.Start("Retrieving the entities of the specified type with a property matching the provided name and value.", NLog.LogLevel.Debug))
+			//{
+			//	LogWriter.Debug("Type: " + type.ToString());
+			//	LogWriter.Debug("Property name: " + propertyName);
+			//	LogWriter.Debug("Property value: " + (propertyValue == null ? "[null]" : propertyValue.ToString()));
 				
 				if (type.Name == "EntityIDReference"
 				    || type.Name == "EntityReference")
@@ -984,7 +984,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					}
 				}
 				
-				LogWriter.Debug("Entities #: " + results.Count.ToString());
+			//	LogWriter.Debug("Entities #: " + results.Count.ToString());
 				
 				// TODO: See if performance can be improved by switching to SODA using the code below.
 				// Won't work because it can't pick up UniqueKeys, as they don't have a private field corresponding with them
@@ -1017,8 +1017,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 						throw new InvalidOperationException("Invalid type found. Expected '" + type.ToString() + "' but was '" + obj.GetType().ToString() + "'.");
 				}
 				 */
-				LogWriter.Debug("Results: " + results.Count.ToString());
-			}
+				//LogWriter.Debug("Results: " + results.Count.ToString());
+			//}
 			return Release<T>((T[])results.ToArray());
 		}
 		
