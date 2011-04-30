@@ -33,6 +33,12 @@
   <target name="Common.Jobs.BuildSolution">
 		<call target="Common.Actions.CleanSolution"/>
 		
+		<delete>
+    		<fileset>
+        		<include name="${Project.RootPath}\bin\${Build.Mode}\*.dll" />
+    		</fileset>
+		</delete>
+		
 		<foreach item="String" in="${Solution.BuildOrder}" delim="," property="item">
 			<echo message="Looking for assembly '${item}'"/>
 			<property name="AssemblyProject.RootPath" value="${path::combine(Solution.RootPath, Solution.BaseNamespace  + '.' + item)}"/>
