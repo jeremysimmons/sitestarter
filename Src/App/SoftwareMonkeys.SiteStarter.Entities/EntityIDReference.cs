@@ -12,17 +12,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 	/// </summary>
 	[Serializable]
 	public class EntityIDReference : BaseEntity, IEntity//, IXmlSerializable
-	{
-		/*private Guid[] entityIDs = new Guid[2];
-		/// <summary>
-		/// Gets/sets the IDs of the entities that the reference is associated with.
-		/// </summary>
-		public Guid[] EntityIDs
-		{
-			get { return entityIDs; }
-			set { entityIDs = value; }
-		}*/
-		
+	{		
 		private Guid entity1ID = Guid.Empty;
 		public Guid Entity1ID
 		{
@@ -51,16 +41,6 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			set { property2Name = value; }
 		}
 		
-		/*private string[] typeNames = new String[2];
-		/// <summary>
-		/// Gets/sets the short names of the types involved in the reference.
-		/// </summary>
-		public string[] TypeNames
-		{
-			get { return typeNames; }
-			set { typeNames = value; }
-		}*/
-		
 		private string type1Name = String.Empty;
 		public string Type1Name
 		{
@@ -78,62 +58,6 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		public EntityIDReference()
 		{
 		}
-		
-		/*/// <summary>
-		/// Adds the provided entity ID to the reference.
-		/// </summary>
-		/// <param name="id">The entity ID to add.</param>
-		/// <param name="typeName">The short type name.</param>
-		public void Add(Guid id, string typeName)
-		{
-			if (id == null)
-				throw new ArgumentNullException("id");
-			
-			List<Guid> ids = (EntityIDs == null ? new List<Guid>() : new List<Guid>(EntityIDs));
-			List<string> names = (TypeNames == null ? new List<string>() : new List<string>(TypeNames));
-			if (!ids.Contains(id) && !names.Contains(typeName))
-			{
-				ids.Add(id);
-				names.Add(typeName);
-			}
-			EntityIDs = ids.ToArray();
-			TypeNames = names.ToArray();
-		}
-		
-		public void Add(IEntity entity)
-		{
-			if (entity == null)
-				throw new ArgumentNullException("entity");
-			
-			if (!Includes(entity))
-				Add(entity.ID, entity.GetType().Name);
-		}*/
-			
-			/*public virtual bool Includes(IEntity entity)
-		{
-			bool flag = false;
-			
-			using (LogGroup logGroup = LogGroup.Start("Checking whether the provided entity is included in the reference.", NLog.LogLevel.Debug))
-			{
-				if (entity == null)
-					throw new ArgumentNullException("entity");
-				
-				LogWriter.Debug("Provided entity name: " + entity.ShortTypeName);
-				LogWriter.Debug("Provided entity ID: " + entity.ID.ToString());
-				LogWriter.Debug("Reference entity 1 ID: " + Entity1ID.ToString());
-				LogWriter.Debug("Reference entity 2 ID: " + Entity2ID.ToString());
-				LogWriter.Debug("Reference entity type name 1: " + Type1Name);
-				LogWriter.Debug("Reference entity type name 2: " + Type2Name);
-				
-				
-				flag = (entity.ID.Equals(Entity1ID) && entity.ShortTypeName.Equals(Type1Name))
-					|| (entity.ID.Equals(Entity2ID) && entity.ShortTypeName.Equals(Type2Name));
-				
-				LogWriter.Debug("Entity is included in reference: " + flag.ToString());
-			}
-			
-			return flag;
-		}*/
 			
 			/// <summary>
 			/// Checks whether the reference includes an entity with the specified ID and a property with the specified name.
@@ -242,27 +166,27 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		public EntityIDReference SwitchFor(string typeName, Guid id)
 		{
 			
-			using (LogGroup logGroup = LogGroup.Start("Switching reference data to the perspective of a specific entity.", NLog.LogLevel.Debug))
-			{
+			//using (LogGroup logGroup = LogGroup.Start("Switching reference data to the perspective of a specific entity.", NLog.LogLevel.Debug))
+			//{
 				if (typeName == null)
 					throw new ArgumentNullException("typeName");
 				
-				LogWriter.Debug("Existing target Entity type: " + typeName);
-				LogWriter.Debug("Existing source entity type: " + Type1Name);
-				LogWriter.Debug("Existing reference entity type: " + Type2Name);
-				LogWriter.Debug("Existing source entity ID: " + Entity1ID.ToString());
-				LogWriter.Debug("Existing reference entity ID: " + Entity2ID.ToString());
-				LogWriter.Debug("Existing source property name: " + Property1Name.ToString());
-				LogWriter.Debug("Existing reference property name: " + Property2Name.ToString());
+			//	LogWriter.Debug("Existing target Entity type: " + typeName);
+			//	LogWriter.Debug("Existing source entity type: " + Type1Name);
+			//	LogWriter.Debug("Existing reference entity type: " + Type2Name);
+			//	LogWriter.Debug("Existing source entity ID: " + Entity1ID.ToString());
+			//	LogWriter.Debug("Existing reference entity ID: " + Entity2ID.ToString());
+			//	LogWriter.Debug("Existing source property name: " + Property1Name.ToString());
+			//	LogWriter.Debug("Existing reference property name: " + Property2Name.ToString());
 				
 				if (EntitiesUtilities.MatchAlias(typeName, Type1Name))
 				{
-					LogWriter.Debug("The reference is already suited for the specified entity. No need to switch.");
+			//		LogWriter.Debug("The reference is already suited for the specified entity. No need to switch.");
 					
 				}
 				else
 				{
-					LogWriter.Debug("Switching to the perspective of entity type: " + typeName);
+			//		LogWriter.Debug("Switching to the perspective of entity type: " + typeName);
 					
 					Guid entity1ID = Entity1ID;
 					Guid entity2ID = Entity2ID;
@@ -282,7 +206,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 					this.Property1Name = property2Name;
 					this.Property2Name = property1Name;
 				}
-			}
+			//}
 			
 			return this;
 		}

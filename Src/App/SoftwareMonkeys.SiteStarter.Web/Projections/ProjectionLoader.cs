@@ -129,12 +129,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			ProjectionInfo info = null;
 			
-			using (LogGroup logGroup = LogGroup.Start("Loading the projection from the specified path.", NLog.LogLevel.Debug))
-			{
+			// Disabled logging to boost performance
+			//using (LogGroup logGroup = LogGroup.Start("Loading the projection from the specified path.", NLog.LogLevel.Debug))
+			//{
 				if (!File.Exists(projectionPath))
 					throw new ArgumentException("The specified file does not exist.");
 				
-				LogWriter.Debug("Path: " + projectionPath);
+			//	LogWriter.Debug("Path: " + projectionPath);
 				
 				
 				using (StreamReader reader = new StreamReader(File.OpenRead(projectionPath)))
@@ -152,7 +153,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 					
 					reader.Close();
 				}
-			}
+			//}
 			
 			return info;
 		}

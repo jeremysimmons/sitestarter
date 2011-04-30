@@ -95,6 +95,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					}
 					else
 					{
+					// TODO: Clean up
 						//				LogWriter.Debug("1 Reference failed match. Skipping. IMPORTANT!!! IT SHOULD NOT HAVE FAILED!!!");
 					}
 				}

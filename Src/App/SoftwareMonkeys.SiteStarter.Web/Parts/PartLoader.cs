@@ -73,15 +73,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		{
 			List<PartInfo> parts = new List<PartInfo>();
 			
-			using (LogGroup logGroup = LogGroup.Start("Loading the parts from the XML files.", NLog.LogLevel.Debug))
-			{
+			//using (LogGroup logGroup = LogGroup.Start("Loading the parts from the XML files.", NLog.LogLevel.Debug))
+			//{
 				foreach (string file in Directory.GetFiles(PartsDirectoryPath))
 				{
-					LogWriter.Debug("File: " + file);
+			//		LogWriter.Debug("File: " + file);
 					
 					parts.Add(LoadFromFile(file));
 				}
-			}
+			//}
 			
 			return parts.ToArray();
 		}
@@ -104,8 +104,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		{			
 			List<PartInfo> parts = new List<PartInfo>();
 			
-			using (LogGroup logGroup = LogGroup.Start("Loading the parts info from the XML files.", NLog.LogLevel.Debug))
-			{
+			//using (LogGroup logGroup = LogGroup.Start("Loading the parts info from the XML files.", NLog.LogLevel.Debug))
+			//{
 				foreach (string file in Directory.GetFiles(PartsInfoDirectoryPath))
 				{
 					LogWriter.Debug("File: " + file);
@@ -114,7 +114,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 					if (includeDisabled || part.Enabled)
 						parts.Add(part);
 				}
-			}
+			//}
 			
 			return parts.ToArray();
 		}
@@ -128,12 +128,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		{
 			PartInfo info = null;
 			
-			using (LogGroup logGroup = LogGroup.Start("Loading the part from the specified path.", NLog.LogLevel.Debug))
-			{
+			//using (LogGroup logGroup = LogGroup.Start("Loading the part from the specified path.", NLog.LogLevel.Debug))
+			//{
 				if (!File.Exists(partPath))
 					throw new ArgumentException("The specified file does not exist.");
 				
-				LogWriter.Debug("Path: " + partPath);
+			//	LogWriter.Debug("Path: " + partPath);
 				
 				
 				using (StreamReader reader = new StreamReader(File.OpenRead(partPath)))
@@ -144,7 +144,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 					
 					reader.Close();
 				}
-			}
+			//}
 			
 			return info;
 		}
