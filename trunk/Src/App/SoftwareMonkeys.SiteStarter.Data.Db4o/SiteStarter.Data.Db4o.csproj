@@ -52,6 +52,9 @@
     <Reference Include="Db4objects.Db4o">
       <HintPath>..\..\..\lib\Db4objects.Db4o.dll</HintPath>
     </Reference>
+    <Reference Include="Db4objects.Db4o.CS">
+      <HintPath>..\..\..\lib\Db4objects.Db4o.CS.dll</HintPath>
+    </Reference>
     <Reference Include="NLog, Version=1.0.0.505, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Lib\NLog.dll</HintPath>

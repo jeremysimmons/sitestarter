@@ -16,17 +16,7 @@ using Db4objects.Db4o.Config;
 namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 {
 	public class Db4oDataStore : DataStore
-	{
-		private string virtualServerID;
-		/// <summary>
-		/// Gets/sets the ID of the virtual server that the data store is attached to.
-		/// </summary>
-		public override string VirtualServerID
-		{
-			get { return virtualServerID; }
-			set { virtualServerID = value; }
-		}
-		
+	{		
 		// TODO: Check if this is needed
 		private IConfiguration db4oConfiguration;
 		
@@ -121,13 +111,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			get
 			{
-				if (!StateAccess.State.ContainsApplication(ObjectContainerKey)
-				    || StateAccess.State.GetApplication(ObjectContainerKey) == null)
+				if (!StateAccess.State.ContainsOperation(ObjectContainerKey)
+				    || StateAccess.State.GetOperation(ObjectContainerKey) == null)
 					OpenContainer();
 				
-				return (IObjectContainer)StateAccess.State.GetApplication(ObjectContainerKey);
+				return (IObjectContainer)StateAccess.State.GetOperation(ObjectContainerKey);
 			}
-			set { StateAccess.State.SetApplication(ObjectContainerKey, value); }
+			set { StateAccess.State.SetOperation(ObjectContainerKey, value); }
 		}
 
 		#region IDataStore Members
@@ -213,10 +203,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			using (LogGroup logGroup = LogGroup.Start("Opening data server.", NLog.LogLevel.Info))
 			{
+				LogWriter.Info("Opening db4o object server: " + Name);
 				ObjectServer = new Db4oDataStoreOpener().TryOpenServer(GetStoreFileName(), MaxOpenRetries);
-				
-				LogWriter.Debug("Server opened");
-				//objectContainer = ObjectServer.OpenClient();
 			}
 		}
 		
@@ -228,21 +216,24 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			using (LogGroup logGroup = LogGroup.Start("Opening data container.", NLog.LogLevel.Info))
 			{
-				string fileName = Name;
+				LogWriter.Info("Opening db4o object container: " + Name);
 				
-				LogWriter.Debug("Name: " + Name);
-
+				string fileName = Name;
 
 				string fullName = GetStoreFileName();
 				
 				LogWriter.Debug("Full file name: " + fullName);
 				
+				// Get the server (this activates JIT loading if necessary)
+				IObjectServer server = ObjectServer;
+				
 				if (!Directory.Exists(Path.GetDirectoryName(fullName)))
 					Directory.CreateDirectory(Path.GetDirectoryName(fullName));
-				//ObjectServer = Db4oFactory.OpenServer(fullName, 0);
-				ObjectContainer = ObjectServer.OpenClient();//Db4oFactory.OpenFile(fullName);
 				
-				LogWriter.Debug("Container opened");
+				// This info should come after the JIT loading of the object server (to make them show up in the right order in the logs)
+				LogWriter.Info("Opening db4o object container: " + Name);
+				
+				ObjectContainer = server.OpenClient();
 			}
 		}
 

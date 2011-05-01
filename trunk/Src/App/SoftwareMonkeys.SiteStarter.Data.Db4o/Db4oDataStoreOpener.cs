@@ -1,6 +1,8 @@
 ﻿using System;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.CS;
+using Db4objects.Db4o.CS.Config;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using System.IO;
 using SoftwareMonkeys.SiteStarter.Entities;
@@ -16,9 +18,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			using (LogGroup logGroup = LogGroup.Start("Trying to open a data server.", NLog.LogLevel.Debug))
 			{
-				IConfiguration configuration = Db4oFactory.NewConfiguration();
+				IServerConfiguration configuration = Db4oClientServer.NewServerConfiguration();
 				
-				configuration.ActivationDepth(2);
+				/*configuration.ActivationDepth(2);
 				configuration.UpdateDepth(0);
 				
 				configuration.ObjectClass(typeof(IEntity)).ObjectField("id").Indexed(true);
@@ -29,7 +31,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				configuration.ObjectClass(typeof(EntityIDReference)).ObjectField("property2Name").Indexed(true);
 				configuration.ObjectClass(typeof(EntityIDReference)).ObjectField("type2Name").Indexed(true);
 				configuration.ObjectClass(typeof(EntityIDReference)).ObjectField("entity2ID").Indexed(true);
-				
+				*/
 				//configuration.AutomaticShutDown(false);
 				
 				LogWriter.Debug("Full file name: " + yapFilePath);
@@ -41,7 +43,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				
 				try
 				{
-					server = Db4oFactory.OpenServer(configuration, yapFilePath, 0);
+					server = Db4oClientServer.OpenServer(configuration, yapFilePath, 0);
 				}
 				catch (Exception ex)
 				{
