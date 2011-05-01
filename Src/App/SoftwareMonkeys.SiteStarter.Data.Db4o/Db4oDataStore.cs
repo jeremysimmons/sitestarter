@@ -242,11 +242,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// </summary>
 		public override void Dispose()
 		{
-			if (!IsClosed)
+			// Don't commit/close here. Commit must be explicit.
+			//Close();
+			
+			// Dispose the container
+			if (ObjectContainer != null && !ObjectContainer.Ext().IsClosed())
 			{
-				// Don't commit/close here. Commit must be explicit.
-				//Close();
-				
 				// Roll back to the last commit
 				// This roll back is important. The data store must not commit the latest data unless commit call is explicit.
 				// If rollback is not called then the latest data will be automatically committed
@@ -255,13 +256,19 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				// TODO: Add a property to specify whether or not to automatically roll back
 				
 				ObjectContainer.Dispose();
-				
+			}
+			
+			// Dispose the server
+			if (ObjectServer != null)
+			{
 				ObjectServer.Close(); // ObjectServer must be closed to unlock files.
+				ObjectServer.Dispose();
 				ObjectServer = null;
 				
 				StateAccess.State.SetApplication(ObjectContainerKey, null);
 				StateAccess.State.SetApplication(ObjectServerKey, null);
 			}
+			
 		}
 
 		/// <summary>
