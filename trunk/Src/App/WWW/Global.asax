@@ -15,17 +15,24 @@
 
     void Application_Start(object sender, EventArgs e) 
     {
-    
-       // using (LogGroup logGroup = LogGroup.Start("Preparing to start application.", LogLevel.Debug))
-       // {
+    	InitializeCore();
+    	
+        using (LogGroup logGroup = LogGroup.Start("Starting application.", LogLevel.Debug))
+        {
             // Attempt to initialize the config
             Initialize();
-       // }
+        }
 
     }
     
     void Application_End(object sender, EventArgs e) 
     {
+    
+        using (LogGroup logGroup = LogGroup.Start("Ending application.", LogLevel.Debug))
+        {
+        	//...
+        }
+        
         //  Code that runs on application shutdown
         Dispose();
     }
@@ -62,20 +69,27 @@
     
     void Application_BeginRequest(object sender, EventArgs e)
     {
-    	using (LogGroup logGroup = LogGroup.Start("Beginning application request.", NLog.LogLevel.Debug))
+    	using (LogGroup logGroup = LogGroup.Start("Beginning application request: " + DateTime.Now.ToString(), NLog.LogLevel.Debug))
     	{
             // Initialize the URL rewriter to take care of friendly URLs
             UrlRewriter.Initialize();
         }
     }
 
+	private void InitializeCore()
+	{
+	        if (!StateAccess.IsInitialized || !Config.IsInitialized)
+	        {
+	        	InitializeState();
+	        }
+	}
+
     private void Initialize()
     {
         //using (LogGroup logGroup = LogGroup.Start("Initializing the state management, config, modules, and data.", LogLevel.Debug))
         //{
-	        if (!StateAccess.IsInitialized || !Config.IsInitialized)
+	        if (!Config.IsInitialized)
 	        {
-	        	InitializeState();
                 Config.Initialize(Server.MapPath(HttpContext.Current.Request.ApplicationPath), WebUtilities.GetLocationVariation(HttpContext.Current.Request.Url));
                 InitializeEntities();
 	            new DataProviderInitializer().Initialize();
