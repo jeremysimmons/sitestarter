@@ -16,7 +16,7 @@ using Db4objects.Db4o.Config;
 namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 {
 	public class Db4oDataStore : DataStore
-	{		
+	{
 		// TODO: Check if this is needed
 		private IConfiguration db4oConfiguration;
 		
@@ -231,7 +231,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					Directory.CreateDirectory(Path.GetDirectoryName(fullName));
 				
 				// This info should come after the JIT loading of the object server (to make them show up in the right order in the logs)
-				LogWriter.Info("Opening db4o object container: " + Name);
+				LogWriter.Debug("Opening db4o object container: " + Name);
 				
 				ObjectContainer = server.OpenClient();
 			}
@@ -242,22 +242,26 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// </summary>
 		public override void Dispose()
 		{
-			// Don't commit/close here. Commit must be explicit.
-			//Close();
-			
-			// Roll back to the last commit
-			// This roll back is important. The data store must not commit the latest data unless commit call is explicit.
-			// If rollback is not called then the latest data will be automatically committed
-			// The ability to dispose without committing is necessary for unit testing and/or transactions
-			ObjectContainer.Rollback();
-			
-			ObjectContainer.Dispose(); 
-			
-			ObjectServer.Close(); // ObjectServer must be closed to unlock files.
-			ObjectServer = null;
-			
-			StateAccess.State.SetApplication(ObjectContainerKey, null);
-			StateAccess.State.SetApplication(ObjectServerKey, null);
+			if (!IsClosed)
+			{
+				// Don't commit/close here. Commit must be explicit.
+				//Close();
+				
+				// Roll back to the last commit
+				// This roll back is important. The data store must not commit the latest data unless commit call is explicit.
+				// If rollback is not called then the latest data will be automatically committed
+				// The ability to dispose without committing is necessary for unit testing, transactions, etc.
+				ObjectContainer.Rollback();
+				// TODO: Add a property to specify whether or not to automatically roll back
+				
+				ObjectContainer.Dispose();
+				
+				ObjectServer.Close(); // ObjectServer must be closed to unlock files.
+				ObjectServer = null;
+				
+				StateAccess.State.SetApplication(ObjectContainerKey, null);
+				StateAccess.State.SetApplication(ObjectServerKey, null);
+			}
 		}
 
 		/// <summary>
@@ -273,7 +277,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				ObjectServer.Close();
 				ObjectServer = null;
 			}
-			//ObjectServer.Close();
 		}
 
 		#endregion
