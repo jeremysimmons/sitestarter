@@ -50,8 +50,11 @@ namespace SoftwareMonkeys.SiteStarter.Data
             {
                 foreach (IDataStore store in Data.Stores)
                 {
-                    store.Close();
+                	// TODO: Check if store should be closed here. Closing will commit it, but the commit should not happen during dispose
+                    //store.Close();
+                    store.Dispose();
                 }
+                Data.Dispose();
                 State.StateAccess.State.SetApplication("DataAccess.Data", null);
             }
         }

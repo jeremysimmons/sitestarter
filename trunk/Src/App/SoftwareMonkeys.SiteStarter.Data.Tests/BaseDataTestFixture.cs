@@ -54,14 +54,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		/// </summary>
 		public virtual void DisposeMockData()
 		{
-			/*foreach (string dataStoreName in DataAccess.Data.GetDataStoreNames())
-			{
-				DataAccess.Data.Stores[dataStoreName].Dispose();
-				DataAccess.Data.Stores.Remove(DataAccess.Data.Stores[dataStoreName]);
-			}*/
-			
-			if (DataAccess.IsInitialized)
-				DataAccess.Data.Dispose();
+			if (DataAccess.IsInitialized && DataAccess.Data != null)
+			{	
+				DataAccess.Dispose();
+			}
 		}
 	}
 }
