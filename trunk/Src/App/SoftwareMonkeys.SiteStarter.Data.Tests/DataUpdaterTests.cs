@@ -191,7 +191,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		public void Test_Update_MaintainReferences()
 		{
 			
-			using (LogGroup logGroup = LogGroup.Start("Testing saving of an EntityIDReference.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing the update function to see if it maintains references.", NLog.LogLevel.Debug))
 			{
 				TestUser user = new TestUser();
 				user.ID = Guid.NewGuid();
@@ -233,9 +233,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				Assert.IsNotNull(user3.Roles);
 				
+				Assert.AreEqual(newFirstName, user3.FirstName, "First name mismatch.");
+				
 				if (user3.Roles != null)
 					Assert.AreEqual(1, user3.Roles.Length, "Incorrect number of roles.");
-				Assert.AreEqual(newFirstName, user3.FirstName, "First name mismatch.");
 				
 				//IDataStore store = DataAccess.Data.Stores["Testing_Articles-Testing_Articles"];
 				
