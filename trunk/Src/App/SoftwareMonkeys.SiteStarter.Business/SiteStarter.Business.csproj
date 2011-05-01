@@ -138,11 +138,9 @@
     <Compile Include="StrategyLocator.cs" />
     <Compile Include="StrategyNotFoundException.cs" />
     <Compile Include="StrategyState.cs" />
-    <Compile Include="CommandAttribute.cs" />
     <Compile Include="Crypter.cs" />
     <Compile Include="DirectoryZipper.cs" />
     <Compile Include="RetrieveStrategy.cs" />
-    <Compile Include="GetCommandAttribute.cs" />
     <Compile Include="StrategyAttribute.cs" />
     <Compile Include="StrategyFileNamer.cs" />
     <Compile Include="StrategyInfo.cs" />
