@@ -309,14 +309,6 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		public abstract IDataStore InitializeDataStore(string dataStoreName);
 		
 		/// <summary>
-		/// Initializes the data store with the provided name in the specified virtual server.
-		/// </summary>
-		/// <param name="virtualServerID">The ID of the virtual server containing the data store.</param>
-		/// <param name="dataStoreName">The name of the data store to initialize.</param>
-		/// <returns>The initialized data store.</returns>
-		public abstract IDataStore InitializeDataStore(string virtualServerID, string dataStoreName);
-		
-		/// <summary>
 		/// Retrieves the names of all the data stores that can be found.
 		/// </summary>
 		/// <returns>An array containing the names of the data stores.</returns>

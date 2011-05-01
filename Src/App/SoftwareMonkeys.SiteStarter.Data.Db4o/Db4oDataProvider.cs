@@ -152,18 +152,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			IDataStore store = Db4oDataStoreFactory.InitializeDataStore(dataStoreName);
 			return store;
 		}
-
-		/// <summary>
-		/// Creates and initilizes the data store with the provided name.
-		/// </summary>
-		/// <param name="virtualServerID">The ID of the virtual server containing the data store.</param>
-		/// <param name="dataStoreName">The name of the data store to initialize.</param>
-		/// <returns>The newly initialized data store.</returns>
-		public override IDataStore InitializeDataStore(string virtualServerID, string dataStoreName)
-		{
-			IDataStore store = Db4oDataStoreFactory.InitializeDataStore(virtualServerID, dataStoreName);
-			return store;
-		}
 		
 		/// <summary>
 		/// Gets the names of the data stores in the data directory.

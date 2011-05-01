@@ -16,11 +16,6 @@ namespace SoftwareMonkeys.SiteStarter.Data
         /// Gets the name of the data store.
         /// </summary>
         string Name { get; }
-        
-        /// <summary>
-        /// Gets the ID of the virtual server that the data store exists on.
-        /// </summary>
-        string VirtualServerID { get; }
         #endregion
 
         #region Initialize/open/close/dispose functions

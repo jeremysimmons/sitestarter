@@ -22,46 +22,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 	{
 		static public Db4oDataStore InitializeDataStore(string dataStoreName)
 		{
-			return InitializeDataStore(dataStoreName, Db4oFactory.CloneConfiguration());
-		}
-		
-		static public Db4oDataStore InitializeDataStore(string virtualServerID, string dataStoreName)
-		{
-			return InitializeDataStore(virtualServerID, dataStoreName, Db4oFactory.CloneConfiguration());
-		}
-		
-		/// <summary>
-		/// Loads the data from the .yap file.
-		/// </summary>
-		static public Db4oDataStore InitializeDataStore(string virtualServerID, string dataStoreName, IConfiguration db4oConfiguration)
-		{
-			Db4oDataStore store = null;
-			
-			using (LogGroup logGroup = LogGroup.Start("Initializing data store.", NLog.LogLevel.Debug))
-			{
-				if (!Config.IsInitialized)
-					throw new InvalidOperationException("The application config file is not present. Run the setup process and try again.");
-				
-				LogWriter.Debug("Data store name: " + dataStoreName);
-				LogWriter.Debug("Virtual server ID: " + virtualServerID);
-				
-				string fullName = String.Empty;
-				
-				if (virtualServerID != String.Empty)
-				{
-					fullName = virtualServerID + "--" + dataStoreName;
-				}
-				else
-					fullName = dataStoreName;
-				
-				LogWriter.Debug("Full name: " + fullName);
-				
-				// Create a new data store
-				store = new Db4oDataStore(Db4oFactory.CloneConfiguration());
-				store.Name = fullName;
-			}
-			return store;
-			
+			return InitializeDataStore(dataStoreName, Db4oFactory.NewConfiguration());
 		}
 		
 		/// <summary>
@@ -71,15 +32,15 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			Db4oDataStore store = null;
 			
-			using (LogGroup logGroup = LogGroup.Start("Initializing data store.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Initializing data store: " + dataStoreName, NLog.LogLevel.Debug))
 			{
 				if (!Config.IsInitialized)
 					throw new InvalidOperationException("The application config file is not present. Run the setup process and try again.");
 				
-				LogWriter.Debug("Data store name: " + dataStoreName);
+				LogWriter.Info("Creating new data store: " + dataStoreName);
 				
 				// Create a new data store
-				store = new Db4oDataStore(Db4oFactory.CloneConfiguration());
+				store = new Db4oDataStore(db4oConfiguration);
 				store.Name = dataStoreName;
 			}
 			return store;

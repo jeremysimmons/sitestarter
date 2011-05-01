@@ -11,9 +11,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		public DataStore()
 		{
 		}
-		
-		public abstract string VirtualServerID { get;set; }
-		
+				
 		public abstract bool IsClosed {get;}
 		
 		public abstract void Commit(bool forceCommit);
