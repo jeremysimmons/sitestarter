@@ -242,14 +242,22 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			// Load data from the stores
 			foreach (IDataStore store in stores)
 			{
-				IQuery query = ((Db4oDataStore)store).ObjectContainer.Query();
-				
-				query.Constrain(typeof(IEntity));
-
-				IObjectSet os = query.Execute();
-				while (os.HasNext())
+				if (!store.IsClosed)
 				{
-					list.Add((IEntity)os.Next());
+					IObjectContainer container = ((Db4oDataStore)store).ObjectContainer;
+					
+					if (!container.Ext().IsClosed())
+					{
+						IQuery query = container.Query();
+						
+						query.Constrain(typeof(IEntity));
+
+						IObjectSet os = query.Execute();
+						while (os.HasNext())
+						{
+							list.Add((IEntity)os.Next());
+						}
+					}
 				}
 			}
 
@@ -960,35 +968,35 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			//	LogWriter.Debug("Type: " + type.ToString());
 			//	LogWriter.Debug("Property name: " + propertyName);
 			//	LogWriter.Debug("Property value: " + (propertyValue == null ? "[null]" : propertyValue.ToString()));
-				
-				if (type.Name == "EntityIDReference"
-				    || type.Name == "EntityReference")
-					throw new ArgumentException("The provided type cannot be EntityReference or EntityIDReference.");
-				
-				Db4oDataStore store = ((Db4oDataStore)GetDataStore(type));
-				
-				if (store != null)
+			
+			if (type.Name == "EntityIDReference"
+			    || type.Name == "EntityReference")
+				throw new ArgumentException("The provided type cannot be EntityReference or EntityIDReference.");
+			
+			Db4oDataStore store = ((Db4oDataStore)GetDataStore(type));
+			
+			if (store != null)
+			{
+				if (store.ObjectContainer != null)
 				{
-					if (store.ObjectContainer != null)
+					IQuery query = store.ObjectContainer.Query();
+					query.Constrain(typeof(T));
+					query.Descend(EntitiesUtilities.GetFieldName(typeof(T),propertyName)).Constrain(propertyValue);
+					
+					IObjectSet os = query.Execute();
+					
+					while (os.HasNext())
 					{
-						IQuery query = store.ObjectContainer.Query();
-						query.Constrain(typeof(T));
-						query.Descend(EntitiesUtilities.GetFieldName(typeof(T),propertyName)).Constrain(propertyValue);
-						
-						IObjectSet os = query.Execute();
-						
-						while (os.HasNext())
-						{
-							results.Add((T)os.Next());
-						}
+						results.Add((T)os.Next());
 					}
 				}
-				
+			}
+			
 			//	LogWriter.Debug("Entities #: " + results.Count.ToString());
-				
-				// TODO: See if performance can be improved by switching to SODA using the code below.
-				// Won't work because it can't pick up UniqueKeys, as they don't have a private field corresponding with them
-				/*
+			
+			// TODO: See if performance can be improved by switching to SODA using the code below.
+			// Won't work because it can't pick up UniqueKeys, as they don't have a private field corresponding with them
+			/*
 				string fieldName = EntitiesUtilities.GetFieldName(type, propertyName);
 				LogWriter.Debug("Field name: " + fieldName);
 				
@@ -1016,8 +1024,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					else
 						throw new InvalidOperationException("Invalid type found. Expected '" + type.ToString() + "' but was '" + obj.GetType().ToString() + "'.");
 				}
-				 */
-				//LogWriter.Debug("Results: " + results.Count.ToString());
+			 */
+			//LogWriter.Debug("Results: " + results.Count.ToString());
 			//}
 			return Release<T>((T[])results.ToArray());
 		}
