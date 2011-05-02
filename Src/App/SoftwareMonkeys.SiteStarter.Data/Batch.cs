@@ -62,32 +62,34 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			using (LogGroup logGroup = LogGroup.Start("Committing data stores in batch.",NLog.LogLevel.Debug))
 			{
-				LogWriter.Debug("# of stores: " + DataStores.Count.ToString());
-				
-				// If the batch has ended then commit
-				if (!BatchState.IsRunning)
+				if (DataAccess.IsInitialized)
 				{
-					foreach (IDataStore dataStore in DataStores)
+					LogWriter.Debug("# of stores: " + DataStores.Count.ToString());
+					
+					// If the batch has ended then commit
+					if (!BatchState.IsRunning)
 					{
-						LogWriter.Debug("Committing store: " + dataStore.Name);
-						dataStore.Commit(true);
+						foreach (IDataStore dataStore in DataStores)
+						{
+							LogWriter.Debug("Committing store: " + dataStore.Name);
+							dataStore.Commit(true);
+						}
+						
+						// Mark the batch as committed
+						IsCommitted = true;
+						
+						// Raise the committed event
+						RaiseCommitted();
+						
+						LogWriter.Debug("Commit complete.");
+						
 					}
-					
-					// Mark the batch as committed
-					IsCommitted = true;
-					
-					// Raise the committed event
-					RaiseCommitted();
-					
-					LogWriter.Debug("Commit complete.");
-					
+					else
+					{
+						LogWriter.Debug("Outer batch still running. Skipping commit.");
+						
+					}
 				}
-				else
-				{
-					LogWriter.Debug("Outer batch still running. Skipping commit.");
-					
-				}
-				
 			}
 		}
 		
