@@ -263,6 +263,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			using (LogGroup logGroup = LogGroup.Start("Disposing the data provider and data stores.", NLog.LogLevel.Debug))
 			{
+				// Dispose the batch first otherwise they'll try to commit the stores after the stores are disposed
+				while (BatchState.IsRunning)
+					BatchState.Batches.Pop();
+				
 				foreach (Db4oDataStore store in Stores)
 				{
 					LogWriter.Debug("Suspending store: " + store.Name);
