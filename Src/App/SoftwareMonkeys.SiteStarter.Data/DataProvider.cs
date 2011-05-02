@@ -292,7 +292,8 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <summary>
 		/// Disposes the data provider.
 		/// </summary>
-		public abstract void Dispose();
+		/// <param name="fullDisposal">Whether to dispose the inner components.</param>
+		public abstract void Dispose(bool fullDisposal);
 		
 		/// <summary>
 		/// Checks whether the provided entity or entity reference is currently found in the corresponding data store.

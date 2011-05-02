@@ -237,37 +237,45 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				ObjectContainer = server.OpenClient();
 			}
 		}
-
+		
 		/// <summary>
-		/// Disposes the data store. Also closes the data store and clears it from state.
+		/// Disposes the data store but not the inner components.
 		/// </summary>
 		public override void Dispose()
 		{
-			// Don't commit/close here. Commit must be explicit.
-			//Close();
-			
-			// Dispose the container
-			if (ObjectContainer != null && !ObjectContainer.Ext().IsClosed())
+			Dispose(false);
+		}
+
+		/// <summary>
+		/// Disposes the data store, and if specified, also closes the data store and clears it from state.
+		/// </summary>
+		public void Dispose(bool fullDisposal)
+		{
+			if (fullDisposal)
 			{
-				// Roll back to the last commit
-				// This roll back is important. The data store must not commit the latest data unless commit call is explicit.
-				// If rollback is not called then the latest data will be automatically committed
-				// The ability to dispose without committing is necessary for unit testing, transactions, etc.
-				ObjectContainer.Rollback();
-				// TODO: Add a property to specify whether or not to automatically roll back
+				// Dispose the container
+				if (ObjectContainer != null && !ObjectContainer.Ext().IsClosed())
+				{
+					// Roll back to the last commit
+					// This roll back is important. The data store must not commit the latest data unless commit call is explicit.
+					// If rollback is not called then the latest data will be automatically committed
+					// The ability to dispose without committing is necessary for unit testing, transactions, etc.
+					ObjectContainer.Rollback();
+					// TODO: Add a property to specify whether or not to automatically roll back
+					
+					ObjectContainer.Dispose();
+				}
 				
-				ObjectContainer.Dispose();
-			}
-			
-			// Dispose the server
-			if (ObjectServer != null)
-			{
-				ObjectServer.Close(); // ObjectServer must be closed to unlock files.
-				ObjectServer.Dispose();
-				ObjectServer = null;
-				
-				StateAccess.State.SetApplication(ObjectContainerKey, null);
-				StateAccess.State.SetApplication(ObjectServerKey, null);
+				// Dispose the server
+				if (ObjectServer != null)
+				{
+					ObjectServer.Close(); // ObjectServer must be closed to unlock files.
+					ObjectServer.Dispose();
+					ObjectServer = null;
+					
+					StateAccess.State.SetApplication(ObjectContainerKey, null);
+					StateAccess.State.SetApplication(ObjectServerKey, null);
+				}
 			}
 			
 		}
