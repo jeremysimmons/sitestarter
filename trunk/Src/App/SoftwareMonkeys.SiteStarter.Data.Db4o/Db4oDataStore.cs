@@ -111,8 +111,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			get
 			{
-				if (!StateAccess.State.ContainsOperation(ObjectContainerKey)
-				    || StateAccess.State.GetOperation(ObjectContainerKey) == null)
+				if (!StateAccess.State.ContainsOperation(ObjectContainerKey) // Container not found in state
+				    || StateAccess.State.GetOperation(ObjectContainerKey) == null // Container entry in state is null
+				    || ((IObjectContainer)StateAccess.State.GetOperation(ObjectContainerKey)).Ext().IsClosed())
 					OpenContainer();
 				
 				return (IObjectContainer)StateAccess.State.GetOperation(ObjectContainerKey);
@@ -278,7 +279,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			if (ObjectContainer != null && !ObjectContainer.Ext().IsClosed())
 			{
-				ObjectContainer.Commit();
 				ObjectContainer.Close();
 				ObjectContainer = null;
 				ObjectServer.Close();
@@ -344,8 +344,15 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					
 					if (ObjectContainer != null)
 					{
-						ObjectContainer.Commit();
-						RaiseCommitted();
+						if (!ObjectContainer.Ext().IsClosed())
+						{
+							LogWriter.Error("Committing.");
+							
+							ObjectContainer.Commit();
+							RaiseCommitted();
+						}
+						else
+							LogWriter.Error("Can't commit. The data store is closed.");
 					}
 					else
 						throw new InvalidOperationException("ObjectContainer == null");
