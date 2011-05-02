@@ -130,7 +130,7 @@ private void DeleteYapFiles()
 
 	string dataDirectory = DataDirectoryPath;
 
-	foreach (string file in Directory.GetFiles(dataDirectory, "*.yap"))
+	foreach (string file in Directory.GetFiles(dataDirectory, "*.db4o"))
 	{
 		File.Delete(file);
 	}

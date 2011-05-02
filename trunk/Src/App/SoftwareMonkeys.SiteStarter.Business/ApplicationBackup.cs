@@ -307,6 +307,10 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					if (Directory.Exists(toDir))
 						Directory.Delete(toDir, true);
 					
+					// If the parent folder doesn't exist then create it
+					if (!Directory.Exists(Path.GetDirectoryName(toDir)))
+						Directory.CreateDirectory(Path.GetDirectoryName(toDir));
+					
 					if (Directory.Exists(dir))
 						Directory.Move(dir, toDir);
 				}

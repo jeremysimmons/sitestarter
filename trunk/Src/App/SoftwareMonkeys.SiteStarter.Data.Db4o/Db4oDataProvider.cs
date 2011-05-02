@@ -165,7 +165,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			if (Directory.Exists(path))
 			{
-				foreach (string file in Directory.GetFiles(path, "*.yap"))
+				foreach (string file in Directory.GetFiles(path, "*.db4o"))
 				{
 					string[] nameParts = Path.GetFileName(file).Split('.');
 					string shortName = nameParts[0];
@@ -293,8 +293,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				
 				LogWriter.Debug("To directory: " + toDirectory);
 				
-				// Move each .yap file to the suspended directory.
-				foreach (string file in Directory.GetFiles(DataDirectoryPath, "*.yap"))
+				// Move each .db4o file to the suspended directory.
+				foreach (string file in Directory.GetFiles(DataDirectoryPath, "*.db4o"))
 				{
 					LogWriter.Debug("Moving data store: " + file);
 					
