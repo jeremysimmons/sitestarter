@@ -259,7 +259,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <summary>
 		/// Disposes the data provider and all data stores within it.
 		/// </summary>
-		public override void Dispose()
+		public override void Dispose(bool fullDisposal)
 		{
 			using (LogGroup logGroup = LogGroup.Start("Disposing the data provider and data stores.", NLog.LogLevel.Debug))
 			{
@@ -271,7 +271,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				{
 					LogWriter.Debug("Suspending store: " + store.Name);
 					
-					store.Dispose();
+					store.Dispose(fullDisposal);
 				}
 			}
 		}
@@ -285,7 +285,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			using (LogGroup logGroup = LogGroup.Start("Suspending the data provider and data stores.", NLog.LogLevel.Debug))
 			{
 				// Dispose the data access system to unlock the files
-				Dispose();
+				Dispose(true);
 				
 				// Create the path to the suspended directory
 				string toDirectory = SuspendedDirectoryPath + Path.DirectorySeparatorChar

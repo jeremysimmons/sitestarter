@@ -44,11 +44,11 @@ namespace SoftwareMonkeys.SiteStarter.Data
         /// <summary>
         /// Disposes and clears all data access objects.
         /// </summary>
-        static public void Dispose()
+        static public void Dispose(bool fullDisposal)
         {
             if (IsInitialized)
             {
-                Data.Dispose();
+                Data.Dispose(fullDisposal);
                 State.StateAccess.State.SetApplication("DataAccess.Data", null);
             }
         }
