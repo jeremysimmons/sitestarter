@@ -176,7 +176,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					fileName = fileName + "." + Config.Application.PathVariation;
 				
 				// Add the extension
-				fileName = fileName +  ".yap";
+				fileName = fileName +  ".db4o";
 				
 				path = DataAccess.Data.DataDirectoryPath + Path.DirectorySeparatorChar
 					+ fileName;
