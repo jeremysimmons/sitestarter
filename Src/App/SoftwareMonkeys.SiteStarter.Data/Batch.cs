@@ -71,8 +71,13 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					{
 						foreach (IDataStore dataStore in DataStores)
 						{
-							LogWriter.Debug("Committing store: " + dataStore.Name);
-							dataStore.Commit(true);
+							if (!dataStore.IsClosed)
+							{
+								LogWriter.Debug("Committing store: " + dataStore.Name);
+								dataStore.Commit(true);
+							}
+							else
+								LogWriter.Error("Can't commit. Store is closed: " + dataStore.Name);
 						}
 						
 						// Mark the batch as committed
@@ -81,7 +86,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 						// Raise the committed event
 						RaiseCommitted();
 						
-						LogWriter.Debug("Commit complete.");
+						LogWriter.Debug("Finished.");
 						
 					}
 					else
