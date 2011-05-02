@@ -16,7 +16,7 @@ using Db4objects.Db4o.Config;
 namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 {
 	/// <summary>
-	/// Assists in interaction with the db4o database.
+	/// Used to create new data stores.
 	/// </summary>
 	public static class Db4oDataStoreFactory
 	{
@@ -26,7 +26,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		}
 		
 		/// <summary>
-		/// Loads the data from the .yap file.
+		/// Initializes the data store.
 		/// </summary>
 		static public Db4oDataStore InitializeDataStore(string dataStoreName, IConfiguration db4oConfiguration)
 		{
