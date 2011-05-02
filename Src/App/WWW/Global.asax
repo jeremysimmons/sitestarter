@@ -131,7 +131,7 @@
     public override void Dispose()
     {
         Config.Dispose();
-        DataAccess.Dispose();
+        DataAccess.Dispose(true);
 
         base.Dispose();
     }
