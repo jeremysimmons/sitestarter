@@ -56,7 +56,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			if (DataAccess.IsInitialized && DataAccess.Data != null)
 			{	
-				DataAccess.Dispose();
+				DataAccess.Dispose(true);
 			}
 		}
 	}
