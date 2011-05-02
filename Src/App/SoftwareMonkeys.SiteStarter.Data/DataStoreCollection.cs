@@ -9,23 +9,13 @@ namespace SoftwareMonkeys.SiteStarter.Data
 	/// <summary>
 	/// Defines the interface required for all data store collections.
 	/// </summary>
-	public class DataStoreCollection : List<IDataStore>
+	public class DataStoreCollection : StateNameValueCollection<IDataStore>
 	{
-		
-		private bool enableVirtualServers = true;
-		/// <summary>
-		/// Gets/sets a boolean value indicating whether virtual servers are enabled.
-		/// </summary>
-		public bool EnableVirtualServers
-		{
-			get { return enableVirtualServers; }
-			set { enableVirtualServers = value; }
-		}
 		
 		/// <summary>
 		/// Gets the data store with the specified name and, if virtual servers are enabled, within the current virtual server.
 		/// </summary>
-		public IDataStore this[string dataStoreName]
+		public new IDataStore this[string dataStoreName]
 		{
 			get
 			{
@@ -33,9 +23,14 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				if (store == null || store.IsClosed)
 				{
 					store = DataAccess.Data.InitializeDataStore(dataStoreName);
-					Add(store);
+					
+					SetStateValue(dataStoreName, store);
 				}
 				return store;
+			}
+			set
+			{
+				SetStateValue(dataStoreName, value);
 			}
 		}
 
@@ -64,9 +59,15 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		}
 
 
-		public DataStoreCollection()
+		public DataStoreCollection() : base(StateScope.Application, "DataAccess.Data.Stores")
 		{
 		}
+		
+		public void Add(IDataStore store)
+		{
+			this[store.Name] = store;
+		}
+		
 		
 		/// <summary>
 		/// Retrieves the data store with the specified name and, if virtual servers are enabled, from within the current virtual server.
@@ -75,7 +76,10 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <returns>The data store with the specified name.</returns>
 		public IDataStore GetByName(string dataStoreName)
 		{
-			IDataStore store = null;
+			return (IDataStore)GetStateValue(dataStoreName);
+			
+			// TODO: Clean up
+			/*IDataStore store = null;
 			
 			for (int i = 0; i < Count; i++)
 			{				
@@ -87,17 +91,19 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				}
 			}
 			
-			return store;
+			return store;*/
 		}
 		
-		/// <summary>
+		/*/// <summary>
 		/// Removes the provided data store from the collection.
 		/// </summary>
 		/// <param name="store">The data store to remove from the collection.</param>
 		public new void Remove(IDataStore store)
 		{
 			store.Dispose();
-			base.Remove(store);
-		}
+			
+			this[store.Name] = null;
+		//	base.Remove(store);
+		}*/
 	}
 }
