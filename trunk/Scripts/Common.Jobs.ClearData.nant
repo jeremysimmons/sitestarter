@@ -10,7 +10,7 @@
 		<delete>
 	    		<fileset basedir="${path::get-full-path(Solution.RootPath)}/">
 	        		<include name="WWW/App_Data/*.config" />
-	        		<include name="WWW/App_Data/**.yap" />
+	        		<include name="WWW/App_Data/**.db4o" />
 	        		<include name="WWW/App_Data/Logs/*.*" />
 	        		<include name="WWW/App_Data/Menu.sitemap" />
 	        		<include name="WWW/App_Data/Menu.local.sitemap" />
