@@ -5,51 +5,58 @@
 <%@ Import Namespace="System.Reflection" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.WebControls" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Data" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Security" %>
 <%@ Import namespace="System.IO" %>
 <%@ Import namespace="System.Xml" %>
 <%@ Import namespace="System.Xml.Serialization" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Data" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.State" %>
+<%@ Import namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
 <script runat="server">
 
 protected override void OnLoad(EventArgs e)
 {
-
-	DeleteEntities();
-	
-	//DeleteMenuFile();
-	
-	// Leave caches because it takes too long to recreate them each time, and the cache should be exactly the same for each test so there's no chance of conflicts
-	// TODO: Ensure there are no conflicts and that the above premise is indeed correct.
-	//DeleteCaches();
-	
-	//DeleteVersionFile();
-	
-	//DeleteLogs();
-	
-	//DeleteConfigurationFile();
-	
-	if (StateAccess.IsInitialized)
-		Authentication.SignOut();
-	
-	//Response.Redirect(Request.ApplicationPath + "/Admin/QuickSetup.aspx");	
+	using (LogGroup logGroup = LogGroup.Start("Executing the test reset, to clear the test environment ready for a new test.", NLog.LogLevel.Debug))
+	{
+		DeleteEntities();
+		
+		//DeleteMenuFile();
+		
+		// Leave caches because it takes too long to recreate them each time, and the cache should be exactly the same for each test so there's no chance of conflicts
+		// TODO: Ensure there are no conflicts and that the above premise is indeed correct.
+		//DeleteCaches();
+		
+		//DeleteVersionFile();
+		
+		//DeleteLogs();
+		
+		//DeleteConfigurationFile();
+		
+		if (StateAccess.IsInitialized)
+			Authentication.SignOut();
+		
+		//Response.Redirect(Request.ApplicationPath + "/Admin/QuickSetup.aspx");
+	}
 }
 
 private void DeleteEntities()
 {
-	if (DataAccess.IsInitialized)
+	using (LogGroup logGroup = LogGroup.Start("Deleting all entities in the system.", NLog.LogLevel.Debug))
 	{
-	//using (Batch batch = BatchState.StartBatch())
-	//{
-		IEntity[] entities = DataAccess.Data.Indexer.GetEntities();
-		
-		foreach (IEntity entity in entities)
+		if (DataAccess.IsInitialized)
 		{
-			//if (!CanSkipDelete(entity))
-				DataAccess.Data.Deleter.Delete(entity);
-		}		
-	//}
+			using (Batch batch = BatchState.StartBatch())
+			{
+				IEntity[] entities = DataAccess.Data.Indexer.GetEntities();
+				
+				foreach (IEntity entity in entities)
+				{
+					//if (!CanSkipDelete(entity))
+						DataAccess.Data.Deleter.Delete(entity);
+				}		
+			}
+		}
 	}
 }
 
@@ -118,6 +125,7 @@ private void DeleteLogs()
 	if (Directory.Exists(path))
 		Directory.Delete(path, true);
 }
+
 
 </script>
 <html>
