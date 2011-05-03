@@ -30,15 +30,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 					return false;
 				else
 				{
-					if (StateAccess.State.Session["Result_IsError"] == null)
-						StateAccess.State.Session["Result_IsError"] = false;
-					return (bool)StateAccess.State.Session["Result_IsError"];
+					if (!StateAccess.State.ContainsSession("Result_IsError")
+					    || StateAccess.State.GetSession("Result_IsError") == null)
+						StateAccess.State.SetSession("Result_IsError", false);
+					return (bool)StateAccess.State.GetSession("Result_IsError");
 				}
 			}
 			set
 			{
 				if (StateAccess.IsInitialized)
-					StateAccess.State.Session["Result_IsError"] = value;
+					StateAccess.State.SetSession("Result_IsError", value);
 			}
 		}
 		
@@ -53,15 +54,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 					return String.Empty;
 				else
 				{
-					if (StateAccess.State.Session["Result_Text"] == null)
-						StateAccess.State.Session["Result_Text"] = String.Empty;
-					return (string)StateAccess.State.Session["Result_Text"];
+					if (!StateAccess.State.ContainsSession("Result_Text")
+					    || StateAccess.State.GetSession("Result_Text") == null)
+						StateAccess.State.SetSession("Result_Text", String.Empty);
+					return (string)StateAccess.State.GetSession("Result_Text");
 				}
 			}
 			set
 			{
 				if (StateAccess.IsInitialized)
-					StateAccess.State.Session["Result_Text"] = value;
+					StateAccess.State.SetSession("Result_Text", value);
 			}
 		}
 
@@ -84,8 +86,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				base.Render(writer);
 
 				// Reset the text because it has been displayed now
-				StateAccess.State.Session["Result_Text"] = String.Empty;
-				StateAccess.State.Session["Result_IsError"] = false;
+				Text = String.Empty;
+				IsError = false;
 			}
 		}
 
@@ -98,8 +100,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		{
 			if (StateAccess.IsInitialized)
 			{
-				StateAccess.State.Session["Result_Text"] = text;
-				StateAccess.State.Session["Result_IsError"] = false;
+				Text = text;
+				IsError = false;
 			}
 			else
 				throw new InvalidOperationException("Can't use the result control when the state has not been initialized.");
@@ -113,8 +115,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		{
 			if (StateAccess.IsInitialized)
 			{
-				StateAccess.State.Session["Result_Text"] = error;
-				StateAccess.State.Session["Result_IsError"] = true;
+				Text = error;
+				IsError = true;
 			}
 			else
 				throw new InvalidOperationException("Can't use the result control when the state has not been initialized.");
