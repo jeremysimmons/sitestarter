@@ -126,8 +126,17 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <returns>The URL to the page handling the provided action in relation to the provided type.</returns>
 		public string CreateFriendlyUrl(string action, string typeName)
 		{
-			string link = ApplicationPath + "/" + PrepareForUrl(action) + "-" + PrepareForUrl(typeName) + ".aspx";
-			link = AddResult(link);
+			string link = String.Empty;
+			using (LogGroup logGroup = LogGroup.Start("Creating a friendly URL for the specified action and type.", NLog.LogLevel.Debug))
+			{
+				LogWriter.Debug("Action: " + action);
+				LogWriter.Debug("Type name: " + typeName);
+				
+				link = ApplicationPath + "/" + PrepareForUrl(action) + "-" + PrepareForUrl(typeName) + ".aspx";
+				link = AddResult(link);
+				
+				LogWriter.Debug("Link: " + link);
+			}
 			return link;
 		}
 		
@@ -137,22 +146,34 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <param name="action">The action to be performed at the target page.</param>
 		/// <param name="typeName">The name of the type being acted upon at the target page.</param>
 		/// <param name="propertyName">The name of the property to filter the type by.</param>
-		/// <param name="dataKey">The value of the property to filter the key by.</param>
+		/// <param name="value">The value of the property to filter the key by.</param>
 		/// <returns>The URL to the page handling the provided action in relation to the provided type.</returns>
-		public string CreateFriendlyUrl(string action, string typeName, string propertyName, string dataKey)
+		public string CreateFriendlyUrl(string action, string typeName, string propertyName, string value)
 		{
-			string link = ApplicationPath + "/" + PrepareForUrl(action) + "-" + PrepareForUrl(typeName);
+			string link = String.Empty;
+			using (LogGroup logGroup = LogGroup.Start("Creating a friendly URL for the specified action and type, including the specified property name and value.", NLog.LogLevel.Debug))
+			{
+				LogWriter.Debug("Action: " + action);
+				LogWriter.Debug("Type name: " + typeName);
+				
+				LogWriter.Debug("Property name: " + propertyName);
+				LogWriter.Debug("Value: " + value);
+				
+				link = ApplicationPath + "/" + PrepareForUrl(action) + "-" + PrepareForUrl(typeName);
 			
-			link = link + "/";
-			
-			if (propertyName == "UniqueKey")
-				link = link + "K";
-			else
-				link = link + PrepareForUrl(propertyName);
-			
-			link = link + "--" + PrepareForUrl(dataKey) + ".aspx";
-			
-			link = AddResult(link);
+				link = link + "/";
+				
+				if (propertyName == "UniqueKey")
+					link = link + "K";
+				else
+					link = link + PrepareForUrl(propertyName);
+				
+				link = link + "--" + PrepareForUrl(value) + ".aspx";
+								
+				link = AddResult(link);
+				
+				LogWriter.Debug("Link: " + link);
+			}
 			return link;
 		}
 		
@@ -166,18 +187,27 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <returns>The URL to the page handling the provided action in relation to the provided type.</returns>
 		public string CreateFriendlyUrl(string action, IEntity entity)
 		{
-			string link = ApplicationPath
+			string link = String.Empty;
+			using (LogGroup logGroup = LogGroup.Start("Creating a friendly URL for the specified action and provided entity type.", NLog.LogLevel.Debug))
+			{
+				LogWriter.Debug("Action: " + action);
+				LogWriter.Debug("Entity type: " + entity.ShortTypeName);
+				
+				link = ApplicationPath
 				+ "/" + PrepareForUrl(action)
 				+ "-" + PrepareForUrl(entity.ShortTypeName);
 			
-			link = link + "/" + entity.ID.ToString();
-			
-			if (entity is IUniqueEntity)
-				link = link + "/I--" + PrepareForUrl(((IUniqueEntity)entity).UniqueKey);
-			
-			link = link + ".aspx";
-			
-			link = AddResult(link);
+				link = link + "/" + entity.ID.ToString();
+				
+				if (entity is IUniqueEntity)
+					link = link + "/I--" + PrepareForUrl(((IUniqueEntity)entity).UniqueKey);
+				
+				link = link + ".aspx";
+				
+				link = AddResult(link);
+				
+				LogWriter.Debug("Link: " + link);
+			}
 			return link;
 		}
 		
@@ -193,15 +223,35 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <returns>The URL to the page handling the provided action in relation to the provided type.</returns>
 		public string CreateStandardUrl(string action, string typeName, ProjectionFormat format)
 		{
-			
-			string link = ApplicationPath + "/Projector.aspx?a=" + PrepareForUrl(action) + "&t=" + PrepareForUrl(typeName) + "&f=" + PrepareForUrl(format.ToString());
-			link = AddResult(link);
+			string link = String.Empty;
+			using (LogGroup logGroup = LogGroup.Start("Creating a standard URL for the specified action and type, with the specified format.", NLog.LogLevel.Debug))
+			{
+				LogWriter.Debug("Action: " + action);
+				LogWriter.Debug("Type name: " + typeName);
+				
+				LogWriter.Debug("Format: " + format);
+				
+				link = ApplicationPath + "/Projector.aspx?a=" + PrepareForUrl(action) + "&t=" + PrepareForUrl(typeName) + "&f=" + PrepareForUrl(format.ToString());
+				link = AddResult(link);
+				
+				LogWriter.Debug("Link: " + link);
+			}
 			return link;
 		}
 		
 		public string CreateStandardUrl(string action, string typeName)
 		{
-			return CreateStandardUrl(action, typeName, ProjectionFormat.Html);
+			string link = String.Empty;
+			using (LogGroup logGroup = LogGroup.Start("Creating a standard URL for the specified action and type.", NLog.LogLevel.Debug))
+			{
+				LogWriter.Debug("Action: " + action);
+				LogWriter.Debug("Type name: " + typeName);
+				
+				link = CreateStandardUrl(action, typeName);
+				
+				LogWriter.Debug("Link: " + link);
+			}
+			return link;
 		}
 		
 		/// <summary>
@@ -212,7 +262,17 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <returns>The URL to the page handling the provided action in relation to the provided type.</returns>
 		public string CreateStandardUrl(string action, IEntity entity)
 		{
-			return CreateStandardUrl(action, entity, ProjectionFormat.Html);
+			string link = String.Empty;
+			using (LogGroup logGroup = LogGroup.Start("Creating a standard URL for the specified action and provided entity type.", NLog.LogLevel.Debug))
+			{
+				LogWriter.Debug("Action: " + action);
+				LogWriter.Debug("Entity type: " + entity.ShortTypeName);
+				
+				link = CreateStandardUrl(action, entity, ProjectionFormat.Html);
+				
+				LogWriter.Debug("Link: " + link);
+			}
+			return link;
 		}
 		
 		/// <summary>
@@ -224,8 +284,18 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <returns>The URL to the page handling the provided action in relation to the provided type.</returns>
 		public string CreateStandardUrl(string action, IEntity entity, ProjectionFormat format)
 		{
-			string link = ApplicationPath + "/Projector.aspx?a=" + PrepareForUrl(action) + "&t=" + PrepareForUrl(entity.ShortTypeName) + "&f=" + PrepareForUrl(format.ToString()) + "&" + PrepareForUrl(entity.ShortTypeName) + "-ID=" + PrepareForUrl(entity.ID.ToString());
-			link = AddResult(link);
+			string link = String.Empty;
+			using (LogGroup logGroup = LogGroup.Start("Creating a standard URL for the specified action and provided entity type, with the specified format.", NLog.LogLevel.Debug))
+			{
+				LogWriter.Debug("Action: " + action);
+				LogWriter.Debug("Entity type: " + entity.ShortTypeName);
+				LogWriter.Debug("Format: " + format.ToString());
+				
+				link = ApplicationPath + "/Projector.aspx?a=" + PrepareForUrl(action) + "&t=" + PrepareForUrl(entity.ShortTypeName) + "&f=" + PrepareForUrl(format.ToString()) + "&" + PrepareForUrl(entity.ShortTypeName) + "-ID=" + PrepareForUrl(entity.ID.ToString());
+				link = AddResult(link);
+				
+				LogWriter.Debug("Link: " + link);
+			}
 			return link;
 		}
 		
@@ -236,19 +306,46 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <param name="action">The action to be performed at the target page.</param>
 		/// <param name="typeName">The name of the type being acted upon at the target page.</param>
 		/// <param name="propertyName">The name of the property to filter the specified type by.</param>
-		/// <param name="dataKey">The value of the property to filter the specified type by.</param>
+		/// <param name="value">The value of the property to filter the specified type by.</param>
 		/// <param name="format">The format of the target projection.</param>
 		/// <returns>The URL to the page handling the provided action in relation to the provided type.</returns>
-		public string CreateStandardUrl(string action, string typeName, string propertyName, ProjectionFormat format, string dataKey)
+		public string CreateStandardUrl(string action, string typeName, string propertyName, string value, ProjectionFormat format)
 		{
-			string link = ApplicationPath + "/Projector.aspx?a=" + PrepareForUrl(action) + "&t=" + PrepareForUrl(typeName) + "&f=" + PrepareForUrl(format.ToString()) + "&" + PrepareForUrl(typeName) + "-" + PrepareForUrl(propertyName) + "=" + PrepareForUrl(dataKey);
-			link = AddResult(link);
+			string link = String.Empty;
+			using (LogGroup logGroup = LogGroup.Start("Creating a standard URL for the specified action and provided entity type, with the specified property name and value, as well as the specified format.", NLog.LogLevel.Debug))
+			{
+				LogWriter.Debug("Action: " + action);
+				LogWriter.Debug("Type name: " + typeName);
+				
+				LogWriter.Debug("Property name: " + propertyName);
+				LogWriter.Debug("Value: " + value);
+				
+				LogWriter.Debug("Format: " + format.ToString());
+				
+				link = ApplicationPath + "/Projector.aspx?a=" + PrepareForUrl(action) + "&t=" + PrepareForUrl(typeName) + "&f=" + PrepareForUrl(format.ToString()) + "&" + PrepareForUrl(typeName) + "-" + PrepareForUrl(propertyName) + "=" + PrepareForUrl(value);
+				link = AddResult(link);
+				
+				LogWriter.Debug("Link: " + link);
+			}
 			return link;
 		}
 		
-		public string CreateStandardUrl(string action, string typeName, string propertyName, string dataKey)
+		public string CreateStandardUrl(string action, string typeName, string propertyName, string value)
 		{
-			return CreateStandardUrl(action, typeName, propertyName, ProjectionFormat.Html, dataKey);
+			string link = String.Empty;
+			using (LogGroup logGroup = LogGroup.Start("Creating a standard URL for the specified action and provided entity type, with the specified property name and value.", NLog.LogLevel.Debug))
+			{
+				LogWriter.Debug("Action: " + action);
+				LogWriter.Debug("Type name: " + typeName);
+				
+				LogWriter.Debug("Property name: " + propertyName);
+				LogWriter.Debug("Value: " + value);
+								
+				link = CreateStandardUrl(action, typeName, propertyName, value, ProjectionFormat.Html);
+				
+				LogWriter.Debug("Link: " + link);
+			}
+			return link;
 		}
 		
 		#endregion
@@ -353,7 +450,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		public virtual string CreateUrl(string action, string typeName, string propertyName, string dataKey)
 		{
 			string link = String.Empty;
-			using (LogGroup logGroup = LogGroup.Start("Creating a link to a module.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Creating a link.", NLog.LogLevel.Debug))
 			{
 				if (EnableFriendlyUrls)
 					link = CreateFriendlyUrl(action, typeName, propertyName, dataKey);
@@ -371,7 +468,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		
 		#region XSLT URL functions
 		/// <summary>
-		/// Creates a URL to the specified XSLT file in the specified module.
+		/// Creates a URL to the specified XSLT file.
 		/// </summary>
 		/// <param name="action">The action being performed and rendering the XML.</param>
 		/// <param name="typeName">The short type name of the entity involved in action.</param>
@@ -442,29 +539,38 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		
 		public string CreateUrl()
 		{
-			string action = QueryStrings.Action;
-			string typeName = QueryStrings.Type;
-			string uniqueKey = QueryStrings.GetUniqueKey(typeName);
-			Guid id = QueryStrings.GetID(typeName);
-			
 			string url = string.Empty;
 			
-			if (action == String.Empty ||
-			    typeName == String.Empty)
+			using (LogGroup logGroup = LogGroup.Start("Creating a URL.", NLog.LogLevel.Debug))
 			{
-				url = WebUtilities.ConvertAbsoluteUrlToApplicationRelativeUrl(HttpContext.Current.Request.Url.ToString());
+				string action = QueryStrings.Action;
+				string typeName = QueryStrings.Type;
+				string uniqueKey = QueryStrings.GetUniqueKey(typeName);
+				Guid id = QueryStrings.GetID(typeName);
+				
+				LogWriter.Debug("Action: " + action);
+				LogWriter.Debug("Type name: " + typeName);
+				LogWriter.Debug("Unique key: " + uniqueKey);
+				LogWriter.Debug("ID: " + id.ToString());
+				
+				if (action == String.Empty ||
+					typeName == String.Empty)
+				{
+					url = WebUtilities.ConvertAbsoluteUrlToApplicationRelativeUrl(HttpContext.Current.Request.Url.ToString());
+				}
+				else if (uniqueKey != String.Empty)
+				{
+					url = CreateUrl(action, typeName, "UniqueKey", uniqueKey);
+				}
+				else if (id != Guid.Empty)
+				{
+					url = CreateUrl(action, typeName, "ID", id.ToString());
+				}
+				else
+					url = CreateUrl(action, typeName);
+					
+				LogWriter.Debug("URL: " + url);
 			}
-			else if (uniqueKey != String.Empty)
-			{
-				url = CreateUrl(action, typeName, "UniqueKey", uniqueKey);
-			}
-			else if (id != Guid.Empty)
-			{
-				url = CreateUrl(action, typeName, "ID", id.ToString());
-			}
-			else
-				url = CreateUrl(action, typeName);
-			
 			return url;
 		}
 		#endregion
