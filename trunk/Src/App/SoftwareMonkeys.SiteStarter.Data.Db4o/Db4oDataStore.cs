@@ -202,9 +202,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// </summary>
 		public void OpenServer()
 		{
-			using (LogGroup logGroup = LogGroup.Start("Opening data server.", NLog.LogLevel.Info))
+			using (LogGroup logGroup = LogGroup.Start("Opening data server.", NLog.LogLevel.Debug))
 			{
-				LogWriter.Info("Opening db4o object server: " + Name);
+				LogWriter.Debug("Opening db4o object server: " + Name);
 				ObjectServer = new Db4oDataStoreOpener().TryOpenServer(GetStoreFileName(), MaxOpenRetries);
 			}
 		}
@@ -217,7 +217,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			using (LogGroup logGroup = LogGroup.Start("Opening data container.", NLog.LogLevel.Info))
 			{
-				LogWriter.Info("Opening db4o object container: " + Name);
+				LogWriter.Debug("Opening db4o object container: " + Name);
 				
 				string fileName = Name;
 
@@ -354,13 +354,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					{
 						if (!ObjectContainer.Ext().IsClosed())
 						{
-							LogWriter.Error("Committing.");
+							LogWriter.Debug("Committing.");
 							
 							ObjectContainer.Commit();
 							RaiseCommitted();
 						}
 						else
-							LogWriter.Error("Can't commit. The data store is closed.");
+							LogWriter.Debug("Can't commit. The data store is closed.");
 					}
 					else
 						throw new InvalidOperationException("ObjectContainer == null");
