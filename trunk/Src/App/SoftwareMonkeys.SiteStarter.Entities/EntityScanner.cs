@@ -125,6 +125,13 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			//using (LogGroup logGroup = LogGroup.Start("Checks whether the provided type is a entity.", NLog.LogLevel.Debug))
 			//{
 			//	LogWriter.Debug("Type: " + type.ToString());
+			
+			
+				// TODO: This function is a performance hot spot. The Type.GetInterface function is the issue.
+				// See if performance can be improved, possibly by removing...
+				// type.GetInterface("IEntity") != null
+				// ...and relying on...
+				// typeof(IEntity).IsAssignableFrom(type)
 				
 				matchesInterface = typeof(IEntity).IsAssignableFrom(type)
 					|| type.GetInterface("IEntity") != null
