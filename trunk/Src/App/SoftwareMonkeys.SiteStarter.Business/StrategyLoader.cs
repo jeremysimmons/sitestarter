@@ -55,7 +55,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			List<StrategyInfo> strategies = new List<StrategyInfo>();
 			
-			using (LogGroup logGroup = LogGroup.Start("Loading the strategies from the XML files.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Loading the strategies from the XML files."))
 			{
 				foreach (string file in Directory.GetFiles(StrategiesDirectoryPath))
 				{
@@ -77,7 +77,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			StrategyInfo info = null;
 			
-			using (LogGroup logGroup = LogGroup.Start("Loading the strategy from the specified path.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Loading the strategy from the specified path."))
 			{
 				if (!File.Exists(strategyPath))
 					throw new ArgumentException("The specified file does not exist.");

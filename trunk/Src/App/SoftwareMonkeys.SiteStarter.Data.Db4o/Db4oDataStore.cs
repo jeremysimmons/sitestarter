@@ -216,15 +216,15 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// </summary>
 		public void OpenContainer()
 		{
-			using (LogGroup logGroup = LogGroup.Start("Opening db4o data container.", NLog.LogLevel.Info))
-			{			
+			//using (LogGroup logGroup = LogGroup.Start("Opening db4o data container.", NLog.LogLevel.Info))
+			//{			
 				LogWriter.Debug("${db4o.OpenContainer:" + Name + "}");
 				
 				string fileName = Name;
 
 				string fullName = GetStoreFileName();
 				
-				LogWriter.Debug("Full file name: " + fullName);
+			//	LogWriter.Debug("Full file name: " + fullName);
 				
 				// Get the server (this activates JIT loading if necessary)
 				IObjectServer server = ObjectServer;
@@ -233,13 +233,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					Directory.CreateDirectory(Path.GetDirectoryName(fullName));
 				
 				// This info should come after the JIT loading of the object server (to make them show up in the right order in the logs)
-				LogWriter.Debug("Opening db4o object container: " + Name);
+			//	LogWriter.Debug("Opening db4o object container: " + Name);
 				
 				if (server != null)
 					ObjectContainer = server.OpenClient();
 				else
 					LogWriter.Error("Can't open container because server is not initialized.");
-			}
+			//}
 		}
 		
 		/// <summary>
