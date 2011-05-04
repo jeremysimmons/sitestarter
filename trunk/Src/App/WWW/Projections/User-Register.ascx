@@ -16,6 +16,8 @@
     {
     	// TODO: Check if needed. Should be obsolete.
         RequireAuthorisation = false;
+		
+		CreateAction = "Register";
         
         Initialize(typeof(User), DataForm, "Username"); 
         
