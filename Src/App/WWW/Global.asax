@@ -19,6 +19,8 @@
     	
         using (LogGroup logGroup = LogGroup.Start("Starting application.", LogLevel.Debug))
         {
+        	LogWriter.Debug("${Application.Start}");
+        
             // Attempt to initialize the config
             Initialize();
         }
@@ -30,7 +32,7 @@
     
         using (LogGroup logGroup = LogGroup.Start("Ending application.", LogLevel.Debug))
         {
-        	//...
+        	LogWriter.Debug("${Application.End}");
         }
         
         //  Code that runs on application shutdown
@@ -41,6 +43,8 @@
     { 
     	using (LogGroup logGroup = LogGroup.Start("Handling application error.", NLog.LogLevel.Error))
 	    {
+        	LogWriter.Debug("${Application.Error}");
+        	
 	        // Code that runs when an unhandled error occurs
 		    Exception lastException = Server.GetLastError();
 	   	    LogWriter.Error(lastException.ToString());
@@ -49,17 +53,22 @@
 
     void Session_Start(object sender, EventArgs e) 
     {
-       // using (LogGroup logGroup = LogGroup.Start("Preparing to start session.", LogLevel.Debug))
-       // {	        
-	        // Code that runs when a new session is started
-	        if (!StateAccess.IsInitialized || !Config.IsInitialized || !DataAccess.IsInitialized)
-	            Initialize();
-		//}
+    	InitializeCore();
+    	
+        using (LogGroup logGroup = LogGroup.Start("Starting session.", LogLevel.Debug))
+        {
+        	LogWriter.Debug("${Session.Start}");
+        
+            // Attempt to initialize the config
+            Initialize();
+        }
 
     }
 
     void Session_End(object sender, EventArgs e) 
     {
+        LogWriter.Debug("${Session.End}");
+        	
         // Code that runs when a session ends. 
         // Note: The Session_End event is raised only when the sessionstate mode
         // is set to InProc in the Web.config file. If session mode is set to StateServer 
@@ -71,8 +80,20 @@
     {
     	using (LogGroup logGroup = LogGroup.Start("Beginning application request: " + DateTime.Now.ToString(), NLog.LogLevel.Debug))
     	{
+        	LogWriter.Debug("${Application.BeginRequest}");
+        	
             // Initialize the URL rewriter to take care of friendly URLs
             UrlRewriter.Initialize();
+        }
+    }
+    
+    
+    void Application_EndRequest(object sender, EventArgs e)
+    {
+    	using (LogGroup logGroup = LogGroup.Start("Ending application request: " + DateTime.Now.ToString(), NLog.LogLevel.Debug))
+    	{
+        	LogWriter.Debug("${Application.EndRequest}");
+        	
         }
     }
 
