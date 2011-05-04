@@ -23,18 +23,27 @@ private void Page_Load(object sender, EventArgs e)
 		if (query == null || query == String.Empty)
 			throw new Exception("A query must be provided via the 'Query' query string.");
 		
+		string logContents = LoadLog();
+		
 		string output = "LogContains=";
 		
-		output += LogContains(query).ToString();
+		output += LogContains(query, logContents).ToString();
 		
+		string foundTotal = "FoundTotal=";
+		
+		foundTotal += Count(query, LoadLog()).ToString();
+		
+		OutputHolder.Controls.Add(new LiteralControl("<div>"));
 		OutputHolder.Controls.Add(new LiteralControl(output));
+		OutputHolder.Controls.Add(new LiteralControl("</div>"));
+		OutputHolder.Controls.Add(new LiteralControl("<div>"));
+		OutputHolder.Controls.Add(new LiteralControl(foundTotal));
+		OutputHolder.Controls.Add(new LiteralControl("</div>"));
 	}
 }
 
-private bool LogContains(string query)
-{
-	string logContents = LoadLog();
-	
+private bool LogContains(string query, string logContents)
+{	
 	if (logContents == String.Empty)
 		return false;
 	
@@ -54,6 +63,13 @@ private string LoadLog()
 	}
 	
 	return content;
+}
+
+private int Count(string query, string searchable)
+{
+	System.Text.RegularExpressions.MatchCollection wordColl = System.Text.RegularExpressions.Regex.Matches(searchable, Regex.Escape(query));
+    return wordColl.Count;
+
 }
 </script>
 <html>
