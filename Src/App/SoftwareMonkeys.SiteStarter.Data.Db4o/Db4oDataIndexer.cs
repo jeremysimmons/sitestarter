@@ -173,7 +173,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				IObjectContainer objectContainer = ((Db4oDataStore)GetDataStore(type)).ObjectContainer;
 				
 				// If the object container is closed then skip the query
-				if (!objectContainer.Ext().IsClosed())
+				if (objectContainer != null && !objectContainer.Ext().IsClosed())
 				{
 					IQuery query = objectContainer.Query();
 					query.Constrain(type);
