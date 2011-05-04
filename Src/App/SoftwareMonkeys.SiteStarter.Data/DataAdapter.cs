@@ -74,13 +74,14 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="store">The data store that the adapter is tied to, or [null] to let it automatically select the appropriate store.</param>
 		protected void Initialize(DataProvider provider, IDataStore store)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Initializing the data adapter.", NLog.LogLevel.Debug))
-			{
-				LogWriter.Debug("Set the provider for the adapter to use.");
+			// Logging disabled to improve performance
+			//using (LogGroup logGroup = LogGroup.Start("Initializing the data adapter.", NLog.LogLevel.Debug))
+			//{
+			//	LogWriter.Debug("Set the provider for the adapter to use.");
 				this.provider = provider;
-				LogWriter.Debug("Set the store for the adapter to use.");
+			//	LogWriter.Debug("Set the store for the adapter to use.");
 				this.DataStore = store;
-			}
+			//}
 		}
 		
 		
@@ -177,22 +178,10 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		public IDataStore GetDataStore(string type1Name, string type2Name)
 		{
 			IDataStore store = null;
+			
 			using (LogGroup logGroup = LogGroup.Start("Retrieving the data store for the provided entity.", NLog.LogLevel.Debug))
 			{
-				
-				// TODO: Clean up
-				// Commented out because this function is use to get the data store for a reference.
-				// Reference data store should always be retrieved dynamically, not tied like entity stores.
-				//if (dataStore == null)
-				//{
-					store = DataAccess.Data.Stores[DataUtilities.GetDataStoreName(type1Name, type2Name)];
-					LogWriter.Debug("Dynamically selected data store.");
-				//}
-				//else
-				//{
-					//store = dataStore;
-					//LogWriter.Debug("Using the data store tied to the adapter.");
-				//}
+				store = DataAccess.Data.Stores[DataUtilities.GetDataStoreName(type1Name, type2Name)];
 				
 				LogWriter.Debug("Data store name: " + store.Name);
 			}

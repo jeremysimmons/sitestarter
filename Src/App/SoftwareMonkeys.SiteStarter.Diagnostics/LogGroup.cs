@@ -274,6 +274,21 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		#region Static functions
 		
 		/// <summary>
+		/// Starts a new debug level log group.
+		/// </summary>
+		/// <param name="summary"></param>
+		/// <returns></returns>
+		static public LogGroup StartDebug(string summary)
+		{
+			MethodBase callingMethod = null;
+			
+			if (new ModeDetector().IsDebug)
+				callingMethod = Reflector.GetCallingMethod();
+
+			return Start(summary, LogLevel.Debug, callingMethod);
+		}
+		
+		/// <summary>
 		/// Starts a new log group.
 		/// </summary>
 		/// <param name="summary"></param>
