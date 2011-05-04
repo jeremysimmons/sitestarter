@@ -74,15 +74,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			List<ProjectionInfo> projections = new List<ProjectionInfo>();
 			
-			using (LogGroup logGroup = LogGroup.Start("Loading the projections from the XML files.", NLog.LogLevel.Debug))
-			{
+			// Logging disabled to boost performance
+			//using (LogGroup logGroup = LogGroup.Start("Loading the projections from the XML files.", NLog.LogLevel.Debug))
+			//{
 				foreach (string file in Directory.GetFiles(ProjectionsDirectoryPath))
 				{
-					LogWriter.Debug("File: " + file);
+			//		LogWriter.Debug("File: " + file);
 					
 					projections.Add(LoadFromFile(file));
 				}
-			}
+			//}
 			
 			return projections.ToArray();
 		}
@@ -105,17 +106,18 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			List<ProjectionInfo> projections = new List<ProjectionInfo>();
 			
-			using (LogGroup logGroup = LogGroup.Start("Loading the projections info from the XML files.", NLog.LogLevel.Debug))
-			{
+			// Logging disabled to boost performance
+			//using (LogGroup logGroup = LogGroup.Start("Loading the projections info from the XML files.", NLog.LogLevel.Debug))
+			//{
 				foreach (string file in Directory.GetFiles(ProjectionsInfoDirectoryPath))
 				{
-					LogWriter.Debug("File: " + file);
+			//		LogWriter.Debug("File: " + file);
 					
 					ProjectionInfo projection = LoadFromFile(file);
 					if (projection.Enabled || includeDisabled)
 						projections.Add(projection);
 				}
-			}
+			//}
 			
 			return projections.ToArray();
 		}
