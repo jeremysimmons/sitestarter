@@ -1,6 +1,7 @@
 ﻿<%@ Page Language="C#" Title="Test Reset" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Entities" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business.Security" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Configuration" %>
 <%@ Import Namespace="System.Reflection" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web" %>
@@ -29,14 +30,18 @@ protected override void OnLoad(EventArgs e)
 		
 		//DeleteVersionFile();
 		
-		//DeleteLogs();
+		if (Request.QueryString["Log"] != null && Request.QueryString["Log"].ToLower() == "true")
+			DeleteLogs();
 		
 		//DeleteConfigurationFile();
 		
-		if (StateAccess.IsInitialized)
+		if (StateAccess.IsInitialized && AuthenticationState.IsAuthenticated)
 			Authentication.SignOut();
 		
 		//Response.Redirect(Request.ApplicationPath + "/Admin/QuickSetup.aspx");
+		
+		// Restart the asp.net application
+		//System.Web.HttpRuntime.UnloadAppDomain();
 	}
 }
 
