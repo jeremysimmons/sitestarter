@@ -66,8 +66,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			get
 			{
-				if (!StateAccess.State.ContainsApplication(ObjectServerKey)
-				    || StateAccess.State.GetApplication(ObjectServerKey) == null)
+				if (!IsServerInitialized)
 					OpenServer();
 				
 				return (IObjectServer)StateAccess.State.GetApplication(ObjectServerKey);
@@ -111,14 +110,31 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			get
 			{
-				if (!StateAccess.State.ContainsOperation(ObjectContainerKey) // Container not found in state
-				    || StateAccess.State.GetOperation(ObjectContainerKey) == null // Container entry in state is null
-				    || ((IObjectContainer)StateAccess.State.GetOperation(ObjectContainerKey)).Ext().IsClosed())
+				if (!IsContainerInitialized)
 					OpenContainer();
 				
 				return (IObjectContainer)StateAccess.State.GetOperation(ObjectContainerKey);
 			}
 			set { StateAccess.State.SetOperation(ObjectContainerKey, value); }
+		}
+		
+		public bool IsContainerInitialized
+		{
+			get
+			{
+				return StateAccess.State.ContainsOperation(ObjectContainerKey) // Container is found in state
+				    && StateAccess.State.GetOperation(ObjectContainerKey) != null // Container entry in state is not null
+				    && !((IObjectContainer)StateAccess.State.GetOperation(ObjectContainerKey)).Ext().IsClosed(); // Container is not closed
+			}
+		}
+		
+		public bool IsServerInitialized
+		{
+			get
+			{
+				return StateAccess.State.ContainsApplication(ObjectServerKey)
+				    && StateAccess.State.GetApplication(ObjectServerKey) != null;
+			}
 		}
 
 		#region IDataStore Members
@@ -257,8 +273,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			if (fullDisposal)
 			{
-				// Dispose the container
-				if (ObjectContainer != null && !ObjectContainer.Ext().IsClosed())
+				// If the container is initialized
+				if (IsContainerInitialized)
 				{
 					// Roll back to the last commit
 					// This roll back is important. The data store must not commit the latest data unless commit call is explicit.
@@ -267,19 +283,20 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					ObjectContainer.Rollback();
 					// TODO: Add a property to specify whether or not to automatically roll back
 					
+				// Dispose the container
 					ObjectContainer.Dispose();
 				}
 				
 				// Dispose the server
-				if (ObjectServer != null)
+				if (IsServerInitialized)
 				{
 					ObjectServer.Close(); // ObjectServer must be closed to unlock files.
 					ObjectServer.Dispose();
 					ObjectServer = null;
-					
-					StateAccess.State.SetApplication(ObjectContainerKey, null);
-					StateAccess.State.SetApplication(ObjectServerKey, null);
 				}
+				
+				StateAccess.State.SetApplication(ObjectContainerKey, null);
+				StateAccess.State.SetApplication(ObjectServerKey, null);
 			}
 			
 		}
@@ -289,10 +306,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// </summary>
 		public override void Close()
 		{
-			if (ObjectContainer != null && !ObjectContainer.Ext().IsClosed())
+			if (IsContainerInitialized)
 			{
 				ObjectContainer.Close();
 				ObjectContainer = null;
+			}
+			if (IsServerInitialized)
+			{
 				ObjectServer.Close();
 				ObjectServer = null;
 			}
