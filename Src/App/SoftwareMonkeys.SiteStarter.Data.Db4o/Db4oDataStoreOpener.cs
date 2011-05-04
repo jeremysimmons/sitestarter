@@ -50,7 +50,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					if (maxRetries == 0)
 						LogWriter.Error(ex);
 					
-					server = TryOpenServer(yapFilePath, maxRetries-1);
+					if (maxRetries > 0)
+						server = TryOpenServer(yapFilePath, maxRetries-1);
 				}
 				
 				return server;
