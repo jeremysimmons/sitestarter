@@ -239,5 +239,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Properties {
 				return ResourceManager.GetString("YourAccountUpdated", resourceCulture);
 			}
 		}
+		/// <summary>
+		///   Looks up a localized string similar to NotAuthenticated.
+		/// </summary>
+		internal static string NotAuthenticated {
+			get {
+				return ResourceManager.GetString("NotAuthenticated", resourceCulture);
+			}
+		}
 	}
 }

@@ -177,4 +177,7 @@
   <data name="UserUpdated" xml:space="preserve">
     <value>The user was updated successfully.</value>
   </data>
+  <data name="NotAuthenticated" xml:space="preserve">
+    <value>You are not signed in.</value>
+  </data>
 </root>
