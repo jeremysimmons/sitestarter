@@ -2,6 +2,8 @@
 using SoftwareMonkeys.SiteStarter.Business;
 using SoftwareMonkeys.SiteStarter.Business.Security;
 using System.Web;
+using SoftwareMonkeys.SiteStarter.Web.WebControls;
+using SoftwareMonkeys.SiteStarter.Web.Properties;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Security
 {
@@ -15,8 +17,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		/// </summary>
 		public static void EnsureIsAuthenticated()
 		{
-			if (HttpContext.Current != null && !AuthenticationState.IsAuthenticated)
-				HttpContext.Current.Response.Redirect(HttpContext.Current.Request.ApplicationPath + "/User-SignIn.aspx?ReturnUrl=" + GetReturnUrl());
+			if (!IsAuthenticated)
+			{
+				Result.DisplayError(Language.NotAuthenticated);
+				
+				if (HttpContext.Current != null)
+					HttpContext.Current.Response.Redirect(HttpContext.Current.Request.ApplicationPath + "/User-SignIn.aspx?ReturnUrl=" + GetReturnUrl());
+				else
+					throw new Exception("You are not authorised to do that.");
+			}
 		}
 		
 		/// <summary>
