@@ -59,6 +59,10 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					{
 						LogWriter.Error(ex.ToString());
 					}
+					catch(SmtpException ex)
+					{
+						LogWriter.Error(ex.ToString());
+					}
 					//new SmtpClient(EmailFactory.SmtpServer).Send(mm);
 				}
 				else
