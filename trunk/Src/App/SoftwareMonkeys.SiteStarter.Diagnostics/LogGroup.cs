@@ -295,10 +295,9 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		{
 			MethodBase callingMethod = null;
 			
-			// Logging is always enabled for groups
-			// TODO: Remove code if not needed
-			//if (new LogSupervisor().LoggingEnabled(logLevel))
-			callingMethod = Reflector.GetCallingMethod();
+			// Only get the calling method if logging is actually enabled
+			if (new LogSupervisor().LoggingEnabled(logLevel))
+				callingMethod = Reflector.GetCallingMethod();
 			
 			return Start(summary, logLevel, callingMethod);
 		}
