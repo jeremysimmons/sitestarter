@@ -175,6 +175,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 
 		public static void EnsureIsAuthenticated()
 		{
+			LogWriter.Debug("Not authenticated. Redirecting.");
+			
 			Authentication.EnsureIsAuthenticated();
 		}
 
