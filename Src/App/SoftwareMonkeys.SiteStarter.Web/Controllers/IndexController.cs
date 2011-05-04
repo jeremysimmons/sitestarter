@@ -15,12 +15,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	/// </summary>
 	[Controller("Index", "IEntity")]
 	public class IndexController : BaseController
-	{
-		public override string Action
-		{
-			get { return "Index"; }
-		}
-		
+	{		
 		private Dictionary<string, string> language = new Dictionary<string, string>();
 		public Dictionary<string, string> Language
 		{

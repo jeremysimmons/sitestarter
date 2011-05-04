@@ -101,7 +101,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		public T New<T>(string action, string typeName)
 			where T : IController
 		{
-			
 			T controller = Controllers[action, typeName].New<T>();
 			controller.TypeName = typeName;
 			
@@ -114,7 +113,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <param name="action">The action to be performed by the controller.</param>
 		/// <param name="type">The type involved in the controller.</param>
 		/// <returns>A new insteance of the specified controller for the specified type.</returns>
-		public IController New<T>(string action, Type type)
+		public T New<T>(string action, Type type)
 			where T : IController
 		{
 			return New<T>(action, type.Name);

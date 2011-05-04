@@ -15,11 +15,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	[Controller("Delete", "IEntity")]
 	public class DeleteController : BaseController
 	{
-		public override string Action
-		{
-			get { return "Delete"; }
-		}
-		
 		private IRetrieveStrategy retriever;
 		public IRetrieveStrategy Retriever
 		{

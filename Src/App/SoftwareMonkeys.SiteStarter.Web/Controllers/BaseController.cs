@@ -46,10 +46,23 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			set { actionOnSuccess = value; }
 		}
 		
+		private string action = String.Empty;
 		/// <summary>
 		/// Gets/sets the action being performed.
 		/// </summary>
-		public abstract string Action {get;}
+		public virtual string Action
+		{
+			get
+			{
+				if (action == String.Empty)
+					action = new ControllerInfo(this.GetType()).Action;
+				return action;
+			}
+			set
+			{
+				action = value;
+			}
+		}
 		
 		private string typeName = String.Empty;
 		/// <summary>
@@ -85,10 +98,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			set { HttpContext.Current.Items["WindowTitle"] = value; }
 		}
 		
+		private IControllable container = null;
 		/// <summary>
 		/// The container of the controller.
 		/// </summary>
-		public IControllable Container;
+		public IControllable Container
+		{
+			get { return container; }
+			set { container = value; }
+		}
 		
 		private IEntity dataSource;
 		/// <summary>
