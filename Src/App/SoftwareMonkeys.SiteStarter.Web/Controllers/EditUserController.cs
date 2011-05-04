@@ -84,7 +84,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			string uniqueKey = base.GetUniqueKey();
 			
 			// If no ID was specified in the URL then edit the currently logged in user
-			if (id == Guid.Empty && uniqueKey == String.Empty)
+			if (id == Guid.Empty && uniqueKey == String.Empty
+				&& AuthenticationState.IsAuthenticated
+				&& AuthenticationState.User != null)
 				id = AuthenticationState.User.ID;
 			
 			return id;
