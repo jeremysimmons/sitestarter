@@ -16,12 +16,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	/// </summary>
 	[Controller("Create", "IEntity")]
 	public class CreateController : BaseController
-	{
-		public override string Action
-		{
-			get { return "Create"; }
-		}
-		
+	{		
 		private string entitySavedLanguageKey = "EntitySaved";
 		public string EntitySavedLanguageKey
 		{
@@ -212,15 +207,32 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			
 			using (LogGroup logGroup = LogGroup.Start("Instantiating a new create controller.", NLog.LogLevel.Debug))
 			{
+				controller = New(container, container.Action, type, uniquePropertyName);
+			}
+			
+			return controller;
+		}
+		
+		/// <summary>
+		/// Creates a new create controller.
+		/// </summary>
+		/// <param name="container"></param>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public static CreateController New(IControllable container, string action, Type type, string uniquePropertyName)
+		{
+			CreateController controller = null;
+			
+			using (LogGroup logGroup = LogGroup.Start("Instantiating a new create controller.", NLog.LogLevel.Debug))
+			{
 				
 				if (type.Name == "IEntity")
 					throw new ArgumentException("The provided type cannot be 'IEntity'.");
 				
-				controller = ControllerState.Controllers.Creator.New<CreateController>("Create", type.Name);
+				controller = ControllerState.Controllers.Creator.New<CreateController>(action, type.Name);
 				
 				controller.Container = container;
 				controller.UniquePropertyName = uniquePropertyName;
-				controller.TypeName = type.Name;
 				
 				LogWriter.Debug("Type name: " + type.Name);
 				LogWriter.Debug("Unique property name: " + uniquePropertyName);
@@ -228,7 +240,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			
 			return controller;
 		}
-		
+				
 		// TODO: Should be obsolete. Remove if it is.
 		public void CheckUniquePropertyName()
 		{

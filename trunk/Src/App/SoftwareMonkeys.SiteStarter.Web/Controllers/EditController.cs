@@ -17,11 +17,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	[Controller("Edit", "IEntity")]
 	public class EditController : BaseController
 	{
-		public override string Action
-		{
-			get { return "Edit"; }
-		}
-		
 		private IRetrieveStrategy retriever;
 		/// <summary>
 		/// Gets/sets the strategy used to retrieve an entity.
@@ -397,7 +392,17 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			EditController controller = null;
 			using (LogGroup logGroup = LogGroup.Start("Instantiating a new edit controller.", NLog.LogLevel.Debug))
 			{
-				controller = ControllerState.Controllers.Creator.NewEditor(type.Name);
+				controller = New(container, container.Action, type, uniquePropertyName);
+			}
+			return controller;
+		}
+		
+		public static EditController New(IControllable container, string action, Type type, string uniquePropertyName)
+		{
+			EditController controller = null;
+			using (LogGroup logGroup = LogGroup.Start("Instantiating a new edit controller.", NLog.LogLevel.Debug))
+			{
+				controller = ControllerState.Controllers.Creator.New<EditController>(action, type.Name);
 				
 				controller.Container = container;
 				controller.UniquePropertyName = uniquePropertyName;

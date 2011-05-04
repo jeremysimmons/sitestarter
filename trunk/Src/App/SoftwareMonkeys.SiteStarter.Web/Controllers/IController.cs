@@ -9,5 +9,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	{
 		string TypeName {get;set;}
 		string Action {get;}
+		IControllable Container {get;}
 	}
 }
