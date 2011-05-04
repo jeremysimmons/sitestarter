@@ -52,11 +52,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <param name="projection">The projection info to save to file.</param>
 		public void SaveInfoToFile(ProjectionInfo projection)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Saving the provided projection to file.", NLog.LogLevel.Debug))
-			{
+			// Logging disabled to boost performance
+			//using (LogGroup logGroup = LogGroup.Start("Saving the provided projection to file.", NLog.LogLevel.Debug))
+			//{
 				string path = FileNamer.CreateInfoFilePath(projection);
 				
-				LogWriter.Debug("Path : " + path);
+				//LogWriter.Debug("Path : " + path);
 				
 				if (!Directory.Exists(Path.GetDirectoryName(path)))
 					Directory.CreateDirectory(Path.GetDirectoryName(path));
@@ -67,7 +68,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 					serializer.Serialize(writer, projection);
 					writer.Close();
 				}
-			}
+			//}
 		}
 		
 		/// <summary>
@@ -76,13 +77,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <param name="projections">An array of the projections to save to file.</param>
 		public void SaveInfoToFile(ProjectionInfo[] projections)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Saving the provided projections to XML files.", NLog.LogLevel.Debug))
-			{
+			// Logging disabled to boost performance
+			//using (LogGroup logGroup = LogGroup.Start("Saving the provided projections to XML files.", NLog.LogLevel.Debug))
+			//{
 				foreach (ProjectionInfo projection in projections)
 				{
 					SaveInfoToFile(projection);
 				}
-			}
+			//}
 		}
 	}
 }
