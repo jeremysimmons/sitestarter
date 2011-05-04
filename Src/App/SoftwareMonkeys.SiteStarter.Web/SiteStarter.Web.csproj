@@ -93,6 +93,7 @@
     <Compile Include="Controllers\EditUserController.cs" />
     <Compile Include="Controllers\IController.cs" />
     <Compile Include="Controllers\IndexController.cs" />
+    <Compile Include="Controllers\RegisterUserController.cs" />
     <Compile Include="Controllers\ViewController.cs" />
     <Compile Include="ControlLoader.cs" />
     <Compile Include="Data\DataProviderInitializer.cs" />
