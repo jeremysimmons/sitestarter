@@ -20,6 +20,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <returns>The copied object.</returns>
 		public static T Clone<T>(T source)
 		{
+			// TODO: This function is a performance hot spot. See if it can be improved.
+		
 			if (!typeof(T).IsSerializable)
 			{
 				throw new ArgumentException("The type must be serializable.", "source");
