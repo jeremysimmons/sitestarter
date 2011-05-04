@@ -53,6 +53,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			set { form = value; }
 		}
 		
+		public string CreateAction = "Create";
+		public string EditAction = "Edit";
+				
 		private string internalAction = String.Empty;
 		/// <summary>
 		/// Gets/sets the action name used internally. Example: The action "View" has the corresponding internal action of "Retrieve".
@@ -62,7 +65,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			get {
 				if (base.InternalAction == String.Empty)
 				{
-					if (Action == "Create")
+					if (Action == CreateAction)
 						base.InternalAction = "Save";
 					else
 						base.InternalAction = "Update";
@@ -93,7 +96,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			{
 				if (!IsPostBack)
 				{
-					if (QueryStrings.Action == "Edit")
+					if (QueryStrings.Action == EditAction)
 						Edit();
 					else
 						Create();
@@ -116,8 +119,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				Type = type;
 				Form = form;
 				
-				createController = CreateController.New(this, type, UniquePropertyName);
-				editController = EditController.New(this, type, UniquePropertyName);
+				createController = CreateController.New(this, CreateAction, Type, UniquePropertyName);
+				editController = EditController.New(this, EditAction, Type, UniquePropertyName);
 				
 				Form.EntityCommand += new EntityFormEventHandler(Form_EntityCommand);
 			}
