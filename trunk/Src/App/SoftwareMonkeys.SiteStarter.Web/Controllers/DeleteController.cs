@@ -53,6 +53,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <param name="entity"></param>
 		public virtual void Delete(IEntity entity)
 		{
+			if (entity == null)
+				throw new ArgumentNullException("entity");
+				
 			ExecuteDelete(entity);
 		}
 		
@@ -134,8 +137,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				
 				if (id != Guid.Empty)
 					entity = Retriever.Retrieve<T>(id);
-				else
+				else if (uniqueKey != String.Empty)
 					entity = Retriever.Retrieve<T>(uniqueKey);
+				else
+					throw new Exception("No ID or unique key found in the URL.");
 				
 				if (entity == null)
 					LogWriter.Debug("Entity: [null]");

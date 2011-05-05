@@ -17,7 +17,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		}
 		
 		public override void ExecuteDelete(IEntity e)
-		{	
+		{
+			if (e == null)
+				throw new ArgumentNullException("e");
+		
 			ISubEntity entity = (ISubEntity)e;
 			
 			if (entity.Parent == null)
