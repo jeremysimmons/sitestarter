@@ -226,6 +226,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				
 				if (Form != null)
 					Form.DataSource = entity;
+					
+				WindowTitle = entity.ToString();
 				
 				DataBind();
 			}
