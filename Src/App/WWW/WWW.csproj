@@ -59,6 +59,7 @@
     <None Include="Admin\Import.aspx" />
     <None Include="Admin\Log.aspx" />
     <None Include="Admin\QuickSetup.aspx" />
+    <None Include="Admin\State.aspx" />
     <None Include="Admin\Tests\ClearData.aspx" />
     <None Include="Admin\Tests\ResetDefaultData.aspx" />
     <None Include="Admin\Tests\TestBreakableLogging.aspx" />
@@ -88,6 +89,7 @@
     <None Include="Controls\Guide.ascx" />
     <None Include="Controls\Testing.ascx" />
     <None Include="Default.aspx" />
+    <None Include="Error.aspx" />
     <None Include="Examples\Data\Basic.aspx" />
     <None Include="Global.asax" />
     <None Include="Maintenance.html" />
