@@ -97,6 +97,7 @@
     <Compile Include="Controllers\ViewController.cs" />
     <Compile Include="ControlLoader.cs" />
     <Compile Include="Data\DataProviderInitializer.cs" />
+    <Compile Include="ExceptionHandler.cs" />
     <Compile Include="FileMapper.cs" />
     <Compile Include="GuidValidator.cs" />
     <Compile Include="Navigation\Navigator.cs" />
