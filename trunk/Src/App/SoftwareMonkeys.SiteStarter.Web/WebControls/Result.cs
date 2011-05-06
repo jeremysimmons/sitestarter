@@ -25,8 +25,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		static public bool IsError
 		{
 			get
+				
 			{
-				if (!StateAccess.IsInitialized)
+				if (!StateAccess.IsInitialized || StateAccess.State == null || HttpContext.Current.Session == null)
 					return false;
 				else
 				{
@@ -50,7 +51,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		{
 			get
 			{
-				if (!StateAccess.IsInitialized)
+				if (!StateAccess.IsInitialized || StateAccess.State == null || HttpContext.Current.Session == null)
 					return String.Empty;
 				else
 				{
