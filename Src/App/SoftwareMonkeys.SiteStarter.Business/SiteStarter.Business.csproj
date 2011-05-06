@@ -97,6 +97,7 @@
     <Compile Include="DeleteStrategy.cs" />
     <Compile Include="DeleteSubEntityStrategy.cs" />
     <Compile Include="DynamicLanguage.cs" />
+    <Compile Include="Emailer.cs" />
     <Compile Include="IndexStrategy.cs" />
     <Compile Include="NotifyStrategy.cs" />
     <Compile Include="ReactionAttribute.cs" />
