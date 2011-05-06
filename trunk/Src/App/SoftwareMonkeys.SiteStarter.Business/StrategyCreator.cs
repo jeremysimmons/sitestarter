@@ -108,7 +108,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="action">The action to be performed by the strategy.</param>
 		/// <param name="type">The type involved in the strategy.</param>
 		/// <returns>A new insteance of the specified strategy for the specified type.</returns>
-		public IStrategy New<T>(string action, Type type)
+		public T New<T>(string action, Type type)
 			where T : IStrategy
 		{
 			return New<T>(action, type.Name);
