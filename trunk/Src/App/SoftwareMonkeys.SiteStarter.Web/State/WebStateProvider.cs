@@ -87,13 +87,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
         	if (key == String.Empty)
         		throw new ArgumentException("The provided key cannot be null or String.Empty.");
         	
-       		if (key != String.Empty
-        	    && HttpContext.Current != null
-                && HttpContext.Current.Session != null
-        	    && HttpContext.Current.Session[key] != null)
-	            return true;
-	        else
-	        	return false;
+       		if (HttpContext.Current != null
+        	    && HttpContext.Current.Session != null)
+        	{
+        	    return HttpContext.Current.Session[key] != null;
+        	}
+        	else
+        		throw new Exception("Can't check for session variable outside the scope of session state.");
         }
         
         public override void SetSession(string key, object value)
@@ -101,12 +101,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
         	if (key == String.Empty)
         		throw new ArgumentException("The provided key cannot be null or String.Empty.");
         	
-            if (key != String.Empty
-                && HttpContext.Current != null
+            if (HttpContext.Current != null
                 && HttpContext.Current.Session != null)
             {
                 HttpContext.Current.Session[key] = value;
             }
+        	else
+        		throw new Exception("Can't set session variable outside the scope of session state.");
         }
 
         public override object GetSession(string key)
@@ -114,10 +115,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
         	if (key == String.Empty)
         		throw new ArgumentException("The provided key cannot be null or String.Empty.");
         	
-        	if (key != String.Empty && HttpContext.Current != null && HttpContext.Current.Session != null)
+        	if (HttpContext.Current != null && HttpContext.Current.Session != null)
 	            return HttpContext.Current.Session[key];
-	        else
-	        	return null;
+        	else
+        		throw new Exception("Can't get session variable outside the scope of session state.");
         }
         
 		public override void RemoveSession(string key)
