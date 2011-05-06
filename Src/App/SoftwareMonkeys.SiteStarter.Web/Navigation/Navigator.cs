@@ -83,33 +83,52 @@ namespace SoftwareMonkeys.SiteStarter.Web.Navigation
 		public virtual void Go(string action, string type, string uniqueKey)
 		{
 			
-			string link = GetLink(action, type, uniqueKey);
-			
-			Redirect(link);
+			using (LogGroup logGroup = LogGroup.Start("Navigating.", NLog.LogLevel.Debug))
+			{
+				string link = GetLink(action, type, uniqueKey);
+				
+				LogWriter.Debug("Link: " + link);
+				
+				Redirect(link);
+			}
 		}
 		
 		public virtual void Go(string action, string type, string propertyName, string dataKey)
 		{
-			
-			string link = GetLink(action, type, propertyName, dataKey);
-			
-			Redirect(link);
+			using (LogGroup logGroup = LogGroup.Start("Navigating.", NLog.LogLevel.Debug))
+			{
+				
+				string link = GetLink(action, type, propertyName, dataKey);
+				
+				LogWriter.Debug("Link: " + link);
+				
+				Redirect(link);
+			}
 		}
 		
 		public virtual void Go(string action, string type)
 		{
-			
-			string link = GetLink(action, type);
-			
-			Redirect(link);
+			using (LogGroup logGroup = LogGroup.Start("Navigating.", NLog.LogLevel.Debug))
+			{
+				string link = GetLink(action, type);
+				
+				LogWriter.Debug("Link: " + link);
+				
+				Redirect(link);
+			}
 		}
 		
 		public virtual void Go(string action, IEntity entity)
 		{
 			
-			string link = GetLink(action, entity);
-			
-			Redirect(link);
+			using (LogGroup logGroup = LogGroup.Start("Navigating.", NLog.LogLevel.Debug))
+			{
+				string link = GetLink(action, entity);
+				
+				LogWriter.Debug("Link: " + link);
+				
+				Redirect(link);
+			}
 		}
 		
 		public virtual void Go(string action)
@@ -148,7 +167,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Navigation
 		public void NavigateAfterOperation(string action, IEntity entity)
 		{
 			string url = String.Empty;
-				
+			
 			using (LogGroup logGroup = LogGroup.Start("Navigating after performing an operation.", NLog.LogLevel.Debug))
 			{
 				if (entity == null)
@@ -169,7 +188,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Navigation
 				else
 				{
 					url = UrlCreator.Current.CreateUrl(action, entity);
-				}	
+				}
 				
 				LogWriter.Debug("URL: " + url);
 			}
