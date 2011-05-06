@@ -809,4 +809,16 @@ ${WebSite.Title}&lt;br /&gt;
   <data name="RegisterNow" xml:space="preserve">
     <value>Register Now</value>
   </data>
+  <data name="ErrorPageTitle" xml:space="preserve">
+    <value>Oops...</value>
+  </data>
+  <data name="NoErrorOccurred" xml:space="preserve">
+    <value>No error occurred.</value>
+  </data>
+  <data name="SiteStarter" xml:space="preserve">
+    <value>SiteStarter</value>
+  </data>
+  <data name="ReportIssue" xml:space="preserve">
+    <value>Report Issue</value>
+  </data>
 </root>
