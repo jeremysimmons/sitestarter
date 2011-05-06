@@ -594,7 +594,10 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <returns>The full URL including the result message.</returns>
 		public string AddResult(string originalUrl)
 		{
-			return AddResult(originalUrl, Result.Text, Result.IsError);
+			if (Result.Text != String.Empty)
+				return AddResult(originalUrl, Result.Text, Result.IsError);
+			else
+				return originalUrl;
 		}
 		
 		/// <summary>
