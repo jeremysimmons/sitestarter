@@ -41,13 +41,14 @@
         
     void Application_Error(object sender, EventArgs e) 
     { 
-    	using (LogGroup logGroup = LogGroup.Start("Handling application error.", NLog.LogLevel.Error))
+    	using (LogGroup logGroup = LogGroup.Start("Application error.", NLog.LogLevel.Error))
 	    {
         	LogWriter.Debug("${Application.Error}");
         	
-	        // Code that runs when an unhandled error occurs
 		    Exception lastException = Server.GetLastError();
-	   	    LogWriter.Error(lastException.ToString());
+	   	    
+	   	    ExceptionHandler handler = new ExceptionHandler();
+	   	    handler.Handle(lastException);
    	    }
     }
 
