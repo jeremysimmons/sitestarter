@@ -222,7 +222,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			List<IEntity> list = new List<IEntity>();
 			
-			DataStoreCollection stores = new DataStoreCollection();
+			List<IDataStore> stores = new List<IDataStore>();
 			
 			// Get the list of stores
 			// If the DataStore property is null then get all stores.
