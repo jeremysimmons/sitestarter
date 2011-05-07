@@ -85,7 +85,6 @@
     <None Include="App_Themes\_svn\format" />
     <None Include="Controls\AdminFooter.ascx" />
     <None Include="Controls\AuthMenu.ascx" />
-    <None Include="Controls\BackupLauncher.ascx" />
     <None Include="Controls\Guide.ascx" />
     <None Include="Controls\Testing.ascx" />
     <None Include="Default.aspx" />
