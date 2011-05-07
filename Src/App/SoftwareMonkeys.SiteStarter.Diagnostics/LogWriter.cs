@@ -68,7 +68,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 				logEntry.Append("<Entry>\r\n");
 				logEntry.AppendFormat("<ID>{0}</ID>\r\n", id.ToString());
 				logEntry.AppendFormat("<ParentID>{0}</ParentID>\r\n", parentID.ToString());
-				logEntry.AppendFormat("<Indent>{0}</Indent>\r\n", indent);
+				logEntry.AppendFormat("<Indent>{0}</Indent>\r\n", indent); // TODO: Remove indent as a parameter - it's obsolete; the parent ID is used to figure out location
 				logEntry.AppendFormat("<LogLevel>{0}</LogLevel>\r\n", logLevel);
 				logEntry.AppendFormat("<Timestamp>{0}</Timestamp>\r\n", DateTime.Now);
 				//logEntry.AppendFormat("<IsThreadTitle>{0}</IsThreadTitle>\r\n", isThreadTitle.ToString());
@@ -88,6 +88,9 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		
 		public static void Error(Exception ex)
 		{
+			if (ex == null)
+				throw new ArgumentNullException("ex");
+			
 			Error(ex.ToString());
 		}
 		
