@@ -24,16 +24,26 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		static public string Username
 		{
 			get {
+				string username = String.Empty;
+				
 				// If the username is found in the request scope state then use it, because it means the value has just been set
 				// and the user scope state won't reflect the change until next request because it uses cookies
 				// Using the request scope state as well gets around this hurdle
 				if (StateAccess.State.ContainsRequest("Username"))
-					return (string)StateAccess.State.GetRequest("Username");
-				return (string)StateAccess.State.GetUser("Username"); }
+					username = (string)StateAccess.State.GetRequest("Username");
+				else
+					username = (string)StateAccess.State.GetUser("Username");
+				
+				return username;
+			}
 			set { StateAccess.State.SetUser("Username", value);
 				// Set the request scope state as well so that the value to get around the hurdle with user scope state not reflecting
 				// changes until the next request
 				StateAccess.State.SetRequest("Username", value);
+				
+				// If the username is different from the one on the user object then reset the user object
+				if (User != null && User.Username != value)
+					User = null;
 			}
 		}
 
@@ -44,22 +54,27 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		{
 			get
 			{
-				if (!IsAuthenticated)
-					return null;
-				
 				if (!StateAccess.State.ContainsRequest("User")
 				    && StateAccess.State.GetRequest("User") == null
 				    && Configuration.Config.IsInitialized)
 				{
-					User user = RetrieveStrategy.New<User>().Retrieve<User>("Username", Username);
+					User u = RetrieveStrategy.New<User>().Retrieve<User>("Username", Username);
 					
 					// TODO: Check if needed. Without it there's a risk of a NullReferenceException
 					//if (user == null)
 					//	throw new Exception("No user was retrieved with the username '" + Username + "'.");
 					
-					StateAccess.State.SetRequest("User", user);
+					StateAccess.State.SetRequest("User", u);
 				}
-				return (User)StateAccess.State.GetRequest("User");
+				
+				User user = (User)StateAccess.State.GetRequest("User");
+				
+				// If no corresponding user exists then sign the user out, as it means they're signed in on an old session, likely due
+				// to a recompile
+				if (user == null && Username != String.Empty)
+					Username = String.Empty;
+				
+				return user;
 			}
 			set
 			{
@@ -72,7 +87,11 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// </summary>
 		static public bool IsAuthenticated
 		{
-			get { return Username != null && Username != String.Empty; }
+			get
+			{
+				return Username != null
+					&& Username != String.Empty; 
+			}
 		}
 		
 		/// <summary>
