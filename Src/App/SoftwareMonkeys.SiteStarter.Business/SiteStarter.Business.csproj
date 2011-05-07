@@ -123,6 +123,7 @@
     <Compile Include="Security\AuthoriseDeleteStrategy.cs" />
     <Compile Include="Security\AuthoriseDeleteUserStrategy.cs" />
     <Compile Include="Security\AuthoriseIndexStrategy.cs" />
+    <Compile Include="Security\AuthoriseRegisterUserStrategy.cs" />
     <Compile Include="Security\AuthoriseRetrieveStrategy.cs" />
     <Compile Include="Security\AuthoriseSaveStrategy.cs" />
     <Compile Include="Security\AuthoriseSaveUserRoleStrategy.cs" />
