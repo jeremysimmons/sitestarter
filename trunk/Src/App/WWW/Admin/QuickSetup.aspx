@@ -13,15 +13,18 @@
 <%@ Import namespace="System.IO" %>
 <script language="C#" runat="server">
 
-
-private void Page_Load(object sender, EventArgs e)
-{
-	using (LogGroup logGroup = LogGroup.Start("Running setup script", NLog.LogLevel.Info))
+	private void Page_Load(object sender, EventArgs e)
 	{
-		Setup();
-		//	Response.Redirect("Restore.aspx");
+		using (LogGroup logGroup = LogGroup.Start("Running setup script", NLog.LogLevel.Info))
+		{
+	    	SetupChecker checker = new SetupChecker();
+	    	if (checker.RequiresImport())
+	    		Response.Redirect(Request.ApplicationPath);
+		    		
+			Setup();
+			//	Response.Redirect("Restore.aspx");
+		}
 	}
-}
 
 	private void Setup()
 	{
