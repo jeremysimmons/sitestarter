@@ -133,6 +133,9 @@
 			<version buildtype="NoIncrement"
 	            revisiontype="Increment"
 	            path="${versionFilePath}"/>
+				
+			<!-- TODO: Finish updating the version system -->
+			<!--get src="${ 'http://10.0.0.1:8080/ScriptCommander/Launch/LaunchRaw?Script=VersionNumber.script&Key=Test' }" dest="${versionFilePath}" /-->
 	            
 	  		<property name="AssemblyProject.Version" value="${buildnumber.version}"/>
 		            
