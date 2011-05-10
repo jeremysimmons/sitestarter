@@ -821,4 +821,7 @@ ${WebSite.Title}&lt;br /&gt;
   <data name="ReportIssue" xml:space="preserve">
     <value>Report Issue</value>
   </data>
+  <data name="Backup" xml:space="preserve">
+    <value>Backup</value>
+  </data>
 </root>
