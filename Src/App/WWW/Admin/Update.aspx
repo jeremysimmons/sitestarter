@@ -41,10 +41,10 @@
 <asp:MultiView runat="server" ID="PageViews">
 <asp:View runat="server" id="Step1View">
 		<h1>Application Update</H1>
-			<p>The current application version is: <%= DataAccess.Data.Schema.ApplicationVersion.ToString() %></p>
 			<p>
 			    This wizard will guide you through the process of updating the application.
 			</p>
+			<p>The current application version is: <%= DataAccess.Data.Schema.ApplicationVersion.ToString() %></p>
 			<asp:placeholder runat="server" visible="false">
 			<p>
 			<i>Note: Your data will be backed up before the update begins. The backup zip files can be accessed at:<br/>
@@ -56,7 +56,8 @@
 			    Download the latest release via HTTP or SVN - get it at <a href="http://www.softwaremonkeys.net" target="_blank">www.softwaremonkeys.net</a>.
 			    </li>
 			    <li>
-			    When you are ready... <input type="button" value='Begin &raquo;' onclick="location.href='Backup.aspx?PrepareForUpdate=true'"/>
+			    When you are ready... <input type="button" value='Begin &raquo;' onclick="location.href='Backup.aspx?PrepareForUpdate=true'"/><br/>
+				(IMPORTANT: clicking "Begin" will take the application offline, display a friendly "Down for Maintenance" message until the update process is complete)
 			    </li>
 			    <li>
 			    Follow the instructions provided on the next page.
