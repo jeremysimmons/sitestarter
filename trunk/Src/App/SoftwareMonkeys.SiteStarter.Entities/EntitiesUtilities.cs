@@ -673,6 +673,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				.Replace(".", "_")
 				.Replace("<", "-")
 				.Replace(">", "-")
+				.Replace("#", "-")
 				.Replace("*", "-");
 			
 			if (originalData.Length > 100)
