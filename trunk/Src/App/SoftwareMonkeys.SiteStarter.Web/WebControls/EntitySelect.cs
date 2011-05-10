@@ -15,6 +15,42 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 	[ControlBuilder(typeof(EntitySelectControlBuilder))]
 	public class EntitySelect : ListBox, IPostBackDataHandler
 	{
+		/// <summary>
+		/// Gets/sets the name of the property to use for the value of the items.
+		/// </summary>
+		public string ValuePropertyName
+		{
+			get
+			{
+				if (ViewState["ValuePropertyName"] == null)
+				{
+					ViewState["ValuePropertyName"] = DataValueField = "ID";
+				}
+				return (string)ViewState["ValuePropertyName"];
+			}
+			set { ViewState["ValuePropertyName"] = value;
+				DataValueField = value;
+			}
+		}
+		
+		/// <summary>
+		/// Gets/sets the name of the property to use for the text of the items.
+		/// </summary>
+		public string TextPropertyName
+		{
+			get
+			{
+				if (ViewState["TextPropertyName"] == null)
+				{
+					ViewState["TextPropertyName"] = DataTextField = "Name";
+				}
+				return (string)ViewState["TextPropertyName"];
+			}
+			set { ViewState["TextPropertyName"] = value;
+				DataTextField = value;
+			}
+		}
+		
 		private string entityType = typeof(SoftwareMonkeys.SiteStarter.Entities.IEntity).FullName;
 		/// <summary>
 		/// Gets/sets the type of entity being displayed in the list.
@@ -36,18 +72,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			}
 		}
 
-		/* private Type entityType;
-        /// <summary>
-        /// Gets/sets the type of entity being displayed in the list.
-        /// </summary>
-        public virtual Type EntityType
-        {
-            get
-            {
-                return entityType;
-            }
-            set { entityType = value; }
-        }*/
 
 		/// <summary>
 		/// Gets/sets the Entity data required for this control.
@@ -66,25 +90,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			set { base.DataSource = value; }
 		}
 
-		/*/// <summary>
-		/// Gets/sets the Entity data required for this control.
+		/// <summary>
+		/// Gets/sets the ID of the selected Entity.
 		/// </summary>
 		[Browsable(false)]
-		public new object DataSource
-		{
-			get
-			{
-				return base.DataSource;
-			}
-			set { base.DataSource = value; }
-		}*/
-
-			/// <summary>
-			/// Gets/sets the ID of the selected Entity.
-			/// </summary>
-			[Browsable(false)]
-			[Bindable(true)]
-			public IEntity SelectedEntity
+		[Bindable(true)]
+		public IEntity SelectedEntity
 		{
 			get
 			{
@@ -346,7 +357,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				base.SelectedEntityIDs = value;
 			}
 		}
-			
+		
 		/// <summary>
 		/// Gets/sets the selected entity.
 		/// </summary>
@@ -431,23 +442,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			}
 		}
 
-		/// <summary>
-		/// Gets/sets the name of the property to use for the value of the items.
-		/// </summary>
-		public string ValuePropertyName
-		{
-			get
-			{
-				if (ViewState["ValuePropertyName"] == null)
-				{
-					ViewState["ValuePropertyName"] = DataTextField = "Name";
-				}
-				return (string)ViewState["ValuePropertyName"];
-			}
-			set { ViewState["ValuePropertyName"] = value;
-				DataTextField = value;
-			}
-		}
 		#endregion
 
 		/// <summary>
@@ -455,7 +449,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		/// </summary>
 		public EntitySelect()
 		{
-			this.DataTextField = ValuePropertyName;
+			this.DataTextField = TextPropertyName;
 			this.DataValueField = "ID";
 		}
 
@@ -471,7 +465,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 					LogWriter.Debug("DataSource property != null");
 					// Organise the data.
 					Collection<E> data = new Collection<E>(DataSource);
-					data.Sort(ValuePropertyName, Entities.SortDirection.Ascending);
+					data.Sort(TextPropertyName, Entities.SortDirection.Ascending);
 					DataSource = (E[])data.ToArray(typeof(E));
 
 					if (!DataPosted)
@@ -593,7 +587,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		protected E[] GetPostedEntities(string postValue)
 		{
 			LogWriter.Debug("Post value: " + postValue);
-						
+			
 			E[] entities = new E[] {};
 			
 			if (postValue != null)
@@ -747,27 +741,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 							{
 								LogWriter.Debug("Adding entity.");
 								
-								PropertyInfo property = entity.GetType().GetProperty(ValuePropertyName);
-								
-								if (property == null)
-									LogWriter.Debug("Value property '" + ValuePropertyName + "' NOT found.");
-								else
-									LogWriter.Debug("Value property '" + ValuePropertyName + "' found.");
-								
-								object value = property.GetValue(entity, null);
-								
-								if (value == null)
-									LogWriter.Debug("Value property == null.");
-								else
-									LogWriter.Debug("Value property != null.");
-								
-								string stringValue = (value == null
-								                      ? String.Empty
-								                      : value.ToString());
-								
-								LogWriter.Debug("String value: " + stringValue);
-								
-								Items.Add(new ListItem(stringValue, entity.ID.ToString()));
+								Items.Add(new ListItem(GetText(entity), GetValue(entity)));
 								
 								existingIDs.Add(entity.ID);
 							}
@@ -777,6 +751,71 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 					}
 				}
 			}
+		}
+		
+		public string GetText(IEntity entity)
+		{
+			string text = String.Empty;
+			
+			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving the text representation of the provided entity."))
+			{
+				PropertyInfo property = entity.GetType().GetProperty(TextPropertyName);
+				
+				if (property == null)
+				{
+					LogWriter.Debug("Text property '" + TextPropertyName + "' NOT found.");
+					throw new Exception("Can't find '" + TextPropertyName + "' property on type '" + typeof(E).Name + "' as specified by the TextPropertyName property on the '" + ID + "' EntitySelect control.");
+				}
+				else
+					LogWriter.Debug("Text property '" + TextPropertyName + "' found.");
+				
+				object value = property.GetValue(entity, null);
+				
+				if (value == null)
+					LogWriter.Debug("Text property == null.");
+				else
+					LogWriter.Debug("Text property != null.");
+				
+				text = (value == null
+				        ? String.Empty
+				        : value.ToString());
+				
+				LogWriter.Debug("String value: " + text);
+			}
+			return text;
+		}
+		
+		public string GetValue(IEntity entity)
+		{
+			string stringValue = String.Empty;
+			
+			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving the value representation of the provided entity."))
+			{
+				PropertyInfo property = entity.GetType().GetProperty(ValuePropertyName);
+				
+				if (property == null)
+				{
+					LogWriter.Debug("Value property '" + ValuePropertyName + "' NOT found.");
+					throw new Exception("Can't find '" + ValuePropertyName + "' property on type '" + typeof(E).Name + "' as specified by the ValuePropertyName property on the '" + ID + "' EntitySelect control.");
+				}
+				else
+					LogWriter.Debug("Value property '" + ValuePropertyName + "' found.");
+				
+				object value = property.GetValue(entity, null);
+				
+				if (value == null)
+					LogWriter.Debug("Value property == null.");
+				else
+					LogWriter.Debug("Value property != null.");
+				
+				stringValue = (value == null
+				               ? String.Empty
+				               : value.ToString());
+				
+				LogWriter.Debug("String value: " + stringValue);
+			}
+			
+			return stringValue;
 		}
 
 		public void Populate(E[] entities)
