@@ -186,6 +186,7 @@
     <Compile Include="UrlCreator.cs" />
     <Compile Include="UrlRewriter.cs" />
     <Compile Include="Utilities.cs" />
+    <Compile Include="WebControls\CommandSelect.cs" />
     <Compile Include="WebControls\ContactForm.cs" />
     <Compile Include="WebControls\DeleteLink.cs" />
     <Compile Include="WebControls\DateSelect.cs" />
