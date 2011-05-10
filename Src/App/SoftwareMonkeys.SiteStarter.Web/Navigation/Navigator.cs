@@ -164,6 +164,48 @@ namespace SoftwareMonkeys.SiteStarter.Web.Navigation
 			return HttpContext.Current.Request.QueryString["t"];
 		}
 		
+		/// <summary>
+		/// Actions that display multiple entities.
+		/// </summary>
+		public string[] IndexActions = new String[]{
+			"Index"
+		};
+		
+		public bool IsIndexAction(string action)
+		{
+			return Array.IndexOf(IndexActions, action) > -1;
+		}
+		
+		public void NavigateAfterOperation(CommandInfo command, IEntity entity)
+		{
+			using (LogGroup logGroup = LogGroup.StartDebug("Navigating after a save operation."))
+			{
+				if (command == null)
+					throw new ArgumentNullException("command");
+				
+				if (entity == null)
+					throw new ArgumentNullException("entity");
+				
+				LogWriter.Debug("Action: " + command.Action);
+				LogWriter.Debug("Command type name: " + command.TypeName);
+				LogWriter.Debug("Entity type name: " + entity.ShortTypeName);
+				
+				// If the type matches the current entity type then pass the actual entity to the navigate function
+				// so that the ID can be passed through as part of the URL.
+				if (command.TypeName == entity.ShortTypeName
+				    && !IsIndexAction(command.Action)) // And if the action is NOT an index action (which doesn't need the entity ID in the URL)
+				{
+					LogWriter.Debug("Entity specific command.");
+					NavigateAfterOperation(command.Action, entity);
+				}
+				else
+				{
+					LogWriter.Debug("Index command.");
+					NavigateAfterOperation(command.Action, command.TypeName);
+				}
+			}
+		}
+		
 		public void NavigateAfterOperation(string action, IEntity entity)
 		{
 			string url = String.Empty;
@@ -181,7 +223,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Navigation
 				
 				LogWriter.Debug("Action: " + action);
 				
-				if (action == "Index")
+				if (IsIndexAction(action))
 				{
 					url = UrlCreator.Current.CreateUrl(action, entity.ShortTypeName);
 				}
@@ -189,6 +231,32 @@ namespace SoftwareMonkeys.SiteStarter.Web.Navigation
 				{
 					url = UrlCreator.Current.CreateUrl(action, entity);
 				}
+				
+				LogWriter.Debug("URL: " + url);
+			}
+			
+			// Redirect (outside the log group)
+			HttpContext.Current.Response.Redirect(url);
+		}
+		
+		public void NavigateAfterOperation(string action, string typeName)
+		{
+			string url = String.Empty;
+			
+			using (LogGroup logGroup = LogGroup.Start("Navigating after performing an operation.", NLog.LogLevel.Debug))
+			{
+				if (typeName == null)
+					throw new ArgumentNullException("typeName");
+				
+				if (action == null)
+					throw new ArgumentNullException("action");
+				
+				if (action == string.Empty)
+					throw new ArgumentException("An action must be provided.");
+				
+				LogWriter.Debug("Action: " + action);
+				
+				url = UrlCreator.Current.CreateUrl(action, typeName);
 				
 				LogWriter.Debug("URL: " + url);
 			}

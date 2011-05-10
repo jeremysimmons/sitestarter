@@ -180,4 +180,7 @@
   <data name="NotAuthenticated" xml:space="preserve">
     <value>You are not signed in.</value>
   </data>
+  <data name="AndGoTo" xml:space="preserve">
+    <value>and go to</value>
+  </data>
 </root>
