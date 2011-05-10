@@ -16,7 +16,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	/// </summary>
 	[Controller("Create", "IEntity")]
 	public class CreateController : BaseController
-	{		
+	{
 		private string entitySavedLanguageKey = "EntitySaved";
 		public string EntitySavedLanguageKey
 		{
@@ -177,10 +177,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// </summary>
 		public virtual void NavigateAfterSave()
 		{
-			if (DataSource == null)
-				throw new InvalidOperationException("The DataSource property wasn't set.");
-			
-			Navigation.Navigator.Current.NavigateAfterOperation(ActionOnSuccess, DataSource);
+			using (LogGroup logGroup = LogGroup.StartDebug("Navigating after a save operation."))
+			{
+				if (DataSource == null)
+					throw new InvalidOperationException("The DataSource property wasn't set.");
+				
+				LogWriter.Debug("CommandOnSuccess: "+ CommandOnSuccess);
+				LogWriter.Debug("ActionOnSuccess: " + ActionOnSuccess);
+				
+				Navigation.Navigator.Current.NavigateAfterOperation(new CommandInfo(CommandOnSuccess), DataSource);
+			}
 		}
 		
 		
@@ -240,7 +246,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			
 			return controller;
 		}
-				
+		
 		// TODO: Should be obsolete. Remove if it is.
 		public void CheckUniquePropertyName()
 		{

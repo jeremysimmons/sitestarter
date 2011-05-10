@@ -70,6 +70,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.Properties {
 		}
 		
 		/// <summary>
+		///   Looks up a localized string similar to and go to.
+		/// </summary>
+		internal static string AndGoTo {
+			get {
+				return ResourceManager.GetString("AndGoTo", resourceCulture);
+			}
+		}
+		
+		/// <summary>
 		///   Looks up a localized string similar to (asc).
 		/// </summary>
 		internal static string Asc {
@@ -120,6 +129,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.Properties {
 		internal static string Name {
 			get {
 				return ResourceManager.GetString("Name", resourceCulture);
+			}
+		}
+		
+		/// <summary>
+		///   Looks up a localized string similar to You are not signed in..
+		/// </summary>
+		internal static string NotAuthenticated {
+			get {
+				return ResourceManager.GetString("NotAuthenticated", resourceCulture);
 			}
 		}
 		
@@ -237,14 +255,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Properties {
 		internal static string YourAccountUpdated {
 			get {
 				return ResourceManager.GetString("YourAccountUpdated", resourceCulture);
-			}
-		}
-		/// <summary>
-		///   Looks up a localized string similar to NotAuthenticated.
-		/// </summary>
-		internal static string NotAuthenticated {
-			get {
-				return ResourceManager.GetString("NotAuthenticated", resourceCulture);
 			}
 		}
 	}

@@ -379,7 +379,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// </summary>
 		public virtual void NavigateAfterUpdate()
 		{
-			Navigation.Navigator.Current.NavigateAfterOperation(ActionOnSuccess, DataSource);
+			if (DataSource == null)
+				throw new InvalidOperationException("The DataSource property wasn't set.");
+			
+			Navigation.Navigator.Current.NavigateAfterOperation(new CommandInfo(CommandOnSuccess), DataSource);
 		}
 		
 		public static EditController New(IControllable container, Type type)

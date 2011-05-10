@@ -5,6 +5,7 @@ using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Web.WebControls;
 using System.Web.UI.WebControls;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using System.Web.UI;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Projections
 {
@@ -55,7 +56,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		
 		public string CreateAction = "Create";
 		public string EditAction = "Edit";
-				
+		
 		private string internalAction = String.Empty;
 		/// <summary>
 		/// Gets/sets the action name used internally. Example: The action "View" has the corresponding internal action of "Retrieve".
@@ -348,6 +349,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			IEntity entity = null;
 			using (LogGroup logGroup = LogGroup.Start("Preparing to update an entity.", NLog.LogLevel.Debug))
 			{
+				ExtractCommandOnSuccess();
+				
 				Form.ReverseBind();
 				
 				DataSource = (IEntity)Form.DataSource;
@@ -385,6 +388,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				
 				if (Form.DataSource == null)
 					throw new Exception("Form.DataSource == null");
+				
+				ExtractCommandOnSuccess();
 				
 				Form.ReverseBind();
 				
@@ -434,6 +439,43 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				}
 			}
 			return success;
+		}
+		
+		
+		public void ExtractCommandOnSuccess()
+		{
+			using (LogGroup logGroup = LogGroup.StartDebug("Extracting the command to perform on success."))
+			{
+				string command = String.Empty;
+				
+				foreach (TableRow row in Form.Rows)
+				{
+					if (row is EntityFormItem)
+					{
+						if (row is EntityFormButtonsItem)
+						{
+							EntityFormItem item = (EntityFormItem)row;
+							foreach (Control control in item.Cells[1].Controls)
+							{
+								if (control is CommandSelect)
+								{
+									command = ((CommandSelect)control).SelectedCommand;
+									
+									if (CreateController != null)
+										CreateController.CommandOnSuccess = command;
+									if (EditController != null)
+										EditController.CommandOnSuccess = command;
+								}
+							}
+						}
+					}
+				}
+				
+				if (command == String.Empty)
+					LogWriter.Debug("No command found.");
+				else
+					LogWriter.Debug("Command: " + command);
+			}
 		}
 		
 		public void CheckCreateController()

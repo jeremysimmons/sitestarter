@@ -46,6 +46,21 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			set { actionOnSuccess = value; }
 		}
 		
+		private string commandOnSuccess = String.Empty;
+		/// <summary>
+		/// Gets/sets the command (ie. "[action] [entity]") that is performed once the controller is successful.
+		/// </summary>
+		public string CommandOnSuccess
+		{
+			get
+			{
+				if (commandOnSuccess == String.Empty)
+					return ActionOnSuccess + " " + TypeName;
+				return commandOnSuccess;
+			}
+			set { commandOnSuccess = value; }
+		}
+		
 		private string action = String.Empty;
 		/// <summary>
 		/// Gets/sets the action being performed.
