@@ -1,10 +1,7 @@
 <?xml version="1.0"?>
 <project name="Common.Jobs.ResetImportData" default="Common.Jobs.ResetImportData" xmlns="http://nant.sf.net/schemas/nant.xsd">
 	
-	
-	<include buildfile="Common.Jobs.WWW.nant"/>
-	<include buildfile="Common.Jobs.Modules.nant"/>
-	
+
   	<target name="Common.Jobs.ResetImportData">
   		<property name="Solution.DataPath" value="${path::combine(path::combine(Solution.RootPath, 'WWW'), 'App_Data')}" />
   		<property name="Solution.DefaultImportPath" value="${path::combine(Solution.DataPath, 'ImportDefault')}"/>

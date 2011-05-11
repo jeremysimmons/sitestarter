@@ -30,6 +30,7 @@
 	<include buildfile="Common.Jobs.PrepareDeployment.nant"/>
 	<include buildfile="Common.Jobs.Release.nant"/>
 	<include buildfile="Common.Jobs.Reset.nant"/>
+	<include buildfile="Common.Jobs.ResetImportData.nant"/>
 	<include buildfile="Common.Jobs.WWW.nant"/>
 	<include buildfile="Common.Jobs.Modules.nant"/>
 	<include buildfile="Common.Jobs.GenerateScreenshots.nant"/>
