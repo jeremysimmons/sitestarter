@@ -55,15 +55,16 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			List<StrategyInfo> strategies = new List<StrategyInfo>();
 			
-			using (LogGroup logGroup = LogGroup.Start("Loading the strategies from the XML files.", NLog.LogLevel.Debug))
-			{
+			// Logging disabled to boost performance
+			//using (LogGroup logGroup = LogGroup.StartDebug("Loading the strategies from the XML files."))
+			//{
 				foreach (string file in Directory.GetFiles(StrategiesDirectoryPath))
 				{
-					LogWriter.Debug("File: " + file);
+			//		LogWriter.Debug("File: " + file);
 					
 					strategies.Add(LoadFromFile(file));
 				}
-			}
+			//}
 			
 			return strategies.ToArray();
 		}
@@ -77,12 +78,13 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			StrategyInfo info = null;
 			
-			using (LogGroup logGroup = LogGroup.Start("Loading the strategy from the specified path.", NLog.LogLevel.Debug))
-			{
+			// Logging disabled to boost performance
+			//using (LogGroup logGroup = LogGroup.StartDebug("Loading the strategy from the specified path."))
+			//{
 				if (!File.Exists(strategyPath))
 					throw new ArgumentException("The specified file does not exist.");
 				
-				LogWriter.Debug("Path: " + strategyPath);
+			//	LogWriter.Debug("Path: " + strategyPath);
 				
 				
 				using (StreamReader reader = new StreamReader(File.OpenRead(strategyPath)))
@@ -93,7 +95,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					
 					reader.Close();
 				}
-			}
+			//}
 			
 			return info;
 		}

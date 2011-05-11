@@ -94,8 +94,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="type">The strategy type with the Strategy attribute to get the strategy information from.</param>
 		public StrategyInfo(Type type)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Analyzing the provided type to extract the info.", NLog.LogLevel.Debug))
-			{
+			// Logging disabled to boost performance
+			//using (LogGroup logGroup = LogGroup.Start("Analyzing the provided type to extract the info.", NLog.LogLevel.Debug))
+			//{
 				StrategyAttribute attribute = null;
 				foreach (Attribute a in type.GetCustomAttributes(true))
 				{
@@ -113,10 +114,10 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				TypeName = attribute.TypeName;
 				StrategyType = type.FullName + ", " + type.Assembly.GetName().Name;
 				
-				LogWriter.Debug("Action: " + Action);
-				LogWriter.Debug("Type name: " + TypeName);
-				LogWriter.Debug("Strategy type: " + StrategyType);
-			}
+			//	LogWriter.Debug("Action: " + Action);
+			//	LogWriter.Debug("Type name: " + TypeName);
+			//	LogWriter.Debug("Strategy type: " + StrategyType);
+			//}
 		}
 		
 		/// <summary>
@@ -133,16 +134,17 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public IStrategy New()
 		{
 			IStrategy strategy = null;
-			using (LogGroup logGroup = LogGroup.Start("Creating a new strategy."))
-			{
-				LogWriter.Debug("Type name: " + TypeName);
+			// Logging disabled to boost performance
+			//using (LogGroup logGroup = LogGroup.Start("Creating a new strategy."))
+			//{
+			//	LogWriter.Debug("Type name: " + TypeName);
 				
-				LogWriter.Debug("Action: " + Action);
+			//	LogWriter.Debug("Action: " + Action);
 				
-				LogWriter.Debug("Key: " + Key);
+			//	LogWriter.Debug("Key: " + Key);
 				
 				return Creator.CreateStrategy(this);
-			}
+			//}
 		}
 		
 		/// <summary>
@@ -164,15 +166,16 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			T strategy = default(T);
 			
-			using (LogGroup logGroup = LogGroup.Start("Creating a new strategy for the type '" + entityTypeName + "' and action '" + Action + "'.", NLog.LogLevel.Debug))
-			{
-				LogWriter.Debug("Entity type name: " + entityTypeName);
+			// Logging disabled to boost performance
+			//using (LogGroup logGroup = LogGroup.Start("Creating a new strategy for the type '" + entityTypeName + "' and action '" + Action + "'.", NLog.LogLevel.Debug))
+			//{
+			//	LogWriter.Debug("Entity type name: " + entityTypeName);
 				
-				LogWriter.Debug("Strategy type: " + typeof(T).FullName);
+			//	LogWriter.Debug("Strategy type: " + typeof(T).FullName);
 				
 				strategy = (T)New();
 				strategy.TypeName = entityTypeName;
-			}
+			//}
 			
 			return strategy;
 		}
