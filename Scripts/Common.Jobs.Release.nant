@@ -95,11 +95,12 @@
 	        <exclude name="**/App_Data/Legacy/**"/>
 	        <exclude name="**/App_Data/Imported/**"/>
 	        <exclude name="**/App_Data/Converted/**"/>
+	        <exclude name="**/App_Data/Reactions/**"/>
 	        <exclude name="**/App_Data/Controllers/**"/>
 	        <exclude name="**/App_Data/Strategies/**"/>
 	        <exclude name="**/App_Data/Entities/**"/>
 	        <exclude name="**/App_Data/Projections/**"/>
-	        <exclude name="**/App_Data/Converted/**"/>
+	        <exclude name="**/App_Data/Parts/**"/>
 	        <exclude name="**/fckeditor/**"/>
 	        <exclude name="**/Backups/*.zip"/>
 	        <exclude name="**/App_Data/**.xml"/>
@@ -129,6 +130,7 @@
 	        <exclude name="**.cache"/>
 	        <exclude name="**.nunit"/>
 	        <exclude name="**/TestResults/**"/>
+	        <exclude name="**.jar"/>
 	        <include name="**/${Solution.Alias}/**" />
 	        <include name="bin/**" />
 	        <include name="lib/**" />
@@ -222,6 +224,7 @@
 	        <exclude name="**.refresh"/>
 	        <exclude name="**.nant"/>
 	        <exclude name="**/tests/**"/>
+	        <exclude name="**.jar"/>
 	        <exclude name="*MockCreate.ascx"/><!-- Hide the mock/test create projections -->
 	        <include name="${IncludeKey}" />
 	    </fileset>	   

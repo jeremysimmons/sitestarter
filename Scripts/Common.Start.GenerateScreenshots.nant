@@ -20,6 +20,8 @@
   		
   		
 	<include buildfile="Common.Jobs.GenerateScreenshots.nant"/>
+	<include buildfile="Common.Jobs.ResetImportData.nant"/>
+	<include buildfile="Common.Jobs.ClearData.nant"/>
 
 	<target name="Common.Start.GenerateScreenshots" description="Generates screenshots of the application.">		
 		<call target="Common.Jobs.GenerateScreenshots"/>
