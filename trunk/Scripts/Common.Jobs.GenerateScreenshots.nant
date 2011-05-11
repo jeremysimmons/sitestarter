@@ -16,6 +16,8 @@
     	</xmlpeek>
     	
 
+			<call target="Common.Jobs.ClearData"/>
+			<call target="Common.Jobs.ResetImportData"/>
 			<call target="DoGeneration"/>
 
   </target>
@@ -64,11 +66,12 @@
 				<exec program="${Project.RootPath}\lib\nant\bin\${CaptureProgram}">
 				    <arg value="--url=http://localhost/${Solution.VirtualDirectoryName + Screenshot.InitializationPath}?SendTo=${Screenshot.Path}" />
 				    <arg value="--out=${Solution.RootPath}\Screenshots\${Screenshot.FileName}.png" />
+				    <arg value="--min-width=1000" />
 				</exec>
 				
 				
 			</do>
-			</foreach>
+	</foreach>
   </target>
 
 </project>
