@@ -15,74 +15,107 @@
 
     void Application_Start(object sender, EventArgs e) 
     {
-    
-       // using (LogGroup logGroup = LogGroup.Start("Preparing to start application.", LogLevel.Debug))
-       // {
+    	InitializeCore();
+    	
+        using (LogGroup logGroup = LogGroup.Start("Starting application.", LogLevel.Debug))
+        {
+        	LogWriter.Debug("${Application.Start}");
+        
             // Attempt to initialize the config
             Initialize();
-       // }
+        }
 
     }
     
     void Application_End(object sender, EventArgs e) 
     {
+    
+        using (LogGroup logGroup = LogGroup.Start("Ending application.", LogLevel.Debug))
+        {
+        	LogWriter.Debug("${Application.End}");
+        }
+        
         //  Code that runs on application shutdown
         Dispose();
     }
         
     void Application_Error(object sender, EventArgs e) 
     { 
-    	using (LogGroup logGroup = LogGroup.Start("Handling application error.", NLog.LogLevel.Error))
+    	using (LogGroup logGroup = LogGroup.Start("Application error.", NLog.LogLevel.Error))
 	    {
-	        // Code that runs when an unhandled error occurs
+        	LogWriter.Debug("${Application.Error}");
+        	
 		    Exception lastException = Server.GetLastError();
-	   	    LogWriter.Error(lastException.ToString());
+	   	    
+	   	    ExceptionHandler handler = new ExceptionHandler();
+	   	    handler.Handle(lastException);
    	    }
     }
 
     void Session_Start(object sender, EventArgs e) 
     {
-       // using (LogGroup logGroup = LogGroup.Start("Preparing to start session.", LogLevel.Debug))
-       // {	        
-	        // Code that runs when a new session is started
-	        if (!StateAccess.IsInitialized || !Config.IsInitialized || !DataAccess.IsInitialized)
-	            Initialize();
-		//}
+    	InitializeCore();
+    	
+        using (LogGroup logGroup = LogGroup.Start("Starting session.", LogLevel.Debug))
+        {
+        	LogWriter.Debug("${Session.Start}");
+        
+            // Attempt to initialize the config
+            Initialize();
+        }
 
     }
 
     void Session_End(object sender, EventArgs e) 
     {
-        // Code that runs when a session ends. 
-        // Note: The Session_End event is raised only when the sessionstate mode
-        // is set to InProc in the Web.config file. If session mode is set to StateServer 
-        // or SQLServer, the event is not raised.
-
+        LogWriter.Debug("${Session.End}");
     }
     
     void Application_BeginRequest(object sender, EventArgs e)
     {
-    	using (LogGroup logGroup = LogGroup.Start("Beginning application request.", NLog.LogLevel.Debug))
+    	string path = (HttpContext.Current != null && HttpContext.Current.Request != null) ? HttpContext.Current.Request.Url.ToString() : String.Empty;
+    	
+    	using (LogGroup logGroup = LogGroup.Start("Beginning application request: " + DateTime.Now.ToString() + " - " + path, NLog.LogLevel.Debug))
     	{
+        	LogWriter.Debug("${Application.BeginRequest}");
+        	
             // Initialize the URL rewriter to take care of friendly URLs
             UrlRewriter.Initialize();
         }
     }
-
-    private void Initialize()
+    
+    
+    void Application_EndRequest(object sender, EventArgs e)
     {
-        //using (LogGroup logGroup = LogGroup.Start("Initializing the state management, config, modules, and data.", LogLevel.Debug))
-        //{
+    	using (LogGroup logGroup = LogGroup.Start("Ending application request: " + DateTime.Now.ToString(), NLog.LogLevel.Debug))
+    	{
+        	LogWriter.Debug("${Application.EndRequest}");
+       	
+       		new AutoBackupInitializer().Initialize();
+        }
+    }
+
+	private void InitializeCore()
+	{
 	        if (!StateAccess.IsInitialized || !Config.IsInitialized)
 	        {
 	        	InitializeState();
+	        }
+	}
+
+    private void Initialize()
+    {
+        using (LogGroup logGroup = LogGroup.Start("Initializing the state management, config, modules, and data.", LogLevel.Debug))
+        {
+	        if (!Config.IsInitialized)
+	        {
                 Config.Initialize(Server.MapPath(HttpContext.Current.Request.ApplicationPath), WebUtilities.GetLocationVariation(HttpContext.Current.Request.Url));
                 InitializeEntities();
 	            new DataProviderInitializer().Initialize();
 	        	InitializeBusiness();
 	        	InitializeWeb();
 	        }
-		//}
+		}
     }
 
     private void InitializeEntities()
@@ -117,10 +150,8 @@
     public override void Dispose()
     {
         Config.Dispose();
-        DataAccess.Dispose();
+        DataAccess.Dispose(true);
 
         base.Dispose();
     }
-   
-       
 </script>
