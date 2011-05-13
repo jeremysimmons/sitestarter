@@ -7,6 +7,7 @@
  		
   		
   	<nant buildfile="Common.Functions.Initialize.nant"/>
+  	<nant buildfile="Common.Functions.GeneratePortNumber.nant"/>
 		
   	<property name="Solution.PropertiesPath" value="${Argument.SolutionPath}"/>
   	<property name="Solution.RootPath" value="${path::get-directory-name(Solution.PropertiesPath)}"/>

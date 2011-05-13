@@ -56,8 +56,9 @@
 			<arg value='"http://localhost/${Solution.VirtualDirectoryName}/"'/>
 			<arg value='"${testSuitePath}"'/>
 			<arg value='"${resultsPath}"'/>
+			<arg value="-port"/>
+			<arg value="${Network::GeneratePortNumber()}"/>
 		</exec>
-
   	</target>
 
 </project>
