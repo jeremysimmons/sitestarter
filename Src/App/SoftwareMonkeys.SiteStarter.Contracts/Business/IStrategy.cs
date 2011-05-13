@@ -17,5 +17,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// Note: Must default to true, and should only be set to false when used internally.
 		/// </summary>
 		bool RequireAuthorisation { get;set; }
+		
+		IReaction[] Reactions { get;set; }
 	}
 }

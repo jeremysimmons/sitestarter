@@ -1,5 +1,6 @@
 ﻿using System;
 using SoftwareMonkeys.SiteStarter.Entities;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Data;
 using SoftwareMonkeys.SiteStarter.Business.Security;
 
@@ -21,13 +22,19 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="entity">The entity to delete.</param>
 		public virtual void Delete(IEntity entity)
 		{
-			if (entity == null)
-				throw new ArgumentNullException("entity");
+			using (LogGroup logGroup = LogGroup.StartDebug("Deleting the provided entity."))
+			{
+				if (entity == null)
+					throw new ArgumentNullException("entity");
 			
-			if (RequireAuthorisation)
-				AuthoriseDeleteStrategy.New(entity.ShortTypeName).EnsureAuthorised(entity);
+				if (RequireAuthorisation)
+					AuthoriseDeleteStrategy.New(entity.ShortTypeName).EnsureAuthorised(entity);
 			
-			DataAccess.Data.Deleter.Delete(entity);
+				DataAccess.Data.Deleter.Delete(entity);
+			
+				// [Important] Trigger the reactions
+				React(entity);
+			}
 		}
 		
 		

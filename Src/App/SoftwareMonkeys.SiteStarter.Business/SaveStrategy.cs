@@ -54,6 +54,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					
 					DataAccess.Data.Saver.Save(entity);
 					saved = true;
+					
+					// [Important] Trigger the reactions
+					React(entity);
 				}
 				else
 				{
