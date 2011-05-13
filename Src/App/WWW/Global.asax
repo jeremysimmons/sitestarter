@@ -125,7 +125,10 @@
     private void InitializeBusiness()
     {
     	if (Config.IsInitialized)
+		{
 	    	new StrategyInitializer().Initialize();
+	    	new ReactionInitializer().Initialize();
+		}
     }
     
     private void InitializeWeb()
