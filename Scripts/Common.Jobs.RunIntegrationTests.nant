@@ -4,6 +4,15 @@
 
 	
 	<target name="Common.Jobs.RunIntegrationTests">
+
+		<xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.VirtualDirectoryName']/@value"
+		    property="Solution.VirtualDirectoryName">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+	    	</xmlpeek>
 		  
 		<property name="testSuitePath" value="${path::get-full-path('../Src/App/IntegrationTests/SiteStarter.Index.html')}"/>
 
@@ -44,7 +53,7 @@
 			<arg value="../lib/selenium-server.jar"/>
 			<arg value="-htmlSuite"/>
 			<arg value='"*iexplore"'/>
-			<arg value='"http://localhost/SiteStarter/"'/>
+			<arg value='"http://localhost/${Solution.VirtualDirectoryName}/"'/>
 			<arg value='"${testSuitePath}"'/>
 			<arg value='"${resultsPath}"'/>
 		</exec>
