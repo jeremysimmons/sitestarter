@@ -27,7 +27,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			get
 				
 			{
-				if (!StateAccess.IsInitialized || StateAccess.State == null || HttpContext.Current.Session == null)
+				if (!StateAccess.IsInitialized || StateAccess.State == null || StateAccess.State.Session == null)
 					return false;
 				else
 				{
@@ -51,7 +51,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		{
 			get
 			{
-				if (!StateAccess.IsInitialized || StateAccess.State == null || HttpContext.Current.Session == null)
+				if (!StateAccess.IsInitialized || StateAccess.State == null || StateAccess.State.Session == null)
 					return String.Empty;
 				else
 				{
