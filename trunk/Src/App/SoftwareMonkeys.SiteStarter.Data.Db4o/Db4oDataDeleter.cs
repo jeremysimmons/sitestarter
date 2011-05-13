@@ -81,35 +81,38 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <param name="entity">The entity to delete.</param>
 		public override void Delete(IEntity entity)
 		{
-			Db4oDataStore store = (Db4oDataStore)GetDataStore(entity);
-			
-			if (entity == null)
-				throw new ArgumentNullException("entity");
-			
-			//if (entity.ID == Guid.Empty)
-			//	throw new ArgumentException("entity.ID is set to Guid.Empty on type " + entity.GetType().ToString());
-			
-			if (DataAccess.Data.IsStored(entity))
+			using (LogGroup logGroup = LogGroup.StartDebug("Deleting the provided entity."))
 			{
-				using (Batch batch = BatchState.StartBatch())
+				Db4oDataStore store = (Db4oDataStore)GetDataStore(entity);
+			
+				if (entity == null)
+					throw new ArgumentNullException("entity");
+			
+				//if (entity.ID == Guid.Empty)
+				//	throw new ArgumentException("entity.ID is set to Guid.Empty on type " + entity.GetType().ToString());
+			
+				if (DataAccess.Data.IsStored(entity))
 				{
-					IDataReader reader = Provider.InitializeDataReader();
-					reader.AutoRelease = false;
-					
-					entity = reader.GetEntity(entity);
-					
-					if (entity == null)
-						throw new Exception("The entity wasn't found.");
-					
-					// PreDelete must be called to ensure all references are correctly managed
-					PreDelete(entity);
-
-					// Delete the entity
-					if (entity != null)
+					using (Batch batch = BatchState.StartBatch())
 					{
-						store.ObjectContainer.Delete(entity);
-						
-						store.Commit();
+						IDataReader reader = Provider.InitializeDataReader();
+						reader.AutoRelease = false;
+					
+						entity = reader.GetEntity(entity);
+					
+						if (entity == null)
+							throw new Exception("The entity wasn't found.");
+					
+						// PreDelete must be called to ensure all references are correctly managed
+						PreDelete(entity);
+
+						// Delete the entity
+						if (entity != null)
+						{
+							store.ObjectContainer.Delete(entity);
+							
+							store.Commit();
+						}
 					}
 				}
 			}

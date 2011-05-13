@@ -969,10 +969,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			//	LogWriter.Debug("Property name: " + propertyName);
 			//	LogWriter.Debug("Property value: " + (propertyValue == null ? "[null]" : propertyValue.ToString()));
 			
-			if (type.Name == "EntityIDReference"
-			    || type.Name == "EntityReference")
-				throw new ArgumentException("The provided type cannot be EntityReference or EntityIDReference.");
-			
 			Db4oDataStore store = ((Db4oDataStore)GetDataStore(type));
 			
 			if (store != null)

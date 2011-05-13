@@ -333,6 +333,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <returns>A collection of all the references in the store that involve the provided entity.</returns>
 		public virtual EntityReferenceCollection GetReferences(IEntity entity, bool activateAll)
 		{
+			
 			EntityReferenceCollection references = new EntityReferenceCollection();
 			
 			using (LogGroup logGroup = LogGroup.Start("Retrieving the references associated with the provided entity."))
@@ -340,7 +341,20 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				if (entity == null)
 					throw new ArgumentNullException("entity");
 				
-				foreach (PropertyInfo property in entity.GetType().GetProperties())
+				foreach (IDataStore store in DataAccess.Data.Stores)
+				{
+					if (IsReferenceStore(store))
+					{
+						if (StoresReferencesToType(store, entity.ShortTypeName))
+						{
+							references.AddRange(store.Indexer.GetEntities<EntityIDReference>("Entity1ID", entity.ID));
+							references.AddRange(store.Indexer.GetEntities<EntityIDReference>("Entity2ID", entity.ID));
+						}
+					}
+				}
+				
+				// TODO: Clean up
+				/*foreach (PropertyInfo property in entity.GetType().GetProperties())
 				{
 					if (EntitiesUtilities.IsReference(entity.GetType(), property))
 					{
@@ -358,10 +372,27 @@ namespace SoftwareMonkeys.SiteStarter.Data
 							              referenceType,
 							              activateAll));
 					}
-				}
+				}*/
 			}
 			
 			return references;
+		}
+
+		public bool IsReferenceStore(IDataStore store)
+		{
+			return store.Name.IndexOf("-") > -1;
+		}
+		
+		public bool StoresReferencesToType(IDataStore store, string entityType)
+		{
+			string[] parts = store.Name.Split('-');
+			
+			if (parts.Length > 0)
+			{
+				return Array.IndexOf(parts, entityType) > -1;
+			}
+			
+			return false;
 		}
 		
 		
