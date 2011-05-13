@@ -1,21 +1,13 @@
 <?xml version="1.0"?>
 <project name="Common.Start.BuildAssembly" default="Common.Start.BuildAssembly" xmlns="http://nant.sf.net/schemas/nant.xsd">
-  		
-  		
-  		<nant buildfile="Common.Functions.Initialize.nant"/>
-  		
-
-		
-		
+  				
+  	<nant buildfile="Common.Functions.Initialize.nant"/>
   		
 	<include buildfile="Common.Actions.GenerateAssemblyInfoFile.nant"/>
 	<!--include buildfile="Common.Actions.Compile.nant"/-->
 
-  		
-  		
-		
 	
-<loadtasks>
+	<loadtasks>
 
             <fileset>
 
@@ -23,10 +15,10 @@
 
             </fileset>
 
-</loadtasks> 
+	</loadtasks> 
 		
 		
-		<!--include buildfile="Common.Jobs.BuildAssembly.nant"/-->
+	<!--include buildfile="Common.Jobs.BuildAssembly.nant"/-->
 
   		
 	<target name="Common.Jobs.BuildAssembly" description="Builds the current project">
