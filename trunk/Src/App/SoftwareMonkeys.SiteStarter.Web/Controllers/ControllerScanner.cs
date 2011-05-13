@@ -114,6 +114,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			bool matchesInterface = false;
 			bool isNotInterface = false;
 			bool isNotAbstract = false;
+			bool hasAttribute = false;
 			
 			//using (LogGroup logGroup = LogGroup.Start("Checks whether the provided type is a controller.", NLog.LogLevel.Debug))
 			//{
@@ -124,6 +125,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			isNotInterface = !type.IsInterface;
 			
 			isNotAbstract = !type.IsAbstract;
+			
+			hasAttribute = type.GetCustomAttributes(typeof(ControllerAttribute), true).Length > 0;
+			
 			//
 			//	LogWriter.Debug("Matches interface: " + matchesInterface);
 			//	LogWriter.Debug("Is not controller interface: " + isNotInterface);
@@ -131,7 +135,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			
 			return matchesInterface
 				&& isNotInterface
-				&& isNotAbstract;
+				&& isNotAbstract
+				&& hasAttribute;
 		}
 	}
 }
