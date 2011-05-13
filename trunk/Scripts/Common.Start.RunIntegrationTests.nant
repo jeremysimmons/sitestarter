@@ -20,6 +20,7 @@
   		
   		
 	<include buildfile="Common.Jobs.RunIntegrationTests.nant"/>
+	<include buildfile="Common.Jobs.ClearData.nant"/>
 
 	<target name="Common.Start.RunIntegrationTests" description="Runs the integration tests.">		
 		<call target="Common.Jobs.RunIntegrationTests"/>

@@ -5,21 +5,51 @@
 	
 	<target name="Common.Jobs.RunIntegrationTests">
 		  
-    	
+		<property name="testSuitePath" value="${path::get-full-path('../Src/App/IntegrationTests/SiteStarter.Index.html')}"/>
 
-			<call target="DoIntegrationTests"/>
+		<echo message="Test Suite Path: ${testSuitePath}"/>
+
+		<property name="versionFile" value="${path::get-full-path('../Src/App/Version.number')}"/>
+
+		<if test="${file::exists(versionFile)}">
+			<loadfile
+			    file="${versionFile}"
+			    property="versionNumber" />
+		</if>
+
+		<property name="versionNumber" value="${string::trim-end(string::replace(versionNumber, '.', '-'))}"/>
+    	
+		<echo message="Version: ${versionNumber}"/>
+
+		<call target="Common.Jobs.ClearData"/>	
+
+		<property name="seleniumServer" value="../lib/selenium-server.jar"/>
+
+		<echo message="Selenium server: ${seleniumServer}"/>
+
+		<echo message="Selenium server mapped: ${path::get-full-path(seleniumServer)}"/>
+
+		<property name="resultsPath" value="${path::get-full-path('../Src/App/IntegrationTests/Results/${versionNumber}/Results.html')}"/>
+
+		<if test="${directory::exists(path::get-directory-name(resultsPath)) == false}">
+			<mkdir dir="${path::get-directory-name(resultsPath)}"/>
+		</if>
+
+		<property name="execCommand" value="java"/>
+
+		<echo message="Exec command: ${seleniumServer}"/>
+
+		<exec program="${execCommand}" verbose="true">
+			<arg value="-jar"/>
+			<arg value="../lib/selenium-server.jar"/>
+			<arg value="-htmlSuite"/>
+			<arg value='"*iexplore"'/>
+			<arg value='"http://localhost/SiteStarter/"'/>
+			<arg value='"${testSuitePath}"'/>
+			<arg value='"${resultsPath}"'/>
+		</exec>
 
   	</target>
-  
-  
-  <target name="DoIntegrationTests">
-				    
-	
-				<call target="Common.Jobs.ClearData"/>	
-
-				<exec program="${Solution.RootPath}\IntegrationTests\Run.bat">
-				</exec>
-  </target>
 
 </project>
   	
