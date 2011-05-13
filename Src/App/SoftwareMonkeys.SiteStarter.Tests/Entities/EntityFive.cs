@@ -16,7 +16,7 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
 			set { name = value; }
 		}
 
-		private EntitySix[] referencedEntities;
+		private EntitySix[] referencedEntities = new EntitySix[]{};
 		[Reference]
 		public EntitySix[] ReferencedEntities
 		{

@@ -6,10 +6,10 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 	/// <summary>
 	/// Description of EntityAttribute.
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Class, AllowMultiple=false)]
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple=false)]
 	public class EntityAttribute : Attribute
 	{
-		private string typeName;
+		private string typeName = String.Empty;
 		/// <summary>
 		/// Gets/sets the name of the type involved in the entity.
 		/// </summary>
@@ -29,7 +29,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			set { isEntity = value; }
 		}
 		
-		private string key;
+		private string key = String.Empty;
 		/// <summary>
 		/// Gets/sets the key used to differentiate the entity from others that are similar.
 		/// For example: A general purpose entity has no key set; A entity that enforces a particular rule such as a unique property can use
@@ -40,6 +40,9 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			get { return key; }
 			set { key = value; }
 		}
+		
+		public EntityAttribute()
+		{}
 		
 		/// <summary>
 		/// Sets the type name and action of the entity.

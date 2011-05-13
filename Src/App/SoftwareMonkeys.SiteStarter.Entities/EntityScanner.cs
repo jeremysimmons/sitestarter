@@ -121,6 +121,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			bool matchesInterface = false;
 			//bool isNotInterface = false;
 			//bool isNotBaseEntity = false;
+			bool hasAttribute = false;
 			
 			//using (LogGroup logGroup = LogGroup.Start("Checks whether the provided type is a entity.", NLog.LogLevel.Debug))
 			//{
@@ -137,11 +138,13 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 					|| type.GetInterface("IEntity") != null
 					|| type.Name == "IEntity";
 				
+				hasAttribute = type.GetCustomAttributes(typeof(EntityAttribute), true).Length > 0;
 				
 			//	LogWriter.Debug("Matches interface: " + matchesInterface);
 			//}
 			
-			return matchesInterface;
+			return matchesInterface
+				&& hasAttribute;
 		}
 	}
 }
