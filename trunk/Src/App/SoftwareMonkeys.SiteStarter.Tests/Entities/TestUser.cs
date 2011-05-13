@@ -7,10 +7,10 @@ using System.Xml.Serialization;
 namespace SoftwareMonkeys.SiteStarter.Tests.Entities
 {
 	/// <summary>
-	/// Description of Class1.
+	/// 
 	/// </summary>
 	[Serializable]
-	public class TestUser : BaseTestEntity, ITestUser
+	public class TestUser : BaseUniqueTestEntity, ITestUser
 	{
 		private string firstName;
 		/// <summary>

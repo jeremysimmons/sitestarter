@@ -707,13 +707,13 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			string fieldName2 = "_" + propertyName;
 			
 			// Try to find a camel case field
-			FieldInfo field = type.GetField(fieldName1, BindingFlags.NonPublic | BindingFlags.Instance);
+			FieldInfo field = type.GetField(fieldName1, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
 			
 			// If the camel case field can't be found then
 			if (field == null)
 			{
 				// Find the underscore _ prefixed field name
-				field = type.GetField(fieldName2, BindingFlags.NonPublic | BindingFlags.Instance);
+				field = type.GetField(fieldName2, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
 			}
 			
 			// TODO: Finish implementing and testing
@@ -722,7 +722,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			{
 				CorrespondingFieldAttribute attribute = GetCorrespondingFieldAttribute(type,  propertyName);
 				if (attribute != null)
-					field = type.GetField(attribute.Name, BindingFlags.NonPublic | BindingFlags.Instance);
+					field = type.GetField(attribute.Name, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
 			}*/
 				
 				// If neither field can be found then throw an exception.

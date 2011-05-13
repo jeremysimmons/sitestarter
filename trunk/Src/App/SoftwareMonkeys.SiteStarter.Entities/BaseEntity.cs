@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Web;
 using SoftwareMonkeys.SiteStarter.Configuration;
 using System.Reflection;
+using SoftwareMonkeys.SiteStarter.Entities;
 
 namespace SoftwareMonkeys.SiteStarter.Entities
 {
@@ -11,6 +12,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 	/// Inherited by all entity components in the application.
 	/// </summary>
 	[Serializable]
+	[Entity]
 	public abstract class BaseEntity : IEntity
 	{
 		private Guid id = Guid.NewGuid();

@@ -6,6 +6,7 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
     /// <summary>
     /// Defines the interface for a user role in the application.
     /// </summary>
+    [Entity]
     public interface ITestRole : IEntity
     {
         string Name { get;set; }

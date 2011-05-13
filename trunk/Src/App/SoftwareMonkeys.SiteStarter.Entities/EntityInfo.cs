@@ -96,7 +96,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				}
 			}
 			
-			if (entityAttribute == null)
+			if (entityAttribute == null || entityAttribute.TypeName == String.Empty)
 				TypeName = type.Name;
 			else
 				TypeName = entityAttribute.TypeName;
