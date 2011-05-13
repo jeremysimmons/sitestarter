@@ -40,6 +40,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = LogGroup.Start("Testing the DataUtilities.GetType function.", NLog.LogLevel.Debug))
 			{
+			// TODO: Check if this test is needed
+			// Aliasing is used to match properties that are an interface type with the
+			// corresponding concrete entities
+			// This can now be done with the ReferenceAttribute.TypeName property instead.
+			
+				throw new NotImplementedException();
+			
 				TestArticle e1 = new TestArticle();
 				e1.ID = Guid.NewGuid();
 				e1.Title = "Test 1";
@@ -144,21 +151,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_GetType_Alias()
 		{
+			// TODO: Check if this test is needed
+			// Aliasing is used to match properties that are an interface type with the
+			// corresponding concrete entities
+			// This can now be done with the ReferenceAttribute.TypeName property instead.
 			
-			//TestUser user = new TestUser();
-			//user.ID = Guid.NewGuid();
-			//user.FirstName = "Test";
-			//user.LastName = "User";
-			
-			//TestRole role = new TestRole();
-			//role.ID = Guid.NewGuid();
-			//role.Name = "Test Role";
-			
-			//user.Roles.Add(role);
-			
-			//PropertyInfo rolesProperty = user.GetType().GetProperty("Roles");
-			
-			Type type = EntitiesUtilities.GetType("ITestUser");
+			throw new NotImplementedException();
+			Type type = EntityState.GetType("ITestUser");
 			
 			Assert.AreEqual(type.FullName, typeof(TestUser).FullName, "The types don't match.");
 		}
@@ -179,6 +178,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			//user.Roles.Add(role);
 			
 			//PropertyInfo rolesProperty = user.GetType().GetProperty("Roles");
+			
+			// TODO: Check if this test is needed
+			// Aliasing is used to match properties that are an interface type with the
+			// corresponding concrete entities
+			// This can now be done with the ReferenceAttribute.TypeName property instead.
+			
+			throw new NotImplementedException();
 			
 			Type type = EntitiesUtilities.GetType("TestUser");
 			
