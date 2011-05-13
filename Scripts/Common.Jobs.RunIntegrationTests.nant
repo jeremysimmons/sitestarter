@@ -29,7 +29,7 @@
 
 		<echo message="Selenium server mapped: ${path::get-full-path(seleniumServer)}"/>
 
-		<property name="resultsPath" value="${path::get-full-path('../Src/App/IntegrationTests/Results/${versionNumber}/Results.html')}"/>
+		<property name="resultsPath" value="${path::get-full-path('../Src/App/IntegrationTests/Results/" + versionNumber + "/Results.html')}"/>
 
 		<if test="${directory::exists(path::get-directory-name(resultsPath)) == false}">
 			<mkdir dir="${path::get-directory-name(resultsPath)}"/>
