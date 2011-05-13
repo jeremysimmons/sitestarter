@@ -16,7 +16,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			StrategyStateNameValueCollection strategies = new StrategyStateNameValueCollection();
 			strategies["Save", "IUniqueEntity"] = new StrategyInfo(new UniqueSaveStrategy());
 			
-			StrategyInfo strategyInfo = strategies["Save", typeof(TestArticle).Name];
+			StrategyInfo strategyInfo = strategies["Save", typeof(TestUser).Name];
 			
 			Assert.IsNotNull(strategyInfo, "No strategy found.");
 			

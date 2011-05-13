@@ -67,7 +67,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			
 			StrategyStateNameValueCollection collection = new StrategyStateNameValueCollection();
 			
-			string type = "TestArticle";
+			string type = "TestUser";
 			string action = "Save";
 			
 			collection.Add(saveStrategy);
@@ -88,7 +88,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			
 			StrategyStateNameValueCollection collection = new StrategyStateNameValueCollection();
 			
-			string type = "TestArticle";
+			string type = "TestUser";
 			string action = "TestAction";
 			
 			collection[action, type] = testStrategy;
