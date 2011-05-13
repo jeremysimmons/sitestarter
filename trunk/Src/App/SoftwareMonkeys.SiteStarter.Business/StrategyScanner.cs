@@ -110,6 +110,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			bool matchesInterface = false;
 			bool isNotInterface = false;
 			bool isNotAbstract = false;
+			bool hasAttribute = false;
 			
 			//using (LogGroup logGroup = LogGroup.Start("Checks whether the provided type is a strategy.", NLog.LogLevel.Debug))
 			//{
@@ -122,13 +123,16 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			isNotAbstract = (!type.IsAbstract);
 			
+			hasAttribute = type.GetCustomAttributes(typeof(StrategyAttribute), true).Length > 0;
+			
 			//	LogWriter.Debug("Matches interface: " + matchesInterface);
 			//	LogWriter.Debug("Is not strategy interface: " + isNotInterface);
 			//}
 			
 			return matchesInterface
 				&& isNotInterface
-				&& isNotAbstract;
+				&& isNotAbstract
+				&& hasAttribute;
 		}
 	}
 }

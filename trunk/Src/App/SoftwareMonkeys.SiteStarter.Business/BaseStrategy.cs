@@ -80,5 +80,20 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			return info.TypeName;
 		}
+		
+		private IReaction[] reactions = new IReaction[]{};
+		public IReaction[] Reactions
+		{
+			get { return reactions; }
+			set { reactions = value; }
+		}
+		
+		public void React(IEntity entity)
+		{
+			foreach (IReaction reaction in Reactions)
+			{
+				reaction.React(entity);
+			}
+		}
 	}
 }

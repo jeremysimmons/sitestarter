@@ -58,6 +58,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				{
 					DataAccess.Data.Updater.Update(entity);
 					didSucceed = true;
+					
+					// [Important] Trigger the reactions
+					React(entity);
 				}
 				else
 					didSucceed = false;

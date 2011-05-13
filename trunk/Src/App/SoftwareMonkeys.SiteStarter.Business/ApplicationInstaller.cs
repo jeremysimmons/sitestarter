@@ -357,6 +357,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			// TODO: Add the initializer to a property so it can be customized for specific cases
 	    	new StrategyInitializer().Initialize();
+	    	new ReactionInitializer().Initialize();
 		}
 
 		/// <summary>
