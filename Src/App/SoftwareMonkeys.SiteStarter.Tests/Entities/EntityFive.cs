@@ -21,8 +21,15 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
 		public EntitySix[] ReferencedEntities
 		{
 			get { return referencedEntities; }
-			set { referencedEntities = value;
-			}
+			set { referencedEntities = value; }
+		}
+		
+		private ISimple[] interfaceReferencedEntities = new ISimple[]{};
+		[Reference(TypeName="EntitySix")]
+		public ISimple[] InterfaceReferencedEntities
+		{
+			get { return interfaceReferencedEntities; }
+			set { interfaceReferencedEntities = value; }
 		}
 	}
 }
