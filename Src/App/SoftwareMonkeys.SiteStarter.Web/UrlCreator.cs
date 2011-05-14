@@ -18,6 +18,8 @@ namespace SoftwareMonkeys.SiteStarter.Web
 	/// </summary>
 	public class UrlCreator
 	{
+		// TODO: Check if standard URLs are needed. They should be obsolete and are no longer entirely supported
+		
 		static private UrlCreator current;
 		/// <summary>
 		/// Gets a default URL creator.
@@ -247,7 +249,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				LogWriter.Debug("Action: " + action);
 				LogWriter.Debug("Type name: " + typeName);
 				
-				link = CreateStandardUrl(action, typeName);
+				link = CreateStandardUrl(action, typeName, ProjectionFormat.Html);
 				
 				LogWriter.Debug("Link: " + link);
 			}
