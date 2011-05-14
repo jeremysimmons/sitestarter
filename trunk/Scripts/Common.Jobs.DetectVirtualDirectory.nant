@@ -3,9 +3,9 @@
 
 	<target name="Common.Jobs.DetectVirtualDirectory">
 
-		<property name="folderName" value="${path::get-file-name(Project.RootPath)}"/>
+		<property name="folderName" value="${path::get-file-name(path::get-full-path(Project.RootPath))}"/>
 
-		<echo message="${folderName}"/>
+		<echo message="Virtual directory: ${folderName}"/>
 
 		<xmlpoke
 		    file="${Solution.PropertiesPath}"
