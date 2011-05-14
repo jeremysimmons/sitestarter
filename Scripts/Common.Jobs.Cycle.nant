@@ -11,6 +11,12 @@
 
 		<call target="Common.Jobs.DetectVirtualDirectory"/>
 		<call target="Common.Jobs.ConfigureIIS"/>	
+
+		<call target="Common.Jobs.BuildSolution"/>	
+		<call target="Common.Jobs.RunTests"/>	
+		<call target="Common.Jobs.GenerateScreenshots"/>
+		<call target="Common.Jobs.CreateReleaseZips"/>		
+		<call target="Common.Jobs.PrepareDeployment"/>
 		
 	</target>
 	
