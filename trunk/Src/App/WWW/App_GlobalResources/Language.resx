@@ -720,7 +720,7 @@ ${WebSite.Title}&lt;br /&gt;
     <value>The username or password is incorrect. Please try again.</value>
   </data>
   <data name="UserRole" xml:space="preserve">
-    <value>User Role</value>
+    <value>Role</value>
   </data>
   <data name="EntitySaved" xml:space="preserve">
     <value>The ${entity} was saved successfully.</value>
