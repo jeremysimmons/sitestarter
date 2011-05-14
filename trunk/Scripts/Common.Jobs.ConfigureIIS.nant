@@ -1,17 +1,5 @@
 <?xml version="1.0"?>
-<project name="Common.Jobs.ConfigureIIS" default="Common.Jobs.ConfigureIIS" xmlns="http://nant.sf.net/schemas/nant.xsd">
-  	
-
-
-	<xmlpeek
-		    file="${Solution.PropertiesPath}"
-		    xpath="/x:project/x:property[@name = 'Solution.VirtualDirectoryName']/@value"
-		    property="Solution.VirtualDirectoryName">
-		        <namespaces>
-        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
-    			</namespaces>
-    	</xmlpeek>
-  	
+<project name="Common.Jobs.ConfigureIIS" default="Common.Jobs.ConfigureIIS" xmlns="http://nant.sf.net/schemas/nant.xsd">	
   		
 	<target name="Common.Jobs.ConfigureIIS" description="Configures IIS to run app">
 
@@ -28,7 +16,17 @@
 
 		<cd dir="${Solution.RootPath}\WWW"/>
 
+		<xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.VirtualDirectoryName']/@value"
+		    property="Solution.VirtualDirectoryName">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+	    	</xmlpeek>
+
 		<mkiisdir dirpath="${Solution.RootPath}\WWW" vdirname="${Solution.VirtualDirectoryName}" appfriendlyname="${Solution.VirtualDirectoryName}" verbose="true" />
+
 	</target>
      
 </project>
