@@ -13,8 +13,18 @@
         			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
     			</namespaces>
 	    	</xmlpeek>
+
+		<xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.Name']/@value"
+		    property="Solution.Name">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+	    	</xmlpeek>
 		  
-		<property name="testSuitePath" value="${path::get-full-path('../Src/App/IntegrationTests/SiteStarter.Index.html')}"/>
+		  
+		<property name="testSuitePath" value="${path::get-full-path('../Src/App/IntegrationTests/' + Solution.Name + '.Index.html')}"/>
 
 		<echo message="Test Suite Path: ${testSuitePath}"/>
 
@@ -48,16 +58,25 @@
 
 		<echo message="Exec command: ${seleniumServer}"/>
 
+		<property name="portNumber" value="${Network::GeneratePortNumber()}"/>
+
+		<echo message="Port: #{portNumber}"/>
+
+		<property name="startUrl" value="http://localhost/${Solution.VirtualDirectoryName}/" />
+
+		<echo message="Start URL: #{startUrl}"/>
+
+
 		<exec program="${execCommand}" verbose="true">
 			<arg value="-jar"/>
 			<arg value="../lib/selenium-server.jar"/>
 			<arg value="-htmlSuite"/>
 			<arg value='"*iexplore"'/>
-			<arg value='"http://localhost/${Solution.VirtualDirectoryName}/"'/>
+			<arg value='"${startUrl}"'/>
 			<arg value='"${testSuitePath}"'/>
 			<arg value='"${resultsPath}"'/>
 			<arg value="-port"/>
-			<arg value="${Network::GeneratePortNumber()}"/>
+			<arg value="${portNumber}"/>
 		</exec>
   	</target>
 

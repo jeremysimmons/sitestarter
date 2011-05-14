@@ -141,6 +141,7 @@
 	        <exclude name="**/Deployment/**"/>
 	        <exclude name="*.refresh"/>
 	        <exclude name="**/Docs/Reference/**"/>
+	        <exclude name="**.jar"/>
 	        <include name="**/lib/**" />
 	        <include name="**/Src/**" />
 	        <include name="**/Docs/**" />
