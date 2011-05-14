@@ -66,33 +66,44 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			//{
 			//	LogWriter.Debug("Entity: " + sourceType.ToString());
 			//	LogWriter.Debug("Property name: " + property.Name);
+			
+			ReferenceAttribute reference = GetReferenceAttribute(property);
+			
+			isReference = reference != null;
+			
+			if (isReference)
+			{
+				Type referenceType = property.PropertyType;
 				
-				ReferenceAttribute reference = GetReferenceAttribute(property);
-				
-				isReference = reference != null;
-				
-				if (isReference)
-				{					
-					Type referenceType = property.PropertyType;
+				if (typeof(Array).IsAssignableFrom(referenceType))
+				{
+					// If it's an array this should work
+					referenceType = property.PropertyType.GetElementType();
 					
-					if (typeof(Array).IsAssignableFrom(referenceType))
+					// If it's not an array (ie. it's a collection) then this should work
+					if (referenceType == null)
 					{
-						// If it's an array this should work
-						referenceType = property.PropertyType.GetElementType();
-						
-						// If it's not an array (ie. it's a collection) then this should work
-						if (referenceType == null)
-						{
-							//LogWriter.Debug("Property is a collection.");
-							referenceType = property.PropertyType.GetGenericArguments()[0];
-						}
-						//else
-						//	LogWriter.Debug("Property is an array.");
+						//LogWriter.Debug("Property is a collection.");
+						referenceType = property.PropertyType.GetGenericArguments()[0];
 					}
+					//else
+					//	LogWriter.Debug("Property is an array.");
+				}
+				
+				validType = EntityState.IsType(referenceType);
+				
+				// If it's not a valid type then try using the type sepcified on the attribute
+				if (!validType)
+				{
+					referenceType = EntityState.GetType(reference.TypeName);
 					
 					validType = EntityState.IsType(referenceType);
 				}
 				
+				if (!validType)
+					throw new Exception("Reference property '" + property.Name + "' of type '" + referenceType.Name + "', found on entity type '" + sourceType.Name + "', is not registered as a valid entity type. Make sure that the referenced type or interface has a ReferenceAttribute.");
+			}
+			
 			//	LogWriter.Debug("Is reference? " + isReference.ToString());
 			//	LogWriter.Debug("Valid type? " + validType.ToString());
 			//}

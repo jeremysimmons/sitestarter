@@ -21,6 +21,17 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 	{		
 		#region Tests
 		[Test]
+		public void Test_IsReference_True_InterfaceType()
+		{
+			EntityFive e5 = new EntityFive();
+			
+			PropertyInfo property = e5.GetType().GetProperty("InterfaceReferencedEntities");
+			
+			Assert.IsTrue(EntitiesUtilities.IsReference(e5.GetType(), property), "Returned false when it should have returned true.");
+		}
+		
+
+		[Test]
 		public void Test_IsReference_True()
 		{
 			TestArticle article = new TestArticle();
