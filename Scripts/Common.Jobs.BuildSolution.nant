@@ -90,8 +90,12 @@
 
 
 			<version buildtype="NoIncrement"
-	            revisiontype="Increment"
-	            path="${path::combine(path::combine(Solution.RootPath, 'WWW'), 'Version.Number')}"/>
+		            	revisiontype="Increment"
+		            	path="${path::combine(path::combine(Solution.RootPath, 'WWW'), 'Version.Number')}"/>
+
+			<version buildtype="NoIncrement"
+	            		revisiontype="Increment"
+	            		path="${path::combine(Solution.RootPath, 'Version.Number')}"/>
 
 		</if>
 	
