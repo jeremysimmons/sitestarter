@@ -4,11 +4,14 @@
 
 
   	<target name="Common.Actions.GenerateAssemblyInfoFile">
-		<echo message="Project version: ${AssemblyProject.Version}"/>
+
+	<loadfile
+		    file="${versionFilePath}"
+		    property="AssemblyProject.Version" />
+
+	<echo message="Assembly version: ${AssemblyProject.Version}"/>
 		
-		
-    	
-    	 <xmlpeek
+    	<xmlpeek
 		    file="${Project.PropertiesPath}"
 		    xpath="/x:project/x:property[@name = 'Project.CompanyName']/@value"
 		    property="Project.CompanyName">
@@ -31,6 +34,7 @@
     	<if test="${directory::exists(propertiesDirectory) == false}">
     		<mkdir dir="${propertiesDirectory}"/>
     	</if>
+
 
          <asminfo output="${path::combine(propertiesDirectory, 'AssemblyInfo.cs')}" language="CSharp">
 
