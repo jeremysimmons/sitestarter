@@ -117,7 +117,7 @@
 			<echo file="${versionFilePath}" message="0.0.0.1" append="false"/>
   		</if>
 		            
-			<version buildtype="NoIncrement"
+		<version buildtype="NoIncrement"
 	            revisiontype="Increment"
 	            path="${versionFilePath}"/>
 				
@@ -127,16 +127,17 @@
 
 		<get src="${ 'http://10.0.0.1:8080/scripts/Launcher/LaunchRaw/VersionNumber.script?IncrementRevision=true&amp;Key=' + versionKey}" dest="${versionFilePath}" />
 		
+		<loadfile
+		    file="${versionFilePath}"
+		    property="AssemblyProject.Version" />
+
   		<echo message="New version number: ${AssemblyProject.Version}"/>
   		
-		
 		<call target="Common.Actions.GenerateAssemblyInfoFile"/>
 		
 		<call target="Common.Actions.Compile"/>
 		
 		<call target="Actions.OutputLibraries"/>
-		
-	
 		
 	</target>
 	

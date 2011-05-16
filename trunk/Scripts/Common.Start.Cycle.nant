@@ -44,6 +44,7 @@
             <fileset>
 
                         <include name="../Lib/nant/bin/tasks/NAnt.Contrib.Tasks.dll" />
+                        <include name="../Lib/nant/bin/tasks/NantGoogleCode.dll" />
 
             </fileset>
 
