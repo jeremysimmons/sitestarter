@@ -136,6 +136,7 @@
 	        <exclude name="**.cache"/>
 	        <exclude name="**.nunit"/>
 	        <exclude name="**/TestResults/**"/>
+	        <exclude name="**/IntegrationTests/Results/**"/>
 	        <exclude name="**.jar"/>
 	        <include name="**/${Solution.Alias}/**" />
 	        <include name="bin/**" />
@@ -232,6 +233,7 @@
 	        <exclude name="**/tests/**"/>
 	        <exclude name="**.jar"/>
 	        <exclude name="*MockCreate.ascx"/><!-- Hide the mock/test create projections -->
+	        <exclude name="**/IntegrationTests/Results/**"/>
 	        <include name="${IncludeKey}" />
 	    </fileset>	   
 	</zip>
@@ -281,7 +283,7 @@
         	username="${GoogleCode.Username}" 
         	password="${GoogleCode.Password}" 
         	projectname="${GoogleCode.ProjectName}" 
-        	filename="${Project.RootPath}\Releases\Install\${Solution.InstallReleaseName}.zip" 
+        	filename="${path::get-full-path(Project.RootPath)}\Releases\Install\${Solution.InstallReleaseName}.zip" 
         	targetfilename="${Solution.InstallReleaseName}.zip"
         	summary="${Solution.InstallReleaseName}"/>
   	
@@ -289,7 +291,7 @@
         	username="${GoogleCode.Username}" 
         	password="${GoogleCode.Password}" 
         	projectname="${GoogleCode.ProjectName}" 
-        	filename="${Project.RootPath}\Releases\Source\${Solution.SourceReleaseName}.zip" 
+        	filename="${path::get-full-path(Project.RootPath)}\Releases\Source\${Solution.SourceReleaseName}.zip" 
         	targetfilename="${Solution.SourceReleaseName}.zip"
         	summary="${Solution.SourceReleaseName}"/>
  
