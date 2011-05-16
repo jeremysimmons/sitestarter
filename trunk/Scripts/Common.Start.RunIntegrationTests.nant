@@ -19,6 +19,8 @@
   		
 	<include buildfile="Common.Jobs.RunIntegrationTests.nant"/>
 	<include buildfile="Common.Jobs.ClearData.nant"/>
+	<include buildfile="Common.Jobs.ClearCache.nant"/>
+	<include buildfile="Common.Jobs.KillDBServer.nant"/>
 
 	<target name="Common.Start.RunIntegrationTests" description="Runs the integration tests.">		
 		<call target="Common.Jobs.RunIntegrationTests"/>

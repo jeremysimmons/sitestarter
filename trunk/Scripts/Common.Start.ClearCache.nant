@@ -18,6 +18,7 @@
   		
   		
 	<include buildfile="Common.Jobs.ClearCache.nant"/>
+	<include buildfile="Common.Jobs.KillDBServer.nant"/>
 
 	<target name="Common.Start.ClearCache" description="Clears the caches from all web applications (in. /WWW/App_Data/)">		
 		<call target="Common.Jobs.ClearCache"/>
