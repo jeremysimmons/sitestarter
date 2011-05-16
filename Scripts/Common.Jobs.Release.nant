@@ -42,12 +42,19 @@
     	
     	<xmlpeek
 		    file="${Solution.PropertiesPath}"
-		    xpath="/x:project/x:property[@name = 'Solution.Version']/@value"
-		    property="Solution.Version">
+		    xpath="/x:project/x:property[@name = 'Solution.VersionMode']/@value"
+		    property="Solution.VersionMode">
 		        <namespaces>
         			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
     			</namespaces>
     	</xmlpeek>
+
+
+	<loadfile
+	    file="${path::combine(Solution.RootPath, 'Version.Number')}"
+	    property="Solution.Version" />
+
+	<property name="Solution.Version" value="${Solution.Version} ${Solution.VersionMode}" />
     	
     	<property name="Solution.ReleaseTimestamp" value="${datetime::get-year(datetime::now())}-${datetime::get-month(datetime::now())}-${datetime::get-day(datetime::now())}--${datetime::get-hour(datetime::now())}-${datetime::get-minute(datetime::now())}-${datetime::get-second(datetime::now())}"/>
     	
@@ -269,24 +276,24 @@
         			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
     			</namespaces>
     	</xmlpeek>
-  
+
+
 	<gcupload 
-        username="${GoogleCode.Username}" 
-        password="${GoogleCode.Password}" 
-        projectname="${GoogleCode.ProjectName}" 
-        filename="${Solution.RootPath}\..\..\Releases\Install\${Solution.InstallReleaseName}.zip" 
-        targetfilename="${Solution.InstallReleaseName}.zip"
-        summary="${Solution.InstallReleaseName}"/>
-<!--        labels="Featured, Type-Package, OpSys-All" /-->
-  
+        	username="${GoogleCode.Username}" 
+        	password="${GoogleCode.Password}" 
+        	projectname="${GoogleCode.ProjectName}" 
+        	filename="${Solution.RootPath}\..\..\Releases\Install\${Solution.InstallReleaseName}.zip" 
+        	targetfilename="${Solution.InstallReleaseName}.zip"
+        	summary="${Solution.InstallReleaseName}"/>
+  	
 	<gcupload 
-        username="${GoogleCode.Username}" 
-        password="${GoogleCode.Password}" 
-        projectname="${GoogleCode.ProjectName}" 
-        filename="${Solution.RootPath}\..\..\Releases\Source\${Solution.SourceReleaseName}.zip" 
-        targetfilename="${Solution.SourceReleaseName}.zip"
-        summary="${Solution.SourceReleaseName}"/>
-        <!--labels="Featured, Type-Source, OpSys-All" /-->
+        	username="${GoogleCode.Username}" 
+        	password="${GoogleCode.Password}" 
+        	projectname="${GoogleCode.ProjectName}" 
+        	filename="${Solution.RootPath}\..\..\Releases\Source\${Solution.SourceReleaseName}.zip" 
+        	targetfilename="${Solution.SourceReleaseName}.zip"
+        	summary="${Solution.SourceReleaseName}"/>
+ 
   </target>
 
 </project>
