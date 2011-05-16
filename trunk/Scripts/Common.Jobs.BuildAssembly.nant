@@ -27,11 +27,6 @@
 	
 		<echo message="AssemblyProject.PropertiesPath: ${AssemblyProject.PropertiesPath}"/>
 		<property name="AssemblyProject.RootPath" value="${AssemblyProject::GetRootPath(AssemblyProject.PropertiesPath)}"/>
-	
-		<!--call target="Private.InitializeProject"/-->
-	
-		<!--property name="Local.ProjectQuery" value="${path::combine(path::combine('..', AssemblyProject.RelativePath), "*.Project.nant")}"/-->
-		
 		
     	
 		            <property name="AssemblyProject.LibrariesPath" value="${Project.RootPath}\lib"/>
@@ -126,12 +121,13 @@
 	            revisiontype="Increment"
 	            path="${versionFilePath}"/>
 				
-			<!-- TODO: Finish updating the version system -->
-			<!--get src="${ 'http://10.0.0.1:8080/ScriptCommander/Launch/LaunchRaw?Script=VersionNumber.script&Key=Test' }" dest="${versionFilePath}" /-->
-	            
-	  		<property name="AssemblyProject.Version" value="${buildnumber.version}"/>
-		            
+		<property name="AssemblyProject.Version" value="${ buildnumber.version }"/>
 		
+		<property name="versionKey" value="${string::replace(AssemblyProject.BaseNamespace, '.', '-')}"/>
+
+		<get src="${ 'http://10.0.0.1:8080/scripts/Launcher/LaunchRaw/VersionNumber.script?IncrementRevision=true&amp;Key=' + versionKey}" dest="${versionFilePath}" />
+		
+  		<echo message="New version number: ${AssemblyProject.Version}"/>
   		
 		
 		<call target="Common.Actions.GenerateAssemblyInfoFile"/>
@@ -140,44 +136,7 @@
 		
 		<call target="Actions.OutputLibraries"/>
 		
-		
-		<!--echo message="New version saved: ${Project.VersionFile}"/-->
-		
-		<!--echo message="Version file saved: ${Project::SaveVersion(Project.VersionFile, )}"/-->
-		<!--echo message="New version: ${Project::LoadVersion(Project.VersionFile)}"/-->
-		
-		            <!--nant buildfile="${Solution.PropertiesPath}" /-->
-		<!--nant buildfile="Common.Actions.InitSolution.nant"-->
-			<!--properties-->
-				<!--property name="Solution.RootPath" value="${Solution.RootPath}"/-->
-			<!--/properties-->
-		<!--/nant-->
-		
-		<!--echo message="Solution root path: ${Solution.RootPath}"/-->
-		
-		<!--foreach item="File" property="filename"-->
-		    <!--in-->
-		        <!--items-->
-		            <!--include name="${path::combine(Solution.RootPath, '*.Solution.nant')}" /-->
-		        <!--/items-->
-		    <!--/in-->
-		    <!--do-->
-				<!--include buildfile="${filename}"-->
-				<!--/include-->
-		    <!--/do-->
-		<!--/foreach-->
-		
-				<!--nant buildfile="Common.Jobs.BuildAssembly.nant"-->
-			<!--properties-->
-				<!--property name="Parameters.ProjectDirectory" value="${Project.RootPath}" /-->
-			<!--/properties-->
-		<!--/nant-->
 	
-		<!--nant buildfile="Common.Jobs.BuildAssembly.nant"-->
-			<!--properties-->
-				<!--property name="Parameters.ProjectDirectory" value="${Project.RootPath}" /-->
-			<!--/properties-->
-		<!--/nant-->
 		
 	</target>
 	
