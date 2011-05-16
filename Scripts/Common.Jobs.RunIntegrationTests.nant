@@ -41,6 +41,7 @@
 		<echo message="Version: ${versionNumber}"/>
 
 		<call target="Common.Jobs.ClearData"/>	
+		<call target="Common.Jobs.ClearCache"/>	
 
 		<property name="seleniumServer" value="../lib/selenium-server.jar"/>
 
@@ -48,7 +49,7 @@
 
 		<echo message="Selenium server mapped: ${path::get-full-path(seleniumServer)}"/>
 
-		<property name="resultsPath" value="${path::get-full-path('../Src/App/IntegrationTests/Results/' + versionNumber + '/Results.html')}"/>
+		<property name="resultsPath" value="${path::get-full-path('../Src/App/IntegrationTests/Results/' + versionNumber + '/index.html')}"/>
 
 		<if test="${directory::exists(path::get-directory-name(resultsPath)) == false}">
 			<mkdir dir="${path::get-directory-name(resultsPath)}"/>
@@ -56,15 +57,15 @@
 
 		<property name="execCommand" value="java"/>
 
-		<echo message="Exec command: ${seleniumServer}"/>
+		<echo message="Exec command: ${execCommand}"/>
 
 		<property name="portNumber" value="${Network::GeneratePortNumber()}"/>
 
-		<echo message="Port: #{portNumber}"/>
+		<echo message="Port: ${portNumber}"/>
 
 		<property name="startUrl" value="http://localhost/${Solution.VirtualDirectoryName}/" />
 
-		<echo message="Start URL: #{startUrl}"/>
+		<echo message="Start URL: ${startUrl}"/>
 
 
 		<exec program="${execCommand}" verbose="true">

@@ -23,6 +23,7 @@
 	<include buildfile="Common.Jobs.DetectVirtualDirectory.nant"/>
 	<include buildfile="Common.Jobs.ConfigureIIS.nant"/>
 	<include buildfile="Common.Jobs.ClearData.nant"/>
+	<include buildfile="Common.Jobs.ClearCache.nant"/>
 	<include buildfile="Common.Jobs.ImportFiles.nant"/>
 	<include buildfile="Common.Jobs.BuildSolution.nant"/>
 	<include buildfile="Common.Jobs.BuildAssembly.nant"/>

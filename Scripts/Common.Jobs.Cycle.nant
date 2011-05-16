@@ -11,7 +11,6 @@
 
 		<call target="Common.Jobs.DetectVirtualDirectory"/>
 		<call target="Common.Jobs.ConfigureIIS"/>	
-
 		<call target="Common.Jobs.BuildSolution"/>	
 		<call target="Common.Jobs.RunTests"/>	
 		<call target="Common.Jobs.RunIntegrationTests"/>	

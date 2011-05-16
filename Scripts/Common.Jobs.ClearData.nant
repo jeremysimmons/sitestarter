@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <project name="Common.Jobs.ClearData" default="Common.Jobs.ClearData" xmlns="http://nant.sf.net/schemas/nant.xsd">
 
-<include buildfile="Common.Jobs.KillDBServer.nant"/>
 	
 <target name="Common.Jobs.ClearData">
 
