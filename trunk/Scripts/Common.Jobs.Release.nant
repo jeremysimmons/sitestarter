@@ -281,7 +281,7 @@
         	username="${GoogleCode.Username}" 
         	password="${GoogleCode.Password}" 
         	projectname="${GoogleCode.ProjectName}" 
-        	filename="${Solution.RootPath}\..\..\Releases\Install\${Solution.InstallReleaseName}.zip" 
+        	filename="${Project.RootPath}\Releases\Install\${Solution.InstallReleaseName}.zip" 
         	targetfilename="${Solution.InstallReleaseName}.zip"
         	summary="${Solution.InstallReleaseName}"/>
   	
@@ -289,7 +289,7 @@
         	username="${GoogleCode.Username}" 
         	password="${GoogleCode.Password}" 
         	projectname="${GoogleCode.ProjectName}" 
-        	filename="${Solution.RootPath}\..\..\Releases\Source\${Solution.SourceReleaseName}.zip" 
+        	filename="${Project.RootPath}\Releases\Source\${Solution.SourceReleaseName}.zip" 
         	targetfilename="${Solution.SourceReleaseName}.zip"
         	summary="${Solution.SourceReleaseName}"/>
  
