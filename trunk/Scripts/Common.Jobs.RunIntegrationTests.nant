@@ -68,7 +68,7 @@
 		<echo message="Start URL: ${startUrl}"/>
 
 
-		<exec program="${execCommand}" verbose="true">
+		<exec program="${execCommand}" verbose="true" failonerror="false">
 			<arg value="-jar"/>
 			<arg value="../lib/selenium-server.jar"/>
 			<arg value="-htmlSuite"/>
