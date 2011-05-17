@@ -93,18 +93,6 @@
     	
     	<property name="AssemblyProject.AssemblyName" value="${string::replace(AssemblyProject.AssemblyName, '${Assembly.BaseNamespace}', AssemblyProject.BaseNamespace)}"/>
      	
-
-    	
-    	<!--echo message="${Project.LibrariesPath}"/-->
-		
-		
-		<!--property name="Solution.RootPath" value="${Solution::GetRootPath(Argument.ProjectPath)}"/-->
-		<!--property name="Solution.PropertiesPath" value="${Solution::GetPropertiesPath(Argument.ProjectPath)}"/-->
-		<!--echo message="Solution.PropertiesPath: ${Solution.PropertiesPath}"/-->
-		
-
-		<!--echo message="${'Project properties path: ' + AssemblyProject.PropertiesPath}"/-->
-		<!--echo message="Project root path: ${Project.RootPath}"/-->
 		
 		<cd dir="${AssemblyProject.RootPath}"/>
 		            

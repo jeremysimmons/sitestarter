@@ -22,7 +22,10 @@
         			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
     			</namespaces>
 	    	</xmlpeek>
-		  
+			
+		<property name="resultsDir" value="${path::combine(path::combine(Solution.RootPath, 'IntegrationTests'), 'Results')}" />
+			
+		<echo message="Results directory: ${resultsDir}"/>
 		  
 		<property name="testSuitePath" value="${path::get-full-path('../Src/App/IntegrationTests/' + Solution.Name + '.Index.html')}"/>
 
@@ -48,13 +51,17 @@
 		<echo message="Selenium server: ${seleniumServer}"/>
 
 		<echo message="Selenium server mapped: ${path::get-full-path(seleniumServer)}"/>
-
-		<property name="resultsPath" value="${path::get-full-path('../Src/App/IntegrationTests/Results/' + versionNumber + '/index.html')}"/>
-
-		<if test="${directory::exists(path::get-directory-name(resultsPath)) == false}">
-			<mkdir dir="${path::get-directory-name(resultsPath)}"/>
-		</if>
-
+		
+		<if test="${directory::exists(resultsDir)}">
+  			<delete dir="${resultsDir}"/>
+  		</if>
+		
+		<property name="resultsPath" value="${path::get-full-path(resultsDir + '/' + versionNumber + '/index.html')}"/>
+		
+		<mkdir dir="${path::get-directory-name(resultsPath)}"/>
+		
+		<echo message="Full results path: ${resultsPath}"/>
+		
 		<property name="execCommand" value="java"/>
 
 		<echo message="Exec command: ${execCommand}"/>
