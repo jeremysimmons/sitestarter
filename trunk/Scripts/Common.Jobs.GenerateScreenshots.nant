@@ -16,8 +16,13 @@
     	</xmlpeek>
     	
 
+			<!-- Call clear data twice and skip errors in the first one. If the first one fails it usually unlocks the file so the second one can proceed. -->
+			<call target="Common.Jobs.ClearData" failonerror="false" />
+
 			<call target="Common.Jobs.ClearData"/>
+
 			<call target="Common.Jobs.ResetImportData"/>
+
 			<call target="DoGeneration"/>
 
   </target>
