@@ -61,6 +61,7 @@
     <None Include="Admin\QuickSetup.aspx" />
     <None Include="Admin\State.aspx" />
     <None Include="Admin\Tests\ClearData.aspx" />
+    <None Include="Admin\Tests\Dispose.aspx" />
     <None Include="Admin\Tests\ResetDefaultData.aspx" />
     <None Include="Admin\Tests\TestBreakableLogging.aspx" />
     <None Include="Admin\Tests\TestContactForm.aspx" />
