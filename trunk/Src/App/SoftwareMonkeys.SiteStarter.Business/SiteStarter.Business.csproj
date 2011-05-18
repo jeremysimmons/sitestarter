@@ -82,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActivateStrategy.cs" />
+    <Compile Include="ActivateSubEntityStrategy.cs" />
     <Compile Include="ApplicationBackup.cs" />
     <Compile Include="ApplicationInstaller.cs" />
     <Compile Include="ApplicationRestorer.cs" />
