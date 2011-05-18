@@ -15,6 +15,7 @@
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.State" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
 <script runat="server">
+public int TotalEntitiesDeleted = 0;
 
 protected override void OnLoad(EventArgs e)
 {
@@ -59,6 +60,8 @@ private void DeleteEntities()
 				{
 					//if (!CanSkipDelete(entity))
 						DataAccess.Data.Deleter.Delete(entity);
+						
+					TotalEntitiesDeleted++;
 				}		
 			}
 		}
@@ -138,7 +141,8 @@ private void DeleteLogs()
 </head>
 <body>
 <form runat="server">
-Done...
+Done...<br/>
+Entities deleted: <%= TotalEntitiesDeleted %>
 </form>
 </body>
 </html>
