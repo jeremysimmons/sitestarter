@@ -43,6 +43,7 @@
     	
 		<echo message="Version: ${versionNumber}"/>
 
+		<call target="Common.Jobs.ClearData" failonerror="false"/>	
 		<call target="Common.Jobs.ClearData"/>	
 		<call target="Common.Jobs.ClearCache"/>	
 
