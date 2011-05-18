@@ -63,6 +63,7 @@
 		<property name="Solution.SourceReleaseName" value="${string::replace(Solution.SourceReleaseName, '${Solution.ReleaseTimestamp}', string::replace(Solution.ReleaseTimestamp, '.', '-'))}"/>
     	<property name="Solution.InstallReleaseName" value="${string::replace(Solution.InstallReleaseName, '${Solution.ReleaseTimestamp}', string::replace(Solution.ReleaseTimestamp, '.', '-'))}"/>
 
+		<call target="Common.Jobs.ClearData" failonerror="false"/>
 		<call target="Common.Jobs.ClearData"/>
 		<call target="Common.Jobs.ResetAll"/>
 
