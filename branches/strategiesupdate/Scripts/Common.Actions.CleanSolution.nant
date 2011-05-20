@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<project name="Common.Actions.CleanSolution" default="Common.Actions.CleanSolution" xmlns="http://nant.sf.net/schemas/nant.xsd">
+   	<target name="Common.Actions.CleanSolution">
+  		<echo message="Start path: ${Solution.RootPath}"/>
+  		<delete>
+    		<fileset>
+	        		<exclude name="*.vshost.exe" />
+        		<exclude name="${Solution.RootPath}\lib\*.*" />
+        		<include name="${Solution.RootPath}\Bin\${Build.Mode}\*.*" />
+        		<include name="${Solution.RootPath}\SoftwareMonkeys.*\bin\${Build.Mode}\*.dll" />
+        		<include name="${Solution.RootPath}\SoftwareMonkeys.*\bin\${Build.Mode}\*.pdb" />
+        		<include name="${Solution.RootPath}\Modules\**\bin\${Build.Mode}\*.dll" />
+        		<include name="${Solution.RootPath}\Modules\**\bin\${Build.Mode}\*.pdb" />
+        		<include name="${Solution.RootPath}\WWW\bin\*.dll" />
+        		<include name="${Solution.RootPath}\WWW\bin\*.pdb" />
+    		</fileset>
+		</delete>
+  	</target>
+</project>
+  	

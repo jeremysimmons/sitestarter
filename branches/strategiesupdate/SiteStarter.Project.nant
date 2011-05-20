@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<project name="SiteStarter.Solution" default="Private.InitSolution" xmlns="http://nant.sf.net/schemas/nant.xsd">
+		  <property name="Project.Name" value="SiteStarter" />
+		  <property name="Project.CompanyName" value="SoftwareMonkeys" />
+		  <property name="Project.BaseNamespace" value="SoftwareMonkeys.SiteStarter" />
+</project>

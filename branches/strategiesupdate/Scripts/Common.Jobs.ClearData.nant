@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<project name="Common.Jobs.ClearData" default="Common.Jobs.ClearData" xmlns="http://nant.sf.net/schemas/nant.xsd">
+
+	
+<target name="Common.Jobs.ClearData">
+
+		<call target="Common.Jobs.KillDBServer"/>
+
+		<delete>
+	    		<fileset basedir="${path::get-full-path(Solution.RootPath)}/">
+	        		<include name="WWW/App_Data/*.config" />
+	        		<include name="WWW/App_Data/**.db4o" />
+	        		<include name="WWW/App_Data/Logs/*.*" />
+	        		<include name="WWW/App_Data/Menu.sitemap" />
+	        		<include name="WWW/App_Data/Menu.local.sitemap" />
+	        		<include name="WWW/App_Data/Menu.staging.sitemap" />
+	        		<include name="WWW/App_Data/Version.number" />
+	        		<include name="WWW/App_Data/Version.local.number" />
+	        		<include name="WWW/App_Data/Version.staging.number" />
+	    		</fileset>
+		</delete>
+
+		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Personalization_Data" />
+		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Imported" />
+		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/FailedImport" />
+		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Suspended" />
+		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Logs" />
+		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Legacy" />
+		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Import" />
+
+
+  </target>
+
+</project>
+  	

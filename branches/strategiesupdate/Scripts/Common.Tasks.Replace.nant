@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<project name="Common.Tasks.Replace" xmlns="http://nant.sf.net/schemas/nant.xsd">
+
+  <target name="Replace">
+<script language="c#">
+
+<code><![CDATA[
+
+public static void ScriptMain(Project project) { project.Properties["string.out"] = project.Properties["string.in"].Replace( project.Properties["string.oldvalue"], project.Properties["string.newvalue" ); 
+}
+]]></code>
+</script>
+
+</target>
+</project>
+  	

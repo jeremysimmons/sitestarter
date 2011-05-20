@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<project name="Common.Actions.GenerateAssemblyInfoFile" default="Common.Actions.GenerateAssemblyInfoFile" xmlns="http://nant.sf.net/schemas/nant.xsd">
+
+
+
+  	<target name="Common.Actions.GenerateAssemblyInfoFile">
+
+	<loadfile
+		    file="${versionFilePath}"
+		    property="AssemblyProject.Version" />
+
+	<echo message="Assembly version: ${AssemblyProject.Version}"/>
+		
+    	<xmlpeek
+		    file="${Project.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Project.CompanyName']/@value"
+		    property="Project.CompanyName">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+    	
+    	<xmlpeek
+		    file="${Project.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Project.Name']/@value"
+		    property="Project.Name">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+    	
+    	<property name="propertiesDirectory" value="${path::combine(AssemblyProject.RootPath, 'Properties')}" />
+    	
+    	<if test="${directory::exists(propertiesDirectory) == false}">
+    		<mkdir dir="${propertiesDirectory}"/>
+    	</if>
+
+
+         <asminfo output="${path::combine(propertiesDirectory, 'AssemblyInfo.cs')}" language="CSharp">
+
+             <imports>
+
+                 <import namespace="System.Reflection" />
+
+                 <import namespace="System.Runtime.InteropServices" />
+
+             </imports>
+             <attributes>
+                 <attribute type="AssemblyTitleAttribute" value="${AssemblyProject.Name}" />
+                 <attribute type="AssemblyDescriptionAttribute" value="" />
+
+                 <attribute type="AssemblyConfigurationAttribute" value="" />
+
+                 <attribute type="AssemblyCompanyAttribute" value="${Project.CompanyName}" />
+
+                <attribute type="AssemblyProductAttribute" value="${AssemblyProject.Name}" />
+
+                 <attribute type="AssemblyCopyrightAttribute" value="Copyright ${Project.CompanyName} (c) ${datetime::get-year(datetime::now())}" />
+
+                 <attribute type="AssemblyTrademarkAttribute" value="" />
+
+                 <attribute type="AssemblyCultureAttribute" value="" />
+
+ 
+
+                 <attribute type="ComVisibleAttribute" value="false" />
+
+ 
+
+                 <!--attribute type="GuidAttribute" value="${Project.Guid}" /-->
+
+ 
+
+                 <attribute type="AssemblyVersionAttribute" value="${AssemblyProject.Version}" />
+
+                 <attribute type="AssemblyFileVersionAttribute" value="${AssemblyProject.Version}" />
+
+             </attributes>
+
+         </asminfo>
+
+     </target>
+</project>
+  	

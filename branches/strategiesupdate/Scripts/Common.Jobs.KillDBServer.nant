@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<project name="Common.Jobs.KillDBServer" default="Common.Jobs.KillDBServer" xmlns="http://nant.sf.net/schemas/nant.xsd">
+
+	
+<target name="Common.Jobs.KillDBServer">
+    	
+	<if test="${file::exists(Solution.RootPath + '\WWW\Web.config')}">
+
+    		<move file="${Solution.RootPath}\WWW\Web.Config" tofile="${Solution.RootPath}\WWW\Web._Config" overwrite="true"/>
+
+    		<move file="${Solution.RootPath}\WWW\Web._Config" tofile="${Solution.RootPath}\WWW\Web.Config" overwrite="true"/>
+
+	</if>    
+
+	<if test="${file::exists(Solution.RootPath + '\WWW\Bin\Db4objects.Db4o.dll')}">
+
+    		<move file="${Solution.RootPath}\WWW\Bin\Db4objects.Db4o.dll" tofile="${Solution.RootPath}\WWW\Bin\Db4objects.Db4o._dll" overwrite="true"/>
+
+    		<move file="${Solution.RootPath}\WWW\Bin\Db4objects.Db4o._dll" tofile="${Solution.RootPath}\WWW\Bin\Db4objects.Db4o.dll" overwrite="true"/>
+
+	</if>    
+
+  </target>
+  
+
+</project>
+  	

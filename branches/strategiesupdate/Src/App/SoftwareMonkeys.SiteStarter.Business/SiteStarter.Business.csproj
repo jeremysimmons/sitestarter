@@ -1,0 +1,222 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F294B839-0C1E-4187-AA58-6EA1C35E6B66}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SoftwareMonkeys.SiteStarter.Business</RootNamespace>
+    <AssemblyName>SoftwareMonkeys.SiteStarter.Business</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <PublishUrl>http://localhost/SoftwareMonkeys.SiteStarter.Business/</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <SourceAnalysisOverrideSettingsFile>F:\Documents and Settings\Jose\Application Data\ICSharpCode/SharpDevelop3.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <NoStdLib>False</NoStdLib>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>Full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <BaseAddress>4194304</BaseAddress>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <FileAlignment>4096</FileAlignment>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\..\..\lib\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=1.0.0.505, Culture=neutral, PublicKeyToken=5120e14c03d0593c">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Lib\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.2.9.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ActivateStrategy.cs" />
+    <Compile Include="ActivateSubEntityStrategy.cs" />
+    <Compile Include="ApplicationBackup.cs" />
+    <Compile Include="ApplicationInstaller.cs" />
+    <Compile Include="ApplicationRestorer.cs" />
+    <Compile Include="BaseDeleteReaction.cs" />
+    <Compile Include="BaseReaction.cs" />
+    <Compile Include="BaseSaveReaction.cs" />
+    <Compile Include="BaseStrategy.cs" />
+    <Compile Include="BaseUpdateReaction.cs" />
+    <Compile Include="CommandInfo.cs" />
+    <Compile Include="CreateStrategy.cs" />
+    <Compile Include="CreateSubEntityStrategy.cs" />
+    <Compile Include="CreateUserStrategy.cs" />
+    <Compile Include="DefaultActions.cs" />
+    <Compile Include="DeleteStrategy.cs" />
+    <Compile Include="DeleteSubEntityStrategy.cs" />
+    <Compile Include="DynamicLanguage.cs" />
+    <Compile Include="Emailer.cs" />
+    <Compile Include="IndexStrategy.cs" />
+    <Compile Include="NotifyStrategy.cs" />
+    <Compile Include="ReactionAttribute.cs" />
+    <Compile Include="ReactionCreator.cs" />
+    <Compile Include="ReactionFileNamer.cs" />
+    <Compile Include="ReactionInfo.cs" />
+    <Compile Include="ReactionInfoCollection.cs" />
+    <Compile Include="ReactionInitializer.cs" />
+    <Compile Include="ReactionLoader.cs" />
+    <Compile Include="ReactionLocator.cs" />
+    <Compile Include="ReactionNotFoundException.cs" />
+    <Compile Include="ReactionSaver.cs" />
+    <Compile Include="ReactionScanner.cs" />
+    <Compile Include="ReactionState.cs" />
+    <Compile Include="ReactionStateNameValueCollection.cs" />
+    <Compile Include="RefreshSubEntityNumbersStrategy.cs" />
+    <Compile Include="SaveStrategy.cs" />
+    <Compile Include="Security\AuthenticateStrategy.cs" />
+    <Compile Include="Security\AuthenticationState.cs" />
+    <Compile Include="Security\AuthoriseCreateStrategy.cs" />
+    <Compile Include="Security\AuthoriseCreateUserRoleStrategy.cs" />
+    <Compile Include="Security\AuthoriseCreateUserStrategy.cs" />
+    <Compile Include="Security\AuthoriseDeleteStrategy.cs" />
+    <Compile Include="Security\AuthoriseDeleteUserStrategy.cs" />
+    <Compile Include="Security\AuthoriseIndexStrategy.cs" />
+    <Compile Include="Security\AuthoriseRegisterUserStrategy.cs" />
+    <Compile Include="Security\AuthoriseRetrieveStrategy.cs" />
+    <Compile Include="Security\AuthoriseSaveStrategy.cs" />
+    <Compile Include="Security\AuthoriseSaveUserRoleStrategy.cs" />
+    <Compile Include="Security\AuthoriseSaveUserStrategy.cs" />
+    <Compile Include="Security\AuthoriseStrategyAttribute.cs" />
+    <Compile Include="Security\AuthoriseUpdateSettingsStrategy.cs" />
+    <Compile Include="Security\AuthoriseUpdateStrategy.cs" />
+    <Compile Include="Security\AuthoriseUpdateUserRoleStrategy.cs" />
+    <Compile Include="Security\AuthoriseUpdateUserStrategy.cs" />
+    <Compile Include="Security\BaseAuthoriseStrategy.cs" />
+    <Compile Include="Security\UnauthorisedException.cs" />
+    <Compile Include="SendEmailStrategy.cs" />
+    <Compile Include="StrategyCreator.cs" />
+    <Compile Include="StrategyLocator.cs" />
+    <Compile Include="StrategyNotFoundException.cs" />
+    <Compile Include="StrategyState.cs" />
+    <Compile Include="Crypter.cs" />
+    <Compile Include="DirectoryZipper.cs" />
+    <Compile Include="RetrieveStrategy.cs" />
+    <Compile Include="StrategyAttribute.cs" />
+    <Compile Include="StrategyFileNamer.cs" />
+    <Compile Include="StrategyInfo.cs" />
+    <Compile Include="StrategyInitializer.cs" />
+    <Compile Include="StrategyLoader.cs" />
+    <Compile Include="StrategySaver.cs" />
+    <Compile Include="StrategyScanner.cs" />
+    <Compile Include="StrategyStateNameValueCollection.cs" />
+    <Compile Include="TestExecutor.cs" />
+    <Compile Include="TestSmtpStrategy.cs" />
+    <Compile Include="UniqueSaveStrategy.cs" />
+    <Compile Include="UniqueUpdateStrategy.cs" />
+    <Compile Include="UniqueValidateStrategy.cs" />
+    <Compile Include="UpdateStrategy.cs" />
+    <Compile Include="ValidateStrategy.cs" />
+    <Compile Include="ZipAnalyzer.cs">
+      <SubType>Component</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration\SiteStarter.Configuration.csproj">
+      <Project>{4B83307F-8307-43EF-A176-8AB1CDA78264}</Project>
+      <Name>SiteStarter.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Contracts\SiteStarter.Contracts.csproj">
+      <Project>{518735AC-EFA2-4205-AE47-CF4664EE3061}</Project>
+      <Name>SiteStarter.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Data\SiteStarter.Data.csproj">
+      <Project>{0D77AB54-E3BE-4B29-8750-91F16BC3DEDB}</Project>
+      <Name>SiteStarter.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Diagnostics\SiteStarter.Diagnostics.csproj">
+      <Project>{C3626F0A-DFD4-4EF2-8755-3532DE3712A4}</Project>
+      <Name>SiteStarter.Diagnostics</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Entities\SiteStarter.Entities.csproj">
+      <Project>{3609F512-9E15-41C7-95AF-D1B3E7F93562}</Project>
+      <Name>SiteStarter.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.State\SiteStarter.State.csproj">
+      <Project>{34129651-3B9F-4A0D-AEBF-7DE2098DD98F}</Project>
+      <Name>SiteStarter.State</Name>
+    </ProjectReference>
+    <Folder Include="Security" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

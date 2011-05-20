@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<project name="Common.Actions.CleanProject" default="Common.Actions.CleanProject" xmlns="http://nant.sf.net/schemas/nant.xsd">
+	<!--property name="Parameter.StartPath" value=""/-->
+	
+  	<target name="Common.Actions.CleanProject">
+  		<echo message="Start path: ${Project.RootPath}"/>
+  		<delete>
+    		<fileset basedir="${path::get-full-path(Parameter.StartPath)}">
+        		<include name="bin/${Project.BuildMode}/*.dll" />
+        		<include name="bin/${Project.BuildMode}/*.pdb" />
+        		<include name="obj/${Project.BuildMode}/*.*" />
+    		</fileset>
+		</delete>
+  	</target>
+</project>
+  	

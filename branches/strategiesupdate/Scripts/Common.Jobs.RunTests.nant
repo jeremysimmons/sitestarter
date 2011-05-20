@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<project name="Common.Jobs.RunTests" default="Common.Jobs.RunTests" xmlns="http://nant.sf.net/schemas/nant.xsd">
+	
+	<property name="Project.TestResultsDirectory" value="${Project.RootPath}\TestResults"/>
+	<property name="Project.LibDirectory" value="${Project.RootPath}\lib"/>
+	
+	
+	<loadtasks>
+	            <fileset>
+	                        <include name="${Project.RootPath}\lib\nant\bin\tasks\nunit2report\NAnt.NUnit2ReportTasks.dll" />
+	            </fileset>
+	</loadtasks> 
+	
+	
+		<xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.TestOrder']/@value"
+		    property="Solution.TestOrder">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+    	
+		<xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.BaseNamespace']/@value"
+		    property="Solution.BaseNamespace">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+	
+  	<target name="Common.Jobs.RunTests"> 	
+  		<!-- Delete the output directories to start from scratch -->
+  		<if test="${directory::exists(path::combine(Project.TestResultsDirectory, 'xml'))}">
+  			<delete dir="${path::combine(Project.TestResultsDirectory, 'xml')}"/>
+  		</if>
+  		<if test="${directory::exists(path::combine(Project.TestResultsDirectory, 'html'))}">
+  			<delete dir="${path::combine(Project.TestResultsDirectory, 'html')}"/>
+  		</if>
+  	
+  		<!-- Create the output directories -->
+  		<if test="${directory::exists(path::combine(Project.TestResultsDirectory, 'xml')) == false}">
+  			<mkdir dir="${path::combine(Project.TestResultsDirectory, 'xml')}"/>
+  		</if>
+  		<if test="${directory::exists(path::combine(Project.TestResultsDirectory, 'html')) == false}">
+  			<mkdir dir="${path::combine(Project.TestResultsDirectory, 'html')}"/>
+  		</if>
+  		
+  		
+		<property name="versionFile" value="${Solution.RootPath}\Version.number"/>
+
+		<if test="${file::exists(versionFile)}">
+			<loadfile
+			    file="${versionFile}"
+			    property="versionNumber" />
+		</if>
+
+		<property name="versionNumber" value="${string::trim-end(string::replace(versionNumber, '.', '-'))}"/>
+  		
+		<foreach item="String" in="${Solution.TestOrder}" delim="," property="testName">
+  			
+			<property name="resultsPath" value="${Project.TestResultsDirectory}\xml\${versionNumber}-${testName}-Tests-Results.xml"/>
+			<echo message="Results path before: ${resultsPath}"/>
+
+			<!-- IMPORTANT: Retrieving full path to eliminate any chance of forward slashes, as a forward slash is an illegal character in this situation -->
+			<property name="resultsPath" value="${path::get-full-path(resultsPath)}"/>
+
+			<property name="testLibraryPath" value="${Project.RootPath}\bin\${Build.Mode}\${Solution.BaseNamespace}.${testName}.Tests.dll"/>
+			<property name="testLibraryPath" value="${path::get-full-path(testLibraryPath)}"/>
+
+			<echo message="Results path: ${resultsPath}"/>
+			<echo message="Test library path: ${testLibraryPath}"/>
+
+	  		<exec program="${Project.LibDirectory}\nunit-console" basedir="${Project.LibDirectory}" failonerror="false">
+	    		<arg value="${testLibraryPath}" />
+	    		<arg value="/xml:${resultsPath}" /><!-- IMPORTANT: Ensure 'resultsPath' does NOT have ANY forward slashes (\) because it can cause get an illegal character error -->
+			</exec>
+			
+		</foreach>
+
+		<property name="htmlResultsPath" value="${Project.TestResultsDirectory}\html\${versionNumber}"/>
+  		<if test="${directory::exists(htmlResultsPath) == false}">
+  			<mkdir dir="${htmlResultsPath}"/>
+  		</if>
+  		
+
+		<nunit2report todir="${htmlResultsPath}">
+		  <fileset basedir="${Project.TestResultsDirectory}\xml">
+		    <include name="*.xml" />
+		  </fileset>
+		</nunit2report>
+
+
+  	</target>  
+
+</project>
+  	
