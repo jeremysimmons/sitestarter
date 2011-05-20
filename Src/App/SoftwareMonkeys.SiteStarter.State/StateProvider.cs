@@ -11,29 +11,29 @@ namespace SoftwareMonkeys.SiteStarter.State
 	/// <summary>
 	/// Initializes and acts as the the state management provider
 	/// </summary>
-    public class StateProvider : BaseStateProvider 
-    {
-    	private string physicalApplicationPath = String.Empty;
-    	/// <summary>
-    	/// Gets/sets the full physical path to the root of the running application.
-    	/// </summary>
-    	public override string PhysicalApplicationPath
-    	{
-    		get { return physicalApplicationPath; }
-    		set { physicalApplicationPath = value; }
-    	}
-    	
-    	private string applicationPath = String.Empty;
-    	/// <summary>
-    	/// Gets/sets the virtual path to the root of the running application.
-    	/// </summary>
-    	public override string ApplicationPath
-    	{
-    		get { return applicationPath; }
-    		set { applicationPath = value; }
-    	}
+	public class StateProvider : BaseStateProvider
+	{
+		private string physicalApplicationPath = String.Empty;
+		/// <summary>
+		/// Gets/sets the full physical path to the root of the running application.
+		/// </summary>
+		public override string PhysicalApplicationPath
+		{
+			get { return physicalApplicationPath; }
+			set { physicalApplicationPath = value; }
+		}
 		
-    	#region Data properties
+		private string applicationPath = String.Empty;
+		/// <summary>
+		/// Gets/sets the virtual path to the root of the running application.
+		/// </summary>
+		public override string ApplicationPath
+		{
+			get { return applicationPath; }
+			set { applicationPath = value; }
+		}
+		
+		#region Data properties
 		private Dictionary<string, object> sessionData;
 		protected Dictionary<string, object> SessionData
 		{
@@ -232,7 +232,7 @@ namespace SoftwareMonkeys.SiteStarter.State
 		}
 		#endregion
 
-        
+		
 		public override string[] GetKeys(StateScope scope)
 		{
 			List<string> keys = new List<string>();
@@ -241,29 +241,37 @@ namespace SoftwareMonkeys.SiteStarter.State
 			{
 				case StateScope.Application:
 					foreach (string key in ApplicationData.Keys)
-						keys.Add(key);
+						if (key != null)
+							keys.Add(key);
 					break;
 				case StateScope.Session:
 					foreach (string key in SessionData.Keys)
-						keys.Add(key);
+						if (key != null)
+							keys.Add(key);
 					break;
 				case StateScope.Operation:
 					foreach (string key in OperationData.Keys)
-						keys.Add(key);
+						if (key != null)
+							keys.Add(key);
+					break;
+				case StateScope.User:
+					foreach (string key in UserData.Keys)
+						if (key != null)
+							keys.Add(key);
 					break;
 			}
 			
 			return keys.ToArray();
 		}
-        
-        public override void Initialize()
-        {
-            StateAccess.State = this;
-            
-            PhysicalApplicationPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            ApplicationPath = PhysicalApplicationPath;
-            
-        }
+		
+		public override void Initialize()
+		{
+			StateAccess.State = this;
+			
+			PhysicalApplicationPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+			ApplicationPath = PhysicalApplicationPath;
+			
+		}
 
-    }
+	}
 }

@@ -91,7 +91,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 				if (Context == null)
 					return String.Empty;
 				if (Context.Items["WindowTitle"] == null)
-					Context.Items["WindowTitle"] = "WorkHub";
+					Context.Items["WindowTitle"] = "SiteStarter";
 				return (string)Context.Items["WindowTitle"];
 			}
 			set { Context.Items["WindowTitle"] = value; }

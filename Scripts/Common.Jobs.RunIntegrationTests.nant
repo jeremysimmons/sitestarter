@@ -86,6 +86,9 @@
 			<arg value='"${resultsPath}"'/>
 			<arg value="-port"/>
 			<arg value="${portNumber}"/>
+			<arg value="-debug"/>
+			<arg value="-timeout"/>
+			<arg value="3600000"/>
 		</exec>
   	</target>
 

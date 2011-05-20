@@ -153,7 +153,12 @@
 	
 	<property name="LatestReleasePath" value="${Project.RootPath}\..\${Project.Name}-SourceRelease\${Solution.Alias}"/>
 	<if test="${directory::exists(LatestReleasePath) == true}">
-		<delete dir="${LatestReleasePath}"/>
+		<!--delete dir="${LatestReleasePath}"/-->
+		<delete>
+		    <fileset>
+		        <include name="${LatestReleasePath}\**.*" />
+		    </fileset>
+		</delete>
 	</if>
 	<if test="${directory::exists(LatestReleasePath) == false}">
 		<mkdir dir="${LatestReleasePath}"/>
@@ -240,7 +245,12 @@
 	</zip>
 	<property name="LatestReleasePath" value="${Project.RootPath}\..\${Project.Name}-InstallRelease\${Solution.Alias}"/>
 	<if test="${directory::exists(LatestReleasePath) == true}">
-		<delete dir="${LatestReleasePath}"/>
+		<!--delete dir="${LatestReleasePath}"/-->
+		<delete>
+		    <fileset>
+		        <include name="${LatestReleasePath}\**.*" />
+		    </fileset>
+		</delete>
 	</if>
 	<if test="${directory::exists(LatestReleasePath) == false}">
 		<mkdir dir="${LatestReleasePath}"/>

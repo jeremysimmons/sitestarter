@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Xml;
 using System.Xml.Serialization;
+using NUnit.Framework;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using System.Collections.Generic;
 
 namespace SoftwareMonkeys.SiteStarter.Business
 {
@@ -92,40 +94,47 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// Sets the action and type name indicated by the Strategy attribute on the provided type.
 		/// </summary>
 		/// <param name="type">The strategy type with the Strategy attribute to get the strategy information from.</param>
-		public StrategyInfo(Type type)
+		static public StrategyInfo[] ExtractInfo(Type type)
 		{
+			List<StrategyInfo> list = new List<StrategyInfo>();
+			
 			// Logging disabled to boost performance
 			//using (LogGroup logGroup = LogGroup.Start("Analyzing the provided type to extract the info.", NLog.LogLevel.Debug))
 			//{
-				StrategyAttribute attribute = null;
-				foreach (Attribute a in type.GetCustomAttributes(true))
+			foreach (Attribute a in type.GetCustomAttributes(typeof(StrategyAttribute), true))
+			{
+				if (a is StrategyAttribute)
 				{
-					if (a is StrategyAttribute)
-					{
-						attribute = (StrategyAttribute)a;
-						break;
-					}
+					StrategyAttribute attribute = (StrategyAttribute)a;
+					
+					StrategyInfo info = new StrategyInfo();
+					info.Action = attribute.Action;
+					info.TypeName = attribute.TypeName;
+					info.StrategyType = type.FullName + ", " + type.Assembly.GetName().Name;
+					
+					list.Add(info);
 				}
-				
-				if (attribute == null)
-					throw new ArgumentException("Can't find StrategyAttribute on type: " + type.FullName);
-				
-				Action = attribute.Action;
-				TypeName = attribute.TypeName;
-				StrategyType = type.FullName + ", " + type.Assembly.GetName().Name;
-				
+			}
+			
+			if (list.Count == 0)
+				throw new ArgumentException("Can't find StrategyAttribute on type: " + type.FullName);
+			
+			
 			//	LogWriter.Debug("Action: " + Action);
 			//	LogWriter.Debug("Type name: " + TypeName);
 			//	LogWriter.Debug("Strategy type: " + StrategyType);
 			//}
+			
+			return list.ToArray();
 		}
 		
 		/// <summary>
 		/// Sets the action and tye name indicated by the Strategy attribute on the type of the provided strategy.
 		/// </summary>
 		/// <param name="strategy">The strategy containing the Strategy attribute.</param>
-		public StrategyInfo(IStrategy strategy) : this(strategy.GetType())
-		{}
+		// TODO: Check if needed
+		//public StrategyInfo(IStrategy strategy) : this(strategy.GetType())
+		//{}
 		
 		/// <summary>
 		/// Creates a new instance of the corresponding strategy for use by the system.
@@ -133,18 +142,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns>An instance of the corresponding strategy.</returns>
 		public IStrategy New()
 		{
-			IStrategy strategy = null;
-			// Logging disabled to boost performance
-			//using (LogGroup logGroup = LogGroup.Start("Creating a new strategy."))
-			//{
-			//	LogWriter.Debug("Type name: " + TypeName);
-				
-			//	LogWriter.Debug("Action: " + Action);
-				
-			//	LogWriter.Debug("Key: " + Key);
-				
-				return Creator.CreateStrategy(this);
-			//}
+			return Creator.CreateStrategy(this);
 		}
 		
 		/// <summary>
@@ -170,11 +168,11 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			//using (LogGroup logGroup = LogGroup.Start("Creating a new strategy for the type '" + entityTypeName + "' and action '" + Action + "'.", NLog.LogLevel.Debug))
 			//{
 			//	LogWriter.Debug("Entity type name: " + entityTypeName);
-				
+			
 			//	LogWriter.Debug("Strategy type: " + typeof(T).FullName);
-				
-				strategy = (T)New();
-				strategy.TypeName = entityTypeName;
+			
+			strategy = (T)New();
+			strategy.TypeName = entityTypeName;
 			//}
 			
 			return strategy;

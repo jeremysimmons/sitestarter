@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using SoftwareMonkeys.SiteStarter.Entities;
 using System.Configuration;
 using System.Net.Mail;

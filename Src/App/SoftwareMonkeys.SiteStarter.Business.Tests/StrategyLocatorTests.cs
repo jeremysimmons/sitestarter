@@ -21,8 +21,8 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			
 			StrategyStateNameValueCollection strategies = new StrategyStateNameValueCollection();
 			
-			strategies.Add(new SaveStrategy());
-			strategies.Add(new UniqueSaveStrategy());
+			strategies.Add(typeof(SaveStrategy));
+			strategies.Add(typeof(UniqueSaveStrategy));
 			
 			StrategyLocator locator = new StrategyLocator(strategies);
 			
@@ -42,8 +42,8 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			
 			StrategyStateNameValueCollection strategies = new StrategyStateNameValueCollection();
 			
-			strategies.Add(new SaveStrategy());
-			strategies.Add(new UniqueSaveStrategy());
+			strategies.Add(typeof(SaveStrategy));
+			strategies.Add(typeof(UniqueSaveStrategy));
 			
 			StrategyLocator locator = new StrategyLocator(strategies);
 			
@@ -60,8 +60,8 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			
 			StrategyStateNameValueCollection strategies = new StrategyStateNameValueCollection();
 			
-			strategies.Add(new IndexStrategy());
-			strategies.Add(new MockIndexWidgetStrategy());
+			strategies.Add(typeof(IndexStrategy));
+			strategies.Add(typeof(MockIndexWidgetStrategy));
 			
 			StrategyLocator locator = new StrategyLocator(strategies);
 			
@@ -84,9 +84,9 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			
 			StrategyStateNameValueCollection strategies = new StrategyStateNameValueCollection();
 			
-			strategies.Add(new IndexStrategy());
-			strategies.Add(new MockIndexWidgetStrategy());
-			strategies.Add(new MockIndexInterfaceStrategy());
+			strategies.Add(typeof(IndexStrategy));
+			strategies.Add(typeof(MockIndexWidgetStrategy));
+			strategies.Add(typeof(MockIndexInterfaceStrategy));
 			
 			StrategyLocator locator = new StrategyLocator(strategies);
 			

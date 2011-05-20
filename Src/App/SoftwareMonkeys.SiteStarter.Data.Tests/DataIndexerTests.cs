@@ -898,6 +898,24 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			}
 		}
 		
-		
+		[Test]
+		public void Test_GetEntities()
+		{
+			TestUser user = new TestUser();
+			user.ID = Guid.NewGuid();
+			user.Username = "testuser";
+			
+			DataAccess.Data.Saver.Save(user);
+			
+			// Dispose the data access system to ensure it'll still retrieve them
+			DataAccess.Data.Dispose(true);
+			
+			IEntity[] found = DataAccess.Data.Indexer.GetEntities();
+			
+			Assert.IsNotNull("found", "found variable is null");
+			
+			Assert.AreEqual(1, found.Length, "Wrong number of entities found.");
+			
+		}
 	}
 }

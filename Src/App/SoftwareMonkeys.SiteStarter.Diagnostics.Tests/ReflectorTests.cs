@@ -9,6 +9,22 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics.Tests
 	[TestFixture]
 	public class ReflectorTests : BaseDiagnosticsTestFixture
 	{
+		// TODO: Check if needed. Needs to be completed.
+		/*[Test]
+		public void Test_GetCallingMethod()
+		{
+			MethodBase method = Internal_TestCallingMethod();
+			
+			string expected = "";
+			
+			Assert.AreEqual(expected, method.ToString(), "Doesn't match expected.");
+		}
+		
+		public MethodBase Internal_TestCallingMethod()
+		{
+			return Reflector.GetCallingMethod();
+		}*/
+		
 		[Test]
 		public void Test_GetMethod()
 		{

@@ -14,7 +14,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		{
 			MockIndexWidgetStrategy strategy = new MockIndexWidgetStrategy();
 			
-			StrategyInfo info = new StrategyInfo(strategy);
+			StrategyInfo info = StrategyInfo.ExtractInfo(strategy.GetType())[0];
 			
 			Assert.AreEqual("Widget", info.TypeName, "Type name doesn't match what's expected.");
 			Assert.AreEqual("Index", info.Action, "Action doesn't match what's expected.");

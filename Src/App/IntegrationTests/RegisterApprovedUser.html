@@ -27,6 +27,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>assertTextNotPresent</td>
+	<td>Exception</td>
+	<td></td>
+</tr>
+<tr>
 	<td>open</td>
 	<td>Admin/QuickSetup.aspx</td>
 	<td></td>
@@ -34,6 +39,11 @@
 <tr>
 	<td>waitForPageToLoad</td>
 	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextNotPresent</td>
+	<td>Exception</td>
 	<td></td>
 </tr>
 <tr>
@@ -53,12 +63,12 @@
 </tr>
 <tr>
 	<td>check</td>
-	<td>ctl00_Body_ctl00_AutoApproveNewUsers</td>
+	<td>document.forms[0].elements[8]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>ctl00_Body_ctl00_UpdateButton</td>
+	<td>//input[@value='Update']</td>
 	<td></td>
 </tr>
 <tr>
@@ -127,13 +137,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>open</td>
-	<td>Admin/tests/testreset.aspx</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForPageToLoad</td>
-	<td></td>
+	<td>clickAndWait</td>
+	<td>ctl00_Body_ctl00_UpdateButton</td>
 	<td></td>
 </tr>
 </tbody></table>

@@ -14,7 +14,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		{
 			
 			StrategyStateNameValueCollection strategies = new StrategyStateNameValueCollection();
-			strategies["Save", "IUniqueEntity"] = new StrategyInfo(new UniqueSaveStrategy());
+			strategies["Save", "IUniqueEntity"] = StrategyInfo.ExtractInfo(typeof(UniqueSaveStrategy))[0];
 			
 			StrategyInfo strategyInfo = strategies["Save", typeof(TestUser).Name];
 			

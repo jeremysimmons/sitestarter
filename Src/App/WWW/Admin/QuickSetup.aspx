@@ -18,9 +18,9 @@
 	{
 		using (LogGroup logGroup = LogGroup.Start("Running setup script", NLog.LogLevel.Info))
 		{
-	    	SetupChecker checker = new SetupChecker();
-	    	if (checker.RequiresImport())
-	    		Response.Redirect(Request.ApplicationPath);
+	    		SetupChecker checker = new SetupChecker();
+		    	if (checker.RequiresImport())
+		    		Response.Redirect(Request.ApplicationPath);
 		    		
 			Setup();
 			//	Response.Redirect("Restore.aspx");

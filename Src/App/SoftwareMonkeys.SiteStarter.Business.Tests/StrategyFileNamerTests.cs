@@ -11,10 +11,12 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		public void Test_CreateFileName()
 		{
 			IStrategy strategy = new MockRetrieveStrategy();
+			
+			StrategyInfo info = StrategyInfo.ExtractInfo(strategy.GetType())[0];
 						
 			StrategyFileNamer namer = new StrategyFileNamer();
 			
-			string name = namer.CreateFileName(strategy);
+			string name = namer.CreateFileName(info);
 			
 			string expected = "TestUser-Retrieve.strategy";
 			

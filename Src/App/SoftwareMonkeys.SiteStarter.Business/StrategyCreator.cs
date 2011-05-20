@@ -27,7 +27,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 		}
 		
-		/// <summary>
+		// TODO: Check if needed
+		/*/// <summary>
 		/// Creates a new instance of the strategy with a Strategy attribute matching the specified type name and action.
 		/// </summary>
 		/// <param name="action">The action that the new strategy will be performing.</param>
@@ -41,7 +42,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			
 			return strategy;
-		}
+		}*/
 		
 		/// <summary>
 		/// Creates a new instance of the strategy with a Strategy attribute matching the specified type name and action.
@@ -82,6 +83,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				}
 				
 				strategy.TypeName = strategyInfo.TypeName;
+				strategy.Action = strategyInfo.Action;
 				
 				AttachReactions(strategyInfo.Action, strategy);
 				
