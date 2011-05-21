@@ -8,6 +8,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// <summary>
 	/// 
 	/// </summary>
+	[Strategy("Test", "SMTP")]
 	public class TestSmtpStrategy : BaseStrategy
 	{
 		static public string SmtpServer

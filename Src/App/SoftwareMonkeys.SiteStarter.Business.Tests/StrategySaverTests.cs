@@ -25,8 +25,6 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			StrategyInfo foundStrategy = LoadMockStrategy(strategy);
 			
 			Assert.IsNotNull(foundStrategy, "The strategy wasn't saved or couldn't be loaded.");
-			
-			
 		}
 		
 		public StrategyInfo LoadMockStrategy(StrategyInfo strategy)

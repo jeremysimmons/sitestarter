@@ -100,7 +100,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				strategyInfo = LocateFromInterfaces(action, type);
 				
 				if (strategyInfo == null)
+				{
 					strategyInfo = LocateFromBaseTypes(action, type);
+				}
 				
 			//	LogWriter.Debug("Strategy found: " + (strategyInfo != null ? strategyInfo.StrategyType : "[null]"));
 			//	LogWriter.Debug("Strategy key: " + (strategyInfo != null ? strategyInfo.Key : "[null]"));
@@ -163,7 +165,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			StrategyInfo strategyInfo = null;
 			//using (LogGroup logGroup = LogGroup.Start("Locating strategy via the base types of the provided type.", NLog.LogLevel.Debug))
 			//{
-				
 				TypeNavigator navigator = new TypeNavigator(type);
 				
 				while (navigator.HasNext && strategyInfo == null)

@@ -63,18 +63,10 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				
 				using (StreamWriter writer = File.CreateText(path))
 				{
-					// TODO: Clean up
-					try
-					{
-						XmlSerializer serializer = new XmlSerializer(typeof(StrategyInfo));
+					XmlSerializer serializer = new XmlSerializer(typeof(StrategyInfo));
 					
-					//serializer.Serialize(writer, strategy);
-					//writer.Close();
-					}
-					catch
-					{
-						throw new Exception(strategy.ToString());
-					}
+					serializer.Serialize(writer, strategy);
+					writer.Close();
 				}
 			}
 		}

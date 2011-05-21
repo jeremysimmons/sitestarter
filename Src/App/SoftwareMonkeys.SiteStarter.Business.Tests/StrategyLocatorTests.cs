@@ -100,5 +100,42 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			
 			Assert.AreEqual(expected, info.StrategyType, "Wrong strategy type selected.");
 		}
+		
+		[Test]
+		public void Test_Locate()
+		{			
+			StrategyLocator locator = new StrategyLocator(StrategyState.Strategies);
+			
+			StrategyInfo info = locator.Locate("Delete", "TestArticle");
+			
+			string expectedType = typeof(DeleteStrategy).FullName + ", " + typeof(DeleteStrategy).Assembly.GetName().Name;
+			
+			Assert.AreEqual(expectedType, info.StrategyType, "Wrong strategy located.");
+		}
+		
+		[Test]
+		public void Test_Locate_Base_Delete()
+		{			
+			StrategyLocator locator = new StrategyLocator(StrategyState.Strategies);
+			
+			StrategyInfo info = locator.Locate("Delete", "IEntity");
+			
+			string expectedType = typeof(DeleteStrategy).FullName + ", " + typeof(DeleteStrategy).Assembly.GetName().Name;
+			
+			Assert.AreEqual(expectedType, info.StrategyType, "Wrong strategy located.");
+		}
+		
+		
+		[Test]
+		public void Test_Locate_Base_Save()
+		{			
+			StrategyLocator locator = new StrategyLocator(StrategyState.Strategies);
+			
+			StrategyInfo info = locator.Locate("Save", "IEntity");
+			
+			string expectedType = typeof(SaveStrategy).FullName + ", " + typeof(SaveStrategy).Assembly.GetName().Name;
+			
+			Assert.AreEqual(expectedType, info.StrategyType, "Wrong strategy located.");
+		}
 	}
 }
