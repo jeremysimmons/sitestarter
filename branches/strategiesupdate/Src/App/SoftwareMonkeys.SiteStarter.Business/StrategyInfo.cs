@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Xml;
 using System.Xml.Serialization;
-using NUnit.Framework;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using System.Collections.Generic;
 
@@ -94,6 +93,22 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// Sets the action and type name indicated by the Strategy attribute on the provided type.
 		/// </summary>
 		/// <param name="type">The strategy type with the Strategy attribute to get the strategy information from.</param>
+		public StrategyInfo(Type type)
+		{
+			throw new Exception("This function is obsolete.");
+		}
+		
+		/// <summary>
+		/// Sets the action and tye name indicated by the Strategy attribute on the type of the provided strategy.
+		/// </summary>
+		/// <param name="strategy">The strategy containing the Strategy attribute.</param>
+		public StrategyInfo(IStrategy strategy) : this(strategy.GetType())
+		{}
+		
+		/// <summary>
+		/// Sets the action and type name indicated by the Strategy attribute on the provided type.
+		/// </summary>
+		/// <param name="type">The strategy type with the Strategy attribute to get the strategy information from.</param>
 		static public StrategyInfo[] ExtractInfo(Type type)
 		{
 			List<StrategyInfo> list = new List<StrategyInfo>();
@@ -101,7 +116,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			// Logging disabled to boost performance
 			//using (LogGroup logGroup = LogGroup.Start("Analyzing the provided type to extract the info.", NLog.LogLevel.Debug))
 			//{
-			foreach (Attribute a in type.GetCustomAttributes(typeof(StrategyAttribute), true))
+			foreach (Attribute a in type.GetCustomAttributes(typeof(StrategyAttribute), false))
 			{
 				if (a is StrategyAttribute)
 				{
