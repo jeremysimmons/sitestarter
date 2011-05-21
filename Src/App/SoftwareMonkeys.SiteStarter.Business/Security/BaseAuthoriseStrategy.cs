@@ -51,9 +51,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// <returns></returns>
 		public virtual string GetRestrictedAction()
 		{
-			StrategyInfo info = new StrategyInfo(this);
-			
-			return info.Action.Replace("Authorise", "");
+			return Action.Replace("Authorise", "");
 		}
 	}
 }

@@ -55,17 +55,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		}
 		
 		/// <summary>
-		/// Creates the file name for the provided strategy.
-		/// </summary>
-		/// <param name="strategy">The strategy to create the file name for.</param>
-		/// <returns>The full file name for the provided entity.</returns>
-		public string CreateFileName(IStrategy strategy)
-		{
-			return CreateFileName(new StrategyInfo(strategy));
-		}
-		
-		
-		/// <summary>
 		/// Creates the full file path for the provided strategy.
 		/// </summary>
 		/// <param name="strategy">The strategy to create the file path for.</param>
@@ -73,17 +62,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public string CreateFilePath(StrategyInfo strategy)
 		{
 			return StrategiesDirectoryPath + Path.DirectorySeparatorChar + CreateFileName(strategy);
-		}
-		
-		/// <summary>
-		/// Creates the full file path for the provided strategy.
-		/// </summary>
-		/// <param name="strategy">The strategy to create the file path for.</param>
-		/// <returns>The full file path for the provided strategy.</returns>
-		public string CreateFilePath(IStrategy strategy)
-		{
-			return CreateFilePath(new StrategyInfo(strategy));
-		}
-		
+		}		
 	}
 }

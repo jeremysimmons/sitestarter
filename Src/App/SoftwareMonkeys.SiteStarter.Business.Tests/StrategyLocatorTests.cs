@@ -21,8 +21,8 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			
 			StrategyStateNameValueCollection strategies = new StrategyStateNameValueCollection();
 			
-			strategies.Add(new SaveStrategy());
-			strategies.Add(new UniqueSaveStrategy());
+			strategies.Add(typeof(SaveStrategy));
+			strategies.Add(typeof(UniqueSaveStrategy));
 			
 			StrategyLocator locator = new StrategyLocator(strategies);
 			
@@ -42,8 +42,8 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			
 			StrategyStateNameValueCollection strategies = new StrategyStateNameValueCollection();
 			
-			strategies.Add(new SaveStrategy());
-			strategies.Add(new UniqueSaveStrategy());
+			strategies.Add(typeof(SaveStrategy));
+			strategies.Add(typeof(UniqueSaveStrategy));
 			
 			StrategyLocator locator = new StrategyLocator(strategies);
 			
@@ -60,8 +60,8 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			
 			StrategyStateNameValueCollection strategies = new StrategyStateNameValueCollection();
 			
-			strategies.Add(new IndexStrategy());
-			strategies.Add(new MockIndexWidgetStrategy());
+			strategies.Add(typeof(IndexStrategy));
+			strategies.Add(typeof(MockIndexWidgetStrategy));
 			
 			StrategyLocator locator = new StrategyLocator(strategies);
 			
@@ -84,9 +84,9 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			
 			StrategyStateNameValueCollection strategies = new StrategyStateNameValueCollection();
 			
-			strategies.Add(new IndexStrategy());
-			strategies.Add(new MockIndexWidgetStrategy());
-			strategies.Add(new MockIndexInterfaceStrategy());
+			strategies.Add(typeof(IndexStrategy));
+			strategies.Add(typeof(MockIndexWidgetStrategy));
+			strategies.Add(typeof(MockIndexInterfaceStrategy));
 			
 			StrategyLocator locator = new StrategyLocator(strategies);
 			
@@ -99,6 +99,43 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			string expected = mockStrategyType.FullName + ", " + mockStrategyType.Assembly.GetName().Name;
 			
 			Assert.AreEqual(expected, info.StrategyType, "Wrong strategy type selected.");
+		}
+		
+		[Test]
+		public void Test_Locate()
+		{			
+			StrategyLocator locator = new StrategyLocator(StrategyState.Strategies);
+			
+			StrategyInfo info = locator.Locate("Delete", "TestArticle");
+			
+			string expectedType = typeof(DeleteStrategy).FullName + ", " + typeof(DeleteStrategy).Assembly.GetName().Name;
+			
+			Assert.AreEqual(expectedType, info.StrategyType, "Wrong strategy located.");
+		}
+		
+		[Test]
+		public void Test_Locate_Base_Delete()
+		{			
+			StrategyLocator locator = new StrategyLocator(StrategyState.Strategies);
+			
+			StrategyInfo info = locator.Locate("Delete", "IEntity");
+			
+			string expectedType = typeof(DeleteStrategy).FullName + ", " + typeof(DeleteStrategy).Assembly.GetName().Name;
+			
+			Assert.AreEqual(expectedType, info.StrategyType, "Wrong strategy located.");
+		}
+		
+		
+		[Test]
+		public void Test_Locate_Base_Save()
+		{			
+			StrategyLocator locator = new StrategyLocator(StrategyState.Strategies);
+			
+			StrategyInfo info = locator.Locate("Save", "IEntity");
+			
+			string expectedType = typeof(SaveStrategy).FullName + ", " + typeof(SaveStrategy).Assembly.GetName().Name;
+			
+			Assert.AreEqual(expectedType, info.StrategyType, "Wrong strategy located.");
 		}
 	}
 }

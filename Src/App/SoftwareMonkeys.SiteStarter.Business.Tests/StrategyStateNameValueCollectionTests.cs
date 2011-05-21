@@ -11,7 +11,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		[Test]
 		public void Test_this()
 		{
-			StrategyInfo testStrategy = new StrategyInfo(new RetrieveStrategy());
+			StrategyInfo testStrategy = StrategyInfo.ExtractInfo(typeof(RetrieveStrategy))[0];
 			
 			StrategyStateNameValueCollection collection = new StrategyStateNameValueCollection();
 			
@@ -30,7 +30,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		[ExpectedException("SoftwareMonkeys.SiteStarter.Business.StrategyNotFoundException")]
 		public void Test_this_StrategyNotFound()
 		{
-			StrategyInfo testStrategy = new StrategyInfo(new RetrieveStrategy());
+			StrategyInfo testStrategy = StrategyInfo.ExtractInfo(typeof(RetrieveStrategy))[0];
 			
 			StrategyStateNameValueCollection collection = new StrategyStateNameValueCollection();
 			
@@ -43,7 +43,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		[Test]
 		public void Test_this_Interface()
 		{
-			StrategyInfo testStrategy = new StrategyInfo(new RetrieveStrategy());
+			StrategyInfo testStrategy = StrategyInfo.ExtractInfo(typeof(RetrieveStrategy))[0];
 			
 			StrategyStateNameValueCollection collection = new StrategyStateNameValueCollection();
 			
@@ -62,16 +62,13 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		[Test]
 		public void Test_this_IUniqueEntityInterface()
 		{
-			StrategyInfo uniqueSaveStrategy = new StrategyInfo(new UniqueSaveStrategy());
-			StrategyInfo saveStrategy = new StrategyInfo(new SaveStrategy());
-			
 			StrategyStateNameValueCollection collection = new StrategyStateNameValueCollection();
 			
 			string type = "TestUser";
 			string action = "Save";
 			
-			collection.Add(saveStrategy);
-			collection.Add(uniqueSaveStrategy);
+			collection.Add(typeof(SaveStrategy));
+			collection.Add(typeof(UniqueSaveStrategy));
 			
 			StrategyInfo foundStrategy = collection[action, type];
 			
@@ -84,7 +81,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		[ExpectedException("SoftwareMonkeys.SiteStarter.Business.StrategyNotFoundException")]
 		public void Test_this_Interface_StrategyNotFound()
 		{
-			StrategyInfo testStrategy = new StrategyInfo(new RetrieveStrategy());
+			StrategyInfo testStrategy = StrategyInfo.ExtractInfo(typeof(SaveStrategy))[0];
 			
 			StrategyStateNameValueCollection collection = new StrategyStateNameValueCollection();
 			

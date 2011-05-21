@@ -25,8 +25,6 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			StrategyInfo foundStrategy = LoadMockStrategy(strategy);
 			
 			Assert.IsNotNull(foundStrategy, "The strategy wasn't saved or couldn't be loaded.");
-			
-			
 		}
 		
 		public StrategyInfo LoadMockStrategy(StrategyInfo strategy)
@@ -55,7 +53,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		{
 			IStrategy mockStrategy = new MockRetrieveStrategy();
 			
-			return new StrategyInfo(mockStrategy);
+			return StrategyInfo.ExtractInfo(typeof(MockRetrieveStrategy))[0];
 		}
 		
 		public string GetMockStrategiesDirectoryPath(string applicationName)

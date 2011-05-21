@@ -12,7 +12,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		public void Test_CreateStrategy()
 		{
 			IStrategy strategy = new RetrieveStrategy();
-			StrategyInfo info = new StrategyInfo(strategy);
+			StrategyInfo info = StrategyInfo.ExtractInfo(strategy.GetType())[0];
 			
 			IStrategy created = info.New();
 			

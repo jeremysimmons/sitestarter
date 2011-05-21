@@ -20,6 +20,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTrademarkAttribute("")]
 [assembly: AssemblyCultureAttribute("")]
 [assembly: ComVisibleAttribute(false)]
-[assembly: AssemblyVersionAttribute("2.6.8.53")]
-[assembly: AssemblyFileVersionAttribute("2.6.8.53")]
+[assembly: AssemblyVersionAttribute("2.6.8.51")]
+[assembly: AssemblyFileVersionAttribute("2.6.8.51")]
 

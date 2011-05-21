@@ -80,17 +80,18 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					{
 						//LogWriter.Debug("Found strategy type: " + type.ToString());
 						
-						StrategyInfo strategyInfo = new StrategyInfo(type);
-						
-						if (strategyInfo.TypeName != null && strategyInfo.TypeName != String.Empty
-						    && strategyInfo.Action != null && strategyInfo.Action != String.Empty)
+						foreach (StrategyInfo strategyInfo in  StrategyInfo.ExtractInfo(type))
 						{
-							//LogWriter.Debug("Found match.");
-							
-							//LogWriter.Debug("Type name: " + strategyInfo.TypeName);
-							//LogWriter.Debug("Action: " + strategyInfo.Action);
-							
-							strategies.Add(strategyInfo);
+							if (strategyInfo.TypeName != null && strategyInfo.TypeName != String.Empty
+							    && strategyInfo.Action != null && strategyInfo.Action != String.Empty)
+							{
+								//LogWriter.Debug("Found match.");
+								
+								//LogWriter.Debug("Type name: " + strategyInfo.TypeName);
+								//LogWriter.Debug("Action: " + strategyInfo.Action);
+								
+								strategies.Add(strategyInfo);
+							}
 						}
 					}
 				}

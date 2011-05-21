@@ -71,15 +71,18 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		
 		
 		/// <summary>
-		/// Adds the info of the provided strategy to the collection.
+		/// Adds the info of the specified strategy to the collection.
 		/// </summary>
-		/// <param name="strategy">The strategy info to add to the collection.</param>
-		public void Add(IStrategy strategy)
+		/// <param name="strategyType">The strategy type to add to the collection.</param>
+		public void Add(Type strategyType)
 		{
-			if (strategy == null)
-				throw new ArgumentNullException("strategy");
+			if (strategyType == null)
+				throw new ArgumentNullException("strategyType");
 			
-			Add(new StrategyInfo(strategy));
+			foreach (StrategyInfo info in StrategyInfo.ExtractInfo(strategyType))
+			{
+				Add(info);
+			}
 		}
 		
 		
