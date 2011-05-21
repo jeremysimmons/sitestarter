@@ -42,7 +42,11 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			string businessAssemblyPath = Assembly.Load("SoftwareMonkeys.SiteStarter.Business").Location;
 			string businessTestsAssemblyPath = Assembly.Load("SoftwareMonkeys.SiteStarter.Business.Tests").Location;
 			
-			string[] assemblyPaths = new String[] {businessAssemblyPath, businessTestsAssemblyPath};
+			string[] assemblyPaths = new String[]
+			{
+				businessAssemblyPath,
+				businessTestsAssemblyPath
+			};
 			
 			// Strategies
 			

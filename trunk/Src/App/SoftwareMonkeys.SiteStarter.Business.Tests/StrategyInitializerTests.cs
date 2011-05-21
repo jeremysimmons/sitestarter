@@ -16,7 +16,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		public void Test_Initialize_StrategiesProvided()
 		{
 			IStrategy strategy = new MockRetrieveStrategy();
-			StrategyInfo info = new StrategyInfo(strategy);
+			StrategyInfo info = StrategyInfo.ExtractInfo(strategy.GetType())[0];
 			
 			StrategyInfo[] strategies = new StrategyInfo[]{info};
 			
@@ -59,7 +59,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			initializer.FileNamer.StrategiesDirectoryPath = GetMockStrategiesDirectoryPath(MockApplicationName);
 			
 			IStrategy strategy = new MockRetrieveStrategy();
-			StrategyInfo info = new StrategyInfo(strategy);
+			StrategyInfo info = StrategyInfo.ExtractInfo(strategy.GetType())[0];
 			info.Action = "MockAction";
 			info.TypeName = "TestUser";
 			info.StrategyType = strategy.GetType().FullName;

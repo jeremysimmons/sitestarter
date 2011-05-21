@@ -20,6 +20,16 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			set { typeName = value; }
 		}
 		
+		private string action = String.Empty;
+		/// <summary>
+		/// Gets/sets the action being carried out.
+		/// </summary>
+		public string Action
+		{
+			get { return action; }
+			set { action = value; }
+		}
+		
 		private bool requireAuthorisation = true;
 		/// <summary>
 		/// Gets/sets a value indicating whether authorisation is required in order for the strategy to execute.
@@ -57,28 +67,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			if (typeName == "IUniqueEntity")
 				throw new InvalidOperationException("The TypeName property cannot be set to 'IUniqueEntity'. A specific type must be specified.");
-		}
-		
-		/// <summary>
-		/// Retrieves the action specified by the Strategy attribute.
-		/// </summary>
-		/// <returns></returns>
-		public virtual string GetAction()
-		{
-			StrategyInfo info = new StrategyInfo(this);
-			
-			return info.Action;
-		}
-		
-		/// <summary>
-		/// Retrieves the short type name specified by the Strategy attribute.
-		/// </summary>
-		/// <returns></returns>
-		public virtual string GetTypeName()
-		{
-			StrategyInfo info = new StrategyInfo(this);
-			
-			return info.TypeName;
 		}
 		
 		private IReaction[] reactions = new IReaction[]{};

@@ -7,6 +7,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// <summary>
 	/// Used to refresh the numbers of sub items.
 	/// </summary>
+	[Strategy("RefreshNumbers", "ISubEntity")]
 	public class RefreshSubEntityNumbersStrategy : BaseStrategy
 	{
 		/// <summary>
