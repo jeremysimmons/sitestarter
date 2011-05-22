@@ -31,6 +31,7 @@
   		<echo message="Solution.RootPath: ${Solution.RootPath}"/>
   		
   		
+	<include buildfile="Common.Jobs.InitializeCache.nant"/>
 	<include buildfile="Common.Jobs.Modules.nant"/>
 	<include buildfile="Common.Jobs.KillDBServer.nant"/>
 	<include buildfile="Common.Jobs.Reset.nant"/>

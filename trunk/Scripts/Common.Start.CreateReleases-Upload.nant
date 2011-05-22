@@ -33,6 +33,7 @@
 
 	
   		
+	<include buildfile="Common.Jobs.InitializeCache.nant"/>
 	<include buildfile="Common.Jobs.Release.nant"/>
 	<include buildfile="Common.Jobs.KillDBServer.nant"/>
 	<include buildfile="Common.Jobs.Modules.nant"/>

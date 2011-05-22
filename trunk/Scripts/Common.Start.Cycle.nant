@@ -20,6 +20,7 @@
   		
   	<include buildfile="Common.Jobs.Cycle.nant"/>
   		
+	<include buildfile="Common.Jobs.InitializeCache.nant"/>
 	<include buildfile="Common.Jobs.DetectVirtualDirectory.nant"/>
 	<include buildfile="Common.Jobs.ConfigureIIS.nant"/>
 	<include buildfile="Common.Jobs.KillDBServer.nant"/>
