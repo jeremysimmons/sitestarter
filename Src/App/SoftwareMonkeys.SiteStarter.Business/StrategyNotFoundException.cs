@@ -27,7 +27,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			set { typeName = value; }
 		}
 		
-		public StrategyNotFoundException(string action, string typeName) : base("A strategy could not be found to carry out the '" + action + "' action with the '" + typeName + "' entity type.")
+		public StrategyNotFoundException(string action, string typeName) : base("A strategy could not be found to carry out the '" + action + "' action with the '" + typeName + "' target type.")
 		{
 			Action = action;
 			TypeName = typeName;
