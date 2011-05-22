@@ -1,6 +1,7 @@
- using System;
+using System;
 using System.Configuration;
 using System.Configuration.Provider;
+using System.Web;
 using System.Web.Configuration;
 using SoftwareMonkeys.SiteStarter.State;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
@@ -30,14 +31,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
 		{
 			if (!isInitialized)
 			{
-
-					if (!isInitialized)
-					{
 						InitializeApplicationState();
 
-						isInitialized = true; //error-free initialization
+						isInitialized = true;
 
-					}
 			}
 		}
 		
@@ -61,6 +58,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
 				ProvidersHelper.InstantiateProviders(qc.Providers, providerCollection, typeof(BaseStateProvider));
 				providerCollection.SetReadOnly();
 				defaultProvider = providerCollection[qc.DefaultProvider];
+				
+				defaultProvider.ApplicationPath = HttpContext.Current.Request.ApplicationPath;
+				defaultProvider.PhysicalApplicationPath = HttpContext.Current.Server.MapPath(HttpContext.Current.Request.ApplicationPath);
+				
 				if (defaultProvider == null)
 				{
 					throw new ConfigurationErrorsException(
@@ -68,11 +69,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
 						qc.ElementInformation.Properties["defaultProvider"].Source,
 						qc.ElementInformation.Properties["defaultProvider"].LineNumber);
 				}
+				
+				StateAccess.State = defaultProvider;
 			}
 			catch (Exception ex)
 			{
 				initializationException = ex;
-				isInitialized = true;
+				isInitialized = false;
 				throw ex;
 			}
 		}
@@ -97,9 +100,5 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
 			}
 		}
 
-		/* public static string DoWork()
-        {
-            return Provider.DoWork();
-        }*/
 	}
 }
