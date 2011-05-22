@@ -166,7 +166,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			using (LogGroup logGroup = LogGroup.Start("Initializing the business projections.", NLog.LogLevel.Debug))
 			{
-				if (StateAccess.IsInitialized && Configuration.Config.IsInitialized)
+				if (StateAccess.IsInitialized)
 				{
 					ProjectionInfo[] projections = new ProjectionInfo[]{};
 					

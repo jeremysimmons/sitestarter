@@ -166,7 +166,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		{
 			using (LogGroup logGroup = LogGroup.Start("Initializing the business parts.", NLog.LogLevel.Debug))
 			{
-				if (StateAccess.IsInitialized && Configuration.Config.IsInitialized)
+				if (StateAccess.IsInitialized)
 				{
 					PartInfo[] parts = new PartInfo[]{};
 					

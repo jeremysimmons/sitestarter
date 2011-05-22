@@ -5,6 +5,7 @@ using System.IO;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using System.Web.UI;
 using System.Web;
+using SoftwareMonkeys.SiteStarter.State;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Parts
 {
@@ -100,7 +101,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 			
 			List<PartInfo> parts = new List<PartInfo>();
 			
-			string relativeFilePath = filePath.Replace(Configuration.Config.Application.PhysicalApplicationPath, "")
+			string relativeFilePath = filePath.Replace(StateAccess.State.PhysicalApplicationPath, "")
 				.Replace(@"\", "/")
 				.Trim('/');
 			

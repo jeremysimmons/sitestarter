@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.IO;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using SoftwareMonkeys.SiteStarter.State;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 {
@@ -47,7 +48,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			List<string> list = new List<string>();
 			
-			string binPath = Configuration.Config.Application.PhysicalApplicationPath
+			string binPath = StateAccess.State.PhysicalApplicationPath
 				+ Path.DirectorySeparatorChar + "bin";
 			
 			foreach (string file in Directory.GetFiles(binPath, "*.dll"))

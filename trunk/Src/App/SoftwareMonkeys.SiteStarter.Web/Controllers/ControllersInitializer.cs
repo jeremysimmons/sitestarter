@@ -121,7 +121,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			using (LogGroup logGroup = LogGroup.Start("Initializing the business controllers.", NLog.LogLevel.Debug))
 			{
-				if (StateAccess.IsInitialized && Configuration.Config.IsInitialized)
+				if (StateAccess.IsInitialized)
 				{
 					ControllerInfo[] controllers = new ControllerInfo[]{};
 					if (IsMapped)
