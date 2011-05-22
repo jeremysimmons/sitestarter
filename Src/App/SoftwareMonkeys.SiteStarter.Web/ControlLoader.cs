@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Web;
 using System.Web.UI;
+using SoftwareMonkeys.SiteStarter.State;
 
 namespace SoftwareMonkeys.SiteStarter.Web
 {
@@ -56,9 +57,12 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		{
 			string virtualPath = physicalPath;
 			
-			virtualPath = virtualPath
-				.Replace(Configuration.Config.Application.PhysicalApplicationPath, "")
-				.Replace("\\", "/");
+			if (StateAccess.IsInitialized)
+			{
+				virtualPath = virtualPath
+					.Replace(StateAccess.State.PhysicalApplicationPath, "")
+					.Replace("\\", "/");
+			}
 			
 			virtualPath = ApplicationPath + "/" + virtualPath;
 			

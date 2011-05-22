@@ -2,6 +2,7 @@
 using SoftwareMonkeys.SiteStarter.Data;
 using System.IO;
 using SoftwareMonkeys.SiteStarter.IO;
+using SoftwareMonkeys.SiteStarter.State;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Projections
 {
@@ -19,8 +20,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			get {
 				if (projectionsDirectoryPath == null || projectionsDirectoryPath == String.Empty)
 				{
-					if (DataAccess.IsInitialized)
-						projectionsDirectoryPath = Configuration.Config.Application.PhysicalApplicationPath + Path.DirectorySeparatorChar + "Projections";
+					if (StateAccess.IsInitialized)
+						projectionsDirectoryPath = StateAccess.State.PhysicalApplicationPath
+							+ Path.DirectorySeparatorChar + "Projections";
 				}
 				return projectionsDirectoryPath;
 			}
@@ -36,8 +38,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			get {
 				if (projectionsInfoDirectoryPath == null || projectionsInfoDirectoryPath == String.Empty)
 				{
-					if (DataAccess.IsInitialized)
-						projectionsInfoDirectoryPath = DataAccess.Data.DataDirectoryPath + Path.DirectorySeparatorChar + "Projections";
+					if (StateAccess.IsInitialized)
+					{
+						projectionsInfoDirectoryPath = StateAccess.State.PhysicalApplicationPath
+							+ Path.DirectorySeparatorChar + "App_Data"
+							+ Path.DirectorySeparatorChar + "Projections";
+					}
 				}
 				return projectionsInfoDirectoryPath;
 			}
