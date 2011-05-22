@@ -11,6 +11,7 @@
 	
 <target name="Common.Jobs.CreateReleaseZips">
 		<call target="Common.Jobs.ResetAll"/>
+		<call target="Common.Jobs.InitializeCache"/>
 
 
 	<xmlpeek
