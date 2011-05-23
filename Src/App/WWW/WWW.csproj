@@ -51,6 +51,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Admin\InitializeCache.aspx" />
+    <None Include="Admin\InitializeScreenshots.aspx" />
     <None Include="Admin\Setup.aspx" />
     <None Include="Admin\Restore.aspx" />
     <None Include="Admin\AutoBackup.aspx" />
