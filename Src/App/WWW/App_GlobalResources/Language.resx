@@ -133,7 +133,7 @@
     <value>Enter the details for the new user in the form below.</value>
   </data>
   <data name="CreateUserRole" xml:space="preserve">
-    <value>Create User Role</value>
+    <value>Create Role</value>
   </data>
   <data name="CreateUserRoleIntro" xml:space="preserve">
     <value>Enter the details of the new user role into the form below.</value>
