@@ -16,12 +16,23 @@
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
 <script runat="server">
 public int TotalEntitiesDeleted = 0;
+public int TotalReferencesDeleted = 0;
+public int TotalStoresDeleted = 0;
+
+public string DataDirectoryPath
+{
+	get { return StateAccess.State.PhysicalApplicationPath + Path.DirectorySeparatorChar + "App_Data"; }
+}
 
 protected override void OnLoad(EventArgs e)
 {
 	using (LogGroup logGroup = LogGroup.Start("Executing the test reset, to clear the test environment ready for a new test.", NLog.LogLevel.Debug))
 	{
-		DeleteEntities();
+		// TODO: Clean up
+	
+		DeleteDb4oFiles();
+	
+		//DeleteEntities();
 		
 		//DeleteMenuFile();
 		
@@ -34,7 +45,8 @@ protected override void OnLoad(EventArgs e)
 		if (Request.QueryString["Log"] != null && Request.QueryString["Log"].ToLower() == "true")
 			DeleteLogs();
 		
-		//DeleteConfigurationFile();
+		if (Request.QueryString["Config"] != null && Request.QueryString["Config"].ToLower() == "true")
+			DeleteConfigurationFile();
 		
 		if (StateAccess.IsInitialized && AuthenticationState.IsAuthenticated)
 			Authentication.SignOut();
@@ -44,6 +56,25 @@ protected override void OnLoad(EventArgs e)
 		// Restart the asp.net application
 		//System.Web.HttpRuntime.UnloadAppDomain();
 	}
+}
+
+private void DeleteDb4oFiles()
+{
+	// Dispose the data access layer so the db4o files can be deleted
+	if (DataAccess.IsInitialized)
+		DataAccess.Dispose(true);
+
+	string dataDirectory = DataDirectoryPath;
+
+	foreach (string file in Directory.GetFiles(dataDirectory, "*.db4o"))
+	{
+		File.Delete(file);
+		
+		TotalStoresDeleted++;
+	}
+	
+	// Re-initialize the data access layer
+	new DataProviderInitializer().Initialize();
 }
 
 private void DeleteEntities()
@@ -62,6 +93,15 @@ private void DeleteEntities()
 						DataAccess.Data.Deleter.Delete(entity);
 						
 					TotalEntitiesDeleted++;
+				}		
+				
+				EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences();
+				
+				foreach (EntityReference reference in references)
+				{
+					DataAccess.Data.Deleter.Delete(reference);
+						
+					TotalReferencesDeleted++;
 				}		
 			}
 		}
@@ -142,7 +182,7 @@ private void DeleteLogs()
 <body>
 <form runat="server">
 Done...<br/>
-Entities deleted: <%= TotalEntitiesDeleted %>
+Data stores cleared: <%= TotalStoresDeleted %>
 </form>
 </body>
 </html>
