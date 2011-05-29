@@ -11,6 +11,39 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 	public class DataReferencerTests : BaseDataTestFixture
 	{
 		[Test]
+		public void Test_GetReferences()
+		{
+				
+				EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences();
+				
+				Assert.IsNotNull(references);
+				                 
+				Assert.AreEqual(0, references.Count, "Invalid number of references found before creating one.");
+			
+				TestUser user = new TestUser();
+				Guid userID = user.ID = Guid.NewGuid();
+				user.FirstName = "Test";
+				user.LastName = "User";
+				
+				TestRole role = new TestRole();
+				Guid roleID = role.ID = Guid.NewGuid();
+				role.Name = "Test Role";
+				
+				
+				user.Roles = Collection<TestRole>.Add(user.Roles, role);
+				
+				DataAccess.Data.Saver.Save(user);
+				
+				DataAccess.Data.Saver.Save(role);
+				
+				references = DataAccess.Data.Referencer.GetReferences();
+				
+				Assert.IsNotNull(references);
+				                 
+				Assert.AreEqual(1, references.Count, "Invalid number of references found after creating one.");
+		}
+		
+		[Test]
 		public void Test_GetReferences_Basic()
 		{
 			using (LogGroup logGroup = LogGroup.Start("Testing the retrieval of references for an entity.", NLog.LogLevel.Debug))

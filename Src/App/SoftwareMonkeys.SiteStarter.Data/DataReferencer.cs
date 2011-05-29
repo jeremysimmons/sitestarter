@@ -10,6 +10,29 @@ namespace SoftwareMonkeys.SiteStarter.Data
 	/// </summary>
 	public abstract class DataReferencer : DataAdapter, IDataReferencer
 	{
+		/// <summary>
+		/// Retrieves all the data references between all types.
+		/// </summary>
+		/// <returns>A collection of the entities found in all data stores.</returns>
+		public virtual EntityReferenceCollection GetReferences()
+		{
+			EntityReferenceCollection references = new EntityReferenceCollection();
+			
+			foreach (string dataStoreName in DataAccess.Data.GetDataStoreNames())
+			{
+				// If the name contains a dash then the store contains references
+				if (dataStoreName.IndexOf('-') > -1)
+				{
+					// Constrain the query to the IEntity type to ensure both EntityIDReference and EntityReference objects are returned
+					EntityIDReference[] entities = Collection<EntityIDReference>.ConvertAll(
+						Provider.Stores[dataStoreName].Indexer.GetEntities());
+						
+					references.AddRange(entities);
+				}
+			}
+			
+			return references;
+		}
 		
 		/// <summary>
 		/// Retrieves all the references between the entities of the specified types.
