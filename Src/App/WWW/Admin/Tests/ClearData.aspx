@@ -27,7 +27,7 @@ private void Page_Init(object sender, EventArgs e)
 private void Page_Load(object sender, EventArgs e)
 {
 	DeleteLogs();
-	DeleteYapFiles();
+	DeleteDb4oFiles();
 	DeleteAppConfig();
 	DeleteSiteMap();
 	DeleteVersion();
@@ -123,10 +123,10 @@ private void DeleteCaches()
 }
 
 
-private void DeleteYapFiles()
+private void DeleteDb4oFiles()
 {
 	if (DataAccess.IsInitialized)
-		DataAccess.Dispose();
+		DataAccess.Dispose(true);
 
 	string dataDirectory = DataDirectoryPath;
 
