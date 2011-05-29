@@ -41,6 +41,34 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		}
 		
 		[Test]
+		public void Test_Delete_Reference()
+		{
+			TestUser user = new TestUser();
+			Guid userID = user.ID = Guid.NewGuid();
+			user.FirstName = "Test";
+			user.LastName = "User";
+			
+			TestRole role = new TestRole();
+			Guid roleID = role.ID = Guid.NewGuid();
+			role.Name = "Test Role";
+			
+			user.Roles = new TestRole[] {role};
+			
+			DataAccess.Data.Saver.Save(user);
+			
+			EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences(typeof(TestUser).Name, typeof(TestRole).Name);
+			
+			Assert.AreEqual(1, references.Count, "Incorrect number of references found.");
+			
+			DataAccess.Data.Deleter.Delete(references[0]);
+			
+			EntityReferenceCollection references2 = DataAccess.Data.Referencer.GetReferences(typeof(TestUser).Name, typeof(TestRole).Name);
+			
+			Assert.AreEqual(0, references2.Count, "Reference not deleted.");
+		}
+		
+		
+		[Test]
 		public void Test_Delete_EntityAndReference()
 		{
 			

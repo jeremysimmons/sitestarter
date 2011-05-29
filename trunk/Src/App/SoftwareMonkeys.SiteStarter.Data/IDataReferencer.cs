@@ -8,10 +8,15 @@ namespace SoftwareMonkeys.SiteStarter.Data
 	/// </summary>
 	public interface IDataReferencer : IDataAdapter
 	{
-		
 		bool MatchReference(Type entityType, Guid entityID, string propertyName, Type referencedEntityType, Guid referencedEntityID, string mirrorPropertyName);
 		bool MatchReference(Type entityType, Guid entityID, string propertyName, Type referencedEntityType, Guid referencedEntityID);
 	
+		/// <summary>
+		/// Retrieves all the data references between all types.
+		/// </summary>
+		/// <returns>A collection of the entities found in all data stores.</returns>
+		EntityReferenceCollection GetReferences();
+		
         /// <summary>
         /// Retrieves all the references to the entities provided.
         /// </summary>
@@ -27,11 +32,10 @@ namespace SoftwareMonkeys.SiteStarter.Data
         EntityReferenceCollection GetObsoleteReferences(IEntity entity, string propertyName, Type referenceType, Guid[] idsOfEntitiesToKeep);
         	
         EntityReferenceCollection GetObsoleteReferences(IEntity entity, Guid[] idsOfEntitiesToKeep);
-        
-        
+                
 		void PersistReferences(EntityReferenceCollection references);
+		
 		void DeleteObsoleteReferences(EntityReferenceCollection references);
-        	
 		
 		void MaintainReferences(IEntity entity);
 		
