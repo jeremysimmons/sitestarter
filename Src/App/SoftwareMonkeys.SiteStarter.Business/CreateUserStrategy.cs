@@ -30,8 +30,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			if (RequireAuthorisation)
 				AuthoriseCreateStrategy.New(TypeName).EnsureAuthorised(TypeName);
 			
-			User user = (User)Activator.CreateInstance(type);
-			user.ID = Guid.NewGuid();
+			User user = (User)base.Create();
 			user.IsApproved = Config.Application.Settings.GetBool("AutoApproveNewUsers");
 			
 			return user;
