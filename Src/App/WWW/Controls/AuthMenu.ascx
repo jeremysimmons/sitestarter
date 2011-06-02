@@ -11,8 +11,8 @@ private void Page_Load(object sender, EventArgs e)
 </script>
 <asp:placeholder runat="server" id="AuthenticationHolder">
         	<asp:placeholder runat="server" visible='<%# AuthenticationState.IsAuthenticated %>'>
-                <%= Resources.Language.YouAreLoggedInAs %>:
-                <%= AuthenticationState.IsAuthenticated ? AuthenticationState.Username : String.Empty %>&nbsp;- <a href='<%= Request.ApplicationPath + "/User-Account.aspx" %>' id='MyAccountLink'><%= Resources.Language.MyAccount %></a> - <a href='<%= Request.ApplicationPath + "/User-SignOut.aspx" %>' id='SignOutLink'><%= Resources.Language.SignOut %></a>
+                <%= Resources.Language.YouAreSignedInAs %>:
+                <%= AuthenticationState.IsAuthenticated ? AuthenticationState.Username : String.Empty %>&nbsp;- <a href='<%= Request.ApplicationPath + "/User-Details.aspx" %>' id='MyDetailsLink'><%= Resources.Language.MyDetails %></a> - <a href='<%= Request.ApplicationPath + "/User-SignOut.aspx" %>' id='SignOutLink'><%= Resources.Language.SignOut %></a>
             </asp:placeholder>
             <asp:placeholder runat="server" visible='<%# !AuthenticationState.IsAuthenticated %>'>
                 <a href='<%= Request.ApplicationPath + "/User-SignIn.aspx" %>' id='SignInLink'>Sign In</a>
