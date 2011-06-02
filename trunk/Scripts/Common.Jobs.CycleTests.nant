@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<project name="Common.Jobs.CycleTests" default="Common.Jobs.CycleTests" xmlns="http://nant.sf.net/schemas/nant.xsd">
+	
+  	<target name="Common.Jobs.CycleTests">
+
+		<call target="Common.Jobs.DetectVirtualDirectory"/>
+		<call target="Common.Jobs.ConfigureIIS"/>	
+		<call target="Common.Jobs.BuildSolution"/>	
+		<call target="Common.Jobs.RunTests"/>	
+		<call target="Common.Jobs.RunIntegrationTests"/>
+		
+	</target>
+
+</project>
