@@ -43,6 +43,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			if (RequireAuthorisation && entity != null)
 				AuthoriseRetrieveStrategy.New(TypeName).EnsureAuthorised(entity);
 			
+			AssignStrategies(entity);
+			
 			return entity;
 		}
 		
@@ -136,12 +138,14 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns>The entity with the specified property matching the provided value.</returns>
 		public IEntity Retrieve(string propertyName, object value)
 		{
-			IEntity entity = DataAccess.Data.Reader.GetEntity(EntitiesUtilities.GetType(TypeName),
+			IEntity entity = DataAccess.Data.Reader.GetEntity(EntityState.GetType(TypeName),
 			                                                  propertyName,
 			                                                  value);
 			
 			if (RequireAuthorisation && entity != null)
 				AuthoriseRetrieveStrategy.New(TypeName).EnsureAuthorised(entity);
+			
+			AssignStrategies(entity);
 			
 			return entity;
 		}
@@ -160,6 +164,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			if (RequireAuthorisation && entity != null)
 				AuthoriseRetrieveStrategy.New<T>().EnsureAuthorised(entity);
 			
+			AssignStrategies(entity);
+			
 			return entity;
 		}
 		
@@ -177,6 +183,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			if (RequireAuthorisation && entity != null)
 				AuthoriseRetrieveStrategy.New<T>().EnsureAuthorised(entity);
 			
+			AssignStrategies(entity);
+			
 			return entity;
 		}
 		
@@ -193,6 +201,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			if (RequireAuthorisation && entity != null)
 				AuthoriseRetrieveStrategy.New(TypeName).EnsureAuthorised(entity);
+			
+			AssignStrategies(entity);
 			
 			return entity;
 		}
@@ -233,9 +243,22 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			if (RequireAuthorisation && entity != null)
 				AuthoriseRetrieveStrategy.New<T>().EnsureAuthorised(entity);
 			
+			AssignStrategies(entity);
+			
 			return entity;
 		}
 		
+		public virtual void AssignStrategies(IEntity entity)
+		{
+			if (entity != null)
+			{
+				// Assign an activation strategy
+				entity.Activator = ActivateStrategy.New(entity);
+				
+				// Assign a validation strategy
+				entity.Validator = ValidateStrategy.New(entity);
+			}
+		}
 		
 		#region New functions
 		/// <summary>
