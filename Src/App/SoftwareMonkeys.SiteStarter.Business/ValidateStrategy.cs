@@ -31,6 +31,12 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			return isValid;
 		}
 		
+		static public IValidateStrategy New(IEntity entity)
+		{
+			IValidateStrategy strategy = StrategyState.Strategies.Creator.NewValidator(entity.GetType());
+			return strategy;
+		}
+		
 		static public IValidateStrategy New(string typeName)
 		{
 			IValidateStrategy strategy = StrategyState.Strategies.Creator.NewValidator(typeName);
