@@ -154,7 +154,6 @@
     <Compile Include="TestSmtpStrategy.cs" />
     <Compile Include="UniqueSaveStrategy.cs" />
     <Compile Include="CreateUniqueEntityStrategy.cs" />
-    <Compile Include="UniqueUpdateStrategy.cs" />
     <Compile Include="UniqueValidateStrategy.cs" />
     <Compile Include="UpdateStrategy.cs" />
     <Compile Include="ValidateStrategy.cs" />
