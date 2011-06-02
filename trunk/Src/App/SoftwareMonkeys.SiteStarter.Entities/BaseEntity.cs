@@ -2,6 +2,8 @@ using System;
 using System.Data;
 using System.Configuration;
 using System.Web;
+using System.Xml.Serialization;
+using SoftwareMonkeys.SiteStarter.Business;
 using SoftwareMonkeys.SiteStarter.Configuration;
 using System.Reflection;
 using SoftwareMonkeys.SiteStarter.Entities;
@@ -29,7 +31,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 			get { return GetType().Name; }
 		}
-
+		
 		/// <summary>
 		/// Empty constructor.
 		/// </summary>
@@ -46,9 +48,14 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			ID = id;
 		}
 		
-		public BaseEntity Clone()
+		public IEntity Clone()
 		{
-			return ObjectCloner.Clone(this);
+			//return EntityCloner.Clone(this);
+			IEntity newEntity = (IEntity)System.Activator.CreateInstance(GetType());
+			
+			CopyTo(newEntity);
+			
+			return newEntity;
 		}
 		
 		IEntity IEntity.Clone()
@@ -69,11 +76,33 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			}
 		}
 		
+		#region Activation
 		
 		/// <summary>
 		/// Strips all the referenced entities.
 		/// </summary>
+        // TODO: Remove strip function if not in use
+        [Obsolete("Use Deactivate function instead.")]
 		public virtual void Strip()
+		{
+			Deactivate();
+		}
+		
+		/// <summary>
+		/// Activates the entity by loading all referenced entities to the relevant properties.
+		/// </summary>
+		public void Activate()
+		{
+			if (Activator == null)
+				throw new InvalidOperationException("Cannot activate.  No activator has been assigned to the Activator property.");
+			
+			Activator.Activate(this);
+		}
+		
+		/// <summary>
+		/// Deactivates the entity by removing all referenced entities from all reference properties.
+		/// </summary>
+		public void Deactivate()
 		{
 			foreach (PropertyInfo property in GetType().GetProperties())
 			{
@@ -83,6 +112,65 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				}
 			}
 		}
+		
+		private IActivateStrategy activator;
+		/// <summary>
+		/// Gets/sets the strategy used to activate the entity references.
+		/// </summary>
+        [XmlIgnore]
+		public IActivateStrategy Activator
+		{
+			get { return activator; }
+			set { activator = value; }
+		}
+		
+		private bool isActivated = false;
+		/// <summary>
+		/// Gets/sets a flag indicating whether the current instance has been activated (ie. the references have been loaded to the properties of the current instance).
+		/// </summary>
+        [XmlIgnore]
+		public bool IsActivated
+		{
+			get { return isActivated; }
+			set { isActivated = value; }
+		}
+		
+        private bool autoActivate = true;
+        /// <summary>
+        /// Gets/sets a value indicating whether the entity should be automatically activated if necessary. Note: Automatic activation may override changes to references (eg. references being added or removed) unless the entity is manually activated before the changes are made.
+        /// </summary>
+        [XmlIgnore]
+        public bool AutoActivate
+        {
+        	get { return autoActivate; }
+        	set { autoActivate = value; }
+        }
+		#endregion
+		
+		#region Validation
+		/// <summary>
+		/// Gets a value indicating whether the entity is valid according to the corrensponding validation strategies.
+		/// </summary>
+        [XmlIgnore]
+		public bool IsValid
+		{
+			get {
+				if (Validator == null)
+					throw new InvalidOperationException("Cannot validate entity. No validation strategy has been set to the Validator property.");
+				return Validator.Validate(this); }
+		}
+		
+		private IValidateStrategy validator;
+		/// <summary>
+		/// Gets/sets the validation strategy used to validate this entity.
+		/// </summary>
+        [XmlIgnore]
+		public IValidateStrategy Validator
+		{
+			get { return validator; }
+			set { validator = value; }
+		}
+		#endregion
 		
 		public virtual void PreStore()
 		{
