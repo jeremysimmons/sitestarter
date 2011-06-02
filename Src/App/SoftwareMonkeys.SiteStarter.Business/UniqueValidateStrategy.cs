@@ -25,6 +25,12 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 		}
 		
+		public override bool Validate(IEntity entity)
+		{
+			return base.Validate(entity) // Run base validation
+				&& Validate(entity, UniquePropertyName); // and unique validation
+		}
+		
 		/// <summary>
 		/// Validates the provided entity by checking whether the provided value of the specified unique property is unique to all entities currently in the system.
 		/// </summary>
@@ -68,6 +74,11 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			return !isTaken;
 		}
 		
+		new static public UniqueValidateStrategy New(IEntity entity)
+		{
+			return New(entity.ShortTypeName);
+		}
+		
 		new static public UniqueValidateStrategy New(string typeName)
 		{
 			UniqueValidateStrategy strategy = null;
@@ -77,6 +88,11 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				strategy = (UniqueValidateStrategy)StrategyState.Strategies.Creator.NewValidator(typeName);
 			}
 			return strategy;
+		}
+		
+		new static public UniqueValidateStrategy New(IEntity entity, bool requireAuthorisation)
+		{
+			return New(entity.ShortTypeName, requireAuthorisation);
 		}
 		
 		new static public UniqueValidateStrategy New(string typeName, bool requireAuthorisation)
