@@ -80,16 +80,21 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			bool valid = false;
 			
 			using (LogGroup logGroup = LogGroup.Start("Validating the provided entity.", NLog.LogLevel.Debug))
-			{
-				if (Validator == null)
-					throw new InvalidOperationException("The validation strategy can't be found.");
-				
+			{				
 				if (entity == null)
 					throw new ArgumentNullException("entity");
 				
+				if (entity.Validator == null)
+				{
+					if (Validator == null)
+						throw new InvalidOperationException("The validation strategy can't be found.");
+				
+					entity.Validator = Validator;
+				}
+				
 				LogWriter.Debug("Entity type: " + entity.GetType().FullName);
 				
-				valid = Validator.Validate(entity);
+				valid = entity.IsValid;
 				
 				LogWriter.Debug("Valid: " + valid.ToString());
 			}
