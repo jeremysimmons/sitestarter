@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftwareMonkeys.SiteStarter.Configuration;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Business;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
@@ -38,15 +39,27 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			if (user == null)
 				throw new ArgumentNullException("user");
 			
+			SendEmail(user.Name, user.Email, subject, message);
+		}
+		
+		public virtual void SendEmail(string recipientName, string recipientEmail, string subject, string message)
+		{
+			string systemName = Config.Application.Title;
 			// TODO: Let administrators specify reply address
-			string fromEmail = "noreply@softwaremonkeys.net";
+			string systemEmail = "noreply@softwaremonkeys.net";
 			
+			SendEmail(systemName, systemEmail, recipientName, recipientEmail, subject, message);
+		}		
+		
+		public virtual void SendEmail(string senderName, string senderEmail, string recipientName, string recipientEmail, string subject, string message)
+		{
 			try
 			{
-				MailMessage mm = new MailMessage(fromEmail,
-				                                 user.Email,
-				                                 PrepareEmailText(subject),
-				                                 PrepareEmailText(message));
+				MailMessage mm = new MailMessage(senderEmail,
+				                                 recipientEmail,
+				                                 PrepareEmailText(subject, senderName, senderEmail, recipientName, recipientEmail),
+				                                 PrepareEmailText(message, senderName, senderEmail, recipientName, recipientEmail)
+				                                );
 				
 				new SmtpClient(SmtpServer).Send(mm);
 			}
@@ -69,8 +82,14 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="original">The original text.</param>
 		/// <returns></returns>
-		protected virtual string PrepareEmailText(string original)
+		protected virtual string PrepareEmailText(string original, string senderName, string senderEmail, string recipientName, string recipientEmail)
 		{
+			string text = original;
+			
+			text = text.Replace("${Application.Title}", Config.Application.Title);
+			text = text.Replace("${Sender.Name}", senderName);
+			text = text.Replace("${Recipient.Name}", recipientName);
+			
 			return original;
 		}
 		
