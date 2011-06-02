@@ -12,22 +12,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	[Strategy("Update", "IEntity")]
 	public class UpdateStrategy : BaseStrategy, IUpdateStrategy
 	{
-		private IValidateStrategy validator;
-		/// <summary>
-		/// Gets/sets the strategy used to ensure entities are valid.
-		/// </summary>
-		public IValidateStrategy Validator
-		{
-			get {
-				if (validator == null)
-				{
-					validator = StrategyState.Strategies.Creator.NewValidator(TypeName);
-					validator.RequireAuthorisation = RequireAuthorisation;
-				}
-				return validator; }
-			set { validator = value; }
-		}
-		
 		public UpdateStrategy()
 		{
 		}
@@ -54,7 +38,16 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				if (RequireAuthorisation)
 					AuthoriseUpdateStrategy.New(entity.ShortTypeName).EnsureAuthorised(entity);
 				
-				if (Validate(entity))
+				// Ensure that the entity is activated
+				if (!entity.IsActivated)
+				{
+					if (entity.AutoActivate)
+						entity.Activate();
+					else
+						throw new InactiveEntityException(entity);
+				}
+				
+				if (entity.IsValid)
 				{
 					DataAccess.Data.Updater.Update(entity);
 					didSucceed = true;
@@ -69,28 +62,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			}
 			return didSucceed;
 		}
-		
-		/// <summary>
-		/// Validates the provided entity against any business rules. Should be overridden by derived strategies.
-		/// </summary>
-		/// <param name="entity"></param>
-		/// <returns></returns>
-		public virtual bool Validate(IEntity entity)
-		{
-			bool valid = false;
-			using (LogGroup logGroup = LogGroup.Start("Validating the provided entity.", NLog.LogLevel.Debug))
-			{
-				if (Validator == null)
-					throw new InvalidOperationException("The validation strategy can't be found.");
-				
-				valid = Validator.Validate(entity);
-				
-				LogWriter.Debug("Is valid: " + valid.ToString());
-			}
-			return valid;
-		}
-		
-		
 		
 		#region New functions
 		/// <summary>
