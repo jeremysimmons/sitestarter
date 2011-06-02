@@ -83,10 +83,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			using (LogGroup logGroup = LogGroup.StartDebug("Deleting the provided entity."))
 			{
-				Db4oDataStore store = (Db4oDataStore)GetDataStore(entity);
-			
 				if (entity == null)
 					throw new ArgumentNullException("entity");
+				
+				Db4oDataStore store = (Db4oDataStore)GetDataStore(entity);
 			
 				//if (entity.ID == Guid.Empty)
 				//	throw new ArgumentException("entity.ID is set to Guid.Empty on type " + entity.GetType().ToString());
