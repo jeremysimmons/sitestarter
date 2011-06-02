@@ -244,6 +244,26 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			}
 		}
 		
+		[Test]
+		public void Test_Update_DontDuplicate()
+		{
+			TestArticle article = new TestArticle();
+			article.ID = Guid.NewGuid();
+			article.Title = "Mock Title";
+			
+			DataAccess.Data.Saver.Save(article);
+			
+			string newTitle = "Updated";
+			article.Title = newTitle;
+			
+			DataAccess.Data.Updater.Update(article);
+			
+			TestArticle[] foundArticles = DataAccess.Data.Indexer.GetEntities<TestArticle>();
+			
+			Assert.IsNotNull(foundArticles);
+			
+			Assert.AreEqual(1, foundArticles.Length, "Incorrect number of articles found.");
+		}
 		
 	}
 }

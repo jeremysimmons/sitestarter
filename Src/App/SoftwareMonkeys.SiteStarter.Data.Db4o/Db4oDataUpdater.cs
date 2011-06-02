@@ -37,7 +37,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				
 				LogWriter.Debug("Entity type: " + entity.GetType().ToString());
 				LogWriter.Debug("Entity ID : " + entity.ID);
-				
+			
 				entity.PreStore();
 				
 				EntityReferenceCollection latestReferences = Provider.Referencer.GetActiveReferences(entity);
@@ -118,20 +118,16 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				if (entity.ID == Guid.Empty)
 					throw new ArgumentException("entity.ID must be set.");
 				
-				
+				// TODO: Check if needed. Circular references are sometimes wanted.
 				//ReferenceValidator validator = new ReferenceValidator();
 				//validator.CheckForCircularReference(entity);
 				
+				
 				using (Batch batch = BatchState.StartBatch())
 				{
-					if (entity == null)
-						throw new ArgumentNullException("entity");
 					
 					LogWriter.Debug("Entity type: " + entity.GetType().ToString());
 					LogWriter.Debug("Entity ID: " + entity.ID);
-					
-					if (entity == null)
-						throw new ArgumentException("The provided entity hasn't been saved so it cannot be updated.");
 					
 					// Preupdate must be called to ensure all references are correctly stored
 					PreUpdate(entity);
@@ -142,7 +138,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					
 					IEntity existingEntity = reader.GetEntity(entity.GetType(), "ID", entity.ID);
 					
-					
 					if (existingEntity != null)
 					{
 						// Activate the found entity
@@ -151,18 +146,17 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 						// Copy the provided data to the bound entity
 						entity.CopyTo(existingEntity);
 						
-						DataUtilities.StripReferences(existingEntity);
+						// Remove all the referenced entities
+						existingEntity.Deactivate();
 						
-						// TODO: Check if needed. The entity is already bound when it's retrieved
-						// so the Store call shouldn't be necessary
-						// The entity in the store should already reflect the changes
 						store.ObjectContainer.Store(existingEntity);
+
 						LogWriter.Debug("Entity updated.");
 						
 						store.Commit();
-						LogWriter.Debug("ObjectContainer committed.");
-						
 					}
+					else
+						throw new InvalidOperationException("Cannot update an entity that doesn't not already exist in the data store. Save the entity first.");
 				}
 				
 				
