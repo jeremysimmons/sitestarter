@@ -8,6 +8,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// Defines the base class used by all business strategy components.
 	/// </summary>
 	[Strategy(false)]
+	[Serializable] // Required for serialization of entities
 	public class BaseStrategy : IStrategy
 	{
 		private string typeName = String.Empty;
