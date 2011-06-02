@@ -7,12 +7,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// Defines the interface of all update strategies.
 	/// </summary>
 	public interface IUpdateStrategy : IStrategy
-	{
-		/// <summary>
-		/// Gets the validator used to validate the entity before saving.
-		/// </summary>
-		IValidateStrategy Validator {get;}
-		
+	{		
 		/// <summary>
 		/// Updates the provided entity.
 		/// </summary>
