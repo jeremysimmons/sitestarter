@@ -8,7 +8,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// Used to activate entities by retrieving the corresponding references.
 	/// </summary>
 	[Strategy("Activate", "IEntity")]
-	[Serializable] // Attribute needed for cloning entities
+	[Serializable]
 	public class ActivateStrategy : BaseStrategy, IActivateStrategy
 	{
 		public ActivateStrategy()

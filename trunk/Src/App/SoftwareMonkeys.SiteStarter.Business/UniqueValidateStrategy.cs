@@ -9,6 +9,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// Used to validate entities and ensure they're unique.
 	/// </summary>
 	[Strategy("Validate", "IUniqueEntity")]
+	[Serializable]
 	public class UniqueValidateStrategy : ValidateStrategy, IUniqueValidateStrategy
 	{
 		private string uniquePropertyName = "UniqueKey";

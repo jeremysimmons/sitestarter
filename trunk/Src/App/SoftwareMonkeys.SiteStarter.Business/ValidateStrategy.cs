@@ -8,6 +8,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// Used to validate entities before storing or updating them.
 	/// </summary>
 	[Strategy("Validate", "IEntity")]
+	[Serializable]
 	public class ValidateStrategy : BaseStrategy, IValidateStrategy
 	{
 		public ValidateStrategy()
