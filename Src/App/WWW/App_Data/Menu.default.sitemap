@@ -2,7 +2,7 @@
 <siteMap>
   <siteMapNode title="Home" url="~/Default.aspx" description="">
     <siteMapNode title="Administration" url="" description="">
-      <siteMapNode title="Account" url="~/User-Account.aspx" description="" />
+      <siteMapNode title="My Details" url="~/User-Details.aspx" description="" />
       <siteMapNode title="Users" url="~/User-Index.aspx" description="" />
       <siteMapNode title="Roles" url="~/UserRole-Index.aspx" description="" />
       <siteMapNode title="Settings" url="~/Index-Settings.aspx" description="" />
