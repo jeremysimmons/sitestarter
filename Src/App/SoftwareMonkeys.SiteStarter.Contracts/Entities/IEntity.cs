@@ -2,6 +2,7 @@ using System;
 using System.Data;
 using System.Configuration;
 using System.Web;
+using System.Xml.Serialization;
 using SoftwareMonkeys.SiteStarter.Configuration;
 using SoftwareMonkeys.SiteStarter.Business;
 
@@ -29,16 +30,19 @@ namespace SoftwareMonkeys.SiteStarter.Entities
         /// <summary>
         /// Gets/sets the activate strategy used to activate the entity instance.
         /// </summary>
+		[XmlIgnore]
         IActivateStrategy Activator { get;set; }
         
         /// <summary>
         /// Gets/sets a value indicating whether the entire entity instance has been activated. Note: This will not be true if only some of the properties have been activated.
         /// </summary>
+		[XmlIgnore]
         bool IsActivated { get;set; }
         
         /// <summary>
         /// Gets/sets a value indicating whether the entity should be automatically activated if necessary. Note: Automatic activation may override changes to references (eg. references being added or removed) unless the entity is manually activated before the changes are made.
         /// </summary>
+		[XmlIgnore]
         bool AutoActivate { get;set; }
         
         // TODO: Remove strip function if not in use
@@ -55,6 +59,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <summary>
 		/// Gets/sets the validation strategy used to validate this entity.
 		/// </summary>
+		[XmlIgnore]
         IValidateStrategy Validator { get;set; }
         #endregion
         
