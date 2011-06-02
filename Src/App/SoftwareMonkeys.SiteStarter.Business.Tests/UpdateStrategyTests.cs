@@ -23,11 +23,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			article.ID = Guid.NewGuid();
 			article.Title = "Mock Title";
 			
-			Assert.IsNotNull(article.Activator);
-			
 			Data.DataAccess.Data.Saver.Save(article);
-			
-			Assert.IsNotNull(article.Activator);
 			
 			string newTitle = "Updated";
 			article.Title = newTitle;
