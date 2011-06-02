@@ -297,5 +297,29 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			}
 		}
 		
+		[Test]
+		public void Test_Save_DontBindToDataStore()
+		{
+			TestArticle article = new TestArticle();
+			article.ID = Guid.NewGuid();
+			article.Title = "Test Article";
+			
+			DataAccess.Data.Saver.Save(article);
+			
+			TestArticle foundArticle = Data.DataAccess.Data.Reader.GetEntity<TestArticle>("ID", article.ID);
+			
+			Assert.IsNotNull(foundArticle);
+			
+			// Edit the entity
+			article.Title = "Test Article 2";
+			
+			// Retrieve the entity from the store again
+			TestArticle foundArticle2 = Data.DataAccess.Data.Reader.GetEntity<TestArticle>("ID", article.ID);
+			
+			// Ensure that the in memory edit wasn't persisted in the store (as the update function wasn't called)
+			Assert.AreNotEqual(foundArticle2.Title, article.Title, "Changes were persisted in the data store despite the update function not being called.");
+			
+		}
+		
 	}
 }
