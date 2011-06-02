@@ -126,6 +126,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					AuthoriseIndexStrategy.New<T>().EnsureAuthorised<T>(ref entities);
 				
 				LogWriter.Debug("Entity count: " + entities.Length);
+				
+				AssignStrategies(entities);
 			}
 			
 			return entities;
@@ -164,6 +166,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					AuthoriseIndexStrategy.New<T>().EnsureAuthorised<T>(ref entities);
 				
 				LogWriter.Debug("Entity count: " + entities.Length);
+				
+				AssignStrategies(entities);
 			}
 			
 			return entities;
@@ -225,6 +229,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					AuthoriseIndexStrategy.New<T>().EnsureAuthorised(ref entities);
 				
 				LogWriter.Debug("Entity count: " + entities.Length);
+				
+				AssignStrategies(entities);
 			}
 			
 			return entities;
@@ -340,6 +346,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			if (RequireAuthorisation)
 				AuthoriseIndexStrategy.New<T>().EnsureAuthorised(ref entities);
 			
+			AssignStrategies(entities);
+			
 			return entities;
 		}
 		
@@ -353,6 +361,33 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			return this.Index<T>((FilterGroup)group);
 		}
 		
+		/// <summary>
+		/// Assigns validation and activation strategies to the provided entities.
+		/// </summary>
+		/// <param name="entities"></param>
+		public virtual void AssignStrategies(IEntity[] entities)
+		{
+			foreach (IEntity entity in entities)
+			{
+				if (entity != null)
+				{
+					// Assign an activation strategy
+					entity.Activator = ActivateStrategy.New(entity);
+					
+					// Assign a validation strategy
+					entity.Validator = ValidateStrategy.New(entity);
+				}
+			}
+		}
+		
+		/// <summary>
+		/// Assigns validation and activation strategies to the provided entities.
+		/// </summary>
+		/// <param name="entities"></param>
+		public virtual void AssignStrategies<T>(T[] entities)
+		{
+			AssignStrategies(Collection<IEntity>.ConvertAll(entities));
+		}
 		
 		#region New functions
 		/// <summary>

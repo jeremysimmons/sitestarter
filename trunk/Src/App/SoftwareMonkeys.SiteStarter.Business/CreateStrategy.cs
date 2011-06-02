@@ -16,12 +16,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public virtual T Create<T>()
 			where T : IEntity
 		{
-			T entity = (T)Activator.CreateInstance(typeof(T));
-			
-			if (RequireAuthorisation)
-				AuthoriseCreateStrategy.New(TypeName).EnsureAuthorised(TypeName);
-			
-			return entity;
+			return (T)Create();
 		}
 		
 		/// <summary>
@@ -39,6 +34,12 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			if (RequireAuthorisation)
 				AuthoriseCreateStrategy.New(TypeName).EnsureAuthorised(entity);
+			
+			// Assign an activation strategy
+			entity.Activator = ActivateStrategy.New(entity);
+			
+			// Assign a validation strategy
+			entity.Validator = ValidateStrategy.New(entity);
 			
 			return entity;
 		}
