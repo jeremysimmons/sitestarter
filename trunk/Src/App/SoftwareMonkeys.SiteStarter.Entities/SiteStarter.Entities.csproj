@@ -82,7 +82,6 @@
     <Compile Include="EntityState.cs" />
     <Compile Include="EntityStateCollection.cs" />
     <Compile Include="EntityTypeLoader.cs" />
-    <Compile Include="ObjectCloner.cs" />
     <Compile Include="PagingLocation.cs" />
     <Compile Include="ReferenceAttribute.cs" />
     <Compile Include="SerializableCollection.cs" />
