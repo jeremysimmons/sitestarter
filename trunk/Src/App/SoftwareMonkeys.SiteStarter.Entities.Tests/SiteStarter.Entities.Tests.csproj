@@ -100,7 +100,6 @@
     <Compile Include="BaseEntityTests.cs" />
     <Compile Include="EntitiesUtilitiesTests.cs" />
     <Compile Include="BaseEntityTestFixture.cs" />
-    <Compile Include="EntityClonerTests.cs" />
     <Compile Include="EntityCollectionTests.cs" />
     <Compile Include="EntityIDReferenceTests.cs" />
     <Compile Include="EntityReferenceTests.cs" />
