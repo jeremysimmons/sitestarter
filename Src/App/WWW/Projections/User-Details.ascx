@@ -40,9 +40,9 @@
 </script>
 <asp:MultiView runat="server">
 <asp:View runat="server" ID="DetailsView">
-<h1><%= Resources.Language.MyAccount %></h1>
+<h1><%= Resources.Language.MyDetails %></h1>
 <cc:Result runat="server"></cc:Result>
-<p><%= Resources.Language.MyAccountIntro %></p>
+<p><%= Resources.Language.MyDetailsIntro %></p>
 <cc:EntityForm runat="server" id="DetailsForm" CssClass="Panel" OnEntityCommand="DetailsForm_EntityCommand" headingtext='<%# Resources.Language.AccountDetails %>' headingcssclass="Heading2" width="100%">
 <cc:EntityFormLabelItem runat="server" PropertyName="FirstName" FieldControlID="FirstNameLabel" text='<%# Resources.Language.FirstName + ":" %>'></cc:EntityFormLabelItem>
 <cc:EntityFormLabelItem runat="server" PropertyName="LastName" FieldControlID="LastNameLabel" text='<%# Resources.Language.LastName + ":" %>'></cc:EntityFormLabelItem>

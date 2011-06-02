@@ -61,7 +61,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		public override void NavigateAfterSave()
 		{
 			if (((User)DataSource).IsApproved)
-				Navigator.Current.Go("Account", "User");
+				Navigator.Current.Go("Details", "User");
 		}
 		
 		public override bool AuthoriseStrategies()

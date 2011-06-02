@@ -72,8 +72,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			// If the user being saved was the logged in user then send them to their account
 			if (IsSelf)
-				Navigator.Current.Go("Account", "User");
-			// Otherwise send them to the users index to see the new user in the list
+				Navigator.Current.Go("Details", "User");
+			// Otherwise send them to the users index
 			else
 				Navigator.Current.Go("Index", "User");
 		}
