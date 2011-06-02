@@ -21,11 +21,11 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		[Test]
 		public void Test_Update_KeepUnique()
 		{
-			TestArticle article = new TestArticle();
+			TestArticle article = CreateStrategy.New<TestArticle>(false).Create<TestArticle>();
 			article.ID = Guid.NewGuid();
 			article.Title = "Test Title";
 			
-			TestArticle article2 = new TestArticle();
+			TestArticle article2 = CreateStrategy.New<TestArticle>(false).Create<TestArticle>();
 			article2.ID = Guid.NewGuid();
 			article2.Title = "Another Title 2";
 			
@@ -34,7 +34,6 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 				Data.DataAccess.Data.Saver.Save(article);
 				Data.DataAccess.Data.Saver.Save(article2);	
 			}
-			
 			
 			TestArticle article3 = Data.DataAccess.Data.Reader.GetEntity<TestArticle>("ID", article.ID);
 			
@@ -54,9 +53,6 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			
 			// Check that the article was rejected because the title is not unique
 			Assert.IsFalse(articleWasUpdated, "The article was updated even though the title was not unique.");
-			
-			
-			
 		}
 	}
 }
