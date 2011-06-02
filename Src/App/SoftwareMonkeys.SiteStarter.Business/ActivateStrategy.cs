@@ -8,6 +8,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// Used to activate entities by retrieving the corresponding references.
 	/// </summary>
 	[Strategy("Activate", "IEntity")]
+	[Serializable] // Attribute needed for cloning entities
 	public class ActivateStrategy : BaseStrategy, IActivateStrategy
 	{
 		public ActivateStrategy()
@@ -21,6 +22,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			public virtual void Activate(SoftwareMonkeys.SiteStarter.Entities.IEntity entity)
 		{
 			DataAccess.Data.Activator.Activate(entity);
+			
+			// Mark the entity as activated because all reference properties have been activated
+			entity.IsActivated = true;
 		}
 		
 		/// <summary>
@@ -31,6 +35,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public virtual void Activate(SoftwareMonkeys.SiteStarter.Entities.IEntity entity, string propertyName)
 		{
 			DataAccess.Data.Activator.Activate(entity, propertyName);
+			
+			// DO NOT mark the entity as activated because not all reference properties have been activated
 		}
 		
 		/// <summary>
@@ -39,7 +45,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="entities">The entities to activate.</param>
 		public virtual void Activate(SoftwareMonkeys.SiteStarter.Entities.IEntity[] entities)
 		{
-			DataAccess.Data.Activator.Activate(entities);
+			foreach (IEntity entity in entities)
+				Activate(entity);
 		}
 		
 		/// <summary>
@@ -65,7 +72,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			foreach (IEntity entity in entities)
 			{
-				DataAccess.Data.Activator.Activate(entity, depth);
+				Activate(entity, depth);
 			}
 		}
 		
@@ -77,6 +84,10 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public virtual void Activate(SoftwareMonkeys.SiteStarter.Entities.IEntity entity, int depth)
 		{
 				DataAccess.Data.Activator.Activate(entity, depth);
+				
+				// Mark the entity as activated because all reference properties have been activated
+				if (depth >= 1)
+					entity.IsActivated = true;
 		}
 		
 		#region New functions
@@ -106,6 +117,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns></returns>
 		static public IActivateStrategy New(IEntity entity)
 		{
+			if (entity == null)
+				throw new ArgumentNullException("entity");
+			
 			return StrategyState.Strategies.Creator.NewActivator(entity.ShortTypeName);
 		}
 		
