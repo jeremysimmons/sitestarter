@@ -71,10 +71,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Lib\NLog.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework, Version=2.2.9.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Lib\nunit.framework.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
@@ -100,7 +96,9 @@
     <Compile Include="DeleteSubEntityStrategy.cs" />
     <Compile Include="DynamicLanguage.cs" />
     <Compile Include="Emailer.cs" />
+    <Compile Include="InactiveEntityException.cs" />
     <Compile Include="IndexStrategy.cs" />
+    <Compile Include="InvalidEntityException.cs" />
     <Compile Include="NotifyStrategy.cs" />
     <Compile Include="ReactionAttribute.cs" />
     <Compile Include="ReactionCreator.cs" />
@@ -153,9 +151,9 @@
     <Compile Include="StrategySaver.cs" />
     <Compile Include="StrategyScanner.cs" />
     <Compile Include="StrategyStateNameValueCollection.cs" />
-    <Compile Include="TestExecutor.cs" />
     <Compile Include="TestSmtpStrategy.cs" />
     <Compile Include="UniqueSaveStrategy.cs" />
+    <Compile Include="CreateUniqueEntityStrategy.cs" />
     <Compile Include="UniqueUpdateStrategy.cs" />
     <Compile Include="UniqueValidateStrategy.cs" />
     <Compile Include="UpdateStrategy.cs" />
