@@ -173,7 +173,6 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			set { creationDate = value; }
 		}
 
-		//[NonSerialized]
 		private UserRole[] roles;
 		/// <summary>
 		/// Gets/sets the roles to this issue.
@@ -191,7 +190,6 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			}
 		}
 
-		//[Reference(MirrorPropertyName="Users")]
 		IUserRole[] IUser.Roles
 		{
 			get { return Collection<IUserRole>.ConvertAll(roles); }
@@ -210,7 +208,6 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// </summary>
 		public User()
 		{
-			//roles.SourceEntity = this;
 		}
 
 		/// <summary>
