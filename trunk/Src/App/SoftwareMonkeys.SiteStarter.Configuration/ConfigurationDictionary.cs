@@ -55,5 +55,18 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 			else
 				return false;
 		}
+
+		/// <summary>
+		/// Retrieves an integer value from the dictionary.
+		/// </summary>
+		/// <param name="key"></param>
+		/// <returns></returns>
+		public int GetInt(string key)
+		{
+			if (ContainsKey(key))
+				return (int)this[key];
+			else
+				return 0;
+		}
 	}
 }
