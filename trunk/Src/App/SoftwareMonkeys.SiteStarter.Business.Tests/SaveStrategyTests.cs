@@ -31,5 +31,33 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			
 			Assert.IsNotNull(foundArticle);
 		}
+		
+		
+		[Test]
+		public void Test_Save_InvalidEntityMustNotSave()
+		{
+			// Create the mock entity
+			TestUser user = CreateStrategy.New<TestUser>(false).Create<TestUser>();
+			user.ID = Guid.NewGuid();
+			user.FirstName = "Test";
+			user.LastName = "User";
+			
+			// Set a mock validator that will always fail
+			user.Validator = new MockInvalidValidateEntityStrategy();
+			
+			Assert.IsFalse(user.IsValid, "The validator returned true when it should return false.");
+			
+			// Try to save the entity
+			bool isValid = SaveStrategy.New(user, false).Save(user);
+			
+			// Ensure that the save was rejected
+			Assert.IsFalse(isValid, "The save strategy didn't recognise the entity as invalid.");
+			
+			// Try loading the user from the data store to see if it's found
+			TestUser foundUser = RetrieveStrategy.New<TestUser>(false).Retrieve<TestUser>("ID", user.ID);
+			
+			// Ensure the user wasn't found and therefore wasn't saved
+			Assert.IsNull(foundUser, "The entity was found in the store even though it shouldn't have saved.");
+		}
 	}
 }
