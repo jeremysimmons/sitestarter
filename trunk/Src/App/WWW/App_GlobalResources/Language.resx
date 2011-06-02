@@ -222,10 +222,10 @@
   <data name="ManageUsersIntro" xml:space="preserve">
     <value>Manage the existing users in the index below or create a new one.</value>
   </data>
-  <data name="MyAccount" xml:space="preserve">
-    <value>My Account</value>
+  <data name="MyDetails" xml:space="preserve">
+    <value>My Details</value>
   </data>
-  <data name="MyAccountIntro" xml:space="preserve">
+  <data name="MyDetailsIntro" xml:space="preserve">
     <value>The details of your account and shown below. Click "Edit" to modify them.</value>
   </data>
   <data name="Name" xml:space="preserve">
@@ -327,8 +327,8 @@
   <data name="ViewAccount" xml:space="preserve">
     <value>View Account</value>
   </data>
-  <data name="YouAreLoggedInAs" xml:space="preserve">
-    <value>You are logged in as</value>
+  <data name="YouAreSignedInAs" xml:space="preserve">
+    <value>You are signed in as</value>
   </data>
   <data name="NoRoles" xml:space="preserve">
     <value>No Roles</value>
