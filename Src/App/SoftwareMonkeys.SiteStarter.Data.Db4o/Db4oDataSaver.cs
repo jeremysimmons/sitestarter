@@ -28,11 +28,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		public override void PreSave(IEntity entity)
 		{
 			using (LogGroup logGroup = LogGroup.Start("Preparing entity for saving: " + entity.GetType().ToString(), NLog.LogLevel.Debug))
-			{
-				entity.PreStore();
-				
+			{				
 				if (entity == null)
 					throw new ArgumentNullException("entity");
+				
+				entity.PreStore();
 				
 				Type entityType = entity.GetType();
 				
@@ -58,34 +58,38 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				if (entity.ID == Guid.Empty)
 					throw new ArgumentException("entity.ID must be set.");
 				
-				Db4oDataStore store = (Db4oDataStore)GetDataStore(entity);
+				// Clone the entity so that it doesn't get bound to the store
+				IEntity clonedEntity = entity.Clone();
+				
+				
+				Db4oDataStore store = (Db4oDataStore)GetDataStore(clonedEntity);
 				
 				if (store.ObjectContainer == null)
 					throw new InvalidOperationException("The ObjectContainer has not been initialized on the '" + store.Name + "' data store.");
 				
 				using (Batch batch = BatchState.StartBatch())
 				{
-					if (EntitiesUtilities.IsReference(entity.GetType()) && DataAccess.Data.IsStored(entity))
+					if (EntitiesUtilities.IsReference(clonedEntity.GetType()) && DataAccess.Data.IsStored(clonedEntity))
 					{
 						LogWriter.Debug("Existing reference found. Skipping save.");
 						// Just skip the saving altogether, if the reference already exists
 					}
 					else
 					{
-						if (entity == null)
+						if (clonedEntity == null)
 							throw new ArgumentNullException("entity");
 						
-						LogWriter.Debug("Entity type: " + entity.GetType().ToString());
-						LogWriter.Debug("Entity ID: " + entity.ID.ToString());
+						LogWriter.Debug("Entity type: " + clonedEntity.GetType().ToString());
+						LogWriter.Debug("Entity ID: " + clonedEntity.ID.ToString());
 						
-						PreSave(entity);
+						PreSave(clonedEntity);
 						
-						if (entity != null)
+						if (clonedEntity != null)
 						{
-							DataUtilities.StripReferences(entity);
+							DataUtilities.StripReferences(clonedEntity);
 							
 							// Save the entity
-							store.ObjectContainer.Store(entity);
+							store.ObjectContainer.Store(clonedEntity);
 							store.Commit();
 							
 							LogWriter.Debug("Entity stored in '" + store.Name + "' store.");
