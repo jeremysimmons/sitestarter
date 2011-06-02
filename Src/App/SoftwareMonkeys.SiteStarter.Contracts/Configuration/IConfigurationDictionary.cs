@@ -23,5 +23,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 		string GetString(string key);
 		
 		bool GetBool(string key);
+
+		int GetInt(string key);
 	}
 }
