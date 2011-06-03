@@ -23,7 +23,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 			projection.Action = "Create";
 			projection.Type =  typeof(TestArticlePage);
 			
-			TestArticle article = new TestArticle();
+			TestArticle article = CreateStrategy.New<TestArticle>(false).Create<TestArticle>();
 			article.ID = Guid.NewGuid();
 			article.Title = "Test title";
 			

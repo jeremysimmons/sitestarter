@@ -15,16 +15,10 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		{
 		}
 		
-		[SetUp]
-		public void Initialize()
-		{
-			InitializeMockBusiness();
-		}
-		
 		[Test]
 		public void Test_React()
 		{
-			TestArticle article = new TestArticle();
+			TestArticle article = CreateStrategy.New<TestArticle>(false).Create<TestArticle>();
 			article.ID = Guid.NewGuid();
 			article.Title = "Test Article";
 			
