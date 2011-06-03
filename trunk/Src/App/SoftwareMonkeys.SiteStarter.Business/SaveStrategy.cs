@@ -48,7 +48,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				if (RequireAuthorisation)
 					AuthoriseSaveStrategy.New(entity.ShortTypeName).EnsureAuthorised(entity);
 				
-				if (Validate(entity))
+				CheckStrategies(entity);
+				
+				if (entity.IsValid)
 				{
 					LogWriter.Debug("Is valid.");
 					
@@ -70,35 +72,13 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			return saved;
 		}
 		
-		/// <summary>
-		/// Validates the provided entity against any business rules. Should be overridden by derived strategies.
-		/// </summary>
-		/// <param name="entity"></param>
-		/// <returns></returns>
-		public virtual bool Validate(IEntity entity)
+		public void CheckStrategies(IEntity entity)
 		{
-			bool valid = false;
+			if (entity.Validator == null)
+				entity.Validator = ValidateStrategy.New(entity);
 			
-			using (LogGroup logGroup = LogGroup.Start("Validating the provided entity.", NLog.LogLevel.Debug))
-			{				
-				if (entity == null)
-					throw new ArgumentNullException("entity");
-				
-				if (entity.Validator == null)
-				{
-					if (Validator == null)
-						throw new InvalidOperationException("The validation strategy can't be found.");
-				
-					entity.Validator = Validator;
-				}
-				
-				LogWriter.Debug("Entity type: " + entity.GetType().FullName);
-				
-				valid = entity.IsValid;
-				
-				LogWriter.Debug("Valid: " + valid.ToString());
-			}
-			return valid;
+			if (entity.Activator == null)
+				entity.Activator = ActivateStrategy.New(entity);
 		}
 		
 		#region New functions
