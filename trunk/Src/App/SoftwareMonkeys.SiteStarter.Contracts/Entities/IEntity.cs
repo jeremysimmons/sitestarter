@@ -54,6 +54,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
         /// <summary>
 		/// Gets a value indicating whether the entity is valid according to the corrensponding validation strategies.
 		/// </summary>
+		[XmlIgnore]
         bool IsValid { get; }
         
 		/// <summary>
@@ -61,6 +62,12 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// </summary>
 		[XmlIgnore]
         IValidateStrategy Validator { get;set; }
+        
+        /// <summary>
+        /// Gets/sets a value indicating whether the entity requires validation before being saved or updated. Note: Should default to true.
+        /// </summary>
+        [XmlIgnore]
+        bool RequiresValidation { get;set; }
         #endregion
         
         IEntity Clone();
