@@ -8,7 +8,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 	/// 
 	/// </summary>
 	[Strategy("Save", "TestArticle")]
-	public class MockSaveTestArticleStrategy : UniqueSaveStrategy
+	public class MockSaveTestArticleStrategy : SaveStrategy
 	{
 		public MockSaveTestArticleStrategy()
 		{
