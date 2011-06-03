@@ -65,16 +65,16 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			StrategyStateNameValueCollection collection = new StrategyStateNameValueCollection();
 			
 			string type = "TestUser";
-			string action = "Save";
+			string action = "Validate";
 			
-			collection.Add(typeof(SaveStrategy));
-			collection.Add(typeof(UniqueSaveStrategy));
+			collection.Add(typeof(ValidateStrategy));
+			collection.Add(typeof(UniqueValidateStrategy));
 			
 			StrategyInfo foundStrategy = collection[action, type];
 			
 			Assert.IsNotNull(foundStrategy);
 			
-			Assert.AreEqual("UniqueSaveStrategy", foundStrategy.New().GetType().Name, "Loaded the wrong type.");
+			Assert.AreEqual("UniqueValidateStrategy", foundStrategy.New().GetType().Name, "Loaded the wrong type.");
 		}
 		
 		[Test]

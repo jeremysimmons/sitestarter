@@ -17,12 +17,12 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		public void Test_LocateFromInterfaces_Immediate()
 		{
 			Type type = typeof(BaseUniqueEntity);
-			string action = "Save";
+			string action = "Validate";
 			
 			StrategyStateNameValueCollection strategies = new StrategyStateNameValueCollection();
 			
-			strategies.Add(typeof(SaveStrategy));
-			strategies.Add(typeof(UniqueSaveStrategy));
+			strategies.Add(typeof(ValidateStrategy));
+			strategies.Add(typeof(UniqueValidateStrategy));
 			
 			StrategyLocator locator = new StrategyLocator(strategies);
 			
@@ -38,12 +38,12 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		public void Test_LocateFromInterfaces_Heirarchy()
 		{
 			Type type = typeof(TestArticle);
-			string action = "Save";
+			string action = "Validate";
 			
 			StrategyStateNameValueCollection strategies = new StrategyStateNameValueCollection();
 			
-			strategies.Add(typeof(SaveStrategy));
-			strategies.Add(typeof(UniqueSaveStrategy));
+			strategies.Add(typeof(ValidateStrategy));
+			strategies.Add(typeof(UniqueValidateStrategy));
 			
 			StrategyLocator locator = new StrategyLocator(strategies);
 			

@@ -152,7 +152,6 @@
     <Compile Include="StrategyScanner.cs" />
     <Compile Include="StrategyStateNameValueCollection.cs" />
     <Compile Include="TestSmtpStrategy.cs" />
-    <Compile Include="UniqueSaveStrategy.cs" />
     <Compile Include="CreateUniqueEntityStrategy.cs" />
     <Compile Include="UniqueValidateStrategy.cs" />
     <Compile Include="UpdateStrategy.cs" />
