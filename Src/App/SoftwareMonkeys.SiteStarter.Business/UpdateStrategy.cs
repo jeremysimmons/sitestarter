@@ -38,6 +38,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				if (RequireAuthorisation)
 					AuthoriseUpdateStrategy.New(entity.ShortTypeName).EnsureAuthorised(entity);
 				
+				CheckStrategies(entity);
+				
 				// Ensure that the entity is activated
 				if (!entity.IsActivated)
 				{
@@ -62,6 +64,16 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			}
 			return didSucceed;
 		}
+		
+		public void CheckStrategies(IEntity entity)
+		{
+			if (entity.Validator == null)
+				entity.Validator = ValidateStrategy.New(entity);
+			
+			if (entity.Activator == null)
+				entity.Activator = ActivateStrategy.New(entity);
+		}
+		
 		
 		#region New functions
 		/// <summary>
