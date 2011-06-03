@@ -211,7 +211,6 @@
     <Compile Include="WebControls\IndexGrid.cs" />
     <Compile Include="WebControls\ProjectorControl.cs" />
     <Compile Include="WebControls\Result.cs" />
-    <Compile Include="WebControls\TestResults.cs" />
     <Compile Include="WebControls\WebControlUtilities.cs" />
     <Compile Include="WebUtilities.cs" />
   </ItemGroup>
