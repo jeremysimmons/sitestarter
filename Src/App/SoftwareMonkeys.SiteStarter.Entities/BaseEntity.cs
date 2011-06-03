@@ -68,7 +68,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			foreach (PropertyInfo property in entity.GetType().GetProperties())
 			{
 				if (property.CanWrite)
-				{					
+				{
 					object value = EntitiesUtilities.GetPropertyValue(this, property.Name);
 					
 					property.SetValue(entity, value, null);
@@ -81,8 +81,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <summary>
 		/// Strips all the referenced entities.
 		/// </summary>
-        // TODO: Remove strip function if not in use
-        [Obsolete("Use Deactivate function instead.")]
+		// TODO: Remove strip function if not in use
+		[Obsolete("Use Deactivate function instead.")]
 		public virtual void Strip()
 		{
 			Deactivate();
@@ -117,7 +117,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <summary>
 		/// Gets/sets the strategy used to activate the entity references.
 		/// </summary>
-        [XmlIgnore]
+		[XmlIgnore]
 		public IActivateStrategy Activator
 		{
 			get { return activator; }
@@ -128,47 +128,66 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <summary>
 		/// Gets/sets a flag indicating whether the current instance has been activated (ie. the references have been loaded to the properties of the current instance).
 		/// </summary>
-        [XmlIgnore]
+		[XmlIgnore]
 		public bool IsActivated
 		{
 			get { return isActivated; }
 			set { isActivated = value; }
 		}
 		
-        private bool autoActivate = true;
-        /// <summary>
-        /// Gets/sets a value indicating whether the entity should be automatically activated if necessary. Note: Automatic activation may override changes to references (eg. references being added or removed) unless the entity is manually activated before the changes are made.
-        /// </summary>
-        [XmlIgnore]
-        public bool AutoActivate
-        {
-        	get { return autoActivate; }
-        	set { autoActivate = value; }
-        }
+		private bool autoActivate = true;
+		/// <summary>
+		/// Gets/sets a value indicating whether the entity should be automatically activated if necessary. Note: Automatic activation may override changes to references (eg. references being added or removed) unless the entity is manually activated before the changes are made.
+		/// </summary>
+		[XmlIgnore]
+		public bool AutoActivate
+		{
+			get { return autoActivate; }
+			set { autoActivate = value; }
+		}
 		#endregion
 		
 		#region Validation
 		/// <summary>
 		/// Gets a value indicating whether the entity is valid according to the corrensponding validation strategies.
 		/// </summary>
-        [XmlIgnore]
+		[XmlIgnore]
 		public bool IsValid
 		{
-			get {
-				if (Validator == null)
-					throw new InvalidOperationException("Cannot validate entity. No validation strategy has been set to the Validator property.");
-				return Validator.Validate(this); }
+			get
+			{
+				// If validation isn't required then it's always valid.
+				if (!RequiresValidation)
+					return true;
+				else
+				{
+					if (Validator == null)
+						throw new InvalidOperationException("Cannot validate entity. No validation strategy has been set to the Validator property.");
+					return Validator.Validate(this);
+				}
+			}
 		}
 		
 		private IValidateStrategy validator;
 		/// <summary>
 		/// Gets/sets the validation strategy used to validate this entity.
 		/// </summary>
-        [XmlIgnore]
+		[XmlIgnore]
 		public IValidateStrategy Validator
 		{
 			get { return validator; }
 			set { validator = value; }
+		}
+		
+		private bool requiresValidation = true;
+		/// <summary>
+		/// Gets/sets a value indicating whether the entity requires validation before being saved or updated. Note: Default is true.
+		/// </summary>
+		[XmlIgnore]
+		public bool RequiresValidation
+		{
+			get { return requiresValidation; }
+			set { requiresValidation = value; }
 		}
 		#endregion
 		
