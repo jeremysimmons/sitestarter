@@ -18,12 +18,11 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		[Test]
 		public void Test_Save()
 		{
-			TestArticle article = new TestArticle();
+			TestArticle article = CreateStrategy.New<TestArticle>(false).Create<TestArticle>();
 			article.ID = Guid.NewGuid();
 			
 			StrategyInfo info = StrategyState.Strategies["Save", "IEntity"];
 			ISaveStrategy strategy = SaveStrategy.New<TestArticle>(false);
-			strategy.Validator = new ValidateStrategy();
 			
 			strategy.Save(article);
 			

@@ -10,33 +10,17 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 	public class UniqueSaveStrategyTests : BaseBusinessTestFixture
 	{
 		[Test]
-		public void Test_Found_ForIEntityInterface()
-		{
-			
-			StrategyStateNameValueCollection strategies = new StrategyStateNameValueCollection();
-			strategies["Save", "IUniqueEntity"] = StrategyInfo.ExtractInfo(typeof(UniqueSaveStrategy))[0];
-			
-			StrategyInfo strategyInfo = strategies["Save", typeof(TestUser).Name];
-			
-			Assert.IsNotNull(strategyInfo, "No strategy found.");
-			
-			IStrategy strategy = strategyInfo.New();
-			
-			Assert.AreEqual("UniqueSaveStrategy", strategy.GetType().Name, "Loaded the wrong type.");
-		}
-		
-		[Test]
 		public void Test_Save_KeepUnique()
 		{
-			TestArticle article = new TestArticle();
+			TestArticle article = CreateStrategy.New<TestArticle>(false).Create<TestArticle>();
 			article.ID = Guid.NewGuid();
 			article.Title = "Test Title";
 			
-			TestArticle article2 = new TestArticle();
+			TestArticle article2 = CreateStrategy.New<TestArticle>(false).Create<TestArticle>();
 			article2.ID = Guid.NewGuid();
 			article2.Title = "Test Title";
 			
-			ISaveStrategy strategy = UniqueSaveStrategy.New<TestArticle>(false);
+			ISaveStrategy strategy = SaveStrategy.New<TestArticle>(false);
 			
 			strategy.Save(article);
 			

@@ -15,7 +15,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		[Test]
 		public void Test_Delete_Reorder()
 		{
-			TestArticle article = new TestArticle();
+			TestArticle article = CreateStrategy.New<TestArticle>(false).Create<TestArticle>();
 			
 			article.ID = Guid.NewGuid();
 			article.Title = "Test Article";
@@ -27,7 +27,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			// Create and save 3 article pages associated with the article
 			for (int i = 0; i < 3; i++)
 			{
-				TestArticlePage page = new TestArticlePage();
+				TestArticlePage page = CreateStrategy.New<TestArticlePage>(false).Create<TestArticlePage>();
 				page.Article = article;
 				page.Title = "Page " + (i+1);
 				page.ID = Guid.NewGuid();
