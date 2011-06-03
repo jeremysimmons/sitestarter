@@ -123,7 +123,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				Assert.IsFalse(BatchCommitted, "#1 The BatchCommitted flag should remain false until the batch disposes, even after saving an entity.");
 				Assert.IsFalse(StoreCommitted, "#1 The StoreCommitted flag should remain false until the batch disposes, even after saving an entity.");
 				
-				DisposeMockData();
+				// TODO: Check if needed. Should be but is causing problems with the test.
+				DisposeMockData(false); // Pass false to stop the disposal triggering automatic commit
 				InitializeMockData();
 				
 				StoreCommitted = false;

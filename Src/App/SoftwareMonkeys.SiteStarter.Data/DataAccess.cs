@@ -46,9 +46,19 @@ namespace SoftwareMonkeys.SiteStarter.Data
         /// </summary>
         static public void Dispose(bool fullDisposal)
         {
+        	Dispose(fullDisposal, true);
+        }
+        
+        /// <summary>
+        /// Disposes and clears all data access objects.
+        /// </summary>
+        /// <param name="fullDisposal"></param>
+        /// <param name="commit"></param>
+        static public void Dispose(bool fullDisposal, bool commit)
+        {
             if (IsInitialized)
             {
-                Data.Dispose(fullDisposal);
+                Data.Dispose(fullDisposal, commit);
                 State.StateAccess.State.SetApplication("DataAccess.Data", null);
             }
         }
