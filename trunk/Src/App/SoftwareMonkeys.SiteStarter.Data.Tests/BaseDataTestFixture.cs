@@ -54,9 +54,18 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		/// </summary>
 		public virtual void DisposeMockData()
 		{
+			DisposeMockData(true);
+		}
+		
+		/// <summary>
+		/// Disposes the mock data system and deletes all mock data.
+		/// </summary>
+		/// <param name="commit"></param>
+		public virtual void DisposeMockData(bool commit)
+		{
 			if (DataAccess.IsInitialized && DataAccess.Data != null)
 			{	
-				DataAccess.Dispose(true);
+				DataAccess.Dispose(true, commit);
 			}
 		}
 	}

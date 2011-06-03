@@ -259,13 +259,16 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <summary>
 		/// Disposes the data provider and all data stores within it.
 		/// </summary>
-		public override void Dispose(bool fullDisposal)
+		public override void Dispose(bool fullDisposal, bool commit)
 		{
 			using (LogGroup logGroup = LogGroup.Start("Disposing the data provider and data stores.", NLog.LogLevel.Debug))
 			{
-				// Dispose the batch first otherwise they'll try to commit the stores after the stores are disposed
-				while (BatchState.IsRunning)
-					BatchState.Batches.Pop();
+				if (commit)
+				{
+					// Dispose the batch first otherwise they'll try to commit the stores after the stores are disposed
+					while (BatchState.IsRunning)
+						BatchState.Batches.Pop();
+				}
 				
 				foreach (Db4oDataStore store in Stores)
 				{
@@ -285,7 +288,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			using (LogGroup logGroup = LogGroup.Start("Suspending the data provider and data stores.", NLog.LogLevel.Debug))
 			{
 				// Dispose the data access system to unlock the files
-				Dispose(true);
+				Dispose(true, true);
 				
 				// Create the path to the suspended directory
 				string toDirectory = SuspendedDirectoryPath + Path.DirectorySeparatorChar
