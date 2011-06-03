@@ -26,6 +26,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="shortTypeName">The short name of the type of entity to create an instance of.</param>
 		public override IEntity Create()
 		{
+			// TODO: Check if needed. Should be unnecessary
+			
 			ISubEntity entity = null;
 			using (LogGroup logGroup = LogGroup.Start("Creating a new entity of type '" + TypeName + "'.", NLog.LogLevel.Debug))
 			{
@@ -41,7 +43,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					AuthoriseCreateStrategy.New(TypeName).EnsureAuthorised(TypeName);
 				}
 				
-				entity = (ISubEntity)Activator.CreateInstance(type);
+				entity = (ISubEntity)base.Create();
 				entity.ID = Guid.NewGuid();
 			}
 			return entity;
