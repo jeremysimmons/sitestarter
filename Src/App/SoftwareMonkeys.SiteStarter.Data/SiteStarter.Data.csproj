@@ -67,7 +67,6 @@
     <Compile Include="Batch.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="BatchManager.cs" />
     <Compile Include="BatchState.cs" />
     <Compile Include="DataActivator.cs" />
     <Compile Include="DataAdapter.cs" />
