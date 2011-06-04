@@ -25,8 +25,21 @@
     			</namespaces>
 	    	</xmlpeek>
 
+		<xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.NetFrameworkVersion']/@value"
+		    property="Solution.NetFrameworkVersion">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+	    	</xmlpeek>
+
 		<mkiisdir dirpath="${Solution.RootPath}\WWW" vdirname="${Solution.VirtualDirectoryName}" appfriendlyname="${Solution.VirtualDirectoryName}" verbose="true" />
 
+		<exec program="c:\Windows\Microsoft.NET\Framework\${Solution.NetFrameworkVersion}\aspnet_regiis">
+			<arg value="-s"/>
+			<arg value="w3svc/1/root/${Solution.VirtualDirectoryName}"/>
+		</exec>
 	</target>
      
 </project>

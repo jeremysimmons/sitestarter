@@ -60,7 +60,7 @@
   		
 		<foreach item="String" in="${Solution.TestOrder}" delim="," property="testName">
   			
-			<property name="resultsPath" value="${Project.TestResultsDirectory}\xml\${versionNumber}-${testName}-Tests-Results.xml"/>
+			<property name="resultsPath" value="${Project.TestResultsDirectory}\xml\${versionNumber}-${string::replace(testName, '.', '-')}-Tests-Results.xml"/>
 			<echo message="Results path before: ${resultsPath}"/>
 
 			<!-- IMPORTANT: Retrieving full path to eliminate any chance of forward slashes, as a forward slash is an illegal character in this situation -->
