@@ -6,9 +6,10 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// 
 	/// </summary>
 	[Strategy("Activate", "ISubEntity")]
-	public class ActiveSubEntityStrategy : ActivateStrategy
+	[Serializable]
+	public class ActivateSubEntityStrategy : ActivateStrategy
 	{
-		public ActiveSubEntityStrategy()
+		public ActivateSubEntityStrategy()
 		{
 		}
 	}
