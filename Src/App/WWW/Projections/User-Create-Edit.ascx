@@ -52,7 +52,7 @@
                               text='<%# Resources.Language.Roles + ":" %>'>
                               <FieldTemplate>
                                   <cc:EntitySelect width="400" EntityType="SoftwareMonkeys.SiteStarter.Entities.UserRole, SoftwareMonkeys.SiteStarter.Entities" runat="server"
-                                      ValuePropertyName='Name' id="UserRoles" DisplayMode="Multiple" SelectionMode="Multiple"
+                                      TextPropertyName='Name' id="UserRoles" DisplayMode="Multiple" SelectionMode="Multiple"
                                       NoDataText='<%# "-- " + Resources.Language.NoRoles + " --" %>' OnDataLoading='UserRolesSelect_DataLoading'>
                                   </cc:EntitySelect>
                                     </FieldTemplate>
