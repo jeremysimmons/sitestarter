@@ -12,7 +12,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 	/// </summary>
 	[Serializable]
 	public class EntityIDReference : BaseEntity, IEntity//, IXmlSerializable
-	{		
+	{
 		private Guid entity1ID = Guid.Empty;
 		public Guid Entity1ID
 		{
@@ -58,15 +58,15 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		public EntityIDReference()
 		{
 		}
-			
-			/// <summary>
-			/// Checks whether the reference includes an entity with the specified ID and a property with the specified name.
-			/// Note: The ID and property belong to the same entity. The property does not contain the provided ID.
-			/// </summary>
-			/// <param name="id"></param>
-			/// <param name="propertyName"></param>
-			/// <returns></returns>
-			public virtual bool Includes(Guid id, string propertyName)
+		
+		/// <summary>
+		/// Checks whether the reference includes an entity with the specified ID and a property with the specified name.
+		/// Note: The ID and property belong to the same entity. The property does not contain the provided ID.
+		/// </summary>
+		/// <param name="id"></param>
+		/// <param name="propertyName"></param>
+		/// <returns></returns>
+		public virtual bool Includes(Guid id, string propertyName)
 		{
 			bool flag = false;
 			
@@ -95,64 +95,12 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			return flag;
 		}
 		
-		/*/// <summary>
-		/// Removes the specified entity from the reference.
-		/// </summary>
-		/// <param name="entity">The entity to remove.</param>
-		public void Remove(IEntity entity)
+		// TODO: Check if needed. Remove if not n
+		/*public virtual EntityIDReference ToData()
 		{
-			Remove(entity.ID);
-		}
-		
-		/// <summary>
-		/// Removes the specified entity from the reference.
-		/// </summary>
-		/// <param name="id">The entity ID to remove.</param>
-		/// <param name="typeName">The short type name.</param>
-		public void Remove(Guid id)
-		{
-			List<Guid> ids = (EntityIDs == null ? new List<Guid>() : new List<Guid>(EntityIDs));
-			List<string> names = (TypeNames == null ? new List<string>() : new List<string>(TypeNames));
-			if (ids.Contains(id))
-			{
-				int pos = ids.IndexOf(id);
+			return (EntityIDReference)this;
+		}*/
 				
-				ids.Remove(id);
-				names.Remove(names[pos]);
-			}
-			EntityIDs = ids.ToArray();
-			TypeNames = names.ToArray();
-		}*/
-			
-			/*	public void ReadXml ( XmlReader reader )
-		{
-			reader.ReadStartElement("EntityIDs");
-			//string strType = reader.GetAttribute("type");
-			XmlSerializer serial = new XmlSerializer(typeof(Guid[]));
-			EntityIDs = (Guid[])serial.Deserialize(reader);
-			reader.ReadEndElement();
-		}
-
-		public void WriteXml ( XmlWriter writer )
-		{
-			writer.WriteStartElement("EntityIDs");
-			//writer.WriteAttributeString("type", strType);
-			XmlSerializer serial = new XmlSerializer(typeof(Guid[]));
-			serial.Serialize(writer, EntityIDs);
-			writer.WriteEndElement();
-		}
-		
-		public XmlSchema GetSchema()
-		{
-			return(null);
-		}*/
-			
-			public virtual EntityIDReference ToData()
-		{
-			return this;
-		}
-		
-		
 		public EntityIDReference SwitchFor(IEntity entity)
 		{
 			return SwitchFor(entity.GetType().Name, entity.ID);
@@ -168,9 +116,9 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			
 			//using (LogGroup logGroup = LogGroup.Start("Switching reference data to the perspective of a specific entity.", NLog.LogLevel.Debug))
 			//{
-				if (typeName == null)
-					throw new ArgumentNullException("typeName");
-				
+			if (typeName == null)
+				throw new ArgumentNullException("typeName");
+			
 			//	LogWriter.Debug("Existing target Entity type: " + typeName);
 			//	LogWriter.Debug("Existing source entity type: " + Type1Name);
 			//	LogWriter.Debug("Existing reference entity type: " + Type2Name);
@@ -178,34 +126,34 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			//	LogWriter.Debug("Existing reference entity ID: " + Entity2ID.ToString());
 			//	LogWriter.Debug("Existing source property name: " + Property1Name.ToString());
 			//	LogWriter.Debug("Existing reference property name: " + Property2Name.ToString());
+			
+			if (EntitiesUtilities.MatchAlias(typeName, Type1Name))
+			{
+				//		LogWriter.Debug("The reference is already suited for the specified entity. No need to switch.");
 				
-				if (EntitiesUtilities.MatchAlias(typeName, Type1Name))
-				{
-			//		LogWriter.Debug("The reference is already suited for the specified entity. No need to switch.");
-					
-				}
-				else
-				{
-			//		LogWriter.Debug("Switching to the perspective of entity type: " + typeName);
-					
-					Guid entity1ID = Entity1ID;
-					Guid entity2ID = Entity2ID;
-					
-					string type1Name = Type1Name;
-					string type2Name = Type2Name;
-					
-					string property1Name = Property1Name;
-					string property2Name = Property2Name;
-					
-					this.Entity1ID = entity2ID;
-					this.Entity2ID = entity1ID;
-					
-					this.Type1Name = type2Name;
-					this.Type2Name = type1Name;
-					
-					this.Property1Name = property2Name;
-					this.Property2Name = property1Name;
-				}
+			}
+			else
+			{
+				//		LogWriter.Debug("Switching to the perspective of entity type: " + typeName);
+				
+				Guid entity1ID = Entity1ID;
+				Guid entity2ID = Entity2ID;
+				
+				string type1Name = Type1Name;
+				string type2Name = Type2Name;
+				
+				string property1Name = Property1Name;
+				string property2Name = Property2Name;
+				
+				this.Entity1ID = entity2ID;
+				this.Entity2ID = entity1ID;
+				
+				this.Type1Name = type2Name;
+				this.Type2Name = type1Name;
+				
+				this.Property1Name = property2Name;
+				this.Property2Name = property1Name;
+			}
 			//}
 			
 			return this;
