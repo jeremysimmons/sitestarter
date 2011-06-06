@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AccountDetails" xml:space="preserve">
     <value>Account Details</value>
@@ -211,7 +211,7 @@
     <value>Logout</value>
   </data>
   <data name="ManageUserRoles" xml:space="preserve">
-    <value>Manage User Roles</value>
+    <value>Manage Roles</value>
   </data>
   <data name="ManageUserRolesIntro" xml:space="preserve">
     <value>Create and manage the user/security roles below.</value>
@@ -823,5 +823,26 @@ ${WebSite.Title}&lt;br /&gt;
   </data>
   <data name="Backup" xml:space="preserve">
     <value>Backup</value>
+  </data>
+  <data name="Reset" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="StrategiesReset" xml:space="preserve">
+    <value>The business strategies were reset successfully.</value>
+  </data>
+  <data name="ProjectionsReset" xml:space="preserve">
+    <value>The web projections were reset successfully.</value>
+  </data>
+  <data name="PartsReset" xml:space="preserve">
+    <value>The web parts were reset successfully.</value>
+  </data>
+  <data name="ControllersReset" xml:space="preserve">
+    <value>The web controllers were reset successfully.</value>
+  </data>
+  <data name="EntitiesReset" xml:space="preserve">
+    <value>The entities were reset successfully.</value>
+  </data>
+  <data name="ReactionsReset" xml:space="preserve">
+    <value>The reactions were reset successfully.</value>
   </data>
 </root>
