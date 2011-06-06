@@ -56,6 +56,15 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		{
 			return StrategyState.Strategies.Creator.New<IAuthoriseRetrieveStrategy>("AuthoriseRetrieve", typeName);
 		}
+		
+		/// <summary>
+		/// Creates a new strategy for authorising the retrieve of the provided entity.
+		/// </summary>
+		/// <param name="entity">The entity involved in the strategy.</param>
+		static public IAuthoriseRetrieveStrategy New(IEntity entity)
+		{
+			return New(entity.ShortTypeName);
+		}
 		#endregion
 	}
 }
