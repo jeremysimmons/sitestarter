@@ -34,85 +34,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			Assert.IsNotNull((object)provider);
 		}
 		#endregion
-		
-		[Test]
-		public void Test_GetType_AliasName()
-		{
-			using (LogGroup logGroup = LogGroup.Start("Testing the DataUtilities.GetType function.", NLog.LogLevel.Debug))
-			{
-			// TODO: Check if this test is needed
-			// Aliasing is used to match properties that are an interface type with the
-			// corresponding concrete entities
-			// This can now be done with the ReferenceAttribute.TypeName property instead.
-			
-				throw new NotImplementedException();
-			
-				TestArticle e1 = new TestArticle();
-				e1.ID = Guid.NewGuid();
-				e1.Title = "Test 1";
 				
-
-				TestArticlePage e2 = new TestArticlePage();
-				e2.ID = Guid.NewGuid();
-				e2.Title = "Test 2";
-
-				e1.Pages = new TestArticlePage[] { e2 };
-				
-				Type type =  EntitiesUtilities.GetType("ITestArticle");
-
-				Assert.IsNotNull(type, "Null type was returned.");
-				
-				if (type != null)
-					Assert.AreEqual("TestArticle", type.Name, "The wrong data type was returned.");
-			}
-		}
-		
-		/*[Test]
-	public void Test_GetDataStoreNameForReference_Many_Null()
-	{
-		using (LogGroup logGroup = LogGroup.Start("Testing the GetDataStoreNameForReference function for a multiple reference.", NLog.LogLevel.Debug))
-		{
-	        	TestArticle e1 = new TestArticle();
-			e1.ID = Guid.NewGuid();
-			e1.Title = "Test 1";
-			
-
-			TestArticlePage e2 = new TestArticlePage();
-			e2.ID = Guid.NewGuid();
-			e2.Title = "Test 2";
-			
-			//e2.ArticleID = e1.ID;
-			
-			string name = DataUtilities.GetDataStoreNameForReference(e2, e2.GetType().GetProperty("ArticleID"));
-
-			
-			Assert.AreEqual("Testing_Articles", name, "The wrong data store name was returned.");
-		}
-	}
-	
-		[Test]
-	public void Test_GetDataStoreNameForReference_Many_NotNull()
-	{
-		using (LogGroup logGroup = LogGroup.Start("Testing the GetDataStoreNameForReference function for a multiple reference.", NLog.LogLevel.Debug))
-		{
-	        	TestArticle e1 = new TestArticle();
-			e1.ID = Guid.NewGuid();
-			e1.Title = "Test 1";
-			
-
-			TestArticlePage e2 = new TestArticlePage();
-			e2.ID = Guid.NewGuid();
-			e2.Title = "Test 2";
-			
-			e2.ArticleID = e1.ID;
-			
-			string name = DataUtilities.GetDataStoreNameForReference(e2, e2.GetType().GetProperty("ArticleID"));
-
-			
-			Assert.AreEqual("Testing_Articles", name, "The wrong data store name was returned.");
-		}
-	}*/
-		
 		[Test]
 		public void Test_GetEntityType()
 		{
@@ -147,45 +69,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			}
 		}
 		
-		
-		[Test]
-		public void Test_GetType_Alias()
-		{
-			// TODO: Check if this test is needed
-			// Aliasing is used to match properties that are an interface type with the
-			// corresponding concrete entities
-			// This can now be done with the ReferenceAttribute.TypeName property instead.
-			
-			throw new NotImplementedException();
-			Type type = EntityState.GetType("ITestUser");
-			
-			Assert.AreEqual(type.FullName, typeof(TestUser).FullName, "The types don't match.");
-		}
-		
 		[Test]
 		public void Test_GetType_Name()
 		{
-			
-			//TestUser user = new TestUser();
-			//user.ID = Guid.NewGuid();
-			//user.FirstName = "Test";
-			//user.LastName = "User";
-			
-			//TestRole role = new TestRole();
-			//role.ID = Guid.NewGuid();
-			//role.Name = "Test Role";
-			
-			//user.Roles.Add(role);
-			
-			//PropertyInfo rolesProperty = user.GetType().GetProperty("Roles");
-			
-			// TODO: Check if this test is needed
-			// Aliasing is used to match properties that are an interface type with the
-			// corresponding concrete entities
-			// This can now be done with the ReferenceAttribute.TypeName property instead.
-			
-			throw new NotImplementedException();
-			
 			Type type = EntitiesUtilities.GetType("TestUser");
 			
 			Assert.AreEqual(type.FullName, typeof(TestUser).FullName, "The types don't match.");
