@@ -72,24 +72,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 						LogWriter.Debug("Reference type #2: " + reference.Type2Name);
 						LogWriter.Debug("Reference ID #2: " + reference.Entity2ID.ToString());
 						
-						/*EntityReference existingReference = DataAccess.Data.Referencer.GetReference(
-							EntitiesUtilites.GetType(reference.Type1Name),
-							reference.Entity1ID,
-							reference.Property1Name,
-							EntitiesUtilities.GetType(reference.Type2Name),
-							reference.Entity2ID,
-							reference.Property2Name,
-							false);
-						
-						if (existingReference != null)
-							reference = existingReference;*/
-						
-						//if (!DataAccess.Data.IsStored(reference))
-						//{
-						
 						Data.DataAccess.Data.Activator.ActivateReference((EntityReference)reference);
-						toUpdate.Add(reference.ToData());
-						//}
+						toUpdate.Add((EntityIDReference)reference);
 					}
 				}
 				
@@ -122,6 +106,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				//ReferenceValidator validator = new ReferenceValidator();
 				//validator.CheckForCircularReference(entity);
 				
+				// TODO: Check if needed - Deactivate function should be sufficient, which is called anyway
+				// If the entity is an EntityReference then cast it back to the simpler EntityIDReference
+				//if (EntitiesUtilities.IsReference(entity.GetType()))
+				//	entity = ((EntityReference)entity).ToData();
 				
 				using (Batch batch = BatchState.StartBatch())
 				{
