@@ -2,10 +2,13 @@
 <%@ Import Namespace="System.Reflection" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Data" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Entities" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Security" %>
 <%@ Import Namespace="Db4objects.Db4o" %>
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
+    	EnsureAuthorised();
+    
         string dataStoreName = Request.QueryString["DataStoreName"];
         if (dataStoreName == String.Empty || dataStoreName == null)
         {
@@ -13,6 +16,17 @@
         }
         else
             PrintOutObjects(dataStoreName);
+    }
+    
+    private void EnsureAuthorised()
+    {
+    	bool isAuthorised = false;
+    
+    	if (ConfigurationSettings.AppSettings["SecureData"] == null
+    		|| ConfigurationSettings.AppSettings["SecureData"].ToLower() != "false")
+    	{
+    		Authorisation.EnsureIsInRole("Administrator");
+    	}
     }
 
     private void ShowIndex()
