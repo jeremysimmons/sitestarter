@@ -19,4 +19,5 @@
     <li><strong><a href='<%= Request.ApplicationPath + "/Admin/Log.aspx" %>'>Log</a></strong> (/Admin/Log.aspx) - The log includes application exceptions and other important information.</li>
     <li><strong><a href='<%= Request.ApplicationPath + "/Admin/Update.aspx" %>'>Update</a></strong> (/Admin/Update.aspx) - Prepares the application to be updated. Important as it ensures the new version can use the existing data.</li>
        <li><strong><a href='<%= Request.ApplicationPath + "/Admin/Data.aspx" %>'>Data</a></strong> (/Admin/Data.aspx) - A simple and direct data browser. NOTE: This should be removed from live installations as it could be used to uncover private/security information.</li>
+       <li><strong><a href='<%= Request.ApplicationPath + "/Admin/Cache.aspx" %>'>Application Cache</a></strong> (/Admin/Cache.aspx) - An index of the various application cache.</li>
 </ul>
