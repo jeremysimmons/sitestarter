@@ -50,25 +50,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				return updater; }
 			set { updater = value; }
 		}
-		
-		private IActivateStrategy activator;
-		/// <summary>
-		/// Gets/sets the strategy used to activate an entity.
-		/// </summary>
-		public IActivateStrategy Activator
-		{
-			get {
-				if (activator == null)
-				{
-					if (Container.Type == null)
-						throw new InvalidOperationException("Type property hasn't been initialized.");
-					activator = StrategyState.Strategies.Creator.NewActivator(Container.Type.Name);
-				}
-				return activator; }
-			set { activator = value; }
-		}
-		
-		
+				
 		private string entityUpdatedLanguageKey = "EntityUpdated";
 		public string EntityUpdatedLanguageKey
 		{
@@ -267,9 +249,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			using (LogGroup logGroup = LogGroup.Start("Loading the provided entity onto DataSource and activating it.", NLog.LogLevel.Debug))
 			{
-				DataSource = entity;
+				entity.Activate();
 				
-				Activator.Activate(DataSource);
+				DataSource = entity;
 			}
 			return entity;
 		}
