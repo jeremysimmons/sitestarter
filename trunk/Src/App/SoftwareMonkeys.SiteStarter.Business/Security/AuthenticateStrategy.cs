@@ -29,9 +29,17 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 			
 			User user = strategy.Retrieve<User>(parameters);
 			
-			return (user != null)
+			bool isAuthenticated = (user != null)
 				&& user.IsApproved
 				&& !user.IsLockedOut;
+			
+			if (isAuthenticated)
+			{
+				user.LastLoginDate = DateTime.Now;
+				UpdateStrategy.New(user, false).Update(user);
+			}
+			
+			return isAuthenticated;
 		}
 		
 		#region New functions	
