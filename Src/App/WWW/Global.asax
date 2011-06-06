@@ -4,6 +4,7 @@
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Providers" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Projections" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Controllers" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Parts" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Data" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Configuration" %>
@@ -35,7 +36,7 @@
         	LogWriter.Debug("${Application.End}");
         }
         
-        //  Code that runs on application shutdown
+        //  Dispose outside the log group
         Dispose();
     }
         
@@ -103,17 +104,14 @@
 
     private void Initialize()
     {
-        //using (LogGroup logGroup = LogGroup.Start("Initializing the state management, config, modules, and data.", LogLevel.Debug))
-        //{
-	        if (!Config.IsInitialized)
-	        {
-                Config.Initialize(Server.MapPath(HttpContext.Current.Request.ApplicationPath), WebUtilities.GetLocationVariation(HttpContext.Current.Request.Url));
-                InitializeEntities();
-	            new DataProviderInitializer().Initialize();
-	        	InitializeBusiness();
-	        	InitializeWeb();
-	        }
-		//}
+        using (LogGroup logGroup = LogGroup.Start("Initializing the config, entities, data, business, and web components", LogLevel.Debug))
+        {
+            Config.Initialize(Server.MapPath(HttpContext.Current.Request.ApplicationPath), WebUtilities.GetLocationVariation(HttpContext.Current.Request.Url));
+            InitializeEntities();
+            new DataProviderInitializer().Initialize();
+        	InitializeBusiness();
+        	InitializeWeb();
+		}
     }
 
     private void InitializeEntities()
@@ -135,11 +133,9 @@
     {
     	if (Config.IsInitialized)
     	{
-    	
-    		// These are now taken care of by the Projector control as it's responsible for projections and controllers
-    		// The projection scanner needs a Page component to access the LoadControl function and so initializing in the Projector control is an appropriate solution
-    		//new ControllersInitializer().Initialize();
-    		//new ProjectionsInitializer().Initialize();
+    		new ControllersInitializer().Initialize();
+    		new ProjectionsInitializer().Initialize();
+    		new PartsInitializer().Initialize();
     	}
     }
 
