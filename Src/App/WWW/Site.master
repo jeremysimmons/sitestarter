@@ -39,12 +39,22 @@ private string GetMenuDataFile()
 		return @"~\App_Data\" + siteMapFile;
 	
 }
+
+private string GetTitle()
+{
+	if (Config.IsInitialized && Config.Application.Title != null && Config.Application.Title != String.Empty)
+	{
+		return Config.Application.Title;
+	}
+	else
+		return Resources.Language.SiteStarter;
+}
 </script>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head runat="server">
-    <title>SiteStarter</title>
+    <title><%= GetTitle() %></title>
     <link href='<%= Request.ApplicationPath + "/Styles/Simple.css" %>' rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -54,7 +64,7 @@ private string GetMenuDataFile()
        { %>
     <table width="100%">
     <tr><td colspan="2" style="padding: 0px;" class="PageHeader">
-	<table width="100%"><tr><td></td><td class="PageHeaderText">SiteStarter</td><td class="PageHeaderIdentity">
+	<table width="100%"><tr><td></td><td class="PageHeaderText"><%= GetTitle() %></td><td class="PageHeaderIdentity">
         &nbsp;
         <uc:AuthMenu runat="server"/>
       </td></tr></table>
