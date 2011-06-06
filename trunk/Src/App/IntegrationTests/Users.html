@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://localhost/SiteStarter/" />
+<title>Users</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Users</td></tr>
+</thead><tbody>
+<tr>
+	<td>setTimeout</td>
+	<td>100000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>Admin/tests/testreset.aspx</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>Admin/QuickSetup.aspx</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Users</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextNotPresent</td>
+	<td>Exception</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Manage Users</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Edit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Delete</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Create User']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ctl00_Body_ctl00_FirstName</td>
+	<td>FirstName</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ctl00_Body_ctl00_LastName</td>
+	<td>LastName</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ctl00_Body_ctl00_Email</td>
+	<td>testuser@softwaremonkeys.net</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ctl00_Body_ctl00_Username</td>
+	<td>TestUser</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ctl00_Body_ctl00_Password</td>
+	<td>pass</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ctl00_Body_ctl00_PasswordConfirm</td>
+	<td>pass</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>ctl00_Body_ctl00_IsApproved</td>
+	<td></td>
+</tr>
+<tr>
+	<td>addSelection</td>
+	<td>ctl00_Body_ctl00_UserRoles</td>
+	<td>label=Administrator</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>saved successfully</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Manage Users</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>TestUser</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>FirstName</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>LastName</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Edit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertSelectedLabel</td>
+	<td>ctl00_Body_ctl00_UserRoles</td>
+	<td>Administrator</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ctl00_Body_ctl00_FirstName</td>
+	<td>System2</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ctl00_Body_ctl00_LastName</td>
+	<td>Administrator2</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ctl00_Body_ctl00_Email</td>
+	<td>default@softwaremonkeys.net2</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Update']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>updated successfully</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>System2</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Administrator2</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>
