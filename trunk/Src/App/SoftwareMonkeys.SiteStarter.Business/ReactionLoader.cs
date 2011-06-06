@@ -37,7 +37,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					if (FileNamer == null)
 						throw new InvalidOperationException("FileNamer is not set.");
 					
-					reactionsDirectoryPath = FileNamer.ReactionsDirectoryPath;
+					reactionsDirectoryPath = FileNamer.ReactionsInfoDirectoryPath;
 				}
 				return reactionsDirectoryPath; }
 			set { reactionsDirectoryPath = value; }

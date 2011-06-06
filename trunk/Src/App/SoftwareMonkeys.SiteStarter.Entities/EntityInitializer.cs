@@ -87,7 +87,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// </summary>
 		public string EntitiesDirectoryPath
 		{
-			get { return FileNamer.EntitiesDirectoryPath; }
+			get { return FileNamer.EntitiesInfoDirectoryPath; }
 		}
 		
 		private string binDirectoryPath = String.Empty;

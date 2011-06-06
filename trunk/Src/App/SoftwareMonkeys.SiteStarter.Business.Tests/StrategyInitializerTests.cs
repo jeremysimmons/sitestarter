@@ -21,7 +21,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			StrategyInfo[] strategies = new StrategyInfo[]{info};
 			
 			StrategyInitializer initializer = new StrategyInitializer();
-			initializer.FileNamer.StrategiesDirectoryPath = GetMockStrategiesDirectoryPath(MockApplicationName);
+			initializer.FileNamer.StrategiesInfoDirectoryPath = GetMockStrategiesDirectoryPath(MockApplicationName);
 			
 			initializer.Initialize(strategies);
 			
@@ -37,7 +37,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		public void Test_Initialize_StrategiesScanned()
 		{
 			StrategyInitializer initializer = new StrategyInitializer();
-			initializer.FileNamer.StrategiesDirectoryPath = GetMockStrategiesDirectoryPath(MockApplicationName);
+			initializer.FileNamer.StrategiesInfoDirectoryPath = GetMockStrategiesDirectoryPath(MockApplicationName);
 			
 			string[] assemblyPaths = new string[] {
 				Assembly.Load("SoftwareMonkeys.SiteStarter.Business").Location
@@ -56,7 +56,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		public void Test_Initialize_StrategiesLoaded()
 		{
 			StrategyInitializer initializer = new StrategyInitializer();
-			initializer.FileNamer.StrategiesDirectoryPath = GetMockStrategiesDirectoryPath(MockApplicationName);
+			initializer.FileNamer.StrategiesInfoDirectoryPath = GetMockStrategiesDirectoryPath(MockApplicationName);
 			
 			IStrategy strategy = new MockRetrieveStrategy();
 			StrategyInfo info = StrategyInfo.ExtractInfo(strategy.GetType())[0];

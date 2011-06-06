@@ -18,7 +18,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			StrategyInfo strategy = CreateMockStrategy();
 			
 			StrategySaver saver = new StrategySaver();
-			saver.FileNamer.StrategiesDirectoryPath = GetMockStrategiesDirectoryPath(MockApplicationName);
+			saver.FileNamer.StrategiesInfoDirectoryPath = GetMockStrategiesDirectoryPath(MockApplicationName);
 			
 			saver.SaveToFile(strategy);
 			
@@ -30,9 +30,9 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		public StrategyInfo LoadMockStrategy(StrategyInfo strategy)
 		{
 			StrategyFileNamer namer = new StrategyFileNamer();
-			namer.StrategiesDirectoryPath = GetMockStrategiesDirectoryPath(MockApplicationName);
+			namer.StrategiesInfoDirectoryPath = GetMockStrategiesDirectoryPath(MockApplicationName);
 			
-			string fullPath = namer.CreateFilePath(strategy);
+			string fullPath = namer.CreateInfoFilePath(strategy);
 			
 			if (!File.Exists(fullPath))
 				Assert.Fail("Mock strategy not found. It must not have been saved properly or must have used wrong file name.");

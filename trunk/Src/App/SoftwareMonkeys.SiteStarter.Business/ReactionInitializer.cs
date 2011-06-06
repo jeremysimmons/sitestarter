@@ -87,7 +87,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		public string ReactionsDirectoryPath
 		{
-			get { return FileNamer.ReactionsDirectoryPath; }
+			get { return FileNamer.ReactionsInfoDirectoryPath; }
 		}
 		
 		public ReactionInitializer()

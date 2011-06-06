@@ -21,7 +21,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				if (reactionsDirectoryPath == null || reactionsDirectoryPath == String.Empty)
 				{
 					if (FileNamer != null)
-						reactionsDirectoryPath = FileNamer.ReactionsDirectoryPath;
+						reactionsDirectoryPath = FileNamer.ReactionsInfoDirectoryPath;
 					
 				}
 				return reactionsDirectoryPath;
@@ -54,7 +54,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			using (LogGroup logGroup = LogGroup.Start("Saving the provided reaction to file.", NLog.LogLevel.Debug))
 			{
-				string path = FileNamer.CreateFilePath(reaction);
+				string path = FileNamer.CreateInfoFilePath(reaction);
 				
 				LogWriter.Debug("Path : " + path);
 				

@@ -20,7 +20,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				if (entitiesDirectoryPath == null || entitiesDirectoryPath == String.Empty)
 				{
 					if (FileNamer != null)
-						entitiesDirectoryPath = FileNamer.EntitiesDirectoryPath;
+						entitiesDirectoryPath = FileNamer.EntitiesInfoDirectoryPath;
 					
 				}
 				return entitiesDirectoryPath;
@@ -56,7 +56,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				if (entity == null)
 					throw new ArgumentNullException("entity");
 				
-				string path = FileNamer.CreateFilePath(entity);
+				string path = FileNamer.CreateInfoFilePath(entity);
 				
 				LogWriter.Debug("Path : " + path);
 				

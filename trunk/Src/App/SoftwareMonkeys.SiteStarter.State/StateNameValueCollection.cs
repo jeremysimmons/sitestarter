@@ -213,7 +213,7 @@ namespace SoftwareMonkeys.SiteStarter.State
 		/// <param name="key">The key to assign to the provided value.</param>
 		/// <param name="value">The value to save to state along with the provided key, prefixed by scope and group key.</param>
 		public void SetStateValue(string key, T value)
-		{			
+		{
 			string fullKey = GetStateKey(groupKey, key);
 			
 			switch (Scope)
@@ -262,10 +262,13 @@ namespace SoftwareMonkeys.SiteStarter.State
 		
 		public int IndexOf(T item)
 		{
-			for (int i = 0; i < Count; i ++)
+			if (item != null)
 			{
-				if (item.Equals(this[i]))
-					return i;
+				for (int i = 0; i < Count; i ++)
+				{
+					if (item.Equals(this[i]))
+						return i;
+				}
 			}
 			
 			return -1;
@@ -284,7 +287,7 @@ namespace SoftwareMonkeys.SiteStarter.State
 				
 				RemoveStateValue(key);
 				
-				base.BaseRemove(key);	
+				base.BaseRemove(key);
 			}
 		}
 		
@@ -340,6 +343,14 @@ namespace SoftwareMonkeys.SiteStarter.State
 				yield return this[key];
 			}
 
+		}
+		
+		public virtual T[] ToArray()
+		{
+			List<T> list = new List<T>();
+			foreach (T item in this)
+				list.Add(item);
+			return list.ToArray();
 		}
 	}
 }

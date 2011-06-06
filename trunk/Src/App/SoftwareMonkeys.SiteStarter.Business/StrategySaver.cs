@@ -21,7 +21,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				if (strategiesDirectoryPath == null || strategiesDirectoryPath == String.Empty)
 				{
 					if (FileNamer != null)
-						strategiesDirectoryPath = FileNamer.StrategiesDirectoryPath;
+						strategiesDirectoryPath = FileNamer.StrategiesInfoDirectoryPath;
 					
 				}
 				return strategiesDirectoryPath;
@@ -54,7 +54,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			using (LogGroup logGroup = LogGroup.Start("Saving the provided strategy to file.", NLog.LogLevel.Debug))
 			{
-				string path = FileNamer.CreateFilePath(strategy);
+				string path = FileNamer.CreateInfoFilePath(strategy);
 				
 				LogWriter.Debug("Path : " + path);
 				
