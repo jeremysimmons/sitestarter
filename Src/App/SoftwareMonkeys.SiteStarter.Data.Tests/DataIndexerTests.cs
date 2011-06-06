@@ -11,6 +11,20 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 	[TestFixture]
 	public class DataIndexerTests : BaseDataTestFixture
 	{
+		[Test]
+		public void Test_GetEntitiesByIDArray()
+		{
+			TestEntity e1 = new TestEntity();
+			e1.Name = "Test E1";
+			
+			DataAccess.Data.Saver.Save(e1);
+			
+			TestEntity[] entities = DataAccess.Data.Indexer.GetEntities<TestEntity>(new Guid[] {e1.ID});
+			
+			Assert.IsNotNull(entities, "Entities array was null.");
+			
+			Assert.AreEqual(1, entities.Length, "Invalid number of entities found");
+		}
 		
 		[Test]
 		public void Test_GetEntitiesByPropertyFilter()
@@ -538,7 +552,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		
 		[Test]
 		public void Test_GetEntitiesPage_Page1_PageSize2_SortAscending()
-		{				
+		{
 			TestArticle article1 = new TestArticle();
 			article1.ID = Guid.NewGuid();
 			article1.Title = "Article C";
@@ -606,12 +620,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			List<string> titles = new List<string>();
 			titles.Add(article1.Title);
 			titles.Add(article2.Title);
-			titles.Add(article3.Title);		
+			titles.Add(article3.Title);
 			
 			List<Guid> ids = new List<Guid>();
 			ids.Add(article1.ID);
 			ids.Add(article2.ID);
-			ids.Add(article3.ID);			
+			ids.Add(article3.ID);
 			
 			DataAccess.Data.Saver.Save(article1);
 			DataAccess.Data.Saver.Save(article2);
@@ -651,7 +665,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		
 		[Test]
 		public void Test_GetPageOfEntitiesWithReference_Page1_PageSize1_SortAscending()
-		{				
+		{
 			TestCategory category = new TestCategory();
 			category.ID = Guid.NewGuid();
 			category.Name = "Test Category";
@@ -709,7 +723,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		
 		[Test]
 		public void Test_GetEntitiesPage_Page1_PageSize1_SortAscending()
-		{				
+		{
 			TestArticle article1 = new TestArticle();
 			article1.ID = Guid.NewGuid();
 			article1.Title = "Article C";
@@ -777,12 +791,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			List<string> titles = new List<string>();
 			titles.Add(article1.Title);
 			titles.Add(article2.Title);
-			titles.Add(article3.Title);		
+			titles.Add(article3.Title);
 			
 			List<Guid> ids = new List<Guid>();
 			ids.Add(article1.ID);
 			ids.Add(article2.ID);
-			ids.Add(article3.ID);			
+			ids.Add(article3.ID);
 			
 			DataAccess.Data.Saver.Save(article2);
 			DataAccess.Data.Saver.Save(article3);
@@ -826,7 +840,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = LogGroup.Start("Testing the index retrieval of entities that don't have any references on a particular property.", NLog.LogLevel.Debug))
 			{
-								
+				
 				TestUser user = new TestUser();
 				Guid userID = user.ID = Guid.NewGuid();
 				user.FirstName = "Test";
@@ -864,7 +878,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = LogGroup.Start("Testing the index retrieval of entities that don't have any references on a particular property.", NLog.LogLevel.Debug))
 			{
-								
+				
 				TestUser user = new TestUser();
 				Guid userID = user.ID = Guid.NewGuid();
 				user.FirstName = "Test";
