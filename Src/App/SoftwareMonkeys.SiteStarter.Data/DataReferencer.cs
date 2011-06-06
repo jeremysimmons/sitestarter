@@ -596,7 +596,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			}
 			
 			if (collection.Count > 0)
-				return collection[0].ToData();
+				return (EntityIDReference)collection[0];
 			else
 				return null;
 		}
@@ -655,7 +655,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					LogWriter.Debug("Mirror property name: " + reference.Property2Name);
 					
 					
-					collection.Add(reference.ToData());
+					collection.Add((EntityIDReference)reference);
 				}
 				
 				// Ensure the references are bound with those stored
