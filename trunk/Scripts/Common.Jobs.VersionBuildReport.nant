@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<project name="Common.Jobs.VersionBuildReport" default="Common.Jobs.VersionBuildReport" xmlns="http://nant.sf.net/schemas/nant.xsd">
+
+	
+<target name="Common.Jobs.VersionBuildReport">
+
+
+	<property name="versionFilePath" value="${path::combine(Solution.RootPath, 'Version.Number')}"/>
+
+	<loadfile
+    		file="${versionFilePath}"
+    		property="Project.Version" />
+
+	<property name="buildLogFilePath" value="${path::combine(Project.RootPath, 'Build.txt')}" />
+
+	<property name="newBuildLogFilePath" value="${Project.RootPath}\BuildLog\${string::replace(Project.Version, '.', '-')}\Build.txt" />
+
+	<delete dir="${Project.RootPath}\BuildLog"/>
+
+	<copy file="${buildLogFilePath}" tofile="${newBuildLogFilePath}" />
+
+  </target>
+
+</project>
+  	
