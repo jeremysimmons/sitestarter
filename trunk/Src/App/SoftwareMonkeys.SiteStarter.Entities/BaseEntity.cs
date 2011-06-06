@@ -48,7 +48,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			ID = id;
 		}
 		
-		public IEntity Clone()
+		public virtual IEntity Clone()
 		{
 			//return EntityCloner.Clone(this);
 			IEntity newEntity = (IEntity)System.Activator.CreateInstance(GetType());
@@ -91,7 +91,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <summary>
 		/// Activates the entity by loading all referenced entities to the relevant properties.
 		/// </summary>
-		public void Activate()
+		public virtual void Activate()
 		{
 			if (Activator == null)
 				throw new InvalidOperationException("Cannot activate.  No activator has been assigned to the Activator property.");
@@ -102,7 +102,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <summary>
 		/// Deactivates the entity by removing all referenced entities from all reference properties.
 		/// </summary>
-		public void Deactivate()
+		public virtual void Deactivate()
 		{
 			foreach (PropertyInfo property in GetType().GetProperties())
 			{
