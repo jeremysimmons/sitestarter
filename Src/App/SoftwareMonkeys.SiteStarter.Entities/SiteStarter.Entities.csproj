@@ -63,6 +63,8 @@
     <Compile Include="BaseEntity.cs" />
     <Compile Include="BaseUniqueEntity.cs" />
     <Compile Include="DynamicComparer.cs" />
+    <Compile Include="EntitiesDisposer.cs" />
+    <Compile Include="EntitiesResetter.cs" />
     <Compile Include="EntitiesUtilities.cs" />
     <Compile Include="EntityAttribute.cs" />
     <Compile Include="EntityEventArgs.cs" />

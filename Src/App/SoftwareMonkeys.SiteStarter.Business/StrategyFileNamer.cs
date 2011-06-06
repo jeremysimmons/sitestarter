@@ -11,25 +11,25 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// </summary>
 	public class StrategyFileNamer
 	{
-		private string strategiesDirectoryPath;
+		private string strategiesInfoDirectoryPath;
 		/// <summary>
 		/// Gets the path to the directory containing serialized strategy component information.
 		/// </summary>
-		public string StrategiesDirectoryPath
+		public string StrategiesInfoDirectoryPath
 		{
 			get {
-				if (strategiesDirectoryPath == null || strategiesDirectoryPath == String.Empty)
+				if (strategiesInfoDirectoryPath == null || strategiesInfoDirectoryPath == String.Empty)
 				{
 					if (StateAccess.IsInitialized)
 					{
-						strategiesDirectoryPath = StateAccess.State.PhysicalApplicationPath
+						strategiesInfoDirectoryPath = StateAccess.State.PhysicalApplicationPath
 							+ Path.DirectorySeparatorChar + "App_Data"
 							+ Path.DirectorySeparatorChar + "Strategies";
 					}
 				}
-				return strategiesDirectoryPath;
+				return strategiesInfoDirectoryPath;
 			}
-			set { strategiesDirectoryPath = value; }
+			set { strategiesInfoDirectoryPath = value; }
 		}
 		
 		public StrategyFileNamer()
@@ -41,7 +41,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="strategy">The strategy to create the file name for.</param>
 		/// <returns>The full file name for the provided strategy.</returns>
-		public string CreateFileName(StrategyInfo strategy)
+		public string CreateInfoFileName(StrategyInfo strategy)
 		{			
 			if (strategy == null)
 				throw new ArgumentNullException("strategy");
@@ -59,9 +59,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="strategy">The strategy to create the file path for.</param>
 		/// <returns>The full file path for the provided strategy.</returns>
-		public string CreateFilePath(StrategyInfo strategy)
+		public string CreateInfoFilePath(StrategyInfo strategy)
 		{
-			return StrategiesDirectoryPath + Path.DirectorySeparatorChar + CreateFileName(strategy);
+			return StrategiesInfoDirectoryPath + Path.DirectorySeparatorChar + CreateInfoFileName(strategy);
 		}		
 	}
 }

@@ -172,5 +172,17 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			return fullKey;
 		}
+		
+		public new ReactionInfo[] ToArray()
+		{
+			List<ReactionInfo> reactions = new List<ReactionInfo>();
+			
+			foreach (ReactionInfo[] infos in this)
+			{
+				reactions.AddRange(infos);
+			}
+			
+			return reactions.ToArray();
+		}
 	}
 }

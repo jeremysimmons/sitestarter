@@ -11,25 +11,25 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// </summary>
 	public class ReactionFileNamer
 	{
-		private string reactionsDirectoryPath;
+		private string reactionsInfoDirectoryPath;
 		/// <summary>
 		/// Gets the path to the directory containing serialized reaction component information.
 		/// </summary>
-		public string ReactionsDirectoryPath
+		public string ReactionsInfoDirectoryPath
 		{
 			get {
-				if (reactionsDirectoryPath == null || reactionsDirectoryPath == String.Empty)
+				if (reactionsInfoDirectoryPath == null || reactionsInfoDirectoryPath == String.Empty)
 				{
 					if (StateAccess.IsInitialized)
 					{
-						reactionsDirectoryPath = StateAccess.State.PhysicalApplicationPath
+						reactionsInfoDirectoryPath = StateAccess.State.PhysicalApplicationPath
 							+ Path.DirectorySeparatorChar + "App_Data"
 							+ Path.DirectorySeparatorChar + "Reactions";
 					}
 				}
-				return reactionsDirectoryPath;
+				return reactionsInfoDirectoryPath;
 			}
-			set { reactionsDirectoryPath = value; }
+			set { reactionsInfoDirectoryPath = value; }
 		}
 		
 		public ReactionFileNamer()
@@ -41,7 +41,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="reaction">The reaction to create the file name for.</param>
 		/// <returns>The full file name for the provided reaction.</returns>
-		public string CreateFileName(ReactionInfo reaction)
+		public string CreateInfoFileName(ReactionInfo reaction)
 		{			
 			if (reaction == null)
 				throw new ArgumentNullException("reaction");
@@ -54,35 +54,15 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			return name;
 		}
 		
-		/// <summary>
-		/// Creates the file name for the provided reaction.
-		/// </summary>
-		/// <param name="reaction">The reaction to create the file name for.</param>
-		/// <returns>The full file name for the provided entity.</returns>
-		public string CreateFileName(IReaction reaction)
-		{
-			return CreateFileName(new ReactionInfo(reaction));
-		}
-		
 		
 		/// <summary>
 		/// Creates the full file path for the provided reaction.
 		/// </summary>
 		/// <param name="reaction">The reaction to create the file path for.</param>
 		/// <returns>The full file path for the provided reaction.</returns>
-		public string CreateFilePath(ReactionInfo reaction)
+		public string CreateInfoFilePath(ReactionInfo reaction)
 		{
-			return ReactionsDirectoryPath + Path.DirectorySeparatorChar + CreateFileName(reaction);
-		}
-		
-		/// <summary>
-		/// Creates the full file path for the provided reaction.
-		/// </summary>
-		/// <param name="reaction">The reaction to create the file path for.</param>
-		/// <returns>The full file path for the provided reaction.</returns>
-		public string CreateFilePath(IReaction reaction)
-		{
-			return CreateFilePath(new ReactionInfo(reaction));
+			return ReactionsInfoDirectoryPath + Path.DirectorySeparatorChar + CreateInfoFileName(reaction);
 		}
 		
 	}

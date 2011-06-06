@@ -37,7 +37,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					if (FileNamer == null)
 						throw new InvalidOperationException("FileNamer is not set.");
 					
-					strategiesDirectoryPath = FileNamer.StrategiesDirectoryPath;
+					strategiesDirectoryPath = FileNamer.StrategiesInfoDirectoryPath;
 				}
 				return strategiesDirectoryPath; }
 			set { strategiesDirectoryPath = value; }

@@ -87,7 +87,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		public string StrategiesDirectoryPath
 		{
-			get { return FileNamer.StrategiesDirectoryPath; }
+			get { return FileNamer.StrategiesInfoDirectoryPath; }
 		}
 		
 		public StrategyInitializer()

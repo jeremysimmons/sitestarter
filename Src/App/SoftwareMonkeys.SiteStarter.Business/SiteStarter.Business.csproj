@@ -111,6 +111,8 @@
     <Compile Include="ReactionNotFoundException.cs" />
     <Compile Include="ReactionSaver.cs" />
     <Compile Include="ReactionScanner.cs" />
+    <Compile Include="ReactionsDisposer.cs" />
+    <Compile Include="ReactionsResetter.cs" />
     <Compile Include="ReactionState.cs" />
     <Compile Include="ReactionStateNameValueCollection.cs" />
     <Compile Include="RefreshSubEntityNumbersStrategy.cs" />
@@ -136,6 +138,8 @@
     <Compile Include="Security\BaseAuthoriseStrategy.cs" />
     <Compile Include="Security\UnauthorisedException.cs" />
     <Compile Include="SendEmailStrategy.cs" />
+    <Compile Include="StrategiesDisposer.cs" />
+    <Compile Include="StrategiesResetter.cs" />
     <Compile Include="StrategyCreator.cs" />
     <Compile Include="StrategyLocator.cs" />
     <Compile Include="StrategyNotFoundException.cs" />

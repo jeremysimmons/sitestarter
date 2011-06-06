@@ -26,72 +26,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		}
 		
 		
-		/*static private BasePartScanner[] defaultScanners;
-		/// <summary>
-		/// Gets/sets the part scanners used to find available parts in the existing assemblies.
-		/// </summary>
-		static public BasePartScanner[] DefaultScanners
-		{
-			get {
-				if (defaultScanners == null)
-				{
-					if (StateAccess.State.ContainsApplication(DefaultScannersKey))
-						defaultScanners = (BasePartScanner[])StateAccess.State.GetApplication(DefaultScannersKey);
-					
-					defaultScanners = new BasePartScanner[]
-					{
-						new PartScanner()
-					};
-				}
-				return defaultScanners; }
-			set { defaultScanners = value;
-				StateAccess.State.SetApplication(DefaultScannersKey, defaultScanners);
-			}
-		}*/
-		
-		
-		private BasePartScanner[] scanners;
-		/// <summary>
-		/// Gets/sets the part scanners used to find available parts in the existing assemblies.
-		/// </summary>
-		public BasePartScanner[] Scanners
-		{
-			get {
-				if (scanners == null)
-				{
-					scanners = PartsInitializer.DefaultScanners;
-					
-					// Make sure each of the default scanners uses the right page
-					foreach (BasePartScanner scanner in scanners)
-						scanner.Page = Page;
-					/*scanners = new BasePartScanner[]
-					{
-						new PartScanner(Page)
-					};*/
-				}
-				return scanners; }
-			set { scanners = value; }
-		}
-		
-		public Page Page;
-		
 		public PartsDisposer()
 		{
-		}
-		
-		public PartsDisposer(Page page)
-		{
-			Page = page;
-			Scanners = new BasePartScanner[]
-			{
-				new PartScanner(Page)
-			};
-		}
-		
-		public PartsDisposer(Page page, params BasePartScanner[] scanners)
-		{
-			Page = page;
-			Scanners = scanners;
 		}
 		
 		/// <summary>
@@ -101,13 +37,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		{
 			using (LogGroup logGroup = LogGroup.Start("Disposing the parts.", NLog.LogLevel.Debug))
 			{
-				PartInfo[] parts = new PartInfo[]{};
-				
-				foreach (PartScanner scanner in Scanners)
-				{
-					Dispose(scanner.FindParts());
-				}
-				
+				Dispose(PartState.Parts.ToArray());
 			}
 		}
 		

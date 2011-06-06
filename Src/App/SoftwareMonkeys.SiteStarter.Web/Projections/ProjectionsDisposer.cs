@@ -24,33 +24,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				return fileNamer; }
 			set { fileNamer = value; }
 		}
-		
-		
-		/*static private BaseProjectionScanner[] defaultScanners;
-		/// <summary>
-		/// Gets/sets the projection scanners used to find available projections in the existing assemblies.
-		/// </summary>
-		static public BaseProjectionScanner[] DefaultScanners
-		{
-			get {
-				if (defaultScanners == null)
-				{
-					if (StateAccess.State.ContainsApplication(DefaultScannersKey))
-						defaultScanners = (BaseProjectionScanner[])StateAccess.State.GetApplication(DefaultScannersKey);
-					
-					defaultScanners = new BaseProjectionScanner[]
-					{
-						new ProjectionScanner()
-					};
-				}
-				return defaultScanners; }
-			set { defaultScanners = value;
-				StateAccess.State.SetApplication(DefaultScannersKey, defaultScanners);
-			}
-		}*/
-		
-		
-		private BaseProjectionScanner[] scanners;
+				
+		// TODO: Remove if not needed
+		/*private BaseProjectionScanner[] scanners;
 		/// <summary>
 		/// Gets/sets the projection scanners used to find available projections in the existing assemblies.
 		/// </summary>
@@ -64,14 +40,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 					// Make sure each of the default scanners uses the right page
 					foreach (BaseProjectionScanner scanner in scanners)
 						scanner.Page = Page;
-					/*scanners = new BaseProjectionScanner[]
-					{
-						new ProjectionScanner(Page)
-					};*/
 				}
 				return scanners; }
 			set { scanners = value; }
-		}
+		}*/
 		
 		public Page Page;
 		
@@ -82,17 +54,19 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		public ProjectionsDisposer(Page page)
 		{
 			Page = page;
-			Scanners = new BaseProjectionScanner[]
-			{
-				new ProjectionScanner(Page)
-			};
+			// TODO: Remove if not needed
+			//Scanners = new BaseProjectionScanner[]
+			//{
+			//	new ProjectionScanner(Page)
+			//};
 		}
 		
-		public ProjectionsDisposer(Page page, params BaseProjectionScanner[] scanners)
+		// TODO: Remove if not needed
+		/*public ProjectionsDisposer(Page page, params BaseProjectionScanner[] scanners)
 		{
 			Page = page;
 			Scanners = scanners;
-		}
+		}*/
 		
 		/// <summary>
 		/// Disposes the projections found by the scanner.
@@ -103,10 +77,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			{
 				ProjectionInfo[] projections = new ProjectionInfo[]{};
 				
-				foreach (ProjectionScanner scanner in Scanners)
+				Dispose(ProjectionState.Projections.ToArray());
+				
+				// TODO: Remove if not needed
+				/*foreach (ProjectionScanner scanner in Scanners)
 				{
 					Dispose(scanner.FindProjections());
-				}
+				}*/
 				
 			}
 		}

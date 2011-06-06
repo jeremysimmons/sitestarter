@@ -16,7 +16,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 						
 			StrategyFileNamer namer = new StrategyFileNamer();
 			
-			string name = namer.CreateFileName(info);
+			string name = namer.CreateInfoFileName(info);
 			
 			string expected = "TestUser-Retrieve.strategy";
 			

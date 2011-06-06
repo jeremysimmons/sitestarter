@@ -37,7 +37,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 					if (FileNamer == null)
 						throw new InvalidOperationException("FileNamer is not set.");
 					
-					entitiesDirectoryPath = FileNamer.EntitiesDirectoryPath;
+					entitiesDirectoryPath = FileNamer.EntitiesInfoDirectoryPath;
 				}
 				return entitiesDirectoryPath; }
 			set { entitiesDirectoryPath = value; }

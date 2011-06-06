@@ -14,7 +14,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		/// </summary>
 		static public bool IsInitialized
 		{
-			get { return parts != null && parts.Count > 0; }
+			get { return parts != null; }
 		}
 		
 		static private PartStateCollection parts;
@@ -27,8 +27,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 				if (!IsInitialized)
 					throw new InvalidOperationException("The parts state has not been initialized.");
 				
-				if (parts == null)
-					parts = new PartStateCollection();
+				//if (parts == null)
+				//	parts = new PartStateCollection();
 				return parts;  }
 			set { parts = value; }
 		}

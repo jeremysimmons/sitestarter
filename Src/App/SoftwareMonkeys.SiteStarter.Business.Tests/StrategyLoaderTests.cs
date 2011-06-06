@@ -21,9 +21,9 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			SaveMockStrategy(strategy);
 			
 			StrategyLoader loader = new StrategyLoader();
-			loader.FileNamer.StrategiesDirectoryPath = GetMockStrategiesDirectoryPath(MockApplicationName);
+			loader.FileNamer.StrategiesInfoDirectoryPath = GetMockStrategiesDirectoryPath(MockApplicationName);
 			
-			string fullPath = loader.FileNamer.CreateFilePath(strategy);
+			string fullPath = loader.FileNamer.CreateInfoFilePath(strategy);
 			
 			StrategyInfo foundStrategy = loader.LoadFromFile(fullPath);
 			
@@ -42,10 +42,10 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			SaveMockStrategy(strategy2);
 			
 			StrategyLoader loader = new StrategyLoader();
-			loader.FileNamer.StrategiesDirectoryPath = GetMockStrategiesDirectoryPath(MockApplicationName);
+			loader.FileNamer.StrategiesInfoDirectoryPath = GetMockStrategiesDirectoryPath(MockApplicationName);
 			
-			string fullPath = loader.FileNamer.CreateFilePath(strategy);
-			string fullPath2 = loader.FileNamer.CreateFilePath(strategy2);
+			string fullPath = loader.FileNamer.CreateInfoFilePath(strategy);
+			string fullPath2 = loader.FileNamer.CreateInfoFilePath(strategy2);
 			
 			StrategyInfo[] foundStrategies = loader.LoadFromDirectory();
 			
@@ -67,9 +67,9 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		public void SaveMockStrategy(StrategyInfo strategy)
 		{
 			StrategyFileNamer namer = new StrategyFileNamer();
-			namer.StrategiesDirectoryPath = GetMockStrategiesDirectoryPath(MockApplicationName);
+			namer.StrategiesInfoDirectoryPath = GetMockStrategiesDirectoryPath(MockApplicationName);
 			
-			string fullPath = namer.CreateFilePath(strategy);
+			string fullPath = namer.CreateInfoFilePath(strategy);
 			
 			if (!Directory.Exists(Path.GetDirectoryName(fullPath)))
 				Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
