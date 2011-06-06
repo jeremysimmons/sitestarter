@@ -51,8 +51,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Admin\Strategies.aspx" />
+    <None Include="Admin\Cache.aspx" />
+    <None Include="Admin\Controllers.aspx" />
+    <None Include="Admin\Entities.aspx" />
     <None Include="Admin\InitializeCache.aspx" />
     <None Include="Admin\InitializeScreenshots.aspx" />
+    <None Include="Admin\Parts.aspx" />
+    <None Include="Admin\Projections.aspx" />
+    <None Include="Admin\Reactions.aspx" />
     <None Include="Admin\Setup.aspx" />
     <None Include="Admin\Restore.aspx" />
     <None Include="Admin\AutoBackup.aspx" />
@@ -64,6 +71,7 @@
     <None Include="Admin\State.aspx" />
     <None Include="Admin\Tests\ClearData.aspx" />
     <None Include="Admin\Tests\Dispose.aspx" />
+    <None Include="Admin\Tests\EntitySelectTest.aspx" />
     <None Include="Admin\Tests\ResetDefaultData.aspx" />
     <None Include="Admin\Tests\TestBreakableLogging.aspx" />
     <None Include="Admin\Tests\TestContactForm.aspx" />
@@ -100,6 +108,7 @@
     <None Include="Projections\User-Create-Edit.ascx" />
     <None Include="Projections\User-Details.ascx" />
     <None Include="Projections\User-Index.ascx" />
+    <None Include="Projections\User-MockCreate.ascx" />
     <None Include="Projections\User-Register.ascx" />
     <None Include="Projections\User-SignIn.ascx" />
     <None Include="Projections\User-SignOut.ascx" />
