@@ -118,14 +118,26 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 					if (StateAccess.State.ContainsApplication(DefaultScannersKey))
 						defaultScanners = (BaseProjectionScanner[])StateAccess.State.GetApplication(DefaultScannersKey);
 					
-					defaultScanners = new BaseProjectionScanner[]
+					if (defaultScanners == null)
 					{
-						new ProjectionScanner()
-					};
+						defaultScanners = new BaseProjectionScanner[]
+						{
+							new ProjectionScanner()
+						};
+					}
 				}
 				return defaultScanners; }
-			set { defaultScanners = value;
-				StateAccess.State.SetApplication(DefaultScannersKey, defaultScanners);
+			set {
+				using (LogGroup logGroup = LogGroup.StartDebug("Setting the default projection scanners."))
+				{
+					if (value == null)
+						LogWriter.Debug("Scanners: [null]");
+					else
+						LogWriter.Debug("Scanners: " + value.Length.ToString());
+					
+					defaultScanners = value;
+					StateAccess.State.SetApplication(DefaultScannersKey, defaultScanners);
+				}
 			}
 		}
 		
@@ -137,10 +149,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		public ProjectionsInitializer(Page page)
 		{
 			Page = page;
-			Scanners = new BaseProjectionScanner[]
-			{
-				new ProjectionScanner(Page)
-			};
 		}
 		
 		public ProjectionsInitializer(Page page, params BaseProjectionScanner[] scanners)
@@ -164,7 +172,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// </summary>
 		public void Initialize()
 		{
-			using (LogGroup logGroup = LogGroup.Start("Initializing the business projections.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Initializing the web projections.", NLog.LogLevel.Debug))
 			{
 				if (StateAccess.IsInitialized)
 				{
@@ -176,7 +184,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 					// and when the projections have NOT yet been mapped
 					if (pageIsAccessible && !IsMapped)
 					{
-						LogWriter.Debug("Is not mapped. Scanning from type attributes.");
+						LogWriter.Debug("Is not mapped. Scanning for projections.");
 						
 						projections = FindProjections();
 						
@@ -192,8 +200,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 						
 						Initialize(projections);
 					}
+					else
+						LogWriter.Debug("Can't initialize. No Page object is assigned to Page property. Skipping for now.");
 					// Otherwise just skip it, as it's likely before setup has run and just needs to wait
 				}
+				else
+					LogWriter.Debug("State is not initialized. Skipping.");
 			}
 		}
 		
