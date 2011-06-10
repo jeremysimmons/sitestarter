@@ -10,11 +10,11 @@ namespace SoftwareMonkeys.SiteStarter.Entities
     /// </summary>
     public class EntityEventArgs : EventArgs
     {
-        private BaseEntity entity;
+        private IEntity entity;
         /// <summary>
         /// Gets the entity involved in the event.
         /// </summary>
-        public BaseEntity Entity
+        public IEntity Entity
         {
             get { return entity; }
         }
@@ -23,7 +23,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
         /// Sets the ID of the entity involved in the event.
         /// </summary>
         /// <param name="entity">The entity that was involved in the event.</param>
-        public EntityEventArgs(BaseEntity entity)
+        public EntityEventArgs(IEntity entity)
         {
             this.entity = entity;
         }
