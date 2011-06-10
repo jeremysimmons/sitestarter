@@ -27,7 +27,7 @@ private void ResetButton_Click(object sender, EventArgs e)
 <h1>Parts</h1>
 <cc:Result runat="Server"/>
 <p>The following parts are currently cached in the system. Click "Reset" to rescan and refresh the parts.</p>
-<p>&laquo; <a href="Cache.aspx">Index</a></p>
+<p><a href="Cache.aspx" id="CacheIndexLink">&laquo; Index</a></p>
 <p><asp:button runat="server" id="ResetButton" text='<%# Resources.Language.Reset %>' onclick="ResetButton_Click"/></p>
 <table class="Panel" width="600">
 	<tr class="Heading2">

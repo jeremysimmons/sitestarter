@@ -75,7 +75,7 @@ private string GetAssemblyName(EntityInfo entity)
 <h1>Entities</h1>
 <cc:Result runat="Server"/>
 <p>The following entities are currently cached in the system. Click "Reset" to rescan and refresh the entities.</p>
-<p>&laquo; <a href="Cache.aspx">Index</a></p>
+<p><a href="Cache.aspx" id="CacheIndexLink">&laquo; Index</a></p>
 <p><asp:button runat="server" id="ResetButton" text='<%# Resources.Language.Reset %>' onclick="ResetButton_Click"/></p>
 <table class="Panel" width="100%">
 	<tr class="Heading2">
