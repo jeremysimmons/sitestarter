@@ -16,17 +16,17 @@ private void Page_Load(object sender, EventArgs e)
 <p>View the application cache using the links below.</p>
 <h2>Entities</h2>
 <ul>
-<li><a href="Entities.aspx">Entities</a></li>
+<li><a href="Entities.aspx" id="EntitiesCacheLink">Entities</a></li>
 </ul>
 <h2>Business</h2>
 <ul>
-<li><a href="Strategies.aspx">Strategies</a></li>
-<li><a href="Reactions.aspx">Reactions</a></li>
+<li><a href="Strategies.aspx" id="StrategiesCacheLink">Strategies</a></li>
+<li><a href="Reactions.aspx" id="ReactionsCacheLink">Reactions</a></li>
 </ul>
 <h2>Web/UI</h2>
 <ul>
-<li><a href="Projections.aspx">Projections</a></li>
-<li><a href="Parts.aspx">Parts</a></li>
-<li><a href="Controllers.aspx">Controllers</a></li>
+<li><a href="Projections.aspx" id="ProjectionsCacheLink">Projections</a></li>
+<li><a href="Parts.aspx" id="PartsCacheLink">Parts</a></li>
+<li><a href="Controllers.aspx" id="ControllersCacheLink">Controllers</a></li>
 </ul>
 </asp:Content>
