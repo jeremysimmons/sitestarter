@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.IO;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using SoftwareMonkeys.SiteStarter.State;
 
 namespace SoftwareMonkeys.SiteStarter.Entities
 {
@@ -33,8 +34,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			get {
 				if (binDirectoryPath == String.Empty)
 				{
-					if (Configuration.Config.IsInitialized)
-						binDirectoryPath = Configuration.Config.Application.PhysicalApplicationPath + Path.DirectorySeparatorChar + "bin";
+					if (StateAccess.IsInitialized)
+						binDirectoryPath = StateAccess.State.PhysicalApplicationPath + Path.DirectorySeparatorChar + "bin";
 				}
 				return binDirectoryPath; }
 			set { binDirectoryPath = value; }
@@ -74,7 +75,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 			List<EntityInfo> entities = new List<EntityInfo>();
 			
-			//using (LogGroup logGroup = LogGroup.Start("Finding entities by scanning the attributes of the available type.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = LogGroup.StartDebug("Finding entities by scanning the attributes of the available type."))
 			//{
 				foreach (string assemblyPath in AssemblyPaths)
 				{
@@ -82,25 +83,30 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 					{
 						Assembly assembly = Assembly.LoadFrom(assemblyPath);
 						
-						foreach (Type type in assembly.GetTypes())
+						if (ContainsEntities(assembly))
 						{
-							if (IsEntity(type))
+							foreach (Type type in assembly.GetTypes())
 							{
-								//LogWriter.Debug("Found entity type: " + type.ToString());
-								
-								EntityInfo entityInfo = new EntityInfo(type);
-								
-								if (entityInfo.TypeName != null && entityInfo.TypeName != String.Empty)
+								if (IsEntity(type))
 								{
-									//LogWriter.Debug("Found match.");
+									//LogWriter.Debug("Found entity type: " + type.ToString());
 									
-									entities.Add(entityInfo);
+									EntityInfo entityInfo = new EntityInfo(type);
+									
+									if (entityInfo.TypeName != null && entityInfo.TypeName != String.Empty)
+									{
+										//LogWriter.Debug("Found match.");
+										
+										entities.Add(entityInfo);
+									}
 								}
 							}
 						}
 					}
 					catch(ReflectionTypeLoadException ex)
 					{
+						LogWriter.Error("An error occurred when scanning for entities...");
+						
 						LogWriter.Error(ex.ToString());
 					}
 					
@@ -108,6 +114,20 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			//}
 			
 			return entities.ToArray();
+		}
+		
+		/// <summary>
+		/// Checks whether the provided assembly contains entity types by looking for AssemblyContainsEntitiesAttribute.
+		/// </summary>
+		/// <param name="assembly"></param>
+		/// <returns></returns>
+		public bool ContainsEntities(Assembly assembly)
+		{
+			bool doesContainEntities = false;
+			
+			doesContainEntities = assembly.GetCustomAttributes(typeof(AssemblyContainsEntitiesAttribute), true).Length > 0;
+			
+			return doesContainEntities;
 		}
 		
 		/// <summary>
@@ -128,18 +148,18 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			//	LogWriter.Debug("Type: " + type.ToString());
 			
 			
-				// TODO: This function is a performance hot spot. The Type.GetInterface function is the issue.
-				// See if performance can be improved, possibly by removing...
-				// type.GetInterface("IEntity") != null
-				// ...and relying on...
-				// typeof(IEntity).IsAssignableFrom(type)
-				
-				matchesInterface = typeof(IEntity).IsAssignableFrom(type)
-					|| type.GetInterface("IEntity") != null
-					|| type.Name == "IEntity";
-				
-				hasAttribute = type.GetCustomAttributes(typeof(EntityAttribute), true).Length > 0;
-				
+			// TODO: This function is a performance hot spot. The Type.GetInterface function is the issue.
+			// See if performance can be improved, possibly by removing...
+			// type.GetInterface("IEntity") != null
+			// ...and relying on...
+			// typeof(IEntity).IsAssignableFrom(type)
+			
+			matchesInterface = typeof(IEntity).IsAssignableFrom(type)
+				|| type.GetInterface("IEntity") != null
+				|| type.Name == "IEntity";
+			
+			hasAttribute = type.GetCustomAttributes(typeof(EntityAttribute), true).Length > 0;
+			
 			//	LogWriter.Debug("Matches interface: " + matchesInterface);
 			//}
 			

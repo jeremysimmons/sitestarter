@@ -59,9 +59,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AliasAttribute.cs" />
+    <Compile Include="AssemblyContainsEntitiesAttribute.cs" />
+    <Compile Include="AssemblyScanInfo.cs" />
     <Compile Include="BaseEntityReferenceAttribute.cs" />
     <Compile Include="BaseEntity.cs" />
     <Compile Include="BaseUniqueEntity.cs" />
+    <Compile Include="CorruptReferenceException.cs" />
     <Compile Include="DynamicComparer.cs" />
     <Compile Include="EntitiesDisposer.cs" />
     <Compile Include="EntitiesResetter.cs" />
@@ -85,6 +88,7 @@
     <Compile Include="EntityStateCollection.cs" />
     <Compile Include="EntityTypeLoader.cs" />
     <Compile Include="PagingLocation.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReferenceAttribute.cs" />
     <Compile Include="SerializableCollection.cs" />
     <Compile Include="TestClass.cs" />
