@@ -25,6 +25,22 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			set { assemblyPaths = value; }
 		}
 		
+		private string binDirectoryPath = String.Empty;
+		/// <summary>
+		/// Gets/sets the path to the directory containing the assemblies.
+		/// </summary>
+		public string BinDirectoryPath
+		{
+			get {
+				if (binDirectoryPath == String.Empty)
+				{
+					if (StateAccess.IsInitialized)
+						binDirectoryPath = StateAccess.State.PhysicalApplicationPath + Path.DirectorySeparatorChar + "bin";
+				}
+				return binDirectoryPath; }
+			set { binDirectoryPath = value; }
+		}
+		
 		public StrategyScanner()
 		{
 		}
@@ -37,10 +53,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			List<string> list = new List<string>();
 			
-			string binPath = StateAccess.State.PhysicalApplicationPath
-				+ Path.DirectorySeparatorChar + "bin";
-			
-			foreach (string file in Directory.GetFiles(binPath, "SoftwareMonkeys.*.dll"))
+			foreach (string file in Directory.GetFiles(BinDirectoryPath, "*.dll"))
 			{
 				list.Add(file);
 			}
@@ -48,6 +61,19 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			return list.ToArray();
 		}
 		
+		/// <summary>
+		/// Checks whether the provided assembly contains strategy types by looking for AssemblyContainsStrategiesAttribute.
+		/// </summary>
+		/// <param name="assembly"></param>
+		/// <returns></returns>
+		public bool ContainsStrategies(Assembly assembly)
+		{
+			bool doesContainStrategies = false;
+			
+			doesContainStrategies = assembly.GetCustomAttributes(typeof(AssemblyContainsStrategiesAttribute), true).Length > 0;
+			
+			return doesContainStrategies;
+		}
 		
 		/// <summary>
 		/// Finds all the strategies in the available assemblies.
@@ -63,34 +89,39 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			{
 				Assembly assembly = Assembly.LoadFrom(assemblyPath);
 				
-				Type[] types = new Type[] {};
-				
-				try
+				if (ContainsStrategies(assembly))
 				{
-					types = assembly.GetTypes();
-				}
-				catch (ReflectionTypeLoadException ex)
-				{
-					LogWriter.Error(ex);
-				}
-				
-				foreach (Type type in types)
-				{
-					if (IsStrategy(type))
+					Type[] types = new Type[] {};
+					
+					try
 					{
-						//LogWriter.Debug("Found strategy type: " + type.ToString());
+						types = assembly.GetTypes();
+					}
+					catch (ReflectionTypeLoadException ex)
+					{
+						LogWriter.Error("An error occurred when scanning for busines strategies...");
 						
-						foreach (StrategyInfo strategyInfo in  StrategyInfo.ExtractInfo(type))
+						LogWriter.Error(ex);
+					}
+					
+					foreach (Type type in types)
+					{
+						if (IsStrategy(type))
 						{
-							if (strategyInfo.TypeName != null && strategyInfo.TypeName != String.Empty
-							    && strategyInfo.Action != null && strategyInfo.Action != String.Empty)
+							//LogWriter.Debug("Found strategy type: " + type.ToString());
+							
+							foreach (StrategyInfo strategyInfo in  StrategyInfo.ExtractInfo(type))
 							{
-								//LogWriter.Debug("Found match.");
-								
-								//LogWriter.Debug("Type name: " + strategyInfo.TypeName);
-								//LogWriter.Debug("Action: " + strategyInfo.Action);
-								
-								strategies.Add(strategyInfo);
+								if (strategyInfo.TypeName != null && strategyInfo.TypeName != String.Empty
+								    && strategyInfo.Action != null && strategyInfo.Action != String.Empty)
+								{
+									//LogWriter.Debug("Found match.");
+									
+									//LogWriter.Debug("Type name: " + strategyInfo.TypeName);
+									//LogWriter.Debug("Action: " + strategyInfo.Action);
+									
+									strategies.Add(strategyInfo);
+								}
 							}
 						}
 					}

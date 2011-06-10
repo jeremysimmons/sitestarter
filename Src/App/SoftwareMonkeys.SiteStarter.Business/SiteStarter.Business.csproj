@@ -82,11 +82,14 @@
     <Compile Include="ApplicationBackup.cs" />
     <Compile Include="ApplicationInstaller.cs" />
     <Compile Include="ApplicationRestorer.cs" />
+    <Compile Include="AssemblyContainsStrategiesAttribute.cs" />
+    <Compile Include="AssemblyScanInfo.cs" />
     <Compile Include="BaseDeleteReaction.cs" />
     <Compile Include="BaseReaction.cs" />
     <Compile Include="BaseSaveReaction.cs" />
     <Compile Include="BaseStrategy.cs" />
     <Compile Include="BaseUpdateReaction.cs" />
+    <Compile Include="AssemblyContainsReactionsAttribute.cs" />
     <Compile Include="CommandInfo.cs" />
     <Compile Include="CreateStrategy.cs" />
     <Compile Include="CreateSubEntityStrategy.cs" />
@@ -100,6 +103,7 @@
     <Compile Include="IndexStrategy.cs" />
     <Compile Include="InvalidEntityException.cs" />
     <Compile Include="NotifyStrategy.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReactionAttribute.cs" />
     <Compile Include="ReactionCreator.cs" />
     <Compile Include="ReactionFileNamer.cs" />
