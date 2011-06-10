@@ -24,7 +24,7 @@ private void Page_Load(object sender, EventArgs e)
 {
 	defaultTimeout = Server.ScriptTimeout;
 
-	Server.ScriptTimeout = 600; // 10 minutes
+	Server.ScriptTimeout = 1800; // 30 minutes
 
 	StateProviderInitializer.Initialize();
 	
