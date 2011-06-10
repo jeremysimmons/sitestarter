@@ -147,8 +147,10 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			return otherEntity;
 		}
 		
-		public void Deactivate()
+		public override void Deactivate()
 		{
+			base.Deactivate();
+			
 			referenceEntity = null;
 			sourceEntity = null;
 		}
