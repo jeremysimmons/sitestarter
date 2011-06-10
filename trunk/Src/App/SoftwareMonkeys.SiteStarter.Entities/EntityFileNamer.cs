@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using SoftwareMonkeys.SiteStarter.State;
 
 namespace SoftwareMonkeys.SiteStarter.Entities
 {
@@ -17,9 +18,9 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			get {
 				if (entitiesInfoDirectoryPath == null || entitiesInfoDirectoryPath == String.Empty)
 				{
-					if (Configuration.Config.IsInitialized)
+					if (StateAccess.IsInitialized)
 					{
-						entitiesInfoDirectoryPath = Configuration.Config.Application.PhysicalApplicationPath
+						entitiesInfoDirectoryPath = StateAccess.State.PhysicalApplicationPath
 							+ Path.DirectorySeparatorChar + "App_Data"
 							+ Path.DirectorySeparatorChar + "Entities";
 					}
