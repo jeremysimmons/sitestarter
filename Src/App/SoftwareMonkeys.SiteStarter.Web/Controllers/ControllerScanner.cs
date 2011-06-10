@@ -40,6 +40,22 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			set { assemblyPaths = value; }
 		}
 		
+		private string binDirectoryPath = String.Empty;
+		/// <summary>
+		/// Gets/sets the path to the directory containing the assemblies.
+		/// </summary>
+		public string BinDirectoryPath
+		{
+			get {
+				if (binDirectoryPath == String.Empty)
+				{
+					if (StateAccess.IsInitialized)
+						binDirectoryPath = StateAccess.State.PhysicalApplicationPath + Path.DirectorySeparatorChar + "bin";
+				}
+				return binDirectoryPath; }
+			set { binDirectoryPath = value; }
+		}
+		
 		/// <summary>
 		/// Retrieves a list of all available assembly paths.
 		/// </summary>
@@ -48,15 +64,26 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			List<string> list = new List<string>();
 			
-			string binPath = StateAccess.State.PhysicalApplicationPath
-				+ Path.DirectorySeparatorChar + "bin";
-			
-			foreach (string file in Directory.GetFiles(binPath, "*.dll"))
+			foreach (string file in Directory.GetFiles(BinDirectoryPath, "*.dll"))
 			{
 				list.Add(file);
 			}
 			
 			return list.ToArray();
+		}
+		
+		/// <summary>
+		/// Checks whether the provided assembly contains strategy types by looking for AssemblyContainsStrategiesAttribute.
+		/// </summary>
+		/// <param name="assembly"></param>
+		/// <returns></returns>
+		public bool ContainsControllers(Assembly assembly)
+		{
+			bool doesContain = false;
+			
+			doesContain = assembly.GetCustomAttributes(typeof(AssemblyContainsControllersAttribute), true).Length > 0;
+			
+			return doesContain;
 		}
 		
 		/// <summary>
@@ -73,31 +100,34 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			{
 				Assembly assembly = Assembly.LoadFrom(assemblyPath);
 				
-				try
+				if (ContainsControllers(assembly))
 				{
-					foreach (Type type in assembly.GetTypes())
+					try
 					{
-						if  (IsController(type))
+						foreach (Type type in assembly.GetTypes())
 						{
-							//LogWriter.Debug("Found controller type: " + type.ToString());
-							
-							ControllerInfo controllerInfo = new ControllerInfo(type);
-							
-							if (controllerInfo.TypeName != null && controllerInfo.TypeName != String.Empty
-							    && controllerInfo.Action != null && controllerInfo.Action != String.Empty)
+							if  (IsController(type))
 							{
-								//LogWriter.Debug("Found match.");
+								//LogWriter.Debug("Found controller type: " + type.ToString());
 								
-								controllers.Add(controllerInfo);
+								ControllerInfo controllerInfo = new ControllerInfo(type);
+								
+								if (controllerInfo.TypeName != null && controllerInfo.TypeName != String.Empty
+								    && controllerInfo.Action != null && controllerInfo.Action != String.Empty)
+								{
+									//LogWriter.Debug("Found match.");
+									
+									controllers.Add(controllerInfo);
+								}
 							}
 						}
 					}
-				}
-				catch (Exception ex)
-				{
-					LogWriter.Error("Error occurred while trying to scan for controllers.");
-					
-					LogWriter.Error(ex);
+					catch (Exception ex)
+					{
+						LogWriter.Error("Error occurred while trying to scan for controllers.");
+						
+						LogWriter.Error(ex);
+					}
 				}
 			}
 			//}

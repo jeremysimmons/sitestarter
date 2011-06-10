@@ -66,10 +66,12 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyScanInfo.cs" />
     <Compile Include="AutoBackupInitializer.cs" />
     <Compile Include="BasePage.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="Controllers\AssemblyContainsControllersAttribute.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\BaseControllerScanner.cs" />
     <Compile Include="Controllers\ControllerAttribute.cs" />
