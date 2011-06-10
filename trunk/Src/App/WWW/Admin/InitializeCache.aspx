@@ -1,6 +1,4 @@
 ﻿<%@ Page Language="C#" Title="InitializeCache" %>
-<%@ Register Namespace="SoftwareMonkeys.SiteStarter.Web.WebControls" Assembly="SoftwareMonkeys.SiteStarter.Web" TagPrefix="cc" %>
-<%@ Register Namespace="SoftwareMonkeys.SiteStarter.Web.WebControls" Assembly="SoftwareMonkeys.SiteStarter.Web" TagPrefix="ss" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Entities" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Configuration" %>
@@ -20,18 +18,24 @@
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Web.State" %>
 <script runat="server">
 
+int defaultTimeout = 0;
+
 private void Page_Load(object sender, EventArgs e)
 {
+	defaultTimeout = Server.ScriptTimeout;
 
-			StateProviderInitializer.Initialize();
-			                
+	Server.ScriptTimeout = 600; // 10 minutes
+
+	StateProviderInitializer.Initialize();
+	
+	new EntityInitializer().Initialize();
+	new StrategyInitializer().Initialize();
+	new ReactionInitializer().Initialize();
+	new ProjectionsInitializer(this).Initialize();
+	new PartsInitializer(this).Initialize();
+	new ControllersInitializer().Initialize();
 			
-			new EntityInitializer().Initialize();
-			new StrategyInitializer().Initialize();
-			new ReactionInitializer().Initialize();
-			new ProjectionsInitializer(this).Initialize();
-			new PartsInitializer().Initialize();
-			new ControllersInitializer().Initialize();
+	Server.ScriptTimeout = defaultTimeout;
 }
    
 </script>
