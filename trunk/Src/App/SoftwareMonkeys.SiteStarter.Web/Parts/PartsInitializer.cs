@@ -118,10 +118,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 					if (StateAccess.State.ContainsApplication(DefaultScannersKey))
 						defaultScanners = (BasePartScanner[])StateAccess.State.GetApplication(DefaultScannersKey);
 					
-					defaultScanners = new BasePartScanner[]
+					if (defaultScanners == null)
 					{
-						new PartScanner()
-					};
+						defaultScanners = new BasePartScanner[]
+						{
+							new PartScanner()
+						};
+					}
 				}
 				return defaultScanners; }
 			set { defaultScanners = value;
@@ -164,7 +167,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		/// </summary>
 		public void Initialize()
 		{
-			using (LogGroup logGroup = LogGroup.Start("Initializing the business parts.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Initializing the web parts.", NLog.LogLevel.Debug))
 			{
 				if (StateAccess.IsInitialized)
 				{
@@ -193,6 +196,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 						Initialize(parts);
 					}
 				}
+				else
+					LogWriter.Debug("State is not initialized. Skipping.");
 			}
 		}
 		
