@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using SoftwareMonkeys.SiteStarter.State;
 
 namespace SoftwareMonkeys.SiteStarter.Entities
 {
@@ -49,7 +50,6 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				if (scanner == null)
 				{
 					scanner = new EntityScanner();
-					scanner.BinDirectoryPath = BinDirectoryPath;
 				}
 				return scanner; }
 			set { scanner = value; }
@@ -90,31 +90,9 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			get { return FileNamer.EntitiesInfoDirectoryPath; }
 		}
 		
-		private string binDirectoryPath = String.Empty;
-		/// <summary>
-		/// Gets/sets the path to the directory containing the assemblies.
-		/// </summary>
-		public string BinDirectoryPath
-		{
-			get {
-				if (binDirectoryPath == String.Empty)
-				{
-					if (Configuration.Config.IsInitialized)
-						binDirectoryPath = Configuration.Config.Application.PhysicalApplicationPath + Path.DirectorySeparatorChar + "bin";
-				}
-				return binDirectoryPath; }
-			set { binDirectoryPath = value; }
-		}
-		
 		public EntityInitializer()
 		{
-		}
-		
-		
-		public EntityInitializer(string binDirectoryPath)
-		{
-			BinDirectoryPath = binDirectoryPath;
-		}
+		}		
 		
 		/// <summary>
 		/// Initializes the entities and loads all entities to state.
