@@ -25,6 +25,22 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			set { assemblyPaths = value; }
 		}
 		
+		private string binDirectoryPath = String.Empty;
+		/// <summary>
+		/// Gets/sets the path to the directory containing the assemblies.
+		/// </summary>
+		public string BinDirectoryPath
+		{
+			get {
+				if (binDirectoryPath == String.Empty)
+				{
+					if (StateAccess.IsInitialized)
+						binDirectoryPath = StateAccess.State.PhysicalApplicationPath + Path.DirectorySeparatorChar + "bin";
+				}
+				return binDirectoryPath; }
+			set { binDirectoryPath = value; }
+		}
+		
 		public ReactionScanner()
 		{
 		}
@@ -34,13 +50,10 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <returns>An array of full file paths to the available assemblies.</returns>
 		public string[] GetAssemblyPaths()
-		{			
+		{
 			List<string> list = new List<string>();
-			
-			string binPath = StateAccess.State.PhysicalApplicationPath
-				+ Path.DirectorySeparatorChar + "bin";
-			
-			foreach (string file in Directory.GetFiles(binPath, "SoftwareMonkeys.*.dll"))
+						
+			foreach (string file in Directory.GetFiles(BinDirectoryPath, "*.dll"))
 			{
 				list.Add(file);
 			}
@@ -58,11 +71,13 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			ReactionInfoCollection strategies = new ReactionInfoCollection();
 			
 			//using (LogGroup logGroup = LogGroup.Start("Finding strategies by scanning the attributes of the available type.", NLog.LogLevel.Debug))
-			//{				
-				foreach (string assemblyPath in AssemblyPaths)
+			//{
+			foreach (string assemblyPath in AssemblyPaths)
+			{
+				Assembly assembly = Assembly.LoadFrom(assemblyPath);
+				
+				if (ContainsReactions(assembly))
 				{
-					Assembly assembly = Assembly.LoadFrom(assemblyPath);
-					
 					foreach (Type type in assembly.GetTypes())
 					{
 						if (IsReaction(type))
@@ -84,9 +99,24 @@ namespace SoftwareMonkeys.SiteStarter.Business
 						}
 					}
 				}
+			}
 			//}
 			
 			return strategies.ToArray();
+		}
+		
+		/// <summary>
+		/// Checks whether the provided assembly contains reaction types by looking for AssemblyContainsReactionsAttribute.
+		/// </summary>
+		/// <param name="assembly"></param>
+		/// <returns></returns>
+		public bool ContainsReactions(Assembly assembly)
+		{
+			bool doesContainReactions = false;
+			
+			doesContainReactions = assembly.GetCustomAttributes(typeof(AssemblyContainsReactionsAttribute), true).Length > 0;
+			
+			return doesContainReactions;
 		}
 		
 		/// <summary>
@@ -104,15 +134,15 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			//using (LogGroup logGroup = LogGroup.Start("Checks whether the provided type is a reaction.", NLog.LogLevel.Debug))
 			//{
 			//	LogWriter.Debug("Type: " + type.ToString());
-				
-				matchesInterface = typeof(IReaction).IsAssignableFrom(type)
-					|| type.GetInterface("IReaction") != null;
-				
-				isNotInterface = !type.IsInterface;
-				
-				isNotAbstract = (!type.IsAbstract);
-				
-				hasAttribute = type.GetCustomAttributes(typeof(ReactionAttribute), true).Length > 0;
+			
+			matchesInterface = typeof(IReaction).IsAssignableFrom(type)
+				|| type.GetInterface("IReaction") != null;
+			
+			isNotInterface = !type.IsInterface;
+			
+			isNotAbstract = (!type.IsAbstract);
+			
+			hasAttribute = type.GetCustomAttributes(typeof(ReactionAttribute), true).Length > 0;
 
 			//	LogWriter.Debug("Matches interface: " + matchesInterface);
 			//	LogWriter.Debug("Is not reaction interface: " + isNotInterface);
