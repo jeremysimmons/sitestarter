@@ -119,7 +119,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// </summary>
 		public void Initialize()
 		{
-			using (LogGroup logGroup = LogGroup.Start("Initializing the business controllers.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Initializing the web controllers.", NLog.LogLevel.Debug))
 			{
 				if (StateAccess.IsInitialized)
 				{
@@ -140,6 +140,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 					
 					Initialize(controllers);
 				}
+				else
+					LogWriter.Debug("State is not initialized. Skipping.");
 			}
 		}
 		
