@@ -83,36 +83,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			return name;
 		}
 		
-		/*/// <summary>
-		/// Creates the file name for the provided controller.
-		/// </summary>
-		/// <param name="controller">The controller to create the file name for.</param>
-		/// <returns>The full file name for the provided controller.</returns>
-		public virtual string CreateControllerFileName(ControllerInfo controller)
-		{			
-			if (controller == null)
-				throw new ArgumentNullException("controller");
-			
-			if (controller.Action == null)
-				throw new ArgumentNullException("controller.Action", "No action has been set to the Action property.");
-			
-			string name = controller.TypeName + "-" + controller.Action + ".ascx";
-			
-			return name;
-		}*/
-		
-		// TODO: Remove if not needed
-		/*/// <summary>
-		/// Creates the file name for the provided controller.
-		/// </summary>
-		/// <param name="controller">The controller to create the file name for.</param>
-		/// <returns>The full file name for the provided entity.</returns>
-		public string CreateFileName(IController controller)
-		{
-			return CreateFileName(new ControllerInfo(controller));
-		}*/
-		
-		
 		/// <summary>
 		/// Creates the full file path for the serialized info for the provided controller.
 		/// </summary>
@@ -122,18 +92,5 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			return ControllersInfoDirectoryPath + Path.DirectorySeparatorChar + CreateInfoFileName(controller);
 		}
-		
-		// TODO: Remove if not needed
-		/*
-		/// <summary>
-		/// Creates the full file path for the provided controller.
-		/// </summary>
-		/// <param name="controller">The controller to create the file path for.</param>
-		/// <returns>The full file path for the provided controller.</returns>
-		public string CreateFilePath(IController controller)
-		{
-			return CreateFilePath(new ControllerInfo(controller));
-		}*/
-		
 	}
 }
