@@ -140,10 +140,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		public PartsInitializer(Page page)
 		{
 			Page = page;
-			Scanners = new BasePartScanner[]
-			{
-				new PartScanner(Page)
-			};
 		}
 		
 		public PartsInitializer(Page page, params BasePartScanner[] scanners)
