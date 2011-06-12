@@ -3,7 +3,7 @@
 
 	<target name="Common.Jobs.InitializeCache">
 	
-	<echo message="This may take a while depending on the size of the application."/>
+	<echo message="The cache initialization may take a while depending on the size of the application...please wait..."/>
 		  
 	<xmlpeek
 		file="${Solution.PropertiesPath}"

@@ -113,7 +113,7 @@
 		
 		<property name="versionKey" value="${string::replace(AssemblyProject.BaseNamespace, '.', '-')}"/>
 
-		<get src="${ 'http://10.0.0.2:8080/scripts/Launcher/LaunchRaw/VersionNumber.script?IncrementRevision=true&amp;Key=' + versionKey}" dest="${versionFilePath}" failonerror="false" />
+		<get src="${ 'http://10.0.0.1:8080/scripts/Launcher/LaunchRaw/VersionNumber.script?IncrementRevision=true&amp;Key=' + versionKey}" dest="${versionFilePath}" failonerror="false" />
 		
 		<loadfile
 		    file="${versionFilePath}"

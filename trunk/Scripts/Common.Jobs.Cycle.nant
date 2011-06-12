@@ -17,6 +17,10 @@
 		<call target="Common.Jobs.UploadZips"/>		
 		<call target="Common.Jobs.VersionBuildReport"/>	
 		
+		<echo message="============================================="/>
+		<echo message="Continuous integration cycle has finished."/>
+		<echo message="============================================="/>
+		
 	</target>
 
 </project>
