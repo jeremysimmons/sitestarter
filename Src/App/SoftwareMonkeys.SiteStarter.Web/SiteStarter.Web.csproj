@@ -189,6 +189,7 @@
     </Compile>
     <Compile Include="StyleUtilities.cs" />
     <Compile Include="TextParser.cs" />
+    <Compile Include="TimeoutExtender.cs" />
     <Compile Include="UrlCreator.cs" />
     <Compile Include="UrlRewriter.cs" />
     <Compile Include="Utilities.cs" />
