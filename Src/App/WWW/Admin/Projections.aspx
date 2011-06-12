@@ -42,6 +42,7 @@ private bool CanView(ProjectionInfo info)
 <p>The following projections are currently cached in the system. Click "Reset" to rescan and refresh the projections.</p>
 <p><a href="Cache.aspx" id="CacheIndexLink">&laquo; Index</a></p>
 <p><asp:button runat="server" id="ResetButton" text='<%# Resources.Language.Reset %>' onclick="ResetButton_Click"/></p>
+<p>Total Projections: <%= ProjectionState.Projections.Count %></p>
 <table class="Panel" width="100%">
 	<tr class="Heading2">
 		<th>
