@@ -31,23 +31,25 @@
 	{
 		using (LogGroup logGroup = LogGroup.Start("Running setup.", NLog.LogLevel.Debug))
 		{
-			ApplicationInstaller installer = new ApplicationInstaller();
-			
+			using (TimeoutExtender extender = new TimeoutExtender(1800)) // 30 minutes
+			{
+				ApplicationInstaller installer = new ApplicationInstaller();
+					
+				installer.ApplicationPath = Request.ApplicationPath;
+				installer.FileMapper = new FileMapper();
+				installer.PathVariation = WebUtilities.GetLocationVariation(Request.Url);
+				installer.DataProviderInitializer = new DataProviderInitializer();
+				installer.AdministratorRoleName = Resources.Language.Administrator;
 				
-			installer.ApplicationPath = Request.ApplicationPath;
-			installer.FileMapper = new FileMapper();
-			installer.PathVariation = WebUtilities.GetLocationVariation(Request.Url);
-			installer.DataProviderInitializer = new DataProviderInitializer();
-			installer.AdministratorRoleName = Resources.Language.Administrator;
-			
-			installer.Administrator = CreateAdministrator();
-			
-			installer.Setup(GetDefaultSettings());
-			
-			InitializeWeb();
-			
-			if (!installer.UseLegacyData)
-				Authentication.SetAuthenticatedUsername(installer.Administrator.Username);
+				installer.Administrator = CreateAdministrator();
+				
+				installer.Setup(GetDefaultSettings());
+				
+				InitializeWeb();
+				
+				if (!installer.UseLegacyData)
+					Authentication.SetAuthenticatedUsername(installer.Administrator.Username);
+			}
 		}
 	}
 
@@ -67,31 +69,31 @@
 	}
 
 
-		/// <summary>
-		/// Creates the default administrator.
-		/// </summary>
-		/// <returns>The default administrator.</returns>
-		private User CreateAdministrator()
+	/// <summary>
+	/// Creates the default administrator.
+	/// </summary>
+	/// <returns>The default administrator.</returns>
+	private User CreateAdministrator()
+	{
+		User user = null;
+		
+		using (LogGroup logGroup = LogGroup.Start("Creating the default administrator user.", NLog.LogLevel.Debug))
 		{
-			User user = null;
+			user = new User();
+			user.ID = Guid.NewGuid();
+			user.FirstName = "System";
+			user.LastName = "Administrator";
+			user.Username = "admin";
+			user.Password = SoftwareMonkeys.SiteStarter.Business.Crypter.EncryptPassword("pass");
+			user.IsApproved = true;
+			user.IsLockedOut = false;
+			user.Email = "default@softwaremonkeys.net";
 			
-			using (LogGroup logGroup = LogGroup.Start("Creating the default administrator user.", NLog.LogLevel.Debug))
-			{
-				user = new User();
-				user.ID = Guid.NewGuid();
-				user.FirstName = "System";
-				user.LastName = "Administrator";
-				user.Username = "admin";
-				user.Password = SoftwareMonkeys.SiteStarter.Business.Crypter.EncryptPassword("pass");
-				user.IsApproved = true;
-				user.IsLockedOut = false;
-				user.Email = "default@softwaremonkeys.net";
-				
-				LogWriter.Debug("Administrator name: " + user.Name);
-			}
-			
-			return user;
+			LogWriter.Debug("Administrator name: " + user.Name);
 		}
+		
+		return user;
+	}
 
 </script>
 <asp:Content runat="server" ContentPlaceHolderID="Body">
