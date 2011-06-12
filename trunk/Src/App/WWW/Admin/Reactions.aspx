@@ -55,6 +55,7 @@ private string GetAssemblyName(ReactionInfo reaction)
 <p>The following reactions are currently cached in the system. Click "Reset" to rescan and refresh the reactions.</p>
 <p><a href="Cache.aspx" id="CacheIndexLink">&laquo; Index</a></p>
 <p><asp:button runat="server" id="ResetButton" text='<%# Resources.Language.Reset %>' onclick="ResetButton_Click"/></p>
+<p>Total Reactions: <%= ReactionState.Reactions.Count %></p>
 <table class="Panel" width="100%">
 	<tr class="Heading2">
 		<th>

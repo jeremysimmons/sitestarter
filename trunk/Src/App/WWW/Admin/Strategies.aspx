@@ -55,6 +55,7 @@ private string GetAssemblyName(StrategyInfo strategy)
 <p>The following strategies are currently cached in the system. Click "Reset" to rescan and refresh the strategies.</p>
 <p><a href="Cache.aspx" id="CacheIndexLink">&laquo; Index</a></p>
 <p><asp:button runat="server" id="ResetButton" text='<%# Resources.Language.Reset %>' onclick="ResetButton_Click"/></p>
+<p>Total Strategies: <%= StrategyState.Strategies.Count %></p>
 <table class="Panel" width="100%">
 	<tr class="Heading2">
 		<th>
