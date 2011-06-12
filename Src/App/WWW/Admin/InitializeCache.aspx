@@ -18,24 +18,19 @@
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Web.State" %>
 <script runat="server">
 
-int defaultTimeout = 0;
-
 private void Page_Load(object sender, EventArgs e)
 {
-	defaultTimeout = Server.ScriptTimeout;
-
-	Server.ScriptTimeout = 1800; // 30 minutes
-
-	StateProviderInitializer.Initialize();
-	
-	new EntityInitializer().Initialize();
-	new StrategyInitializer().Initialize();
-	new ReactionInitializer().Initialize();
-	new ProjectionsInitializer(this).Initialize();
-	new PartsInitializer(this).Initialize();
-	new ControllersInitializer().Initialize();
-			
-	Server.ScriptTimeout = defaultTimeout;
+	using (TimeoutExtender extender = new TimeoutExtender(1800)) // 30 minutes
+	{
+		StateProviderInitializer.Initialize();
+		
+		new EntityInitializer().Initialize();
+		new StrategyInitializer().Initialize();
+		new ReactionInitializer().Initialize();
+		new ProjectionsInitializer(this).Initialize();
+		new PartsInitializer(this).Initialize();
+		new ControllersInitializer().Initialize();
+	}
 }
    
 </script>
