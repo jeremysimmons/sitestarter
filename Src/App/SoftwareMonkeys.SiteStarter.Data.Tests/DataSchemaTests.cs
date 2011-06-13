@@ -346,7 +346,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 			Collection<IEntity> entities = new Collection<IEntity>();
 			foreach (Type type in types)
-				entities.Add((IEntity[])DataAccess.Data.Indexer.GetEntities(type));
+				entities.AddRange((IEntity[])DataAccess.Data.Indexer.GetEntities(type));
 
 			foreach (IEntity entity in entities)
 			{
