@@ -59,9 +59,9 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		}
 		
 		/// <summary>
-		/// Retrieves the type with the provided short name.
+		/// Retrieves the type with the provided type name.
 		/// </summary>
-		/// <param name="typeName">The short type name.</param>
+		/// <param name="typeName">The type name. Either a short name ex. "User" or full name ex. "SoftwareMonkeys.SiteStarter.Entities.User".</param>
 		/// <returns></returns>
 		static public Type GetType(string typeName)
 		{
@@ -80,24 +80,42 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			if (typeName == "EntityReference")
 				return typeof(EntityReference);
 			
-			
-			EntityInfo info = GetInfo(typeName);
-			
-			if (info == null)
-				throw new ArgumentException("No entity type info found with the name '" + typeName + "'.");
-			
 			Type type = null;
 			
-			type = info.GetEntityType();
-			
-			if (type == null)
-				throw new ArgumentException("No entity type loaded with the name '" + typeName + "'.");
-			
+			// If it's a full name
+			if (typeName.IndexOf(".") > -1)
+			{
+				try
+				{
+					type = Type.GetType(typeName);
+				}
+				catch (Exception ex)
+				{
+					throw new ArgumentException("Invalid type name: " + typeName, ex);
+				}
+			}
+			else
+			{
+				EntityInfo info = GetInfo(typeName);
+				
+				if (info == null)
+					throw new ArgumentException("No entity type info found with the name '" + typeName + "'.");
+				
+				
+				type = info.GetEntityType();
+				
+				if (type == null)
+					throw new ArgumentException("No entity type loaded with the name '" + typeName + "'.");
+			}
 			return type;
 		}
 		
 		static public EntityInfo GetInfo(string typeName)
 		{
+			// If it's a full type name then get the short type name from it
+			if (typeName.IndexOf(".") > -1)
+				typeName = GetType(typeName).Name;
+			
 			return GetInfo(typeName, true);
 		}
 		

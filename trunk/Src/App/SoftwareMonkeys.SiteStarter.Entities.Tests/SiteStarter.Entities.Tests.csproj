@@ -104,6 +104,7 @@
     <Compile Include="EntityIDReferenceTests.cs" />
     <Compile Include="EntityReferenceTests.cs" />
     <Compile Include="EntityScannerTests.cs" />
+    <Compile Include="EntityStateTests.cs" />
     <Compile Include="PagingLocationTests.cs" />
   </ItemGroup>
   <ItemGroup>
