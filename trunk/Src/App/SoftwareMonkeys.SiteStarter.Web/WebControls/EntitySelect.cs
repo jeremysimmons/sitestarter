@@ -184,6 +184,26 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				}
 			}
 		}
+		
+		private bool autoLoadPostEntities = true;
+		/// <summary>
+		/// Gets/sets a value indicating whether the control can to automatically load the selected/posted entities rather than relying on the DataSource property to be populated.
+		/// </summary>
+		public bool AutoLoadPostEntities
+		{
+			get { return autoLoadPostEntities; }
+			set { autoLoadPostEntities = value; }
+		}
+		
+		private bool requireAuthorisation = true;
+		/// <summary>
+		/// Gets/sets a value indicating whether data loading requires authorisation. NOTE: Shouldn't be set to false except during unit testing or other rare cases.
+		/// </summary>
+		public bool RequireAuthorisation
+		{
+			get { return requireAuthorisation; }
+			set { requireAuthorisation = value; }
+		}
 
 		/// <summary>
 		/// Selects the appropriate items depending on the SelectedEntityIDs.
@@ -500,7 +520,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
 		protected override bool LoadPostData(string postDataKey, System.Collections.Specialized.NameValueCollection postCollection)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Loading post data.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Loading post data for EntitySelect with ID '" + ID + "'.", NLog.LogLevel.Debug))
 			{
 				//if (DataSource == null || DataSource.Length == 0)
 				//{
@@ -584,20 +604,32 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			return postValue;
 		}
 		
-		protected E[] GetPostedEntities(string postValue)
+		public E[] GetPostedEntities(string postValue)
 		{
 			LogWriter.Debug("Post value: " + postValue);
 			
-			E[] entities = new E[] {};
+			Guid[] ids = new Guid[]{};
 			
 			if (postValue != null)
 			{
-				Guid[] ids = GetIDsFromString(postValue);
-				
 				LogWriter.Debug("Post value: !null");
 				
-				entities = Collection<E>.GetByIDs(DataSource, ids);
+				ids = GetIDsFromString(postValue);
 			}
+			else
+				LogWriter.Debug("Post value: null");
+			
+			return GetPostedEntities(ids);
+		}
+		
+		public E[] GetPostedEntities(Guid[] ids)
+		{
+			E[] entities = new E[] {};
+			
+			if (AutoLoadPostEntities)
+				entities = IndexStrategy.New<E>(RequireAuthorisation).Index<E>(ids);
+			else
+				entities = Collection<E>.GetByIDs(DataSource, ids);
 			
 			return entities;
 		}
