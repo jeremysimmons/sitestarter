@@ -24,7 +24,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.WebControls
 			
 			EntitySelect<TestRecord> ctrl = new EntitySelect<TestRecord>();
 			ctrl.AutoLoadPostEntities = true;			
-			ctrl.EntityType = record.GetType().ToString();
+			ctrl.EntityType = record.GetType().FullName + ", " + typeof(TestRecord).Assembly.GetName().Name;
 			ctrl.RequireAuthorisation = false; // Only false during testing
 			
 			Guid[] ids = new Guid[] { record.ID };
@@ -50,7 +50,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.WebControls
 			
 			EntitySelect<TestRecord> ctrl = new EntitySelect<TestRecord>();
 			ctrl.AutoLoadPostEntities = false;				
-			ctrl.EntityType = record.GetType().ToString();
+			ctrl.EntityType = record.GetType().FullName + ", " + typeof(TestRecord).Assembly.GetName().Name;
 			ctrl.RequireAuthorisation = false; // Only false during testing
 			
 			Guid[] ids = new Guid[] { record.ID };
