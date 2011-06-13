@@ -2,6 +2,7 @@ using System;
 using System.Text;
 
 using NLog;
+using NLog.LayoutRenderers;
 
 namespace SoftwareMonkeys.SiteStarter.Diagnostics
 {
@@ -17,12 +18,6 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
             get { return heading; }
             set { heading = value; }
             
-        }
-        protected override int GetEstimatedBufferSize(LogEventInfo ev)
-        {
-            // since hour is expressed by 2 digits we need at most 2-character
-            // buffer for it
-            return 200;
         }
 
         protected override void Append(StringBuilder builder, LogEventInfo ev)
