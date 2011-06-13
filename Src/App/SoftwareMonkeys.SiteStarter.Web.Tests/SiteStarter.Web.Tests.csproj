@@ -166,6 +166,7 @@
     <Compile Include="UrlCreatorTests.cs" />
     <Compile Include="UrlRewriterTests.cs" />
     <Compile Include="WebControls\EntityFormHelperTests.cs" />
+    <Compile Include="WebControls\EntitySelectTests.cs" />
     <Compile Include="WebControls\IndexGridTests.cs" />
     <Compile Include="WebUtilitiesTests.cs" />
   </ItemGroup>
