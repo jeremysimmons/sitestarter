@@ -183,7 +183,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			Collection<T> list = new Collection<T>();
 			
-			IRetrieveStrategy retriever = RetrieveStrategy.New<T>();
+			IRetrieveStrategy retriever = RetrieveStrategy.New<T>(RequireAuthorisation);
 			
 			foreach (Guid id in ids)
 			{
@@ -396,6 +396,15 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		static public IIndexStrategy New<T>()
 		{
 			return StrategyState.Strategies.Creator.NewIndexer(typeof(T).Name);
+		}
+		
+		/// <summary>
+		/// Creates a new strategy for indexing the specified type.
+		/// </summary>
+		/// <param name="type">The type involved in the strategy.</param>
+		static public IIndexStrategy New(Type type)
+		{
+			return StrategyState.Strategies.Creator.NewIndexer(type.Name);
 		}
 		
 		/// <summary>
