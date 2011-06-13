@@ -100,33 +100,27 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				}
 			}
 		}
-
-		// TODO: Removed if not needed
-		/*/// <summary>
-		/// Adds the provided data to the collection.
+		
+		/// <summary>
+		/// Adds the provided entities to the collection.
 		/// </summary>
-		/// <param name="obj">An object containing the data to add.</param>
-		public Collection(object obj)
+		/// <param name="data">Entities to add to the collection.</param>
+		public Collection(object data)
 		{
-			Add((object)obj);
-		}*/
+			if (data != null)
+			{
+				if (data is IEnumerable)
+					AddRange((IEnumerable)data);
+				else
+					throw new ArgumentException("Invalid data argument: " + data.GetType().ToString());
+			}
+		}
 
-		// TODO: Removed if not needed. Base function should be sufficient
-			/*/// <summary>
-			/// Adds the provided entity to the collection.
-			/// </summary>
-			/// <param name="entity">The entity to add to the collection.</param>
-			public void Add(E entity)
-		{
-			if (entity != null)
-				base.Add(entity);
-		}*/
-
-			/// <summary>
-			/// Adds the provided entities to the collection.
-			/// </summary>
-			/// <param name="entity">The entity to add to the collection.</param>
-			public void Add(IEnumerable<E> entities)
+		/// <summary>
+		/// Adds the provided entities to the collection.
+		/// </summary>
+		/// <param name="entity">The entity to add to the collection.</param>
+		public void AddRange(IEnumerable<E> entities)
 		{
 			if (entities != null)
 			{
@@ -138,34 +132,27 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				}
 			}
 		}
-
+		
 		/// <summary>
-		/// Adds the provided data to the collection.
+		/// Adds the provided entities to the collection.
 		/// </summary>
-		/// <param name="entity">The data to add to the collection.</param>
-		/*public void Add(object obj)
+		/// <param name="entity">The entity to add to the collection.</param>
+		public void AddRange(IEnumerable entities)
 		{
-			if (obj is IEnumerable)
+			if (entities != null)
 			{
-				foreach (object entity in (IEnumerable)obj)
-					if (entity is E)
-					Add((E)entity);
-				else
-					throw new NotSupportedException("Invalid type: " + obj.GetType().ToString());
-
-			}
-			else
-			{
-				if (obj is E)
+				foreach (object obj in entities)
 				{
-					Add((E)obj);
-				}
-				else
-				{
-					throw new NotSupportedException("Invalid type: " + obj.GetType().ToString());
+					if (obj != null)
+					{
+						if (obj is E)
+							base.Add((E)obj);
+						else
+							throw new ArgumentException("Invalid item type: " + obj.ToString());
+					}
 				}
 			}
-		}*/
+		}
 
 		/// <summary>
 		/// Removes the provided entity from the collection.
