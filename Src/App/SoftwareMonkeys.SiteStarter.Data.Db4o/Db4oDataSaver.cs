@@ -61,7 +61,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				// Clone the entity so that it doesn't get bound to the store
 				IEntity clonedEntity = entity.Clone();
 				
-				
 				Db4oDataStore store = (Db4oDataStore)GetDataStore(clonedEntity);
 				
 				if (store.ObjectContainer == null)
