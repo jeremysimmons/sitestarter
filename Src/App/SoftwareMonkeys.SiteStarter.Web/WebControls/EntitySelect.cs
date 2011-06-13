@@ -59,16 +59,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		{
 			get
 			{
-				//  if (entityType != null)
-				//      return entityType.FullName;
 				return entityType;
 			}
 			set
 			{
 				entityType = value;
-				// Reset the entity type object if it's been made obsolete by the entity type string.
-				//    if (!entityType.FullName.Equals(entityTypeString))
-				//      entityType = null;
 			}
 		}
 
@@ -77,7 +72,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		/// Gets/sets the Entity data required for this control.
 		/// </summary>
 		[Browsable(false)]
-		public new IEntity[] DataSource
+		public override object DataSource
 		{
 			get
 			{
@@ -85,7 +80,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				{
 					RaiseDataLoading();
 				}
-				return (IEntity[])base.DataSource;
+				return base.DataSource;
 			}
 			set { base.DataSource = value; }
 		}
@@ -123,7 +118,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				if (selectedEntities == null)
 				{
 					if (DataSource != null && GetDataSourceLength() > 0)
-						selectedEntities = Collection<IEntity>.GetByIDs(DataSource, SelectedEntityIDs);
+						selectedEntities = new Collection<IEntity>(DataSource).GetByIDs(SelectedEntityIDs).ToArray();
 					else
 						selectedEntities = new IEntity[]{};
 				}
@@ -185,7 +180,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			}
 		}
 		
-		private bool autoLoadPostEntities = true;
+		private bool autoLoadPostEntities = false;
 		/// <summary>
 		/// Gets/sets a value indicating whether the control can to automatically load the selected/posted entities rather than relying on the DataSource property to be populated.
 		/// </summary>
@@ -276,7 +271,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			base.OnInit(e);
 		}
 
-
 		protected int GetDataSourceLength()
 		{
 			if (DataSource is Array)
@@ -303,39 +297,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		protected bool DataPosted = false;
 
 		#region Properties
-		/// <summary>
-		/// Gets/sets the Entity data required for this control.
-		/// </summary>
-		[Browsable(false)]
-		public new E[] DataSource
-		{
-			get
-			{
-				if (base.DataSource == null)
-				{
-					RaiseDataLoading();
-				}
-				return Collection<E>.ConvertAll(base.DataSource);
-			}
-			set { base.DataSource = Collection<IEntity>.ConvertAll(value); }
-		}
-
-		/*/// <summary>
-		/// Gets/sets the Entity data required for this control.
-		/// </summary>
-		[Browsable(false)]
-		public new object DataSource
-		{
-			get
-			{
-				//if (base.DataSource == null)
-				//{
-				//    RaiseDataLoading();
-				//}
-				return base.DataSource;
-			}
-			set { base.DataSource = value; }
-		}*/
 
 			// TODO: Check if necessary
 			/// <summary>
@@ -626,10 +587,20 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		{
 			E[] entities = new E[] {};
 			
+			Type type = EntityState.GetType(EntityType);
+			
+			if (type == null)
+				throw new Exception("Invalid entity type name '" + EntityType + "' set to EntityType property.");
+			
 			if (AutoLoadPostEntities)
-				entities = IndexStrategy.New<E>(RequireAuthorisation).Index<E>(ids);
+			{
+				if (type.IsAbstract || type.IsInterface)
+					throw new InvalidOperationException("Cannot auto load post entities on EntitySelect '" + ID + "' with an abstract or interface entity specified.");
+					
+				entities = IndexStrategy.New(type.Name, RequireAuthorisation).Index<E>(ids);
+			}
 			else
-				entities = Collection<E>.GetByIDs(DataSource, ids);
+				entities = new Collection<E>(DataSource).GetByIDs(ids).ToArray();
 			
 			return entities;
 		}
