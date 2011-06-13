@@ -36,7 +36,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		static public string ConvertAbsoluteUrlToRelativeUrl(string originalUrl, string relatedPath)
 		{
 			string newPath = String.Empty;
-			using (LogGroup logGroup = LogGroup.Start("Converting the provided absolute URL to one that's relative to the one provided.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Converting the provided absolute URL to be relative to the one provided.", NLog.LogLevel.Debug))
 			{
 				if (originalUrl == null)
 					throw new ArgumentNullException("originalUrl");
