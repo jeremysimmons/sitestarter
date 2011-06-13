@@ -71,12 +71,6 @@
     	Response.Redirect(Request.ApplicationPath);
     }
     #endregion
-
-
-    protected void UserRolesSelect_DataLoading(object sender, EventArgs e)
-    {
-        ((EntitySelect)sender).DataSource = IndexStrategy.New<UserRole>().Index();
-    }
                     
 </script>
 	<asp:MultiView runat="server" id="PageViews">
