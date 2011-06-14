@@ -122,7 +122,7 @@
 <asp:Content runat="server" ContentPlaceHolderID="Body">
 <asp:MultiView runat="server" ID="PageViews">
 <asp:View runat="server" ID="DataStoresView">
-    <div class="Heading1">Data Stores</div>
+    <h1>Data Stores</h1>
     <p>All data stores that were found are shown below.</p>
     <asp:DataList runat="server" ID="DataStoresIndex">
     <ItemTemplate><a href='<%# "Data.aspx?DataStoreName=" + Container.DataItem %>'><%# Container.DataItem %></a></ItemTemplate>
