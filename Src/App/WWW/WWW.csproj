@@ -97,7 +97,6 @@
     <None Include="Controls\Testing.ascx" />
     <None Include="Default.aspx" />
     <None Include="Error.aspx" />
-    <None Include="Examples\Data\Basic.aspx" />
     <None Include="Global.asax" />
     <None Include="Maintenance.html" />
     <None Include="Projections\IEntity-Delete.ascx" />
