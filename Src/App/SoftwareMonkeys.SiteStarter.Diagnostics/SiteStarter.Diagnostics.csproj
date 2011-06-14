@@ -66,6 +66,7 @@
     <Compile Include="LogGroup.cs" />
     <Compile Include="LogGroupMode.cs" />
     <Compile Include="LogGroupSite.cs" />
+    <Compile Include="LogRepairer.cs" />
     <Compile Include="LogSupervisor.cs" />
     <Compile Include="LogThreader.cs" />
     <Compile Include="LogUtilities.cs" />
