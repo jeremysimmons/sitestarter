@@ -15,13 +15,7 @@
     
     private void EnsureAuthorised()
     {
-    	//bool isAuthorised = false;
-    
-    	//if (ConfigurationSettings.AppSettings["SecureData"] == null
-    	//	|| ConfigurationSettings.AppSettings["SecureData"].ToLower() != "false")
-    	//{
-    		Authorisation.EnsureIsInRole("Administrator");
-    	//}
+    	Authorisation.EnsureIsInRole("Administrator");
     }
     
 </script>
