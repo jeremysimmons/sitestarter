@@ -96,10 +96,7 @@
 
 	private void InitializeCore()
 	{
-	        if (!StateAccess.IsInitialized || !Config.IsInitialized)
-	        {
-	        	InitializeState();
-	        }
+	    InitializeState();
 	}
 
     private void Initialize()
