@@ -335,46 +335,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		
 		public void RepairLog()
 		{
-			CheckLogsDirectoryPath();
-			CheckDateStamp();
-			
-			string logPath = LogsDirectoryPath + Path.DirectorySeparatorChar + LogDateStamp + Path.DirectorySeparatorChar + LogFileName;
-			string fixedLogPath = LogsDirectoryPath + Path.DirectorySeparatorChar + LogDateStamp + Path.DirectorySeparatorChar + RepairedLogFileName;
-			
-			string logContents;
-			
-			using (StreamReader reader = new StreamReader(logPath))
-			{
-				logContents = reader.ReadToEnd();
-				reader.Close();
-			}
-			
-			
-			// Remove any duplicate <Log>...</Log> tags
-			logContents = new Regex("</Log>(.|\r\n)*?<Log>", RegexOptions.IgnoreCase | RegexOptions.Multiline)
-				.Replace(logContents, "");
-			
-			// Add the start <Log> tag if necessary
-			string startTag = "<Log>";
-			if (logContents.IndexOf(startTag) == -1)
-				logContents = startTag + "\r\n" + logContents;
-			
-			// Add the XML declaration if necessary
-			// This must be done before after the start tag prepend won't work
-			string xmlDeclaration = "<?xml version=\'1.0\'?>";
-			if (logContents.IndexOf(xmlDeclaration) == -1)
-				logContents = xmlDeclaration + "\r\n" + logContents;
-
-			// Add the ending </Log> tag if necessary
-			if (logContents.IndexOf("</Log>") == -1)
-				logContents = logContents + "</Log>";
-			
-			
-			using (StreamWriter writer = File.CreateText(fixedLogPath))
-			{
-				writer.Write(logContents);
-				writer.Close();
-			}
+			new LogRepairer(LogsDirectoryPath, LogDateStamp).RepairLog();
 
 		}
 		
