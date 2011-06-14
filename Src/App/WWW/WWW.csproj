@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Admin\Errors.aspx" />
     <None Include="Admin\Strategies.aspx" />
     <None Include="Admin\Cache.aspx" />
     <None Include="Admin\Controllers.aspx" />
