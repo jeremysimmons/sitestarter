@@ -28,33 +28,36 @@ protected override void OnLoad(EventArgs e)
 {
 	using (LogGroup logGroup = LogGroup.Start("Executing the test reset, to clear the test environment ready for a new test.", NLog.LogLevel.Debug))
 	{
-		// TODO: Clean up
+		using (TimeoutExtender extender = new TimeoutExtender(1800)) // 30 minutes
+		{
+			// TODO: Clean up
 	
-		DeleteDb4oFiles();
+			DeleteDb4oFiles();
 	
-		//DeleteEntities();
+			//DeleteEntities();
 		
-		//DeleteMenuFile();
+			//DeleteMenuFile();
 		
-		// Leave caches because it takes too long to recreate them each time, and the cache should be exactly the same for each test so there's no chance of conflicts
-		// TODO: Ensure there are no conflicts and that the above premise is indeed correct.
-		//DeleteCaches();
+			// Leave caches because it takes too long to recreate them each time, and the cache should be exactly the same for each test so there's no chance of conflicts
+			// TODO: Ensure there are no conflicts and that the above premise is indeed correct.
+			//DeleteCaches();
 		
-		//DeleteVersionFile();
+			//DeleteVersionFile();
 		
-		if (Request.QueryString["Log"] != null && Request.QueryString["Log"].ToLower() == "true")
-			DeleteLogs();
+			if (Request.QueryString["Log"] != null && Request.QueryString["Log"].ToLower() == "true")
+				DeleteLogs();
 		
-		if (Request.QueryString["Config"] != null && Request.QueryString["Config"].ToLower() == "true")
-			DeleteConfigurationFile();
+			if (Request.QueryString["Config"] != null && Request.QueryString["Config"].ToLower() == "true")
+				DeleteConfigurationFile();
 		
-		if (StateAccess.IsInitialized && AuthenticationState.IsAuthenticated)
-			Authentication.SignOut();
+			if (StateAccess.IsInitialized && AuthenticationState.IsAuthenticated)
+				Authentication.SignOut();
 		
-		//Response.Redirect(Request.ApplicationPath + "/Admin/QuickSetup.aspx");
+			//Response.Redirect(Request.ApplicationPath + "/Admin/QuickSetup.aspx");
 		
-		// Restart the asp.net application
-		//System.Web.HttpRuntime.UnloadAppDomain();
+			// Restart the asp.net application
+			//System.Web.HttpRuntime.UnloadAppDomain();
+		}
 	}
 }
 
