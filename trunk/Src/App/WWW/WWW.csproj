@@ -133,17 +133,9 @@
     <Folder Include="Controls" />
     <Folder Include="Projections" />
     <Folder Include="Styles" />
-    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Business.Tests\SiteStarter.Business.Tests.csproj">
-      <Project>{F6AA1DC2-1E10-43FF-97AB-D6679A854D51}</Project>
-      <Name>SiteStarter.Business.Tests</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Business\SiteStarter.Business.csproj">
       <Project>{F294B839-0C1E-4187-AA58-6EA1C35E6B66}</Project>
       <Name>SiteStarter.Business</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration.Tests\SiteStarter.Configuration.Tests.csproj">
-      <Project>{5DFB85CA-D338-425A-B382-64EFBE19C65D}</Project>
-      <Name>SiteStarter.Configuration.Tests</Name>
     </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration\SiteStarter.Configuration.csproj">
       <Project>{4B83307F-8307-43EF-A176-8AB1CDA78264}</Project>
@@ -157,25 +149,13 @@
       <Project>{61DF6782-15A0-4056-AA02-7C18F0A19B0F}</Project>
       <Name>SiteStarter.Data.Db4o</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Data.Tests\SiteStarter.Data.Tests.csproj">
-      <Project>{0BBD2A6C-9955-4BB6-9DCA-6AA57715C3F2}</Project>
-      <Name>SiteStarter.Data.Tests</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Data\SiteStarter.Data.csproj">
       <Project>{0D77AB54-E3BE-4B29-8750-91F16BC3DEDB}</Project>
       <Name>SiteStarter.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Diagnostics.Tests\SiteStarter.Diagnostics.Tests.csproj">
-      <Project>B82C8670-C976-47E4-B06C-B75FC97A1C7D</Project>
-      <Name>SiteStarter.Diagnostics.Tests</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Diagnostics\SiteStarter.Diagnostics.csproj">
       <Project>{C3626F0A-DFD4-4EF2-8755-3532DE3712A4}</Project>
       <Name>SiteStarter.Diagnostics</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Entities.Tests\SiteStarter.Entities.Tests.csproj">
-      <Project>27BEA38F-7F83-4DFF-854C-EF4444346EED</Project>
-      <Name>SiteStarter.Entities.Tests</Name>
     </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Entities\SiteStarter.Entities.csproj">
       <Project>{3609F512-9E15-41C7-95AF-D1B3E7F93562}</Project>
@@ -184,10 +164,6 @@
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.State\SiteStarter.State.csproj">
       <Project>{34129651-3B9F-4A0D-AEBF-7DE2098DD98F}</Project>
       <Name>SiteStarter.State</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Web.Tests\SiteStarter.Web.Tests.csproj">
-      <Project>{FBB72693-0267-4DB0-98D5-9ECBC13E98DD}</Project>
-      <Name>SiteStarter.Web.Tests</Name>
     </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Web\SiteStarter.Web.csproj">
       <Project>{A5D49D94-D936-4123-BA9A-572AA7C7F426}</Project>
