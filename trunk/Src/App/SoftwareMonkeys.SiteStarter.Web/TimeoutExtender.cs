@@ -24,7 +24,9 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		{
 			OriginalTimeout = HttpContext.Current.Server.ScriptTimeout;
 			
-			HttpContext.Current.Server.ScriptTimeout = timeoutInSeconds * 30;
+			int millisecondsInSecond = 1000; // 1000 milliseconds per second
+
+			HttpContext.Current.Server.ScriptTimeout = timeoutInSeconds * millisecondsInSecond;
 		}
 		
 		/// <summary>
