@@ -3,6 +3,7 @@ using System.Web.UI;
 using System.Collections;
 using System.Web;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using SoftwareMonkeys.SiteStarter.State;
 using SoftwareMonkeys.SiteStarter.Web.WebControls;
 using System.Configuration;
 using System.Collections.Specialized;
@@ -596,7 +597,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <returns>The full URL including the result message.</returns>
 		public string AddResult(string originalUrl)
 		{
-			if (Result.Text != String.Empty)
+			if (StateAccess.IsInitialized && Result.Text != String.Empty)
 				return AddResult(originalUrl, Result.Text, Result.IsError);
 			else
 				return originalUrl;
