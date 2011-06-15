@@ -20,7 +20,11 @@
 			<call target="Common.Jobs.ClearData" failonerror="false" />
 
 			<call target="Common.Jobs.ClearData"/>
+			
+			<call target="Common.Jobs.ClearCache"/>
 
+			<call target="Common.Jobs.InitializeCache"/>
+			
 			<call target="Common.Jobs.ResetImportData"/>
 
 			<call target="DoGeneration"/>
@@ -29,6 +33,13 @@
   
   
   <target name="DoGeneration">
+  
+	<property name="tmpFilePath" value="tmpfile.txt" />
+
+	<get src="http://localhost/${Solution.VirtualDirectoryName}/Admin/Import.aspx" dest="${tmpFilePath}" timeout="1800000" />
+
+	<delete file="${tmpFilePath}"/>
+  
   	<foreach item="File" property="filename">
 		    <in>
 		        <items basedir="${Project.RootPath}">
