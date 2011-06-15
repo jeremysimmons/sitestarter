@@ -28,7 +28,10 @@
         
             if (!IsPostBack)
             {
-                Update();
+				using (TimeoutExtender extender = TimeoutExtender.NewMinutes(60)) // TODO: See if this timeout can be reduced
+				{
+					Update();
+				}
             }
         }
         
