@@ -73,6 +73,7 @@
     <None Include="Admin\Tests\ClearData.aspx" />
     <None Include="Admin\Tests\Dispose.aspx" />
     <None Include="Admin\Tests\EntitySelectTest.aspx" />
+    <None Include="Admin\Tests\PrepareTestImport.aspx" />
     <None Include="Admin\Tests\ResetDefaultData.aspx" />
     <None Include="Admin\Tests\TestBreakableLogging.aspx" />
     <None Include="Admin\Tests\TestContactForm.aspx" />
