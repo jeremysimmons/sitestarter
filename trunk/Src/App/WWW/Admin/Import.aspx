@@ -26,7 +26,10 @@
         {
             if (!IsPostBack)
             {
-                Import();
+				using (TimeoutExtender extender = TimeoutExtender.NewMinutes(30))
+				{
+					Import();
+				}
             }
         }
         
