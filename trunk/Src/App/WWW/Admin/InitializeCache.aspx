@@ -20,7 +20,7 @@
 
 private void Page_Load(object sender, EventArgs e)
 {
-	using (TimeoutExtender extender = new TimeoutExtender(1800)) // 30 minutes
+	using (TimeoutExtender extender = TimeoutExtender.NewMinutes(30)) // 30 minutes
 	{
 		StateProviderInitializer.Initialize();
 		
