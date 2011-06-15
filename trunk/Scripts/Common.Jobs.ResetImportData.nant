@@ -20,6 +20,7 @@
 			        <include name="**.xml" />
 			        <include name="**.config" />
 			        <include name="**.number" />
+			        <include name="**.txt" />
 			    </fileset>
 			</copy>
 		</if>
