@@ -845,4 +845,7 @@ ${WebSite.Title}&lt;br /&gt;
   <data name="ReactionsReset" xml:space="preserve">
     <value>The reactions were reset successfully.</value>
   </data>
+  <data name="BackToHome" xml:space="preserve">
+    <value>Back to Home</value>
+  </data>
 </root>
