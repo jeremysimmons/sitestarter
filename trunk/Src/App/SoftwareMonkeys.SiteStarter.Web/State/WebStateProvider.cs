@@ -93,7 +93,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
         	    return HttpContext.Current.Session[key] != null;
         	}
         	else
-        		throw new Exception("Can't check for session variable outside the scope of session state.");
+        		throw new Exception("Can't check for session variable outside the scope of session state. Check that HttpContext.Current and HttpContext.Current.Session are not null.");
         }
         
         public override void SetSession(string key, object value)
