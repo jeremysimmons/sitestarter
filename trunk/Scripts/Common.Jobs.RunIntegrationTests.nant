@@ -87,6 +87,7 @@
 			<arg value="-port"/>
 			<arg value="${portNumber}"/>
 			<arg value="-debug"/>
+			<arg value="-singleWindow"/>
 			<arg value="-timeout"/>
 			<arg value="3600000"/>
 		</exec>
