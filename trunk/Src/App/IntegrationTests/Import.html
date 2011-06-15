@@ -4,12 +4,12 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="http://localhost/SiteStarter/" />
-<title>Errors</title>
+<title>Import</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">Errors</td></tr>
+<tr><td rowspan="1" colspan="3">Import</td></tr>
 </thead><tbody>
 <tr>
 	<td>setTimeout</td>
@@ -18,7 +18,7 @@
 </tr>
 <tr>
 	<td>open</td>
-	<td>Admin/tests/testreset.aspx?Log=true</td>
+	<td>Admin/tests/testreset.aspx?Log=true&amp;Config=true</td>
 	<td></td>
 </tr>
 <tr>
@@ -32,14 +32,28 @@
 	<td></td>
 </tr>
 <tr>
+	<td>assertTextNotPresent</td>
+	<td>Exception</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>Admin/Tests/PrepareTestImport.aspx</td>
+	<td></td>
+</tr>
+<tr>
 	<td>waitForPageToLoad</td>
 	<td></td>
 	<td></td>
 </tr>
-<!--Create an error by going to a page that doesn't exist-->
+<tr>
+	<td>assertTextNotPresent</td>
+	<td>Exception</td>
+	<td></td>
+</tr>
 <tr>
 	<td>open</td>
-	<td>NonExistentPage.aspx</td>
+	<td>Admin/Import.aspx</td>
 	<td></td>
 </tr>
 <tr>
@@ -48,38 +62,13 @@
 	<td></td>
 </tr>
 <tr>
-	<td>assertTextPresent</td>
-	<td>Oops</td>
-	<td></td>
-</tr>
-<tr>
-	<td>open</td>
-	<td>Admin/Errors.aspx</td>
+	<td>assertTextNotPresent</td>
+	<td>Exception</td>
 	<td></td>
 </tr>
 <tr>
 	<td>assertTextPresent</td>
-	<td>Errors</td>
-	<td></td>
-</tr>
-<tr>
-	<td>assertTextPresent</td>
-	<td>NonExistentPage.aspx</td>
-	<td></td>
-</tr>
-<tr>
-	<td>open</td>
-	<td>User-SignOut.aspx</td>
-	<td></td>
-</tr>
-<tr>
-	<td>open</td>
-	<td>Admin/Errors.aspx</td>
-	<td></td>
-</tr>
-<tr>
-	<td>assertTextPresent</td>
-	<td>Sign In Details</td>
+	<td>Import Complete</td>
 	<td></td>
 </tr>
 </tbody></table>
