@@ -28,7 +28,7 @@ protected override void OnLoad(EventArgs e)
 {
 	using (LogGroup logGroup = LogGroup.Start("Executing the test reset, to clear the test environment ready for a new test.", NLog.LogLevel.Debug))
 	{
-		using (TimeoutExtender extender = new TimeoutExtender(1800)) // 30 minutes
+		using (TimeoutExtender extender = TimeoutExtender.NewMinutes(30)) // 30 minutes
 		{
 			// TODO: Clean up
 	
