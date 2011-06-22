@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<project name="Common.Start.RunFunctionalTests-iexplore" default="Common.Start.RunFunctionalTests-iexplore" xmlns="http://nant.sf.net/schemas/nant.xsd">
+  
+	<property name="Argument.ProjectPath" value=""/>
+	<property name="Argument.SolutionPath" value=""/>
+	<property name="Argument.BuildMode" value=""/>
+	
+	<nant buildfile="Common.Functions.Initialize.nant"/>
+	
+	<property name="Project.RelativePath" value=""/>
+	
+	<property name="Project.PropertiesPath" value="${Argument.ProjectPath}"/>
+	<property name="Project.RootPath" value="${path::get-directory-name(Project.PropertiesPath)}"/>
+	
+	<property name="Solution.PropertiesPath" value="${Argument.SolutionPath}"/>
+	<property name="Solution.RootPath" value="${path::get-directory-name(Solution.PropertiesPath)}"/>
+
+	<property name="Build.Mode" value="${Argument.BuildMode}"/>
+  		
+  		
+	<include buildfile="Common.Jobs.RunFunctionalTests.nant"/>
+	<include buildfile="Common.Jobs.ClearData.nant"/>
+	<include buildfile="Common.Jobs.KillDBServer.nant"/>
+
+  		
+	<target name="Common.Start.RunFunctionalTests-iexplore" description="Runs the functional tests using internet explorer.">		
+		<property name="browser" value="iexplore" />
+	
+		<call target="Common.Jobs.RunFunctionalTests"/>
+	</target>
+	
+</project>
+  	

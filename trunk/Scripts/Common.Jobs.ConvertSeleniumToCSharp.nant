@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<project name="Common.Jobs.ConvertSeleniumToCSharp" default="Common.Jobs.ConvertSeleniumToCSharp" xmlns="http://nant.sf.net/schemas/nant.xsd">
+
+
+	
+	<target name="Common.Jobs.ConvertSeleniumToCSharp">
+		  
+		<xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.Name']/@value"
+		    property="Solution.Name">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+		
+		<xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.BaseNamespace']/@value"
+		    property="Solution.BaseNamespace">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+
+		
+		<xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.VirtualDirectoryName']/@value"
+		    property="Solution.VirtualDirectoryName">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+		
+		<property name="seleniumTestsFolder" value="${Solution.RootPath}\FunctionalTests\" />
+		
+		<property name="seleniumTestSuitePath" value="${seleniumTestsFolder}\${Solution.Name}.Index.html" />
+
+		<property name="baseUrl" value="http://localhost/${Solution.VirtualDirectoryName}" />
+		
+		<property name="browsers" value="iexplore,firefox" />
+		
+		<foreach item="String" in="${browsers}" delim="," property="browser">
+		
+			<property name="cSharpTestsFolder" value="${Solution.RootPath}/${Solution.BaseNamespace}.Functional.${browser}.Tests" />
+
+			<exec program="${Project.RootPath}\lib\SeleniumToCSharp.exe">
+				<arg value="-testsuite:${seleniumTestSuitePath}"/>
+				<arg value="-output:${cSharpTestsFolder}"/>
+				<arg value="-namespace:${Solution.BaseNamespace}.Functional.${browser}.Tests" />
+				<arg value="-basetype:${Solution.BaseNamespace}.Functional.Tests.BaseFunctionalTestFixture" />
+				<arg value="-browser:*${browser}" />
+				<arg value="-baseurl:${baseUrl}" />
+			</exec>
+		
+		</foreach>
+  </target>
+  
+  
+</project>
+  	

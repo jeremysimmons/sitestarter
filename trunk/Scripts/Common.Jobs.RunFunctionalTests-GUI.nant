@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
-<project name="Common.Jobs.RunIntegrationTests" default="Common.Jobs.RunIntegrationTests" xmlns="http://nant.sf.net/schemas/nant.xsd">
+<project name="Common.Jobs.RunFunctionalTests-GUI" default="Common.Jobs.RunFunctionalTests-GUI" xmlns="http://nant.sf.net/schemas/nant.xsd">
 
 
 	
-	<target name="Common.Jobs.RunIntegrationTests">
+	<target name="Common.Jobs.RunFunctionalTests-GUI">
 
 		<xmlpeek
 		    file="${Solution.PropertiesPath}"
@@ -27,7 +27,7 @@
 			
 		<echo message="Results directory: ${resultsDir}"/>
 		  
-		<property name="testSuitePath" value="${path::get-full-path('../Src/App/IntegrationTests/' + Solution.Name + '.Index.html')}"/>
+		<property name="testSuitePath" value="${path::get-full-path('../Src/App/FunctionalTests/' + Solution.Name + '.Index.html')}"/>
 
 		<echo message="Test Suite Path: ${testSuitePath}"/>
 
@@ -80,7 +80,7 @@
 			<arg value="-jar"/>
 			<arg value="../lib/selenium-server.jar"/>
 			<arg value="-htmlSuite"/>
-			<arg value='"*iexplore"'/>
+			<arg value='"${browser}"'/>
 			<arg value='"${startUrl}"'/>
 			<arg value='"${testSuitePath}"'/>
 			<arg value='"${resultsPath}"'/>

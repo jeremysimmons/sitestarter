@@ -34,7 +34,7 @@
 	<include buildfile="Common.Jobs.RunTests.nant"/>
 
   		
-	<target name="Common.Start.RunTests" description="Runs the NUnit tests.">		
+	<target name="Common.Start.RunTests" description="Runs unit and integration tests.">		
 		<call target="Common.Jobs.RunTests"/>
 	</target>
 </project>

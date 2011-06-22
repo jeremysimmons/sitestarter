@@ -19,7 +19,7 @@
 			
 				string propertiesPath = String.Empty;
 
-				foreach (string file in Directory.GetFiles(startPath, @"**\*.Solution.nant"))
+				foreach (string file in Directory.GetFiles(startPath, @"**\*.Solution.nant", SearchOption.AllDirectories))
 				{
 					propertiesPath = file;
 				}
