@@ -10,70 +10,117 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics.Tests
 	[TestFixture]
 	public class LogSupervisorTests : BaseDiagnosticsTestFixture
 	{
+		[SetUp]
+		public override void Start()
+		{
+			EnableTestLogging = false;
+			
+			base.Start();
+		}
+		
 		[Test]
-		public void Test_IsEnabled_Debug_True()
+		public void Test_LoggingEnabled_DebugMode_DebugLevel_SettingsTrue_ReturnsTrue()
 		{
 			LogSupervisor supervisor = new LogSupervisor();
 			supervisor.ModeDetector = new MockModeDetector(true);
+			supervisor.SettingsManager = MockLogSettingsManager.NewSpecified(true);
 			
-			bool isEnabled = supervisor.LoggingEnabled(NLog.LogLevel.Debug);
+			bool isEnabled = supervisor.LoggingEnabled(LogLevel.Debug);
 			
 			Assert.IsTrue(isEnabled, "Should have been true.");
 		}
 		
 		[Test]
-		public void Test_IsEnabled_Debug_False()
+		public void Test_LoggingEnabled_DebugMode_DebugLevel_SettingsFalse_ReturnsFalse()
 		{
 			LogSupervisor supervisor = new LogSupervisor();
 			supervisor.ModeDetector = new MockModeDetector(false);
+			supervisor.SettingsManager =  MockLogSettingsManager.NewSpecified(false);
 			
-			bool isEnabled = supervisor.LoggingEnabled(NLog.LogLevel.Debug);
+			bool isEnabled = supervisor.LoggingEnabled(LogLevel.Debug);
 			
 			Assert.IsFalse(isEnabled, "Should have been false.");
 		}
 		
 		[Test]
-		public void Test_IsEnabled_Error_True_DebugMode()
+		public void Test_LoggingEnabled_DebugMode_ErrorLevel_SettingsTrue_ReturnsTrue()
 		{
 			LogSupervisor supervisor = new LogSupervisor();
 			supervisor.ModeDetector = new MockModeDetector(true);
+			supervisor.SettingsManager = MockLogSettingsManager.NewSpecified(true);
 			
-			bool isEnabled = supervisor.LoggingEnabled(NLog.LogLevel.Error);
+			bool isEnabled = supervisor.LoggingEnabled(LogLevel.Error);
 			
 			Assert.IsTrue(isEnabled, "Should have been true.");
 		}
 		
 		[Test]
-		public void Test_IsEnabled_Error_True_ReleaseMode()
+		public void Test_LoggingEnabled_ReleaseMode_ErrorLevel_ReturnsTrue()
 		{
 			LogSupervisor supervisor = new LogSupervisor();
 			supervisor.ModeDetector = new MockModeDetector(false);
 			
-			bool isEnabled = supervisor.LoggingEnabled(NLog.LogLevel.Error);
+			bool isEnabled = supervisor.LoggingEnabled(LogLevel.Error);
 			
 			Assert.IsTrue(isEnabled, "Should have been true.");
 		}
 		
 		[Test]
-		public void Test_IsEnabled_Info_True_DebugMode()
+		public void Test_LoggingEnabled_DebugMode_InfoLevel_ReturnsTrue()
 		{
 			LogSupervisor supervisor = new LogSupervisor();
 			supervisor.ModeDetector = new MockModeDetector(true);
 			
-			bool isEnabled = supervisor.LoggingEnabled(NLog.LogLevel.Info);
+			bool isEnabled = supervisor.LoggingEnabled(LogLevel.Info);
 			
 			Assert.IsTrue(isEnabled, "Should have been true.");
 		}
 		
 		[Test]
-		public void Test_IsEnabled_Info_True_ReleaseMode()
+		public void Test_LoggingEnabled_ReleaseMode_InfoLevel_ReturnsTrue()
 		{
 			LogSupervisor supervisor = new LogSupervisor();
 			supervisor.ModeDetector = new MockModeDetector(false);
 			
-			bool isEnabled = supervisor.LoggingEnabled(NLog.LogLevel.Info);
+			bool isEnabled = supervisor.LoggingEnabled(LogLevel.Info);
 			
 			Assert.IsTrue(isEnabled, "Should have been true.");
+		}
+		
+		[Test]
+		public void Test_LoggingEnabled_DebugMode_InfoLevel_SettingsTrue_ReturnsTrue()
+		{
+			LogSupervisor supervisor = new LogSupervisor();
+			supervisor.ModeDetector = new MockModeDetector(true);
+			supervisor.SettingsManager = MockLogSettingsManager.NewSpecified(true);
+			
+			bool isEnabled = supervisor.LoggingEnabled(LogLevel.Info);
+			
+			Assert.IsTrue(isEnabled, "Should have been true.");
+		}
+		
+		[Test]
+		public void Test_IsEnabled_MockType_DebugMode_InfoLevel_SettingsTrue_ReturnsTrue()
+		{
+			LogSupervisor supervisor = new LogSupervisor();
+			supervisor.ModeDetector = new MockModeDetector(true);
+			supervisor.SettingsManager = MockLogSettingsManager.NewSpecified(true);
+			
+			bool isEnabled = supervisor.IsEnabled("MockType", LogLevel.Info);
+			
+			Assert.IsTrue(isEnabled, "Should have been true.");
+		}
+		
+		[Test]
+		public void Test_IsEnabled_MockType_DebugMode_DebugLevel_SettingsNotSpecified_ReturnsFalse()
+		{
+			LogSupervisor supervisor = new LogSupervisor();
+			supervisor.ModeDetector = new MockModeDetector(true);
+			supervisor.SettingsManager = MockLogSettingsManager.NewNotSpecified();
+			
+			bool isEnabled = supervisor.IsEnabled("MockType", LogLevel.Debug);
+			
+			Assert.IsFalse(isEnabled, "Should have been true.");
 		}
 		
 		[Test]
