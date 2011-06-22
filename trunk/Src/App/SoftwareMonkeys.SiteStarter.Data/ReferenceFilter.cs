@@ -89,7 +89,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			bool referenceMatches = false;
 			
 			
-			using (LogGroup logGroup = LogGroup.Start("Checking whether provided entity matches this filter.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Checking whether provided entity matches this filter.", LogLevel.Debug))
 			{
 				if (referenceType == null)
 					throw new InvalidOperationException("ReferenceType property has not been set.");

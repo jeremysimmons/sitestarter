@@ -38,7 +38,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="document">The reference serialized to an XML document.</param>
 		public override void ExecuteOnReference(XmlDocument document)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Renaming the type on the provided reference.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Renaming the type on the provided reference.", LogLevel.Debug))
 			{
 				XmlNode type1Node = document.DocumentElement.SelectSingleNode("Type1Name");
 				
@@ -70,7 +70,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="document">The entity serialized to an XML document.</param>
 		public override void ExecuteOnEntity(XmlDocument document)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Executing the rename type command on the provided entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Executing the rename type command on the provided entity.", LogLevel.Debug))
 			{
 				string typeName = document.DocumentElement.Name;
 				

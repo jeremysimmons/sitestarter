@@ -85,7 +85,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			// Logging disabled to boost performance
 			
 			// TODO: Comment out logging to improve performance
-			//using (LogGroup logGroup = LogGroup.Start("Checking whether the provided entity and specified property matches the specified referenced entity ID.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = LogGroup.Start("Checking whether the provided entity and specified property matches the specified referenced entity ID.", LogLevel.Debug))
 			//{
 			if (entityType == null)
 				throw new ArgumentNullException("entityType");
@@ -212,7 +212,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="references">The collection of entity references to persist.</param>
 		public virtual void PersistReferences(EntityReferenceCollection references)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Persisting the provided references.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Persisting the provided references.", LogLevel.Debug))
 			{
 				if (references != null)
 				{
@@ -245,7 +245,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="references">The array of references to delete.</param>
 		public virtual void DeleteObsoleteReferences(EntityReferenceCollection references)
 		{
-			using (LogGroup logGroup2 = LogGroup.Start("Deleting all references that need to be deleted.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup2 = LogGroup.Start("Deleting all references that need to be deleted.", LogLevel.Debug))
 			{
 				LogWriter.Debug("Reference #: " + references.Count);
 				
@@ -266,7 +266,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="entity">The entity to maintain the references for.</param>
 		public virtual void MaintainReferences(IEntity entity)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Maintaining the references for the provided entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Maintaining the references for the provided entity.", LogLevel.Debug))
 			{
 				EntityReferenceCollection updateList = new EntityReferenceCollection();
 				EntityReferenceCollection deleteList = new EntityReferenceCollection();
@@ -306,7 +306,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			Collection<IEntity> collection = new Collection<IEntity>();
 			
-			using (LogGroup logGroup = LogGroup.Start("Retrieving the referenced entities indicated by the provided reference collection, and from the perspective of the provided entity.",NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving the referenced entities indicated by the provided reference collection, and from the perspective of the provided entity.",LogLevel.Debug))
 			{
 				
 				if (entity == null)
@@ -501,7 +501,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			EntityReferenceCollection collection = new EntityReferenceCollection();
 			
-			using (LogGroup logGroup = LogGroup.Start("Retrieving the reference entities from the specified property on the provided entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving the reference entities from the specified property on the provided entity.", LogLevel.Debug))
 			{
 				Type entityType = entity.GetType();
 				
@@ -562,7 +562,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			EntityReferenceCollection collection = new EntityReferenceCollection();
 			
-			using (LogGroup logGroup = LogGroup.Start("Retrieving the reference from a single reference property.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving the reference from a single reference property.", LogLevel.Debug))
 			{
 				LogWriter.Debug("Single reference property.");
 				
@@ -612,7 +612,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			EntityReferenceCollection collection = new EntityReferenceCollection();
 			
-			using (LogGroup logGroup = LogGroup.Start("Retrieving the references from a multiple reference property.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving the references from a multiple reference property.", LogLevel.Debug))
 			{
 				LogWriter.Debug("Multiple reference property.");
 				
@@ -672,7 +672,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		public virtual void BindReferences(EntityReferenceCollection references)
 		{
 			// Logging commented out to boost performance
-			//using (LogGroup logGroup = LogGroup.Start("Binding the provided references with those in the data storer.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = LogGroup.Start("Binding the provided references with those in the data storer.", LogLevel.Debug))
 			//{
 			if (references == null)
 				throw new ArgumentNullException("references");

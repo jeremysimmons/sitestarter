@@ -95,7 +95,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="document">The serialized entity as an XML document.</param>
 		public void RenewSchema(XmlDocument document)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Renewing the schema of the provided XML document.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Renewing the schema of the provided XML document.", LogLevel.Debug))
 			{
 				LogWriter.Debug("Total commands found: " + SchemaCommands.Count);
 				

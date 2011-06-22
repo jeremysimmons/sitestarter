@@ -15,7 +15,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="store">The data store being handled as part of the batch.</param>
 		public static void Handle(IDataStore store)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Adding a data store to the batch.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Adding a data store to the batch.", LogLevel.Debug))
 			{
 				LogWriter.Debug("Batch stack: " + BatchState.Batches.Count.ToString());
 				
@@ -69,7 +69,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		static public Batch StartBatch()
 		{
 			Batch batch = null;
-			using (LogGroup logGroup = LogGroup.Start("Starting a batch of data operations.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Starting a batch of data operations.", LogLevel.Debug))
 			{
 				batch = new Batch();
 				
