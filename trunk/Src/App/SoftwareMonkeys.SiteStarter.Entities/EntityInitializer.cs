@@ -108,7 +108,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// </summary>
 		public void Initialize()
 		{
-			using (LogGroup logGroup = LogGroup.Start("Initializing the business entities.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Initializing the business entities.", LogLevel.Debug))
 			{
 				EntityInfo[] entities = new EntityInfo[]{};
 				if (IsMapped)
@@ -135,7 +135,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <param name="entities">The entities to save to file.</param>
 		public void SaveToFile(EntityInfo[] entities)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Saving the provided entities to XML.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Saving the provided entities to XML.", LogLevel.Debug))
 			{
 				foreach (EntityInfo entity in entities)
 				{
