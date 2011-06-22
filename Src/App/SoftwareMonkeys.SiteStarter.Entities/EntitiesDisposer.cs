@@ -33,7 +33,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// </summary>
 		public void Dispose()
 		{
-			using (LogGroup logGroup = LogGroup.Start("Disposing the entities.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Disposing the entities.", LogLevel.Debug))
 			{
 				EntityInfo[] entities = new EntityInfo[]{};
 				
@@ -46,7 +46,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// </summary>
 		public void Dispose(EntityInfo[] entities)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Disposing the entities.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Disposing the entities.", LogLevel.Debug))
 			{
 				foreach (EntityInfo entity in entities)
 				{

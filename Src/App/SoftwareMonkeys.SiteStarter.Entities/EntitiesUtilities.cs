@@ -220,7 +220,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 			Type type = null;
 			
-			using (LogGroup logGroup = LogGroup.Start("Retrieving the referenced entity type.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving the referenced entity type.", LogLevel.Debug))
 			{
 				if (sourceType == null)
 					throw new ArgumentNullException("sourceType");
@@ -301,7 +301,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			return tmpType;
 		}
 		
-		[Obsolete("Use EntityState.Entities[typeName].GetEntityType().")]
+		[Obsolete("Use EntityState.GetType(string typeName) instead.")]
+		// TODO: Remove when not in use
 		static public Type GetType(string typeName)
 		{
 			return EntityState.GetType(typeName);
@@ -508,11 +509,11 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 			string mirrorPropertyName = String.Empty;
 			
-			using (LogGroup logGroup = LogGroup.Start("Retrieving mirror property name using reverse method.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving mirror property name using reverse method.", LogLevel.Debug))
 			{
 				foreach (PropertyInfo property in referencedEntityType.GetProperties())
 				{
-					using (LogGroup logGroup2 = LogGroup.Start("Checking property: " + property.Name, NLog.LogLevel.Debug))
+					using (LogGroup logGroup2 = LogGroup.Start("Checking property: " + property.Name, LogLevel.Debug))
 					{
 						
 						if (IsReference(entityType, property))
@@ -550,7 +551,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 			string mirror = String.Empty;
 			
-			using (LogGroup logGroup = LogGroup.Start("Retrieving the name of the mirror property that corresponds with the specified property.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving the name of the mirror property that corresponds with the specified property.", LogLevel.Debug))
 			{
 				if (sourceType == null)
 					throw new ArgumentNullException("sourceType");
@@ -569,7 +570,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 			string mirrorPropertyName = String.Empty;
 			
-			using (LogGroup logGroup = LogGroup.Start("Retrieving the name of the mirror property that corresponds with the specified property.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving the name of the mirror property that corresponds with the specified property.", LogLevel.Debug))
 			{
 				if (sourceType == null)
 					throw new ArgumentNullException("sourceType");

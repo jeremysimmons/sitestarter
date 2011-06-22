@@ -206,7 +206,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// </summary>
 		public void SetIDs(Guid[] ids)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Setting entity IDs on the collection.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Setting entity IDs on the collection.", LogLevel.Debug))
 			{
 				LogWriter.Debug("The following IDs were passed:");
 				if (ids != null && ids.Length > 0)
