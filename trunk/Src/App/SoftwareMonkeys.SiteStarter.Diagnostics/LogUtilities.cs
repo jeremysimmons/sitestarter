@@ -42,6 +42,9 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			
 			string logsDirectory = StateAccess.State.PhysicalApplicationPath + @"\App_Data\Logs";
 
+			// Dispose the log writer to unlock the file
+			LogWriter.Dispose();
+			
 			RepairLog(logsDirectory, dateStamp);
 			
 			string logDirectory = logsDirectory + @"\" + dateStamp;

@@ -104,9 +104,21 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 				
 				GroupStack.Pop();
 
-				if (parentGroup != null)
+				// TODO: Check if needed. If the parent group is null then it can still be set to CurrentGroup to make CurrentGroup == null
+				//if (parentGroup != null)
 					CurrentGroup = parentGroup;
 			}
+		}
+		
+		/// <summary>
+		/// Disposes the diagnostic state. Pops all groups so they're written to the log, then disposes the log writer to unlock the file.
+		/// </summary>
+		static public void Dispose()
+		{
+			while (CurrentGroup != null)
+				PopGroup();
+			
+			LogWriter.Dispose();
 		}
 	}
 }
