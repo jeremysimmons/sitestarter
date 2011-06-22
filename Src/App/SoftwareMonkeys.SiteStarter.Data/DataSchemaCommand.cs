@@ -28,7 +28,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			bool doesApply = false;
 			
-			using (LogGroup logGroup = LogGroup.Start("Checking whether the schema command applies to the provided document.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Checking whether the schema command applies to the provided document.", LogLevel.Debug))
 			{
 				if (document == null)
 					throw new ArgumentNullException("document");
@@ -70,7 +70,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			bool doesApply = false;
 			
-			using (LogGroup logGroup = LogGroup.Start("Checking whether the command applies to the provided XML document.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Checking whether the command applies to the provided XML document.", LogLevel.Debug))
 			{
 				XmlNode type1Node = document.DocumentElement.SelectSingleNode("Type1Name");
 				
@@ -102,7 +102,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		public bool AppliesToEntity(XmlDocument document)
 		{
 			bool doesApply = false;
-			using (LogGroup logGroup = LogGroup.Start("Checking whether the command applies to the provided XML document.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Checking whether the command applies to the provided XML document.", LogLevel.Debug))
 			{
 				LogWriter.Debug("Type: " + document.DocumentElement.Name);
 				
@@ -119,7 +119,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="document">The entity serialized and loaded into an XML document.</param>
 		public virtual void Execute(XmlDocument document)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Executing the rename property command on the provided XML document.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Executing the rename property command on the provided XML document.", LogLevel.Debug))
 			{
 				string typeName = document.DocumentElement.Name;
 				

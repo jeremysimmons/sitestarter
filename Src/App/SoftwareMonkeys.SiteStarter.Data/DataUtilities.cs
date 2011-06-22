@@ -21,7 +21,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <returns>The data store that the provided entity is stored in.</returns>
 		/*static public string GetDataStoreNameForReference(IEntity entity, PropertyInfo property)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Retrieving the data store name for a particulary entity property reference.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving the data store name for a particulary entity property reference.", LogLevel.Debug))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");
@@ -54,7 +54,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				{
 					string name = String.Empty;
 					
-					using (LogGroup logGroup2 = LogGroup.Start("The specified property is not an entities reference. Retrieving the corresponding entities property now.", NLog.LogLevel.Debug))
+					using (LogGroup logGroup2 = LogGroup.Start("The specified property is not an entities reference. Retrieving the corresponding entities property now.", LogLevel.Debug))
 					{
 						PropertyInfo entitiesProperty = GetEntitiesProperty(property);
 						
@@ -137,7 +137,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			return type.Name;
 			/*string dataStoreName = String.Empty;
-			//using (LogGroup logGroup = LogGroup.Start("Retrieving the name of the data store.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = LogGroup.Start("Retrieving the name of the data store.", LogLevel.Debug))
 			// {
 			if (type == null)
 				throw new ArgumentNullException("type");
@@ -186,7 +186,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			string dataStoreName = String.Empty;
 			Type type = entity.GetType();
 			
-			using (LogGroup logGroup = LogGroup.Start("Retrieving data store name for entity of type '" + type.ToString() + "'.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving data store name for entity of type '" + type.ToString() + "'.", LogLevel.Debug))
 			{
 				if (EntitiesUtilities.IsReference(entity.GetType()))
 				{
@@ -208,7 +208,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			string returnName;
 			
-			//using (LogGroup logGroup = LogGroup.Start("Retrieving the data store name for provided types.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = LogGroup.Start("Retrieving the data store name for provided types.", LogLevel.Debug))
 			//{
 			if (typeNames == null)
 				throw new ArgumentNullException("typeNames");
@@ -256,7 +256,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			Type type = null;
 
-			using (LogGroup group = LogGroup.Start("Retrieving the type of entity being referenced by the provided property.", NLog.LogLevel.Debug))
+			using (LogGroup group = LogGroup.Start("Retrieving the type of entity being referenced by the provided property.", LogLevel.Debug))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");
@@ -359,7 +359,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		
 		static public void StripReferences(IEntity entity)
 		{
-			using (LogGroup logGroup2 = LogGroup.Start("Clearing all the object references so that they don't cascade automatically.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup2 = LogGroup.Start("Clearing all the object references so that they don't cascade automatically.", LogLevel.Debug))
 			{
 				if (entity is EntityReference)
 				{

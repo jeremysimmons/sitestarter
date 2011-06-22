@@ -62,7 +62,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		protected string CreateReferencePath()
 		{
 			string referenceFileName = String.Empty;
-			using (LogGroup logGroup = LogGroup.Start("Creating the path to the specified reference file.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Creating the path to the specified reference file.", LogLevel.Debug))
 			{
 				EntityIDReference reference = (EntityIDReference)entity;
 				

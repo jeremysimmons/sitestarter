@@ -60,7 +60,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// </summary>
 		public void Commit()
 		{
-			using (LogGroup logGroup = LogGroup.Start("Committing data stores in batch.",NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Committing data stores in batch.",LogLevel.Debug))
 			{
 				if (DataAccess.IsInitialized)
 				{
@@ -110,7 +110,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="disposing">A value indicating whether the component is actually disposing.</param>
 		protected override void Dispose(bool disposing)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Disposing the batch and finishing operations.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Disposing the batch and finishing operations.", LogLevel.Debug))
 			{
 				
 				// Get rid of this batch and all others within it from the stack

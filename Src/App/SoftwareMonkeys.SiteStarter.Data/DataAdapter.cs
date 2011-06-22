@@ -48,7 +48,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="provider">The provider for the adapater to use.</param>
 		public DataAdapter(DataProvider provider)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Constructing the data adapter.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Constructing the data adapter.", LogLevel.Debug))
 			{
 				Initialize(provider, null);
 			}
@@ -61,7 +61,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="store">The data store for the adapter to use.</param>
 		public DataAdapter(DataProvider provider, IDataStore store)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Constructing the data adapter.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Constructing the data adapter.", LogLevel.Debug))
 			{
 				Initialize(provider, store);
 			}
@@ -75,7 +75,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		protected void Initialize(DataProvider provider, IDataStore store)
 		{
 			// Logging disabled to improve performance
-			//using (LogGroup logGroup = LogGroup.Start("Initializing the data adapter.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = LogGroup.Start("Initializing the data adapter.", LogLevel.Debug))
 			//{
 			//	LogWriter.Debug("Set the provider for the adapter to use.");
 				this.provider = provider;
@@ -93,7 +93,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		public IDataStore GetDataStore(string dataStoreName)
 		{
 			IDataStore store = null;
-			using (LogGroup logGroup = LogGroup.Start("Retrieving the data store for the provided entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving the data store for the provided entity.", LogLevel.Debug))
 			{
 				if (DataStore == null)
 				{
@@ -122,7 +122,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		public IDataStore GetDataStore(IEntity entity)
 		{
 			IDataStore store = null;
-			using (LogGroup logGroup = LogGroup.Start("Retrieving the data store for the provided entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving the data store for the provided entity.", LogLevel.Debug))
 			{
 				if (DataStore == null)
 				{
@@ -151,7 +151,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		public IDataStore GetDataStore(Type type)
 		{
 			IDataStore store = null;
-			using (LogGroup logGroup = LogGroup.Start("Retrieving the data store for the provided entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving the data store for the provided entity.", LogLevel.Debug))
 			{
 				if (DataStore == null)
 				{
@@ -179,7 +179,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			IDataStore store = null;
 			
-			using (LogGroup logGroup = LogGroup.Start("Retrieving the data store for the provided entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving the data store for the provided entity.", LogLevel.Debug))
 			{
 				store = DataAccess.Data.Stores[DataUtilities.GetDataStoreName(type1Name, type2Name)];
 				

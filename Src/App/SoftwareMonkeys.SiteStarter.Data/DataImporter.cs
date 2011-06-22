@@ -83,7 +83,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// </summary>
 		public void ImportFromXml()
 		{
-			using (LogGroup logGroup = LogGroup.Start("Importing all objects in the working directory.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Importing all objects in the working directory.", LogLevel.Debug))
 			{
 				using (Batch batch = BatchState.StartBatch())
 				{
@@ -130,7 +130,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			
 			List<string> list = new List<string>();
 
-			using (LogGroup logGroup = LogGroup.Start("Retrieving a list of importable entities from the specified directory.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving a list of importable entities from the specified directory.", LogLevel.Debug))
 			{
 				LogWriter.Debug("Directory: " + directory);
 				
@@ -160,7 +160,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			IEntity entity = null;
 			
-			using (LogGroup logGroup = LogGroup.Start("Loading an entity from XML file.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Loading an entity from XML file.", LogLevel.Debug))
 			{
 				XmlDocument doc = new XmlDocument();
 				doc.Load(filePath);
@@ -199,7 +199,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		public void MoveToImported(IEntity entity, string filePath)
 		{
 			
-			using (LogGroup logGroup = LogGroup.Start("Marking the provided entity as imported by moving it to the imported directory.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Marking the provided entity as imported by moving it to the imported directory.", LogLevel.Debug))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity", "The provided entity cannot be null.");
@@ -251,7 +251,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		public void MoveToFailed(IEntity entity, string filePath)
 		{
 			
-			using (LogGroup logGroup = LogGroup.Start("Marking the provided entity as failed by moving it to the failed import directory.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Marking the provided entity as failed by moving it to the failed import directory.", LogLevel.Debug))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity", "The provided entity cannot be null.");
@@ -342,7 +342,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="reference">The reference to move.</param>
 		public void MoveReferenceToImported(string importedDirectoryPath, EntityReference reference)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Moving the provided entity to the imported directory.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Moving the provided entity to the imported directory.", LogLevel.Debug))
 			{
 			}
 		}*/
