@@ -4,7 +4,6 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Collections;
 using System.Diagnostics;
-using NLog;
 using System.Reflection;
 using System.Xml.Serialization;
 
@@ -28,6 +27,16 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			set { id = value; }
 		}
 		
+		private LogSupervisor logSupervisor;
+		public LogSupervisor LogSupervisor
+		{
+			get {
+				if (logSupervisor == null)
+					logSupervisor = new LogSupervisor();
+				return logSupervisor; }
+			set { logSupervisor = value; }
+		}
+		
 		/// <summary>
 		/// A flag indicating whether the log group is marked to be output.
 		/// </summary>
@@ -35,7 +44,10 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		{
 			get
 			{
-				return new LogSupervisor().LoggingEnabled(CallingMethod, LogLevel);
+				if (CallingMethod == null)
+					return LogSupervisor.LoggingEnabled(LogLevel);
+				else
+					return LogSupervisor.LoggingEnabled(CallingMethod.DeclaringType.Name, LogLevel);
 			}
 		}
 		
@@ -126,42 +138,40 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		}
 
 
-		public LogGroup(string summary, MethodBase callingMethod)
+		public LogGroup(string summary, MethodBase callingMethod, LogLevel level)
 		{
 			this.summary = summary;
 			this.callingMethod = callingMethod;
+			this.logLevel = level;
 		}
 		
 		private void Write(string message, LogLevel logLevel)
 		{
-			MethodBase callingMethod = Reflector.GetCallingMethod();
+			CallingMethod = Reflector.GetCallingMethod();
 			Write(message, logLevel, callingMethod);
+			
 		}
 
 		private void Write(string message, LogLevel logLevel, MethodBase callingMethod)
 		{
 			if (logLevel < this.LogLevel)
 				throw new ArgumentException("The provided log level " + logLevel + " must be equal or greater than the log level of the group, which is " + logLevel + ".");
-
+			
+			CallingMethod = callingMethod;
+			
 			Guid parentID = GetOutputParentID();
 			
+			// TODO: Check if needed. Should be obsolete as the LogWriter.WriteGroup function will check whether or not to output the data
 			if (IsOutput)
 				LogWriter.WriteGroup(message, callingMethod, LogLevel, ID, parentID);
 		}
 
 
-		internal void Start(MethodBase callingMethod, NLog.LogLevel logLevel)
+		internal void Start()
 		{
 			DiagnosticState.PushGroup(this);
 			
-			CallingMethod = callingMethod;
-			
-			Start(callingMethod);
-		}
-		
-		private void Start(MethodBase callingMethod)
-		{
-			Write(Summary, LogLevel, callingMethod);
+			Write(Summary, LogLevel, CallingMethod);
 		}
 
 		internal void End()
@@ -306,6 +316,17 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		/// <param name="summary"></param>
 		/// <param name="logLevel"></param>
 		/// <returns></returns>
+		static public LogGroup Start(string summary, NLog.LogLevel logLevel)
+		{
+			return Start(summary, LogWriter.ConvertLevel(logLevel));
+		}
+		
+		/// <summary>
+		/// Starts a new log group.
+		/// </summary>
+		/// <param name="summary"></param>
+		/// <param name="logLevel"></param>
+		/// <returns></returns>
 		static public LogGroup Start(string summary, LogLevel logLevel)
 		{
 			MethodBase callingMethod = null;
@@ -328,12 +349,11 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		{
 			LogGroup parent = DiagnosticState.CurrentGroup;
 			
-			LogGroup newGroup = new LogGroup(summary, callingMethod);
+			LogGroup newGroup = new LogGroup(summary, callingMethod, logLevel);
 			newGroup.Parent = parent;
 			
 			
-			newGroup.Start(callingMethod, logLevel);
-
+			newGroup.Start();
 
 			return newGroup;
 		}

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using System.Configuration;
 
 namespace SoftwareMonkeys.SiteStarter.Diagnostics
 {
@@ -22,17 +21,34 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			set { modeDetector = value; }
 		}
 		
+		private LogSettingsManager settingsManager;
+		/// <summary>
+		/// Gets/sets an instance of the LogSettingsManager used to check the log settings in the web.config file.
+		/// </summary>
+		public LogSettingsManager SettingsManager
+		{
+			get {
+				if (settingsManager == null)
+					settingsManager = LogSettingsManager.Current;
+				return settingsManager; }
+			set { settingsManager = value; }
+		}
+		
 		/// <summary>
 		/// Checks whether the logging is enabled for the specified log level.
 		/// </summary>
 		/// <param name="level"></param>
 		/// <returns></returns>
-		public bool LoggingEnabled(NLog.LogLevel level)
+		public bool LoggingEnabled(LogLevel level)
 		{
-			if (level == NLog.LogLevel.Debug && !IsDebug())
+			// If the level is debug and the compile mode is NOT debug then return false regardless of the settings
+			if (level == LogLevel.Debug && !IsDebug())
 				return false;
+			else
+				return SettingsManager.IsEnabled(level);
 			
-			object value = ConfigurationSettings.AppSettings["Logging." + level.ToString() + ".Enabled"];
+			// TODO: Clean up
+			/*object value = ConfigurationSettings.AppSettings["Logging." + level.ToString() + ".Enabled"];
 			if (value != null)
 			{
 				bool loggingEnabled = ((string)value).ToLower() == "true";
@@ -40,36 +56,37 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 				return loggingEnabled;
 			}
 			else
-				return true;
+			{
+				// Info and error default to enabled
+				if (level == LogLevel.Info || level == LogLevel.Error)
+					return true;
+				// Everything else defaults to disabled
+				else
+					return false;
+			}*/
 			
 		}
 		
 		/// <summary>
-		/// Checks whether the logging is enabled for the specified log and the specified method.
+		/// Checks whether the logging is enabled for the specified log and the specified type.
 		/// </summary>
-		/// <param name="callingMethod"></param>
+		/// <param name="callingTypeName"></param>
 		/// <param name="level"></param>
 		/// <returns></returns>
-		public bool LoggingEnabled(MethodBase callingMethod, NLog.LogLevel level)
+		public bool LoggingEnabled(string callingTypeName, LogLevel level)
 		{
-			object value = ConfigurationSettings.AppSettings["Logging." + level.ToString() + ".Enabled"];
-			if (value != null)
+			bool modeIsEnabled = IsModeEnabled(level);
+			
+			bool typeIsEnabled = IsEnabled(callingTypeName, level);
+			
+			if (modeIsEnabled
+			    && typeIsEnabled)
 			{
-				bool allLoggingEnabled = value == null
-					|| Convert.ToBoolean(value.ToString()) != false;
-				
-				if (allLoggingEnabled && IsModeEnabled(level) && IsEnabled(level, callingMethod))
-				{
-					return true;
-				}
-				
-				// Defaults to false
-				return false;
-			}
-			else 
-			{
-				// Defaults to true if no setting was found in the web.config.
 				return true;
+			}
+			else
+			{
+				return false;
 			}
 		}
 		
@@ -84,43 +101,32 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			return isDebug;
 		}
 		
-		/// <summary>
-		/// Checks whether logging for the specified calling method is enabled according to the settings in the Web.config.
+		/*/// <summary>
+		/// Checks whether logging for the specified calling type is enabled according to the settings in the Web.config.
 		/// </summary>
 		/// <param name="level"></param>
-		/// <param name="callingMethod"></param>
+		/// <param name="callingTypeName"></param>
 		/// <returns></returns>
-		public bool IsEnabled(NLog.LogLevel level, MethodBase callingMethod)
+		public bool IsEnabled(LogLevel level, string callingTypeName)
 		{
 			// If the callingMethod parameter is null then logging is disabled
 			if (callingMethod == null)
 				return false;
 			
-			Type declaringType = callingMethod.DeclaringType;
-			
-			return IsEnabled(level, declaringType.Name);
-		}
+			return IsEnabled(level, callingTypeName);
+		}*/
 		
 		/// <summary>
 		/// Checks whether logging for the specified type is enabled according to the settings in the Web.config.
 		/// </summary>
-		/// <param name="level"></param>
 		/// <param name="typeName"></param>
+		/// <param name="level"></param>
 		/// <returns></returns>
-		public bool IsEnabled(NLog.LogLevel level, string typeName)
+		public bool IsEnabled(string typeName, LogLevel level)
 		{
-			object value = ConfigurationSettings.AppSettings["Logging." + level.ToString() + "." + typeName + ".Enabled"];
-			
-			
-			if (value != null)
-			{
-				string setting = ((string)value);
-				
-				if (setting.ToLower() == false.ToString().ToLower())
-					return false;
-			}
-			
-			return IsModeEnabled(level);
+			bool enabledInSettings = SettingsManager.IsEnabled(typeName, level);
+
+			return enabledInSettings;
 		}
 		
 		/// <summary>
@@ -128,12 +134,12 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		/// </summary>
 		/// <param name="level"></param>
 		/// <returns></returns>
-		public bool IsModeEnabled(NLog.LogLevel level)
+		public bool IsModeEnabled(LogLevel level)
 		{
-			if (level == NLog.LogLevel.Debug)
+			if (level == LogLevel.Debug)
 				return IsDebug();
 			else
-				return true;
+				return SettingsManager.IsEnabled(level);
 		}
 		
 		/// <summary>
