@@ -1,0 +1,175 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>WebDriver.Chrome</name>
+    </assembly>
+    <members>
+        <member name="T:OpenQA.Selenium.Chrome.ChromeCommandExecutor">
+            <summary>
+            Provides a mechanism to execute commands on the browser
+            </summary>
+        </member>
+        <member name="M:OpenQA.Selenium.Chrome.ChromeCommandExecutor.#ctor(OpenQA.Selenium.Chrome.ChromeDriverService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:OpenQA.Selenium.Chrome.ChromeCommandExecutor"/> class.
+            </summary>
+            <param name="driverService">The <see cref="T:OpenQA.Selenium.Chrome.ChromeDriverService"/> that drives the browser.</param>
+        </member>
+        <member name="M:OpenQA.Selenium.Chrome.ChromeCommandExecutor.Start">
+            <summary>
+            Starts the <see cref="T:OpenQA.Selenium.Chrome.ChromeCommandExecutor"/>.
+            </summary>
+        </member>
+        <member name="M:OpenQA.Selenium.Chrome.ChromeCommandExecutor.Stop">
+            <summary>
+            Stops the <see cref="T:OpenQA.Selenium.Chrome.ChromeCommandExecutor"/>.
+            </summary>
+        </member>
+        <member name="T:OpenQA.Selenium.Chrome.ChromeDriver">
+            <summary>
+            Provides a mechanism to write tests against Chrome
+            </summary>
+            <example>
+            <code>
+            [TestFixture]
+            public class Testing
+            {
+                private IWebDriver driver;
+                <para></para>
+                [SetUp]
+                public void SetUp()
+                {
+                    driver = new ChromeDriver();
+                }
+                <para></para>
+                [Test]
+                public void TestGoogle()
+                {
+                    driver.Navigate().GoToUrl("http://www.google.co.uk");
+                    /*
+                    *   Rest of the test
+                    */
+                }
+                <para></para>
+                [TearDown]
+                public void TearDown()
+                {
+                    driver.Quit();
+                } 
+            }
+            </code>
+            </example>
+        </member>
+        <member name="F:OpenQA.Selenium.Chrome.ChromeDriver.AcceptUntrustedCertificates">
+            <summary>
+            Accept untrusted SSL Certificates
+            </summary>
+        </member>
+        <member name="M:OpenQA.Selenium.Chrome.ChromeDriver.#ctor">
+            <summary>
+            Initializes a new instance of the ChromeDriver class.
+            </summary>
+        </member>
+        <member name="M:OpenQA.Selenium.Chrome.ChromeDriver.#ctor(OpenQA.Selenium.Chrome.ChromeDriverService)">
+            <summary>
+            Initializes a new instance of the ChromeDriver class using the specified <see cref="T:OpenQA.Selenium.Chrome.ChromeDriverService"/>.
+            </summary>
+            <param name="service">The <see cref="T:OpenQA.Selenium.Chrome.ChromeDriverService"/> to use.</param>
+        </member>
+        <member name="M:OpenQA.Selenium.Chrome.ChromeDriver.GetScreenshot">
+            <summary>
+            Gets a <see cref="T:OpenQA.Selenium.Screenshot"/> object representing the image of the page on the screen.
+            </summary>
+            <returns>A <see cref="T:OpenQA.Selenium.Screenshot"/> object containing the image.</returns>
+        </member>
+        <member name="M:OpenQA.Selenium.Chrome.ChromeDriver.StartClient">
+            <summary>
+            By default will try to load Chrome from system property
+            webdriver.chrome.bin and the extension from
+            webdriver.chrome.extensiondir.  If the former fails, will try to guess the
+            path to Chrome.  If the latter fails, will try to unzip from the JAR we 
+            hope we're in.  If these fail, throws exceptions.
+            </summary>
+        </member>
+        <member name="M:OpenQA.Selenium.Chrome.ChromeDriver.StopClient">
+            <summary>
+            Kills the started Chrome process and ChromeCommandExecutor if they exist
+            </summary>
+        </member>
+        <member name="T:OpenQA.Selenium.Chrome.ChromeDriverService">
+            <summary>
+            Exposes the service provided by the native ChromeDriver executable.
+            </summary>
+        </member>
+        <member name="M:OpenQA.Selenium.Chrome.ChromeDriverService.#ctor(System.String,System.Int32)">
+            <summary>
+            Initializes a new instance of the ChromeDriverService class.
+            </summary>
+            <param name="executable">The full path to the ChromeDriver executable.</param>
+            <param name="port">The port on which the ChromeDriver executable should listen.</param>
+        </member>
+        <member name="M:OpenQA.Selenium.Chrome.ChromeDriverService.CreateDefaultService">
+            <summary>
+            Creates a default instance of the ChromeDriverService.
+            </summary>
+            <returns>A ChromeDriverService that implements default settings.</returns>
+        </member>
+        <member name="M:OpenQA.Selenium.Chrome.ChromeDriverService.CreateDefaultService(System.String)">
+            <summary>
+            Creates a default instance of the ChromeDriverService using a specified path to the ChromeDriver executable.
+            </summary>
+            <param name="driverPath">The directory containing the ChromeDriver executable.</param>
+            <returns>A ChromeDriverService using a random port.</returns>
+        </member>
+        <member name="M:OpenQA.Selenium.Chrome.ChromeDriverService.Dispose">
+            <summary>
+            Releases all resources associated with this <see cref="T:OpenQA.Selenium.Chrome.ChromeDriverService"/>.
+            </summary>
+        </member>
+        <member name="M:OpenQA.Selenium.Chrome.ChromeDriverService.Start">
+            <summary>
+            Starts the ChromeDriverService.
+            </summary>
+        </member>
+        <member name="M:OpenQA.Selenium.Chrome.ChromeDriverService.Stop">
+            <summary>
+            Stops the ChromeDriverService.
+            </summary>
+        </member>
+        <member name="P:OpenQA.Selenium.Chrome.ChromeDriverService.ServiceUrl">
+            <summary>
+            Gets the Uri of the service.
+            </summary>
+        </member>
+        <member name="P:OpenQA.Selenium.Chrome.ChromeDriverService.IsRunning">
+            <summary>
+            Gets a value indicating whether the service is running.
+            </summary>
+        </member>
+        <member name="T:OpenQA.Selenium.Chrome.ChromeWebElement">
+            <summary>
+            Provides a mechanism to get elements off the page for test
+            </summary>
+        </member>
+        <member name="M:OpenQA.Selenium.Chrome.ChromeWebElement.#ctor(OpenQA.Selenium.Chrome.ChromeDriver,System.String)">
+            <summary>
+            Initializes a new instance of the ChromeWebElement class
+            </summary>
+            <param name="parent">Driver in use</param>
+            <param name="elementId">Id of the element</param>
+        </member>
+        <member name="M:OpenQA.Selenium.Chrome.ChromeWebElement.GetHashCode">
+            <summary>
+            Returns the HashCode of the Element
+            </summary>
+            <returns>Hashcode of the element</returns>
+        </member>
+        <member name="M:OpenQA.Selenium.Chrome.ChromeWebElement.Equals(System.Object)">
+            <summary>
+            Compares current element against another
+            </summary>
+            <param name="obj">element to compare against</param>
+            <returns>A value indicating whether they are the same</returns>
+        </member>
+    </members>
+</doc>
