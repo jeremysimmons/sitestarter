@@ -117,6 +117,7 @@
 	        <exclude name="**/App_Data/Personalization_Data/**"/>
 	        <exclude name="**/App_Data/Logs/**"/>
 	        <exclude name="**/App_Data/LogsArchive/**"/>
+	        <exclude name="**/App_Data/LogReports/**"/>
 	        <exclude name="**/App_Data/Version.number"/>
 	        <exclude name="**/App_Data/Suspended/**"/>
 	        <exclude name="**/Deployment/**"/>
@@ -215,6 +216,7 @@
 	        <exclude name="**/App_Data/Personalization_Data/**"/>
 	        <exclude name="**/App_Data/Logs/**"/>
 	        <exclude name="**/App_Data/LogsArchive/**"/>
+	        <exclude name="**/App_Data/LogReports/**"/>
 	        <exclude name="**/App_Data/LegacyDefault/**"/>
 	        <exclude name="**/App_Data/Legacy/**"/>
 	        <exclude name="**/App_Data/Imported/**"/>

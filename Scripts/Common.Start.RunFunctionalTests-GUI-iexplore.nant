@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="Common.Start.RunIntegrationTests" default="Common.Start.RunIntegrationTests" xmlns="http://nant.sf.net/schemas/nant.xsd">
+<project name="Common.Start.RunFunctionalTests-GUI-iexplore" default="Common.Start.RunFunctionalTests-GUI-iexplore" xmlns="http://nant.sf.net/schemas/nant.xsd">
   			
   	<property name="Argument.ProjectPath" value=""/>
   	<property name="Argument.SolutionPath" value=""/>
@@ -17,13 +17,15 @@
 	<property name="Project.PropertiesPath" value="${Argument.ProjectPath}"/>
 	<property name="Project.RootPath" value="${path::get-directory-name(Argument.ProjectPath)}"/>  		
   		
-	<include buildfile="Common.Jobs.RunIntegrationTests.nant"/>
+	<include buildfile="Common.Jobs.RunFunctionalTests-GUI.nant"/>
 	<include buildfile="Common.Jobs.ClearData.nant"/>
 	<include buildfile="Common.Jobs.ClearCache.nant"/>
 	<include buildfile="Common.Jobs.KillDBServer.nant"/>
 
-	<target name="Common.Start.RunIntegrationTests" description="Runs the integration tests.">		
-		<call target="Common.Jobs.RunIntegrationTests"/>
+	<target name="Common.Start.RunFunctionalTests-GUI-iexplore" description="Runs the functional tests using the selenium web GUI via internet explorer.">		
+		<property name="browser" value="*iexplore" />
+	
+		<call target="Common.Jobs.RunFunctionalTests-GUI"/>
 	</target>
 </project>
   	

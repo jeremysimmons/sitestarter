@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<project name="Common.Jobs.CycleTestsWithLogging" default="Common.Jobs.CycleTestsWithLogging" xmlns="http://nant.sf.net/schemas/nant.xsd">
+
+	<target name="Common.Jobs.CycleTestsWithLogging">
+
+		<property name="webConfigPath" value="${Solution.RootPath}\WWW\Web.config" />
+		
+		<xmlpeek
+		    file="${webConfigPath}"
+		    xpath="/x:configuration/x:appSettings/x:add[@key='Logging.Debug.Enabled']/@value"
+		    property="originalDebugLoggingValue">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://schemas.microsoft.com/.NetConfiguration/v2.0" />
+    			</namespaces>
+    	</xmlpeek>
+		
+		<echo message="Enabling debug logging in: ${webConfigPath}" />
+		
+		<xmlpoke file="${webConfigPath}" xpath="/x:configuration/x:appSettings/x:add[@key='Logging.Debug.Enabled']/@value" value="true">
+                <namespaces>
+                    <namespace prefix="x" uri="http://schemas.microsoft.com/.NetConfiguration/v2.0" />
+                </namespaces>
+        </xmlpoke>
+		
+		<call target="Common.Jobs.CycleTestsWithLogging" />
+		
+		<xmlpoke file="${webConfigPath}" xpath="/x:configuration/x:appSettings/x:add[@key='Logging.Debug.Enabled']/@value" value="${originalDebugLoggingValue}">
+                <namespaces>
+                    <namespace prefix="x" uri="http://schemas.microsoft.com/.NetConfiguration/v2.0" />
+                </namespaces>
+        </xmlpoke>
+		
+  	</target>
+
+</project>
+  	
