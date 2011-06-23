@@ -14,7 +14,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			PropertyInfo property = null;
 			object value = obj;
 			
-			using (LogGroup logGroup = LogGroup.Start("Retrieving property '" + propertyName + "' from type '" + obj.GetType(), NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving property '" + propertyName + "' from type '" + obj.GetType(), LogLevel.Debug))
 			{
 				string[] parts = propertyName.Split('.');
 				
@@ -53,7 +53,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			if (obj == null)
 				throw new ArgumentException("obj cannot be null");
 			
-			using (LogGroup logGroup = LogGroup.Start("Retrieving property '" + propertyName + "' from type '" + obj.GetType(), NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Retrieving property '" + propertyName + "' from type '" + obj.GetType(), LogLevel.Debug))
 			{
 				string[] parts = propertyName.Split('.');
 				
@@ -90,7 +90,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			PropertyInfo property = null;
 			object parent = obj;
 			
-			using (LogGroup logGroup = LogGroup.Start("Setting value of property '" + propertyName + "' on type '" + obj.GetType() + "'.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Setting value of property '" + propertyName + "' on type '" + obj.GetType() + "'.", LogLevel.Debug))
 			{
 				string[] parts = propertyName.Split('.');
 				
@@ -262,7 +262,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			bool argumentsMatch = true;
 			
 			// Disabled logging to boost performance
-			//using (LogGroup logGroup = LogGroup.Start("Checking whether the provided arguments match those on the provided method.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = LogGroup.Start("Checking whether the provided arguments match those on the provided method.", LogLevel.Debug))
 			//{
 				
 				if (method == null)
@@ -322,7 +322,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		static public bool ParametersMatch(MethodInfo method, Type[] expectedArgumentTypes, Type[] expectedParameters)
 		{
 			bool parametersMatch = true;
-			//using (LogGroup logGroup = LogGroup.Start("Checking whether the provide parameter types match those on the provided method.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = LogGroup.Start("Checking whether the provide parameter types match those on the provided method.", LogLevel.Debug))
 			//{
 				if (method == null)
 					throw new ArgumentNullException("method");
