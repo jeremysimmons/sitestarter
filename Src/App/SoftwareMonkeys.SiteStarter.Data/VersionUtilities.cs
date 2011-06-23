@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using SoftwareMonkeys.SiteStarter.Configuration;
+using SoftwareMonkeys.SiteStarter.State;
 
 namespace SoftwareMonkeys.SiteStarter.Data
 {
@@ -57,6 +58,11 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				+ "Version.number"; // Don't use path variation here
 			
 			return LoadVersionFromFile(versionFilePath);
+		}
+		
+		public static Version GetCurrentVersion()
+		{
+			return GetCurrentVersion(StateAccess.State.PhysicalApplicationPath);
 		}
 		
 		public static Version LoadVersionFromFile(string path)
