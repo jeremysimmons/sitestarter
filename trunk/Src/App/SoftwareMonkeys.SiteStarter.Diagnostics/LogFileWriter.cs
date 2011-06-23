@@ -46,13 +46,22 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		public string BufferData
 		{
 			get {
-				if (StateAccess.State.ContainsApplication(BufferDataKey))
-					return (string)StateAccess.State.GetApplication(BufferDataKey);
+				if (StateAccess.IsInitialized)
+				{
+					if (StateAccess.State.ContainsApplication(BufferDataKey))
+						return (string)StateAccess.State.GetApplication(BufferDataKey);
+				}
+				else
+					throw new InvalidOperationException("Cannot access log buffer when the state access has not been initialized.");
+				
 				return String.Empty;
 			}
 			set
 			{
-				StateAccess.State.SetApplication(BufferDataKey, value);
+				if (StateAccess.IsInitialized)
+					StateAccess.State.SetApplication(BufferDataKey, value);
+				else
+					throw new InvalidOperationException("Cannot write to log file when the state access has not been initialized.");
 			}
 		}
 		
@@ -80,26 +89,6 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		// TODO: Allow this to be specified in the Web.config but have a default value here in case it's not specified
 		public int BufferDuration = 2;
 		
-		/*static protected string LogFileStreamWriterKey = "Diagnostics.LogFileWriter.CurrentStreamWriter";
-		
-		static private StreamWriter currentStreamWriter;
-		/// <summary>
-		/// Gets a single instance of the stream writer held in application state.
-		/// </summary>
-		static protected StreamWriter CurrentStreamWriter
-		{
-			get
-			{
-				if (currentStreamWriter == null)
-					OpenStreamWriter();
-				
-				return currentStreamWriter;
-				//StreamWriter writer = (StreamWriter)StateAccess.State.GetApplication(LogFileStreamWriterKey);
-				
-				//return writer;
-			}
-		}*/
-		
 		/// <summary>
 		/// Opens the file stream writer instance.
 		/// </summary>
@@ -109,25 +98,31 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			
 			StreamWriter writer = null;
 			
-			// If the log exists then open it
-			if (File.Exists(logFilePath))
-				writer = File.AppendText(logFilePath);
-			// Otherwise create a new log
-			else
+			try
 			{
-				// Create the log directory if not foudn
-				if (!Directory.Exists(Path.GetDirectoryName(logFilePath)))
-					Directory.CreateDirectory(Path.GetDirectoryName(logFilePath));
-			
-				// Create a new log file
-				writer = File.CreateText(logFilePath);
-				
-				// Write the header to the log file
-				writer.Write(CreateLogHeader());
+				// If the log exists then open it
+				if (File.Exists(logFilePath))
+					writer = File.AppendText(logFilePath);
+				// Otherwise create a new log
+				else
+				{
+					// Create the log directory if not foudn
+					if (!Directory.Exists(Path.GetDirectoryName(logFilePath)))
+						Directory.CreateDirectory(Path.GetDirectoryName(logFilePath));
+					
+					// Create a new log file
+					writer = File.CreateText(logFilePath);
+					
+					// Write the header to the log file
+					writer.Write(CreateLogHeader());
+				}
+			}
+			catch (IOException)
+			{
+				// The file is locked. Return a null value and the commit will be skipped until next time
 			}
 			
 			return writer;
-			//StateAccess.State.SetApplication(LogFileStreamWriterKey, writer);
 		}
 		
 		public LogFileWriter()
@@ -135,7 +130,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		}
 		
 		internal void Write(string entry)
-		{			
+		{
 			AddToBuffer(entry);
 		}
 		
@@ -165,7 +160,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		/// </summary>
 		/// <returns></returns>
 		public bool TimeToCommit()
-		{  
+		{
 			return PreviousCommitTime.AddSeconds(BufferDuration) < DateTime.Now;
 		}
 		
@@ -178,11 +173,16 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			{
 				using (StreamWriter writer = OpenStreamWriter())
 				{
-					writer.Write(BufferData);
+					// TODO: Check if needed
+					// If the write is null then the file was locked and the commit can be skipped until next time
+					if (writer != null)
+					{
+						writer.Write(BufferData);
+						
+						BufferData = String.Empty;
+						PreviousCommitTime = DateTime.Now;
+					}
 				}
-				
-				BufferData = String.Empty;
-				PreviousCommitTime = DateTime.Now;
 			}
 		}
 		
@@ -287,9 +287,6 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		
 		private void EndLog()
 		{
-			//if (currentStreamWriter != null)
-			//	currentStreamWriter.WriteLine("</Log>");
-			
 			Write("</Log>");
 			
 			CommitBuffer();
@@ -297,26 +294,11 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		
 		protected override void Dispose(bool disposing)
 		{
-			EndLog();
-			
-			//DisposeStreamWriter();
+			// If state isn't initialized then don't try to end the log as the state data is needed for the buffer
+			if (StateAccess.IsInitialized)
+				EndLog();
 			
 			base.Dispose(disposing);
 		}
-		
-		// TODO: Clean up
-		/*public void DisposeStreamWriter()
-		{
-			// TODO: Clean up
-			//if (StateAccess.State.ContainsApplication(LogFileStreamWriterKey))
-			if (currentStreamWriter != null)
-			{
-				StreamWriter writer = currentStreamWriter;//(StreamWriter)StateAccess.State.GetApplication(LogFileStreamWriterKey);
-				writer.Close();
-				currentStreamWriter = null;
-				
-			//	StateAccess.State.RemoveApplication(LogFileStreamWriterKey);
-			}
-		}*/
 	}
 }
