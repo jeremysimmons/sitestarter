@@ -60,7 +60,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// <summary>
 		/// Creates a new strategy for authorising the updating of the specified type.
 		/// </summary>
-		static public IAuthoriseUpdateStrategy New<T>()
+		new static public IAuthoriseUpdateStrategy New<T>()
 		{
 			return StrategyState.Strategies.Creator.New<IAuthoriseUpdateStrategy>("AuthoriseUpdate", typeof(T).Name);
 		}
@@ -69,7 +69,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// Creates a new strategy for authorising the updating the specified type.
 		/// </summary>
 		/// <param name="typeName">The short name of the type involved in the strategy.</param>
-		static public IAuthoriseUpdateStrategy New(string typeName)
+		new static public IAuthoriseUpdateStrategy New(string typeName)
 		{
 			return StrategyState.Strategies.Creator.New<IAuthoriseUpdateStrategy>("AuthoriseUpdate", typeName);
 		}
