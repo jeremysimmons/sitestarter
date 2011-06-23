@@ -12,7 +12,10 @@
 		<call target="Common.Jobs.ConvertSeleniumToCSharp"/>
 		<call target="Common.Jobs.BuildSolution"/>	
 		<call target="Common.Jobs.CreateReleaseZips"/>	
-		<call target="Common.Jobs.RunTests"/>	
+		<call target="Common.Jobs.RunTests"/>
+		<property name="browser" value="firefox" />
+		<call target="Common.Jobs.RunFunctionalTests"/>
+		<property name="browser" value="iexplore" />
 		<call target="Common.Jobs.RunFunctionalTests"/>
 		<call target="Common.Jobs.GenerateScreenshots"/>	
 		<call target="Common.Jobs.UploadZips"/>		
