@@ -32,7 +32,6 @@
 	<include buildfile="Common.Jobs.BuildSolution.nant"/>
 	<include buildfile="Common.Jobs.BuildAssembly.nant"/>
 	<include buildfile="Common.Jobs.RunTests.nant"/>
-	<include buildfile="Common.Jobs.RunIntegrationTests.nant"/>
 	<include buildfile="Common.Jobs.Reset.nant"/>
 	<include buildfile="Common.Jobs.ResetImportData.nant"/>
 	<include buildfile="Common.Jobs.WWW.nant"/>
