@@ -13,11 +13,19 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 	public class BaseEntityTestFixture : BaseConfigurationTestFixture
 	{
 		[SetUp]
-		public void Initialize()
-		{			
-			InitializeMockState();
-			InitializeMockConfiguration();
+		public override void Start()
+		{
+			base.Start();
+			
 			InitializeMockEntities();
+		}
+		
+		[TearDown]
+		public override void End()
+		{
+			DisposeMockEntities();
+			
+			base.End();
 		}
 		
 		

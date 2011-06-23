@@ -14,29 +14,6 @@ namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
     [TestFixture]
     public class ConfigFactoryTests : BaseConfigurationTestFixture
     {        
-        public ConfigFactoryTests()
-        {
-            //Config.Initialize(ApplicationPath, "");
-        }
-        
-        
-		[SetUp]
-		public void Start()
-		{
-			TestUtilities.ClearTestingDirectory(this);
-			InitializeMockState();
-			InitializeMockConfiguration();
-		}
-		
-		[TearDown]
-		public void End()
-		{
-			DisposeMockConfiguration();
-			DisposeMockState();
-			TestUtilities.ClearTestingDirectory(this);
-		}
-
-
         #region Save tests
         [Test]
         public void Test_LoadConfig()

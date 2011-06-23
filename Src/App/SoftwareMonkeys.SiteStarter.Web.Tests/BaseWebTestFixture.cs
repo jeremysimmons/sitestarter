@@ -9,9 +9,19 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
 	public class BaseWebTestFixture : BaseBusinessTestFixture
 	{
 		[SetUp]
-		public new void Initialize()
+		public override void Start()
 		{
+			base.Start();
+			
 			InitializeMockWeb();
+		}
+		
+		[TearDown]
+		public override void End()
+		{
+			
+			
+			base.End();
 		}
 		
 		protected void InitializeMockWeb()

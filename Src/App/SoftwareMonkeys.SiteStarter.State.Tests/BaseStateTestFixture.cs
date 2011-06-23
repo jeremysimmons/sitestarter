@@ -1,6 +1,7 @@
 ﻿using System;
 using SoftwareMonkeys.SiteStarter.Tests;
 using NUnit.Framework;
+using System.IO;
 
 namespace SoftwareMonkeys.SiteStarter.State.Tests
 {
@@ -14,8 +15,10 @@ namespace SoftwareMonkeys.SiteStarter.State.Tests
 		/// Starts a test by initializing the mock environment, registering test entities, and ensuring the testing directory is clear.
 		/// </summary>
 		[SetUp]
-		public void Start()
+		public override void Start()
 		{
+			base.Start();
+			
 			InitializeMockState();
 		}
 		
@@ -23,11 +26,12 @@ namespace SoftwareMonkeys.SiteStarter.State.Tests
 		/// Ends a test by disposing the mock test environment and deleting mock data.
 		/// </summary>
 		[TearDown]
-		public void End()
+		public override void End()
 		{
 			DisposeMockState();
+			
+			base.End();
 		}
-	
 		
 		/// <summary>
 		/// Initializes a mock state environment for use during testing.
@@ -50,10 +54,10 @@ namespace SoftwareMonkeys.SiteStarter.State.Tests
 		/// </summary>
 		/// <returns>The mock StateProvider ready for use.</returns>
 		public BaseStateProvider CreateMockState()
-        {
-        	BaseStateProvider config = new MockStateProvider(this);
-        	
-        	return config;
-        }
+		{
+			BaseStateProvider config = new MockStateProvider(this);
+			
+			return config;
+		}
 	}
 }

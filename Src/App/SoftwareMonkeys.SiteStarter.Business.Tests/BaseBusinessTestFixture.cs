@@ -10,9 +10,10 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 	public class BaseBusinessTestFixture : BaseDataTestFixture
 	{
 		[SetUp]
-		public new void Initialize()
+		public override void Start()
 		{
-			InitializeMockEntities();
+			base.Start();
+			
 			InitializeMockBusiness();
 		}
 		
@@ -37,7 +38,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			initializer.Initialize();
 		}
 		
-		public void InitializeMockBusiness()
+		public virtual void InitializeMockBusiness()
 		{
 			string businessAssemblyPath = Assembly.Load("SoftwareMonkeys.SiteStarter.Business").Location;
 			string businessTestsAssemblyPath = Assembly.Load("SoftwareMonkeys.SiteStarter.Business.Tests").Location;
