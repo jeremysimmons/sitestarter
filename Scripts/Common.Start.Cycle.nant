@@ -32,7 +32,7 @@
 	<include buildfile="Common.Jobs.BuildSolution.nant"/>
 	<include buildfile="Common.Jobs.BuildAssembly.nant"/>
 	<include buildfile="Common.Jobs.RunTests.nant"/>
-	<include buildfile="Common.Jobs.RunIntegrationTests.nant"/>
+	<include buildfile="Common.Jobs.RunFunctionalTests.nant"/>
 	<include buildfile="Common.Jobs.PrepareDeployment.nant"/>
 	<include buildfile="Common.Jobs.Release.nant"/>
 	<include buildfile="Common.Jobs.Reset.nant"/>
