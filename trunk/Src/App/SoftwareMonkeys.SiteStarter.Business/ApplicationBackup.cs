@@ -124,7 +124,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			string outputFile = String.Empty;
 			
-			using (LogGroup logGroup = LogGroup.Start("Backing up the application.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Backing up the application.", LogLevel.Debug))
 			{
 				// Export data to XML
 				Export();
@@ -253,7 +253,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		public void Suspend()
 		{
-			using (LogGroup logGroup = LogGroup.Start("Suspending the application (ready for update).", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Suspending the application (ready for update).", LogLevel.Debug))
 			{
 				DataAccess.Data.Suspend();
 				
