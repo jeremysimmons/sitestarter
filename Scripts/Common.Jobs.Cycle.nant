@@ -7,18 +7,18 @@
 		<!-- Import disabled because it's not working properly -->
 		<!--call target="Common.Jobs.ImportFiles"/-->
 
-		<call target="Common.Jobs.DetectVirtualDirectory"/>
-		<call target="Common.Jobs.ConfigureIIS"/>	
-		<call target="Common.Jobs.ConvertSeleniumToCSharp"/>
-		<call target="Common.Jobs.BuildSolution"/>	
-		<call target="Common.Jobs.CreateReleaseZips"/>	
-		<call target="Common.Jobs.RunTests"/>
+		<call target="Common.Jobs.DetectVirtualDirectory" failonerror="false"/>
+		<call target="Common.Jobs.ConfigureIIS" failonerror="false"/>	
+		<call target="Common.Jobs.ConvertSeleniumToCSharp" failonerror="false"/>
+		<call target="Common.Jobs.BuildSolution" failonerror="false"/>	
+		<call target="Common.Jobs.CreateReleaseZips" failonerror="false"/>	
+		<call target="Common.Jobs.RunTests" failonerror="false"/>
 		<property name="browser" value="firefox" />
-		<call target="Common.Jobs.RunFunctionalTests"/>
+		<call target="Common.Jobs.RunFunctionalTests" failonerror="false" />
 		<property name="browser" value="iexplore" />
-		<call target="Common.Jobs.RunFunctionalTests"/>
-		<call target="Common.Jobs.GenerateScreenshots"/>	
-		<call target="Common.Jobs.UploadZips"/>		
+		<call target="Common.Jobs.RunFunctionalTests" failonerror="false" />
+		<call target="Common.Jobs.GenerateScreenshots" failonerror="false" />	
+		<call target="Common.Jobs.UploadZips" failonerror="false" />		
 		<call target="Common.Jobs.VersionBuildReport"/>	
 		
 		<echo message="============================================="/>
