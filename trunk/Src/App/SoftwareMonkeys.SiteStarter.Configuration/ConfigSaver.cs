@@ -17,7 +17,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 		/// <param name="config">The configuration component to save to file.</param>
 		public virtual void Save(IConfig config)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Saving configuration file.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Saving configuration file.", LogLevel.Debug))
 			{
 				if (config == null)
 					throw new ArgumentNullException("config");

@@ -108,7 +108,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 		/// <param name="variation">The path variation applied to configuration files.</param>
 		static public void Initialize(string physicalApplicationPath, string variation)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Initializing the application configuration settings.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Initializing the application configuration settings.", LogLevel.Debug))
 			{
 				if (!IsInitialized)
 				{
