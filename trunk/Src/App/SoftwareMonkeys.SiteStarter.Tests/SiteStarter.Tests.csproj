@@ -89,6 +89,7 @@
     <Compile Include="Entities\TestTask.cs" />
     <Compile Include="Entities\TestUser.cs" />
     <Compile Include="Entities\Widget.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestUtilities.cs" />
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration\SiteStarter.Configuration.csproj">
       <Project>{4B83307F-8307-43EF-A176-8AB1CDA78264}</Project>
@@ -97,6 +98,10 @@
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Contracts\SiteStarter.Contracts.csproj">
       <Project>{518735AC-EFA2-4205-AE47-CF4664EE3061}</Project>
       <Name>SiteStarter.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Diagnostics\SiteStarter.Diagnostics.csproj">
+      <Project>{C3626F0A-DFD4-4EF2-8755-3532DE3712A4}</Project>
+      <Name>SiteStarter.Diagnostics</Name>
     </ProjectReference>
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Entities\SiteStarter.Entities.csproj">
       <Project>{3609F512-9E15-41C7-95AF-D1B3E7F93562}</Project>

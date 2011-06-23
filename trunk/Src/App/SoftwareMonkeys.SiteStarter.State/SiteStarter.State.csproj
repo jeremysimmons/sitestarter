@@ -58,6 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StateAccess.cs" />
     <Compile Include="StateCollection.cs" />
     <Compile Include="StateInitializer.cs" />

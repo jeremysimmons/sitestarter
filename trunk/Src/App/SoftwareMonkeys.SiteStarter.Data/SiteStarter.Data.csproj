@@ -104,6 +104,7 @@
     <Compile Include="IDataStore.cs" />
     <Compile Include="IDataUpdater.cs" />
     <Compile Include="IDataSchema.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyFilter.cs" />
     <Compile Include="ReferenceFilter.cs" />
     <Compile Include="ReferenceValidator.cs" />
