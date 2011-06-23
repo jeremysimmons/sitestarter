@@ -74,9 +74,13 @@
     
     void Application_BeginRequest(object sender, EventArgs e)
     {
+    	InitializeCore();
+    	
     	using (LogGroup logGroup = LogGroup.Start("Beginning application request: " + DateTime.Now.ToString(), NLog.LogLevel.Debug))
     	{
         	LogWriter.Debug("${Application.BeginRequest}");
+        	
+        	Initialize();
         	
             // Initialize the URL rewriter to take care of friendly URLs
             UrlRewriter.Initialize();
@@ -143,9 +147,11 @@
     
     public override void Dispose()
     {
-        Config.Dispose();
         DataAccess.Dispose(true);
+        Config.Dispose();
+        DiagnosticState.Dispose();
 
         base.Dispose();
     }
+    
 </script>
