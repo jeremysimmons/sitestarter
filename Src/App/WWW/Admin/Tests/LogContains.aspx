@@ -4,6 +4,7 @@
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Entities" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Configuration" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
 <%@ Import Namespace="System.Reflection" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.WebControls" %>
@@ -52,10 +53,12 @@ private bool LogContains(string query, string logContents)
 
 private string LoadLog()
 {
-	string path = Request.ApplicationPath + "/App_Data/Logs/" + DateTime.Now.Year + "-" + DateTime.Now.ToString("MM") + "-" + DateTime.Now.ToString("dd") + "/Log.xml";
+	string path = Request.ApplicationPath + "/App_Data/Logs/" + DateTime.Now.Year + "-" + DateTime.Now.Month + "-" + DateTime.Now.ToString("dd") + "/Log.xml";
 	path = Server.MapPath(path);
 	
 	string content = String.Empty;
+	
+	LogWriter.Dispose();
 	
 	using (StreamReader reader = new StreamReader(File.OpenRead(path)))
 	{

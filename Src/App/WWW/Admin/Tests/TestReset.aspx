@@ -15,8 +15,6 @@
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.State" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
 <script runat="server">
-public int TotalEntitiesDeleted = 0;
-public int TotalReferencesDeleted = 0;
 public int TotalStoresDeleted = 0;
 
 public string DataDirectoryPath
@@ -29,7 +27,7 @@ protected override void OnLoad(EventArgs e)
 	using (LogGroup logGroup = LogGroup.Start("Executing the test reset, to clear the test environment ready for a new test.", NLog.LogLevel.Debug))
 	{
 		using (TimeoutExtender extender = TimeoutExtender.NewMinutes(30)) // 30 minutes
-		{
+		{		
 			// TODO: Clean up
 	
 			DeleteDb4oFiles();
@@ -95,7 +93,7 @@ private void DeleteEntities()
 					//if (!CanSkipDelete(entity))
 						DataAccess.Data.Deleter.Delete(entity);
 						
-					TotalEntitiesDeleted++;
+				//	TotalEntitiesDeleted++;
 				}		
 				
 				EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences();
@@ -104,7 +102,7 @@ private void DeleteEntities()
 				{
 					DataAccess.Data.Deleter.Delete(reference);
 						
-					TotalReferencesDeleted++;
+				//	TotalReferencesDeleted++;
 				}		
 			}
 		}
@@ -173,10 +171,11 @@ private void DeleteLogs()
 {
 	string path = Server.MapPath(Request.ApplicationPath + "/App_Data/Logs");
 	
+	LogWriter.Dispose();
+	
 	if (Directory.Exists(path))
 		Directory.Delete(path, true);
 }
-
 
 </script>
 <html>
