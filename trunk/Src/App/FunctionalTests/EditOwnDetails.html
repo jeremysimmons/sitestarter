@@ -4,12 +4,12 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="http://localhost/SiteStarter/" />
-<title>RegisterPendingUser</title>
+<title>EditOwnAccount</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">RegisterApprovedUser</td></tr>
+<tr><td rowspan="1" colspan="3">EditOwnAccount</td></tr>
 </thead><tbody>
 <tr>
 	<td>setTimeout</td>
@@ -38,7 +38,7 @@
 </tr>
 <tr>
 	<td>assertTextPresent</td>
-	<td>You are signed in as</td>
+	<td>Settings</td>
 	<td></td>
 </tr>
 <tr>
@@ -47,13 +47,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>assertTextNotPresent</td>
-	<td>Exception</td>
-	<td></td>
-</tr>
-<tr>
-	<td>assertTextNotPresent</td>
-	<td>aren't authorised</td>
+	<td>assertTextPresent</td>
+	<td>User Settings</td>
 	<td></td>
 </tr>
 <tr>
@@ -62,13 +57,28 @@
 	<td></td>
 </tr>
 <tr>
-	<td>uncheck</td>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>check</td>
 	<td>ctl00_Body_ctl00_AutoApproveNewUsers</td>
 	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
 	<td>ctl00_Body_ctl00_UpdateButton</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>successfully</td>
 	<td></td>
 </tr>
 <tr>
@@ -82,14 +92,9 @@
 	<td></td>
 </tr>
 <tr>
-	<td>waitForPageToLoad</td>
-	<td></td>
-	<td></td>
-</tr>
-<tr>
 	<td>type</td>
 	<td>ctl00_Body_ctl00_FirstName</td>
-	<td>Pending</td>
+	<td>Approved</td>
 </tr>
 <tr>
 	<td>type</td>
@@ -99,12 +104,12 @@
 <tr>
 	<td>type</td>
 	<td>ctl00_Body_ctl00_Email</td>
-	<td>pendinguser@softwaremonkeys.net</td>
+	<td>approveduser@softwaremonkeys.net</td>
 </tr>
 <tr>
 	<td>type</td>
 	<td>ctl00_Body_ctl00_Username</td>
-	<td>pendinguser</td>
+	<td>testuser</td>
 </tr>
 <tr>
 	<td>type</td>
@@ -133,7 +138,7 @@
 </tr>
 <tr>
 	<td>assertTextPresent</td>
-	<td>Pending Approval</td>
+	<td>My Details</td>
 	<td></td>
 </tr>
 <tr>
@@ -143,17 +148,112 @@
 </tr>
 <tr>
 	<td>assertTextPresent</td>
-	<td>Sign In</td>
+	<td>approveduser@softwaremonkeys.net</td>
 	<td></td>
 </tr>
 <tr>
-	<td>open</td>
-	<td>Admin/tests/testreset.aspx</td>
+	<td>clickAndWait</td>
+	<td>//input[@id='ctl00_Body_ctl00_ViewEditButton']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForPageToLoad</td>
 	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextNotPresent</td>
+	<td>Exception</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>First Name:</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ctl00_Body_ctl00_FirstName</td>
+	<td>NewFirst</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ctl00_Body_ctl00_LastName</td>
+	<td>NewLast</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ctl00_Body_ctl00_Email</td>
+	<td>new@softwaremonkeys.net</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>ctl00_Body_ctl00_UpdateButton</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>My Details</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>updated successfully</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>NewFirst</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>NewLast</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>new@softwaremonkeys.net</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>SignOutLink</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ctl00_Body_ctl00_Login_UserName</td>
+	<td>testuser</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ctl00_Body_ctl00_Login_Password</td>
+	<td>pass</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>ctl00_Body_ctl00_Login_LoginButton</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Sign Out</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>My Details</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>You are signed in as:</td>
 	<td></td>
 </tr>
 </tbody></table>
