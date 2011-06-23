@@ -13,7 +13,7 @@
 		<call target="Common.Jobs.BuildSolution"/>	
 		<call target="Common.Jobs.CreateReleaseZips"/>	
 		<call target="Common.Jobs.RunTests"/>	
-		<call target="Common.Jobs.RunIntegrationTests"/>
+		<call target="Common.Jobs.RunFunctionalTests"/>
 		<call target="Common.Jobs.GenerateScreenshots"/>	
 		<call target="Common.Jobs.UploadZips"/>		
 		<call target="Common.Jobs.VersionBuildReport"/>	
