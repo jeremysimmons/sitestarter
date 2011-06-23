@@ -11,7 +11,6 @@
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Entities" %>
-<%@ Import Namespace="NLog" %>
 <script runat="server">
 
     void Application_Start(object sender, EventArgs e) 
