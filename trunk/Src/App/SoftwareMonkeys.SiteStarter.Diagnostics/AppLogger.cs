@@ -89,9 +89,21 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 
 
 		[Obsolete("Use LogGroup.Start(...) instead.")]
+		static public LogGroup StartGroup(string summary, NLog.LogLevel logLevel)
+		{
+			return StartGroup(summary, LogWriter.ConvertLevel(logLevel));
+		}
+		
+		[Obsolete("Use LogGroup.Start(...) instead.")]
 		static public LogGroup StartGroup(string summary, LogLevel logLevel)
 		{
 			return LogGroup.Start(summary, logLevel);
+		}
+
+		[Obsolete("Use LogGroup.Start(...) instead.")]
+		static public LogGroup StartGroup(string summary, NLog.LogLevel logLevel, MethodBase callingMethod)
+		{
+			return StartGroup(summary, LogWriter.ConvertLevel(logLevel), callingMethod);
 		}
 
 		[Obsolete("Use LogGroup.Start(...) instead.")]
