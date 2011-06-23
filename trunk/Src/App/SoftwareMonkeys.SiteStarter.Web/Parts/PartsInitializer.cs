@@ -177,6 +177,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 					{
 						LogWriter.Debug("Is not mapped. Scanning from type attributes.");
 						
+						CreateInfoDirectory(); // Existence of this directory indicates that the parts have been mapped even if empty
+						
 						parts = FindParts();
 						
 						SaveInfoToFile(parts);
@@ -191,10 +193,21 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 						
 						Initialize(parts);
 					}
+					
 				}
 				else
 					LogWriter.Debug("State is not initialized. Skipping.");
 			}
+		}
+		
+		/// <summary>
+		/// Creates the directory used to hold part info files.
+		/// </summary>
+		public void CreateInfoDirectory()
+		{
+			// Create the parts info directory
+			if (!Directory.Exists(FileNamer.PartsInfoDirectoryPath))
+				Directory.CreateDirectory(FileNamer.PartsInfoDirectoryPath);
 		}
 		
 		/// <summary>
@@ -253,7 +266,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		{
 			string directory = FileNamer.PartsInfoDirectoryPath;
 			
-			return (Directory.Exists(directory) && Directory.GetFiles(directory).Length > 0);
+			return (Directory.Exists(directory));
 		}
 	}
 	
