@@ -54,7 +54,8 @@ namespace SoftwareMonkeys.SiteStarter.Functional.iexplore.Tests
 			selenium.WaitForPageToLoad("30000");
 			selenium.Click("link=User Settings");
 			selenium.WaitForPageToLoad("30000");
-			if (selenium.IsChecked("ctl00_Body_ctl00_EnableUserRegistration"))\n\t\t\tselenium.Click("ctl00_Body_ctl00_EnableUserRegistration");
+			if (selenium.IsChecked("ctl00_Body_ctl00_EnableUserRegistration"))
+			selenium.Click("ctl00_Body_ctl00_EnableUserRegistration");
 			selenium.Click("//input[@value='Update']");
 			selenium.WaitForPageToLoad("30000");
 			Assert.IsTrue(selenium.IsTextPresent("updated successfully"), "Text 'updated successfully' not found when it should be.");

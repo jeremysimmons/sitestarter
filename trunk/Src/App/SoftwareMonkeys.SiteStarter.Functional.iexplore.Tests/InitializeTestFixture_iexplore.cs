@@ -46,7 +46,7 @@ namespace SoftwareMonkeys.SiteStarter.Functional.iexplore.Tests
 		public void Test_Initialize()
 		{
 			selenium.SetTimeout("2000000");
-			selenium.Open("Admin/tests/testreset.aspx?Log=true&amp;Config=true&amp;Test=Initialize");
+			selenium.Open("Admin/tests/testreset.aspx?Log=true&amp;Config=true");
 			selenium.WaitForPageToLoad("30000");
 			Assert.IsFalse(selenium.IsTextPresent("Exception"), "Text 'Exception' found when it shouldn't be.");
 			selenium.Open("Admin/InitializeCache.aspx");

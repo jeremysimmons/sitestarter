@@ -46,7 +46,7 @@ namespace SoftwareMonkeys.SiteStarter.Functional.firefox.Tests
 		public void Test_Setup()
 		{
 			selenium.SetTimeout("100000");
-			selenium.Open("Admin/tests/testreset.aspx?Log=true&amp;Config=true&amp;Test=Setup");
+			selenium.Open("Admin/tests/testreset.aspx?Log=true&amp;Config=true");
 			selenium.WaitForPageToLoad("30000");
 			Assert.IsFalse(selenium.IsTextPresent("Exception"), "Text 'Exception' found when it shouldn't be.");
 			selenium.Open("Admin/QuickSetup.aspx");

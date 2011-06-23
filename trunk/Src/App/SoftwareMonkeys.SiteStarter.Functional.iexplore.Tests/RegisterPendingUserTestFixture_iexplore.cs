@@ -57,7 +57,8 @@ namespace SoftwareMonkeys.SiteStarter.Functional.iexplore.Tests
 			Assert.IsFalse(selenium.IsTextPresent("aren't authorised"), "Text 'aren't authorised' found when it shouldn't be.");
 			selenium.Click("link=User Settings");
 			selenium.WaitForPageToLoad("30000");
-			if (selenium.IsChecked("ctl00_Body_ctl00_AutoApproveNewUsers"))\n\t\t\tselenium.Click("ctl00_Body_ctl00_AutoApproveNewUsers");
+			if (selenium.IsChecked("ctl00_Body_ctl00_AutoApproveNewUsers"))
+			selenium.Click("ctl00_Body_ctl00_AutoApproveNewUsers");
 			selenium.Click("ctl00_Body_ctl00_UpdateButton");
 			selenium.WaitForPageToLoad("30000");
 			selenium.Click("SignOutLink");

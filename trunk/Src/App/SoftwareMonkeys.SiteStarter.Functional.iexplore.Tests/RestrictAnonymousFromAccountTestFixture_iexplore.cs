@@ -50,11 +50,13 @@ namespace SoftwareMonkeys.SiteStarter.Functional.iexplore.Tests
 			selenium.WaitForPageToLoad("30000");
 			selenium.Open("Admin/QuickSetup.aspx");
 			selenium.WaitForPageToLoad("30000");
-			while (!selenium.IsTextPresent("Sign Out"))\n\t\t\tThread.Sleep(1000);
+			while (!selenium.IsTextPresent("Sign Out"))
+			Thread.Sleep(1000);
 			selenium.Click("SignOutLink");
 			selenium.WaitForPageToLoad("30000");
 			selenium.WaitForPageToLoad("30000");
-			while (!selenium.IsTextPresent("Sign In"))\n\t\t\tThread.Sleep(1000);
+			while (!selenium.IsTextPresent("Sign In"))
+			Thread.Sleep(1000);
 			selenium.Open("User-Details.aspx");
 			selenium.WaitForPageToLoad("30000");
 			Assert.IsTrue(selenium.IsTextPresent("not signed in"), "Text 'not signed in' not found when it should be.");
