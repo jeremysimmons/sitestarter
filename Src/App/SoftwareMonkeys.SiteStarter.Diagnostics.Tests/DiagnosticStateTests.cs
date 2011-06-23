@@ -43,7 +43,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics.Tests
 			// Load the log
 			string content = LoadLogContent(LogFileWriter.LogFilePath);
 			
-			int expectedLength = 1092;
+			int expectedLength = 1095;
 			
 			Assert.IsTrue(content.IndexOf("Test group") > -1, "Didn't find first group.");
 			Assert.IsTrue(content.IndexOf("Another group") > -1, "Didn't find second group.");

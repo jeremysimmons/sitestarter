@@ -187,9 +187,6 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 				
 				StateAccess.State.RemoveApplication(LogFileWriter.LogFileWriterKey);
 			}
-			
-			// TODO: Check if needed. Should be obsolete
-			//LogFileWriter.DisposeStreamWriter();
 		}
 
 	}
