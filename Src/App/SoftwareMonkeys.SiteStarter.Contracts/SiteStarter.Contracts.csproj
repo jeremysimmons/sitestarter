@@ -104,6 +104,7 @@
     <Compile Include="Entities\IUserRole.cs" />
     <Compile Include="IAppComponent.cs" />
     <Compile Include="IO\IFileMapper.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="State\IStateProvider.cs" />
     <Compile Include="Web\IControllable.cs" />
     <Compile Include="Web\ISiteMap.cs" />
@@ -114,6 +115,7 @@
     <Folder Include="Business\Security" />
     <Folder Include="IO" />
     <Folder Include="Data" />
+    <Folder Include="Properties" />
     <Folder Include="State" />
     <Folder Include="Web" />
   </ItemGroup>
