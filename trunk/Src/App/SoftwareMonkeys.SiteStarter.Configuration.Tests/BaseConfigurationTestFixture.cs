@@ -13,6 +13,22 @@ namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
 	/// </summary>
 	public abstract class BaseConfigurationTestFixture : BaseDiagnosticsTestFixture
 	{
+		[SetUp]
+		public override void Start()
+		{
+			base.Start();
+			
+			InitializeMockConfiguration();
+		}
+		
+		[TearDown]
+		public override void End()
+		{
+			DisposeMockConfiguration();
+			
+			base.End();
+		}
+		
 		/// <summary>
 		/// Creates a mock AppConfig object for use while testing.
 		/// </summary>

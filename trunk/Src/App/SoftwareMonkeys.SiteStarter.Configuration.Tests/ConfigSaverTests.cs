@@ -7,23 +7,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
 {
 	[TestFixture]
 	public class ConfigSaverTests : BaseConfigurationTestFixture
-	{
-		[SetUp]
-		public void Start()
-		{
-			TestUtilities.ClearTestingDirectory(this);
-			InitializeMockState();
-			InitializeMockConfiguration();
-		}
-		
-		[TearDown]
-		public void End()
-		{
-			DisposeMockConfiguration();
-			DisposeMockState();
-			TestUtilities.ClearTestingDirectory(this);
-		}
-		
+	{		
 		[Test]
 		public void Test_Save()
 		{

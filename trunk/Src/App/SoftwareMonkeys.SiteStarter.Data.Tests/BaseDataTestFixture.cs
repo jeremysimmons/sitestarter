@@ -17,12 +17,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		/// Starts a test by initializing the mock environment, registering test entities, and ensuring the testing directory is clear.
 		/// </summary>
 		[SetUp]
-		public new void Start()
+		public override void Start()
 		{
-			TestUtilities.ClearTestingDirectory(this);
-			InitializeMockState();
-			InitializeMockConfiguration();
-			InitializeMockEntities();
+			base.Start();
+			
 			InitializeMockData();
 		}
 		
@@ -30,14 +28,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		/// Ends a test by disposing the mock test environment and deleting mock data.
 		/// </summary>
 		[TearDown]
-		public void End()
+		public override void End()
 		{
 			DisposeMockData();
-			DisposeMockEntities();
-			DisposeMockConfiguration();
-			DisposeMockState();
-			TestUtilities.ClearTestingDirectory(this);
-			TestUtilities.ClearTestEntities(this);
+			
+			base.End();
 		}
 		
 		

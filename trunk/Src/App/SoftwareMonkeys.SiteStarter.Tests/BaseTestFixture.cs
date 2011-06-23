@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Reflection;
 using NUnit.Framework;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.State;
 
 namespace SoftwareMonkeys.SiteStarter.Tests
@@ -9,16 +11,22 @@ namespace SoftwareMonkeys.SiteStarter.Tests
 	/// </summary>
 	public abstract class BaseTestFixture
 	{
+		public string TestName = String.Empty;
+		
 		[SetUp]
-		public void Start()
+		public virtual void Start()
 		{
+			TestName = TestContext.CurrentContext.Test.Name;
+			
 			TestUtilities.ClearTestingDirectory(this);
+			
 			// Create a new ID for the current test
 			testID = Guid.NewGuid();
+			
 		}
 		
 		[TearDown]
-		public void End()
+		public virtual void End()
 		{
 			TestUtilities.ClearTestingDirectory(this);
 		}
