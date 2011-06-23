@@ -40,6 +40,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiteStarter.Data.Db4o.Tests
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiteStarter.State.Tests", "SoftwareMonkeys.SiteStarter.State.Tests\SiteStarter.State.Tests.csproj", "AD977DB1-879A-476C-A74A-FC2E0EC98F0A"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiteStarter.Functional.Tests", "SoftwareMonkeys.SiteStarter.Functional.Tests\SiteStarter.Functional.Tests.csproj", "63E8974F-2E08-4198-A28B-EB69B18B32E5"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiteStarter.Functional.iexplore.Tests", "SoftwareMonkeys.SiteStarter.Functional.iexplore.Tests\SiteStarter.Functional.iexplore.Tests.csproj", "66EB50E2-290C-4ABA-9D38-C3FCBA357ED2"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiteStarter.Functional.firefox.Tests", "SoftwareMonkeys.SiteStarter.Functional.firefox.Tests\SiteStarter.Functional.firefox.Tests.csproj", "C6A1D908-96A5-4749-B0E0-64BD9DA0299C"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
@@ -278,6 +284,42 @@ Global
 		AD977DB1-879A-476C-A74A-FC2E0EC98F0A.Release|Any CPU.ActiveCfg = Release|Any CPU
 		AD977DB1-879A-476C-A74A-FC2E0EC98F0A.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		AD977DB1-879A-476C-A74A-FC2E0EC98F0A.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		63E8974F-2E08-4198-A28B-EB69B18B32E5.Debug|.NET.Build.0 = Debug|Any CPU
+		63E8974F-2E08-4198-A28B-EB69B18B32E5.Debug|.NET.ActiveCfg = Debug|Any CPU
+		63E8974F-2E08-4198-A28B-EB69B18B32E5.Debug|Any CPU.Build.0 = Debug|Any CPU
+		63E8974F-2E08-4198-A28B-EB69B18B32E5.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		63E8974F-2E08-4198-A28B-EB69B18B32E5.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		63E8974F-2E08-4198-A28B-EB69B18B32E5.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		63E8974F-2E08-4198-A28B-EB69B18B32E5.Release|.NET.Build.0 = Release|Any CPU
+		63E8974F-2E08-4198-A28B-EB69B18B32E5.Release|.NET.ActiveCfg = Release|Any CPU
+		63E8974F-2E08-4198-A28B-EB69B18B32E5.Release|Any CPU.Build.0 = Release|Any CPU
+		63E8974F-2E08-4198-A28B-EB69B18B32E5.Release|Any CPU.ActiveCfg = Release|Any CPU
+		63E8974F-2E08-4198-A28B-EB69B18B32E5.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		63E8974F-2E08-4198-A28B-EB69B18B32E5.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		66EB50E2-290C-4ABA-9D38-C3FCBA357ED2.Debug|.NET.Build.0 = Debug|Any CPU
+		66EB50E2-290C-4ABA-9D38-C3FCBA357ED2.Debug|.NET.ActiveCfg = Debug|Any CPU
+		66EB50E2-290C-4ABA-9D38-C3FCBA357ED2.Debug|Any CPU.Build.0 = Debug|Any CPU
+		66EB50E2-290C-4ABA-9D38-C3FCBA357ED2.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		66EB50E2-290C-4ABA-9D38-C3FCBA357ED2.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		66EB50E2-290C-4ABA-9D38-C3FCBA357ED2.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		66EB50E2-290C-4ABA-9D38-C3FCBA357ED2.Release|.NET.Build.0 = Release|Any CPU
+		66EB50E2-290C-4ABA-9D38-C3FCBA357ED2.Release|.NET.ActiveCfg = Release|Any CPU
+		66EB50E2-290C-4ABA-9D38-C3FCBA357ED2.Release|Any CPU.Build.0 = Release|Any CPU
+		66EB50E2-290C-4ABA-9D38-C3FCBA357ED2.Release|Any CPU.ActiveCfg = Release|Any CPU
+		66EB50E2-290C-4ABA-9D38-C3FCBA357ED2.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		66EB50E2-290C-4ABA-9D38-C3FCBA357ED2.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		C6A1D908-96A5-4749-B0E0-64BD9DA0299C.Debug|.NET.Build.0 = Debug|Any CPU
+		C6A1D908-96A5-4749-B0E0-64BD9DA0299C.Debug|.NET.ActiveCfg = Debug|Any CPU
+		C6A1D908-96A5-4749-B0E0-64BD9DA0299C.Debug|Any CPU.Build.0 = Debug|Any CPU
+		C6A1D908-96A5-4749-B0E0-64BD9DA0299C.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		C6A1D908-96A5-4749-B0E0-64BD9DA0299C.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		C6A1D908-96A5-4749-B0E0-64BD9DA0299C.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		C6A1D908-96A5-4749-B0E0-64BD9DA0299C.Release|.NET.Build.0 = Release|Any CPU
+		C6A1D908-96A5-4749-B0E0-64BD9DA0299C.Release|.NET.ActiveCfg = Release|Any CPU
+		C6A1D908-96A5-4749-B0E0-64BD9DA0299C.Release|Any CPU.Build.0 = Release|Any CPU
+		C6A1D908-96A5-4749-B0E0-64BD9DA0299C.Release|Any CPU.ActiveCfg = Release|Any CPU
+		C6A1D908-96A5-4749-B0E0-64BD9DA0299C.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		C6A1D908-96A5-4749-B0E0-64BD9DA0299C.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
