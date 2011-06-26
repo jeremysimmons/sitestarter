@@ -92,7 +92,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		/// <returns>An array of the the parts found in the directory.</returns>
 		public PartInfo[] LoadInfoFromDirectory()
 		{
-			return LoadInfoFromDirectory(false);
+			return LoadInfoFromDirectory(true);
 		}
 		
 		/// <summary>
