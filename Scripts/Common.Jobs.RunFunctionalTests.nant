@@ -45,9 +45,6 @@
 			<if test="${directory::exists(path::combine(Project.TestResultsDirectory, 'xml'))}">
 				<delete dir="${path::combine(Project.TestResultsDirectory, 'xml')}"/>
 			</if>
-			<if test="${directory::exists(path::combine(Project.TestResultsDirectory, 'Logs'))}">
-				<delete dir="${path::combine(Project.TestResultsDirectory, 'Logs')}"/>
-			</if>
 		
 			<!-- Create the output directories -->
 			<if test="${directory::exists(path::combine(Project.TestResultsDirectory, 'xml')) == false}">
@@ -88,9 +85,10 @@
 			<echo message="Results path: ${resultsPath}"/>
 			<echo message="Test library path: ${testLibraryPath}"/>
 
-			<exec program="${Project.LibDirectory}\nunit-console" basedir="${Project.LibDirectory}" failonerror="false">
+			<exec program="${Project.LibDirectory}\nunit-console" basedir="${Project.LibDirectory}" failonerror="false" verbose="true">
 				<arg value="${testLibraryPath}" />
 				<arg value="/xml:${resultsPath}" /><!-- IMPORTANT: Ensure 'resultsPath' does NOT have ANY forward slashes (\) because it can cause get an illegal character error -->
+				<arg value="/trace:Info" />
 			</exec>
 			
 			<property name="htmlResultsPath" value="${baseHtmlResultsPath}\${string::replace(Solution.BaseNamespace, '.', '-')}-${string::replace(testName, '.', '-')}-Tests" />
