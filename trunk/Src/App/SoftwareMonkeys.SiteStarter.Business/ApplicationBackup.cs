@@ -156,7 +156,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				}
 				
 				LogWriter.Info("Backup completed: " + DateTime.Now.ToString());
-				LogWriter.Info("${AutoBackup}");
+				LogWriter.Info("${BackupComplete}");
 			}
 			
 			return outputFile;
