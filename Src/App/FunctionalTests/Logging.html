@@ -4,12 +4,12 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="http://localhost/SiteStarter/" />
-<title>TestBreakableLogging</title>
+<title>Logging</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">TestBreakableLogging</td></tr>
+<tr><td rowspan="1" colspan="3">Logging</td></tr>
 </thead><tbody>
 <tr>
 	<td>setTimeout</td>
@@ -18,7 +18,7 @@
 </tr>
 <tr>
 	<td>open</td>
-	<td>Admin/Tests/TestReset.aspx?Log=true</td>
+	<td>Admin/tests/testreset.aspx?Log=true&amp;Config=true</td>
 	<td></td>
 </tr>
 <tr>
@@ -32,18 +32,13 @@
 	<td></td>
 </tr>
 <tr>
-	<td>waitForPageToLoad</td>
-	<td></td>
+	<td>assertTextNotPresent</td>
+	<td>Exception</td>
 	<td></td>
 </tr>
 <tr>
 	<td>open</td>
-	<td>Admin/Tests/TestBreakableLogging.aspx</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForPageToLoad</td>
-	<td></td>
+	<td>Admin/tests/TestLogging.aspx</td>
 	<td></td>
 </tr>
 <tr>
@@ -53,17 +48,7 @@
 </tr>
 <tr>
 	<td>open</td>
-	<td></td>
-	<td></td>
-</tr>
-<tr>
-	<td>assertTextNotPresent</td>
-	<td>Exception</td>
-	<td></td>
-</tr>
-<tr>
-	<td>open</td>
-	<td>Admin/Tests/LogContains.aspx?Query=Test group %231</td>
+	<td>Admin/tests/LogContains.aspx?Query=Test group %231</td>
 	<td></td>
 </tr>
 <tr>
@@ -78,7 +63,7 @@
 </tr>
 <tr>
 	<td>open</td>
-	<td>Admin/Tests/LogContains.aspx?Query=Test group %232</td>
+	<td>Admin/tests/LogContains.aspx?Query=Test entry %231</td>
 	<td></td>
 </tr>
 <tr>
@@ -93,7 +78,7 @@
 </tr>
 <tr>
 	<td>open</td>
-	<td>Admin/Tests/LogContains.aspx?Query=Test group %233</td>
+	<td>Admin/tests/LogContains.aspx?Query=Test group %232</td>
 	<td></td>
 </tr>
 <tr>
@@ -108,22 +93,7 @@
 </tr>
 <tr>
 	<td>open</td>
-	<td>Admin/Tests/LogContains.aspx?Query=Test entry %231</td>
-	<td></td>
-</tr>
-<tr>
-	<td>assertTextNotPresent</td>
-	<td>Exception</td>
-	<td></td>
-</tr>
-<tr>
-	<td>assertTextPresent</td>
-	<td>LogContains=True</td>
-	<td></td>
-</tr>
-<tr>
-	<td>open</td>
-	<td>Admin/Tests/LogContains.aspx?Query=Test entry %232</td>
+	<td>Admin/tests/LogContains.aspx?Query=Test entry %232</td>
 	<td></td>
 </tr>
 <tr>
