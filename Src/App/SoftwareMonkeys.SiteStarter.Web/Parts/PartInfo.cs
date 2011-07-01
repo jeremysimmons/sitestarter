@@ -52,16 +52,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 			set { partFilePath = value; }
 		}
 		
-		private PartFormat format = PartFormat.Html;
-		/// <summary>
-		/// Gets/sets the format of the part output.
-		/// </summary>
-		public PartFormat Format
-		{
-			get { return format; }
-			set { format = value; }
-		}
-		
 		private PartLoader loader;
 		/// <summary>
 		/// Gets the part loader.
