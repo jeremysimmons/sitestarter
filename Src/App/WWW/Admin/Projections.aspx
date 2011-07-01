@@ -55,6 +55,15 @@ private bool CanView(ProjectionInfo info)
 			Action
 		</th>
 		<th>
+			Format
+		</th>
+		<th>
+			Title
+		</th>
+		<th>
+			Category
+		</th>
+		<th>
 			Folder
 		</th>
 		<th>	
@@ -71,6 +80,15 @@ private bool CanView(ProjectionInfo info)
 		</td>
 		<td>
 			<%= projection.Action %>
+		</td>
+		<td>
+			<%= projection.Format.ToString() %>
+		</td>
+		<td>
+			<%= projection.MenuTitle %>
+		</td>
+		<td>
+			<%= projection.MenuCategory %>
 		</td>
 		<td>
 			/<%= Path.GetDirectoryName(projection.ProjectionFilePath).Replace(@"\", "/").Trim('/') %>/
