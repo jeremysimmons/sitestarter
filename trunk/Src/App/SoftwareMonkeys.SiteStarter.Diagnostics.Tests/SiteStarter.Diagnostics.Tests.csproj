@@ -111,7 +111,6 @@
     </ProjectReference>
     <Compile Include="BaseDiagnosticsTestFixture.cs" />
     <Compile Include="DiagnosticStateTests.cs" />
-    <Compile Include="LogFileWriterTests.cs" />
     <Compile Include="LogGroupTests.cs" />
     <Compile Include="LogSettingsManagerTests.cs" />
     <Compile Include="LogSupervisorTests.cs" />
