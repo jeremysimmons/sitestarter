@@ -12,7 +12,7 @@ using OpenQA.Selenium.Remote;
 namespace SoftwareMonkeys.SiteStarter.Functional.iexplore.Tests
 {
 	[TestFixture]
-	public class AutoBackupTestFixture_iexplore : SoftwareMonkeys.SiteStarter.Functional.Tests.BaseFunctionalTestFixture
+	public class LoggingTestFixture_iexplore : SoftwareMonkeys.SiteStarter.Functional.Tests.BaseFunctionalTestFixture
 	{
 		private ISelenium selenium;
 		private StringBuilder verificationErrors;
@@ -43,19 +43,27 @@ namespace SoftwareMonkeys.SiteStarter.Functional.iexplore.Tests
 		}
 		
 		[Test]
-		public void Test_AutoBackup()
+		public void Test_Logging()
 		{
 			selenium.SetTimeout("1000000");
 			selenium.Open("Admin/tests/testreset.aspx?Log=true&amp;Config=true");
 			selenium.WaitForPageToLoad("30000");
 			selenium.Open("Admin/QuickSetup.aspx");
 			Assert.IsFalse(selenium.IsTextPresent("Exception"), "Text 'Exception' found when it shouldn't be.");
-			selenium.Open("");
+			selenium.Open("Admin/tests/TestLogging.aspx");
 			Assert.IsFalse(selenium.IsTextPresent("Exception"), "Text 'Exception' found when it shouldn't be.");
-			Thread.Sleep(10000);
-			selenium.Open("Admin/tests/LogContains.aspx?Query=%3CData%3E${BackupComplete}%3C/Data%3E");
+			selenium.Open("Admin/tests/LogContains.aspx?Query=Test group %231");
+			Assert.IsFalse(selenium.IsTextPresent("Exception"), "Text 'Exception' found when it shouldn't be.");
 			Assert.IsTrue(selenium.IsTextPresent("LogContains=True"), "Text 'LogContains=True' not found when it should be.");
-			Assert.IsTrue(selenium.IsTextPresent("FoundTotal=1"), "Text 'FoundTotal=1' not found when it should be.");
+			selenium.Open("Admin/tests/LogContains.aspx?Query=Test entry %231");
+			Assert.IsFalse(selenium.IsTextPresent("Exception"), "Text 'Exception' found when it shouldn't be.");
+			Assert.IsTrue(selenium.IsTextPresent("LogContains=True"), "Text 'LogContains=True' not found when it should be.");
+			selenium.Open("Admin/tests/LogContains.aspx?Query=Test group %232");
+			Assert.IsFalse(selenium.IsTextPresent("Exception"), "Text 'Exception' found when it shouldn't be.");
+			Assert.IsTrue(selenium.IsTextPresent("LogContains=True"), "Text 'LogContains=True' not found when it should be.");
+			selenium.Open("Admin/tests/LogContains.aspx?Query=Test entry %232");
+			Assert.IsFalse(selenium.IsTextPresent("Exception"), "Text 'Exception' found when it shouldn't be.");
+			Assert.IsTrue(selenium.IsTextPresent("LogContains=True"), "Text 'LogContains=True' not found when it should be.");
 
 		}
 
