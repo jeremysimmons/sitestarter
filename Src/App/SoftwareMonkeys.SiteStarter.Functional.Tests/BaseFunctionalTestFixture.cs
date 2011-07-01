@@ -7,13 +7,14 @@ using NUnit.Framework;
 using SoftwareMonkeys.SiteStarter.Web.Tests;
 using System.IO;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using SoftwareMonkeys.SiteStarter.Diagnostics.Tests;
 
 namespace SoftwareMonkeys.SiteStarter.Functional.Tests
 {
 	/// <summary>
 	/// 
 	/// </summary>
-	public class BaseFunctionalTestFixture : BaseWebTestFixture
+	public class BaseFunctionalTestFixture : BaseDiagnosticsTestFixture
 	{
 		public BaseFunctionalTestFixture()
 		{
@@ -48,7 +49,7 @@ namespace SoftwareMonkeys.SiteStarter.Functional.Tests
 		}
 		
 		public void ClearAppData()
-		{			
+		{
 			string dataDirectory = GetWWWDirectory() + Path.DirectorySeparatorChar + "App_Data";
 			
 			ClearData(dataDirectory);
@@ -58,26 +59,19 @@ namespace SoftwareMonkeys.SiteStarter.Functional.Tests
 		
 		public void ClearData(string dataDirectory)
 		{
-			using (Batch batch = BatchState.StartBatch())
+			if (DataAccess.IsInitialized)
 			{
-				foreach (IEntity entity in DataAccess.Data.Indexer.GetEntities())
-					DataAccess.Data.Deleter.Delete(entity);
+				using (Batch batch = BatchState.StartBatch())
+				{
+					foreach (IEntity entity in DataAccess.Data.Indexer.GetEntities())
+						DataAccess.Data.Deleter.Delete(entity);
+				}
 			}
-			
-			// TODO: Clean up
-			//DataAccess.Dispose(true, true);
-			
-			//foreach (string file in Directory.GetFiles(dataDirectory, "*.db4o"))
-			//{
-			//	File.Delete(file);
-			//}
 		}
 		
 		public void ClearLogs(string dataDirectory)
 		{
 			string logsDirectory = dataDirectory + Path.DirectorySeparatorChar + "Logs";
-			
-			LogWriter.Dispose();
 			
 			if (Directory.Exists(logsDirectory))
 				Directory.Delete(logsDirectory, true);
@@ -100,10 +94,6 @@ namespace SoftwareMonkeys.SiteStarter.Functional.Tests
 			string subDir = "Src/App/WWW/";
 			
 			string stepUp = "/";
-			
-			// TODO: Clean up
-			// If the current directory is within an assembly bin directory
-			//if (cd.IndexOf(GetType().Assembly.GetName().Name.Replace(".", "-")) > -1)
 			
 			// If the current directory is within the /src/ directory
 			if (cd.ToLower().IndexOf(Path.DirectorySeparatorChar + "src" + Path.DirectorySeparatorChar) > -1)
@@ -128,8 +118,7 @@ namespace SoftwareMonkeys.SiteStarter.Functional.Tests
 				+ "Logs";
 			
 			string reportDirectory = GetLogReportDirectory();
-			// TODO: Clean up
-			//throw new Exception(inputDirectory + " - " + reportDirectory);
+
 			LogReporter reporter = new LogReporter(inputDirectory, reportDirectory, "AppLog.xml");
 			reporter.Report(GetType().Name + Path.DirectorySeparatorChar + TestName);
 		}
