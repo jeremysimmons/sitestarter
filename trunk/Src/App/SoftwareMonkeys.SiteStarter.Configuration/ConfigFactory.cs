@@ -32,7 +32,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 			
 			T config = default(T);
 			
-			using (LogGroup logGroup = LogGroup.Start("Loading configuration file: " + configPath))
+			using (LogGroup logGroup = LogGroup.StartDebug("Loading configuration file: " + configPath))
 			{
 
 				if (!File.Exists(configPath))
