@@ -117,7 +117,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			string variation = String.Empty;
 			
 			// If running on a local machine the variation is "local"
-			if (uri.Host == "localhost" || uri.Host == "127.0.0.1")
+			if (uri.Host == "localhost" || uri.Host == "127.0.0.1" || uri.Host == "10.0.0.1")
 				variation = "local";
 			// If running on a staging site the variation is "staging"
 			else if (uri.ToString().ToLower().IndexOf("staging") > -1)
