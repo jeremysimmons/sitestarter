@@ -73,14 +73,31 @@
 		        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
 		    			</namespaces>
 		    	</xmlpeek>
-				    	
+				
+				<property name="url" value="http://localhost/${Solution.VirtualDirectoryName + Screenshot.InitializationPath}" />
+					
+				<property name="queryStrings" value="" />
+					
+				<if test="${string::index-of(url, '?') == -1}">
+					<property name="queryStrings" value="?" />		
+				</if>
+				<if test="${string::index-of(url, '?') > -1}">
+					<property name="queryStrings" value="&amp;" />		
+				</if>
+				
+				<property name="queryStrings" value="${queryStrings}SendTo=${Screenshot.Path}" />		
+				
+				<property name="url" value="${url}${queryStrings}" />
+						
+				<echo message="URL: ${url}" />
+						
 		    	<property name="CaptureProgram" value="IECapt.exe"/>
 		    	<!-- The next line can be enabled and the previous line disabled to switch to use CutyCapt (Mozilla based engine)  -->
 		    	<!--property name="CaptureProgram" value="CutyCapt.exe"/-->
 
 				<!-- Capture the screenshot -->
-				<exec program="${Project.RootPath}\lib\nant\bin\${CaptureProgram}">
-				    <arg value="--url=http://localhost/${Solution.VirtualDirectoryName + Screenshot.InitializationPath}?SendTo=${Screenshot.Path}" />
+				<exec program="${Project.RootPath}\lib\nant\bin\${CaptureProgram}" verbose="true">
+				    <arg value="--url=${url}" />
 				    <arg value="--out=${Solution.RootPath}\Screenshots\${Screenshot.FileName}.png" />
 				    <arg value="--min-width=1000" />
 				</exec>
