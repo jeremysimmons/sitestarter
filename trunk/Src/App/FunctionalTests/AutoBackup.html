@@ -37,18 +37,33 @@
 	<td></td>
 </tr>
 <tr>
+	<td>open</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextNotPresent</td>
+	<td>Exception</td>
+	<td></td>
+</tr>
+<tr>
 	<td>pause</td>
 	<td>10000</td>
 	<td></td>
 </tr>
 <tr>
 	<td>open</td>
-	<td>Admin/tests/LogContains.aspx?Query=${AutoBackup}</td>
+	<td>Admin/tests/LogContains.aspx?Query=%3CData%3E${BackupComplete}%3C/Data%3E</td>
 	<td></td>
 </tr>
 <tr>
 	<td>assertTextPresent</td>
 	<td>LogContains=True</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>FoundTotal=1</td>
 	<td></td>
 </tr>
 </tbody></table>
