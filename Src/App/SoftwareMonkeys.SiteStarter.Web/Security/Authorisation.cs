@@ -26,7 +26,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		{
 			bool isAuthorised = false;
 			
-			using (LogGroup logGroup = LogGroup.Start("Checking whether the user can perform the action '" + action + "' with the entity type '" + typeName + "'."))
+			using (LogGroup logGroup = LogGroup.StartDebug("Checking whether the user can perform the action '" + action + "' with the entity type '" + typeName + "'."))
 			{
 				string internalAction = GetInternalAction(action);
 				
@@ -43,7 +43,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		{
 			bool isAuthorised = false;
 			
-			using (LogGroup logGroup = LogGroup.Start("Checking whether the user can perform the action '" + action + "' with the entity type '" + type.Name + "'."))
+			using (LogGroup logGroup = LogGroup.StartDebug("Checking whether the user can perform the action '" + action + "' with the entity type '" + type.Name + "'."))
 			{
 				string internalAction = GetInternalAction(action);
 				
@@ -59,7 +59,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		{
 			bool can = false;
 			
-			using (LogGroup logGroup = LogGroup.Start("Checking whether the user can perform the action '" + action + "' with the entity type '" + entity.ShortTypeName + "'."))
+			using (LogGroup logGroup = LogGroup.StartDebug("Checking whether the user can perform the action '" + action + "' with the entity type '" + entity.ShortTypeName + "'."))
 			{
 				string internalAction = GetInternalAction(action);
 				
@@ -78,7 +78,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		{
 			bool can = false;
 			
-			using (LogGroup logGroup = LogGroup.Start("Checking whether the user can perform the action '" + action + "'."))
+			using (LogGroup logGroup = LogGroup.StartDebug("Checking whether the user can perform the action '" + action + "'."))
 			{
 				if (entities == null || entities.Length == 0)
 				{
@@ -114,7 +114,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		{
 			string internalAction = action;
 			
-			using (LogGroup logGroup = LogGroup.Start("Getting the internal action that corresponds with the one provided.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Getting the internal action that corresponds with the one provided."))
 			{
 				LogWriter.Debug("Action: " + action);
 				
@@ -193,7 +193,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		static public bool IsInRole(string roleName)
 		{
 			bool isInRole = false;
-			using (LogGroup logGroup = LogGroup.Start("Checking whether the current user is in the specified role.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Checking whether the current user is in the specified role."))
 			{
 				if (!AuthenticationState.IsAuthenticated)
 					isInRole = false;
