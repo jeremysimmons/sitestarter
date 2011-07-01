@@ -171,8 +171,6 @@ private void DeleteLogs()
 {
 	string path = Server.MapPath(Request.ApplicationPath + "/App_Data/Logs");
 	
-	LogWriter.Dispose();
-	
 	if (Directory.Exists(path))
 		Directory.Delete(path, true);
 }

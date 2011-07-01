@@ -21,10 +21,9 @@ private void Page_Init(object sender, EventArgs e)
 
 private void Page_Load(object sender, EventArgs e)
 {
-	
-	using (LogGroup logGroup = AppLogger.StartGroup("Testing logging", NLog.LogLevel.Debug))
+	using (LogGroup logGroup = LogGroup.Start("Test group #1", NLog.LogLevel.Info))
 	{
-		AppLogger.Debug("Test debug message");
+		LogWriter.Info("Test entry #1");
 		
 		DoSomething();
 	}
@@ -34,67 +33,16 @@ private void DoSomething()
 {
 	LogGroup breakingGroup = null;
 	
-	using (LogGroup logGroup = AppLogger.StartGroup("Doing something", NLog.LogLevel.Debug))
+	using (LogGroup logGroup = LogGroup.Start("Test group #2", NLog.LogLevel.Info))
 	{
-		AppLogger.Debug("The 'Doing something' group should be a sub group of the 'Testing logging' group.");
+		LogWriter.Info("Test entry #2");
 		
-		breakingGroup = LogGroup.Start("This group should break the logging because it's not in a using block.", NLog.LogLevel.Debug);
+		breakingGroup = LogGroup.Start("Test group #3", NLog.LogLevel.Info);
 		
 	}
 	
 	LogGroup stillAlive = breakingGroup;
 }
-
-private void BreakLogging()
-{
-}
-
-    private void Initialize()
-    {
-        //using (LogGroup logGroup = AppLogger.StartGroup("Initializing the state management, config, modules, and data.", LogLevel.Debug))
-        //{
-	        if (!StateAccess.IsInitialized || !Config.IsInitialized)
-	        {
-	        	InitializeState();
-                /*Config.Initialize(Server.MapPath(HttpContext.Current.Request.ApplicationPath), WebUtilities.GetLocationVariation(HttpContext.Current.Request.Url));
-                InitializeEntities();
-	            new DataProviderInitializer().Initialize();
-	        	InitializeBusiness();
-	        	InitializeWeb();*/
-	        }
-		//}
-    }
-
-    
-    private void InitializeState()
-    {
-    	SoftwareMonkeys.SiteStarter.Web.State.StateProviderInitializer.Initialize();
-    }
-    
-    private void InitializeEntities()
-    {
-        if (Config.IsInitialized)
-            new EntityInitializer().Initialize();
-    }
-    
-    private void InitializeBusiness()
-    {
-    	if (Config.IsInitialized)
-	    	new StrategyInitializer().Initialize();
-    }
-    
-    private void InitializeWeb()
-    {
-    	if (Config.IsInitialized)
-    	{
-    	
-    		// These are now taken care of by the Projector control as it's responsible for projections and controllers
-    		// The projection scanner needs a Page component to access the LoadControl function and so initializing in the Projector control is an appropriate solution
-    		//new ControllersInitializer().Initialize();
-    		//new ProjectionsInitializer().Initialize();
-    	}
-    }
-
 </script>
 <html>
 <head runat="server">
