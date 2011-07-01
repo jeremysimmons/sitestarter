@@ -50,9 +50,12 @@ namespace SoftwareMonkeys.SiteStarter.Functional.firefox.Tests
 			selenium.WaitForPageToLoad("30000");
 			selenium.Open("Admin/QuickSetup.aspx");
 			Assert.IsFalse(selenium.IsTextPresent("Exception"), "Text 'Exception' found when it shouldn't be.");
+			selenium.Open("");
+			Assert.IsFalse(selenium.IsTextPresent("Exception"), "Text 'Exception' found when it shouldn't be.");
 			Thread.Sleep(10000);
-			selenium.Open("Admin/tests/LogContains.aspx?Query=${AutoBackup}");
+			selenium.Open("Admin/tests/LogContains.aspx?Query=%3CData%3E${BackupComplete}%3C/Data%3E");
 			Assert.IsTrue(selenium.IsTextPresent("LogContains=True"), "Text 'LogContains=True' not found when it should be.");
+			Assert.IsTrue(selenium.IsTextPresent("FoundTotal=1"), "Text 'FoundTotal=1' not found when it should be.");
 
 		}
 
