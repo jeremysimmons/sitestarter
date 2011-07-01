@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" Title="LogContains" %>
+﻿<%@ Page Language="C#" Title="LogContains" ValidateRequest="false" %>
 <%@ Register Namespace="SoftwareMonkeys.SiteStarter.Web.WebControls" Assembly="SoftwareMonkeys.SiteStarter.Web" TagPrefix="cc" %>
 <%@ Register Namespace="SoftwareMonkeys.SiteStarter.Web.WebControls" Assembly="SoftwareMonkeys.SiteStarter.Web" TagPrefix="ss" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Entities" %>
@@ -34,6 +34,11 @@ private void Page_Load(object sender, EventArgs e)
 		
 		foundTotal += Count(query, LoadLog()).ToString();
 		
+		string queryMessage = "Query=" + Server.HtmlEncode(query);
+		
+		OutputHolder.Controls.Add(new LiteralControl("<div>"));
+		OutputHolder.Controls.Add(new LiteralControl(queryMessage));
+		OutputHolder.Controls.Add(new LiteralControl("</div>"));
 		OutputHolder.Controls.Add(new LiteralControl("<div>"));
 		OutputHolder.Controls.Add(new LiteralControl(output));
 		OutputHolder.Controls.Add(new LiteralControl("</div>"));
@@ -53,12 +58,10 @@ private bool LogContains(string query, string logContents)
 
 private string LoadLog()
 {
-	string path = Request.ApplicationPath + "/App_Data/Logs/" + DateTime.Now.Year + "-" + DateTime.Now.Month + "-" + DateTime.Now.ToString("dd") + "/Log.xml";
+	string path = Request.ApplicationPath + "/App_Data/Logs/" + DateTime.Now.Year + "-" + DateTime.Now.ToString("MM") + "-" + DateTime.Now.ToString("dd") + "/Log.xml";
 	path = Server.MapPath(path);
 	
 	string content = String.Empty;
-	
-	LogWriter.Dispose();
 	
 	using (StreamReader reader = new StreamReader(File.OpenRead(path)))
 	{
