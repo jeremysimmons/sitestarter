@@ -343,9 +343,21 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		{
 			using (LogGroup logGroup = LogGroup.Start("Adding item to site map.", NLog.LogLevel.Debug))
 			{
+				if (item == null)
+					throw new ArgumentNullException("item");
+				
 				if (UrlCreator == null)
 					throw new InvalidOperationException("The UrlCreator property has not been initialized.");
 
+				LogWriter.Debug("Item title: " + item.Title);
+				LogWriter.Debug("Item URL: " + item.Url);
+				LogWriter.Debug("Item category: " + item.Category);
+				LogWriter.Debug("Item action: " + item.Action);
+				LogWriter.Debug("Item type name: " + item.TypeName);
+				
+				if (item.Title == null || item.Title == String.Empty)
+					throw new ArgumentException("An title must be specified on the provided item.");
+				
 				SiteMapNode node = new SiteMapNode();
 				
 				node.Title = item.Title;
@@ -369,6 +381,9 @@ namespace SoftwareMonkeys.SiteStarter.Web
 
 				if (existingNode == null)
 				{
+					LogWriter.Debug("Node title: " + node.Title);
+					LogWriter.Debug("Node URL:" + node.Url);
+					
 					if (item.Category != null && item.Category != String.Empty)
 					{
 						SiteMapNode categoryNode = GetNodeByTitle(rootNode.ChildNodes, item.Category);
@@ -403,53 +418,63 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <param name="item">The item to remove from the site map.</param>
 		public void Remove(ISiteMapNode item)
 		{
-			if (UrlCreator == null)
-				throw new InvalidOperationException("The UrlCreator property has not been initialized.");
-			
-			LogWriter.Debug("Page: " + item.Title);
-			
-			string url = UrlCreator.CreateUrl(item.Action, item.TypeName);
-
-			LogWriter.Debug("URL: " + url);
-			
-			
-			SiteMapNode rootNode = ChildNodes.Count > 0 ? ChildNodes[0] : null;
-			
-			// Choose the appropriate child nodes collection (depending on whether a root node is found)
-			List<SiteMapNode> childNodes = (rootNode != null
-			                                ? rootNode.ChildNodes
-			                                : ChildNodes);
-
-
-			SiteMapNode existingNode = GetNodeByUrl(childNodes, url);
-
-			if (existingNode != null)
+			using (LogGroup logGroup = LogGroup.Start("Removing item from site map.", NLog.LogLevel.Debug))
 			{
-				if (item.Category != null && item.Category != String.Empty)
-				{
-					SiteMapNode categoryNode = GetNodeByTitle(rootNode.ChildNodes, item.Category);
-					
-					categoryNode.ChildNodes.Remove(existingNode);
-					
-					if (categoryNode.ChildNodes.Count == 0)
-						rootNode.ChildNodes.Remove(categoryNode);
+				if (item == null)
+					throw new ArgumentNullException("item");
+				
+				if (UrlCreator == null)
+					throw new InvalidOperationException("The UrlCreator property has not been initialized.");
+				
+				LogWriter.Debug("Item title: " + item.Title);
+				LogWriter.Debug("Item URL: " + item.Url);
+				LogWriter.Debug("Item category: " + item.Category);
+				LogWriter.Debug("Item action: " + item.Action);
+				LogWriter.Debug("Item type name: " + item.TypeName);
+				
+				string url = item.Url;
+				
+				if (url == String.Empty)
+					url = UrlCreator.CreateUrl(item.Action, item.TypeName);
+				
+				LogWriter.Debug("URL: " + url);
+				
+				SiteMapNode rootNode = ChildNodes.Count > 0 ? ChildNodes[0] : null;
+				
+				// Choose the appropriate child nodes collection (depending on whether a root node is found)
+				List<SiteMapNode> childNodes = (rootNode != null
+				                                ? rootNode.ChildNodes
+				                                : ChildNodes);
 
-					LogWriter.Debug("Removed node from category.");
+				SiteMapNode existingNode = GetNodeByUrl(childNodes, url);
+
+				if (existingNode != null)
+				{
+					if (item.Category != null && item.Category != String.Empty)
+					{
+						SiteMapNode categoryNode = GetNodeByTitle(rootNode.ChildNodes, item.Category);
+						
+						categoryNode.ChildNodes.Remove(existingNode);
+						
+						if (categoryNode.ChildNodes.Count == 0)
+							rootNode.ChildNodes.Remove(categoryNode);
+
+						LogWriter.Debug("Removed node from category.");
+					}
+					else
+					{
+						LogWriter.Debug("Removed node from root.");
+						
+						rootNode.ChildNodes.Remove(existingNode);
+					}
 				}
 				else
 				{
-					LogWriter.Debug("Removed node from root.");
+					LogWriter.Debug("Node not found. Skipping remove.");
 					
-					rootNode.ChildNodes.Remove(existingNode);
+					throw new Exception("No existing node found with URL '" + url + "'.");
 				}
 			}
-			else
-			{
-				LogWriter.Debug("Node not found. Skipping remove.");
-				
-				throw new Exception("No existing node found with URL '" + url + "'.");
-			}
-			
 		}
 
 		/// <summary>

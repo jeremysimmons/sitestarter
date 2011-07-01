@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 
 namespace SoftwareMonkeys.SiteStarter.Web
 {
@@ -18,9 +19,14 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <param name="siteMap"></param>
 		public virtual void Add(ISiteMap siteMap)
 		{
-			foreach (ISiteMapNode item in GetSiteMapItems())
+			using (LogGroup logGroup = LogGroup.StartDebug("Adding items to the provided site map."))
 			{
-				siteMap.Add(item);
+				foreach (ISiteMapNode item in GetSiteMapItems())
+				{
+					LogWriter.Debug("Action: " + item.Action + " | Type name: " + item.TypeName + " | Category: " + item.Category + " | Title: " + item.Title);
+					
+					siteMap.Add(item);
+				}
 			}
 		}
 		
@@ -31,9 +37,14 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <param name="siteMap"></param>
 		public virtual void Remove(ISiteMap siteMap)
 		{
-			foreach (ISiteMapNode item in GetSiteMapItems())
+			using (LogGroup logGroup = LogGroup.StartDebug("Removing items from the provided site map."))
 			{
-				siteMap.Remove(item);
+				foreach (ISiteMapNode item in GetSiteMapItems())
+				{
+					LogWriter.Debug("Action: " + item.Action + " | Type name: " + item.TypeName + " | Category: " + item.Category + " | Title: " + item.Title);
+					
+					siteMap.Remove(item);
+				}
 			}
 		}
 		
