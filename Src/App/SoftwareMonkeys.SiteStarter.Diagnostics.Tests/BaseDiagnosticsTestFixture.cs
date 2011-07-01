@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
+using NLog.Layouts;
+using NLog.Targets;
+using NLog.Config;
 using NUnit.Framework;
 using SoftwareMonkeys.SiteStarter.Tests;
 using SoftwareMonkeys.SiteStarter.State;
@@ -47,6 +50,8 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics.Tests
 		{
 			if (EnableTestLogging)
 			{
+				InitializeLogging();
+				
 				// Create a log group for the test
 				FixtureLogGroup = LogGroup.Start("Starting test '" + TestName + "'.", LogLevel.Info);
 				
@@ -64,9 +69,12 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics.Tests
 			{
 				FixtureLogGroup.Dispose();
 				FixtureLogGroup = null;
+				
+				DisposeLogging();
 			}
 			
 			DiagnosticState.Dispose();
+			
 			
 			ReportLogs();
 		}
@@ -128,9 +136,12 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics.Tests
 			
 			string[] parts = original.Split('.');
 			
+			if (parts[parts.Length-1] == "Tests")
+				output = output.Replace(".Tests", "");
+			
 			// If the namespace has more than 2 parts remove the first two (company and project)
 			if (parts.Length > 2)
-				output = original.Replace(parts[0] + "." // Company name
+				output = output.Replace(parts[0] + "." // Company name
 				                          + parts[1] + ".", // Project name
 				                          "");
 			
@@ -148,6 +159,40 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics.Tests
 				}
 			}
 			return content;
+		}
+		
+		public LoggingConfiguration OriginalLoggingConfiguration;
+		
+		public void InitializeLogging()
+		{
+			OriginalLoggingConfiguration = NLog.LogManager.Configuration;
+			
+			LoggingConfiguration config = new LoggingConfiguration();
+			
+            FileTarget fileTarget = new FileTarget();
+            config.AddTarget("File", fileTarget);
+
+            fileTarget.Layout = @"<layout xsi:type=""LayoutWithHeaderAndFooter"">
+        		<header xsi:type=""SimpleLayout"" text=""&lt;?xml version='1.0'?&gt;${newline}&lt;Log&gt;""/>
+            		<layout xsi:type=""SimpleLayout"" text=""${message}"" />
+            		<footer xsi:type=""SimpleLayout"" text=""&lt;/Log&gt;""/>
+      		</layout>";
+            
+            fileTarget.FileName = String.Format("{0}/App_Data/Logs/{1}-{2}-{3}/Log.xml",
+                                                StateAccess.State.PhysicalApplicationPath,
+                                                DateTime.Now.Year,
+                                                DateTime.Now.ToString("MM"),
+                                               DateTime.Now.Day);
+
+            LoggingRule rule = new LoggingRule("*", NLog.LogLevel.Trace, fileTarget);
+            config.LoggingRules.Add(rule);
+
+            LogManager.Configuration = config; 
+		}
+		
+		public void DisposeLogging()
+		{
+			LogManager.Configuration = OriginalLoggingConfiguration;
 		}
 	}
 }

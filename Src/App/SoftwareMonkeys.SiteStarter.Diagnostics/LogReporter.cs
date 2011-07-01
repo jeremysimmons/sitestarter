@@ -73,10 +73,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		public void Move(string from, string to)
 		{
 			if (Directory.Exists(from))
-			{
-				// Dispose the log file writer to unlock the log file
-				LogWriter.Dispose();
-				
+			{				
 				foreach (string file in Directory.GetFiles(from))
 				{
 					string fileName = Path.GetFileName(file);

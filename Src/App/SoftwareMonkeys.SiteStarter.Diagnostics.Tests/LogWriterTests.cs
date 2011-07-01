@@ -17,28 +17,6 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics.Tests
 		}
 		
 		[Test]
-		public void Test_Dispose_UnlocksTheLogFile()
-		{
-			// Create the log by adding a dummy entry
-			LogWriter.Error("Test entry");
-			
-			// Dispose the log to unlock the log file
-			LogWriter.Dispose();
-			
-			// Get the path of the log file
-			string logPath = LogFileWriter.LogFilePath;
-			
-			// Check that the log file was created
-			Assert.IsTrue(File.Exists(logPath), "Can't find log file.");
-			
-			// Delete the file to test that it was unlocked
-			File.Delete(logPath);
-			
-			// Ensure the file was deleted, confirming that it was unlocked
-			Assert.IsFalse(File.Exists(logPath), "Log file wasn't deleted.");
-		}
-		
-		[Test]
 		public void Test_ConvertLevel_ConvertsNLogToInternalEnumeration()
 		{
 			NLog.LogLevel original = NLog.LogLevel.Error;
@@ -46,6 +24,30 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics.Tests
 			LogLevel converted = LogWriter.ConvertLevel(original);
 			
 			Assert.AreEqual(LogLevel.Error, converted, "Didn't convert properly.");
+		}
+		
+		[Test]
+		public void Test_Write_FiveEntries()
+		{
+			string label = "Test entry: ";
+			
+			for (int i = 0; i < 5; i++)
+			{
+				LogWriter.Info(label + i+1.ToString());
+			} 
+			
+			string logFilePath = LogFileWriter.LogFilePath;
+			
+			string content = LoadLogContent(logFilePath);
+			
+			for (int i = 0; i < 5; i++)
+			{
+				string expectedEntry = label + i+1.ToString();
+				
+				bool entryFound = content.IndexOf(expectedEntry.ToString()) > -1;
+				
+				Assert.IsTrue(entryFound, "Entry missing; index = " + i);
+			}
 		}
 	}
 }

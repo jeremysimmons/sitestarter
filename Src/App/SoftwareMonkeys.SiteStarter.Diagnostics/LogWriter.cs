@@ -11,7 +11,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 	/// Writes entries to the log.
 	/// </summary>
 	public static class LogWriter
-	{	
+	{
 
 		/// <summary>
 		/// Converts the provided NLog.LogLevel value to the internal LogLevel value.
@@ -46,60 +46,9 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		/// <param name="parentID">The ID of the parent group.</param>
 		public static void WriteGroup(string message, MethodBase callingMethod, LogLevel level, Guid groupID, Guid parentID)
 		{
-			string entry = CreateLogEntry(level, message, callingMethod.DeclaringType.Name, callingMethod.Name, groupID, parentID, DiagnosticState.GroupIndent-1);
-			if (entry != null && entry.Trim() != String.Empty)
-			{
-				LogFileWriter.Current.Write(groupID, entry);
-			}
+				LogFileWriter.Current.Write(message, level, callingMethod.DeclaringType.Name, callingMethod.Name, groupID, parentID, DiagnosticState.GroupIndent-1);
 		}
-		
-		/// <summary>
-		/// Creates a new log entry XML from the provided data.
-		/// </summary>
-		/// <param name="logLevel"></param>
-		/// <param name="data">The log entry data.</param>
-		/// <param name="callingMethod">The method that started the group.</param>
-		/// <param name="groupID">The ID of the group that the entry represents.</param>
-		/// <param name="parentID">The ID of the parent group.</param>
-		/// <param name="indent">The indent level of the entry.</param>
-		/// <returns></returns>
-		public static string CreateLogEntry(
-			LogLevel logLevel,
-			string message,
-			string callingTypeName,
-			string callingMethodName,
-			Guid id,
-			Guid parentID,
-			int indent)
-		{
-			StringBuilder logEntry = new StringBuilder();
-
-			// If the callingMethod property is null then logging must be disabled, so skip the output
-			if (new LogSupervisor().LoggingEnabled(callingTypeName, logLevel))
-			{
-				//if (indent > 0 && parentID == Guid.Empty)
-				//	throw new Exception("Couldn't detect parent group of an entry at indent '" + indent + "' with data '" + message + "' from method '" + callingMethod.DeclaringType.ToString() + "." + callingMethod.Name + "'.");
 				
-				logEntry.Append("<Entry>\r\n");
-				
-				logEntry.AppendFormat("<ID>{0}</ID>\r\n", id.ToString());
-				logEntry.AppendFormat("<ParentID>{0}</ParentID>\r\n", parentID.ToString());
-				logEntry.AppendFormat("<Indent>{0}</Indent>\r\n", indent); // TODO: Remove indent as a parameter - it's obsolete; the parent ID is used to figure out location
-				logEntry.AppendFormat("<LogLevel>{0}</LogLevel>\r\n", logLevel);
-				logEntry.AppendFormat("<Timestamp>{0}</Timestamp>\r\n", DateTime.Now);
-				logEntry.AppendFormat("<Component>{0}</Component>\r\n", EscapeLogData(callingTypeName));
-				logEntry.AppendFormat("<Method>{0}</Method>\r\n", EscapeLogData(callingMethodName));
-				logEntry.AppendFormat("<Data>{0}</Data>\r\n", EscapeLogData(message));
-				
-				logEntry.Append("</Entry>\r\n");
-				
-				logEntry.AppendLine();
-				
-			}
-			
-			return logEntry.ToString();
-		}
-		
 		public static void Error(Exception ex)
 		{
 			if (ex == null)
@@ -155,24 +104,9 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		public static void Write(string message, string callingType, string callingMethod, LogLevel level)
 		{
 			if (new LogSupervisor().LoggingEnabled(callingType, level))
-			{
-				Guid id = Guid.NewGuid();
-				
-				string entry = CreateLogEntry(level, message, callingType, callingMethod, id, DiagnosticState.CurrentGroupID, DiagnosticState.GroupIndent);
-				if (entry != null && entry.Trim() != String.Empty)
-				{
-					LogFileWriter.Current.Write(id, entry);
-				}
+			{				
+				LogFileWriter.Current.Write(message, level, callingType, callingMethod);
 			}
-		}
-		
-		private static string EscapeLogData(string data)
-		{
-			return data.Replace("&", "&amp;")
-				.Replace("<", "&lt;")
-				.Replace(">", "&gt;")
-				.Replace("\"", "&quot;")
-				.Replace("'", "&apos;");
 		}
 		
 		/// <summary>
@@ -180,14 +114,16 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		/// </summary>
 		static public void Dispose()
 		{
-			if (StateAccess.IsInitialized && StateAccess.State.ContainsApplication(LogFileWriter.LogFileWriterKey))
-			{
-				LogFileWriter fileWriter = (LogFileWriter)StateAccess.State.GetApplication(LogFileWriter.LogFileWriterKey);
-				fileWriter.Dispose();
 				
-				StateAccess.State.RemoveApplication(LogFileWriter.LogFileWriterKey);
-			}
-		}
+				Debug("Disposing log data.");
+				
+				// TODO: Check if needed. Should be obsolete
+				//LogFileWriter fileWriter = (LogFileWriter)StateAccess.State.GetApplication(LogFileWriter.LogFileWriterKey);
 
+				//fileWriter.Dispose();
+				
+
+				//StateAccess.State.RemoveApplication(LogFileWriter.LogFileWriterKey);
+		}
 	}
 }

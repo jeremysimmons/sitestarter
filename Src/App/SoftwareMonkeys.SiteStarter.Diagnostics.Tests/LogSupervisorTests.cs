@@ -34,7 +34,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics.Tests
 		public void Test_LoggingEnabled_DebugMode_DebugLevel_SettingsFalse_ReturnsFalse()
 		{
 			LogSupervisor supervisor = new LogSupervisor();
-			supervisor.ModeDetector = new MockModeDetector(false);
+			supervisor.ModeDetector = new MockModeDetector(true);
 			supervisor.SettingsManager =  MockLogSettingsManager.NewSpecified(false);
 			
 			bool isEnabled = supervisor.LoggingEnabled(LogLevel.Debug);
