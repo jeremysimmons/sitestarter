@@ -46,29 +46,38 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <returns>The projection info for the specified scenario.</returns>
 		public ProjectionInfo Locate(string action, string typeName, ProjectionFormat format)
 		{
-			// Get the specified type
-			Type type = null;
-			
-			if (Entities.EntityState.Entities.EntityExists(typeName))
-				type = Entities.EntityState.Entities[typeName].GetEntityType();
-			
-			// Create a direct projection key for the specified type
-			string key = Projections.GetProjectionKey(action, typeName, format);
-			
 			// Create the projection info variable to hold the return value
 			ProjectionInfo projectionInfo = null;
 			
-			// Check the direct key to see if a projection exists
-			if (Projections.ProjectionExists(key))
+			using (LogGroup logGroup = LogGroup.StartDebug("Locating projection with action '" + action + "', type name '" + typeName + "', and format '" + format.ToString() + "'."))
 			{
-				projectionInfo = Projections[key];
+				// Get the specified type
+				Type type = null;
+				
+				if (Entities.EntityState.Entities.EntityExists(typeName))
+					type = Entities.EntityState.Entities[typeName].GetEntityType();
+				
+				// Create a direct projection key for the specified type
+				string key = Projections.GetProjectionKey(action, typeName, format);
+				
+				LogWriter.Debug("Key: " + key);
+				
+				// Check the direct key to see if a projection exists
+				if (Projections.ProjectionExists(key))
+				{
+					projectionInfo = Projections[key];
+				}
+				// If not then navigate up the heirarchy looking for a matching projection
+				else if (type != null)
+				{
+					projectionInfo = LocateFromHeirarchy(action, type, format);
+				}
+				
+				if (projectionInfo == null)
+					LogWriter.Debug("No projection found.");
+				else
+					LogWriter.Debug("Projection found - Action: " + projectionInfo.Action + " | Type name: " + projectionInfo.TypeName + " | Title: " + projectionInfo.MenuTitle + " | Category: " + projectionInfo.MenuCategory + " | Format: " + projectionInfo.Format.ToString());
 			}
-			// If not then navigate up the heirarchy looking for a matching projection
-			else if (type != null)
-			{
-				projectionInfo = LocateFromHeirarchy(action, type, format);
-			}
-			
 			return projectionInfo;
 		}
 		
