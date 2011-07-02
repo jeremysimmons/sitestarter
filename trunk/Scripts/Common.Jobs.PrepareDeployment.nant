@@ -114,6 +114,14 @@
 	        <exclude name="*disabled*"/>
 	        <exclude name="**/bin/Debug/**"/>
 	        <exclude name="**/bin/Release/**"/>
+	        <exclude name="**/ThoughtWorks.*.*"/>
+	        <exclude name="**/WebDriver.*.*"/>
+	        <exclude name="**/Selenium.*.*"/>
+	        <exclude name="**/SoftwareMonkeys.SeleniumToCSharp.Conversion.dll"/>
+	        <exclude name="**/Castle.Core.dll"/>
+	        <exclude name="**/Ionic.Zip.Reduced.dll"/>
+	        <exclude name="**/Newtonsoft.Json.dll"/>
+	        <exclude name="**/SoftwareMonkeys.*.Tests.dll"/>
 	        <exclude name="**.Tests.dll"/>
 	        <exclude name="**.refresh"/>
 	        <exclude name="**.nant"/>

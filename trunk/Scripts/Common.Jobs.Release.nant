@@ -235,13 +235,20 @@
 	        <exclude name="*disabled*"/>
 	        <exclude name="**/bin/Debug/**"/>
 	        <exclude name="**/bin/nunit**"/>
+	        <exclude name="**/ThoughtWorks.*.*"/>
+	        <exclude name="**/WebDriver.*.*"/>
+	        <exclude name="**/Selenium.*.*"/>
+	        <exclude name="**/SoftwareMonkeys.SeleniumToCSharp.Conversion.dll"/>
+	        <exclude name="**/Castle.Core.dll"/>
+	        <exclude name="**/Ionic.Zip.Reduced.dll"/>
+	        <exclude name="**/Newtonsoft.Json.dll"/>
 	        <exclude name="**.Tests.dll"/>
 	        <exclude name="RestartApp.bat"/>
 	        <exclude name="**.refresh"/>
 	        <exclude name="**.nant"/>
 	        <exclude name="**/tests/**"/>
 	        <exclude name="**.jar"/>
-	        <exclude name="*MockCreate.ascx"/><!-- Hide the mock/test create projections -->
+	        <exclude name="*MockCreate.ascx"/><!-- Exclude the mock/test create projections -->
 	        <exclude name="**/IntegrationTests/Results/**"/>
 	        <include name="${IncludeKey}" />
 	    </fileset>	   
