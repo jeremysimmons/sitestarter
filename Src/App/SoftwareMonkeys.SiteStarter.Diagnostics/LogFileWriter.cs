@@ -266,7 +266,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		{
 			return StateAccess.State.PhysicalApplicationPath + Path.DirectorySeparatorChar + "App_Data"
 				+ Path.DirectorySeparatorChar + "Logs"
-				+ Path.DirectorySeparatorChar + DateTime.Now.Year + "-" + DateTime.Now.ToString("MM") + "-" + DateTime.Now.Day
+				+ Path.DirectorySeparatorChar + DateTime.Now.Year + "-" + DateTime.Now.ToString("MM") + "-" + DateTime.Now.ToString("dd")
 				+ Path.DirectorySeparatorChar + "StackTrace";
 		}
 		
