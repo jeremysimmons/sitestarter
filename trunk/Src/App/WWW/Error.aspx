@@ -29,6 +29,17 @@
 			throw ex;
 		}
     }    
+    
+    private string GetReportIssueUrl()
+    {
+    	string path = ConfigurationSettings.AppSettings["ReportIssueUrl"];
+    	path = path.Replace("${Project.ID}", ConfigurationSettings.AppSettings["UniversalProjectID"]);
+
+		if (Request.QueryString["ProjectVersion"] != null && Request.QueryString["ProjectVersion"] != String.Empty)
+    		path = path.Replace("${Project.Version}", Request.QueryString["ProjectVersion"]);
+    	
+    	return path;
+    }
 
 </script>
 
@@ -46,7 +57,7 @@
 				var path = '';
 				if (project == 'SiteStarter')
 				{
-					path = '<%= ConfigurationSettings.AppSettings["ReportIssueUrl"].Replace("${Project.ID}", ConfigurationSettings.AppSettings["UniversalProjectID"]) %>';
+					path = '<%= GetReportIssueUrl() %>';
 				}
 				
 				if (path != '')
