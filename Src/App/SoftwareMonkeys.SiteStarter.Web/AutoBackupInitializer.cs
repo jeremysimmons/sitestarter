@@ -19,7 +19,11 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		public void Initialize()
 		{
 			if (AutoBackupDue())
-				ExecuteBackup();
+			{
+				// Extend the timeout to ensure there is no error
+				using (TimeoutExtender extender = TimeoutExtender.NewMinutes(60))
+					ExecuteBackup();
+			}
 		}
 		
 		void ExecuteBackup()
