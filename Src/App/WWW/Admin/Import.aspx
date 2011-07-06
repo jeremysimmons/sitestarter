@@ -69,6 +69,7 @@
 	{
 		new ControllersInitializer().Initialize();
 		new ProjectionsInitializer(this).Initialize();
+		new PartsInitializer(this).Initialize();
 	}
     
     private void ExecuteImport()
