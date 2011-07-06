@@ -135,6 +135,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				// Copy version file to export folder
 				BackupVersion();
 				
+				// Copy personalization data to export folder
+				BackupPersonalization();
+				
 				// Zip up files
 				outputFile = ZipFiles();
 				
@@ -225,6 +228,31 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				Path.GetFileName(filePath);
 			
 			File.Copy(filePath, toFile, true);
+		}
+		
+		/// <summary>
+		/// Backs up the personalization folder.
+		/// </summary>
+		private void BackupPersonalization()
+		{
+			string folderPath = DataDirectoryPath + Path.DirectorySeparatorChar +
+				"Personalization_Data";
+			
+			if (Directory.Exists(folderPath))
+			{
+				string toFolder = ExportDirectoryPath + Path.DirectorySeparatorChar +
+					Path.GetFileName(folderPath);
+				
+				if (!Directory.Exists(toFolder))
+					Directory.CreateDirectory(toFolder);
+				
+				foreach (string file in Directory.GetFiles(folderPath))
+				{
+					string toFile = toFolder + Path.DirectorySeparatorChar + Path.GetFileName(file);
+					
+					File.Copy(file, toFile, true);
+				}
+			}
 		}
 		
 		/// <summary>
