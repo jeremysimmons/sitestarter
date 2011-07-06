@@ -57,7 +57,7 @@
 			    </li>
 			    <li>
 			    When you are ready... <input type="button" value='Begin &raquo;' onclick="location.href='Backup.aspx?PrepareForUpdate=true'"/><br/>
-				(IMPORTANT: clicking "Begin" will take the application offline, display a friendly "Down for Maintenance" message until the update process is complete)
+				(IMPORTANT: clicking "Begin" will take the application offline and display a friendly "Down for Maintenance" message until the update process is complete)
 			    </li>
 			    <li>
 			    Follow the instructions provided on the next page.
