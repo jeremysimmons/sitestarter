@@ -263,7 +263,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <returns>The loaded and activated entity.</returns>
 		public IEntity Load(string uniqueKey)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Loading entity with the unique key: " + uniqueKey))
+			using (LogGroup logGroup = LogGroup.StartDebug("Loading entity with the unique key: " + uniqueKey))
 			{
 				Load(Retriever.Retrieve("UniqueKey", uniqueKey));
 			}
@@ -277,7 +277,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <returns>The loaded and activated entity.</returns>
 		public IEntity Load(Guid id)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Loading entity with the ID: " + id.ToString()))
+			using (LogGroup logGroup = LogGroup.StartDebug("Loading entity with the ID: " + id.ToString()))
 			{
 				Load(Retriever.Retrieve("ID", id));
 			}
