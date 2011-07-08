@@ -38,7 +38,7 @@
 	{
 		int number = position+1;
 
-		User user = new User();
+		User user = CreateStrategy.New<User>(false).Create<User>();
 		user.ID = Guid.NewGuid();
 		user.Username = "Username" + number;
 		user.FirstName = "FirstName" + number;
@@ -46,7 +46,7 @@
 		user.Email = "Email" + number;
 		user.IsApproved = false;
 		
-		SaveStrategy.New(user).Save(user);
+		SaveStrategy.New(user, false).Save(user);
 	}
 
                     
