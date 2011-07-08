@@ -49,13 +49,13 @@ protected void CreateMockData()
 
 protected void CreateMockUser(int i)
 {
-	User user = new User();
+	User user = CreateStrategy.New<User>(false).Create<User>();
 	user.Username = "Test User " + i;
 	user.FirstName = "First Name " + i;
 	user.LastName = "Last Name " + i;
 	user.Email = "test" + i + "@softwaremonkeys.net";
 	
-	SaveStrategy.New(user).Save(user);
+	SaveStrategy.New(user, false).Save(user);
 }
 
 protected void ExportData()
