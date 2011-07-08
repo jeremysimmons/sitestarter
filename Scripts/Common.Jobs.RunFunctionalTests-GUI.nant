@@ -23,7 +23,7 @@
     			</namespaces>
 	    	</xmlpeek>
 			
-		<property name="resultsDir" value="${path::get-full-path(path::combine(path::combine(Solution.RootPath, 'IntegrationTests'), 'Results'))}" />
+		<property name="resultsDir" value="${path::get-full-path(path::combine(path::combine(Solution.RootPath, 'FunctionalTests'), 'Results'))}" />
 			
 		<echo message="Results directory: ${resultsDir}"/>
 		  

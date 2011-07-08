@@ -139,7 +139,7 @@
 	        <exclude name="**.cache"/>
 	        <exclude name="**.nunit"/>
 	        <exclude name="**/TestResults/**"/>
-	        <exclude name="**/IntegrationTests/Results/**"/>
+	        <exclude name="**/FunctionalTests/Results/**"/>
 	        <exclude name="**.jar"/>
 	        <include name="**/${Solution.Alias}/**" />
 	        <include name="bin/**" />
@@ -249,7 +249,7 @@
 	        <exclude name="**/tests/**"/>
 	        <exclude name="**.jar"/>
 	        <exclude name="*MockCreate.ascx"/><!-- Exclude the mock/test create projections -->
-	        <exclude name="**/IntegrationTests/Results/**"/>
+	        <exclude name="**/FunctionalTests/Results/**"/>
 	        <include name="${IncludeKey}" />
 	    </fileset>	   
 	</zip>
