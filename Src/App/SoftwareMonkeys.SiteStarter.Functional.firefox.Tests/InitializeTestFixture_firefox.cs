@@ -54,14 +54,5 @@ namespace SoftwareMonkeys.SiteStarter.Functional.firefox.Tests
 			Assert.IsFalse(selenium.IsTextPresent("Exception"), "Text 'Exception' found when it shouldn't be.");
 
 		}
-
-		private int GeneratePortNumber()
-		{
-			TcpListener listener = new TcpListener(IPAddress.Any, 0);
-			listener.Start();
-			int port = ((IPEndPoint)listener.LocalEndpoint).Port;
-			listener.Stop();
-			return port;
-		}
 	}
 }

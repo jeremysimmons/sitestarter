@@ -79,14 +79,5 @@ namespace SoftwareMonkeys.SiteStarter.Functional.firefox.Tests
 			Assert.AreEqual("FirstName1 LastName1,System Administrator", String.Join(",", selenium.GetSelectedLabels("ctl00_Body_ctl00_Users")));
 
 		}
-
-		private int GeneratePortNumber()
-		{
-			TcpListener listener = new TcpListener(IPAddress.Any, 0);
-			listener.Start();
-			int port = ((IPEndPoint)listener.LocalEndpoint).Port;
-			listener.Stop();
-			return port;
-		}
 	}
 }

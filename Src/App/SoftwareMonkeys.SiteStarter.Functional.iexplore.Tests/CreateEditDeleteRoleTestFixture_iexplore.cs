@@ -73,14 +73,5 @@ namespace SoftwareMonkeys.SiteStarter.Functional.iexplore.Tests
 			Assert.IsFalse(selenium.IsTextPresent("Test Role"), "Text 'Test Role' found when it shouldn't be.");
 
 		}
-
-		private int GeneratePortNumber()
-		{
-			TcpListener listener = new TcpListener(IPAddress.Any, 0);
-			listener.Start();
-			int port = ((IPEndPoint)listener.LocalEndpoint).Port;
-			listener.Stop();
-			return port;
-		}
 	}
 }

@@ -78,7 +78,7 @@ namespace SoftwareMonkeys.SiteStarter.Functional.iexplore.Tests
 			selenium.Click("UpdateApplicationLink");
 			selenium.WaitForPageToLoad("30000");
 			selenium.WaitForPageToLoad("30000");
-			Assert.IsTrue(selenium.IsTextPresent(""), "Text '' not found when it should be.");
+			Assert.IsTrue(selenium.IsTextPresent("Application Update"), "Text 'Application Update' not found when it should be.");
 			Assert.IsTrue(selenium.IsTextPresent("current application version"), "Text 'current application version' not found when it should be.");
 			selenium.Click("//input[@value='Begin »']");
 			selenium.WaitForPageToLoad("30000");
@@ -96,16 +96,32 @@ namespace SoftwareMonkeys.SiteStarter.Functional.iexplore.Tests
 			selenium.Click("link=Roles");
 			selenium.WaitForPageToLoad("30000");
 			Assert.IsTrue(selenium.IsTextPresent("another role"), "Text 'another role' not found when it should be.");
+			selenium.Click("link=Sign Out");
+			selenium.WaitForPageToLoad("30000");
+			selenium.Type("ctl00_Body_ctl00_Login_UserName", "admin");
+			selenium.Type("ctl00_Body_ctl00_Login_Password", "pass");
+			selenium.Click("ctl00_Body_ctl00_Login_LoginButton");
+			selenium.WaitForPageToLoad("30000");
+			selenium.Open("Admin/Data.aspx");
+			selenium.Click("link=User-UserRole");
+			selenium.WaitForPageToLoad("30000");
+			Assert.IsTrue(selenium.IsTextPresent("System Administrator"), "Text 'System Administrator' not found when it should be.");
+			selenium.Click("UpdateApplicationLink");
+			selenium.WaitForPageToLoad("30000");
+			selenium.WaitForPageToLoad("30000");
+			Assert.IsTrue(selenium.IsTextPresent("Application Update"), "Text 'Application Update' not found when it should be.");
+			Assert.IsTrue(selenium.IsTextPresent("current application version"), "Text 'current application version' not found when it should be.");
+			selenium.Click("//input[@value='Begin »']");
+			selenium.WaitForPageToLoad("30000");
+			selenium.WaitForPageToLoad("30000");
+			Assert.IsTrue(selenium.IsTextPresent("Ready for Upload"), "Text 'Ready for Upload' not found when it should be.");
+			Assert.IsTrue(selenium.IsTextPresent("Your data has been backed up"), "Text 'Your data has been backed up' not found when it should be.");
+			selenium.Click("//input[@value='Continue »']");
+			selenium.WaitForPageToLoad("30000");
+			selenium.WaitForPageToLoad("30000");
+			Assert.IsTrue(selenium.IsTextPresent("Update Complete"), "Text 'Update Complete' not found when it should be.");
+			Assert.IsTrue(selenium.IsTextPresent("successfully"), "Text 'successfully' not found when it should be.");
 
-		}
-
-		private int GeneratePortNumber()
-		{
-			TcpListener listener = new TcpListener(IPAddress.Any, 0);
-			listener.Start();
-			int port = ((IPEndPoint)listener.LocalEndpoint).Port;
-			listener.Stop();
-			return port;
 		}
 	}
 }

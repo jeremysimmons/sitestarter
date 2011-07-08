@@ -65,14 +65,5 @@ namespace SoftwareMonkeys.SiteStarter.Functional.firefox.Tests
 			Assert.IsTrue(selenium.IsTextPresent("Password:"), "Text 'Password:' not found when it should be.");
 
 		}
-
-		private int GeneratePortNumber()
-		{
-			TcpListener listener = new TcpListener(IPAddress.Any, 0);
-			listener.Start();
-			int port = ((IPEndPoint)listener.LocalEndpoint).Port;
-			listener.Stop();
-			return port;
-		}
 	}
 }
