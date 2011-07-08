@@ -50,14 +50,5 @@ namespace SoftwareMonkeys.SiteStarter.Functional.iexplore.Tests
 			selenium.Close();
 
 		}
-
-		private int GeneratePortNumber()
-		{
-			TcpListener listener = new TcpListener(IPAddress.Any, 0);
-			listener.Start();
-			int port = ((IPEndPoint)listener.LocalEndpoint).Port;
-			listener.Stop();
-			return port;
-		}
 	}
 }

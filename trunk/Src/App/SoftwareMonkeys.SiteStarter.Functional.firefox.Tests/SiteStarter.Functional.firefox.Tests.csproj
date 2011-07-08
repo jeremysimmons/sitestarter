@@ -77,23 +77,11 @@
     <Reference Include="ThoughtWorks.Selenium.Core">
       <HintPath>..\..\..\lib\ThoughtWorks.Selenium.Core.dll</HintPath>
     </Reference>
-    <Reference Include="WebDriver.Chrome">
-      <HintPath>..\..\..\lib\WebDriver.Chrome.dll</HintPath>
+    <Reference Include="WebDriver">
+      <HintPath>..\..\..\lib\WebDriver.dll</HintPath>
     </Reference>
-    <Reference Include="WebDriver.Common">
-      <HintPath>..\..\..\lib\WebDriver.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="WebDriver.Firefox">
-      <HintPath>..\..\..\lib\WebDriver.Firefox.dll</HintPath>
-    </Reference>
-    <Reference Include="WebDriver.IE">
-      <HintPath>..\..\..\lib\WebDriver.IE.dll</HintPath>
-    </Reference>
-    <Reference Include="WebDriver.Remote">
-      <HintPath>..\..\..\lib\WebDriver.Remote.dll</HintPath>
-    </Reference>
-    <Reference Include="WebDriver.Remote.Common">
-      <HintPath>..\..\..\lib\WebDriver.Remote.Common.dll</HintPath>
+    <Reference Include="Webdriver.Support">
+      <HintPath>..\..\..\lib\Webdriver.Support.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

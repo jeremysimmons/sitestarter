@@ -60,14 +60,5 @@ namespace SoftwareMonkeys.SiteStarter.Functional.iexplore.Tests
 			Assert.IsTrue(selenium.IsTextPresent("Sign In Details"), "Text 'Sign In Details' not found when it should be.");
 
 		}
-
-		private int GeneratePortNumber()
-		{
-			TcpListener listener = new TcpListener(IPAddress.Any, 0);
-			listener.Start();
-			int port = ((IPEndPoint)listener.LocalEndpoint).Port;
-			listener.Stop();
-			return port;
-		}
 	}
 }
