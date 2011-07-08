@@ -6,6 +6,7 @@
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Business" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Web.Properties" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Web.Projections" %>
+<%@ Import namespace="SoftwareMonkeys.SiteStarter.Web.Parts" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Web.Controllers" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Web.State" %>
