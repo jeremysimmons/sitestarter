@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Collections.Specialized;
 using System.Configuration.Provider;
-using SoftwareMonkeys.SiteStarter.Configuration;
 
 namespace SoftwareMonkeys.SiteStarter.State
 {
