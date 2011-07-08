@@ -20,10 +20,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
 			SiteMapNode homeNode = new SiteMapNode();
 			homeNode.Action = "Home";
 			homeNode.TypeName = "Home";
+			homeNode.Title = "Home";
 			
 			SiteMapNode item = new SiteMapNode();
 			item.Action = "TestAction";
 			item.TypeName = "TestType";
+			item.Title = "Test Title";
 			
 			SiteMap map = new SiteMap();
 			map.UrlCreator = new MockUrlCreator(this);
@@ -41,10 +43,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
 			SiteMapNode homeNode = new SiteMapNode();
 			homeNode.Action = "Home";
 			homeNode.TypeName = "Home";
+			homeNode.Title = "Home";
 			
 			SiteMapNode item = new SiteMapNode();
 			item.Action = "TestAction";
 			item.TypeName = "TestType";
+			item.Title = "Test Title";
 			
 			SiteMap map = new SiteMap();
 			map.UrlCreator = new MockUrlCreator(this);
