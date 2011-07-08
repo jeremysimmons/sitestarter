@@ -22,7 +22,16 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			{
 				// Extend the timeout to ensure there is no error
 				using (TimeoutExtender extender = TimeoutExtender.NewMinutes(60))
-					ExecuteBackup();
+				{
+					try
+					{
+						ExecuteBackup();
+					}
+					catch (Exception ex)
+					{
+						LogWriter.Error(new Exception("An error occurred during the automatic backup.", ex));
+					}
+				}
 			}
 		}
 		
@@ -101,11 +110,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 
 			if (lastAutoBackup == DateTime.MinValue)
 				return DynamicLanguage.GetText("Never");
-
-			//return lastBackup.ToString();
-			//return DateTime.Now.Subtract(lastBackup).Days + " days";
-
-			//TimeSpan span = lastAutoBackup.Subtract(DateTime.Now);
+				
 			TimeSpan span = DateTime.Now.Subtract(lastAutoBackup);
 
 			string time = String.Empty;
