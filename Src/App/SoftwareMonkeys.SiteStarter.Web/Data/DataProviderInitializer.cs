@@ -26,7 +26,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Data
 
 		public DataProvider Initialize()
 		{
-			using (LogGroup logGroup = LogGroup.Start("Initializing data provider", NLog.LogLevel.Info))
+			using (LogGroup logGroup = LogGroup.Start("Initializing data provider", NLog.LogLevel.Debug))
 			{
 				if (StateAccess.IsInitialized && Config.IsInitialized
 				    && !isInitialized)
