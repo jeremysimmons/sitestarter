@@ -119,6 +119,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// </summary>
 		public void Initialize()
 		{
+			Initialize(false);
+		}
+		
+		/// <summary>
+		/// Initializes the controllers and loads all controllers to state.
+		/// </summary>
+		/// <param name="includeTestControllers"></param>
+		public void Initialize(bool includeTestControllers)
+		{
 			using (LogGroup logGroup = LogGroup.Start("Initializing the web controllers.", NLog.LogLevel.Debug))
 			{
 				if (StateAccess.IsInitialized)
@@ -134,7 +143,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 					{
 						LogWriter.Debug("Is not mapped. Scanning from type attributes.");
 						
-						controllers = FindControllers();
+						controllers = FindControllers(includeTestControllers);
 						SaveInfoToFile(controllers);
 					}
 					
@@ -173,8 +182,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <summary>
 		/// Finds all the controllers available to the application.
 		/// </summary>
+		/// <param name="includeTestControllers"></param>
 		/// <returns>An array of the available controllers.</returns>
-		public ControllerInfo[] FindControllers()
+		public ControllerInfo[] FindControllers(bool includeTestControllers)
 		{
 			List<ControllerInfo> controllers = new List<ControllerInfo>();
 			
@@ -184,7 +194,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				
 				foreach (BaseControllerScanner scanner in Scanners)
 				{
-					foreach (ControllerInfo controller in scanner.FindControllers())
+					foreach (ControllerInfo controller in scanner.FindControllers(includeTestControllers))
 					{
 						controllers.Add(controller);
 					}

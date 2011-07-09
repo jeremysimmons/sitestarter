@@ -27,7 +27,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 			
 			CreateMockControllers(scanner.FileNamer);
 			
-			ControllerInfo[] infos = scanner.FindControllers();
+			ControllerInfo[] infos = scanner.FindControllers(true);
 			
 			Assert.Greater(infos.Length, 1, "Invalid number of controllers found.");
 			

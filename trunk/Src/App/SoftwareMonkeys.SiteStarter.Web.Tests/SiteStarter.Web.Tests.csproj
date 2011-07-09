@@ -138,6 +138,7 @@
       <Project>{A5D49D94-D936-4123-BA9A-572AA7C7F426}</Project>
       <Name>SiteStarter.Web</Name>
     </ProjectReference>
+    <Compile Include="AssemblyScanInfo.cs" />
     <Compile Include="BaseWebTestFixture.cs" />
     <Compile Include="Controllers\ControllerLocatorTests.cs" />
     <Compile Include="Controllers\ControllerScannerTests.cs" />

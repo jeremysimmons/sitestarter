@@ -76,12 +76,20 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// Checks whether the provided assembly contains strategy types by looking for AssemblyContainsStrategiesAttribute.
 		/// </summary>
 		/// <param name="assembly"></param>
+		/// <param name="includeTestControllers"></param>
 		/// <returns></returns>
-		public bool ContainsControllers(Assembly assembly)
+		public bool ContainsControllers(Assembly assembly, bool includeTestControllers)
 		{
 			bool doesContain = false;
 			
-			doesContain = assembly.GetCustomAttributes(typeof(AssemblyContainsControllersAttribute), true).Length > 0;
+			object[] attributes = assembly.GetCustomAttributes(typeof(AssemblyContainsControllersAttribute), true);
+			if (attributes.Length > 0)
+			{
+				AssemblyContainsControllersAttribute attribute = (AssemblyContainsControllersAttribute)attributes[0];
+				
+				doesContain = includeTestControllers // True if test controllers are included, or
+					|| !attribute.AreTestControllers; // True if controllers are NOT test controllers
+			}
 			
 			return doesContain;
 		}
@@ -89,8 +97,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <summary>
 		/// Finds all the controllers in the available assemblies.
 		/// </summary>
+		/// <param name="includeTestControllers"></param>
 		/// <returns>An array of info about the controllers found.</returns>
-		public override ControllerInfo[] FindControllers()
+		public override ControllerInfo[] FindControllers(bool includeTestControllers)
 		{
 			List<ControllerInfo> controllers = new List<ControllerInfo>();
 			
@@ -100,7 +109,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			{
 				Assembly assembly = Assembly.LoadFrom(assemblyPath);
 				
-				if (ContainsControllers(assembly))
+				if (ContainsControllers(assembly, includeTestControllers))
 				{
 					try
 					{
