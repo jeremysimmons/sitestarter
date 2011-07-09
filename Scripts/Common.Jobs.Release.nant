@@ -11,6 +11,9 @@
 	
 <target name="Common.Jobs.CreateReleaseZips">
 		<call target="Common.Jobs.ResetAll"/>
+		<call target="Common.Jobs.ClearData" failonerror="false"/>
+		<call target="Common.Jobs.ClearData"/>
+		<call target="Common.Jobs.ClearCache"/>
 		<call target="Common.Jobs.InitializeCache"/>
 
 
