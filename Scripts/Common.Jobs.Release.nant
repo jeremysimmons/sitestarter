@@ -213,9 +213,9 @@
 	        <exclude name="**/App_Data/**.xml"/>
 	        <exclude name="**/App_Data/Testing/*"/>
 	        <exclude name="**/App_Data/*.db4o"/>
-	        <exclude name="**/App_Data/Personalization_Data/**"/>
-	        <exclude name="**/App_Data/Logs/**"/>
-	        <exclude name="**/App_Data/LogsArchive/**"/>
+	        <exclude name="**/App_Data/Personalization_Data"/>
+	        <exclude name="**/App_Data/Logs"/>
+	        <exclude name="**/App_Data/LogsArchive"/>
 	        <exclude name="**/App_Data/LogReports/**"/>
 	        <exclude name="**/App_Data/LegacyDefault/**"/>
 	        <exclude name="**/App_Data/Legacy/**"/>
@@ -223,7 +223,7 @@
 	        <exclude name="**/App_Data/ImportDefault/**"/>
 	        <exclude name="**/App_Data/LegacyConverted/**"/>
 	        <exclude name="**/App_Data/Version.number"/>
-	        <exclude name="**/App_Data/Suspended/**"/>
+	        <exclude name="**/App_Data/Suspended"/>
 	        <exclude name="**/Deployment/**"/>
 	        <exclude name="*.Import.nant"/>
 	        <exclude name="**/Releases/**"/>
