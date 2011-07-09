@@ -40,7 +40,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
 			
 			initializer.Scanners = new ControllerScanner[] {scanner};
 			
-			initializer.Initialize();
+			initializer.Initialize(true);
 		}
 		
 		public BaseWebTestFixture()

@@ -15,7 +15,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <summary>
 		/// Finds all the controllers in the available assemblies.
 		/// </summary>
+		/// <param name="includeTestControllers"></param>
 		/// <returns>An array of info about the controllers found.</returns>
-		public abstract ControllerInfo[] FindControllers();
+		public abstract ControllerInfo[] FindControllers(bool includeTestControllers);
 	}
 }
