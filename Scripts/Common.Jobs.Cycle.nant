@@ -13,11 +13,14 @@
 		<call target="Common.Jobs.BuildSolution" failonerror="false"/>	
 		<call target="Common.Jobs.CreateReleaseZips" failonerror="false"/>	
 		<call target="Common.Jobs.RunTests" failonerror="false"/>
-		<!--property name="browser" value="firefox" /-->
-		<!--call target="Common.Jobs.RunFunctionalTests" failonerror="false" /-->
+		
+		<property name="browser" value="*firefox" />
+		<call target="Common.Jobs.RunFunctionalTests-GUI" failonerror="false" />
+		
 		<!-- Disabled because test mechanism doesn't seem to be working with IE -->
 		<!--property name="browser" value="iexplore" /-->
 		<!--call target="Common.Jobs.RunFunctionalTests" failonerror="false" /-->
+		
 		<call target="Common.Jobs.GenerateScreenshots" failonerror="false" />	
 		<call target="Common.Jobs.UploadZips" failonerror="false" />		
 		<call target="Common.Jobs.VersionBuildReport"/>	
