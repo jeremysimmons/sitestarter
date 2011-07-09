@@ -39,6 +39,7 @@
 	<include buildfile="Common.Actions.CleanSolution.nant"/>
 	
 	<include buildfile="Common.Jobs.ClearData.nant"/>
+	<include buildfile="Common.Jobs.ClearCache.nant"/>
   		
 	<include buildfile="Common.Jobs.Release.nant"/>
 	<!--include buildfile="Common.Actions.Compile.nant"/-->

@@ -45,6 +45,7 @@
 	<include buildfile="Common.Actions.CleanSolution.nant"/>
 	
 	<include buildfile="Common.Jobs.ClearData.nant"/>
+	<include buildfile="Common.Jobs.ClearCache.nant"/>
   		
   		
   		<!--property name="Solution.RelativePath" value=""/-->
