@@ -91,7 +91,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReferenceAttribute.cs" />
     <Compile Include="SerializableCollection.cs" />
-    <Compile Include="TestClass.cs" />
     <Compile Include="EntityCollection.cs" />
     <Compile Include="EntityEventHandler.cs" />
     <Compile Include="SortDirection.cs" />

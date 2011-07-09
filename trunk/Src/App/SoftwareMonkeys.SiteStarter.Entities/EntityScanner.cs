@@ -70,8 +70,9 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <summary>
 		/// Finds all the entities in the available assemblies.
 		/// </summary>
+		/// <param name="includeTestEntities">A flag indicating whether to find test/mock entities as well.</param>
 		/// <returns>An array of info about the entities found.</returns>
-		public EntityInfo[] FindEntities()
+		public EntityInfo[] FindEntities(bool includeTestEntities)
 		{
 			List<EntityInfo> entities = new List<EntityInfo>();
 			
@@ -83,7 +84,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 					{
 						Assembly assembly = Assembly.LoadFrom(assemblyPath);
 						
-						if (ContainsEntities(assembly))
+						if (ContainsEntities(assembly, includeTestEntities))
 						{
 							foreach (Type type in assembly.GetTypes())
 							{
@@ -123,9 +124,27 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <returns></returns>
 		public bool ContainsEntities(Assembly assembly)
 		{
+			return ContainsEntities(assembly, false);
+		}
+		
+		/// <summary>
+		/// Checks whether the provided assembly contains entity types by looking for AssemblyContainsEntitiesAttribute.
+		/// </summary>
+		/// <param name="assembly"></param>
+		/// <param name="includeTestEntities">A flag indicating whether to include test/mock entities as well.</param>
+		/// <returns></returns>
+		public bool ContainsEntities(Assembly assembly, bool includeTestEntities)
+		{
 			bool doesContainEntities = false;
 			
-			doesContainEntities = assembly.GetCustomAttributes(typeof(AssemblyContainsEntitiesAttribute), true).Length > 0;
+			object[] attributes = assembly.GetCustomAttributes(typeof(AssemblyContainsEntitiesAttribute), true);
+			if (attributes.Length > 0)
+			{
+				AssemblyContainsEntitiesAttribute attribute = (AssemblyContainsEntitiesAttribute)attributes[0];
+				
+				doesContainEntities = includeTestEntities // True if test entities are included, or
+					|| !attribute.AreTestEntities; // True if entities are NOT test entities
+			}
 			
 			return doesContainEntities;
 		}

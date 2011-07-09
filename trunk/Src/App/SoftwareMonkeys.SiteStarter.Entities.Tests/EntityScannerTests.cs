@@ -30,11 +30,39 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 		[Test]
 		public void Test_ContainsEntities_NonMatchingAssembly()
 		{
-			Assembly assembly = Assembly.Load("SoftwareMonkeys.SiteStarter.Business");
+			Assembly assembly = Assembly.Load("SoftwareMonkeys.SiteStarter.State");
 			
 			EntityScanner scanner = new EntityScanner();
 			
 			bool doesMatch = scanner.ContainsEntities(assembly);
+			
+			Assert.IsFalse(doesMatch, "Matched when it shouldn't have.");
+		}
+		
+		[Test]
+		public void Test_ContainsEntities_MatchingAssembly_IncludeTestEnttiies()
+		{
+			Assembly matchingAssembly = Assembly.Load("SoftwareMonkeys.SiteStarter.Entities.Tests");
+			
+			EntityScanner scanner = new EntityScanner();
+			
+			bool includeTestEntities = true;
+			
+			bool doesMatch = scanner.ContainsEntities(matchingAssembly, includeTestEntities);
+			
+			Assert.IsTrue(doesMatch, "Failed to match when it should.");
+		}
+		
+		[Test]
+		public void Test_ContainsEntities_NonMatchingAssembly_ExcludeTestEntites()
+		{
+			Assembly assembly = Assembly.Load("SoftwareMonkeys.SiteStarter.Entities.Tests");
+			
+			EntityScanner scanner = new EntityScanner();
+			
+			bool includeTestEntities = false;
+			
+			bool doesMatch = scanner.ContainsEntities(assembly, includeTestEntities);
 			
 			Assert.IsFalse(doesMatch, "Matched when it shouldn't have.");
 		}
