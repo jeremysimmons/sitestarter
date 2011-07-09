@@ -61,12 +61,20 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			return list.ToArray();
 		}
 		
-		
 		/// <summary>
 		/// Finds all the strategies in the available assemblies.
 		/// </summary>
 		/// <returns>An array of info about the strategies found.</returns>
 		public ReactionInfo[] FindReactions()
+		{
+			return FindReactions(false);
+		}
+		/// <summary>
+		/// Finds all the strategies in the available assemblies.
+		/// </summary>
+		/// <param name="includeTestReactions"></param>
+		/// <returns>An array of info about the strategies found.</returns>
+		public ReactionInfo[] FindReactions(bool includeTestReactions)
 		{
 			ReactionInfoCollection strategies = new ReactionInfoCollection();
 			
@@ -76,7 +84,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			{
 				Assembly assembly = Assembly.LoadFrom(assemblyPath);
 				
-				if (ContainsReactions(assembly))
+				if (ContainsReactions(assembly, includeTestReactions))
 				{
 					foreach (Type type in assembly.GetTypes())
 					{
@@ -109,12 +117,20 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// Checks whether the provided assembly contains reaction types by looking for AssemblyContainsReactionsAttribute.
 		/// </summary>
 		/// <param name="assembly"></param>
+		/// <param name="includeTestReactions"></param>
 		/// <returns></returns>
-		public bool ContainsReactions(Assembly assembly)
+		public bool ContainsReactions(Assembly assembly, bool includeTestReactions)
 		{
 			bool doesContainReactions = false;
 			
-			doesContainReactions = assembly.GetCustomAttributes(typeof(AssemblyContainsReactionsAttribute), true).Length > 0;
+			object[] attributes = assembly.GetCustomAttributes(typeof(AssemblyContainsReactionsAttribute), true);
+			if (attributes.Length > 0)
+			{
+				AssemblyContainsReactionsAttribute attribute = (AssemblyContainsReactionsAttribute)attributes[0];
+				
+				doesContainReactions = includeTestReactions // True if test reactions are included, or
+					|| !attribute.AreTestReactions; // True if reactions are NOT test reactions
+			}
 			
 			return doesContainReactions;
 		}

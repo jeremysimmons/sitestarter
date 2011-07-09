@@ -35,7 +35,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			// Set the specific assemblies used during testing as it can't do it automatically in the mock environment
 			initializer.Scanner.AssemblyPaths = assemblyPaths;
 			
-			initializer.Initialize();
+			initializer.Initialize(true);
 		}
 		
 		public virtual void InitializeMockBusiness()
@@ -56,7 +56,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			// Set the specific assemblies used during testing as it can't do it automatically in the mock environment
 			initializer.Scanner.AssemblyPaths = assemblyPaths;
 			
-			initializer.Initialize();
+			initializer.Initialize(true);
 			
 			
 			// Reactions
@@ -66,7 +66,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			// Set the specific assemblies used during testing as it can't do it automatically in the mock environment
 			reactionsInitializer.Scanner.AssemblyPaths = assemblyPaths;
 			
-			reactionsInitializer.Initialize();
+			reactionsInitializer.Initialize(true);
 			
 		}
 		

@@ -109,6 +109,15 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		public void Initialize()
 		{
+			Initialize(false);
+		}
+		
+		/// <summary>
+		/// Initializes the reactions and loads all reactions to state.
+		/// </summary>
+		/// <param name="includeTestReactions"></param>
+		public void Initialize(bool includeTestReactions)
+		{
 			using (LogGroup logGroup = LogGroup.Start("Initializing the business reactions.", NLog.LogLevel.Debug))
 			{
 				ReactionInfo[] reactions = new ReactionInfo[]{};
@@ -122,7 +131,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				{
 					LogWriter.Debug("Is not mapped. Scanning from type attributes.");
 					
-					reactions = FindReactions();
+					reactions = FindReactions(includeTestReactions);
 					SaveToFile(reactions);
 				}
 				
@@ -158,10 +167,11 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <summary>
 		/// Finds all the reactions available to the application.
 		/// </summary>
+		/// <param name="includeTestReactions"></param>
 		/// <returns>An array of the available reactions.</returns>
-		public ReactionInfo[] FindReactions()
+		public ReactionInfo[] FindReactions(bool includeTestReactions)
 		{
-			return Scanner.FindReactions();
+			return Scanner.FindReactions(includeTestReactions);
 		}
 		
 		/// <summary>
