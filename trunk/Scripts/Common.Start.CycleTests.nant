@@ -36,6 +36,7 @@
 	<include buildfile="Common.Jobs.ResetImportData.nant"/>
 	<include buildfile="Common.Jobs.WWW.nant"/>
 	<include buildfile="Common.Jobs.Modules.nant"/>
+	<include buildfile="Common.Jobs.RunFunctionalTests-GUI.nant"/>
 	<include buildfile="Common.Actions.CleanSolution.nant"/>
 	
 	<loadtasks>

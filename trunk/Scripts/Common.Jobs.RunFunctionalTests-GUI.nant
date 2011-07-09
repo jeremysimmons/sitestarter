@@ -23,7 +23,18 @@
     			</namespaces>
 	    	</xmlpeek>
 			
-		<property name="resultsDir" value="${path::get-full-path(path::combine(path::combine(Solution.RootPath, 'FunctionalTests'), 'Results'))}" />
+		<xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.BaseNamespace']/@value"
+		    property="Solution.BaseNamespace">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+	    	</xmlpeek>
+			
+		<!--property name="resultsDir" value="${path::get-full-path(path::combine(path::combine(Solution.RootPath, 'FunctionalTests'), 'Results'))}" /-->
+		
+		<property name="resultsDir" value="${path::get-full-path(path::combine(path::combine(Project.RootPath, 'TestResults'), 'html'))}" />
 			
 		<echo message="Results directory: ${resultsDir}"/>
 		  
@@ -53,11 +64,11 @@
 
 		<echo message="Selenium server mapped: ${path::get-full-path(seleniumServer)}"/>
 		
-		<if test="${directory::exists(resultsDir)}">
+		<!--if test="${directory::exists(resultsDir)}">
   			<delete dir="${resultsDir}"/>
-  		</if>
+  		</if-->
 		
-		<property name="resultsPath" value="${path::get-full-path(resultsDir + '/' + versionNumber + '/index.html')}"/>
+		<property name="resultsPath" value="${path::get-full-path(resultsDir + '/' + versionNumber + '/' + string::replace(Solution.BaseNamespace, '.', '-') + '-Functional-' + string::replace(browser, '*', '') + '-Tests/index.html')}"/>
 		
 		<mkdir dir="${path::get-directory-name(resultsPath)}"/>
 		
