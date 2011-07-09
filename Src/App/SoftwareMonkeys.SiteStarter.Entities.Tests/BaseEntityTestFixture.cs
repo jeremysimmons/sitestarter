@@ -40,7 +40,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 			// Set the specific assemblies used during testing as it can't do it automatically in the mock environment
 			initializer.Scanner.AssemblyPaths = assemblyPaths;
 			
-			initializer.Initialize();
+			initializer.Initialize(true);
 		}
 		
 		protected void DisposeMockEntities()

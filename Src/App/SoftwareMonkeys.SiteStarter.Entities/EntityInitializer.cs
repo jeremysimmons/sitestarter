@@ -108,6 +108,11 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// </summary>
 		public void Initialize()
 		{
+			Initialize(false);
+		}
+		
+		public void Initialize(bool includeTestEntities)
+		{
 			using (LogGroup logGroup = LogGroup.Start("Initializing the business entities.", LogLevel.Debug))
 			{
 				EntityInfo[] entities = new EntityInfo[]{};
@@ -121,7 +126,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				{
 					LogWriter.Debug("Is not mapped. Scanning from type attributes.");
 					
-					entities = FindEntities();
+					entities = FindEntities(includeTestEntities);
 					SaveToFile(entities);
 				}
 				
@@ -157,10 +162,11 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <summary>
 		/// Finds all the entities available to the application.
 		/// </summary>
+		/// <param name="includeTestEntities">A flag indicating whether to find test/mock entities as well.</param>
 		/// <returns>An array of the available entities.</returns>
-		public EntityInfo[] FindEntities()
+		public EntityInfo[] FindEntities(bool includeTestEntities)
 		{
-			return Scanner.FindEntities();
+			return Scanner.FindEntities(includeTestEntities);
 		}
 		
 		/// <summary>
