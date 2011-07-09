@@ -68,9 +68,27 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns></returns>
 		public bool ContainsStrategies(Assembly assembly)
 		{
+			return ContainsStrategies(assembly, false);
+		}
+		
+		/// <summary>
+		/// Checks whether the provided assembly contains strategy types by looking for AssemblyContainsStrategiesAttribute.
+		/// </summary>
+		/// <param name="assembly"></param>
+		/// <param name="includeTestStrategies"></param>
+		/// <returns></returns>
+		public bool ContainsStrategies(Assembly assembly, bool includeTestStrategies)
+		{
 			bool doesContainStrategies = false;
 			
-			doesContainStrategies = assembly.GetCustomAttributes(typeof(AssemblyContainsStrategiesAttribute), true).Length > 0;
+			object[] attributes = assembly.GetCustomAttributes(typeof(AssemblyContainsStrategiesAttribute), true);
+			if (attributes.Length > 0)
+			{
+				AssemblyContainsStrategiesAttribute attribute = (AssemblyContainsStrategiesAttribute)attributes[0];
+				
+				doesContainStrategies = includeTestStrategies // True if test strategies are included, or
+					|| !attribute.AreTestStrategies; // True if strategies are NOT test strategies
+			}
 			
 			return doesContainStrategies;
 		}
@@ -81,6 +99,16 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns>An array of info about the strategies found.</returns>
 		public StrategyInfo[] FindStrategies()
 		{
+			return FindStrategies(false);
+		}
+		
+		/// <summary>
+		/// Finds all the strategies in the available assemblies.
+		/// </summary>
+		/// <param name="includeTestStrategies"></param>
+		/// <returns>An array of info about the strategies found.</returns>
+		public StrategyInfo[] FindStrategies(bool includeTestStrategies)
+		{
 			List<StrategyInfo> strategies = new List<StrategyInfo>();
 			
 			//using (LogGroup logGroup = LogGroup.Start("Finding strategies by scanning the attributes of the available type.", NLog.LogLevel.Debug))
@@ -89,7 +117,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			{
 				Assembly assembly = Assembly.LoadFrom(assemblyPath);
 				
-				if (ContainsStrategies(assembly))
+				if (ContainsStrategies(assembly, includeTestStrategies))
 				{
 					Type[] types = new Type[] {};
 					

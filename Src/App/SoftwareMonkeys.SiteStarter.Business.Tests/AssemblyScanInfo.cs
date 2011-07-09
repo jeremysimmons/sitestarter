@@ -1,4 +1,4 @@
 ﻿using SoftwareMonkeys.SiteStarter.Business;
 
-[assembly: AssemblyContainsStrategies]
-[assembly: AssemblyContainsReactions]
+[assembly: AssemblyContainsStrategies(true)]
+[assembly: AssemblyContainsReactions(true)]

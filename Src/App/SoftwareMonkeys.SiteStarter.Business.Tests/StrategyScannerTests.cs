@@ -63,5 +63,30 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			
 			Assert.IsFalse(doesMatch, "Matched when it shouldn't have.");
 		}
+		
+		
+		[Test]
+		public void Test_ContainsEntities_MatchingAssembly_IncludeTestStrategies()
+		{
+			Assembly matchingAssembly = Assembly.Load("SoftwareMonkeys.SiteStarter.Business.Tests");
+			
+			StrategyScanner scanner = new StrategyScanner();
+			
+			bool doesMatch = scanner.ContainsStrategies(matchingAssembly, true);
+			
+			Assert.IsTrue(doesMatch, "Failed to match when it should.");
+		}
+		
+		[Test]
+		public void Test_ContainsEntities_NonMatchingAssembly_ExcludeTestStrategies()
+		{
+			Assembly assembly = Assembly.Load("SoftwareMonkeys.SiteStarter.Business.Tests");
+			
+			StrategyScanner scanner = new StrategyScanner();
+			
+			bool doesMatch = scanner.ContainsStrategies(assembly, false);
+			
+			Assert.IsFalse(doesMatch, "Matched when it shouldn't have.");
+		}
 	}
 }

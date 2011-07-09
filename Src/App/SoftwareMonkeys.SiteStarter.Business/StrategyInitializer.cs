@@ -109,6 +109,14 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		public void Initialize()
 		{
+			Initialize(false);
+		}
+		
+		/// <summary>
+		/// Initializes the strategies and loads all strategies to state.
+		/// </summary>
+		public void Initialize(bool includeTestEntities)
+		{
 			using (LogGroup logGroup = LogGroup.Start("Initializing the business strategies.", NLog.LogLevel.Debug))
 			{
 				StrategyInfo[] strategies = new StrategyInfo[]{};
@@ -122,7 +130,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				{
 					LogWriter.Debug("Is not mapped. Scanning from type attributes.");
 					
-					strategies = FindStrategies();
+					strategies = FindStrategies(includeTestEntities);
 					SaveToFile(strategies);
 				}
 				
@@ -161,7 +169,17 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns>An array of the available strategies.</returns>
 		public StrategyInfo[] FindStrategies()
 		{
-			return Scanner.FindStrategies();
+			return FindStrategies(false);
+		}
+		
+		/// <summary>
+		/// Finds all the strategies available to the application.
+		/// </summary>
+		/// <param name="includeTestStrategies"></param>
+		/// <returns>An array of the available strategies.</returns>
+		public StrategyInfo[] FindStrategies(bool includeTestStrategies)
+		{
+			return Scanner.FindStrategies(includeTestStrategies);
 		}
 		
 		/// <summary>
