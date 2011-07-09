@@ -67,33 +67,12 @@
     <Reference Include="Selenium.WebDriverBackedSelenium">
       <HintPath>..\..\..\lib\Selenium.WebDriverBackedSelenium.dll</HintPath>
     </Reference>
-    <Reference Include="SoftwareMonkeys.SeleniumToCSharp.Conversion">
-      <HintPath>..\..\..\lib\SoftwareMonkeys.SeleniumToCSharp.Conversion.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="ThoughtWorks.Selenium.Core">
       <HintPath>..\..\..\lib\ThoughtWorks.Selenium.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="WebDriver.Chrome">
-      <HintPath>..\..\..\lib\WebDriver.Chrome.dll</HintPath>
-    </Reference>
-    <Reference Include="WebDriver.Common">
-      <HintPath>..\..\..\lib\WebDriver.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="WebDriver.Firefox">
-      <HintPath>..\..\..\lib\WebDriver.Firefox.dll</HintPath>
-    </Reference>
-    <Reference Include="WebDriver.IE">
-      <HintPath>..\..\..\lib\WebDriver.IE.dll</HintPath>
-    </Reference>
-    <Reference Include="WebDriver.Remote">
-      <HintPath>..\..\..\lib\WebDriver.Remote.dll</HintPath>
-    </Reference>
-    <Reference Include="WebDriver.Remote.Common">
-      <HintPath>..\..\..\lib\WebDriver.Remote.Common.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
