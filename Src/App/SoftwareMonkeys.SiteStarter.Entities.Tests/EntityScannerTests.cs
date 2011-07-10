@@ -40,7 +40,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 		}
 		
 		[Test]
-		public void Test_ContainsEntities_MatchingAssembly_IncludeTestEnttiies()
+		public void Test_ContainsEntities_MatchingAssembly_IncludeTestEntities()
 		{
 			Assembly matchingAssembly = Assembly.Load("SoftwareMonkeys.SiteStarter.Entities.Tests");
 			
@@ -54,7 +54,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 		}
 		
 		[Test]
-		public void Test_ContainsEntities_NonMatchingAssembly_ExcludeTestEntites()
+		public void Test_ContainsEntities_NonMatchingAssembly_ExcludeTestEntities()
 		{
 			Assembly assembly = Assembly.Load("SoftwareMonkeys.SiteStarter.Entities.Tests");
 			
