@@ -108,7 +108,7 @@
         {
             Config.Initialize(Server.MapPath(HttpContext.Current.Request.ApplicationPath), WebUtilities.GetLocationVariation(HttpContext.Current.Request.Url));
             InitializeEntities();
-            new DataProviderInitializer().Initialize();
+			InitializeData();
         	InitializeBusiness();
         	InitializeWeb();
 		}
@@ -119,6 +119,11 @@
         if (Config.IsInitialized)
             new EntityInitializer().Initialize();
     }
+	
+	private void InitializeData()
+	{
+            new DataProviderInitializer().Initialize();
+	}
     
     private void InitializeBusiness()
     {
