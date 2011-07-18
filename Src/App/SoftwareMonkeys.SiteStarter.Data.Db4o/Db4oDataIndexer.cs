@@ -893,6 +893,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			using (LogGroup logGroup = LogGroup.Start("Retrieving a page of entities.", NLog.LogLevel.Debug))
 			{
+				if (type == null)
+					throw new ArgumentNullException("type");
+			
 				if (location == null)
 					throw new ArgumentNullException("location");
 				
@@ -905,6 +908,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				// Get the corresponding data store
 				Db4oDataStore store = (Db4oDataStore)GetDataStore(type);
 				
+				if (store == null)
+					throw new Exception("Can't find data store.");
+				
+				if (store.ObjectContainer == null)
+					throw new Exception("store.ObjectContainer is null");
+				
 				// Create the query object
 				IQuery query = store.ObjectContainer.Query();
 				
@@ -916,6 +925,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 
 				// Execute the query and get the object set
 				IObjectSet os = query.Execute();
+
+				if (os == null)
+					throw new Exception("IObjectSet is null");
 				
 				int i = 0;
 				
