@@ -803,15 +803,21 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <returns></returns>
 		public override IEntity[] GetEntities(Type type, Dictionary<string, object> parameters)
 		{
+			
 			List<IEntity> entities = new List<IEntity>();
 			
 			using (LogGroup logGroup = LogGroup.Start("Querying the data store based on the provided type and parameters.", NLog.LogLevel.Debug))
 			{
+				if (type == null)
+					throw new ArgumentNullException("type");
 				
 				if (parameters == null)
 					throw new ArgumentNullException("parameters");
 
 				Db4oDataStore store = (Db4oDataStore)GetDataStore(type);
+				
+				if (store == null)
+					throw new Exception("No data store found.");
 				
 				if (store.DoesExist)
 				{
@@ -825,7 +831,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					                                                                  	{
 					                                                                  		LogWriter.Debug("Checking parameter '" + key + "' for value '" + parameters[key].ToString() + "'");
 					                                                                  		
-					                                                                  		PropertyInfo property = e.GetType().GetProperty(key, parameters[key].GetType());
+					                                                                  		Type parameterType = parameters[key] != null ? parameters[key].GetType() : null;
+					                                                                  		
+					                                                                  		PropertyInfo property = e.GetType().GetProperty(key, parameterType);
 					                                                                  		if (property == null)
 					                                                                  			throw new InvalidOperationException("The property '" + key + "' was not found on the type " + e.GetType().ToString());
 					                                                                  		else
@@ -849,10 +857,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					
 				}
 				
-				LogWriter.Debug("Total: " + entities.Count.ToString());
+				LogWriter.Debug("Total: " + entities != null ? entities.Count.ToString() : 0.ToString());
 
 			}
-			return Release((IEntity[])entities.ToArray());
+			return Release((IEntity[])(entities != null ? entities.ToArray() : new IEntity[]{});
 		}
 
 		
