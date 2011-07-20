@@ -23,6 +23,8 @@
 		
 		<call target="Common.Jobs.GenerateScreenshots" failonerror="false" />	
 		<call target="Common.Jobs.UploadZips" failonerror="false" />	
+
+		<call target="Common.Jobs.VersionBuildReport"/>	
 		<call target="Common.Jobs.OutputFiles"/>	
 		
 		<echo message="============================================="/>

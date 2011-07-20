@@ -5,13 +5,19 @@
 
   	<target name="Common.Actions.GenerateAssemblyInfoFile">
 
-	<loadfile
+  		<property name="versionFilePath" value="${path::combine(AssemblyProject.RootPath, 'Version.Number')}"/>
+  		
+		<property name="versionKey" value="${string::replace(AssemblyProject.BaseNamespace, '.', '-')}"/>
+
+		<get src="${ 'http://10.0.0.1:8080/scripts/Scripts/VersionNumber.script?Raw=true&amp;Key=' + versionKey}" dest="${versionFilePath}" failonerror="false" />
+		
+		<loadfile
 		    file="${versionFilePath}"
 		    property="AssemblyProject.Version" />
 			
-	<property name="AssemblyProject.Version" value="${string::trim(AssemblyProject.Version)}" />
+		<property name="AssemblyProject.Version" value="${string::trim(AssemblyProject.Version)}" />
 
-	<echo message="Assembly version: ${AssemblyProject.Version}"/>
+		<echo message="Assembly version: ${AssemblyProject.Version}"/>
 		
     	<xmlpeek
 		    file="${Project.PropertiesPath}"
