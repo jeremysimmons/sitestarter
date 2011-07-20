@@ -860,7 +860,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				LogWriter.Debug("Total: " + entities != null ? entities.Count.ToString() : 0.ToString());
 
 			}
-			return Release((IEntity[])(entities != null ? entities.ToArray() : new IEntity[]{});
+			return Release((IEntity[])(entities != null ? entities.ToArray() : new IEntity[]{}));
 		}
 
 		
