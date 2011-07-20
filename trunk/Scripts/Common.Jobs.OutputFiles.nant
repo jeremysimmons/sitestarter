@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<project name="Common.Jobs.OutputFiles" default="Common.Jobs.OutputFiles" xmlns="http://nant.sf.net/schemas/nant.xsd">
+
+	
+  <target name="Common.Jobs.OutputFiles">
+  
+  
+		<xmlpeek
+		    file="${Project.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Project.Name']/@value"
+		    property="Project.Name">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+
+  
+  		<property name="versionFilePath" value="${path::combine(path::combine(Solution.RootPath, 'WWW'), 'Version.Number')}"/>
+  		
+		<loadfile
+		    file="${versionFilePath}"
+		    property="CurrentVersion" />
+			
+		<property name="CurrentVersion" value="${string::trim(CurrentVersion)}" />	
+			
+		<echo message="Current version: ${CurrentVersion}" />
+		
+		<property name="outputBaseDir" value="S:\www\softwaremonkeys\${Project.Name}\Archive\${string::replace(CurrentVersion, '.', '-')}" />
+	
+			
+		<call target="OutputBuildLog" />
+		<call target="OutputScreenshots" />
+		<call target="OutputTestResults" />
+		
+		<property name="tmpFilePath" value="${path::get-full-path('tmpfile.txt')}" />
+		
+		<get src="http://10.0.0.1:8080/scripts/Scripts/UploadProjectFiles.script?Project=${Project.Name}&amp;Store=Default&amp;Group=softwaremonkeys" dest="${tmpFilePath}" failonerror="false" verbose="true" timeout="1800000" />
+
+		<delete file="${tmpFilePath}"/>
+  </target>
+  
+  
+  <target name="OutputBuildLog">
+		
+		<copy todir="${outputBaseDir}\BuildLog\" flatten="true">
+			<fileset basedir="${Project.RootPath}">
+				<include name="Build.txt" />
+			</fileset>
+		</copy>
+		
+  </target>
+  
+  <target name="OutputScreenshots">
+		
+		<copy todir="${outputBaseDir}\Screenshots\" flatten="true">
+			<fileset basedir="${Project.RootPath}">
+				<include name="Src/App/Screenshots/*.png" />
+			</fileset>
+		</copy>
+		
+  </target>
+  
+  <target name="OutputTestResults">
+		<foreach item="File" property="filename">
+                <in>
+                    <items>
+                        <include name="${Project.RootPath}\TestResults\html\**\**\**.html" />
+                    </items>
+                </in>
+                <do>
+                    <echo message="${filename}" />
+					
+					<property name="testName" value="${path::get-file-name(path::get-directory-name(filename))}" />
+					<property name="shortFileName" value="${path::get-file-name(filename)}" />
+					<echo message="${testName}" />
+					<property name="newFileName" value="${outputBaseDir}\Tests\${testName}\${shortFileName}" />
+					
+					<copy todir="${outputBaseDir}\Tests\${testName}" file="${filename}" />
+                </do>
+            </foreach>
+			
+  </target>
+
+</project>
+  	
