@@ -8,6 +8,8 @@
 	<loadfile
 		    file="${versionFilePath}"
 		    property="AssemblyProject.Version" />
+			
+	<property name="AssemblyProject.Version" value="${string::trim(AssemblyProject.Version)}" />
 
 	<echo message="Assembly version: ${AssemblyProject.Version}"/>
 		

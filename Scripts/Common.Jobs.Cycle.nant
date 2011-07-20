@@ -22,8 +22,8 @@
 		<!--call target="Common.Jobs.RunFunctionalTests" failonerror="false" /-->
 		
 		<call target="Common.Jobs.GenerateScreenshots" failonerror="false" />	
-		<call target="Common.Jobs.UploadZips" failonerror="false" />		
-		<call target="Common.Jobs.VersionBuildReport"/>	
+		<call target="Common.Jobs.UploadZips" failonerror="false" />	
+		<call target="Common.Jobs.OutputFiles"/>	
 		
 		<echo message="============================================="/>
 		<echo message="Continuous integration cycle has finished."/>
