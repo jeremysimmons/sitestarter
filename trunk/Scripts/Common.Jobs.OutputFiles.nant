@@ -44,7 +44,7 @@
 		
 		<property name="outputDir" value="${outputBaseDir}\BuildLog\" />
 		
-		<if test="${directory::exists(outputDir) == false}">
+		<if test="${not directory::exists(outputDir)}">
 			<mkdir dir="${outputDir}"/>
 		</if>
 		
@@ -60,7 +60,7 @@
 		
 		<property name="outputDir" value="${outputBaseDir}\Screenshots\" />
 		
-		<if test="${directory::exists(outputDir) == false}">
+		<if test="${not directory::exists(outputDir)}">
 			<mkdir dir="${outputDir}"/>
 		</if>
 		
@@ -76,7 +76,7 @@
   
 		<property name="outputDir" value="${outputBaseDir}\Tests\" />
 		
-		<if test="${directory::exists(outputDir) == false}">
+		<if test="${not directory::exists(outputDir)}">
 			<mkdir dir="${outputDir}"/>
 		</if>
   
