@@ -42,7 +42,13 @@
   
   <target name="OutputBuildLog">
 		
-		<copy todir="${outputBaseDir}\BuildLog\" flatten="true">
+		<property name="outputDir" value="${outputBaseDir}\BuildLog\" />
+		
+		<if test="${directory::exists(outputDir)}">
+			<mkdir dir="${outputDir}"/>
+		</if>
+		
+		<copy todir="${outputDir}" flatten="true">
 			<fileset basedir="${Project.RootPath}">
 				<include name="Build.txt" />
 			</fileset>
@@ -52,7 +58,13 @@
   
   <target name="OutputScreenshots">
 		
-		<copy todir="${outputBaseDir}\Screenshots\" flatten="true">
+		<property name="outputDir" value="${outputBaseDir}\Screenshots\" />
+		
+		<if test="${directory::exists(outputDir)}">
+			<mkdir dir="${outputDir}"/>
+		</if>
+		
+		<copy todir="${outputDir}" flatten="true">
 			<fileset basedir="${Project.RootPath}">
 				<include name="Src/App/Screenshots/*.png" />
 			</fileset>
@@ -61,6 +73,13 @@
   </target>
   
   <target name="OutputTestResults">
+  
+		<property name="outputDir" value="${outputBaseDir}\Tests\" />
+		
+		<if test="${directory::exists(outputDir)}">
+			<mkdir dir="${outputDir}"/>
+		</if>
+  
 		<foreach item="File" property="filename">
                 <in>
                     <items>
@@ -75,7 +94,12 @@
 					<echo message="${testName}" />
 					<property name="newFileName" value="${outputBaseDir}\Tests\${testName}\${shortFileName}" />
 					
-					<copy todir="${outputBaseDir}\Tests\${testName}" file="${filename}" />
+					<property name="testOutputDir" value="${outputBaseDir}\Tests\" />
+		
+					<if test="${directory::exists(testOutputDir)}">
+						<mkdir dir="${testOutputDir}"/>
+					</if>
+					<copy todir="${testOutputDir}" file="${filename}" />
                 </do>
             </foreach>
 			
