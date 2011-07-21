@@ -25,7 +25,7 @@
 			
 		<echo message="Current version: ${CurrentVersion}" />
 		
-		<property name="outputBaseDir" value="S:\www\softwaremonkeys\${Project.Name}\Archive\${string::replace(CurrentVersion, '.', '-')}" />
+		<property name="outputBaseDir" value="S:\www\softwaremonkeys\${Project.Name}\Archive\${string::replace(CurrentVersion, '.', '-')}\" />
 	
 		<if test="${not directory::exists(outputBaseDir)}">
 			<mkdir dir="${outputBaseDir}"/>
