@@ -57,7 +57,7 @@
 	    file="${path::combine(Solution.RootPath, 'Version.Number')}"
 	    property="Solution.Version" />
 
-	<property name="Solution.Version" value="${Solution.Version} ${Solution.VersionMode}" />
+		<property name="Solution.Version" value="${string::trim(Solution.Version)} ${Solution.VersionMode}" />
     	
     	<property name="Solution.ReleaseTimestamp" value="${datetime::get-year(datetime::now())}-${datetime::get-month(datetime::now())}-${datetime::get-day(datetime::now())}--${datetime::get-hour(datetime::now())}-${datetime::get-minute(datetime::now())}-${datetime::get-second(datetime::now())}"/>
     	
