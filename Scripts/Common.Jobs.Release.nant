@@ -81,7 +81,9 @@
 
   	<mkdir dir="${Solution.RootPath}\..\..\Releases\Source\"/>
 	<property name="zipFilePath" value="${Solution.RootPath}\..\..\Releases\Source\${Solution.SourceReleaseName}.zip"/>
+	<echo message="Zip file path before: ${zipFilePath}"/>
 	<property name="zipFilePath" value="${path::get-full-path(zipFilePath)}"/>
+	<echo message="Zip file path after: ${zipFilePath}"/>
   	<zip zipfile="${zipFilePath}">
 	    <fileset basedir="${Project.RootPath}">
 	        <exclude name="**/*.db4o"/>
@@ -195,7 +197,9 @@
   	
   	<mkdir dir="${Solution.RootPath}\..\..\Releases\Install"/>
 	<property name="zipFilePath" value="${Solution.RootPath}\..\..\Releases\Install\${Solution.InstallReleaseName}.zip"/>
+	<echo message="Zip file path before: ${zipFilePath}"/>
 	<property name="zipFilePath" value="${path::get-full-path(zipFilePath)}"/>
+	<echo message="Zip file path after: ${zipFilePath}"/>
   	<zip zipfile="${zipFilePath}">
 	    <fileset basedir="${InstallablePath}">
 	        <exclude name="**/*.db4o"/>
