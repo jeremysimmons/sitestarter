@@ -80,7 +80,9 @@
   	<property name="Solution.Alias" value="${path::get-file-name(Solution.RootPath)}"/>
 
   	<mkdir dir="${Solution.RootPath}\..\..\Releases\Source\"/>
-  	<zip zipfile="${Solution.RootPath}\..\..\Releases\Source\${Solution.SourceReleaseName}.zip">
+	<property name="zipFilePath" value="${Solution.RootPath}\..\..\Releases\Source\${Solution.SourceReleaseName}.zip"/>
+	<property name="zipFilePath" value="${path::get-full-path(zipFilePath)}"/>
+  	<zip zipfile="${zipFilePath}">
 	    <fileset basedir="${Project.RootPath}">
 	        <exclude name="**/*.db4o"/>
 	        <exclude name="**/*.local.config"/>
@@ -192,7 +194,9 @@
   	<property name="Solution.Alias" value="${path::get-file-name(Solution.RootPath)}"/>
   	
   	<mkdir dir="${Solution.RootPath}\..\..\Releases\Install"/>
-  	<zip zipfile="${Solution.RootPath}\..\..\Releases\Install\${Solution.InstallReleaseName}.zip">
+	<property name="zipFilePath" value="${Solution.RootPath}\..\..\Releases\Install\${Solution.InstallReleaseName}.zip"/>
+	<property name="zipFilePath" value="${path::get-full-path(zipFilePath)}"/>
+  	<zip zipfile="${zipFilePath}">
 	    <fileset basedir="${InstallablePath}">
 	        <exclude name="**/*.db4o"/>
 	        <exclude name="**/*.local.config"/>
