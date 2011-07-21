@@ -13,7 +13,7 @@
 
 	<property name="buildLogFilePath" value="${path::combine(Project.RootPath, 'Build.txt')}" />
 
-	<property name="newBuildLogFilePath" value="${Project.RootPath}\BuildLog\${string::replace(Project.Version, '.', '-')}\Build.txt" />
+	<property name="newBuildLogFilePath" value="${Project.RootPath}\BuildLog\${string::replace(string::trim(Project.Version), '.', '-')}\Build.txt" />
 
 	<delete dir="${Project.RootPath}\BuildLog"/>
 
