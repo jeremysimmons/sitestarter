@@ -53,40 +53,6 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			TypeName = typeName;
 		}
 		
-		
-		/// <summary>
-		/// Sets the type name and action of the entity.
-		/// </summary>
-		/// <param name="typeName"></param>
-		/// <param name="key"></param>
-		public EntityAttribute(string typeName, string key)
-		{
-			TypeName = typeName;
-			Key = key;
-		}
-		
-		/// <summary>
-		/// Sets the type name and action of the entity.
-		/// </summary>
-		/// <param name="action"></param>
-		/// <param name="type"></param>
-		public EntityAttribute(string action, Type type)
-		{
-			TypeName = type.Name;
-		}
-
-		/// <summary>
-		/// Sets the type name and action of the entity.
-		/// </summary>
-		/// <param name="action"></param>
-		/// <param name="type"></param>
-		/// <param name="key"></param>
-		public EntityAttribute(string action, Type type, string key)
-		{
-			TypeName = type.Name;
-			Key = key;
-		}
-		
 		/// <summary>
 		/// Sets a value indicating whether the corresponding class is an available business entity.
 		/// </summary>

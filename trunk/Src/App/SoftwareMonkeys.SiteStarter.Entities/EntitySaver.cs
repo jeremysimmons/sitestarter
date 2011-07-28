@@ -51,7 +51,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <param name="entity">The entity to save to file.</param>
 		public void SaveToFile(EntityInfo entity)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Saving the provided entity to file.", LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Saving the provided entity to file."))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");
@@ -78,7 +78,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <param name="entities">An array of the entities to save to file.</param>
 		public void SaveToFile(EntityInfo[] entities)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Saving the provided entities to XML files.", LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Saving the provided entities to XML files."))
 			{
 				foreach (EntityInfo entity in entities)
 				{

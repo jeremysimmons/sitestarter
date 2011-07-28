@@ -120,7 +120,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// Adds the provided entities to the collection.
 		/// </summary>
 		/// <param name="entity">The entity to add to the collection.</param>
-		public void AddRange(IEnumerable<E> entities)
+		public new void AddRange(IEnumerable<E> entities)
 		{
 			if (entities != null)
 			{
@@ -158,7 +158,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// Removes the provided entity from the collection.
 		/// </summary>
 		/// <param name="entity">The entity to remove from the collection.</param>
-		public void Remove(E entity)
+		public new void Remove(E entity)
 		{
 			if (entity != null && base.Contains(entity))
 				base.Remove(entity);
@@ -206,7 +206,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// </summary>
 		public void SetIDs(Guid[] ids)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Setting entity IDs on the collection.", LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Setting entity IDs on the collection."))
 			{
 				LogWriter.Debug("The following IDs were passed:");
 				if (ids != null && ids.Length > 0)
@@ -264,7 +264,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// </summary>
 		/// <param name="entity">The entity to look for in the application.</param>
 		/// <returns>A boolean value indicating whether the entity was found in the collection.</returns>
-		public bool Contains(E entity)
+		public new bool Contains(E entity)
 		{
 			return base.Contains(entity);
 		}
@@ -285,7 +285,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// Converts the collection to an array of E objects.
 		/// </summary>
 		/// <returns>An array of the E objects in the collection.</returns>
-		public E[] ToArray()
+		public new E[] ToArray()
 		{
 			ArrayList list = new ArrayList();
 			foreach (E entity in this)
@@ -458,7 +458,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			
 			for (int i = 0; i < Count; i++)
 			{
-				if (EntitiesUtilities.IsInPage(i, pageIndex, pageSize))
+				if (new PagingLocation(pageIndex, pageSize).IsInPage(i))
 					page.Add(this[i]);
 			}
 			

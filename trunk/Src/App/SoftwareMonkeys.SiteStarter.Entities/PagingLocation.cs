@@ -68,7 +68,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			// Create the return flag
 			bool isInPage = false;
 			
-			using (LogGroup logGroup = LogGroup.Start("Checking whether the specified position is within the specified page.", LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Checking whether the specified position is within the specified page."))
 			{
 				LogWriter.Debug("Position (i): " + i.ToString());
 				LogWriter.Debug("Page index: " + pageIndex);

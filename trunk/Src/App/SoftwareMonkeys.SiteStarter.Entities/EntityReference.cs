@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Xml.Serialization;
-using System.Xml.Schema;
-using System.Xml;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using System.Xml.Serialization;
 
 namespace SoftwareMonkeys.SiteStarter.Entities
 {
