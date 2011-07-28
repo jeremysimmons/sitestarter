@@ -73,16 +73,6 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
             set { primaryAdministratorID = value; }
         }
         
-    	private string pathVariation;
-        /// <summary>
-        /// Gets/sets the variation applied to the config file path (eg. staging, local, etc.).
-        /// </summary>
-        public string PathVariation
-        {
-        	get { return pathVariation; }
-        	set { pathVariation = value; }
-        }
-
         /// <summary>
         /// Gets/sets the flexible settings collection.
         /// </summary>

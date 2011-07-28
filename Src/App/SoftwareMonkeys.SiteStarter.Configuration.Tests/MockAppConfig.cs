@@ -207,15 +207,5 @@ namespace SoftwareMonkeys.SiteStarter.Configuration.Tests
 			get { return title; }
 			set { title = value; }
 		}
-		
-		private string pathVariation;
-		/// <summary>
-		/// Gets/sets the variation applied to the config file path (eg. staging, local, etc.).
-		/// </summary>
-		public string PathVariation
-		{
-			get { return pathVariation; }
-			set { pathVariation = value; }
-		}
 	}
 }
