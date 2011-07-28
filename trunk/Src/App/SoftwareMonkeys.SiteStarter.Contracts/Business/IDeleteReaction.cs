@@ -8,10 +8,5 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// </summary>
 	public interface IDeleteReaction : IReaction
 	{
-		/// <summary>
-		/// Reacts to a delete action.
-		/// </summary>
-		/// <param name="entity">The entity that was deleted.</param>
-		void React(IEntity entity);
 	}
 }
