@@ -22,7 +22,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// </summary>
 		public string DataDirectoryPath
 		{
-			get { return StateAccess.State.PhysicalApplicationPath + Path.DirectorySeparatorChar + "App_Data"; }
+			get { return StateAccess.State.PhysicalApplicationPath.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar + "App_Data"; }
 		}
 		
 		/// <summary>
