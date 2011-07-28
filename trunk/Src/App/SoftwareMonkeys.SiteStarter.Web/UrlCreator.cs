@@ -501,17 +501,6 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			
 			url = WebUtilities.ConvertRelativeUrlToAbsoluteUrl(url, host, isSecure);
 			
-			string separator = "?";
-			if (url.IndexOf("?") > -1)
-				separator = "&";
-			
-			//if (ProjectsState.IsEnabled
-			//    && ProjectsState.ProjectSelected
-			//    && type != "Project") // If the type is project then there's no need for the project ID
-			//{
-			//	url = url + separator + "ProjectID=" + ProjectsState.ProjectID.ToString();
-			//}
-			
 			return url;
 		}
 
@@ -584,8 +573,8 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <returns>The value of the EnableFriendlyURLs setting in the Web.config file.</returns>
 		public bool GetEnableFriendlyUrlsSetting()
 		{
-			if (ConfigurationSettings.AppSettings != null)
-				return Convert.ToBoolean(ConfigurationSettings.AppSettings["FriendlyUrls.Enabled"]);
+			if (ConfigurationManager.AppSettings != null)
+				return Convert.ToBoolean(ConfigurationManager.AppSettings["FriendlyUrls.Enabled"]);
 			else
 				return false;
 		}

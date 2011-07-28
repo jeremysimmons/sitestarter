@@ -658,8 +658,8 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <returns>The value of the EnableFriendlyURLs setting in the Web.config file.</returns>
 		public bool GetEnableFriendlyUrlsSetting()
 		{
-			if (ConfigurationSettings.AppSettings != null)
-				return Convert.ToBoolean(ConfigurationSettings.AppSettings["FriendlyUrls.Enabled"]);
+			if (ConfigurationManager.AppSettings != null)
+				return Convert.ToBoolean(ConfigurationManager.AppSettings["FriendlyUrls.Enabled"]);
 			else
 				return false;
 		}
