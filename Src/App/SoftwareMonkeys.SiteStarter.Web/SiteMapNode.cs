@@ -19,7 +19,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <summary>
 		/// Gets/sets the child node collection.
 		/// </summary>
-		public List<SiteMapNode> ChildNodes
+		public new List<SiteMapNode> ChildNodes
 		{
 			get {
 				if (childNodes == null)
