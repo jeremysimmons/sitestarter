@@ -18,9 +18,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		
 		public BaseUpdateReaction(string typeName) : base(typeName)
 		{}
-		
-		public abstract void React(IEntity entity);
-		
 	
 		#region New functions
 		/// <summary>

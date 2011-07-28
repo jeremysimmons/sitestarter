@@ -18,9 +18,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 		}
 		
-		
-		public abstract void React(IEntity entity);
-		
 		#region New functions	
 		/// <summary>
 		/// Creates new reactions to a save of the specified type.
