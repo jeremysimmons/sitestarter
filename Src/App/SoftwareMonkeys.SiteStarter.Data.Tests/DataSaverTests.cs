@@ -275,12 +275,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		
 		
 		[Test]
-		public void Test_Save_EntityIDReference()
+		public void Test_Save_EntityReference()
 		{
 			
 			using (LogGroup logGroup = LogGroup.Start("Testing saving of an EntityIDReference.", NLog.LogLevel.Debug))
 			{
-				EntityIDReference reference = new EntityIDReference();
+				EntityReference reference = new EntityReference();
 				reference.ID = Guid.NewGuid();
 				reference.Type1Name = "TestArticle";
 				reference.Type2Name = "TestArticlePage";
@@ -294,9 +294,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				IDataStore store = DataAccess.Data.Stores["Testing_Articles-Testing_Articles"];
 				
 				Assert.IsNotNull(store, "The data store wasn't created/initialized.");
+				
 			}
 		}
-		
+
 		[Test]
 		public void Test_Save_DontBindToDataStore()
 		{
