@@ -315,7 +315,7 @@ namespace SoftwareMonkeys.SiteStarter.State
 			}
 		}*/
 		
-		public T[] ToArray()
+		public new T[] ToArray()
 		{
 			List<T> list = new List<T> ();
 			for (int i = 0; i < Count; i++)
