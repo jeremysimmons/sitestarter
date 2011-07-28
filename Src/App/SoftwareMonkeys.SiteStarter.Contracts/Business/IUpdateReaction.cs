@@ -8,10 +8,5 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// </summary>
 	public interface IUpdateReaction : IReaction
 	{
-		/// <summary>
-		/// Reacts to an update action.
-		/// </summary>
-		/// <param name="entity">The entity that was updated.</param>
-		void React(IEntity entity);
 	}
 }

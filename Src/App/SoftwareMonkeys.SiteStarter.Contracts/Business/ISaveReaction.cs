@@ -8,10 +8,5 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// </summary>
 	public interface ISaveReaction : IReaction
 	{
-		/// <summary>
-		/// Reacts to a save action.
-		/// </summary>
-		/// <param name="entity">The entity that was saved.</param>
-		void React(IEntity entity);
 	}
 }
