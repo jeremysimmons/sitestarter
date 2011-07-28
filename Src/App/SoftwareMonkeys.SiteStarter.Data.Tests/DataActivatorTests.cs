@@ -4,7 +4,6 @@ using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Tests;
 using SoftwareMonkeys.SiteStarter.Tests.Entities;
-using NUnit.Framework;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Tests
 {

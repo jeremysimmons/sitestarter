@@ -248,22 +248,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			Assert.IsTrue(isValid, "Should have returned true.");
 		}
 		
-		public void Test_GetPreviousVersion_Legacy()
-		{
-			throw new NotImplementedException();
-			
-			Version version = DataAccess.Data.Importer.GetPreviousVersion();
-			
-			Version expected = new Version(1,2,3,4);
-			
-			Assert.AreEqual(expected.ToString(), version.ToString());
-		}
-		
-		public void Test_GetPreviousVersion_Import()
-		{
-			throw new NotImplementedException();
-		}
-		
 		[Test]
 		public void Test_LoadEntitiesFileList()
 		{
