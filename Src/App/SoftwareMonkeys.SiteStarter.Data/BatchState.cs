@@ -89,11 +89,11 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		static public Stack<Batch> Batches
 		{
 			get {
-				if (!State.StateAccess.State.ContainsRequest(BatchesKey)
-				   || State.StateAccess.State.GetRequest(BatchesKey) == null)
-					State.StateAccess.State.SetRequest(BatchesKey, new Stack<Batch>());
-				return (Stack<Batch>)State.StateAccess.State.GetRequest(BatchesKey); }
-			set { State.StateAccess.State.SetRequest(BatchesKey, value); }
+				if (!State.StateAccess.State.ContainsOperation(BatchesKey)
+				   || State.StateAccess.State.GetOperation(BatchesKey) == null)
+					State.StateAccess.State.SetOperation(BatchesKey, new Stack<Batch>());
+				return (Stack<Batch>)State.StateAccess.State.GetOperation(BatchesKey); }
+			set { State.StateAccess.State.SetOperation(BatchesKey, value); }
 		}
         #endregion
         
