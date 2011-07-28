@@ -35,8 +35,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				LogWriter.Debug("ID 1: " + reference.Entity1ID);
 				LogWriter.Debug("ID 2: " + reference.Entity2ID);
 				
-				Type type1 = EntitiesUtilities.GetType(reference.Type1Name);
-				Type type2 = EntitiesUtilities.GetType(reference.Type2Name);
+				Type type1 = EntityState.GetType(reference.Type1Name);
+				Type type2 = EntityState.GetType(reference.Type2Name);
 				
 				LogWriter.Debug("Full type 1: " + type1.ToString());
 				LogWriter.Debug("Full type 2: " + type2.ToString());

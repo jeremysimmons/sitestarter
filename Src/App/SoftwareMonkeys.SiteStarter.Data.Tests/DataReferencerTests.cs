@@ -325,10 +325,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				//DataAccess.Data.Saver.Save(user);
 				//DataAccess.Data.Saver.Save(role);
 				
-				EntityReference reference = DataAccess.Data.Referencer.GetReference(EntitiesUtilities.GetType(originalReference.Type1Name),
+				EntityReference reference = DataAccess.Data.Referencer.GetReference(EntityState.GetType(originalReference.Type1Name),
 				                                                                    originalReference.Entity1ID,
 				                                                                    originalReference.Property1Name,
-				                                                                    EntitiesUtilities.GetType(originalReference.Type2Name),
+				                                                                    EntityState.GetType(originalReference.Type2Name),
 				                                                                    originalReference.Entity2ID,
 				                                                                    originalReference.Property2Name,
 				                                                                    false);
