@@ -27,14 +27,14 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		static public LogGroup CurrentGroup
 		{
 			get {
-				if (StateAccess.State.ContainsRequest("AppLogger_CurrentGroup"))
-					return (LogGroup)StateAccess.State.GetRequest("AppLogger_CurrentGroup");
+				if (StateAccess.State.ContainsOperation("DiagnosticState_CurrentGroup"))
+					return (LogGroup)StateAccess.State.GetOperation("DiagnosticState_CurrentGroup");
 				return null; }
 			set {
 				if (value != null)
-					StateAccess.State.SetRequest("AppLogger_CurrentGroup", value);
+					StateAccess.State.SetOperation("DiagnosticState_CurrentGroup", value);
 				else
-					StateAccess.State.RemoveRequest("AppLogger_CurrentGroup");
+					StateAccess.State.RemoveOperation("DiagnosticState_CurrentGroup");
 				
 			}
 		}
