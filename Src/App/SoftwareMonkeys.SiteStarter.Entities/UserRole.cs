@@ -1,9 +1,6 @@
 using System;
-using System.Data;
 using System.Configuration;
-using System.Xml.Serialization;
 using System.Collections.Generic;
-using SoftwareMonkeys.SiteStarter.Configuration;
 
 namespace SoftwareMonkeys.SiteStarter.Entities
 {
