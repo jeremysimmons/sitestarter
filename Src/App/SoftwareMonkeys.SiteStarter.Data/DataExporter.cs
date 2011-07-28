@@ -73,7 +73,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="filePath">The path to save the serialized file to.</param>
 		public void SerializeToFile(IEntity entity, string filePath)
 		{
-			entity.Strip();
+			entity.Deactivate();
 			
 			if (!Directory.Exists(Path.GetDirectoryName(filePath)))
 				Directory.CreateDirectory(Path.GetDirectoryName(filePath));
