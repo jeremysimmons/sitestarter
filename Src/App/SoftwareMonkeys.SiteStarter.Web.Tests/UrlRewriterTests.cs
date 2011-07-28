@@ -241,7 +241,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
             InitializeMockProjections();
 
             string entityID = "A1FC7BA3-3832-467f-8989-058BF420D1D9";
-            string title = "TestTitle";
 
             string fullApplicationUrl = "http://localhost/SiteStarter";
             string applicationPath = "/SiteStarter";
