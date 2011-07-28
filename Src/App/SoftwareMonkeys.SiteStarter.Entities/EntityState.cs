@@ -125,8 +125,6 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			
 			if (info != null)
 			{
-				Type type = null;
-				
 				// If an alias is specified then grab the alias
 				// Repeat until no alias is specified
 				while (info.Alias != String.Empty)
