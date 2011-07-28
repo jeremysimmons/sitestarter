@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Configuration.Provider;
 using SoftwareMonkeys.SiteStarter.State;
-using SoftwareMonkeys.SiteStarter.Entities;
+using SoftwareMonkeys.SiteStarter.Web.State.Cookies;
 using System.IO;
 using System.Web;
-using SoftwareMonkeys.SiteStarter.Web.State.Cookies;
 
 namespace SoftwareMonkeys.SiteStarter.Web.State
 {

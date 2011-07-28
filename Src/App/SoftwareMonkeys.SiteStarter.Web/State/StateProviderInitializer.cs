@@ -5,9 +5,7 @@ using System.Web;
 using System.Web.Configuration;
 using SoftwareMonkeys.SiteStarter.State;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
-using SoftwareMonkeys.SiteStarter.Business;
 using SoftwareMonkeys.SiteStarter.Entities;
-using NLog;
 
 namespace SoftwareMonkeys.SiteStarter.Web.State
 {
