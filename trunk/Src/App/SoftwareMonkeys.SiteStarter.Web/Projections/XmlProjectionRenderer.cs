@@ -55,7 +55,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 
 					StringWriter stringWriter = new StringWriter();
 					
-					Type type = EntitiesUtilities.GetType(TypeName);
+					Type type = EntityState.GetType(TypeName);
 
 					if (DataSource is Array)
 						DataSource = new SerializableCollection((IEntity[])DataSource);
