@@ -59,9 +59,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	
 					return true;
 				}
-				catch (SmtpException ex)
+				catch (SmtpException)
 				{
-					//throw ex;
 					return false;
 				}
 		}
