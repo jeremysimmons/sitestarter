@@ -150,7 +150,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// </summary>
 		public void Check()
 		{
-			using (LogGroup logGroup = LogGroup.Start("Checking whether the application needs to be set up or restored.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Checking whether the application needs to be set up or restored."))
 			{
 				string redirectPath = GetRedirectPath();
 				
@@ -176,7 +176,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		{
 			string returnPath = String.Empty;
 			
-			using (LogGroup logGroup = LogGroup.Start("Retrieving the path to redirect the user to.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving the path to redirect the user to."))
 			{
 				CheckApplicationPath();
 				
@@ -270,7 +270,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		{
 			bool skip = true;
 			
-			using (LogGroup logGroup = LogGroup.Start("Checking whether the current page should be skipped.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Checking whether the current page should be skipped."))
 			{
 				CheckCurrentUrl();
 				
