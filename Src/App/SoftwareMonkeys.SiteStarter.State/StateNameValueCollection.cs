@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Specialized;
 using System.Collections.Generic;
-using SoftwareMonkeys.SiteStarter.Entities;
 
 namespace SoftwareMonkeys.SiteStarter.State
 {
@@ -15,7 +14,7 @@ namespace SoftwareMonkeys.SiteStarter.State
 		/// <summary>
 		/// Gets/sets
 		/// </summary>
-		public StateCollection<string> Keys
+		new public StateCollection<string> Keys
 		{
 			get {
 				if (keys == null)
@@ -115,7 +114,7 @@ namespace SoftwareMonkeys.SiteStarter.State
 		/// <summary>
 		/// The total number of items in the collection.
 		/// </summary>
-		public int Count {
+		public override int Count {
 			get {
 				return GetCount();
 			}
@@ -145,8 +144,8 @@ namespace SoftwareMonkeys.SiteStarter.State
 						StateAccess.State.GetSession(fullKey) != null;
 					break;
 				case StateScope.Operation:
-					exists = StateAccess.State.ContainsRequest(fullKey) &&
-						StateAccess.State.GetRequest(fullKey) != null;
+					exists = StateAccess.State.ContainsOperation(fullKey) &&
+						StateAccess.State.GetOperation(fullKey) != null;
 					break;
 			}
 			
@@ -173,7 +172,7 @@ namespace SoftwareMonkeys.SiteStarter.State
 					value = (T)StateAccess.State.GetSession(fullKey);
 					break;
 				case StateScope.Operation:
-					value = (T)StateAccess.State.GetRequest(fullKey);
+					value = (T)StateAccess.State.GetOperation(fullKey);
 					break;
 			}
 			
@@ -202,7 +201,7 @@ namespace SoftwareMonkeys.SiteStarter.State
 					StateAccess.State.RemoveSession(fullKey);
 					break;
 				case StateScope.Operation:
-					StateAccess.State.RemoveRequest(fullKey);
+					StateAccess.State.RemoveOperation(fullKey);
 					break;
 			}
 		}
@@ -225,7 +224,7 @@ namespace SoftwareMonkeys.SiteStarter.State
 					StateAccess.State.SetSession(fullKey, value);
 					break;
 				case StateScope.Operation:
-					StateAccess.State.SetRequest(fullKey, value);
+					StateAccess.State.SetOperation(fullKey, value);
 					break;
 			}
 			
@@ -328,7 +327,7 @@ namespace SoftwareMonkeys.SiteStarter.State
 				return false;
 		}
 		
-		public IEnumerator<T> GetEnumerator()
+		public new IEnumerator<T> GetEnumerator()
 		{
 			foreach (string key in Keys)
 			{
