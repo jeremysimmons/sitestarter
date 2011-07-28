@@ -107,7 +107,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		
 		private void Initialize()
 		{
-			if (ConfigurationSettings.AppSettings != null)
+			if (ConfigurationManager.AppSettings != null)
 			{
 				CheckFileMapper();
 				
