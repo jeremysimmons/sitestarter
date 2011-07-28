@@ -1,9 +1,7 @@
 using System;
-using System.Data;
 using System.Configuration;
 using System.Web;
 using System.Xml.Serialization;
-using SoftwareMonkeys.SiteStarter.Configuration;
 using SoftwareMonkeys.SiteStarter.Business;
 
 namespace SoftwareMonkeys.SiteStarter.Entities
