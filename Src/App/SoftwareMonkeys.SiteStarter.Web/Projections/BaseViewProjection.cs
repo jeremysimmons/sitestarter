@@ -244,7 +244,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// </summary>
 		/// <param name="expression"></param>
 		/// <returns></returns>
-		public object Eval(string expression)
+		public new object Eval(string expression)
 		{
 			return Controller.Eval(expression);
 		}
