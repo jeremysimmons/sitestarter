@@ -69,7 +69,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns>The text matching the provided key from the assembly.</returns>
 		public static string GetEntityText(string key, string typeName)
 		{
-			Type type = EntitiesUtilities.GetType(typeName);
+			Type type = EntityState.GetType(typeName);
 			
 			string text = GetText(type, key);
 			string entityName = GetText(type, typeName);
