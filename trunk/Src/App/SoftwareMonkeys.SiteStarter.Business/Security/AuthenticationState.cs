@@ -29,8 +29,8 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 				// If the username is found in the request scope state then use it, because it means the value has just been set
 				// and the user scope state won't reflect the change until next request because it uses cookies
 				// Using the request scope state as well gets around this hurdle
-				if (StateAccess.State.ContainsRequest("Username"))
-					username = (string)StateAccess.State.GetRequest("Username");
+				if (StateAccess.State.ContainsOperation("Username"))
+					username = (string)StateAccess.State.GetOperation("Username");
 				else
 					username = (string)StateAccess.State.GetUser("Username");
 				
@@ -39,7 +39,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 			set { StateAccess.State.SetUser("Username", value);
 				// Set the request scope state as well so that the value to get around the hurdle with user scope state not reflecting
 				// changes until the next request
-				StateAccess.State.SetRequest("Username", value);
+				StateAccess.State.SetOperation("Username", value);
 				
 				// If the username is different from the one on the user object then reset the user object
 				if (User != null && User.Username != value)
@@ -54,8 +54,8 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		{
 			get
 			{
-				if (!StateAccess.State.ContainsRequest("User")
-				    && StateAccess.State.GetRequest("User") == null
+				if (!StateAccess.State.ContainsOperation("User")
+				    && StateAccess.State.GetOperation("User") == null
 				    && Configuration.Config.IsInitialized)
 				{
 					User u = RetrieveStrategy.New<User>().Retrieve<User>("Username", Username);
@@ -64,10 +64,10 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 					//if (user == null)
 					//	throw new Exception("No user was retrieved with the username '" + Username + "'.");
 					
-					StateAccess.State.SetRequest("User", u);
+					StateAccess.State.SetOperation("User", u);
 				}
 				
-				User user = (User)StateAccess.State.GetRequest("User");
+				User user = (User)StateAccess.State.GetOperation("User");
 				
 				// If no corresponding user exists then sign the user out, as it means they're signed in on an old session, likely due
 				// to a recompile
@@ -78,7 +78,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 			}
 			set
 			{
-				StateAccess.State.SetRequest("User", value);
+				StateAccess.State.SetOperation("User", value);
 			}
 		}
 		
@@ -155,9 +155,9 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 				LogWriter.Debug("Username: " + username);
 				
 				StateAccess.State.SetUser(AuthenticationStateKey, username, expirationDate);
-				// Set the username in the request scope as well to get around hurdle with user scope values not being reflected until the next request
+				// Set the username in the operation scope as well to get around hurdle with user scope values not being reflected until the next request
 				// due to the use of cookies
-				StateAccess.State.SetRequest(AuthenticationStateKey, username);
+				StateAccess.State.SetOperation(AuthenticationStateKey, username);
 			}
 		}
 	}
