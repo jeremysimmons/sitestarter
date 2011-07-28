@@ -187,29 +187,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			return NewSaver(type.Name);
 		}
-		
-		/// <summary>
-		/// Creates a new saver strategy for the specified type.
-		/// </summary>
-		/// <param name="typeName"></param>
-		/// <returns></returns>
-		public IUniqueSaveStrategy NewUniqueSaver(string typeName)
-		{
-			CheckType(typeName);
-			
-			return Strategies["SaveUnique", typeName]
-				.New<IUniqueSaveStrategy>(typeName);
-		}
-		
-		/// <summary>
-		/// Creates a new saver strategy for the specified type.
-		/// </summary>
-		/// <param name="type"></param>
-		/// <returns></returns>
-		public IUniqueSaveStrategy NewUniqueSaver(Type type)
-		{
-			return NewUniqueSaver(type.Name);
-		}
 		#endregion
 		
 		#region New updater strategy functions
@@ -234,29 +211,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public IUpdateStrategy NewUpdater(Type type)
 		{
 			return NewUpdater(type.Name);
-		}
-		
-		/// <summary>
-		/// Creates a new updater strategy for the specified type.
-		/// </summary>
-		/// <param name="typeName"></param>
-		/// <returns></returns>
-		public IUniqueUpdateStrategy NewUniqueUpdater(string typeName)
-		{
-			CheckType(typeName);
-			
-			return Strategies["UpdateUnique", typeName]
-				.New<IUniqueUpdateStrategy>(typeName);
-		}
-		
-		/// <summary>
-		/// Creates a new updater strategy for the specified type.
-		/// </summary>
-		/// <param name="type"></param>
-		/// <returns></returns>
-		public IUniqueUpdateStrategy NewUniqueUpdater(Type type)
-		{
-			return NewUniqueUpdater(type.Name);
 		}
 		#endregion
 		
