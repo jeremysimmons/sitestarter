@@ -219,7 +219,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			IEntity entity = (IEntity)Reflector.InvokeGenericMethod(this,
 			                                                        "RetrieveWithReference",
-			                                                        new Type[] {EntitiesUtilities.GetType(referencedEntityType)},
+			                                                        new Type[] {EntityState.GetType(referencedEntityType)},
 			                                                        new object[] {propertyName, referencedEntityType, referencedEntityID});
 			
 			if (RequireAuthorisation && entity != null)
@@ -238,7 +238,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public T RetrieveWithReference<T>(string propertyName, string referencedEntityType, Guid referencedEntityID)
 			where T : IEntity
 		{
-			T entity = (T)DataAccess.Data.Reader.GetEntityWithReference<T>(propertyName, EntitiesUtilities.GetType(referencedEntityType), referencedEntityID);
+			T entity = (T)DataAccess.Data.Reader.GetEntityWithReference<T>(propertyName, EntityState.GetType(referencedEntityType), referencedEntityID);
 			
 			if (RequireAuthorisation && entity != null)
 				AuthoriseRetrieveStrategy.New<T>().EnsureAuthorised(entity);
