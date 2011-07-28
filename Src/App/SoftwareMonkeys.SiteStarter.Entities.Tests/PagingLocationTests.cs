@@ -21,7 +21,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 				int pageIndex = 1;
 				int pageSize = 1;
 				
-				bool isInPage = EntitiesUtilities.IsInPage(i, pageIndex, pageSize);
+				bool isInPage = new PagingLocation(pageIndex, pageSize).IsInPage(i);
 				
 				Assert.IsFalse(isInPage, "Returned true when it shouldn't have.");
 			}
@@ -56,7 +56,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 				int pageIndex = 0;
 				int pageSize = 1;
 				
-				bool isInPage = EntitiesUtilities.IsInPage(i, pageIndex, pageSize);
+				bool isInPage = new PagingLocation(pageIndex, pageSize).IsInPage(i);
 				
 				Assert.IsFalse(isInPage, "Returned true when it shouldn't have.");
 			}
@@ -71,7 +71,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 				int pageIndex = 1;
 				int pageSize = 10;
 				
-				bool isInPage = EntitiesUtilities.IsInPage(i, pageIndex, pageSize);
+				bool isInPage = new PagingLocation(pageIndex, pageSize).IsInPage(i);
 				
 				Assert.IsFalse(isInPage, "Returned true when it shouldn't have.");
 			}
@@ -87,7 +87,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 				int pageIndex = 1;
 				int pageSize = 10;
 				
-				bool isInPage = EntitiesUtilities.IsInPage(i, pageIndex, pageSize);
+				bool isInPage = new PagingLocation(pageIndex, pageSize).IsInPage(i);
 				
 				
 				Assert.IsTrue(isInPage, "Returned false when it should have been true.");
@@ -104,7 +104,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 				int pageIndex = 0;
 				int pageSize = 10;
 				
-				bool isInPage = EntitiesUtilities.IsInPage(i, pageIndex, pageSize);
+				bool isInPage = new PagingLocation(pageIndex, pageSize).IsInPage(i);
 				
 				
 				Assert.IsTrue(isInPage, "Returned false when it should have been true.");
@@ -121,7 +121,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 				int pageIndex = 0;
 				int pageSize = 10;
 				
-				bool isInPage = EntitiesUtilities.IsInPage(i, pageIndex, pageSize);
+				bool isInPage = new PagingLocation(pageIndex, pageSize).IsInPage(i);
 				
 				
 				Assert.IsTrue(isInPage, "Returned false when it should have been true.");
@@ -138,7 +138,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 				int pageIndex = 0;
 				int pageSize = 10;
 				
-				bool isInPage = EntitiesUtilities.IsInPage(i, pageIndex, pageSize);
+				bool isInPage = new PagingLocation(pageIndex, pageSize).IsInPage(i);
 				
 				Assert.IsFalse(isInPage, "Returned true when it shouldn't have.");
 			}
