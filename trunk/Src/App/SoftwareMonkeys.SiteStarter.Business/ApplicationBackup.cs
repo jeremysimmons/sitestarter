@@ -93,7 +93,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		
 		private void Initialize()
 		{
-			if (Configuration.Config.IsInitialized && ConfigurationSettings.AppSettings != null)
+			if (Configuration.Config.IsInitialized && ConfigurationManager.AppSettings != null)
 			{
 				
 				string physicalPath = Configuration.Config.Application.PhysicalApplicationPath;
