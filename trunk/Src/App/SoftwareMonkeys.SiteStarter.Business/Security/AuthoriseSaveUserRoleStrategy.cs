@@ -38,7 +38,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// <summary>
 		/// Creates a new strategy for authorising the saveing of the specified type.
 		/// </summary>
-		static public IAuthoriseSaveStrategy New<T>()
+		new static public IAuthoriseSaveStrategy New<T>()
 		{
 			return StrategyState.Strategies.Creator.New<IAuthoriseSaveStrategy>("AuthoriseSave", typeof(T).Name);
 		}
@@ -47,7 +47,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// Creates a new strategy for authorising the saveing the specified type.
 		/// </summary>
 		/// <param name="typeName">The short name of the type involved in the strategy.</param>
-		static public IAuthoriseSaveStrategy New(string typeName)
+		new static public IAuthoriseSaveStrategy New(string typeName)
 		{
 			return StrategyState.Strategies.Creator.New<IAuthoriseSaveStrategy>("AuthoriseSave", typeName);
 		}
