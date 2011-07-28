@@ -227,10 +227,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				
 				EntityIDReference reference = (EntityIDReference)entity;
 				
-				found = referencer.GetReference(EntitiesUtilities.GetType(reference.Type1Name),
+				found = referencer.GetReference(EntityState.GetType(reference.Type1Name),
 				                               reference.Entity1ID,
 				                               reference.Property1Name,
-				                               EntitiesUtilities.GetType(reference.Type2Name),
+				                               EntityState.GetType(reference.Type2Name),
 				                               reference.Entity2ID,
 				                               reference.Property2Name,
 				                               false);

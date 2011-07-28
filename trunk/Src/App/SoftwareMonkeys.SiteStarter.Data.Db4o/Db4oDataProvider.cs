@@ -229,8 +229,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					
 					//if (reference.Type1Name == String.Empty)
 
-					Type type = EntitiesUtilities.GetType(reference.Type1Name);
-					Type type2 = EntitiesUtilities.GetType(reference.Type2Name);
+					Type type = EntityState.GetType(reference.Type1Name);
+					Type type2 = EntityState.GetType(reference.Type2Name);
 
 					LogWriter.Debug("Type 1: " + type.ToString());
 					LogWriter.Debug("Type 2: " + type2.ToString());

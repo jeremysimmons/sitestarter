@@ -72,7 +72,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_GetType_Name()
 		{
-			Type type = EntitiesUtilities.GetType("TestUser");
+			Type type = EntityState.GetType("TestUser");
 			
 			Assert.AreEqual(type.FullName, typeof(TestUser).FullName, "The types don't match.");
 			
