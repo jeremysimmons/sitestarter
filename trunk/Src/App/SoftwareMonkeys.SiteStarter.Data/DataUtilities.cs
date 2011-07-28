@@ -233,8 +233,8 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			//LogWriter.Debug("Type name 0: " + typeNames[0]);
 			//LogWriter.Debug("Type name 1: " + typeNames[1]);
 			
-			Type type0 = EntitiesUtilities.GetType(typeNames[0]);
-			Type type1 = EntitiesUtilities.GetType(typeNames[1]);
+			Type type0 = EntityState.GetType(typeNames[0]);
+			Type type1 = EntityState.GetType(typeNames[1]);
 			
 			//LogWriter.Debug("Type 0: " + type0.ToString());
 			//LogWriter.Debug("Type 1: " + type1.ToString());
