@@ -139,8 +139,6 @@ namespace SoftwareMonkeys.SiteStarter.State.Tests
 			
 			string zero = "Zero";
 			string one = "One";
-			string two = "Two";
-			string three = "Three";
 			
 			collection["KeyZero"] = zero;
 			
