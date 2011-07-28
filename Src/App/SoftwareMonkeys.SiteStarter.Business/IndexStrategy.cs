@@ -115,11 +115,11 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				
 				if (EnablePaging)
 				{
-					entities = (T[])DataAccess.Data.Indexer.GetPageOfEntitiesWithReference<T>(propertyName, EntitiesUtilities.GetType(referencedEntityType), referencedEntityID, Location, sortExpression);
+					entities = (T[])DataAccess.Data.Indexer.GetPageOfEntitiesWithReference<T>(propertyName, EntityState.GetType(referencedEntityType), referencedEntityID, Location, sortExpression);
 				}
 				else
 				{
-					entities = (T[])DataAccess.Data.Indexer.GetEntitiesWithReference<T>(propertyName, EntitiesUtilities.GetType(referencedEntityType), referencedEntityID);
+					entities = (T[])DataAccess.Data.Indexer.GetEntitiesWithReference<T>(propertyName, EntityState.GetType(referencedEntityType), referencedEntityID);
 				}
 				
 				if (RequireAuthorisation)
@@ -245,7 +245,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			CheckTypeName();
 			
-			Type type = EntitiesUtilities.GetType(TypeName);
+			Type type = EntityState.GetType(TypeName);
 			
 			IEntity[] entities = Collection<IEntity>.ConvertAll(Reflector.InvokeGenericMethod(this, // Source object
 			                                                                                  "Index", // Method name
@@ -265,7 +265,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns></returns>
 		public virtual IEntity[] Index(Dictionary<string, object> filterValues)
 		{
-			Type type = EntitiesUtilities.GetType(TypeName);
+			Type type = EntityState.GetType(TypeName);
 			
 			if (type == null)
 				throw new InvalidOperationException("Type not found.");
