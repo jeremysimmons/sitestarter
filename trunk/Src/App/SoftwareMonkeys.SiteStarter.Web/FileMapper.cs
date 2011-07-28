@@ -47,7 +47,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		{
 			string output = String.Empty;
 		
-			using (LogGroup logGroup = LogGroup.Start("Mapping the provided path.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Mapping the provided path."))
 			{
 				if (ApplicationPath == String.Empty)
 					throw new InvalidOperationException("The ApplicationPath property has not been set.");

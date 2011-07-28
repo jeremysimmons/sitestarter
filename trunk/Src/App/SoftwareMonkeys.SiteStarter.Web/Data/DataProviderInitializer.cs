@@ -26,7 +26,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Data
 
 		public DataProvider Initialize()
 		{
-			using (LogGroup logGroup = LogGroup.Start("Initializing data provider", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Initializing data provider"))
 			{
 				if (StateAccess.IsInitialized && Config.IsInitialized
 				    && !isInitialized)
@@ -97,10 +97,5 @@ namespace SoftwareMonkeys.SiteStarter.Web.Data
 				return providerCollection;
 			}
 		}
-
-		/* public static string DoWork()
-        {
-            return Provider.DoWork();
-        }*/
 	}
 }
