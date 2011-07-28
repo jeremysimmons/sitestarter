@@ -321,30 +321,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 					SelectedEntityIDs = new Guid[] { value };
 			}
 		}
-
-		/// <summary>
-		/// Gets/sets the selected entities.
-		/// </summary>
-		[Browsable(false)]
-		[Bindable(true)]
-		public Guid[] SelectedEntityIDs
-		{
-			get
-			{
-				return base.SelectedEntityIDs;
-			}
-			set
-			{
-				base.SelectedEntityIDs = value;
-			}
-		}
 		
 		/// <summary>
 		/// Gets/sets the selected entity.
 		/// </summary>
 		[Browsable(false)]
 		[Bindable(true)]
-		public E SelectedEntity
+		public new E SelectedEntity
 		{
 			get
 			{
@@ -538,7 +521,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				throw new Exception("EntityType isn't specified.");
 
 			//if (EntityType == null)
-			innerType = EntitiesUtilities.GetType(EntityType);
+			innerType = EntityState.GetType(EntityType);
 			//else
 			//    innerType = EntityType;
 			
@@ -837,7 +820,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
 			if (entityTypeName != null || entityTypeName != String.Empty)
 			{
-				Type entityType = EntitiesUtilities.GetType(entityTypeName);
+				Type entityType = EntityState.GetType(entityTypeName);
 				if (entityType == null)
 				{
 					throw new Exception(string.Format("The '{0}' type cannot be found or is invalid/incomplete.", entityTypeName));
