@@ -133,6 +133,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public IReaction New()
 		{
 			IReaction reaction = null;
+
 			using (LogGroup logGroup = LogGroup.Start("Creating a new reaction."))
 			{
 				LogWriter.Debug("Type name: " + TypeName);
@@ -140,9 +141,11 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				LogWriter.Debug("Action: " + Action);
 				
 				LogWriter.Debug("Key: " + Key);
-				
-				return Creator.CreateReaction(this);
+			
+				reaction = Creator.CreateReaction(this);	
 			}
+
+			return reaction;
 		}
 		
 		/// <summary>
