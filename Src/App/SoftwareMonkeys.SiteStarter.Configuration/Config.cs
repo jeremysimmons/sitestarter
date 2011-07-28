@@ -60,39 +60,6 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 			}
 		}
 		
-		// TODO: Remove if not needed
-		/*/// <summary>
-		/// Gets/sets the application configuration object.
-		/// </summary>
-		static public MappingConfig Mappings
-		{
-			get {
-				if (All != null && All.Count > 0)
-				{
-					for (int i = 0; i < All.Count; i++)
-					{
-						if (All[i] is MappingConfig)
-							return (MappingConfig)All[i];
-					}
-				}
-				
-				return null;
-			}
-			set
-			{
-				if (All.Contains((IConfig)value))
-				{
-					for (int i = 0; i < All.Count; i++)
-					{
-						if (All[i] is MappingConfig)
-							All[i] = (IConfig)value;
-					}
-				}
-				else
-					All.Add((IConfig)value);
-			}
-		}*/
-			
 			/// <summary>
 			/// Gets a flag indicating whether the application configuration has been initialized.
 			/// </summary>
@@ -108,7 +75,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 		/// <param name="variation">The path variation applied to configuration files.</param>
 		static public void Initialize(string physicalApplicationPath, string variation)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Initializing the application configuration settings.", LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Initializing the application configuration settings."))
 			{
 				if (!IsInitialized)
 				{
