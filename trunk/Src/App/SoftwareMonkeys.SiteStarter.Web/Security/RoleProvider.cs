@@ -2,8 +2,6 @@
 using System.Configuration.Provider;
 using System.Collections.Specialized;
 using System;
-using System.Data;
-using System.Data.Odbc;
 using System.Configuration;
 using System.Diagnostics;
 using System.Web;
@@ -234,7 +232,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 
 		public override void CreateRole(string rolename)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Creating new role: " + rolename, NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Creating new role: " + rolename))
 			{
 				if (rolename.Contains(","))
 				{
@@ -465,28 +463,5 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 
 			return (string[])usernames.ToArray();
 		}
-
-		//
-		// WriteToEventLog
-		//   A helper function that writes exception detail to the event log. Exceptions
-		// are written to the event log as a security measure to avoid private database
-		// details from being returned to the browser. If a method does not return a status
-		// or boolean indicating the action succeeded or failed, a generic exception is also
-		// thrown by the caller.
-		//
-
-		private void WriteToEventLog(OdbcException e, string action)
-		{
-			EventLog log = new EventLog();
-			log.Source = eventSource;
-			log.Log = eventLog;
-
-			string message = exceptionMessage + "\n\n";
-			message += "Action: " + action + "\n\n";
-			message += "Exception: " + e.ToString();
-
-			log.WriteEntry(message);
-		}
-
 	}
 }
