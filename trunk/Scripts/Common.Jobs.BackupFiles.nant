@@ -107,6 +107,7 @@
   	</if>
   	<zip zipfile="${Backup.ZipPath.Internal}" verbose="true">
 	    <fileset basedir="${Project.RootPath}">
+	        <exclude name="**/Archive"/>
 	        <exclude name="**/*.db4o"/>
 	        <exclude name="**/*.local.config"/>
 	        <exclude name="**/obj/**/*.*"/>

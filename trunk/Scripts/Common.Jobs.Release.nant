@@ -86,6 +86,7 @@
 	<echo message="Zip file path after: ${zipFilePath}"/>
   	<zip zipfile="${zipFilePath}">
 	    <fileset basedir="${Project.RootPath}">
+	        <exclude name="**/Archive"/>
 	        <exclude name="**/*.db4o"/>
 	        <exclude name="**/*.local.config"/>
 	        <exclude name="**/obj/**"/>
@@ -202,6 +203,7 @@
 	<echo message="Zip file path after: ${zipFilePath}"/>
   	<zip zipfile="${zipFilePath}">
 	    <fileset basedir="${InstallablePath}">
+	        <exclude name="**/Archive"/>
 	        <exclude name="**/*.db4o"/>
 	        <exclude name="**/*.local.config"/>
 	        <exclude name="_svn"/>

@@ -3,16 +3,19 @@
 	
   	<target name="Common.Jobs.CycleTests">
 
-		<call target="Common.Jobs.DetectVirtualDirectory"/>
-		<call target="Common.Jobs.ConfigureIIS"/>	
+		<call target="Common.Jobs.DetectVirtualDirectory" />
+		<call target="Common.Jobs.ConfigureIIS" />	
 		
 		<!-- Not needed because the selenium GUI is used to run the tests directly from the HTML suite -->
 		<!--call target="Common.Jobs.ConvertSeleniumToCSharp"/-->
-		<call target="Common.Jobs.BuildSolution"/>	
-		<call target="Common.Jobs.RunTests"/>	
+		<call target="Common.Jobs.BuildSolution" failonerror="false" />	
+		<call target="Common.Jobs.RunTests" failonerror="false" />	
 		
-		<property name="browser" value="*firefox" />
-		<call target="Common.Jobs.RunFunctionalTests-GUI"/>
+		<property name="browser" value="*firefox" failonerror="false"  />
+		<call target="Common.Jobs.RunFunctionalTests-GUI" failonerror="false" />
+		
+		
+		<call target="Common.Jobs.OutputFiles" failonerror="false" />	
 		
 	</target>
 
