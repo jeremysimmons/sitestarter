@@ -16,7 +16,7 @@
     	
 	<property name="tmpFilePath" value="tmpfile.txt" />
 
-	<get src="http://localhost/${Solution.VirtualDirectoryName}/Admin/InitializeCache.aspx" dest="${tmpFilePath}" timeout="1800000" />
+	<get src="http://localhost/${Solution.VirtualDirectoryName}/Admin/InitializeCache.aspx" dest="${tmpFilePath}" timeout="1000000" />
 
 	<delete file="${tmpFilePath}"/>
 	

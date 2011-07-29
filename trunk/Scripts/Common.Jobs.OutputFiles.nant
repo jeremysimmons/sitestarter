@@ -25,7 +25,7 @@
 			
 		<echo message="Current version: ${CurrentVersion}" />
 		
-		<property name="outputBaseDir" value="${Project.RootPath}\Archive\${string::replace(CurrentVersion, '.', '-')}\" />
+		<property name="outputBaseDir" value="${Project.RootPath}-Archive\${string::replace(CurrentVersion, '.', '-')}\" />
 	
 		<if test="${not directory::exists(outputBaseDir)}">
 			<mkdir dir="${outputBaseDir}"/>
@@ -39,6 +39,12 @@
 		
 		<get src="http://10.0.0.1:8080/scripts/Scripts/UploadProjectFiles.script?Project=${Project.Name}&amp;Store=Default&amp;Group=softwaremonkeys" dest="${tmpFilePath}" failonerror="false" verbose="true" timeout="1800000" />
 
+		<loadfile
+		    file="${tmpFilePath}"
+		    property="uploadResults" />
+			
+		<echo message="${uploadResults}"/>
+			
 		<delete file="${tmpFilePath}"/>
   </target>
   
@@ -97,7 +103,7 @@
 					<echo message="Test name: ${testName}" />
 					<property name="newFileName" value="${outputBaseDir}\Tests\${testName}\${shortFileName}" />
 					
-					<property name="testOutputDir" value="${outputBaseDir}\Tests\${testName}" />
+					<property name="testOutputDir" value="${outputBaseDir}Tests\${testName}" />
 		
 					<echo message="Test output dir: ${testOutputDir}" />
 		
