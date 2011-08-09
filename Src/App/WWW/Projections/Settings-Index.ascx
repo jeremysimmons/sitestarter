@@ -54,6 +54,9 @@
 				<li>
 		                         <a href='<%= Navigator.GetLink("Edit", "UserSettings") %>' id='UserSettingsLink'><%# Resources.Language.UserSettings %></a>
 				</li>
+				<li>
+		                         <a href='<%= Navigator.GetLink("Edit", "EmailSettings") %>' id='EmailSettingsLink'><%# Resources.Language.EmailSettings %></a> - <a href='<%= Navigator.GetLink("Test", "Smtp") %>' id='TestSmtpLink'><%# Resources.Language.TestSmtpSettings %></a>
+				</li>
 			</ul>
         </asp:View>
     </asp:MultiView>
