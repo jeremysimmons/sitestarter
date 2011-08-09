@@ -2,6 +2,7 @@
 using System.Web;
 using System.Web.UI;
 using SoftwareMonkeys.SiteStarter.State;
+using System.IO;
 
 namespace SoftwareMonkeys.SiteStarter.Web
 {
@@ -44,7 +45,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		
 		public virtual Control LoadControl(string path)
 		{
-			if (path.IndexOf(":") > -1)
+			if (path.IndexOf(StateAccess.State.PhysicalApplicationPath) > -1)
 				path = PhysicalToVirtual(path);
 			
 			if (Page == null)
@@ -64,7 +65,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 					.Replace("\\", "/");
 			}
 			
-			virtualPath = ApplicationPath + "/" + virtualPath;
+			virtualPath = ApplicationPath.TrimEnd(Path.DirectorySeparatorChar) + "/" + virtualPath;
 			
 			return virtualPath;
 		}
