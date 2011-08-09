@@ -28,6 +28,12 @@ namespace SoftwareMonkeys.SiteStarter.Web
 
 		}
 
+		static public string ConvertApplicationRelativeUrlToAbsoluteUrl(string relativeUrl)
+		{
+			string applicationPath = HttpContext.Current.Request.ApplicationPath.TrimEnd('/');
+			return ConvertRelativeUrlToAbsoluteUrl(applicationPath.TrimEnd('/') + "/" + relativeUrl.TrimStart('/'));
+		}
+		
 		static public string ConvertAbsoluteUrlToApplicationRelativeUrl(string originalUrl)
 		{
 			return ConvertAbsoluteUrlToRelativeUrl(originalUrl, HttpContext.Current.Request.ApplicationPath);
