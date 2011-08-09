@@ -16,24 +16,22 @@
     void Application_Start(object sender, EventArgs e) 
     {
     	InitializeCore();
-    	
-        using (LogGroup logGroup = LogGroup.Start("Starting application.", LogLevel.Debug))
-        {
-        	LogWriter.Debug("${Application.Start}");
         
-            // Attempt to initialize the config
-            Initialize();
-        }
+		// Start a log group for the application
+		HttpContext.Current.Application["Application_Start.LogGroup"] = LogGroup.StartDebug("Starting application.");
+		
+		LogWriter.Debug("${Application.Start}");
+	
+	    // Attempt to initialize the config
+	    Initialize();
 
     }
     
     void Application_End(object sender, EventArgs e) 
     {
-    
-        using (LogGroup logGroup = LogGroup.Start("Ending application.", LogLevel.Debug))
-        {
-        	LogWriter.Debug("${Application.End}");
-        }
+        LogWriter.Debug("${Application.End}");
+        	
+        HttpContext.Current.Application["Application_Start.LogGroup"] = null;
         
         //  Dispose outside the log group
         Dispose();
@@ -56,45 +54,45 @@
     {
     	InitializeCore();
     	
-        using (LogGroup logGroup = LogGroup.Start("Starting session.", LogLevel.Debug))
-        {
-        	LogWriter.Debug("${Session.Start}");
+        // Create a log group for the session
+		HttpContext.Current.Session["Session_Start.LogGroup"] = LogGroup.StartDebug("Starting session.");
+			
+        LogWriter.Debug("${Session.Start}");
         
-            // Attempt to initialize the config
-            Initialize();
-        }
-
+        // Attempt to initialize the config
+        Initialize();
     }
 
     void Session_End(object sender, EventArgs e) 
     {
         LogWriter.Debug("${Session.End}");
+        
+        HttpContext.Current.Session["Session_Start.LogGroup"] = null;
     }
     
     void Application_BeginRequest(object sender, EventArgs e)
     {
     	InitializeCore();
     	
-    	using (LogGroup logGroup = LogGroup.Start("Beginning application request: " + DateTime.Now.ToString(), NLog.LogLevel.Debug))
-    	{
-        	LogWriter.Debug("${Application.BeginRequest}");
+    	// Create a log group for the request
+		HttpContext.Current.Items["Application_BeginRequest.LogGroup"] = LogGroup.StartDebug("Beginning request: " + HttpContext.Current.Request.Url.ToString());
+
+        LogWriter.Debug("${Application.BeginRequest}");
         	
-        	Initialize();
+        Initialize();
         	
-            // Initialize the URL rewriter to take care of friendly URLs
-            UrlRewriter.Initialize();
-        }
+        // Initialize the URL rewriter to take care of friendly URLs
+        UrlRewriter.Initialize();
     }
     
     
     void Application_EndRequest(object sender, EventArgs e)
     {
-    	using (LogGroup logGroup = LogGroup.Start("Ending application request: " + DateTime.Now.ToString(), NLog.LogLevel.Debug))
-    	{
-        	LogWriter.Debug("${Application.EndRequest}");
+        LogWriter.Debug("${Application.EndRequest}");
        	
-       		new AutoBackupInitializer().Initialize();
-        }
+       	new AutoBackupInitializer().Initialize();
+       		
+        HttpContext.Current.Items["Application_BeginRequest.LogGroup"] = null;
     }
 
 	private void InitializeCore()
