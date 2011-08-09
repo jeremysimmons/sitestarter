@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" ClassName="CreateEditProjection" Inherits="SoftwareMonkeys.SiteStarter.Web.Projections.BaseProjection" %>
+﻿<%@ Control Language="C#" ClassName="SignInProjection" Inherits="SoftwareMonkeys.SiteStarter.Web.Projections.BaseProjection" %>
 <%@ Register Namespace="SoftwareMonkeys.SiteStarter.Web.WebControls" Assembly="SoftwareMonkeys.SiteStarter.Web" TagPrefix="cc" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web" %>
@@ -38,3 +38,4 @@
     <asp:Login ID="Login" runat="server" DestinationPageUrl="Default.aspx" OnLoggingIn="Login_LoggingIn" titletext='<%# Resources.Language.SignInDetails %>'>
         <TitleTextStyle CssClass="Heading2" HorizontalAlign="Left" />
     </asp:Login>
+    <p><a href='<%= Navigator.GetLink("Recover", "Password") %>'><%= Resources.Language.ForgotMyPassword %></a></p>
