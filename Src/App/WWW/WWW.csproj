@@ -24,6 +24,8 @@
     <Optimize>False</Optimize>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <StartAction>StartURL</StartAction>
+    <StartURL>http://localhost/SiteStarter/</StartURL>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DebugSymbols>false</DebugSymbols>
@@ -74,6 +76,7 @@
     <None Include="Admin\Log.aspx" />
     <None Include="Admin\QuickSetup.aspx" />
     <None Include="Admin\State.aspx" />
+    <None Include="Admin\Tests\ChangePassword.aspx" />
     <None Include="Admin\Tests\ClearData.aspx" />
     <None Include="Admin\Tests\Dispose.aspx" />
     <None Include="Admin\Tests\EntitySelectTest.aspx" />
@@ -109,6 +112,8 @@
     <None Include="Projections\IEntity-Index.xml.ascx" />
     <None Include="Projections\IEntity-View.xml.ascx" />
     <None Include="Projections\Message-Send.ascx" />
+    <None Include="Projections\Password-Recover.ascx" />
+    <None Include="Projections\Password-Change.ascx" />
     <None Include="Projections\Settings-Index.ascx" />
     <None Include="Projections\Smtp-Test.ascx" />
     <None Include="Projections\User-Create-Edit.ascx" />
@@ -191,5 +196,8 @@
       <Project>{A5D49D94-D936-4123-BA9A-572AA7C7F426}</Project>
       <Name>SiteStarter.Web</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Projections\EmailSettings-Edit.ascx" />
   </ItemGroup>
 </Project>
