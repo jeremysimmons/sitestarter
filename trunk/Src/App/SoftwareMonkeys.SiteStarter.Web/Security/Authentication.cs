@@ -1,9 +1,10 @@
 ﻿using System;
 using SoftwareMonkeys.SiteStarter.Business;
 using SoftwareMonkeys.SiteStarter.Business.Security;
-using System.Web;
-using SoftwareMonkeys.SiteStarter.Web.WebControls;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Web.Properties;
+using SoftwareMonkeys.SiteStarter.Web.WebControls;
+using System.Web;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Security
 {
@@ -17,14 +18,27 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		/// </summary>
 		public static void EnsureIsAuthenticated()
 		{
-			if (!IsAuthenticated)
+			using (LogGroup logGroup = LogGroup.StartDebug("Ensuring that the current user is authenticated."))
 			{
-				Result.DisplayError(Language.NotAuthenticated);
-				
-				if (HttpContext.Current != null)
-					HttpContext.Current.Response.Redirect(HttpContext.Current.Request.ApplicationPath + "/User-SignIn.aspx?ReturnUrl=" + GetReturnUrl());
+				if (!IsAuthenticated)
+				{
+					LogWriter.Debug("Is authenticated.");
+					
+					Result.DisplayError(Language.NotAuthenticated);
+					
+					if (HttpContext.Current != null)
+					{
+						string url = HttpContext.Current.Request.ApplicationPath + "/User-SignIn.aspx?ReturnUrl=" + GetReturnUrl();
+						
+						LogWriter.Debug("Redirecting to: " + url);
+						
+						HttpContext.Current.Response.Redirect(url);
+					}
+					else
+						throw new Exception("You are not authorised to do that.");
+				}
 				else
-					throw new Exception("You are not authorised to do that.");
+					LogWriter.Debug("Is NOT authenticated.");
 			}
 		}
 		
@@ -56,7 +70,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		/// <returns>A value indicating whether the user's credentials are authentic.</returns>
 		public static bool SignIn(string username, string password)
 		{
-			return SignIn(username, password, false);
+			bool isAuthenticated = false;
+			
+			using (LogGroup logGroup = LogGroup.StartDebug("Attempting to sign in user '" + username + "'."))
+			{
+				isAuthenticated = SignIn(username, password, false);
+				
+				LogWriter.Debug("Is authenticated: " + isAuthenticated);
+			}
+			
+			return isAuthenticated;
 		}
 		
 		
@@ -69,14 +92,25 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		/// <returns>A value indicating whether the user's credentials are authentic.</returns>
 		public static bool SignIn(string username, string password, bool persistAuthentication)
 		{
-			if(Authenticate(username, password))
+			bool isAuthenticated = false;
+			
+			using (LogGroup logGroup = LogGroup.StartDebug("Attempting to sign in user '" + username + "'."))
 			{
-				SetAuthenticatedUsername(username, persistAuthentication);
+				LogWriter.Debug("Persist authentication: " + persistAuthentication);
 				
-				return true;
+				if(Authenticate(username, password))
+				{
+					LogWriter.Debug("Authenticated. Setting authenticated username.");
+					
+					SetAuthenticatedUsername(username, persistAuthentication);
+					
+					isAuthenticated = true;
+				}
+				
+				LogWriter.Debug("Is authenticated: " + isAuthenticated);
 			}
-			else
-				return false;
+			
+			return isAuthenticated;
 		}
 		
 		/// <summary>
@@ -87,13 +121,22 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		/// <returns>A value indicating whether the user's credentials are authentic.</returns>
 		public static bool SignInAndRedirect(string username, string password)
 		{
-			if (SignIn(username, password))
+			bool isAuthenticated = false;
+			
+			using (LogGroup logGroup = LogGroup.StartDebug("Attempting to sign in user '" + username + "' and redirect to previous page."))
 			{
-				ReturnUser();
-				return true;
+				if (SignIn(username, password))
+				{
+					LogWriter.Debug("Signed in.");
+					
+					ReturnUser();
+					isAuthenticated = true;
+				}
+				
+				LogWriter.Debug("Is authenticated: " + isAuthenticated);
 			}
-			else
-				return false;
+			
+			return isAuthenticated;
 		}
 		
 		
@@ -106,13 +149,25 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		/// <returns>A value indicating whether the user's credentials are authentic.</returns>
 		public static bool SignInAndRedirect(string username, string password, bool persistAuthentication)
 		{
-			if (SignIn(username, password, persistAuthentication))
+			bool isAuthenticated = false;
+			
+			using (LogGroup logGroup = LogGroup.StartDebug("Attempting to sign in user '" + username + "' and redirect to previous page."))
 			{
-				ReturnUser();
-				return true;
+				LogWriter.Debug("Persist authentication: " + persistAuthentication);
+				
+				if (SignIn(username, password, persistAuthentication))
+				{
+					LogWriter.Debug("Signed in.");
+					
+					ReturnUser();
+					
+					isAuthenticated = true;
+				}
+				
+				LogWriter.Debug("Is authenticated: " + isAuthenticated);
 			}
-			else
-				return false;
+			
+			return isAuthenticated;
 		}
 		
 		/// <summary>
@@ -130,7 +185,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		/// <param name="username">The username of the current user.</param>
 		public static void SetAuthenticatedUsername(string username)
 		{
-			SetAuthenticatedUsername(username, false);
+			using (LogGroup logGroup = LogGroup.StartDebug("Setting the authenticated username '" + username + "'."))
+			{
+				SetAuthenticatedUsername(username, false);
+			}
 		}
 		
 		/// <summary>
@@ -139,21 +197,47 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		/// <param name="username">The username of the current user.</param>
 		public static void SetAuthenticatedUsername(string username, bool persistAuthentication)
 		{
-			DateTime expirationDate = DateTime.Now.AddHours(GetStandardDurationHours());
-			
-			if (persistAuthentication)
-				expirationDate = DateTime.Now.AddDays(GetPersistDurationDays());
-			
-			AuthenticationState.SetAuthenticatedUsername(username, expirationDate);
-			
-			if (username != String.Empty)
+			using (LogGroup logGroup = LogGroup.StartDebug("Setting the authenticated username '" + username + "'."))
 			{
-				// Set the auth cookie in standard forms authentication to ensure dependent features work
-				System.Web.Security.FormsAuthentication.SetAuthCookie(username, persistAuthentication);
+				DateTime expirationDate = DateTime.Now;
+				
+				if (persistAuthentication)
+				{
+					int durationDays = GetPersistDurationDays();
+				
+					LogWriter.Debug("Persist duration (days): " + durationDays);
+				
+					expirationDate = DateTime.Now.AddDays(durationDays);
+				}
+				else
+				{
+					int durationHours = GetStandardDurationHours();
+					
+					LogWriter.Debug("Login duration (hours): " + durationHours);
+					
+					expirationDate = DateTime.Now.AddHours(durationHours);
+				}
+				
+				LogWriter.Debug("Expiration date: " + expirationDate.ToString());
+				
+				AuthenticationState.SetAuthenticatedUsername(username, expirationDate);
+				
+				if (username != String.Empty)
+				{
+					LogWriter.Debug("Setting auth cookie via FormsAuthentication.SetAuthCookie(...)");
+					
+					// Set the auth cookie in standard forms authentication to ensure dependent features work
+					System.Web.Security.FormsAuthentication.SetAuthCookie(username, persistAuthentication);
+					
+					LogWriter.Debug("HttpContext.Current.User.Identity.Name: " + HttpContext.Current.User.Identity.Name);
+				}
+				else
+				{
+					LogWriter.Debug("Removing auth cookie via FormsAuthentication.SignOut()");
+					
+					System.Web.Security.FormsAuthentication.SignOut();
+				}
 			}
-			else
-				System.Web.Security.FormsAuthentication.SignOut();
-			
 		}
 		
 		public static void ReturnUser()
