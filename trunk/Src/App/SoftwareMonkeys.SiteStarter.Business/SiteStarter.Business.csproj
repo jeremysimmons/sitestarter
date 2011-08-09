@@ -123,6 +123,7 @@
     <Compile Include="ReactionsResetter.cs" />
     <Compile Include="ReactionState.cs" />
     <Compile Include="ReactionStateNameValueCollection.cs" />
+    <Compile Include="RecoverPasswordStrategy.cs" />
     <Compile Include="RefreshSubEntityNumbersStrategy.cs" />
     <Compile Include="SaveStrategy.cs" />
     <Compile Include="Security\AuthenticateStrategy.cs" />
