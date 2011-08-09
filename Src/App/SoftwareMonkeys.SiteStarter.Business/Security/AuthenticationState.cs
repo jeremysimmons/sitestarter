@@ -158,6 +158,9 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 				// Set the username in the operation scope as well to get around hurdle with user scope values not being reflected until the next request
 				// due to the use of cookies
 				StateAccess.State.SetOperation(AuthenticationStateKey, username);
+				
+				LogWriter.Debug("AuthenticationState.Username: " + Username);
+				LogWriter.Debug("AuthenticationState.IsAuthenticated: " + IsAuthenticated);
 			}
 		}
 	}
