@@ -2,11 +2,18 @@
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business.Security" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Configuration" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
 <script runat="server">
 private void Page_Load(object sender, EventArgs e)
 {
+	using (LogGroup logGroup = LogGroup.StartDebug("Loading authentication menu."))
+	{
 		if (!QueryStrings.HideTemplate)
 				AuthenticationHolder.DataBind();
+				
+		LogWriter.Debug("AuthenticationState.Username: " + AuthenticationState.Username);
+		LogWriter.Debug("AuthenticationState.IsAuthenticated: " + AuthenticationState.IsAuthenticated);
+	}
 }
 </script>
 <asp:placeholder runat="server" id="AuthenticationHolder">
