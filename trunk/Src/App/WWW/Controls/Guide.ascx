@@ -16,8 +16,7 @@
     <li><strong><a href='<%= Request.ApplicationPath + "/UserRole-Index.aspx" %>'>Roles</a></strong> (/UserRole-Index.aspx) - The roles is used by authorised administrators to manage user/security roles.</li>
     <li><strong><a href='<%= Request.ApplicationPath + "/Settings-Index.aspx" %>'>Settings</a></strong> (/Settings-Index.aspx) - The administration settings can be used to configure certain parts of the application.</li>
      <li><strong><a href='<%= Request.ApplicationPath + "/Admin/Backup.aspx" %>'>Backup</a></strong> (/Admin/Backup.aspx) - Used to back up data from the stores to serialized XML files and then zip them into a single file.</li>
-    <li><strong><a href='<%= Request.ApplicationPath + "/Admin/Log.aspx" %>'>Log</a></strong> (/Admin/Log.aspx) - The log includes application exceptions and other important information.</li>
     <li><strong><a href='<%= Request.ApplicationPath + "/Admin/Update.aspx" %>'>Update</a></strong> (/Admin/Update.aspx) - Prepares the application to be updated. Important as it ensures the new version can use the existing data.</li>
        <li><strong><a href='<%= Request.ApplicationPath + "/Admin/Data.aspx" %>'>Data</a></strong> (/Admin/Data.aspx) - A simple and direct data browser. NOTE: This should be removed from live installations as it could be used to uncover private/security information.</li>
-       <li><strong><a href='<%= Request.ApplicationPath + "/Admin/Cache.aspx" %>'>Application Cache</a></strong> (/Admin/Cache.aspx) - An index of the various application cache.</li>
+       <li><strong><a href='<%= Request.ApplicationPath + "/Admin/Cache.aspx" %>'>Application Cache</a></strong> (/Admin/Cache.aspx) - Displays the cached info about many of the components in the application.</li>
 </ul>
