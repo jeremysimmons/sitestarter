@@ -848,4 +848,41 @@ ${WebSite.Title}&lt;br /&gt;
   <data name="BackToHome" xml:space="preserve">
     <value>Back to Home</value>
   </data>
+  <data name="RecoverPassword" xml:space="preserve">
+    <value>Recover Password</value>
+  </data>
+  <data name="RecoverPasswordIntro" xml:space="preserve">
+    <value>Enter your email address below to recover your password.</value>
+  </data>
+  <data name="ResetPasswordEmailSubject" xml:space="preserve">
+    <value>Confirm password reset</value>
+  </data>
+  <data name="ResetPasswordEmailMessage" xml:space="preserve">
+    <value>To update your password use this link:
+${ResetUrl}</value>
+  </data>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>Change Password</value>
+  </data>
+  <data name="ChangePasswordIntro" xml:space="preserve">
+    <value>Enter your new password below.</value>
+  </data>
+  <data name="EditEmailSettingsIntro" xml:space="preserve">
+    <value>Edit email related settings below.</value>
+  </data>
+  <data name="Recover" xml:space="preserve">
+    <value>Recover</value>
+  </data>
+  <data name="ForgotMyPassword" xml:space="preserve">
+    <value>Forgot my password!</value>
+  </data>
+  <data name="TestSmtpSettings" xml:space="preserve">
+    <value>Test SMTP Settings</value>
+  </data>
+  <data name="RecoverEmailSent" xml:space="preserve">
+    <value>An email has been sent to the provided email address. Please use the link provided in the email to set your password.</value>
+  </data>
+  <data name="EmailNotFound" xml:space="preserve">
+    <value>The specified email wasn't found.</value>
+  </data>
 </root>
