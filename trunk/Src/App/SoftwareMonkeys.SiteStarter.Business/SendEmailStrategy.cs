@@ -14,6 +14,11 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			get
 			{
+				// If it's configured in the settings then use it
+				if (Configuration.Config.IsInitialized && Configuration.Config.Application.Settings.ContainsKey("SmtpServer") && Configuration.Config.Application.Settings["SmtpServer"] != null)
+					return Configuration.Config.Application.Settings.GetString("SmtpServer");
+				
+				// Otherwise fall back to the config file
 				return ConfigurationSettings.AppSettings["SmtpServer"];
 			}
 		}
@@ -55,6 +60,12 @@ namespace SoftwareMonkeys.SiteStarter.Business
             new SmtpClient(SmtpServer).Send(message);
   		}
   		
+  		static public SendEmailStrategy New(bool requiresAuthorisation)
+  		{
+  			SendEmailStrategy strategy = new SendEmailStrategy();
+  			strategy.RequireAuthorisation = true;
+  			return strategy;
+  		}
   		static public SendEmailStrategy New()
   		{
   			return new SendEmailStrategy();
