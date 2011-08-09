@@ -249,7 +249,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 
 				string lastPart = parts[parts.Length-1];
 
-				if (parts.Length > 0)
+				if (parts.Length > 0 && lastPart.IndexOf(".") > -1)
 					parts[parts.Length - 1] = lastPart.Substring(0, lastPart.IndexOf("."));
 				
 				// If there aren't enough parts then it's not cloaked and can't be rewritten.
