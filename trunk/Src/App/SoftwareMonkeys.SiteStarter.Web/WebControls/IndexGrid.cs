@@ -198,25 +198,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		}
 
 		/// <summary>
-		/// Gets/sets a value indicating whether to enable expanding items.
-		/// </summary>
-		[Bindable(true)]
-		[Browsable(true)]
-		public bool EnableExpansion
-		{
-			get
-			{
-				if (ViewState["EnableExpansion"] == null)
-					ViewState["EnableExpansion"] = false;
-				return (bool)ViewState["EnableExpansion"];
-			}
-			set
-			{
-				ViewState["EnableExpansion"] = value;
-			}
-		}
-
-		/// <summary>
 		/// Gets/sets the heading text for the grid.
 		/// </summary>
 		[Bindable(true)]
@@ -372,14 +353,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				LogWriter.Debug("Default sort: " + DefaultSort);
 				LogWriter.Debug("Current sort: " + CurrentSort);
 				
-				//Sort.Items.Add(new ListItem("------ " + TextHelper.Get("Sort") + " ------", ""));
-				
 				CustomHolder = new PlaceHolder();
-				CustomHolder.ID = "CustomHolder";
-				
-				Page.ClientScript.RegisterStartupScript(this.GetType(), "IndexUtil", "<script language='javascript' src='" + HttpContext.Current.Request.ApplicationPath + "/Scripts/IndexUtil.js'></script>");
-				
-				
+				CustomHolder.ID = "CustomHolder";				
 			}
 			
 			base.OnInit(e);
@@ -399,14 +374,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 					Sort.Visible = false;
 			}
 		}
-
-		/*protected override void DataBind(bool raiseOnDataBinding)
-		{
-			
-			base.DataBind(raiseOnDataBinding);
-
-		}*/
-
 		void Sort_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			HttpContext.Current.Response.Redirect(CompileNavigateUrl(CurrentPageIndex, Sort.SelectedValue));
@@ -602,29 +569,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			
 			using (LogGroup logGroup = LogGroup.Start("Customizing a pager item.", NLog.LogLevel.Debug))
 			{
-				e.Item.Cells[0].Controls.Clear();
-
-				/*if (!IsFirstPage)
-				{
-					LinkButton firstButton = new LinkButton();
-					firstButton.Text = "|&laquo;&laquo;";
-					firstButton.CommandName = "Page";
-					firstButton.CommandArgument = "1";
-					firstButton.CausesValidation = false;
-					e.Item.Cells[0].Controls.Add(firstButton);
-
-					e.Item.Cells[0].Controls.Add(new LiteralControl(" | "));
-
-					LinkButton prevButton = new LinkButton();
-					prevButton.Text = "&laquo;";
-					prevButton.CommandName = "Page";
-					prevButton.CommandArgument = (CurrentPageIndex).ToString();
-					prevButton.CausesValidation = false;
-					e.Item.Cells[0].Controls.Add(prevButton);
-
-					e.Item.Cells[0].Controls.Add(new LiteralControl(" | "));
-				}*/
-				
+				e.Item.Cells[0].Controls.Clear();			
 				
 
 				e.Item.Cells.RemoveAt(0);
@@ -638,7 +583,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			{
 				e.Item.Attributes.Add("onmouseover", "this.className='" + ItemMouseOverCssClass + "';");
 				e.Item.Attributes.Add("onmouseout", "this.className='" + ItemMouseOutCssClass + "';");
-				e.Item.Attributes.Add("onclick", (EnableExpansion ? "ToggleExpansion('" + ClientID + "', " + e.Item.ItemIndex + ")" : String.Empty));
+				
+				// TODO: Check if expansion is needed
+				//e.Item.Attributes.Add("onclick", (EnableExpansion ? "ToggleExpansion('" + ClientID + "', " + e.Item.ItemIndex + ")" : String.Empty));
 			}
 		}
 
@@ -647,42 +594,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			CurrentPageIndex = e.NewPageIndex;
 			
 			base.OnPageIndexChanged (e);
-		}
-		
-		protected override void CreateChildControls()
-		{
-			base.CreateChildControls();
-			
-			//int numRows = base.CreateChildControls(dataSource, dataBinding);
-
-			
-			/*//create table
-			Table table = new Table();
-			table.ID = this.ID;
-
-			//create a new header row
-			GridViewRow row = base.CreateRow(-1, -1, DataControlRowType.Header, DataControlRowState.Normal);
-
-			//convert the exisiting columns into an array and initialize
-			DataControlField[] fields = new DataControlField[this.Columns.Count];
-			this.Columns.CopyTo(fields, 0);
-			this.InitializeRow(row, fields);
-			table.Rows.Add(row);
-
-			//create the empty row
-			row = new GridViewRow(-1, -1, DataControlRowType.DataRow, DataControlRowState.Normal);
-			TableCell cell = new TableCell();
-			cell.ColumnSpan = this.Columns.Count;
-			cell.Width = Unit.Percentage(100);
-			cell.Controls.Add(new LiteralControl(EmptyTableRowText));
-			row.Cells.Add(cell);
-			table.Rows.Add(row);
-
-			this.Controls.Add(table);*/
-				
-
-		}
-		
+		}		
 		
 		private void InitializeNoDataText()
 		{
@@ -708,46 +620,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			textCell.Controls.Add(new LiteralControl("<div class='" + NoDataTextCssClass + "' nowrap>" + NoDataText + "</div>"));
 			
 			DataGridItem textRow = new DataGridItem(Items.Count, 0, ListItemType.Item);
-			//textRow.CssClass = NoDataTextCssClass;
+			
 			textRow.Cells.Add(textCell);
 			
 			table.Rows.Add(textRow);
-			
-			//textRow.Visible = (DataSource == null || DataSource.Length == 0);
-			
-			//Table noDataTable = new Table();
-			//outerTable.Rows[0].Cells[0].Controls.Add(noDataTable);
-			
-			//TableCell headerCell = new TableCell();
-			//headerCell.Controls.Add(new LiteralControl(HeaderText));
-			
-			//headerRow.Cells[0]
-			//headerRow.Cells.Add(headerCell);
-			
-			
-			//noDataTable.Rows.Add(headerRow);
-			//noDataTable.Rows.Add(textRow);
-			
-			
-			
-			/*//create a new header row
-			DataGridItem row = base.CreateItem(-1, -1, ListItemType.Header);
-
-			//convert the exisiting columns into an array and initialize
-			DataGridColumn[] fields = new DataGridColumn[this.Columns.Count];
-			this.Columns.CopyTo(fields, 0);
-			this.InitializeItem(row, fields);
-			noDataTable.Rows.Add(row);
-
-			//create the empty row
-			row = base.CreateItem(-1, -1, ListItemType.Header);
-			TableCell cell = new TableCell();
-			cell.ColumnSpan = this.Columns.Count;
-			cell.Width = Unit.Percentage(100);
-			cell.Controls.Add(new LiteralControl(NoDataText));
-			row.Cells.Add(cell);
-			noDataTable.Rows.Add(row);*/
-
 		}
 
 		protected override void OnPreRender(EventArgs e)
@@ -770,68 +646,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			if (PageCount <= 1)
 				PagerStyle.Visible = false;
 			
-
-			if (EnableExpansion)
-			{
-				if (!Page.ClientScript.IsClientScriptBlockRegistered(this.GetType(), "SmartGrid"))
-				{
-					/*string script = @"<script language='JavaScript' defer>
-						function ExpandGridItem(gridID, itemIndex)
-						{
-							for (var i = 0; i < " + Columns.Count + 5 + @"; i++)
-							{
-								var itemID = gridID + '__ctl' + itemIndex + '_Expanded_' + i;
-								if (document.getElementById(itemID))
-								{
-									document.getElementById(itemID).style.display = '';
-								}
-							}
-						}
-
-						function CollapseGridItem(gridID, itemIndex)
-						{
-							for (var i = 0; i < " + Columns.Count + 5 + @"; i++)
-							{
-								var itemID = gridID + '__ctl' + itemIndex + '_Expanded_' + i;
-								if (document.getElementById(itemID))
-								{
-									document.getElementById(itemID).style.display = 'none';
-								}
-							}
-						}
-				</script>";*/
-
-					string script = @"<script language='JavaScript'>
-						function ToggleExpansion(gridID, itemIndex)
-						{
-							for (var i = 0; i <= " + Columns.Count + @"; i++)
-							{
-								var itemID = gridID + '__ctl' + itemIndex + '_Expanded_' + i;
-
-								if (document.getElementById(itemID))
-								{
-
-									if (document.getElementById(itemID).style.display == 'none')
-										document.getElementById(itemID).style.display = '';
-									else
-										document.getElementById(itemID).style.display = 'none';
-								}
-							}
-						}
-
-						function InitToggle()
-						{
-							for (var x = 0; x <= " + (DataSource != null ? DataSource.Length : 0).ToString() + @"; x++)
-							{
-								ToggleExpansion('" + ClientID + @"', x);
-							}
-						}
-						</script>";
-
-					Page.ClientScript.RegisterClientScriptBlock(this.GetType(), "SmartGrid", script);
-				}
-			}
-
 			base.OnPreRender(e);
 		}
 		
@@ -956,38 +770,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				
 				if (Columns == null)
 					throw new InvalidOperationException("Columns == null");
-			}
-		}
-
-
-		#region Expansion functions
-		/// <summary>
-		/// Gets the ID to use for an expanding div.
-		/// </summary>
-		/// <param name="item"></param>
-		/// <returns></returns>
-		public string GetExpandedClientID(DataGridItem item, int cellID)
-		{
-			string id = ClientID + "__ctl" + item.ItemIndex + "_Expanded_" + cellID;
-			// TODO: Remove expanded count
-			//ExpandedCount++;
-			return id;
-		}
-		#endregion
-		
-
-		protected override void Render(HtmlTextWriter writer)
-		{
-			base.Render (writer);
-
-			if (EnableExpansion)
-			{
-				writer.Write(
-					@"<script language='JavaScript' defer>
-
-				InitToggle();
-
-				</script>");
 			}
 		}
 		
