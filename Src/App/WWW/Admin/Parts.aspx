@@ -24,10 +24,10 @@ private void ResetButton_Click(object sender, EventArgs e)
 }
 </script>
 <asp:Content runat="server" ContentPlaceHolderID="Body">
+<div class="Trail"><a href='<%= Request.ApplicationPath %>'><%= Resources.Language.Home %></a> &gt; <a id="CacheIndexLink" href='<%= Request.ApplicationPath.TrimEnd('/') + "/Admin/Cache.aspx" %>'><%= Resources.Language.Cache %></a></div>
 <h1>Parts</h1>
 <cc:Result runat="Server"/>
 <p>The following parts are currently cached in the system. Click "Reset" to rescan and refresh the parts.</p>
-<p><a href="Cache.aspx" id="CacheIndexLink">&laquo; Index</a></p>
 <p><asp:button runat="server" id="ResetButton" text='<%# Resources.Language.Reset %>' onclick="ResetButton_Click"/></p>
 <p>Total Parts: <%= PartState.Parts.Count %></p>
 <table class="Panel" width="600">

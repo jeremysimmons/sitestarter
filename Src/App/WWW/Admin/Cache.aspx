@@ -12,6 +12,7 @@ private void Page_Load(object sender, EventArgs e)
 }
 </script>
 <asp:Content runat="server" ContentPlaceHolderID="Body">
+<div class="Trail"><a href='<%= Request.ApplicationPath %>'><%= Resources.Language.Home %></a></div>
 <h1>Application Cache</h1>
 <p>View the application cache using the links below.</p>
 <h2>Entities</h2>

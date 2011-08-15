@@ -37,7 +37,7 @@ private bool CanView(ProjectionInfo info)
 }
 </script>
 <asp:Content runat="server" ContentPlaceHolderID="Body">
-<p><a href='<%= Request.ApplicationPath %>'><%= Resources.Language.Home %></a> &gt; <a id="CacheIndexLink" href='<%= Request.ApplicationPath.TrimEnd('/') + "/Admin/Cache.aspx" %>'><%= Resources.Language.Cache %></a></p>
+<div class="Trail"><a href='<%= Request.ApplicationPath %>'><%= Resources.Language.Home %></a> &gt; <a id="CacheIndexLink" href='<%= Request.ApplicationPath.TrimEnd('/') + "/Admin/Cache.aspx" %>'><%= Resources.Language.Cache %></a></div>
 <h1>Projections</h1>
 <cc:Result runat="Server"/>
 <p>The following projections are currently cached in the system. Click "Reset" to rescan and refresh the projections.</p>

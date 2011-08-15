@@ -50,10 +50,10 @@ private string GetAssemblyName(ReactionInfo reaction)
 }
 </script>
 <asp:Content runat="server" ContentPlaceHolderID="Body">
+<div class="Trail"><a href='<%= Request.ApplicationPath %>'><%= Resources.Language.Home %></a> &gt; <a id="CacheIndexLink" href='<%= Request.ApplicationPath.TrimEnd('/') + "/Admin/Cache.aspx" %>'><%= Resources.Language.Cache %></a></div>
 <h1>Reactions</h1>
 <cc:Result runat="Server"/>
 <p>The following reactions are currently cached in the system. Click "Reset" to rescan and refresh the reactions.</p>
-<p><a href="Cache.aspx" id="CacheIndexLink">&laquo; Index</a></p>
 <p><asp:button runat="server" id="ResetButton" text='<%# Resources.Language.Reset %>' onclick="ResetButton_Click"/></p>
 <p>Total Reactions: <%= ReactionState.Reactions.Count %></p>
 <table class="Panel" width="100%">
