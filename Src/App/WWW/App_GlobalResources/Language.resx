@@ -885,4 +885,40 @@ ${ResetUrl}</value>
   <data name="EmailNotFound" xml:space="preserve">
     <value>The specified email wasn't found.</value>
   </data>
+  <data name="ParametersQueryString" xml:space="preserve">
+    <value>Parameters (query string)</value>
+  </data>
+  <data name="ProjectionSaved" xml:space="preserve">
+    <value>The projection was saved successfully.</value>
+  </data>
+  <data name="ProjectionExists" xml:space="preserve">
+    <value>A projection with that name already exists.</value>
+  </data>
+  <data name="Projection" xml:space="preserve">
+    <value>Projection</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="FilePath" xml:space="preserve">
+    <value>File Path</value>
+  </data>
+  <data name="EnablePreview" xml:space="preserve">
+    <value>Enable Preview</value>
+  </data>
+  <data name="ProjectionSaved" xml:space="preserve">
+    <value>The projection was saved successfully.</value>
+  </data>
+  <data name="Cache" xml:space="preserve">
+    <value>Cache</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="HitCtrlSToSave" xml:space="preserve">
+    <value>Hit CTRL+S to save and preview.</value>
+  </data>
+  <data name="Projections" xml:space="preserve">
+    <value>Projections</value>
+  </data>
 </root>

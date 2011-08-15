@@ -37,10 +37,10 @@ private bool CanView(ProjectionInfo info)
 }
 </script>
 <asp:Content runat="server" ContentPlaceHolderID="Body">
+<p><a href='<%= Request.ApplicationPath %>'><%= Resources.Language.Home %></a> &gt; <a id="CacheIndexLink" href='<%= Request.ApplicationPath.TrimEnd('/') + "/Admin/Cache.aspx" %>'><%= Resources.Language.Cache %></a></p>
 <h1>Projections</h1>
 <cc:Result runat="Server"/>
 <p>The following projections are currently cached in the system. Click "Reset" to rescan and refresh the projections.</p>
-<p><a href="Cache.aspx" id="CacheIndexLink">&laquo; Index</a></p>
 <p><asp:button runat="server" id="ResetButton" text='<%# Resources.Language.Reset %>' onclick="ResetButton_Click"/></p>
 <p>Total Projections: <%= ProjectionState.Projections.Count %></p>
 <table class="Panel" width="100%">
@@ -67,7 +67,6 @@ private bool CanView(ProjectionInfo info)
 			Folder
 		</th>
 		<th>	
-			View
 		</th>
 	</tr>
 	<% foreach (ProjectionInfo projection in ProjectionState.Projections){ %>
@@ -95,7 +94,8 @@ private bool CanView(ProjectionInfo info)
 		</td>
 		<td>
 			<% if (CanView(projection)) { %>
-			<a href='<%= Navigator.Current.GetLink(projection.Action, projection.TypeName) %>' target="_blank"><%= Resources.Language.View %> &raquo;</a>
+			<a href='<%= "EditProjection.aspx?Projection=" + projection.Action + "-" + projection.TypeName %>'><%= Resources.Language.Edit %></a>
+			<a href='<%= Navigator.Current.GetLink(projection.Action, projection.TypeName) %>' target="_blank"><%= Resources.Language.View %></a>
 			<% } %>
 		</td>
 	</tr>

@@ -81,7 +81,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				{
 			//		LogWriter.Debug("File: " + file);
 					
-					projections.Add(LoadFromFile(file));
+					projections.Add(LoadInfoFromFile(file));
 				}
 			//}
 			
@@ -113,7 +113,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				{
 			//		LogWriter.Debug("File: " + file);
 					
-					ProjectionInfo projection = LoadFromFile(file);
+					ProjectionInfo projection = LoadInfoFromFile(file);
 					if (projection.Enabled || includeDisabled)
 						projections.Add(projection);
 				}
@@ -123,11 +123,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		}
 		
 		/// <summary>
-		/// Loads the projection from the specified path.
+		/// Loads the projection info from the specified path.
 		/// </summary>
 		/// <param name="projectionPath">The full path to the projection to load.</param>
 		/// <returns>The projection deserialized from the specified file path.</returns>
-		public ProjectionInfo LoadFromFile(string projectionPath)
+		public ProjectionInfo LoadInfoFromFile(string projectionPath)
 		{
 			ProjectionInfo info = null;
 			
@@ -158,6 +158,34 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			//}
 			
 			return info;
+		}
+		
+		/// <summary>
+		/// Loads the projection content from the specified path.
+		/// </summary>
+		/// <param name="projectionPath">The full path to the projection to load.</param>
+		/// <returns>The projection content from the specified file path.</returns>
+		public string LoadContentFromFile(string projectionPath)
+		{
+			string content = String.Empty;
+			
+			// Disabled logging to boost performance
+			//using (LogGroup logGroup = LogGroup.Start("Loading the projection from the specified path.", NLog.LogLevel.Debug))
+			//{
+				if (!File.Exists(projectionPath))
+					throw new ArgumentException("The specified file does not exist: " + projectionPath);
+				
+			//	LogWriter.Debug("Path: " + projectionPath);
+				
+				
+				using (StreamReader reader = new StreamReader(File.OpenRead(projectionPath)))
+				{
+					content = reader.ReadToEnd();
+					reader.Close();
+				}
+			//}
+			
+			return content;
 		}
 	}
 }

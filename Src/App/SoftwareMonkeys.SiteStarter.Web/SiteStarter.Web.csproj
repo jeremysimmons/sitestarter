@@ -224,6 +224,7 @@
     <Compile Include="WebControls\EntitySelectRequester.cs" />
     <Compile Include="WebControls\EntityTree.cs" />
     <Compile Include="WebControls\IndexGrid.cs" />
+    <Compile Include="WebControls\PreviewControl.cs" />
     <Compile Include="WebControls\ProjectorControl.cs" />
     <Compile Include="WebControls\Result.cs" />
     <Compile Include="WebControls\WebControlUtilities.cs" />
