@@ -92,7 +92,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		
 		public EntityInitializer()
 		{
-		}		
+		}
 		
 		/// <summary>
 		/// Initializes the entities and loads all entities to state.
@@ -104,33 +104,41 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		}
 		
 		/// <summary>
-		/// Initializes the entities and loads all entities to state.
+		/// Initializes the entities and loads all entities to state. Note: Skips initialization if already initialized.
 		/// </summary>
 		public void Initialize()
 		{
 			Initialize(false);
 		}
 		
+		/// <summary>
+		/// Initializes the entities and loads all entities to state. Note: Skips initialization if already initialized.
+		/// </summary>
 		public void Initialize(bool includeTestEntities)
 		{
 			using (LogGroup logGroup = LogGroup.StartDebug("Initializing the business entities."))
 			{
-				EntityInfo[] entities = new EntityInfo[]{};
-				if (IsMapped)
+				if (!EntityState.IsInitialized)
 				{
-					LogWriter.Debug("Is mapped. Loading from XML.");
+					EntityInfo[] entities = new EntityInfo[]{};
+					if (IsMapped)
+					{
+						LogWriter.Debug("Is mapped. Loading from XML.");
+						
+						entities = LoadEntities();
+					}
+					else
+					{
+						LogWriter.Debug("Is not mapped. Scanning from type attributes.");
+						
+						entities = FindEntities(includeTestEntities);
+						SaveToFile(entities);
+					}
 					
-					entities = LoadEntities();
+					Initialize(entities);
 				}
 				else
-				{
-					LogWriter.Debug("Is not mapped. Scanning from type attributes.");
-					
-					entities = FindEntities(includeTestEntities);
-					SaveToFile(entities);
-				}
-				
-				Initialize(entities);
+					LogWriter.Debug("Already initialized.");
 			}
 		}
 		
