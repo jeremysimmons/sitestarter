@@ -259,7 +259,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		
 		public static string GetUrl()
 		{
-			string returnUrl = UrlCreator.Current.CreateUrl();
+			string returnUrl = WebUtilities.ConvertAbsoluteUrlToRelativeUrl(HttpContext.Current.Request.Url.ToString(), "/");
 			
 			return returnUrl;
 		}
