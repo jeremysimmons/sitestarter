@@ -176,7 +176,7 @@
 	}
 	
 </script>
-<p><a href='<%= Request.ApplicationPath %>'><%= Resources.Language.Home %></a> &gt; <a href='<%= Request.ApplicationPath.TrimEnd('/') + "/Admin/Cache.aspx" %>'>Cache</a> &gt; <a href='<%= Request.ApplicationPath.TrimEnd('/') + "/Admin/Projections.aspx" %>'><%= Resources.Language.Projections %></a></p>
+<div class="Trail"><a href='<%= Request.ApplicationPath %>'><%= Resources.Language.Home %></a> &gt; <a href='<%= Request.ApplicationPath.TrimEnd('/') + "/Admin/Cache.aspx" %>'>Cache</a> &gt; <a href='<%= Request.ApplicationPath.TrimEnd('/') + "/Admin/Projections.aspx" %>'><%= Resources.Language.Projections %></a></div>
 <h1><%= Resources.Language.Edit + " " + Resources.Language.Projection %></h1>
 <p>
 	<%= Resources.Language.FilePath %>: <asp:textbox runat="server" id="ProjectionFilePath" readonly="true" width="400px"/>
