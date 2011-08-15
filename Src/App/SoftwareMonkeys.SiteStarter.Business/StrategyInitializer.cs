@@ -113,28 +113,33 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		}
 		
 		/// <summary>
-		/// Initializes the strategies and loads all strategies to state.
+		/// Initializes the strategies and loads all strategies to state. Note: Skips initialization if already initialized.
 		/// </summary>
 		public void Initialize(bool includeTestEntities)
 		{
 			using (LogGroup logGroup = LogGroup.Start("Initializing the business strategies.", NLog.LogLevel.Debug))
 			{
-				StrategyInfo[] strategies = new StrategyInfo[]{};
-				if (IsMapped)
+				if (!StrategyState.IsInitialized)
 				{
-					LogWriter.Debug("Is mapped. Loading from XML.");
+					StrategyInfo[] strategies = new StrategyInfo[]{};
+					if (IsMapped)
+					{
+						LogWriter.Debug("Is mapped. Loading from XML.");
+						
+						strategies = LoadStrategies();
+					}
+					else
+					{
+						LogWriter.Debug("Is not mapped. Scanning from type attributes.");
+						
+						strategies = FindStrategies(includeTestEntities);
+						SaveToFile(strategies);
+					}
 					
-					strategies = LoadStrategies();
+					Initialize(strategies);
 				}
 				else
-				{
-					LogWriter.Debug("Is not mapped. Scanning from type attributes.");
-					
-					strategies = FindStrategies(includeTestEntities);
-					SaveToFile(strategies);
-				}
-				
-				Initialize(strategies);
+					LogWriter.Debug("Already initialized.");
 			}
 		}
 		

@@ -132,22 +132,27 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			{
 				if (StateAccess.IsInitialized)
 				{
-					ControllerInfo[] controllers = new ControllerInfo[]{};
-					if (IsMapped)
+					if (!ControllerState.IsInitialized)
 					{
-						LogWriter.Debug("Is mapped. Loading from XML.");
+						ControllerInfo[] controllers = new ControllerInfo[]{};
+						if (IsMapped)
+						{
+							LogWriter.Debug("Is mapped. Loading from XML.");
+							
+							controllers = LoadControllers();
+						}
+						else
+						{
+							LogWriter.Debug("Is not mapped. Scanning from type attributes.");
+							
+							controllers = FindControllers(includeTestControllers);
+							SaveInfoToFile(controllers);
+						}
 						
-						controllers = LoadControllers();
+						Initialize(controllers);
 					}
 					else
-					{
-						LogWriter.Debug("Is not mapped. Scanning from type attributes.");
-						
-						controllers = FindControllers(includeTestControllers);
-						SaveInfoToFile(controllers);
-					}
-					
-					Initialize(controllers);
+						LogWriter.Debug("Already initialized.");
 				}
 				else
 					LogWriter.Debug("State is not initialized. Skipping.");

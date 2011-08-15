@@ -113,7 +113,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		}
 		
 		/// <summary>
-		/// Initializes the reactions and loads all reactions to state.
+		/// Initializes the reactions and loads all reactions to state. Note: Skips initialization if already initialized.
 		/// </summary>
 		/// <param name="includeTestReactions"></param>
 		public void Initialize(bool includeTestReactions)
@@ -121,21 +121,26 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			using (LogGroup logGroup = LogGroup.Start("Initializing the business reactions.", NLog.LogLevel.Debug))
 			{
 				ReactionInfo[] reactions = new ReactionInfo[]{};
-				if (IsMapped)
+				if (!ReactionState.IsInitialized)
 				{
-					LogWriter.Debug("Is mapped. Loading from XML.");
+					if (IsMapped)
+					{
+						LogWriter.Debug("Is mapped. Loading from XML.");
+						
+						reactions = LoadReactions();
+					}
+					else
+					{
+						LogWriter.Debug("Is not mapped. Scanning from type attributes.");
+						
+						reactions = FindReactions(includeTestReactions);
+						SaveToFile(reactions);
+					}
 					
-					reactions = LoadReactions();
+					Initialize(reactions);
 				}
 				else
-				{
-					LogWriter.Debug("Is not mapped. Scanning from type attributes.");
-					
-					reactions = FindReactions(includeTestReactions);
-					SaveToFile(reactions);
-				}
-				
-				Initialize(reactions);
+					LogWriter.Debug("Already initialized.");
 			}
 		}
 		
