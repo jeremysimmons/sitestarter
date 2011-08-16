@@ -57,7 +57,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Admin\EditProjection.aspx" />
     <None Include="Admin\Errors.aspx" />
+    <None Include="Admin\LogJavascriptError.aspx" />
+    <None Include="Admin\SaveProjection.aspx" />
     <None Include="Admin\Strategies.aspx" />
     <None Include="Admin\Cache.aspx" />
     <None Include="Admin\Controllers.aspx" />
@@ -79,7 +82,7 @@
     <None Include="Admin\Tests\ChangePassword.aspx" />
     <None Include="Admin\Tests\ClearData.aspx" />
     <None Include="Admin\Tests\Dispose.aspx" />
-    <None Include="Admin\Tests\EntitySelectTest.aspx" />
+    <None Include="Admin\Tests\JavascriptError.aspx" />
     <None Include="Admin\Tests\LogContains.aspx" />
     <None Include="Admin\Tests\PrepareTestImport.aspx" />
     <None Include="Admin\Tests\ResetDefaultData.aspx" />
@@ -98,8 +101,6 @@
     <None Include="App_Themes\Default\_svn\format" />
     <None Include="App_Themes\Default\_svn\text-base\Site.skin.svn-base" />
     <None Include="App_Themes\Default\_svn\text-base\Styles.css.svn-base" />
-    <None Include="App_Themes\_svn\entries" />
-    <None Include="App_Themes\_svn\format" />
     <None Include="Controls\AdminFooter.ascx" />
     <None Include="Controls\AuthMenu.ascx" />
     <None Include="Controls\Guide.ascx" />
@@ -107,6 +108,8 @@
     <None Include="Default.aspx" />
     <None Include="Error.aspx" />
     <None Include="Global.asax" />
+    <None Include="js\errors.js" />
+    <None Include="js\httpRequests.js" />
     <None Include="Maintenance.html" />
     <None Include="Projections\IEntity-Delete.ascx" />
     <None Include="Projections\IEntity-Index.xml.ascx" />
@@ -129,9 +132,7 @@
     <None Include="Projections\WebSiteSettings-Edit.ascx" />
     <None Include="Projector.aspx" />
     <None Include="Site.master" />
-    <None Include="Styles\Simple.css" />
     <None Include="Web.config" />
-    <EmbeddedResource Include="App_GlobalResources\Language.resx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Admin" />
@@ -142,8 +143,8 @@
     <Folder Include="App_Themes" />
     <Folder Include="App_Themes\Default" />
     <Folder Include="Controls" />
+    <Folder Include="js" />
     <Folder Include="Projections" />
-    <Folder Include="Styles" />
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Business\SiteStarter.Business.csproj">
       <Project>{F294B839-0C1E-4187-AA58-6EA1C35E6B66}</Project>
       <Name>SiteStarter.Business</Name>
@@ -199,5 +200,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Projections\EmailSettings-Edit.ascx" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="App_GlobalResources\Language.resx" />
   </ItemGroup>
 </Project>
