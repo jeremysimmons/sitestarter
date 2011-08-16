@@ -24,7 +24,6 @@
 	
 	    // Attempt to initialize the config
 	    Initialize();
-
     }
     
     void Application_End(object sender, EventArgs e) 
@@ -72,14 +71,14 @@
     
     void Application_BeginRequest(object sender, EventArgs e)
     {
-    	InitializeCore();
+    	//InitializeCore();
     	
     	// Create a log group for the request
 		HttpContext.Current.Items["Application_BeginRequest.LogGroup"] = LogGroup.StartDebug("Beginning request: " + HttpContext.Current.Request.Url.ToString());
 
         LogWriter.Debug("${Application.BeginRequest}");
         	
-        Initialize();
+       // Initialize();
         	
         // Initialize the URL rewriter to take care of friendly URLs
         UrlRewriter.Initialize();
