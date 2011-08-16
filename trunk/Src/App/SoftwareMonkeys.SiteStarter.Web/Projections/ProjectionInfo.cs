@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Web;
 using System.Xml;
 using System.Xml.Serialization;
 using System.IO;
@@ -129,7 +130,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <returns>The projection control ready to be added to the page.</returns>
 		public Control Load(Page page)
 		{
-			return page.LoadControl(ProjectionFilePath);
+			string path = HttpContext.Current.Request.ApplicationPath.TrimEnd('/')
+				+ ProjectionFilePath;
+			
+			return page.LoadControl(path);
 		}
 	}
 }
