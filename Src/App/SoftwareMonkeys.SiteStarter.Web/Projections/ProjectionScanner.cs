@@ -97,9 +97,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			List<ProjectionInfo> projections = new List<ProjectionInfo>();
 			
 			string relativeFilePath = filePath.Replace(StateAccess.State.PhysicalApplicationPath, "")
-				.Replace(@"\", "/")
-				.Trim('/');
-			
+				.Replace(@"\", "/");		
 			
 			foreach (string action in actions)
 			{
