@@ -35,9 +35,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			using (LogGroup logGroup = LogGroup.Start("Disposing the strategies.", NLog.LogLevel.Debug))
 			{
-				StrategyInfo[] strategies = new StrategyInfo[]{};
-				
-				Dispose(StrategyState.Strategies.ToArray());
+				if (StrategyState.IsInitialized)
+					Dispose(StrategyState.Strategies.ToArray());
 			}
 		}
 		
@@ -48,13 +47,16 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			using (LogGroup logGroup = LogGroup.Start("Disposing the strategies.", NLog.LogLevel.Debug))
 			{
-				foreach (StrategyInfo strategy in strategies)
+				if (StrategyState.IsInitialized)
 				{
-					StrategyState.Strategies.Remove(
-						StrategyState.Strategies[strategy.TypeName]
-					);
-					
-					DeleteInfo(strategy);
+					foreach (StrategyInfo strategy in strategies)
+					{
+						StrategyState.Strategies.Remove(
+							StrategyState.Strategies[strategy.TypeName]
+						);
+						
+						DeleteInfo(strategy);
+					}
 				}
 			}
 		}
@@ -67,7 +69,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			string path = FileNamer.CreateInfoFilePath(info);
 			
-			File.Delete(path);
+			if (File.Exists(path))
+				File.Delete(path);
 		}
 	}
 }
