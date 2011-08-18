@@ -102,7 +102,7 @@ namespace SoftwareMonkeys.SiteStarter.State.Tests
 			if (!ContainsApplication(key))
 			{
 				return null;
-				//throw new ArgumentException("No application state data found with the key '" + key + "'.");
+				
 			}
 			
 			return ApplicationData[key];
@@ -179,7 +179,7 @@ namespace SoftwareMonkeys.SiteStarter.State.Tests
 			}
 		}
 		#endregion
-		
+
 		#region Request state
 		public override bool ContainsRequest(string key)
 		{

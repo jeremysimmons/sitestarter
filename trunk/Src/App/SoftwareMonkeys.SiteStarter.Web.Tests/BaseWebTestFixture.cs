@@ -3,6 +3,8 @@ using SoftwareMonkeys.SiteStarter.Web.Controllers;
 using SoftwareMonkeys.SiteStarter.Business.Tests;
 using NUnit.Framework;
 using System.Reflection;
+using SoftwareMonkeys.SiteStarter.Web.Parts;
+using SoftwareMonkeys.SiteStarter.Web.Projections;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Tests
 {
@@ -19,14 +21,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
 		[TearDown]
 		public override void End()
 		{
-			
+			DisposeMockWeb();
 			
 			base.End();
 		}
 		
 		protected void InitializeMockWeb()
 		{
-			
 			string webAssemblyPath = Assembly.Load("SoftwareMonkeys.SiteStarter.Web").Location;
 			
 			string[] assemblyPaths = new String[] {webAssemblyPath};
@@ -43,8 +44,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
 			initializer.Initialize(true);
 		}
 		
-		public BaseWebTestFixture()
+		protected void DisposeMockWeb()
 		{
+			ControllerState.Controllers = null;
+			ProjectionState.Projections = null;
+			PartState.Parts = null;
 		}
 	}
 }

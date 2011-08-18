@@ -45,7 +45,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 		
 		protected void DisposeMockEntities()
 		{
-			
+			EntityState.Entities = null;
 		}
 	}
 }
