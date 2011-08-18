@@ -12,6 +12,17 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 	{
 		string MockApplicationName = "TestApplication";
 		
+		[SetUp]
+		public override void Start()
+		{
+			// Disable business state to avoid it already being initialized,
+			// as this test fixture is intended to test the initialization process
+			// and it can't effectively if already initialized
+			EnableBusinessState = false;
+			
+			base.Start();
+		}
+		
 		[Test]
 		public void Test_Initialize_StrategiesProvided()
 		{
@@ -58,11 +69,8 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			StrategyInitializer initializer = new StrategyInitializer();
 			initializer.FileNamer.StrategiesInfoDirectoryPath = GetMockStrategiesDirectoryPath(MockApplicationName);
 			
-			IStrategy strategy = new MockRetrieveStrategy();
+			IStrategy strategy = new MockActionStrategy();
 			StrategyInfo info = StrategyInfo.ExtractInfo(strategy.GetType())[0];
-			info.Action = "MockAction";
-			info.TypeName = "TestUser";
-			info.StrategyType = strategy.GetType().FullName;
 			
 			StrategyInfo[] strategies = new StrategyInfo[]{info};
 			

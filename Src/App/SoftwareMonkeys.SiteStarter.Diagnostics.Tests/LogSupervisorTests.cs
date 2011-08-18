@@ -138,7 +138,6 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics.Tests
 			Assert.IsFalse(canPop);
 		}
 		
-		
 		[Test]
 		public void Test_CanPop_True()
 		{

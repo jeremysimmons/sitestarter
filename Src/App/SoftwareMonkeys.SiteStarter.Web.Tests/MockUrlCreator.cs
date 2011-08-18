@@ -46,10 +46,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
 			if (dataKey == null || dataKey == String.Empty)
 				throw new ArgumentNullException("dataKey");
 			
-			return "http://localhost/TestApplication/" + EntitiesUtilities.FormatUniqueKey(typeName)
-				+ "/" + EntitiesUtilities.FormatUniqueKey(action)
+			return "http://localhost/TestApplication/" + EntitiesUtilities.FormatUniqueKey(action)
+				+ "-" + EntitiesUtilities.FormatUniqueKey(typeName)
 				+ "/" + EntitiesUtilities.FormatUniqueKey(propertyName)
-				+ "/" + EntitiesUtilities.FormatUniqueKey(dataKey);
+				+ "--" + EntitiesUtilities.FormatUniqueKey(dataKey);
 		}
 		
 		public override string CreateUrl(string action, string typeName)
@@ -60,8 +60,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
 			if (typeName == null || typeName == String.Empty)
 				throw new ArgumentNullException("typeName");
 			
-			return "http://localhost/TestApplication/" + EntitiesUtilities.FormatUniqueKey(typeName)
-				+ "/" + EntitiesUtilities.FormatUniqueKey(action);
+			return "http://localhost/TestApplication/" + EntitiesUtilities.FormatUniqueKey(action)
+				+ "-" + EntitiesUtilities.FormatUniqueKey(typeName);
 		}
 	}
 }
