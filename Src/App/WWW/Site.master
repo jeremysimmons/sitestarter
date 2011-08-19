@@ -77,9 +77,7 @@ private string GetTitle()
     <form id="form1" runat="server">
     <div>
 <% if (!Utilities.HideTemplate){ %>
-    <table width="100%">
-    	<tr>
-			<td colspan="2" style="padding: 0px;" class="PageHeader">
+    	<div class="PageHeader">
 				<table width="100%">
 					<tr>
 						<td></td>
@@ -90,30 +88,29 @@ private string GetTitle()
       					</td>
 					</tr>
 				</table>
-    		</td>
-		</tr>
-    	<tr>
-			<td class="Column" nowrap="nowrap">
-        
-                   <asp:TreeView ID="Menu" runat="server" DataSourceID="MenuSource">
-			          <Databindings>
-			            <asp:TreeNodeBinding DataMember="siteMapNode" TextField="title" NavigateUrlField="url"/>
-			          </Databindings>
-
-                    </asp:TreeView>
-                                <asp:XmlDataSource ID="MenuSource" XPath="siteMap/*" DataFile='<%# GetMenuDataFile() %>' runat="server" />
-        	</td>
-			<td class="BodyContainer">
+		</div>
+		<table width="100%">
+    		<tr>
+				<td class="Column" nowrap="nowrap">
+	        
+	                   <asp:TreeView ID="Menu" runat="server" DataSourceID="MenuSource">
+				          <Databindings>
+				            <asp:TreeNodeBinding DataMember="siteMapNode" TextField="title" NavigateUrlField="url"/>
+				          </Databindings>
+	
+	                    </asp:TreeView>
+	                                <asp:XmlDataSource ID="MenuSource" XPath="siteMap/*" DataFile='<%# GetMenuDataFile() %>' runat="server" />
+	        	</td>
+				<td class="BodyContainer">
 <% } %>
-        		<asp:contentplaceholder id="Body" runat="server">
-        		</asp:contentplaceholder>
+        			<asp:contentplaceholder id="Body" runat="server">
+        			</asp:contentplaceholder>
 <% if (!Utilities.HideTemplate){ %>
-       		</td>
-		</tr>
-	</table>
-        
-    <uc:AdminFooter id="AdminFooter" runat="server">
-    </uc:AdminFooter>
+       			</td>
+			</tr>
+		</table>
+    	<uc:AdminFooter id="AdminFooter" runat="server">
+    	</uc:AdminFooter>
 <% } %>
 
     </div>
