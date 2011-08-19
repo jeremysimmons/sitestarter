@@ -356,7 +356,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				LogWriter.Debug("Item type name: " + item.TypeName);
 				
 				if (item.Title == null || item.Title == String.Empty)
-					throw new ArgumentException("An title must be specified on the provided item.");
+					throw new ArgumentException("A title must be specified on the provided site map item.");
 				
 				SiteMapNode node = new SiteMapNode();
 				
@@ -366,18 +366,11 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				if (node.Url == String.Empty)
 					node.Url = UrlCreator.CreateUrl(item.Action, item.TypeName);
 				
+				string url = node.Url;
+				
 				LogWriter.Debug("URL: " + node.Url);
 
-				SiteMapNode rootNode = ChildNodes.Count > 0 ? ChildNodes[0] : null;
-				
-				// Choose the appropriate child nodes collection (depending on whether a root node is found)
-				List<SiteMapNode> childNodes = (rootNode != null
-				                                ? rootNode.ChildNodes
-				                                : ChildNodes);
-
-				// Check for an existing node with the same title
-				// TODO: Check if the category property should be chcked too
-				SiteMapNode existingNode = GetNodeByUrl(childNodes, node.Url);
+				SiteMapNode existingNode = GetNodeByUrl(ChildNodes, node.Url);
 
 				if (existingNode == null)
 				{
@@ -386,14 +379,13 @@ namespace SoftwareMonkeys.SiteStarter.Web
 					
 					if (item.Category != null && item.Category != String.Empty)
 					{
-						SiteMapNode categoryNode = GetNodeByTitle(rootNode.ChildNodes, item.Category);
+						SiteMapNode categoryNode = GetNodeByTitle(ChildNodes, item.Category);
+						
 						if (categoryNode == null)
 						{
-							LogWriter.Debug("Creating/adding category node: " + item.Category);
-							categoryNode = new SiteMapNode();
-							categoryNode.Title = item.Category;
-							rootNode.ChildNodes.Add(categoryNode);
+							categoryNode = CreateCategoryNode(item.Category);
 						}
+						
 						categoryNode.SelectAction = TreeNodeSelectAction.None;
 						categoryNode.ChildNodes.Add(node);
 
@@ -402,13 +394,61 @@ namespace SoftwareMonkeys.SiteStarter.Web
 					else
 					{
 						LogWriter.Debug("Added node to root.");
-						childNodes.Add(node);
+						ChildNodes.Add(node);
 					}
 				}
 				else
 				{
 					LogWriter.Debug("Node exists. Skipping add.");
 				}
+			}
+		}
+		
+		public SiteMapNode CreateCategoryNode(string title)
+		{
+			int i = title.Trim('/').LastIndexOf('/');
+			
+			string categoryName = title;
+			string parentCategoryName = String.Empty;
+			
+			if (i > 0)
+			{
+				categoryName = title.Substring(i, title.Length-i).Trim('/');
+				parentCategoryName = title.Substring(0, i).Trim('/');
+			}
+			
+			SiteMapNode node = new SiteMapNode(parentCategoryName, categoryName, String.Empty, String.Empty);
+			
+			AddCategoryNode(node);
+			
+			return node;
+		}
+		
+		private void AddCategoryNode(SiteMapNode item)
+		{
+			using (LogGroup logGroup = LogGroup.StartDebug("Creating/adding category node: " + item.Category))
+			{
+				int i = item.Category.Trim('/').LastIndexOf('/');
+				
+				string categoryName = item.Title;
+				string parentCategoryName = item.Category;
+				
+				List<SiteMapNode> childNodes = ChildNodes;
+				
+				if (parentCategoryName != String.Empty)
+				{
+					SiteMapNode parentNode = GetNodeByTitle(ChildNodes, parentCategoryName);
+					
+					// If no parent node was found then create it
+					if (parentNode == null)
+					{
+						parentNode = CreateCategoryNode(parentCategoryName);
+					}
+					
+					childNodes = parentNode.ChildNodes;
+				}
+				
+				childNodes.Add(item);
 			}
 		}
 
@@ -438,26 +478,20 @@ namespace SoftwareMonkeys.SiteStarter.Web
 					url = UrlCreator.CreateUrl(item.Action, item.TypeName);
 				
 				LogWriter.Debug("URL: " + url);
-				
-				SiteMapNode rootNode = ChildNodes.Count > 0 ? ChildNodes[0] : null;
-				
-				// Choose the appropriate child nodes collection (depending on whether a root node is found)
-				List<SiteMapNode> childNodes = (rootNode != null
-				                                ? rootNode.ChildNodes
-				                                : ChildNodes);
 
-				SiteMapNode existingNode = GetNodeByUrl(childNodes, url);
+				SiteMapNode existingNode = GetNodeByUrl(ChildNodes, url);
+				List<SiteMapNode> nodes = GetNodeListByUrl(ChildNodes, url);
 
 				if (existingNode != null)
 				{
 					if (item.Category != null && item.Category != String.Empty)
 					{
-						SiteMapNode categoryNode = GetNodeByTitle(rootNode.ChildNodes, item.Category);
+						SiteMapNode categoryNode = GetNodeByTitle(nodes, item.Category);
 						
 						categoryNode.ChildNodes.Remove(existingNode);
 						
 						if (categoryNode.ChildNodes.Count == 0)
-							rootNode.ChildNodes.Remove(categoryNode);
+							nodes.Remove(categoryNode);
 
 						LogWriter.Debug("Removed node from category.");
 					}
@@ -465,7 +499,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 					{
 						LogWriter.Debug("Removed node from root.");
 						
-						rootNode.ChildNodes.Remove(existingNode);
+						nodes.Remove(existingNode);
 					}
 				}
 				else
@@ -476,6 +510,37 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				}
 			}
 		}
+		
+		/// <summary>
+		/// Retrieves the node list containing the node with the specified URL.
+		/// </summary>
+		/// <param name="nodes">The base nodes to search through.</param>
+		/// <param name="url">The url of the node to retrieve the related list for.</param>
+		/// <returns>The node list containing the node with the provided url.</returns>
+		public List<SiteMapNode> GetNodeListByUrl(List<SiteMapNode> nodes, string url)
+		{
+			SiteMapNode node = null;
+			
+			foreach (SiteMapNode n in nodes)
+			{
+				if (n.Url == url)
+				{
+					node = n;
+				}
+
+				if (node == null)
+				{
+					node = GetNodeByUrl(n.ChildNodes, url);
+					if (node != null)
+						return n.ChildNodes;
+				}
+				
+				if (node != null)
+					return nodes;
+			}
+			
+			return new List<SiteMapNode>();
+		}
 
 		/// <summary>
 		/// Retrieves the node from the provided collection with the provided title.
@@ -485,14 +550,45 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <returns>The node with the provided title from the provided collection.</returns>
 		public SiteMapNode GetNodeByTitle(List<SiteMapNode> nodes, string title)
 		{
-			foreach (SiteMapNode node in nodes)
+			SiteMapNode node = null;
+			
+			using (LogGroup logGroup = LogGroup.StartDebug(""))
 			{
-				if (node.Title == title)
+				LogWriter.Debug("Title: " + title);
+				
+				title = title.Replace(@"\", "/").Trim('/');
+				
+				string[] parts = title.Split('/');
+				
+				LogWriter.Debug("Title parts: " + parts.Length);
+				
+				foreach (SiteMapNode n in nodes)
 				{
-					return node;
+					if (n.Title == parts[0])
+					{
+						LogWriter.Debug("Found node: " + n.Url);
+						
+						node = n;
+					}
 				}
+				
+				if (parts.Length > 1 && node != null)
+				{
+					LogWriter.Debug("Title is multi level. Stepping down.");
+					
+					int i = title.IndexOf("/");
+					
+					string subTitle = title.Substring(i, title.Length - i).Trim('/');
+					
+					LogWriter.Debug("Sub title: " + subTitle);
+					
+					node = GetNodeByTitle(node.ChildNodes, subTitle);
+				}
+				
+				LogWriter.Debug("Node: " + (node == null ? "null" : node.Title));
 			}
-			return null;
+			
+			return node;
 		}
 
 		/// <summary>
@@ -503,22 +599,22 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <returns>The node with the provided url from the provided collection.</returns>
 		public SiteMapNode GetNodeByUrl(List<SiteMapNode> nodes, string url)
 		{
-			foreach (SiteMapNode node in nodes)
+			SiteMapNode node = null;
+			
+			foreach (SiteMapNode n in nodes)
 			{
-				if (node.Url == url)
+				if (n.Url == url)
 				{
-					return node;
+					node = n;
 				}
 
-				foreach (SiteMapNode childNode in node.ChildNodes)
+				if (node == null)
 				{
-					if (childNode.Url == url)
-					{
-						return childNode;
-					}
+					node = GetNodeByUrl(n.ChildNodes, url);
 				}
 			}
-			return null;
+			
+			return node;
 		}
 	}
 }
