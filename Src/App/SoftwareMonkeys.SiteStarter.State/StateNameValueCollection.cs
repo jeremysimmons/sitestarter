@@ -90,23 +90,7 @@ namespace SoftwareMonkeys.SiteStarter.State
 		/// </summary>
 		/// <returns>The total number of items in the collection.</returns>
 		public int GetCount()
-		{
-			/*int i = 0;
-			int count = 0;
-			
-			foreach (string key in StateAccess.State.GetKeys(Scope))
-			{
-				// If it starts with the group key
-				//if (key.IndexOf(GroupKey + "_") > -1)
-				//{
-					i++;
-				//}
-			}
-			
-			count = i;
-			
-			return count;*/
-			
+		{			
 			return Keys.Count;
 		}
 		
