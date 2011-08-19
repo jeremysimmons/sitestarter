@@ -28,7 +28,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 					
 					if (HttpContext.Current != null)
 					{
-						string url = HttpContext.Current.Request.ApplicationPath + "/User-SignIn.aspx?ReturnUrl=" + GetReturnUrl();
+						string returnUrl = HttpContext.Current.Server.UrlEncode(GetUrl());
+						
+						string url = HttpContext.Current.Request.ApplicationPath + "/User-SignIn.aspx?ReturnUrl=" + returnUrl;
 						
 						LogWriter.Debug("Redirecting to: " + url);
 						
@@ -259,9 +261,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		
 		public static string GetUrl()
 		{
-			string returnUrl = WebUtilities.ConvertAbsoluteUrlToRelativeUrl(HttpContext.Current.Request.Url.ToString(), "/");
+			string url = Navigation.Navigator.Current.GetCurrentLink();
 			
-			return returnUrl;
+			url = WebUtilities.ConvertAbsoluteUrlToRelativeUrl(url, "/");
+			
+			return url;
 		}
 		
 		public static int GetPersistDurationDays()
