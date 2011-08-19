@@ -15,6 +15,8 @@ namespace SoftwareMonkeys.SiteStarter.Web
 	{
 		static public string ResolveUrl(string originalUrl)
 		{
+			if (originalUrl == null)
+				originalUrl = String.Empty;
 
 			if (!string.IsNullOrEmpty(originalUrl) && '~' == originalUrl[0])
 			{
@@ -25,6 +27,38 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			}
 
 			return originalUrl;
+
+		}
+
+		/// <summary>
+
+		/// Converts the provided relative URL to an absolute URL.
+
+		/// </summary>
+
+		/// <param name="relativeUrl">The relative URL to convert.</param>
+
+		/// <param name="host">The base URL host.</param>
+
+		/// <param name="isSecure">A boolean value indicating whether the URL is a secure path.</param>
+
+		/// <returns></returns>
+
+		static public string ConvertRelativeUrlToAbsoluteUrl(string relativeUrl, string host, int port, bool isSecure)
+
+		{
+
+			string protocol = (isSecure ? "https" : "http");
+
+			
+
+			if (port != 80)
+
+				host = host + ":" + port.ToString();
+
+			
+
+			return string.Format("{0}://{1}/{2}", protocol, host, ResolveUrl(relativeUrl).Trim('/'));
 
 		}
 
