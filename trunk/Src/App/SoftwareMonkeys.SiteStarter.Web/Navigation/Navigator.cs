@@ -48,6 +48,18 @@ namespace SoftwareMonkeys.SiteStarter.Web.Navigation
 		{
 		}
 		
+		public string GetCurrentLink()
+		{
+			string url = String.Empty;
+			
+			if (HttpContext.Current.Items.Contains("FriendlyUrl"))
+				url = (string)HttpContext.Current.Items["FriendlyUrl"];
+			else
+				url = HttpContext.Current.Request.Url.ToString();
+			
+			return url;
+		}
+		
 		public string GetLink()
 		{
 			return UrlCreator.CreateUrl();
