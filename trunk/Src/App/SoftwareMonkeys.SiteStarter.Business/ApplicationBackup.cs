@@ -261,7 +261,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns>The full path to the zip file.</returns>
 		private string ZipFiles()
 		{
-			string zipFileName = @"Backup--" + DateTime.Now.Year + "-" + DateTime.Now.Month + "-" + DateTime.Now.Day + "--" + DateTime.Now.Hour + "-" + DateTime.Now.Minute + "-" + DateTime.Now.Second + ".zip";
+			string zipFileName = @"Backup--" + DateTime.Now.Year + "-" + DateTime.Now.Month + "-" + DateTime.Now.Day + "--" + DateTime.Now.Hour + "-" + DateTime.Now.Minute + "-" + DateTime.Now.Second + "--[" + Guid.NewGuid().ToString() + "].zip";
 			
 			string zipFilePath = BackupDirectoryPath + Path.DirectorySeparatorChar +
 				zipFileName;
