@@ -255,7 +255,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				// If there aren't enough parts then it's not cloaked and can't be rewritten.
 				if (parts != null && parts.Length >= 1)
 				{
-					newUrl = SmartRewrite(friendlyUrl, applicationPath, parts, commit);
+					newUrl = SmartRewrite(friendlyUrl, applicationPath, parts);
 				}
 				
 				// If a new URL was created
@@ -291,114 +291,6 @@ namespace SoftwareMonkeys.SiteStarter.Web
 
 			return newUrl;
 		}
-		
-		/*/// <summary>
-		/// Rewrites the friendly URL to the corresponding raw URL. Used for entity action URLs.
-		/// </summary>
-		/// <param name="friendlyUrl">The friendly URL to rewrite.</param>
-		/// <param name="applicationPath">The relative path to the root of the application.</param>
-		/// <param name="parts">The parts of the URL.</param>
-		/// <param name="commit">A boolean value indicating whether to commit the rewrite (ie. actually redirect the request to the rewritten path).</param>
-		/// <returns>The rewritten URL that corresponds with the friendly URL provided.</returns>
-		public string RewriteToEntityAction(string friendlyUrl, string applicationPath, string[] parts, bool commit)
-		{
-			string newUrl = String.Empty;
-
-			using (LogGroup logGroup = LogGroup.Start("Rewriting path to an entity action.", NLog.LogLevel.Debug))
-			{
-				if (parts == null)
-					throw new ArgumentNullException("parts");
-
-				if (parts.Length < 2)
-					throw new InvalidOperationException("Not enough parts. Expected 2. Was " + parts.Length);
-
-				//LogWriter.Debug("Original path: " + friendlyUrl);
-				//LogWriter.Debug("Application path: " + applicationPath);
-				
-				string type = parts[0];
-				string action = parts[1];
-				string propertyName = String.Empty;
-				string data = String.Empty;
-
-				// If the property name is specified
-				if (parts.Length > 3)
-				{
-					data = parts[3];
-					propertyName = parts[2];
-				}
-				// Otherwise
-				else if (parts.Length > 2)
-				{
-					data = parts[2];
-					if (GuidValidator.IsValidGuid(data))
-						propertyName = "ID";
-					else
-						propertyName = "UniqueKey";
-					
-					
-				}
-
-				string pageType = "Html";
-				string originalFileName = Path.GetFileName(GetShortUrl(friendlyUrl));
-				
-				//LogWriter.Debug("Original file name: " + originalFileName);
-				
-				int pos = originalFileName.IndexOf(".");
-
-				string ext = originalFileName.Substring(pos, originalFileName.Length - pos);
-				
-				//LogWriter.Debug("Extension: " + ext);
-				
-				if (ext.ToLower().Trim('.') == "xml.aspx")
-					pageType = "Xml";
-				else if (ext.ToLower().Trim('.') == "xslt.aspx")
-					pageType = "Xslt";
-				
-				//LogWriter.Debug("Page type: " + pageType.ToString());
-
-
-				//LogWriter.Debug("Action: " + action);
-				//LogWriter.Debug("Type: " + type);
-				//LogWriter.Debug("Property name: " + propertyName);
-				//LogWriter.Debug("Data: " + data);
-
-				string realPageName = "Projector.aspx";
-				if (pageType == "Xml"
-				    || pageType == "Xslt")
-					realPageName = "XmlProjector.aspx";
-				
-				//LogWriter.Debug("Real page name: " + realPageName);
-
-				newUrl = applicationPath + "/" + realPageName
-					+ "?a=" + action
-					+ "&t=" + type
-					+ "&f=" + pageType;
-				
-				//LogWriter.Debug("New url: " + newUrl);
-
-				// TODO: Remove comment
-				//if (propertyName.ToLower() == "ID".ToLower())
-				propertyName = type + "-" + propertyName;
-				
-				//LogWriter.Debug("Property name: " + propertyName);
-
-				if (propertyName != String.Empty
-				    && data != String.Empty)
-				{
-					string qs = "&" + propertyName + "=" + data;
-					
-					//	LogWriter.Debug("Adding query string: " + qs);
-					
-					newUrl = newUrl + qs;
-					
-					//	LogWriter.Debug("New url: " + newUrl);
-					
-				}
-			}
-
-
-			return newUrl;
-		}*/
 			
 			/// <summary>
 			/// Rewrites the friendly URL to the corresponding raw URL. Used for entity action URLs.
@@ -406,9 +298,8 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			/// <param name="friendlyUrl">The friendly URL to rewrite.</param>
 			/// <param name="applicationPath">The relative path to the root of the application.</param>
 			/// <param name="parts">The parts of the URL.</param>
-			/// <param name="commit">A boolean value indicating whether to commit the rewrite (ie. actually redirect the request to the rewritten path).</param>
 			/// <returns>The rewritten URL that corresponds with the friendly URL provided.</returns>
-			public string SmartRewrite(string friendlyUrl, string applicationPath, string[] parts, bool commit)
+			public string SmartRewrite(string friendlyUrl, string applicationPath, string[] parts)
 		{
 			string command = parts[0];
 			
@@ -645,7 +536,10 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				LogWriter.Debug("Url: " + url);
 
 				if (HttpContext.Current.Items != null)
+				{
+					HttpContext.Current.Items["FriendlyUrl"] = HttpContext.Current.Request.Url.ToString();
 					HttpContext.Current.Items["RewrittenUrl"] = url;
+				}
 
 				HttpContext.Current.RewritePath(url, false);
 				//HttpContext.Current.Server.Transfer(url, false);
