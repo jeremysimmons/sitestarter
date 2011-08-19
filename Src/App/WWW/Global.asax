@@ -17,21 +17,21 @@
     {
     	InitializeCore();
         
-		// Start a log group for the application
-		HttpContext.Current.Application["Application_Start.LogGroup"] = LogGroup.StartDebug("Starting application.");
+		using (LogGroup logGroup = LogGroup.StartDebug("Starting application."))
+		{		
+			LogWriter.Debug("${Application.Start}");
 		
-		LogWriter.Debug("${Application.Start}");
-	
-	    // Attempt to initialize the config
-	    Initialize();
+	    	Initialize();
+		}
     }
     
     void Application_End(object sender, EventArgs e) 
-    {
-        LogWriter.Debug("${Application.End}");
-        	
-        HttpContext.Current.Application["Application_Start.LogGroup"] = null;
-        
+    {        
+		using (LogGroup logGroup = LogGroup.StartDebug("Ending application."))
+		{
+			LogWriter.Debug("${Application.End}");
+        }
+
         //  Dispose outside the log group
         Dispose();
     }
@@ -71,15 +71,11 @@
     
     void Application_BeginRequest(object sender, EventArgs e)
     {
-    	//InitializeCore();
-    	
     	// Create a log group for the request
 		HttpContext.Current.Items["Application_BeginRequest.LogGroup"] = LogGroup.StartDebug("Beginning request: " + HttpContext.Current.Request.Url.ToString());
 
         LogWriter.Debug("${Application.BeginRequest}");
-        	
-       // Initialize();
-        	
+
         // Initialize the URL rewriter to take care of friendly URLs
         UrlRewriter.Initialize();
     }
