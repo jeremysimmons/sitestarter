@@ -147,23 +147,25 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		
 		private void Write(string message, LogLevel logLevel)
 		{
-			CallingMethod = Reflector.GetCallingMethod();
-			Write(message, logLevel, callingMethod);
+			if (new LogSupervisor().LoggingEnabled(logLevel))
+			{
+				CallingMethod = Reflector.GetCallingMethod();
 			
+				Write(message, logLevel, callingMethod);
+			}
 		}
 
 		private void Write(string message, LogLevel logLevel, MethodBase callingMethod)
-		{
-			if (logLevel < this.LogLevel)
-				throw new ArgumentException("The provided log level " + logLevel + " must be equal or greater than the log level of the group, which is " + logLevel + ".");
-			
-			CallingMethod = callingMethod;
-			
-			Guid parentID = GetOutputParentID();
-			
-			// TODO: Check if needed. Should be obsolete as the LogWriter.WriteGroup function will check whether or not to output the data
-			if (IsOutput)
-				LogWriter.WriteGroup(message, callingMethod, LogLevel, ID, parentID);
+		{			
+			if (callingMethod != null && new LogSupervisor().LoggingEnabled(callingMethod.DeclaringType.Name, logLevel))
+			{
+				CallingMethod = callingMethod;
+				
+				Guid parentID = GetOutputParentID();
+				
+				if (IsOutput)
+					LogWriter.WriteGroup(message, callingMethod, LogLevel, ID, parentID);
+			}
 		}
 
 
@@ -305,7 +307,10 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		/// <returns></returns>
 		static public LogGroup Start(string summary)
 		{
-			MethodBase callingMethod = Reflector.GetCallingMethod();
+			MethodBase callingMethod = null;
+
+			if (new LogSupervisor().LoggingEnabled(LogLevel.Debug))
+				callingMethod = Reflector.GetCallingMethod();
 
 			return Start(summary, LogLevel.Info, callingMethod);
 		}
