@@ -187,10 +187,7 @@
     <Compile Include="SiteMap.cs" />
     <Compile Include="SiteMapManager.cs" />
     <Compile Include="SiteMapNode.cs" />
-    <Compile Include="State\Cookies\CookieProtectionHelperWrapper.cs" />
-    <Compile Include="State\Cookies\HttpSecureCookie.cs" />
-    <Compile Include="State\Cookies\InvalidCypherTextException.cs" />
-    <Compile Include="State\Cookies\MachineKeyCryptography.cs" />
+    <Compile Include="State\Cookies\CookieCrypter.cs" />
     <Compile Include="State\StateProviderInitializer.cs" />
     <Compile Include="State\WebStateProvider.cs">
       <SubType>Code</SubType>

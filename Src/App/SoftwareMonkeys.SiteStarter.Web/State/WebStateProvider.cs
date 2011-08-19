@@ -247,27 +247,30 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
         
         public override void SetUser(string key, object value)
         {
-        	SetUser(key, value, DateTime.MinValue);
+        	// TODO: Allow the cookie expiry to be set in web.config
+        	SetUser(key, value, DateTime.Now.AddHours(24));
         }
 
         
-        public override void SetUser(string key, object value, DateTime expirationDate)
+		public override void SetUser(string key, object value, DateTime expirationDate)
         {
-        	if (key == String.Empty)
+			if (key == String.Empty)
         		throw new ArgumentException("The provided key cannot be null or String.Empty.");
-        	
+
             if (key != String.Empty
                 && HttpContext.Current != null
                 && HttpContext.Current.Request != null)
             {
-        		HttpCookie cookie = new HttpCookie(key, value.ToString());
+				string encryptedValue = CookieCrypter.Encrypt(key, value.ToString(), expirationDate);
+				
+        		HttpCookie cookie = new HttpCookie(key, encryptedValue);
         		
         		cookie.Path = StateAccess.State.ApplicationPath;
         		
         		if (expirationDate > DateTime.MinValue)
         			cookie.Expires = expirationDate;
         		
-        		HttpContext.Current.Response.Cookies.Add(HttpSecureCookie.Encode(cookie));
+        		HttpContext.Current.Response.Cookies.Add(cookie);
             }
         }
 
@@ -275,19 +278,17 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
         {
         	if (key == String.Empty)
         		throw new ArgumentException("The provided key cannot be null or String.Empty.");
-        	
+
         	if (key != String.Empty && HttpContext.Current != null && HttpContext.Current.Request != null)
         	{
         		HttpCookie cookie = HttpContext.Current.Request.Cookies[key];
-        		
+
         		if (cookie != null)
         		{
-        			HttpCookie decodedCookie = HttpSecureCookie.Decode(cookie);
-        			if (decodedCookie != null)
-	        			return decodedCookie.Value;
+	        			return CookieCrypter.Decrypt(cookie.Value);
         		}
         	}
-        	
+   	
 	        return null;
         }
         
