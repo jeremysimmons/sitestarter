@@ -9,6 +9,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 {
 	public class ProjectionRouteHandler : IRouteHandler
 	{
+		protected string VirtualPath = String.Empty;
+		
 		public ProjectionRouteHandler ()
 		{
 			Initialize();
@@ -22,7 +24,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			}
 		}
 
-		public override IHttpHandler GetHttpHandler (RequestContext requestContext)
+		public IHttpHandler GetHttpHandler (RequestContext requestContext)
 		{
 			IHttpHandler handler = null;
 			
