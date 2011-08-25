@@ -108,7 +108,18 @@ namespace SoftwareMonkeys.SiteStarter.State
 		/// Checks whether a state value exists at the specified index.
 		/// </summary>
 		/// <param name="key">The key of the item.</param>
+		[Obsolete("Use ContainsKey function.")]
 		public bool StateValueExists(string key)
+		{
+			return ContainsKey(key);
+		}
+		
+		/// <summary>
+		/// Checks whether the provided key exists in the collection.
+		/// </summary>
+		/// <param name="key"></param>
+		/// <returns></returns>
+		public bool ContainsKey(string key)
 		{
 			if (!StateAccess.IsInitialized || StateAccess.State == null)
 				throw new InvalidOperationException("The state hasn't been initialized.");
