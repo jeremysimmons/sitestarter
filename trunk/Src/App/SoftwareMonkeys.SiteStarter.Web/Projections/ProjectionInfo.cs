@@ -12,17 +12,17 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 	/// </summary>
 	public class ProjectionInfo
 	{
-		private string key;
+		private string name = String.Empty;
 		/// <summary>
-		/// Gets/sets the key that is used as an identifier for this projection.
+		/// Gets/sets the name of the projection.
 		/// </summary>
-		public string Key
+		public string Name
 		{
-			get { return key; }
-			set { key = value; }
+			get { return name; }
+			set { name = value; }
 		}
 		
-		private string action;
+		private string action = String.Empty;
 		/// <summary>
 		/// Gets/sets the action that the projection is responsible for carrying out in relation to an entity of the specified type.
 		/// </summary>
@@ -32,7 +32,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			set { action = value; }
 		}
 		
-		private string typeName;
+		private string typeName = String.Empty;
 		/// <summary>
 		/// Gets/sets the name of the type that is involved in the projection.
 		/// </summary>
@@ -42,7 +42,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			set { typeName = value; }
 		}
 		
-		private string projectionFilePath;
+		private string projectionFilePath = String.Empty;
 		/// <summary>
 		/// Gets/sets the full file path to the projection that corresponds with the Actions and TypeName.
 		/// </summary>

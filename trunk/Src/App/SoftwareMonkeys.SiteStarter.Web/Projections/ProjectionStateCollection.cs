@@ -1,6 +1,6 @@
 ﻿using System;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.State;
-
 
 namespace SoftwareMonkeys.SiteStarter.Web.Projections
 {
@@ -45,17 +45,34 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			set { SetProjection(action, type.Name, format, value); }
 		}
 		
+		/// <summary>
+		/// Gets/sets the specified projection.
+		/// </summary>
+		public new ProjectionInfo this[string name]
+		{
+			get { return GetProjection(name, ProjectionFormat.Html); }
+			set { SetProjection(name, ProjectionFormat.Html, value); }
+		}
+		
+		/// <summary>
+		/// Gets/sets the specified projection.
+		/// </summary>
+		public ProjectionInfo this[string name, ProjectionFormat format]
+		{
+			get { return GetProjection(name, format); }
+			set { SetProjection(name, format, value); }
+		}
 		
 		
 		public ProjectionStateCollection() : base(StateScope.Application, "Web.Projections")
 		{
 		}
 		
-		public ProjectionStateCollection(ProjectionInfo[] strategies) : base(StateScope.Application, "Web.Projections")
+		public ProjectionStateCollection(ProjectionInfo[] projections) : base(StateScope.Application, "Web.Projections")
 		{
-			foreach (ProjectionInfo projection in strategies)
+			foreach (ProjectionInfo projection in projections)
 			{
-				SetProjection(projection.Action, projection.TypeName, projection.Format, projection);
+				Add(projection);
 			}
 		}
 		
@@ -68,33 +85,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			if (projection == null)
 				throw new ArgumentNullException("projection");
 			
-			string key = GetProjectionKey(projection.Action, projection.TypeName, projection.Format);
+			string key = GetProjectionKey(projection);
 			
-			this[key] = projection;
-		}
-		
-		// TODO: Remove if not needed
-		/*/// <summary>
-		/// Adds the info of the provided projection to the collection.
-		/// </summary>
-		/// <param name="projection">The projection info to add to the collection.</param>
-		public void Add(IProjection projection)
-		{
-			if (projection == null)
-				throw new ArgumentNullException("projection");
-			
-			Add(new ProjectionInfo(projection));
-		}*/
-		
-		
-		/// <summary>
-		/// Checks whether a projection exists with the provided key.
-		/// </summary>
-		/// <param name="key">The key of the projection to check for.</param>
-		/// <returns>A value indicating whether the projection exists.</returns>
-		public bool ProjectionExists(string key)
-		{
-			return StateValueExists(key);
+			base[key] = projection;
 		}
 		
 		/// <summary>
@@ -103,6 +96,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <param name="action"></param>
 		/// <param name="typeName"></param>
 		/// <returns>A value indicating whether the projection exists.</returns>
+		[Obsolete("Use Contains function.")]
 		public bool ProjectionExists(string action, string typeName)
 		{
 			return ProjectionExists(action, typeName, ProjectionFormat.Html);
@@ -115,6 +109,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <param name="typeName"></param>
 		/// <param name="format"></param>
 		/// <returns>A value indicating whether the projection exists.</returns>
+		[Obsolete("Use Contains function.")]
 		public bool ProjectionExists(string action, string typeName, ProjectionFormat format)
 		{
 			return StateValueExists(GetProjectionKey(action, typeName, format));
@@ -139,6 +134,31 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			
 			return foundProjection;
 		}
+		
+		/// <summary>
+		/// Retrieves the projection with the provided name.
+		/// </summary>
+		/// <param name="name">The name of the projection.</param>
+		/// <param name="format">The output format of the desired projection.</param>
+		/// <returns>The projection with the specified name.</returns>
+		public ProjectionInfo GetProjection(string name, ProjectionFormat format)
+		{
+			ProjectionInfo foundProjection = null;
+			
+			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving projection with name '" + name + "'."))
+			{
+				string key = GetProjectionKey(name, format);
+				
+				LogWriter.Debug("Key: " + key);
+				
+				foundProjection = base[key];
+				
+				if (foundProjection == null)
+					throw new ProjectionNotFoundException(name, format);
+			}
+			
+			return foundProjection;
+		}
 
 		/// <summary>
 		/// Sets the projection with the provided action and type.
@@ -149,9 +169,44 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <param name="format">The output format of the projection.</param>
 		public void SetProjection(string action, string type, ProjectionFormat format, ProjectionInfo projection)
 		{
-			this[GetProjectionKey(action, type, format)] = projection;
+			base[GetProjectionKey(action, type, format)] = projection;
+		}
+		
+		/// <summary>
+		/// Sets the projection with the provided name.
+		/// </summary>
+		/// <param name="action">The name of the projection.</param>
+		/// <param name="projection">The projection that corresponds with the specified action and type.</param>
+		/// <param name="format">The output format of the projection.</param>
+		public void SetProjection(string name, ProjectionFormat format, ProjectionInfo projection)
+		{
+			string key = GetProjectionKey(name, format);
+			
+			base[key] = projection;
+			
 		}
 
+		
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="info"></param>
+		/// <returns></returns>
+		public string GetProjectionKey(ProjectionInfo info)
+		{
+			if (info.Action != String.Empty
+			    && info.TypeName != String.Empty)
+			{
+				return GetProjectionKey(info.Action, info.TypeName, info.Format);
+			}
+			else
+			{
+				return GetProjectionKey(info.Name, info.Format);
+			}
+			
+			return String.Empty;
+		}
+		
 		/// <summary>
 		/// Retrieves the key for the specifid action and type.
 		/// </summary>
@@ -161,9 +216,62 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <returns></returns>
 		public string GetProjectionKey(string action, string type, ProjectionFormat format)
 		{
-			string fullKey = action + "_" + type + "_" + format.ToString();
+			string fullKey = type + "_" + action + "_" + format.ToString();
 			
 			return fullKey;
 		}
+		
+		/// <summary>
+		/// Retrieves the key for the specifid action and type.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="format"></param>
+		/// <returns></returns>
+		public string GetProjectionKey(string name, ProjectionFormat format)
+		{
+			string fullKey = name.Replace("-", "_") + "_" + format.ToString();
+			
+			return fullKey;
+		}
+		
+		public bool Contains(string name)
+		{
+			return Contains(name, ProjectionFormat.Html);
+		}
+		
+		public bool Contains(string name, ProjectionFormat format)
+		{
+			bool doesContain = false;
+			using (LogGroup logGroup = LogGroup.StartDebug("Checking whether projection is found with name '" + name  + "'."))
+			{
+				LogWriter.Debug("Format: " + format);
+				
+				// Replace - with _ to work around formatting issue
+				string key = GetProjectionKey(name.Replace("-", "_"), format);
+				
+				LogWriter.Debug("Key: " + key);
+				
+				doesContain = ContainsKey(key);
+				
+				LogWriter.Debug("Does contain projection: " + doesContain.ToString());
+			}
+			return doesContain;
+		}
+		
+		public bool Contains(string action, string typeName)
+		{
+			return ContainsKey(GetProjectionKey(action, typeName, ProjectionFormat.Html));
+		}
+		
+		public bool Contains(string action, string typeName, ProjectionFormat format)
+		{
+			return ContainsKey(GetProjectionKey(action, typeName, format));
+		}
+		
+		public ProjectionInfo GetByKey(string key)
+		{
+			return base[key];
+		}
+		
 	}
 }

@@ -52,9 +52,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// </summary>
 		/// <param name="newFilePath">The new path to the projection file.</param>
 		/// <param name="content">The content of the projection file.</param>
-		public void SaveToFile(string newFilePath, string content)
+		/// <param name="extractor">A projection info extractor (used to extract cache info).</param>
+		public void SaveToFile(string newFilePath, string content, ProjectionInfoExtractor extractor)
 		{
-			SaveToFile(String.Empty, newFilePath, content);
+			SaveToFile(String.Empty, newFilePath, content, extractor);
 		}
 		
 		/// <summary>
@@ -63,7 +64,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <param name="originalFilePath">The original path to the projection file.</param>
 		/// <param name="newFilePath">The new path to the projection file.</param>
 		/// <param name="content">The content of the projection file.</param>
-		public bool SaveToFile(string originalFilePath, string newFilePath, string content)
+		/// <param name="extractor">A projection info extractor (used to extract cache info).</param>
+		public bool SaveToFile(string originalFilePath, string newFilePath, string content, ProjectionInfoExtractor extractor)
 		{
 			bool alreadyExists = false;
 
@@ -75,7 +77,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				LogWriter.Debug("Original path: " + fullOriginalFilePath);
 				LogWriter.Debug("Path: " + fullNewFilePath);
 				
-				// If the original file path was specified
+				// If the original file path was specified and it exists then move the old file
+				// to the new location
 				if (originalFilePath != String.Empty
 				    && File.Exists(fullOriginalFilePath))
 				{
@@ -108,6 +111,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 						writer.Write(content);
 						writer.Close();
 					}
+					
+					SaveCache(originalFilePath, newFilePath, extractor);
 				}
 				else
 					LogWriter.Debug("Projection name is in use. Skipping save.");
@@ -156,6 +161,61 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				SaveInfoToFile(projection);
 			}
 			//}
+		}
+		
+		/// <summary>
+		/// Saves/updates the cache for the specified file.
+		/// </summary>
+		/// <param name="originalFilePath"></param>
+		/// <param name="newFilePath"></param>
+		/// <param name="extractor"></param>
+		internal void SaveCache(string originalFilePath, string newFilePath, ProjectionInfoExtractor extractor)
+		{
+			using (LogGroup logGroup = LogGroup.StartDebug("Saving projection cache."))
+			{
+				string fullOriginalFilePath = HttpContext.Current.Server.MapPath(HttpContext.Current.Request.ApplicationPath + "/" + originalFilePath);
+				string fullNewFilePath = HttpContext.Current.Server.MapPath(HttpContext.Current.Request.ApplicationPath + "/" + newFilePath);
+				
+				LogWriter.Debug("Original path: " + fullOriginalFilePath);
+				LogWriter.Debug("Path: " + fullNewFilePath);
+				
+				// If the original file path was specified
+				if (originalFilePath != String.Empty
+				    && File.Exists(fullOriginalFilePath))
+				{
+					LogWriter.Debug("Removing old cache info.");
+					
+					ProjectionInfo[] oldInfos = extractor.ExtractProjectionInfo(fullOriginalFilePath);
+					
+					// Remove old state
+					foreach (ProjectionInfo oldInfo in oldInfos)
+					{
+						using (LogGroup logGroup2 = LogGroup.StartDebug("Removing cache info for: " + oldInfo.Name + " - " + oldInfo.ProjectionFilePath))
+						{
+							if (ProjectionState.Projections.Contains(oldInfo.Name, oldInfo.Format))
+								ProjectionState.Projections.Remove(ProjectionState.Projections[oldInfo.Name, oldInfo.Format]);
+							
+							string oldInfoPath = new ProjectionFileNamer().CreateInfoFilePath(oldInfo);
+
+							File.Delete(oldInfoPath);
+						}
+					}
+				}
+				
+				ProjectionInfo[] infos = extractor.ExtractProjectionInfo(fullNewFilePath);
+				
+				// Add the new info to state
+				foreach (ProjectionInfo info in infos)
+				{
+					using (LogGroup logGroup3 = LogGroup.StartDebug("Adding cache info for: " + info.Name + " - " + info.ProjectionFilePath))
+					{
+						ProjectionState.Projections.Add(info);
+						
+						// Save the info to file
+						SaveInfoToFile(info);
+					}
+				}
+			}
 		}
 	}
 }

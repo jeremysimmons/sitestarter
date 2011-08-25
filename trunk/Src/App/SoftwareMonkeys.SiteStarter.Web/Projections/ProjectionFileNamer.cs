@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Web;
 using SoftwareMonkeys.SiteStarter.Data;
 using System.IO;
 using SoftwareMonkeys.SiteStarter.IO;
@@ -27,6 +28,24 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				return projectionsDirectoryPath;
 			}
 			set { projectionsDirectoryPath = value; }
+		}
+		
+		private string projectionTemplatesDirectoryPath;
+		/// <summary>
+		/// Gets the path to the directory containing the projection template files.
+		/// </summary>
+		public virtual string ProjectionTemplatesDirectoryPath
+		{
+			get {
+				if (projectionTemplatesDirectoryPath == null || projectionTemplatesDirectoryPath == String.Empty)
+				{
+					if (StateAccess.IsInitialized)
+						projectionTemplatesDirectoryPath = StateAccess.State.PhysicalApplicationPath
+							+ Path.DirectorySeparatorChar + "ProjectionTemplates";
+				}
+				return projectionTemplatesDirectoryPath;
+			}
+			set { projectionTemplatesDirectoryPath = value; }
 		}
 		
 		private string projectionsInfoDirectoryPath;
@@ -77,43 +96,17 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			if (projection == null)
 				throw new ArgumentNullException("projection");
 			
-			if (projection.Action == null)
-				throw new ArgumentNullException("projection.Action", "No action has been set to the Action property.");
+			string name = projection.Name;
 			
-			string name = projection.TypeName + "-" + projection.Action + "." + projection.Format.ToString().ToLower() + ".projection";
+			if (projection.TypeName != String.Empty && projection.Action != String.Empty)
+			{
+				name = projection.TypeName + "-" + projection.Action;
+			}
+			
+			name = name + "." + projection.Format.ToString().ToLower() + ".projection";
 			
 			return name;
 		}
-		
-		/*/// <summary>
-		/// Creates the file name for the provided projection.
-		/// </summary>
-		/// <param name="projection">The projection to create the file name for.</param>
-		/// <returns>The full file name for the provided projection.</returns>
-		public virtual string CreateProjectionFileName(ProjectionInfo projection)
-		{			
-			if (projection == null)
-				throw new ArgumentNullException("projection");
-			
-			if (projection.Action == null)
-				throw new ArgumentNullException("projection.Action", "No action has been set to the Action property.");
-			
-			string name = projection.TypeName + "-" + projection.Action + ".ascx";
-			
-			return name;
-		}*/
-		
-		// TODO: Remove if not needed
-		/*/// <summary>
-		/// Creates the file name for the provided projection.
-		/// </summary>
-		/// <param name="projection">The projection to create the file name for.</param>
-		/// <returns>The full file name for the provided entity.</returns>
-		public string CreateFileName(IProjection projection)
-		{
-			return CreateFileName(new ProjectionInfo(projection));
-		}*/
-		
 		
 		/// <summary>
 		/// Creates the full file path for the serialized info for the provided projection.
@@ -133,23 +126,72 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <returns>The full file path for the provided projection.</returns>
 		public string CreateProjectionFilePath(ProjectionInfo projection)
 		{
+			if (projection == null)
+				throw new ArgumentNullException("projection");
+			
 			if (projection.ProjectionFilePath == null || projection.ProjectionFilePath == String.Empty)
 				throw new ArgumentException("The projection.ProjectionFilePath property hasn't been set.");
 			
 			return FileMapper.MapApplicationRelativePath(projection.ProjectionFilePath);
 		}
 		
-		// TODO: Remove if not needed
-		/*
+		
 		/// <summary>
-		/// Creates the full file path for the provided projection.
+		/// Creates the application relative file path for the specified projection.
 		/// </summary>
-		/// <param name="projection">The projection to create the file path for.</param>
-		/// <returns>The full file path for the provided projection.</returns>
-		public string CreateFilePath(IProjection projection)
+		/// <param name="name">The name of the projection to create the file path for.</param>
+		/// <returns>The application relative file path of the projection.</returns>
+		public string CreateRelativeProjectionFilePath(string name)
 		{
-			return CreateFilePath(new ProjectionInfo(projection));
-		}*/
+			string basePath  = HttpContext.Current.Server.MapPath(HttpContext.Current.Request.ApplicationPath);
+			
+			string directoryName = ProjectionsDirectoryPath.Replace(basePath, "").Replace(@"\", "/");
+			
+			return CreateRelativeProjectionFilePath(name, directoryName);
+		}
+		
+		/// <summary>
+		/// Creates the application relative file path for the specified projection.
+		/// </summary>
+		/// <param name="name">The name of the projection to create the file path for.</param>
+		/// <param name="directory">The directory containing the projection (relative to the application).</param>
+		/// <returns>The application relative file path of the projection.</returns>
+		public string CreateRelativeProjectionFilePath(string name, string directory)
+		{
+			if (name.ToLower().IndexOf("ascx") == -1)
+				name = name + ".ascx";
+			
+			string path = "/" + directory.Trim('/') + "/" + name;
+			
+			return path;
+		}
+		
+		/// <summary>
+		/// Creates the application relative file path for the specified projection template.
+		/// </summary>
+		/// <param name="name">The name of the projection template to create the file path for.</param>
+		/// <returns>The application relative file path of the projection template.</returns>
+		public string CreateRelativeProjectionTemplateFilePath(string name)
+		{
+			string basePath  = HttpContext.Current.Server.MapPath(HttpContext.Current.Request.ApplicationPath);
+			
+			string directoryName = ProjectionTemplatesDirectoryPath.Replace(basePath, "").Replace(@"\", "/");
+			
+			return CreateRelativeProjectionFilePath(name, directoryName);
+		}
+		
+		/// <summary>
+		/// Creates the full file path for the specified projection template.
+		/// </summary>
+		/// <param name="name">The name of the projection template to create the file path for.</param>
+		/// <returns>The full file path of the projection template.</returns>
+		public string CreateProjectionTemplateFilePath(string name)
+		{
+			if (name.ToLower().IndexOf("ascx") == -1)
+				name = name + ".ascx";
+			
+			return ProjectionTemplatesDirectoryPath.TrimEnd('\\') + @"\" + name;
+		}
 		
 	}
 }

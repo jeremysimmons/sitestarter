@@ -59,6 +59,22 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			set { ViewState["TypeName"] = value; }
 		}
 		
+		/// <summary>
+		/// Gets/sets the name of the target projection.
+		/// </summary>
+		[Browsable(true)]
+		[Bindable(true)]
+		public string ProjectionName
+		{
+			get {
+				if (ViewState["ProjectionName"] == null)
+					ViewState["ProjectionName"] = QueryStrings.Name;
+				return (string)ViewState["ProjectionName"];
+			}
+			set { ViewState["ProjectionName"] = value; }
+		}
+		
+		
 		
 		/// <summary>
 		/// Gets/sets the output format of the target projection.
@@ -90,11 +106,30 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				LogWriter.Debug("Url: " + Page.Request.Url.ToString());
 				LogWriter.Debug("Action: " + Action);
 				LogWriter.Debug("Type Name: " + TypeName);
+				LogWriter.Debug("Projection Name: " + ProjectionName);
 				LogWriter.Debug("Format: " + Format);
 				
 				InitializeProjections();
 				
-				ProjectionInfo projection = ProjectionState.Projections[Action, TypeName, Format];
+				ProjectionInfo projection = null;
+				
+				if (QueryStrings.Name != String.Empty)
+				{
+					if (ProjectionState.Projections.Contains(QueryStrings.Name, Format))
+						projection = ProjectionState.Projections[QueryStrings.Name, Format];
+					else
+						LogWriter.Debug("Projection not found with name '" + QueryStrings.Name + "' and format '" + QueryStrings.Format + "'.");
+				}
+				else if (QueryStrings.Action != String.Empty &&
+				        QueryStrings.Type != String.Empty)
+				{
+					if (ProjectionState.Projections.Contains(QueryStrings.Action, QueryStrings.Type, Format))
+						projection = ProjectionState.Projections[QueryStrings.Action, QueryStrings.Type, Format];
+					else
+						LogWriter.Debug("Projection not found with action '" + QueryStrings.Action + "', type '" + QueryStrings.Type + "' and format '" + QueryStrings.Format + "'.");
+				}
+				else
+					LogWriter.Debug("No projection specified by the query string.");
 				
 				Control control = projection.Load(Page);
 				
@@ -103,6 +138,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 					LogWriter.Debug("Projection control found: " + projection.ProjectionFilePath);
 					
 					Controls.Add(control);
+					
 					FoundProjection = true;
 				}
 				else

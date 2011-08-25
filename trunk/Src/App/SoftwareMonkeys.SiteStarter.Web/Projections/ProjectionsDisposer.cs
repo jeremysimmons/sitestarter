@@ -98,7 +98,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				foreach (ProjectionInfo projection in projections)
 				{
 					ProjectionState.Projections.Remove(
-						ProjectionState.Projections[projection.Key]
+						ProjectionState.Projections[projection.Name]
 					);
 					
 					DeleteInfo(projection);

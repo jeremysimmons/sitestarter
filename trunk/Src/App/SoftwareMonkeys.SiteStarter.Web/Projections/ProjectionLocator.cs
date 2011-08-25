@@ -63,9 +63,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				LogWriter.Debug("Key: " + key);
 				
 				// Check the direct key to see if a projection exists
-				if (Projections.ProjectionExists(key))
+				if (Projections.ContainsKey(key))
 				{
-					projectionInfo = Projections[key];
+					projectionInfo = Projections.GetByKey(key);
 				}
 				// If not then navigate up the heirarchy looking for a matching projection
 				else if (type != null)
@@ -119,7 +119,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				
 				string key = Projections.GetProjectionKey(action, interfaceType.Name, format);
 				
-				if (Projections.ProjectionExists(key))
+				if (Projections.ContainsKey(key))
 				{
 					projectionInfo = Projections[key];
 					
@@ -150,18 +150,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				string key = Projections.GetProjectionKey(action, nextType.Name, format);
 				
 				// If a projection exists for the base type then use it
-				if (Projections.ProjectionExists(key))
+				if (Projections.ContainsKey(key))
 				{
 					projectionInfo = Projections[key];
 					
 					break;
 				}
-				// TODO: Check if needed. It shouldn't be. The other call to LocateFromInterfaces in LocateFromHeirarchy should be sufficient
-				// Otherwise check the interfaces of that base type
-				//else
-				//{
-				//	projectionInfo = LocateFromInterfaces(action, nextType);
-				//}
 			}
 			
 			return projectionInfo;

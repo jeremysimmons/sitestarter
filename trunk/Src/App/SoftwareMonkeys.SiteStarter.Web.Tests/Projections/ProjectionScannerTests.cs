@@ -21,7 +21,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Projections
 			
 			string fileName = "Test.ascx";
 			
-			ProjectionFormat format = scanner.GetFormatFromFileName(fileName);
+			ProjectionFormat format = new ProjectionInfoExtractor(null).GetFormatFromFileName(fileName);
 			
 			Assert.AreEqual(ProjectionFormat.Html, format, "The format doesn't match what's expected.");
 		}
@@ -37,7 +37,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Projections
 			
 			string fileName = "Test.xml.ascx";
 			
-			ProjectionFormat format = scanner.GetFormatFromFileName(fileName);
+			ProjectionFormat format = new ProjectionInfoExtractor(null).GetFormatFromFileName(fileName);
 			
 			Assert.AreEqual(ProjectionFormat.Xml, format, "The format doesn't match what's expected.");
 		}
@@ -54,7 +54,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Projections
 			
 			string fileName = "Test.xslt.ascx";
 			
-			ProjectionFormat format = scanner.GetFormatFromFileName(fileName);
+			ProjectionFormat format = new ProjectionInfoExtractor(null).GetFormatFromFileName(fileName);
 			
 			Assert.AreEqual(ProjectionFormat.Xslt, format, "The format doesn't match what's expected.");
 		}

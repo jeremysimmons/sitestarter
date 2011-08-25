@@ -67,12 +67,19 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Abstractions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Web.Extensions">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Web.Routing">
+      <HintPath>..\..\..\lib\System.Web.Routing.dll</HintPath>
     </Reference>
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationContext.cs" />
     <Compile Include="AssemblyScanInfo.cs" />
     <Compile Include="AutoBackupInitializer.cs" />
     <Compile Include="BasePage.cs">
@@ -157,10 +164,14 @@
     <Compile Include="Projections\IProjection.cs" />
     <Compile Include="Projections\ProjectionFileNamer.cs" />
     <Compile Include="Projections\ProjectionFormat.cs" />
+    <Compile Include="Projections\ProjectionHttpHandler.cs" />
     <Compile Include="Projections\ProjectionInfo.cs" />
+    <Compile Include="Projections\ProjectionInfoExtractor.cs" />
     <Compile Include="Projections\ProjectionLoader.cs" />
     <Compile Include="Projections\ProjectionLocator.cs" />
+    <Compile Include="Projections\ProjectionMapper.cs" />
     <Compile Include="Projections\ProjectionNotFoundException.cs" />
+    <Compile Include="Projections\ProjectionRouteHandler.cs" />
     <Compile Include="Projections\ProjectionSaver.cs" />
     <Compile Include="Projections\ProjectionScanner.cs" />
     <Compile Include="Projections\ProjectionsDisposer.cs" />
@@ -187,6 +198,7 @@
     <Compile Include="SiteMap.cs" />
     <Compile Include="SiteMapManager.cs" />
     <Compile Include="SiteMapNode.cs" />
+    <Compile Include="StandardRouteHandler.cs" />
     <Compile Include="State\Cookies\CookieCrypter.cs" />
     <Compile Include="State\StateProviderInitializer.cs" />
     <Compile Include="State\WebStateProvider.cs">
