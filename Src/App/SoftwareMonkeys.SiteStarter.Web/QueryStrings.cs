@@ -35,6 +35,20 @@ namespace SoftwareMonkeys.SiteStarter.Web
                     return String.Empty;
             }
         }
+        
+        /// <summary>
+        /// The name passed to the page via the query string variable "n".
+        /// </summary>
+        static public string Name
+        {
+            get
+            {
+                if (HttpContext.Current.Request.QueryString["n"] != null)
+                    return HttpContext.Current.Request.QueryString["n"];
+                else
+                    return String.Empty;
+            }
+        }
     	
         /// <summary>
         /// The type passed to the page via the query string variable "t".
