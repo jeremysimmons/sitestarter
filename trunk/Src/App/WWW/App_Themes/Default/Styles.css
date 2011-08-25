@@ -1,4 +1,4 @@
-﻿body 
+﻿body, P, TD
 {
 	font-family: Verdana;
 	font-size: x-small;
@@ -7,6 +7,7 @@
 /* Template */
 .PageHeader
 {
+	color: gray;
 	border-bottom: solid 1px gray;
 }
 
@@ -148,13 +149,6 @@ OL LI
 TH
 {
 	text-align: left;
-}
-
-
-p
-{
-	font-size: x-small;
-	font-family: verdana;
 }
 
 h1
