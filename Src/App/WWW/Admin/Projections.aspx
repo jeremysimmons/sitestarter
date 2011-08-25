@@ -5,6 +5,7 @@
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Security" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Navigation" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Entities" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web" %>
 <%@ Import Namespace="System.IO" %>
 <script runat="server">
 private void Page_Load(object sender, EventArgs e)
@@ -12,6 +13,7 @@ private void Page_Load(object sender, EventArgs e)
 	Authorisation.EnsureIsInRole("Administrator");
 	
 	ResetButton.DataBind();
+	CreateButton.DataBind();
 }
 
 private void ResetButton_Click(object sender, EventArgs e)
@@ -23,9 +25,19 @@ private void ResetButton_Click(object sender, EventArgs e)
 	Result.Display(Resources.Language.ProjectionsReset);
 }
 
+private void CreateButton_Click(object sender, EventArgs e)
+{
+	Response.Redirect("EditProjection.aspx");
+}
+
+
 private bool CanView(ProjectionInfo info)
 {
-	if (EntityState.IsType(info.TypeName))
+	if (info.TypeName == String.Empty && info.Action == String.Empty)
+	{
+		return true;
+	}
+	else if (EntityState.IsType(info.TypeName))
 	{	
 		Type type = EntityState.GetType(info.TypeName);
 
@@ -35,13 +47,18 @@ private bool CanView(ProjectionInfo info)
 	else
 		return true;
 }
+
+private string GetEditLink(ProjectionInfo projection)
+{
+	return "EditProjection.aspx?Projection=" + projection.Name;
+}
 </script>
 <asp:Content runat="server" ContentPlaceHolderID="Body">
 <div class="Trail"><a href='<%= Request.ApplicationPath %>'><%= Resources.Language.Home %></a> &gt; <a id="CacheIndexLink" href='<%= Request.ApplicationPath.TrimEnd('/') + "/Admin/Cache.aspx" %>'><%= Resources.Language.Cache %></a></div>
 <h1>Projections</h1>
 <cc:Result runat="Server"/>
 <p>The following projections are currently cached in the system. Click "Reset" to rescan and refresh the projections.</p>
-<p><asp:button runat="server" id="ResetButton" text='<%# Resources.Language.Reset %>' onclick="ResetButton_Click"/></p>
+<p><asp:button runat="server" id="CreateButton" text='<%# Resources.Language.CreateProjection %>' onclick="CreateButton_Click"/>&nbsp;<asp:button runat="server" id="ResetButton" text='<%# Resources.Language.Reset %>' onclick="ResetButton_Click"/></p>
 <p>Total Projections: <%= ProjectionState.Projections.Count %></p>
 <table class="Panel" width="100%">
 	<tr class="Heading2">
@@ -49,10 +66,10 @@ private bool CanView(ProjectionInfo info)
 			File Name
 		</th>
 		<th>
-			Type Name
+			Action
 		</th>
 		<th>
-			Action
+			Type Name
 		</th>
 		<th>
 			Format
@@ -75,10 +92,10 @@ private bool CanView(ProjectionInfo info)
 			<%= Path.GetFileName(projection.ProjectionFilePath) %>
 		</td>
 		<td>
-			<%= projection.TypeName %>
+			<%= projection.Action %>
 		</td>
 		<td>
-			<%= projection.Action %>
+			<%= projection.TypeName %>
 		</td>
 		<td>
 			<%= projection.Format.ToString() %>
@@ -93,9 +110,10 @@ private bool CanView(ProjectionInfo info)
 			/<%= Path.GetDirectoryName(projection.ProjectionFilePath).Replace(@"\", "/").Trim('/') %>/
 		</td>
 		<td>
+			<a href='<%= GetEditLink(projection) %>'><%= Resources.Language.Edit %></a>
+			
 			<% if (CanView(projection)) { %>
-			<a href='<%= "EditProjection.aspx?Projection=" + projection.Action + "-" + projection.TypeName %>'><%= Resources.Language.Edit %></a>
-			<a href='<%= Navigator.Current.GetLink(projection.Action, projection.TypeName) %>' target="_blank"><%= Resources.Language.View %></a>
+			<a href='<%= new UrlCreator().CreateUrl(projection) %>' target="_blank"><%= Resources.Language.View %></a>
 			<% } %>
 		</td>
 	</tr>
