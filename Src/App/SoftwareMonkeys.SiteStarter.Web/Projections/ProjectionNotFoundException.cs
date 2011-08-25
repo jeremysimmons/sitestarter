@@ -7,7 +7,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 	/// </summary>
 	public class ProjectionNotFoundException : ApplicationException
 	{
-		private string action;
+		private string action = String.Empty;
 		/// <summary>
 		/// Gets/sets the action being performed by the projection.
 		/// </summary>
@@ -17,7 +17,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			set { action = value; }
 		}
 		
-		private string typeName;
+		private string typeName = String.Empty;
 		/// <summary>
 		/// Gets/sets the name of the type involved in the projection.
 		/// </summary>
@@ -25,6 +25,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			get { return typeName; }
 			set { typeName = value; }
+		}
+		
+		private string name = String.Empty;
+		/// <summary>
+		/// Gets/sets the name of the projction.
+		/// </summary>
+		public string Name
+		{
+			get { return name; }
+			set { name = value; }
 		}
 		
 		private ProjectionFormat format = ProjectionFormat.Html;
@@ -35,6 +45,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			get { return format; }
 			set { format = value; }
+		}
+		
+		public ProjectionNotFoundException(string name, ProjectionFormat format) : base("A projection could not be found with the name '" + name + "' and output format '" + format + "'.")
+		{
+			Name = name;
+			Format = format;
 		}
 		
 		public ProjectionNotFoundException(string action, string typeName, ProjectionFormat format) : base("A projection could not be found to carry out action '" + action + "', entity type '" + typeName + "' and output format '" + format + "'.")

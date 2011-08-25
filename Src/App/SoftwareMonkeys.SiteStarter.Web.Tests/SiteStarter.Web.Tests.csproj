@@ -167,6 +167,7 @@
     <Compile Include="Projections\MockProjectionLoader.cs" />
     <Compile Include="Projections\MockProjectionScanner.cs" />
     <Compile Include="Projections\ProjectionScannerTests.cs" />
+    <Compile Include="Projections\ProjectionStateNameValueTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SetupCheckerTests.cs" />
     <Compile Include="SiteMapTests.cs" />
