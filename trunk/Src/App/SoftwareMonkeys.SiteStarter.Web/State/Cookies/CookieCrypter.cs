@@ -13,7 +13,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.State.Cookies
 		{
 			FormsAuthenticationTicket ticket = FormsAuthentication.Decrypt(value);
             
-            return ticket.UserData;
+			if (ticket != null)
+            	return ticket.UserData;
+			else
+				return String.Empty;
 		}
 		
 		static public string Encrypt(string name, string value, DateTime expires)
