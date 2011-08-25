@@ -7,7 +7,7 @@ using SoftwareMonkeys.SiteStarter.Diagnostics;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Projections
 {
-	public class ProjectionRouteHandler : StandardRouteHandler
+	public class ProjectionRouteHandler : IRouteHandler
 	{
 		public ProjectionRouteHandler ()
 		{
