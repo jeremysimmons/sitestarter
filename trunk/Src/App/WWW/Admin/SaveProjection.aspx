@@ -24,7 +24,7 @@
 			LogWriter.Debug("Projection path: " + projectionPath);
 			
 			ProjectionSaver saver = new ProjectionSaver();
-			saver.SaveToFile(originalProjectionPath, projectionPath, projectionContent);
+			saver.SaveToFile(originalProjectionPath, projectionPath, projectionContent, new ProjectionInfoExtractor(new ControlLoader(this)));
 			
 			Response.Write("Saved");
 		}

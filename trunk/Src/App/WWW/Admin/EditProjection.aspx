@@ -16,15 +16,31 @@
 	
 		EnablePreviewBox.Attributes.Add("onclick", "triggerPreview();");
 	
+		string projectionKey = Request.QueryString["Projection"];
+	
 		if (!IsPostBack)
-			EditProjection(Request.QueryString["Projection"]);
+			EditProjection(projectionKey);
 	}
 
-	public void EditProjection(string projection)
+	public void EditProjection(string projectionKey)
 	{
-		string[] parts = projection.Split('-');
+		if (projectionKey != null && projectionKey != String.Empty)
+			LoadProjection(projectionKey);
+		else
+			CreateProjection();
+	}
+	
+	public void LoadProjection(string projectionKey)
+	{
+		string[] parts = projectionKey.Split('-');
 		
-		ProjectionInfo info = ProjectionState.Projections[parts[0], parts[1]];
+		ProjectionInfo info = null;
+		
+		// If the key contains a dash - then it's an Action/TypeName based projection
+		if (parts.Length == 2)
+			info = ProjectionState.Projections[parts[0], parts[1]];
+		else
+			info = ProjectionState.Projections[projectionKey];
 	
 		CurrentProjection = info;
 	
@@ -40,7 +56,18 @@
 			QueryStrings.Text = Request.Form["QueryStrings"];
 		else
 			QueryStrings.Text = PrepareQueryStrings(Request.Url.Query);
-		
+	}
+	
+	public void CreateProjection()
+	{
+		CurrentProjection = new ProjectionInfo();
+		CurrentProjection.Name = "newprojection";
+		CurrentProjection.ProjectionFilePath = new ProjectionFileNamer().CreateRelativeProjectionFilePath(CurrentProjection.Name);
+	
+		string templatePath = new ProjectionFileNamer().CreateProjectionTemplateFilePath("Default");
+	
+		ProjectionFilePath.Text = CurrentProjection.ProjectionFilePath;
+		ProjectionContent.Text = new ProjectionLoader().LoadContentFromFile(templatePath);
 	}
 	
 	public string PrepareQueryStrings(string original)
@@ -64,6 +91,19 @@
 		return output.Trim('&');
 	}
 	
+	private string GetPreviewLink()
+	{
+		string link = new UrlCreator().CreateUrl(CurrentProjection);
+		
+		if (link.IndexOf("?") > -1)
+			link = link + "&";
+		else
+			link = link + "?";
+			
+		link = link + "HideTemplate=true";
+			
+		return link;
+	}
 </script>
 <asp:Content ID="BodyContent" ContentPlaceHolderID="Body" runat="server">
 <script type="text/javascript">
@@ -73,7 +113,7 @@
 		var isEnabled = cb.checked;
 		
 		if (isEnabled)
-			displayPreview('<%= WebUtilities.ConvertApplicationRelativeUrlToAbsoluteUrl("/") + "/" + Request.QueryString["Projection"] + ".aspx" %>');
+			displayPreview('<%= GetPreviewLink() %>');
 		else
 			displayPreview("");
 	}
@@ -124,7 +164,7 @@
 	
 	function close()
 	{
-		window.location.href = '<%= WebUtilities.ConvertApplicationRelativeUrlToAbsoluteUrl("/Admin/Projections.aspx") %>';
+		window.location.href = '<%= WebUtilities.ConvertApplicationRelativeUrlToAbsoluteUrl(new UrlCreator().CreateUrl(CurrentProjection)) %>';
 	}
 	
 	function insertTab(o, e)
@@ -177,9 +217,9 @@
 	
 </script>
 <div class="Trail"><a href='<%= Request.ApplicationPath %>'><%= Resources.Language.Home %></a> &gt; <a href='<%= Request.ApplicationPath.TrimEnd('/') + "/Admin/Cache.aspx" %>'>Cache</a> &gt; <a href='<%= Request.ApplicationPath.TrimEnd('/') + "/Admin/Projections.aspx" %>'><%= Resources.Language.Projections %></a></div>
-<h1><%= Resources.Language.Edit + " " + Resources.Language.Projection %></h1>
+<h1><%= (CurrentProjection == null ? Resources.Language.Create : Resources.Language.Edit) + " " + Resources.Language.Projection %></h1>
 <p>
-	<%= Resources.Language.FilePath %>: <asp:textbox runat="server" id="ProjectionFilePath" readonly="true" width="400px"/>
+	<%= Resources.Language.FilePath %>: <asp:textbox runat="server" id="ProjectionFilePath" width="400px"/>
 </p>
 <p>
 	<asp:textbox runat="server" id="ProjectionContent" style="width: 100%; height: 400px;" onkeydown="insertTab(this, event);" TextMode="Multiline" wrap="false"/>
@@ -193,5 +233,5 @@
 <hr/>
 <p><%= Resources.Language.EnablePreview %>: <asp:CheckBox runat="Server" id="EnablePreviewBox" /></p>
 <cc:PreviewControl runat="server" CssClass="PreviewPanel" />
-<input type="hidden" name="OriginalProjectionFilePath" id="OriginalProjectionFilePath" value='<%= CurrentProjection.ProjectionFilePath %>' />
+<input type="hidden" name="OriginalProjectionFilePath" id="OriginalProjectionFilePath" value='<%= CurrentProjection != null ? CurrentProjection.ProjectionFilePath : String.Empty %>' />
 </asp:Content>
