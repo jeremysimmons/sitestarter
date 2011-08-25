@@ -4,12 +4,12 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="http://localhost/SiteStarter-ManageProjections/" />
-<title>JavascriptError</title>
+<title>CreateProjection</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">JavascriptError</td></tr>
+<tr><td rowspan="1" colspan="3">CreateProjection</td></tr>
 </thead><tbody>
 <tr>
 	<td>setTimeout</td>
@@ -18,7 +18,7 @@
 </tr>
 <tr>
 	<td>open</td>
-	<td>Admin/tests/testreset.aspx?Log=true</td>
+	<td>Admin/tests/testreset.aspx</td>
 	<td></td>
 </tr>
 <tr>
@@ -41,9 +41,10 @@
 	<td></td>
 	<td></td>
 </tr>
+<!--Make sure the test projection doesn't yet exist-->
 <tr>
 	<td>open</td>
-	<td>Admin/Tests/JavascriptError.aspx</td>
+	<td>Admin/Tests/DeleteProjection.aspx?Projection=TestProjection</td>
 	<td></td>
 </tr>
 <tr>
@@ -52,13 +53,13 @@
 	<td></td>
 </tr>
 <tr>
-	<td>pause</td>
-	<td>4000</td>
+	<td>assertTextNotPresent</td>
+	<td>Exception</td>
 	<td></td>
 </tr>
 <tr>
 	<td>open</td>
-	<td>Admin/Errors.aspx</td>
+	<td>Admin/EditProjection.aspx</td>
 	<td></td>
 </tr>
 <tr>
@@ -67,15 +68,36 @@
 	<td></td>
 </tr>
 <tr>
-	<td>assertTextPresent</td>
-	<td>Javascript error: missingVariable is not defined</td>
+	<td>type</td>
+	<td>id=ctl00_Body_ProjectionFilePath</td>
+	<td>/Projections/TestProjection.ascx</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=ctl00_Body_ProjectionContent</td>
+	<td>&lt;%@ Control Language=&quot;C#&quot; Inherits=&quot;SoftwareMonkeys.SiteStarter.Web.Projections.BaseProjection&quot; %&gt;<br />&lt;h1&gt;Test Projection&lt;/h1&gt;<br />&lt;p&gt;Hello World&lt;/p&gt;</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=SaveContinueButton</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>Admin/Projections.aspx</td>
 	<td></td>
 </tr>
 <tr>
 	<td>assertTextPresent</td>
-	<td>JavascriptError.aspx, line 113</td>
+	<td>TestProjection.ascx</td>
 	<td></td>
 </tr>
+<tr>
+	<td>open</td>
+	<td>Admin/Tests/DeleteProjection.aspx?Projection=TestProjection</td>
+	<td></td>
+</tr>
+
 </tbody></table>
 </body>
 </html>
