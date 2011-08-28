@@ -921,4 +921,10 @@ ${ResetUrl}</value>
   <data name="Projections" xml:space="preserve">
     <value>Projections</value>
   </data>
+  <data name="CreateProjection" xml:space="preserve">
+    <value>Create Projection</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Create</value>
+  </data>
 </root>
