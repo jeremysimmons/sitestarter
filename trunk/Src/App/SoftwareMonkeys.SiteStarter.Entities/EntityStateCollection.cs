@@ -10,7 +10,16 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 	public class EntityStateCollection : StateNameValueCollection<EntityInfo>
 	{		
 		/// <summary>
-		/// Gets/sets the entity for the specifid action and type.
+		/// Gets/sets the specified entity info.
+		/// </summary>
+		public override EntityInfo this[string typeName]
+		{
+			get { return GetEntity(typeName); }
+			set { SetEntity(typeName, value); }
+		}
+		
+		/// <summary>
+		/// Gets/sets the entity info for the provided type.
 		/// </summary>
 		public EntityInfo this[Type type]
 		{
@@ -54,9 +63,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			if (entity == null)
 				throw new ArgumentNullException("entity");
 			
-			string key = GetEntityKey(entity.TypeName);
-			
-			this[key] = entity;
+			this[entity.TypeName] = entity;
 		}
 		
 		
@@ -72,32 +79,66 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			Add(new EntityInfo(entity));
 		}
 		
+		/// <summary>
+		/// Checks whether an entity exists with the provided name.
+		/// </summary>
+		/// <param name="typeName">The name of the entity type name.</param>
+		/// <returns>A value indicating whether the entity exists.</returns>
+		[Obsolete("Use Contains function.")]
+		public bool EntityExists(string typeName)
+		{
+			return Contains(typeName);
+		}
 		
 		/// <summary>
-		/// Checks whether a entity exists with the provided key.
+		/// Checks whether an entity exists with the provided name.
 		/// </summary>
-		/// <param name="key">The key of the entity to check for.</param>
+		/// <param name="typeName">The name of the entity type name.</param>
 		/// <returns>A value indicating whether the entity exists.</returns>
-		public bool EntityExists(string key)
+		public bool Contains(string typeName)
 		{
-			return StateValueExists(key);
+			bool doesContain = false;
+			using (LogGroup logGroup = LogGroup.StartDebug("Checking whether the entity '" + typeName + "' exists."))
+			{
+				doesContain = ContainsKey(GetEntityKey(typeName));
+				
+				LogWriter.Debug("Does contains: " + doesContain.ToString());
+			}
+			return doesContain;
 		}
 		
 		/// <summary>
 		/// Retrieves the entity with the provided action and type.
 		/// </summary>
-		/// <param name="typeName">The type of entity involved in the entity</param>
+		/// <param name="typeName">The type of entity involved in the entity.</param>
 		/// <returns>The entity matching the provided action and type.</returns>
 		public EntityInfo GetEntity(string typeName)
 		{
+			return GetEntity(typeName, true);
+		}
+		
+		/// <summary>
+		/// Retrieves the entity with the provided action and type.
+		/// </summary>
+		/// <param name="typeName">The type of entity involved in the entity.</param>
+		/// <param name="throwExceptionIfNotFound"></param>
+		/// <returns>The entity matching the provided action and type.</returns>
+		public EntityInfo GetEntity(string typeName, bool throwExceptionIfNotFound)
+		{
+			EntityInfo foundEntity = null;
 			
-			EntityLocator locator = new EntityLocator(this);
-			
-			EntityInfo foundEntity = locator.Locate(typeName);
-			
-			if (foundEntity == null)
-				throw new EntityNotFoundException(typeName);
-			
+			// Disabled logging to boost performance.
+			//using (LogGroup logGroup = LogGroup.StartDebug("Retrieving the entity '" + typeName + "'."))
+			//{
+				EntityLocator locator = new EntityLocator(this);
+				
+				foundEntity = locator.Locate(typeName);
+				
+				if (foundEntity == null)
+					throw new EntityNotFoundException(typeName);
+				
+				//LogWriter.Debug("Found entity: " + foundEntity.ToString());
+			//}
 			return foundEntity;
 		}
 

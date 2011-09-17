@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 
 namespace SoftwareMonkeys.SiteStarter.Entities
 {
@@ -53,9 +54,14 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			    || typeName == "EntityReference")
 				return true;
 			
-			EntityInfo info = GetInfo(typeName, false);
+			if (Entities.Contains(typeName))
+			{
+				EntityInfo info = GetInfo(typeName, false);
 			
-			return (info != null);
+				return (info != null);
+			}
+			else
+				return false;
 		}
 		
 		/// <summary>
@@ -65,79 +71,92 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <returns></returns>
 		static public Type GetType(string typeName)
 		{
-			if (typeName == String.Empty)
-				throw new ArgumentException("A type name must be provided.", "typeName");
-			
-			if (typeName.IndexOf(".") > -1)
-				return Type.GetType(typeName);
-			
-			if (typeName == "IEntity")
-				return typeof(IEntity);
-			
-			if (typeName == "IUniqueEntity")
-				return typeof(IUniqueEntity);
-			
-			if (typeName == "EntityReference")
-				return typeof(EntityReference);
-			
-			Type type = null;
-			
-			// If it's a full name
-			if (typeName.IndexOf(".") > -1)
+				Type type = null;
+				
+			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving the type '" + typeName + "'."))
 			{
-				try
+				if (typeName == String.Empty)
+					throw new ArgumentException("A type name must be provided.", "typeName");
+				
+				if (typeName.IndexOf(".") > -1)
+					return Type.GetType(typeName);
+				
+				if (typeName == "IEntity")
+					return typeof(IEntity);
+				
+				if (typeName == "IUniqueEntity")
+					return typeof(IUniqueEntity);
+				
+				if (typeName == "EntityReference")
+					return typeof(EntityReference);
+				
+				
+				// If it's a full name
+				if (typeName.IndexOf(".") > -1)
 				{
-					type = Type.GetType(typeName);
+					try
+					{
+						type = Type.GetType(typeName);
+					}
+					catch (Exception ex)
+					{
+						throw new ArgumentException("Invalid type name: " + typeName, ex);
+					}
 				}
-				catch (Exception ex)
+				else
 				{
-					throw new ArgumentException("Invalid type name: " + typeName, ex);
+					EntityInfo info = GetInfo(typeName, false);
+					
+					if (info == null)
+						throw new ArgumentException("No entity type info found with the name '" + typeName + "'.");
+					
+					
+					type = info.GetEntityType();
+					
+					if (type == null)
+						throw new ArgumentException("No entity type loaded with the name '" + typeName + "'.");
 				}
-			}
-			else
-			{
-				EntityInfo info = GetInfo(typeName);
 				
-				if (info == null)
-					throw new ArgumentException("No entity type info found with the name '" + typeName + "'.");
-				
-				
-				type = info.GetEntityType();
-				
-				if (type == null)
-					throw new ArgumentException("No entity type loaded with the name '" + typeName + "'.");
+				LogWriter.Debug("Type: " + type == null ? "[null]" : type.Name);
 			}
 			return type;
 		}
 		
 		static public EntityInfo GetInfo(string typeName)
 		{
-			// If it's a full type name then get the short type name from it
-			if (typeName.IndexOf(".") > -1)
-				typeName = GetType(typeName).Name;
+			// If it's a full type name then extract the short name from it
+			
+			if (typeName.LastIndexOf(",") > -1)
+				typeName = typeName.Substring(0, typeName.IndexOf(","));
+			
+			if (typeName.LastIndexOf(".") > -1)
+				typeName = typeName.Substring(typeName.LastIndexOf("."), typeName.Length-typeName.LastIndexOf(".")).Trim('.');
 			
 			return GetInfo(typeName, true);
 		}
 		
 		static public EntityInfo GetInfo(string typeName, bool throwExceptionIfNotFound)
 		{
-			EntityInfo info = EntityState.Entities[typeName];
+			EntityInfo info = null;
 			
-			if (info != null)
+			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving the info for the entity type '" + typeName + "'."))
 			{
-				// If an alias is specified then grab the alias
-				// Repeat until no alias is specified
-				while (info.Alias != String.Empty)
-				{
-					info = EntityState.Entities[info.Alias];
-				}
+				info = EntityState.Entities[typeName];
 				
-				return info;
+				if (info != null)
+				{
+					// If an alias is specified then grab the alias
+					// Repeat until no alias is specified
+					while (info.Alias != String.Empty)
+					{
+						info = EntityState.Entities[info.Alias];
+					}
+				}
+				else if (throwExceptionIfNotFound)
+					throw new ArgumentException("No entity type info found with the name '" + typeName + "'.");
 			}
-			else if (throwExceptionIfNotFound)
-				throw new ArgumentException("No entity type info found with the name '" + typeName + "'.");
-			else
-				return null;
+			
+			return info;
 		}
 	}
 }

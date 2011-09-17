@@ -44,109 +44,25 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <returns>The entity info for the specified scenario.</returns>
 		public EntityInfo Locate(string typeName)
 		{
-			// Get the specified type
-			//Type type = Entities.EntitiesUtilities.GetType(typeName);
-			
-			// Create a direct entity key for the specified type
-			string key = Entities.GetEntityKey(typeName);
-			
 			// Create the entity info variable to hold the return value
 			EntityInfo entityInfo = null;
 			
-			// Check the direct key to see if a entity exists
-			if (Entities.EntityExists(key))
-			{
-				entityInfo = Entities[key];
-			}
-			// If not then navigate up the heirarchy looking for a matching entity
-			//else
+			// Disabled logging to boost performance
+			//using (LogGroup logGroup = LogGroup.StartDebug("Locating type '" + typeName + "' in application state."))
 			//{
-			//	entityInfo = LocateFromHeirarchy(type);
+				string key = Entities.GetEntityKey(typeName);
+				
+				// Check the direct key to see if a entity exists
+				if (Entities.ContainsKey(key))
+				{
+					entityInfo = Entities.GetStateValue(key);
+				}
+				
+			//	LogWriter.Debug("Entity: " + (entityInfo == null ? "[null]" : entityInfo.FullType));
 			//}
 			
 			return entityInfo;
 		}
 		
-		// TODO: Clean up
-		/*/// <summary>
-		/// Locates the entity info for performing the specified action with the specified type by looking at the base types and interfaces of the provided type.
-		/// </summary>
-		/// <param name="type">The type that is involved in the action.</param>
-		/// <returns>The entity info for the specified scenario.</returns>
-		public EntityInfo LocateFromHeirarchy(Type type)
-		{
-			EntityInfo entityInfo = LocateFromInterfaces(type);
-			
-			if (entityInfo == null)
-				entityInfo = LocateFromBaseTypes(type);
-			
-			return entityInfo;
-		}
-		
-		
-		/// <summary>
-		/// Locates the entity info for performing the specified action with the specified type by looking at the interfaces of the provided type.
-		/// </summary>
-		/// <param name="action">The action that is to be performed by the entity.</param>
-		/// <param name="type">The type that is involved in the action.</param>
-		/// <returns>The entity info for the specified scenario.</returns>
-		public EntityInfo LocateFromInterfaces(Type type)
-		{
-			EntityInfo entityInfo = null;
-			
-			Type[] interfaceTypes = type.GetInterfaces();
-			
-			// Loop backwards through the interface types
-			for (int i = interfaceTypes.Length-1; i >= 0; i --)
-			{
-				Type interfaceType = interfaceTypes[i];
-				
-				string key = Entities.GetEntityKey(interfaceType.Name);
-				
-				if (Entities.EntityExists(key))
-				{
-					entityInfo = Entities[key];
-					
-					break;
-				}
-			}
-			
-			return entityInfo;
-		}
-
-		/// <summary>
-		/// Locates the entity info for performing the specified action with the specified type by looking at the base types of the provided type.
-		/// </summary>
-		/// <param name="type">The type that is involved in the action.</param>
-		/// <returns>The entity info for the specified scenario.</returns>
-		public EntityInfo LocateFromBaseTypes(Type type)
-		{
-			EntityInfo entityInfo = null;
-			
-			TypeNavigator navigator = new TypeNavigator(type);
-			
-			while (navigator.HasNext && entityInfo == null)
-			{
-				Type nextType = navigator.Next();
-				
-				string key = Entities.GetEntityKey(nextType.Name);
-				
-				// If a entity exists for the base type then use it
-				if (Entities.EntityExists(key))
-				{
-					entityInfo = Entities[key];
-					
-					break;
-				}
-				// TODO: Check if needed. It shouldn't be. The other call to LocateFromInterfaces in LocateFromHeirarchy should be sufficient
-				// Otherwise check the interfaces of that base type
-				//else
-				//{
-				//	entityInfo = LocateFromInterfaces(action, nextType);
-				//}
-			}
-			
-			return entityInfo;
-		}*/
 	}
 }
