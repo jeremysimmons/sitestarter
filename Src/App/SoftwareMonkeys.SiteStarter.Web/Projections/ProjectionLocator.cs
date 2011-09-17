@@ -54,7 +54,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				// Get the specified type
 				Type type = null;
 				
-				if (Entities.EntityState.Entities.EntityExists(typeName))
+				if (Entities.EntityState.Entities.Contains(typeName))
 					type = Entities.EntityState.Entities[typeName].GetEntityType();
 				
 				// Create a direct projection key for the specified type
@@ -90,11 +90,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <returns>The projection info for the specified scenario.</returns>
 		public ProjectionInfo LocateFromHeirarchy(string action, Type type, ProjectionFormat format)
 		{
-			ProjectionInfo projectionInfo = LocateFromInterfaces(action, type, format);
-			
-			if (projectionInfo == null)
-				projectionInfo = LocateFromBaseTypes(action, type, format);
-			
+			ProjectionInfo projectionInfo = null;
+			using (LogGroup logGroup = LogGroup.StartDebug("Locating projection from type heirarchy."))
+			{
+				projectionInfo = LocateFromInterfaces(action, type, format);
+				
+				if (projectionInfo == null)
+					projectionInfo = LocateFromBaseTypes(action, type, format);
+			}
 			return projectionInfo;
 		}
 		
@@ -110,20 +113,23 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			ProjectionInfo projectionInfo = null;
 			
-			Type[] interfaceTypes = type.GetInterfaces();
-			
-			// Loop backwards through the interface types
-			for (int i = interfaceTypes.Length-1; i >= 0; i --)
+			using (LogGroup logGroup = LogGroup.StartDebug("Locating projection from type interfaces."))
 			{
-				Type interfaceType = interfaceTypes[i];
+				Type[] interfaceTypes = type.GetInterfaces();
 				
-				string key = Projections.GetProjectionKey(action, interfaceType.Name, format);
-				
-				if (Projections.ContainsKey(key))
+				// Loop backwards through the interface types
+				for (int i = interfaceTypes.Length-1; i >= 0; i --)
 				{
-					projectionInfo = Projections[key];
+					Type interfaceType = interfaceTypes[i];
 					
-					break;
+					string key = Projections.GetProjectionKey(action, interfaceType.Name, format);
+					
+					if (Projections.ContainsKey(key))
+					{
+						projectionInfo = Projections.GetByKey(key);
+						
+						break;
+					}
 				}
 			}
 			
@@ -141,23 +147,25 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			ProjectionInfo projectionInfo = null;
 			
-			TypeNavigator navigator = new TypeNavigator(type);
-			
-			while (navigator.HasNext && projectionInfo == null)
+			using (LogGroup logGroup = LogGroup.StartDebug("Locating projection from base types."))
 			{
-				Type nextType = navigator.Next();
+				TypeNavigator navigator = new TypeNavigator(type);
 				
-				string key = Projections.GetProjectionKey(action, nextType.Name, format);
-				
-				// If a projection exists for the base type then use it
-				if (Projections.ContainsKey(key))
+				while (navigator.HasNext && projectionInfo == null)
 				{
-					projectionInfo = Projections[key];
+					Type nextType = navigator.Next();
 					
-					break;
+					string key = Projections.GetProjectionKey(action, nextType.Name, format);
+					
+					// If a projection exists for the base type then use it
+					if (Projections.ContainsKey(key))
+					{
+						projectionInfo = Projections.GetByKey(key);
+						
+						break;
+					}
 				}
 			}
-			
 			return projectionInfo;
 		}
 	}
