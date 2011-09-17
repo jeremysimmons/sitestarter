@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" ClassName="RegisterEditProjection" Inherits="SoftwareMonkeys.SiteStarter.Web.Projections.BaseProjection" %>
+﻿<%@ Control Language="C#" ClassName="SettingsProjection" Inherits="SoftwareMonkeys.SiteStarter.Web.Projections.BaseProjection" %>
 <%@ Register Namespace="SoftwareMonkeys.SiteStarter.Web.WebControls" Assembly="SoftwareMonkeys.SiteStarter.Web" TagPrefix="cc" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter" %>
@@ -49,13 +49,13 @@
                             <%# Resources.Language.SettingsIntro %></p>
 			<ul>
 				<li>
-		                         <a href='<%= Navigator.GetLink("Edit", "WebSiteSettings") %>' id='WebSiteSettingsLink'><%# Resources.Language.WebSiteSettings %></a>
+		                         <a href='<%= new UrlCreator().CreateUrl("WebSiteSettings") %>' id='WebSiteSettingsLink'><%# Resources.Language.WebSiteSettings %></a>
 				</li>
 				<li>
-		                         <a href='<%= Navigator.GetLink("Edit", "UserSettings") %>' id='UserSettingsLink'><%# Resources.Language.UserSettings %></a>
+		                         <a href='<%= new UrlCreator().CreateUrl("UserSettings") %>' id='UserSettingsLink'><%# Resources.Language.UserSettings %></a>
 				</li>
 				<li>
-		                         <a href='<%= Navigator.GetLink("Edit", "EmailSettings") %>' id='EmailSettingsLink'><%# Resources.Language.EmailSettings %></a> - <a href='<%= Navigator.GetLink("Test", "Smtp") %>' id='TestSmtpLink'><%# Resources.Language.TestSmtpSettings %></a>
+		                         <a href='<%= new UrlCreator().CreateUrl("EmailSettings") %>' id='EmailSettingsLink'><%# Resources.Language.EmailSettings %></a> - <a href='<%= new UrlCreator().CreateUrl("TestSmtp") %>' id='TestSmtpLink'><%# Resources.Language.TestSmtpSettings %></a>
 				</li>
 			</ul>
         </asp:View>
