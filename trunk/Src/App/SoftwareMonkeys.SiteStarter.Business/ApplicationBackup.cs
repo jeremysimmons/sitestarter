@@ -4,6 +4,7 @@ using System.Configuration;
 using SoftwareMonkeys.SiteStarter.Data;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Configuration;
+using SoftwareMonkeys.SiteStarter.State;
 
 namespace SoftwareMonkeys.SiteStarter.Business
 {
@@ -96,7 +97,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			if (Configuration.Config.IsInitialized && ConfigurationManager.AppSettings != null)
 			{
 				
-				string physicalPath = Configuration.Config.Application.PhysicalApplicationPath;
+				string physicalPath = StateAccess.State.PhysicalApplicationPath;
 				
 				DataDirectoryPath = physicalPath + Path.DirectorySeparatorChar +
 					"App_Data";
