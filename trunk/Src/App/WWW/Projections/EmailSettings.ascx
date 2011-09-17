@@ -44,7 +44,7 @@
         Result.Display(Resources.Language.SettingsUpdated);
 
         // Show the index again
-            Navigator.Go("Index", "Settings");
+            Navigator.Go("Settings");
     }
 
     #endregion
