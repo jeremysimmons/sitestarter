@@ -124,11 +124,24 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <returns>The projection matching the provided action and type.</returns>
 		public ProjectionInfo GetProjection(string action, string typeName, ProjectionFormat format)
 		{
+			return GetProjection(action, typeName, format, true);
+		}
+		
+		/// <summary>
+		/// Retrieves the projection with the provided action and type.
+		/// </summary>
+		/// <param name="action">The action that the projection performs.</param>
+		/// <param name="typeName">The type of entity involved in the projection</param>
+		/// <param name="format">The output format of the desired projection.</param>
+		/// <param name="throwExceptionIfNotFound">A value indicating whether to throw an exception if no projection was found.</param>
+		/// <returns>The projection matching the provided action and type.</returns>
+		public ProjectionInfo GetProjection(string action, string typeName, ProjectionFormat format, bool throwExceptionIfNotFound)
+		{
 			ProjectionLocator locator = new ProjectionLocator(this);
 			
 			ProjectionInfo foundProjection = locator.Locate(action, typeName, format);
 			
-			if (foundProjection == null)
+			if (foundProjection == null && throwExceptionIfNotFound)
 				throw new ProjectionNotFoundException(action, typeName, format);
 			
 			
@@ -143,6 +156,18 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <returns>The projection with the specified name.</returns>
 		public ProjectionInfo GetProjection(string name, ProjectionFormat format)
 		{
+			return GetProjection(name, format, true);
+		}
+		
+		/// <summary>
+		/// Retrieves the projection with the provided name.
+		/// </summary>
+		/// <param name="name">The name of the projection.</param>
+		/// <param name="format">The output format of the desired projection.</param>
+		/// <param name="throwExceptionIfNotFound">A value indicating whether to throw an exception if no projection was found.</param>
+		/// <returns>The projection with the specified name.</returns>
+		public ProjectionInfo GetProjection(string name, ProjectionFormat format, bool throwExceptionIfNotFound)
+		{
 			ProjectionInfo foundProjection = null;
 			
 			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving projection with name '" + name + "'."))
@@ -153,7 +178,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				
 				foundProjection = base[key];
 				
-				if (foundProjection == null)
+				if (foundProjection == null && throwExceptionIfNotFound)
 					throw new ProjectionNotFoundException(name, format);
 			}
 			
@@ -203,8 +228,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			{
 				return GetProjectionKey(info.Name, info.Format);
 			}
-			
-			return String.Empty;
 		}
 		
 		/// <summary>
@@ -242,16 +265,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		public bool Contains(string name, ProjectionFormat format)
 		{
 			bool doesContain = false;
+			
 			using (LogGroup logGroup = LogGroup.StartDebug("Checking whether projection is found with name '" + name  + "'."))
 			{
 				LogWriter.Debug("Format: " + format);
-				
-				// Replace - with _ to work around formatting issue
-				string key = GetProjectionKey(name.Replace("-", "_"), format);
-				
-				LogWriter.Debug("Key: " + key);
-				
-				doesContain = ContainsKey(key);
+								
+				doesContain = (GetProjection(name, format, false) != null);
 				
 				LogWriter.Debug("Does contain projection: " + doesContain.ToString());
 			}
@@ -260,12 +279,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		
 		public bool Contains(string action, string typeName)
 		{
-			return ContainsKey(GetProjectionKey(action, typeName, ProjectionFormat.Html));
+			return Contains(action, typeName, ProjectionFormat.Html);
 		}
 		
 		public bool Contains(string action, string typeName, ProjectionFormat format)
 		{
-			return ContainsKey(GetProjectionKey(action, typeName, format));
+			return GetProjection(action, typeName, format, false) != null;
 		}
 		
 		public ProjectionInfo GetByKey(string key)

@@ -77,12 +77,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			// Logging disabled to boost performance
 			//using (LogGroup logGroup = LogGroup.Start("Loading the projections from the XML files.", NLog.LogLevel.Debug))
 			//{
-				foreach (string file in Directory.GetFiles(ProjectionsDirectoryPath))
-				{
-			//		LogWriter.Debug("File: " + file);
-					
-					projections.Add(LoadInfoFromFile(file));
-				}
+			foreach (string file in Directory.GetFiles(ProjectionsDirectoryPath))
+			{
+				//		LogWriter.Debug("File: " + file);
+				
+				projections.Add(LoadInfoFromFile(file));
+			}
 			//}
 			
 			return projections.ToArray();
@@ -106,18 +106,21 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			List<ProjectionInfo> projections = new List<ProjectionInfo>();
 			
-			// Logging disabled to boost performance
-			//using (LogGroup logGroup = LogGroup.Start("Loading the projections info from the XML files.", NLog.LogLevel.Debug))
-			//{
+			using (LogGroup logGroup = LogGroup.Start("Loading the projections info from the XML files.", NLog.LogLevel.Debug))
+			{
 				foreach (string file in Directory.GetFiles(ProjectionsInfoDirectoryPath))
 				{
-			//		LogWriter.Debug("File: " + file);
-					
 					ProjectionInfo projection = LoadInfoFromFile(file);
 					if (projection.Enabled || includeDisabled)
+					{
+						LogWriter.Debug("Importing file: " + file);
+						
 						projections.Add(projection);
+					}
+					else
+						LogWriter.Debug("Skipping file: " + file);
 				}
-			//}
+			}
 			
 			return projections.ToArray();
 		}
@@ -134,27 +137,27 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			// Disabled logging to boost performance
 			//using (LogGroup logGroup = LogGroup.Start("Loading the projection from the specified path.", NLog.LogLevel.Debug))
 			//{
-				if (!File.Exists(projectionPath))
-					throw new ArgumentException("The specified file does not exist.");
-				
+			if (!File.Exists(projectionPath))
+				throw new ArgumentException("The specified file does not exist.");
+			
 			//	LogWriter.Debug("Path: " + projectionPath);
+			
+			
+			using (StreamReader reader = new StreamReader(File.OpenRead(projectionPath)))
+			{
+				XmlSerializer serializer = new XmlSerializer(typeof(ProjectionInfo));
 				
-				
-				using (StreamReader reader = new StreamReader(File.OpenRead(projectionPath)))
+				try
 				{
-					XmlSerializer serializer = new XmlSerializer(typeof(ProjectionInfo));
-					
-					try
-					{
-						info = (ProjectionInfo)serializer.Deserialize(reader);
-					}
-					catch (XmlException ex)
-					{
-						throw new Exception("Can't load projection at '" + projectionPath + "'.", ex);
-					}
-					
-					reader.Close();
+					info = (ProjectionInfo)serializer.Deserialize(reader);
 				}
+				catch (XmlException ex)
+				{
+					throw new Exception("Can't load projection at '" + projectionPath + "'.", ex);
+				}
+				
+				reader.Close();
+			}
 			//}
 			
 			return info;
@@ -172,17 +175,17 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			// Disabled logging to boost performance
 			//using (LogGroup logGroup = LogGroup.Start("Loading the projection from the specified path.", NLog.LogLevel.Debug))
 			//{
-				if (!File.Exists(projectionPath))
-					throw new ArgumentException("The specified file does not exist: " + projectionPath);
-				
+			if (!File.Exists(projectionPath))
+				throw new ArgumentException("The specified file does not exist: " + projectionPath);
+			
 			//	LogWriter.Debug("Path: " + projectionPath);
-				
-				
-				using (StreamReader reader = new StreamReader(File.OpenRead(projectionPath)))
-				{
-					content = reader.ReadToEnd();
-					reader.Close();
-				}
+			
+			
+			using (StreamReader reader = new StreamReader(File.OpenRead(projectionPath)))
+			{
+				content = reader.ReadToEnd();
+				reader.Close();
+			}
 			//}
 			
 			return content;
