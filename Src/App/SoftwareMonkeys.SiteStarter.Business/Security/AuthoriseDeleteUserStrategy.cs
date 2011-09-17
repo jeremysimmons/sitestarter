@@ -37,7 +37,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 			
 			bool isAdministrator = AuthenticationState.UserIsInRole("Administrator");
 			
-			bool isSelf = (user.ID.Equals(AuthenticationState.User.ID));
+			bool isSelf = (AuthenticationState.User != null && user.ID.Equals(AuthenticationState.User.ID));
 			
 			return (isAuthenticated && isAdministrator) // Administrators
 				|| (isSelf); // Editing own account

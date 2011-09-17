@@ -42,7 +42,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 			
 			bool isAuthenticated = AuthenticationState.IsAuthenticated;
 			
-			if (isAuthenticated)
+			if (isAuthenticated && AuthenticationState.User != null)
 			{
 				bool isAdministrator = AuthenticationState.UserIsInRole("Administrator");
 				
