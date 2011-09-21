@@ -90,6 +90,8 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			LogWriter.Debug("${Application.BeginRequest}");
 			
 			Initialize();
+			
+			UrlRewriter.Initialize();
 		}
 		
 		
@@ -146,17 +148,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				new ControllersInitializer().Initialize();
 				new ProjectionsInitializer().Initialize();
 				new PartsInitializer().Initialize();
-				
-				RegisterRoutes (RouteTable.Routes);
 			}
-		}
-
-		public static void RegisterRoutes (RouteCollection routes)
-		{
-			routes.RouteExistingFiles = true;
-			if (routes["Projections"] == null)
-				routes.Add("Projections", new Route("{name}.aspx", new ProjectionRouteHandler()));
-
 		}
 		
 		private void InitializeState()
