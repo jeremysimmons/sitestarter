@@ -60,10 +60,6 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 				{
 					User u = RetrieveStrategy.New<User>().Retrieve<User>("Username", Username);
 					
-					// TODO: Check if needed. Without it there's a risk of a NullReferenceException
-					//if (user == null)
-					//	throw new Exception("No user was retrieved with the username '" + Username + "'.");
-					
 					StateAccess.State.SetOperation("User", u);
 				}
 				
@@ -90,7 +86,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 			get
 			{
 				return Username != null
-					&& Username != String.Empty; 
+					&& Username != String.Empty;
 			}
 		}
 		
