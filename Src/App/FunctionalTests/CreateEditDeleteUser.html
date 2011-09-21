@@ -13,7 +13,7 @@
 </thead><tbody>
 <tr>
 	<td>setTimeout</td>
-	<td>100000</td>
+	<td>1000000</td>
 	<td></td>
 </tr>
 <tr>
@@ -52,13 +52,18 @@
 	<td></td>
 </tr>
 <tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
 	<td>type</td>
-	<td>ctl00_Body_ctl00_FirstName</td>
+	<td>id=ctl00_Body_ctl00_FirstName</td>
 	<td>Test1</td>
 </tr>
 <tr>
 	<td>type</td>
-	<td>ctl00_Body_ctl00_LastName</td>
+	<td>id=ctl00_Body_ctl00_LastName</td>
 	<td>Test1</td>
 </tr>
 <tr>
@@ -92,6 +97,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
 	<td>assertTextPresent</td>
 	<td>successfully</td>
 	<td></td>
@@ -103,7 +113,7 @@
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>ctl00_Body_ctl00_IndexGrid_ctl04_EditButton</td>
+	<td>ctl00_Body_ctl00_IndexGrid_ctl03_EditButton</td>
 	<td></td>
 </tr>
 <tr>
@@ -137,6 +147,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>clickAndWait</td>
+	<td>link=Users</td>
+	<td></td>
+</tr>
+<tr>
 	<td>chooseOkOnNextConfirmation</td>
 	<td></td>
 	<td></td>
@@ -152,13 +167,23 @@
 	<td></td>
 </tr>
 <tr>
-	<td>assertTextPresent</td>
-	<td>successfully</td>
+	<td>waitForPageToLoad</td>
+	<td></td>
 	<td></td>
 </tr>
 <tr>
-	<td>assertTextNotPresent</td>
-	<td>Test1</td>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>successfully</td>
 	<td></td>
 </tr>
 </tbody></table>
