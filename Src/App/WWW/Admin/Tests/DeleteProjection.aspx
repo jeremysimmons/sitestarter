@@ -10,8 +10,12 @@ private void Page_Load(object sender, EventArgs e)
 	string projectionName = Request.QueryString["Projection"];
 	if (projectionName != null && projectionName != String.Empty)
 	{
-		ProjectionInfo info = ProjectionState.Projections[projectionName];
+		ProjectionInfo info = null;
+		if (ProjectionState.Projections.Contains(projectionName))
+			info = ProjectionState.Projections[projectionName];
 	
+		// If not found create a dummy object which holds the path to the files
+		// just in case the files exist while the state objects don't
 		if (info == null)
 		{
 			info = new ProjectionInfo();
