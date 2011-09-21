@@ -96,7 +96,6 @@
     <None Include="App_LocalResources\_svn\entries" />
     <None Include="App_LocalResources\_svn\format" />
     <None Include="App_Themes\Default\Site.skin" />
-    <None Include="App_Themes\Default\Styles.css" />
     <None Include="App_Themes\Default\_svn\entries" />
     <None Include="App_Themes\Default\_svn\format" />
     <None Include="App_Themes\Default\_svn\text-base\Site.skin.svn-base" />
@@ -111,14 +110,15 @@
     <None Include="js\errors.js" />
     <None Include="js\httpRequests.js" />
     <None Include="Maintenance.html" />
+    <None Include="Projections\Home.ascx" />
     <None Include="Projections\IEntity-Delete.ascx" />
     <None Include="Projections\IEntity-Index.xml.ascx" />
     <None Include="Projections\IEntity-View.xml.ascx" />
     <None Include="Projections\Message-Send.ascx" />
     <None Include="Projections\Password-Recover.ascx" />
     <None Include="Projections\Password-Change.ascx" />
-    <None Include="Projections\Settings-Index.ascx" />
-    <None Include="Projections\Smtp-Test.ascx" />
+    <None Include="Projections\Settings.ascx" />
+    <None Include="Projections\TestSmtp.ascx" />
     <None Include="Projections\User-Create-Edit.ascx" />
     <None Include="Projections\User-Details.ascx" />
     <None Include="Projections\User-Index.ascx" />
@@ -128,10 +128,12 @@
     <None Include="Projections\User-SignOut.ascx" />
     <None Include="Projections\UserRole-Create-Edit.ascx" />
     <None Include="Projections\UserRole-Index.ascx" />
-    <None Include="Projections\UserSettings-Edit.ascx" />
-    <None Include="Projections\WebSiteSettings-Edit.ascx" />
+    <None Include="Projections\UserSettings.ascx" />
+    <None Include="Projections\WebSiteSettings.ascx" />
     <None Include="Projector.aspx" />
     <None Include="Site.master" />
+    <None Include="Styles\Simple.css" />
+    <None Include="Styles\Styles.css" />
     <None Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -145,6 +147,7 @@
     <Folder Include="Controls" />
     <Folder Include="js" />
     <Folder Include="Projections" />
+    <Folder Include="Styles" />
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Business\SiteStarter.Business.csproj">
       <Project>{F294B839-0C1E-4187-AA58-6EA1C35E6B66}</Project>
       <Name>SiteStarter.Business</Name>
@@ -199,7 +202,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Projections\EmailSettings-Edit.ascx" />
+    <None Include="Projections\EmailSettings.ascx" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="App_GlobalResources\Language.resx" />
