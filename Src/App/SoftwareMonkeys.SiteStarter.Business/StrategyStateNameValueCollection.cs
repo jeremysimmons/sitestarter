@@ -93,7 +93,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns>A value indicating whether the strategy exists.</returns>
 		public bool StrategyExists(string key)
 		{
-			return StateValueExists(key);
+			return ContainsKey(key);
 		}
 		
 		/// <summary>

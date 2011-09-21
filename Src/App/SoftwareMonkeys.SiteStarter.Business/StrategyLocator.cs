@@ -49,9 +49,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			// Create the strategy info variable to hold the return value
 			StrategyInfo strategyInfo = null;
 			
-			// Logging disabled to improve performance
-			//using (LogGroup logGroup = LogGroup.Start("Locating the strategy that is appropriate for carrying out the action '" + action + "' involving the type '" + typeName + "'.", NLog.LogLevel.Debug))
-			//{
+			using (LogGroup logGroup = LogGroup.Start("Locating the strategy that is appropriate for carrying out the action '" + action + "' involving the type '" + typeName + "'.", NLog.LogLevel.Debug))
+			{
 				// Get the specified type
 				Type type = null;
 				if (EntityState.IsType(typeName))
@@ -64,7 +63,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			//	LogWriter.Debug("Type name: " + typeName);
 				
 				// Check the direct key to see if a strategy exists
-				if (Strategies.StrategyExists(key))
+				if (Strategies.ContainsKey(key))
 				{
 			//		LogWriter.Debug("Found strategy with key: " + key);
 					
@@ -139,7 +138,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 							
 			//				LogWriter.Debug("Key: " + key);
 							
-							if (Strategies.StrategyExists(key))
+							if (Strategies.ContainsKey(key))
 							{
 								strategyInfo = Strategies[key];
 								
