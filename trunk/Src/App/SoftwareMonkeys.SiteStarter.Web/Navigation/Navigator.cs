@@ -91,6 +91,17 @@ namespace SoftwareMonkeys.SiteStarter.Web.Navigation
 			return UrlCreator.CreateStandardUrl(action, type);
 		}
 		
+		public virtual void Go(string projectionName)
+		{
+			using (LogGroup logGroup = LogGroup.Start("Navigating.", NLog.LogLevel.Debug))
+			{
+				string link = new UrlCreator().CreateUrl(projectionName);
+				
+				LogWriter.Debug("Link: " + link);
+				
+				Redirect(link);
+			}
+		}
 		
 		public virtual void Go(string action, string type, string uniqueKey)
 		{
@@ -142,22 +153,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Navigation
 				Redirect(link);
 			}
 		}
-		
-		public virtual void Go(string action)
-		{
-			using (LogGroup logGroup = LogGroup.Start("Redirecting to carry out the specified action.", NLog.LogLevel.Debug))
-			{
-				string type = GetEntityType();
-				string link = GetLink(action, type);
-				
-				LogWriter.Debug("Type: " + type);
-				LogWriter.Debug("Link: " + link);
-				
-				Redirect(link);
-			}
-			
-		}
-		
+
 		public virtual void Redirect(string link)
 		{
 			using (LogGroup logGroup = LogGroup.Start("Redirecting to the specified link.", NLog.LogLevel.Debug))
