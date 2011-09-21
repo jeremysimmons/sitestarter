@@ -49,7 +49,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <summary>
 		/// Gets/sets the URL of the current request.
 		/// </summary>
-		public string CurrentUrl
+		protected string CurrentUrl
 		{
 			get { return currentUrl; }
 			set { currentUrl = value; }
@@ -63,6 +63,17 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		{
 			get { return enableFriendlyUrls; }
 			set { enableFriendlyUrls = value; }
+		}
+		
+		private UrlConverter converter = null;
+		public UrlConverter Converter
+		{
+			get {
+				if (converter == null)
+					converter = new UrlConverter(ApplicationPath);
+				return converter; }
+			set { converter  = value; }
+		
 		}
 		
 		public UrlCreator() : this(true)
@@ -355,12 +366,37 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		
 		
 		#region General URL functions
+		
 		/// <summary>
-		/// Creates a URL to the specified action and type matching the specified property and value.
+		/// Creates a URL to the specified projection.
+		/// </summary>
+		/// <param name="projection">The projection to create a URL to.</param>
+		/// <returns>The URL to the specified projection.</returns>
+		public virtual string CreateUrl(ProjectionInfo projection)
+		{
+			if (projection.TypeName != null && projection.TypeName != String.Empty
+			    && projection.Action != null && projection.Action != String.Empty)
+				return CreateUrl(projection.Action, projection.TypeName);
+			else
+				return CreateUrl(projection.Name);
+		}
+		
+		/// <summary>
+		/// Creates a URL to the specified projection.
+		/// </summary>
+		/// <param name="projectionName">The name of the projection.</param>
+		/// <returns>The URL to the specified projection.</returns>
+		public virtual string CreateUrl(string projectionName)
+		{
+			return StateAccess.State.ApplicationPath + "/" + projectionName + ".aspx";
+		}
+		
+		/// <summary>
+		/// Creates a URL to the specified action and type.
 		/// </summary>
 		/// <param name="action">The action to be performed by following the link.</param>
 		/// <param name="type">The type that the action is dealing with.</param>
-		/// <returns>The rewritten raw URL to be used behind the scenes.</returns>
+		/// <returns>The URL to the specified action and type.</returns>
 		public virtual string CreateUrl(string action, Type type)
 		{
 			return CreateUrl(action, type.Name);
@@ -371,7 +407,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// </summary>
 		/// <param name="action">The action to be performed by following the link.</param>
 		/// <param name="entity">The entity involved in the action.</param>
-		/// <returns>The rewritten raw URL to be used behind the scenes.</returns>
+		/// <returns>The URL to the specified action and entity.</returns>
 		public virtual string CreateUrl(string action, IEntity entity)
 		{
 			if (EnableFriendlyUrls)
@@ -385,7 +421,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// </summary>
 		/// <param name="action">The action to be performed by following the link.</param>
 		/// <param name="typeName">The name of the type that the action is dealing with.</param>
-		/// <returns>The rewritten raw URL to be used behind the scenes.</returns>
+		/// <returns>The URL to the specified action and entity.</returns>
 		public virtual string CreateUrl(string action, string typeName)
 		{
 			if (EnableFriendlyUrls)
@@ -400,7 +436,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <param name="action">The action to be performed by following the link.</param>
 		/// <param name="type">The type that the action is dealing with.</param>
 		/// <param name="entityID">The value of the ID property to filter the type by.</param>
-		/// <returns>The rewritten raw URL to be used behind the scenes.</returns>
+		/// <returns>The URL to the specified action and entity..</returns>
 		public virtual string CreateUrl(string action, Type type, Guid entityID)
 		{
 			return CreateUrl(action, type.Name, entityID);
@@ -412,7 +448,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <param name="action">The action to be performed by following the link.</param>
 		/// <param name="typeName">The name of the type that the action is dealing with.</param>
 		/// <param name="entityID">The value of the ID property to filter the type by.</param>
-		/// <returns>The rewritten raw URL to be used behind the scenes.</returns>
+		/// <returns>The URL to the specified action and entity.</returns>
 		public virtual string CreateUrl(string action, string typeName, Guid entityID)
 		{
 			return CreateUrl(action, typeName, "ID", entityID.ToString());
@@ -424,7 +460,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <param name="action">The action to be performed by following the link.</param>
 		/// <param name="type">The type that the action is dealing with.</param>
 		/// <param name="dataKey">The value of the UniqueKey property to filter the type by.</param>
-		/// <returns>The rewritten raw URL to be used behind the scenes.</returns>
+		/// <returns>The URL to the specified action and entity.</returns>
 		public virtual string CreateUrl(string action, Type type, string dataKey)
 		{
 			return CreateUrl(action, type.Name, dataKey);
@@ -436,7 +472,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <param name="action">The action to be performed by following the link.</param>
 		/// <param name="typeName">The name of the type that the action is dealing with.</param>
 		/// <param name="dataKey">The value of the UniqueKey property to filter the type by.</param>
-		/// <returns>The rewritten raw URL to be used behind the scenes.</returns>
+		/// <returns>The URL to the specified action and entity.</returns>
 		public virtual string CreateUrl(string action, string typeName, string dataKey)
 		{
 			return CreateUrl(action, typeName, "UniqueKey", dataKey);
@@ -449,7 +485,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <param name="typeName">The name of the type that the action is dealing with.</param>
 		/// <param name="propertyName">The name of the property to filter the type by.</param>
 		/// <param name="dataKey">The value of the property to filter the type by.</param>
-		/// <returns>The rewritten raw URL to be used behind the scenes.</returns>
+		/// <returns>The URL to the specified action and entity.</returns>
 		public virtual string CreateUrl(string action, string typeName, string propertyName, string dataKey)
 		{
 			string link = String.Empty;
@@ -495,11 +531,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		{
 			string url = CreateXmlUrl(action, type);
 			
-			Uri uri = new Uri(CurrentUrl);
-			string host = uri.Host;
-			bool isSecure = uri.Scheme == Uri.UriSchemeHttps;
-			
-			url = WebUtilities.ConvertRelativeUrlToAbsoluteUrl(url, host, isSecure);
+			url = Converter.ToAbsolute(url);
 			
 			return url;
 		}
@@ -516,11 +548,6 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				return ApplicationPath + "/" + PrepareForUrl(action) + "-" + PrepareForUrl(type) + ".xml.aspx";
 			else
 			{
-				/*string moduleID = ModuleState.GetModuleID(action, type);
-				string controlID = ModuleState.GetControlID(action, type);
-				
-				return ApplicationPath + "/XmlProjector.aspx?m=" + moduleID + "&cid=" + controlID + "&a=" + PrepareForUrl(action) + "&Type=" + type;*/
-				
 				return ApplicationPath + "/XmlProjector.aspx?a=" + PrepareForUrl(action) + "&t=" + PrepareForUrl(type) + "&f=" + ProjectionFormat.Xml;
 			}
 		}

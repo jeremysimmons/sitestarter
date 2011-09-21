@@ -69,14 +69,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Projections
 			scanner.FileNamer.FileMapper = new MockFileMapper(this, TestUtilities.GetTestingPath(this), appName);
 			scanner.FileNamer.ProjectionsDirectoryPath = TestUtilities.GetTestApplicationPath(this, appName) + Path.DirectorySeparatorChar + "Projections";
 			
-			CreateMockProjections(scanner.FileNamer);
-			
 			ProjectionInfo[] infos = scanner.FindProjections();
 			
 			Assert.AreEqual(1, infos.Length, "Invalid number of projections found.");
 			
-			Assert.AreEqual("Create", infos[0].Action, "The action doesn't match.");
-			Assert.AreEqual("User", infos[0].TypeName, "The type name doesn't match.");
+			Assert.AreEqual("Edit", infos[0].Action, "The action doesn't match.");
+			Assert.AreEqual("TestUser", infos[0].TypeName, "The type name doesn't match.");
 		}
 		
 		
