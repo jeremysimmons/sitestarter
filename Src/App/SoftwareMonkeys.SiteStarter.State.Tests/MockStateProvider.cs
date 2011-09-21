@@ -271,7 +271,7 @@ namespace SoftwareMonkeys.SiteStarter.State.Tests
 
 			SoftwareMonkeys.SiteStarter.State.StateAccess.State = this;
 			
-			this.PhysicalApplicationPath = TestUtilities.GetTestingPath(fixture);
+			this.PhysicalApplicationPath = TestUtilities.GetTestApplicationPath(fixture, "MockApplication");
 			this.ApplicationPath = "/MockApplication";
 
 		}
