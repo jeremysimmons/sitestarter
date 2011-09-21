@@ -48,8 +48,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			// Create the controller info variable to hold the return value
 			ControllerInfo controllerInfo = null;
 			
-			using (LogGroup logGroup = LogGroup.Start("Locating a controller for the action '" + action + "' and the type '" + typeName + "'.", NLog.LogLevel.Debug))
-			{
+			// Disabled logging to boost performance
+			//using (LogGroup logGroup = LogGroup.Start("Locating a controller for the action '" + action + "' and the type '" + typeName + "'.", NLog.LogLevel.Debug))
+			//{
 				// Get the specified type
 				Type type = null;
 
@@ -61,30 +62,30 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				// Create a direct controller key for the specified type
 				string key = Controllers.GetControllerKey(action, typeName);
 				
-				LogWriter.Debug("Direct key: " + key);
+			//	LogWriter.Debug("Direct key: " + key);
 				
 				// Check the direct key to see if a controller exists
 				if (Controllers.ControllerExists(key))
 				{
-					LogWriter.Debug("Direct key matches.");
+			//		LogWriter.Debug("Direct key matches.");
 					
 					controllerInfo = Controllers[key];
 				}
 				// If not then navigate up the heirarchy looking for a matching controller
 				else if (type != null) // Only use heirarchy if an actual type was provided.
 				{
-					LogWriter.Debug("Direct key doesn't match. Locating through heirarchy.");
+			//		LogWriter.Debug("Direct key doesn't match. Locating through heirarchy.");
 					controllerInfo = LocateFromHeirarchy(action, type);
 				}
 				
-				if (controllerInfo == null)
-					LogWriter.Debug("No controller found.");
-				else
-				{
-					LogWriter.Debug("Controller type found: " + controllerInfo.ControllerType);
-					LogWriter.Debug("Controller key: " + controllerInfo.Key);
-				}
-			}
+			//	if (controllerInfo == null)
+			//		LogWriter.Debug("No controller found.");
+			//	else
+			//	{
+			//		LogWriter.Debug("Controller type found: " + controllerInfo.ControllerType);
+			//		LogWriter.Debug("Controller key: " + controllerInfo.Key);
+			//	}
+			//}
 			return controllerInfo;
 		}
 		
@@ -98,18 +99,19 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			ControllerInfo controllerInfo = null;
 			
-			using (LogGroup logGroup = LogGroup.Start("Locating via heirarchy the controller for the action '" + action + "' and type '" + type.Name + "'.", NLog.LogLevel.Debug))
-			{
+			// Disabled logging to boost performance
+			//using (LogGroup logGroup = LogGroup.Start("Locating via heirarchy the controller for the action '" + action + "' and type '" + type.Name + "'.", NLog.LogLevel.Debug))
+			//{
 				controllerInfo = LocateFromInterfaces(action, type);
 				
 				if (controllerInfo == null)
 				{
-					LogWriter.Debug("Can't locate through interfaces. Trying base types.");
+			//		LogWriter.Debug("Can't locate through interfaces. Trying base types.");
 					
 					controllerInfo = LocateFromBaseTypes(action, type);
 				}
 				
-			}
+			//}
 			return controllerInfo;
 		}
 		
@@ -124,8 +126,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			ControllerInfo controllerInfo = null;
 			
-			using (LogGroup logGroup = LogGroup.Start("Locating via interfaces the controller for the action '" + action + "' and type '" + type.Name + "'.", NLog.LogLevel.Debug))
-			{
+			// Disabled logging to boost performance
+			//using (LogGroup logGroup = LogGroup.Start("Locating via interfaces the controller for the action '" + action + "' and type '" + type.Name + "'.", NLog.LogLevel.Debug))
+			//{
 				Type[] interfaceTypes = type.GetInterfaces();
 				
 				// Loop backwards through the interface types
@@ -137,14 +140,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 					
 					if (Controllers.ControllerExists(key))
 					{
-						LogWriter.Debug("Found match with key: " + key);
+			//			LogWriter.Debug("Found match with key: " + key);
 						
 						controllerInfo = Controllers[key];
 						
 						break;
 					}
 				}
-			}
+			//}
 			
 			return controllerInfo;
 		}
@@ -159,8 +162,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			ControllerInfo controllerInfo = null;
 			
-			using (LogGroup logGroup = LogGroup.Start("Locating via base types the controller for the action '" + action + "' and type '" + type.Name + "'.", NLog.LogLevel.Debug))
-			{
+			// Disabled logging to boost performance
+			//using (LogGroup logGroup = LogGroup.Start("Locating via base types the controller for the action '" + action + "' and type '" + type.Name + "'.", NLog.LogLevel.Debug))
+			//{
 				TypeNavigator navigator = new TypeNavigator(type);
 				
 				while (navigator.HasNext && controllerInfo == null)
@@ -172,7 +176,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 					// If a controller exists for the base type then use it
 					if (Controllers.ControllerExists(key))
 					{
-						LogWriter.Debug("Found match with key: " + key);
+			//			LogWriter.Debug("Found match with key: " + key);
 						
 						controllerInfo = Controllers[key];
 						
@@ -185,7 +189,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 					//	controllerInfo = LocateFromInterfaces(action, nextType);
 					//}
 				}
-			}
+			//}
 			
 			return controllerInfo;
 		}
