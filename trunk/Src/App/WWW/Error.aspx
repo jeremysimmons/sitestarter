@@ -47,7 +47,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" >
 	<head runat="server">
 	    <title><%# Resources.Language.ErrorPageTitle %></title>
-	    <link href='<%= Request.ApplicationPath + "/Styles/Simple.css" %>' rel="stylesheet" type="text/css" />
+	    <%= StyleUtilities.GetStyleSheet("Styles.css") %>
 	</head>
 	<body>
 	    <form id="form1" runat="server">
