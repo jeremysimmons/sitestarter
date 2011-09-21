@@ -50,7 +50,7 @@ namespace SoftwareMonkeys.SiteStarter.State
 		/// <summary>
 		/// Gets/sets the state variable with the specified key.
 		/// </summary>
-		public T this[string key]
+		public virtual T this[string key]
 		{
 			get { return GetStateValue(key); }
 			set { SetStateValue(key, value); }
