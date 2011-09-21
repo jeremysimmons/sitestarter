@@ -5,121 +5,39 @@ using System.Web.UI;
 using System.Web;
 using System.IO;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using SoftwareMonkeys.SiteStarter.State;
 
 namespace SoftwareMonkeys.SiteStarter.Web
 {
 	/// <summary>
 	/// Contains utility functions for the web site related parts of the application
 	/// </summary>
+	[Obsolete("Use UrlConverter")]
 	static public class WebUtilities
 	{
+		[Obsolete("Use UrlConverter.ResolveUrl(string)")]
 		static public string ResolveUrl(string originalUrl)
 		{
-			if (originalUrl == null)
-				originalUrl = String.Empty;
-
-			if (!string.IsNullOrEmpty(originalUrl) && '~' == originalUrl[0])
-			{
-				int index = originalUrl.IndexOf('?');
-				string queryString = (-1 == index) ? null : originalUrl.Substring(index);
-				if (-1 != index) originalUrl = originalUrl.Substring(0, index);
-				originalUrl = VirtualPathUtility.ToAbsolute(originalUrl) + queryString;
-			}
-
-			return originalUrl;
+			return new UrlConverter().ResolveUrl(originalUrl);
 
 		}
 
-		/// <summary>
-
-		/// Converts the provided relative URL to an absolute URL.
-
-		/// </summary>
-
-		/// <param name="relativeUrl">The relative URL to convert.</param>
-
-		/// <param name="host">The base URL host.</param>
-
-		/// <param name="isSecure">A boolean value indicating whether the URL is a secure path.</param>
-
-		/// <returns></returns>
-
-		static public string ConvertRelativeUrlToAbsoluteUrl(string relativeUrl, string host, int port, bool isSecure)
-
-		{
-
-			string protocol = (isSecure ? "https" : "http");
-
-			
-
-			if (port != 80)
-
-				host = host + ":" + port.ToString();
-
-			
-
-			return string.Format("{0}://{1}/{2}", protocol, host, ResolveUrl(relativeUrl).Trim('/'));
-
-		}
-
+		[Obsolete]
 		static public string ConvertApplicationRelativeUrlToAbsoluteUrl(string relativeUrl)
 		{
-			string applicationPath = HttpContext.Current.Request.ApplicationPath.TrimEnd('/');
-			return ConvertRelativeUrlToAbsoluteUrl(applicationPath.TrimEnd('/') + "/" + relativeUrl.TrimStart('/'));
+			return new UrlConverter().ToAbsolute(relativeUrl);
 		}
 		
+		[Obsolete]
 		static public string ConvertAbsoluteUrlToApplicationRelativeUrl(string originalUrl)
 		{
 			return ConvertAbsoluteUrlToRelativeUrl(originalUrl, HttpContext.Current.Request.ApplicationPath);
 		}
 
+		[Obsolete("Use UrlConverter.ToRelative")]
 		static public string ConvertAbsoluteUrlToRelativeUrl(string originalUrl, string relatedPath)
 		{
-			string newPath = String.Empty;
-			using (LogGroup logGroup = LogGroup.Start("Converting the provided absolute URL to be relative to the one provided.", NLog.LogLevel.Debug))
-			{
-				if (originalUrl == null)
-					throw new ArgumentNullException("originalUrl");
-				
-				if (relatedPath == null)
-					throw new ArgumentNullException("relatedPath");
-				
-				LogWriter.Debug("Original URL: " + originalUrl);
-				LogWriter.Debug("Related path: " + relatedPath);
-				
-				if (relatedPath.ToLower().IndexOf("http://") == -1
-				    && relatedPath.ToLower().IndexOf("https://") == -1)
-				{
-					relatedPath = ConvertRelativeUrlToAbsoluteUrl(relatedPath);
-					
-					LogWriter.Debug("Related path changed to absolute: " + relatedPath);
-				}
-				
-				if (originalUrl.ToLower().IndexOf("http://") == -1
-				    && originalUrl.ToLower().IndexOf("https://") == -1)
-				{
-					originalUrl = ConvertRelativeUrlToAbsoluteUrl(originalUrl);
-					
-					LogWriter.Debug("Original url changed to absolute: " + originalUrl);
-				}
-				
-				string[] originalParts = originalUrl.Trim('/').Split('/');
-				string[] relatedParts = relatedPath.Trim('/').Split('/');
-				
-				List<string> keptItems = new List<string>();
-				
-				for (int i = 0; i < originalParts.Length; i++)
-				{
-					if (i >= relatedParts.Length)
-						keptItems.Add(originalParts[i]);
-				}
-				
-				newPath = "/" + String.Join("/", keptItems.ToArray());
-
-				LogWriter.Debug("New path: " + newPath);
-				
-			}
-			return newPath;
+			return new UrlConverter(relatedPath).ToRelative(originalUrl);
 		}
 		
 		/// <summary>
@@ -127,25 +45,13 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// </summary>
 		/// <param name="relativeUrl">The relative URL to convert.</param>
 		/// <returns>An absolute version of the provided URL.</returns>
+		[Obsolete("Use UrlConverter.ToRelative")]
 		static public string ConvertRelativeUrlToAbsoluteUrl(string relativeUrl)
 		{
-			return ConvertRelativeUrlToAbsoluteUrl(relativeUrl, HttpContext.Current.Request.Url.Host, HttpContext.Current.Request.IsSecureConnection);
+			return new UrlConverter(StateAccess.State.ApplicationPath).ToAbsolute(relativeUrl);
 		}
 		
-		/// <summary>
-		/// Converts the provided relative URL to an absolute URL.
-		/// </summary>
-		/// <param name="relativeUrl">The relative URL to convert.</param>
-		/// <param name="host">The base URL host.</param>
-		/// <param name="isSecure">A boolean value indicating whether the URL is a secure path.</param>
-		/// <returns></returns>
-		static public string ConvertRelativeUrlToAbsoluteUrl(string relativeUrl, string host, bool isSecure)
-		{
-			string protocol = (isSecure ? "https" : "http");
-			
-			return string.Format("{0}://{1}/{2}", protocol, host, ResolveUrl(relativeUrl).Trim('/'));
-		}
-		
+		// TODO: Move to another class
 		/// <summary>
 		/// Gets the config file name variation based on the provided URI.
 		/// </summary>
@@ -170,6 +76,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 
 		}
 		
+		// TODO: Move to another class
 		public static string EncodeJsString(string s)
 		{
 			if (s == null)
