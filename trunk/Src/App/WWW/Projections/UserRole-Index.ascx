@@ -27,7 +27,7 @@
     
   private void CreateButton_Click(object sender, EventArgs e)
   {
-  		Navigator.Go("Create");
+  		Navigator.Go("Create", "UserRole");
   }
                     
 </script>
