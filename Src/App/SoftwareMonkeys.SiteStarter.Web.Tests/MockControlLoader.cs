@@ -32,9 +32,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
 			set { base.ApplicationPath = value; }
 		}
 		
+		public MockControlLoader(BaseTestFixture fixture) : base(null)
+		{
+			Fixture = fixture;
+		}
+		
 		public MockControlLoader(BaseTestFixture fixture, string mockControlFilePath) : base(null)
 		{
 			MockControlFilePath = mockControlFilePath;
+			Fixture = fixture;
 		}
 		
 		public override System.Web.UI.Control LoadControl(string virtualPath)

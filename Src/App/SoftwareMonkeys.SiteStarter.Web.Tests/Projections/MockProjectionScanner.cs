@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftwareMonkeys.SiteStarter.Tests;
 using SoftwareMonkeys.SiteStarter.Web.Projections;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Tests.Projections
@@ -8,8 +9,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Projections
 	/// </summary>
 	public class MockProjectionScanner : ProjectionScanner
 	{
-		public MockProjectionScanner() : base(null)
+		public MockProjectionScanner(BaseTestFixture fixture) : base(null)
 		{
+			ControlLoader = new MockControlLoader(fixture);
 		}
 	}
 }

@@ -26,7 +26,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
 			article.ID = Guid.NewGuid();
 			article.Title = "Test article";
 			
-			
 			UrlCreator creator = new UrlCreator(applicationPath, originalUrl);
 			creator.EnableFriendlyUrls = true;
 			
@@ -118,6 +117,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
 			
 			
 			UrlCreator creator = new UrlCreator(applicationPath, originalUrl);
+			creator.Converter = new MockUrlConverter();
 			creator.EnableFriendlyUrls = true;
 			
 			string url = creator.CreateExternalXmlUrl(action, typeName);
