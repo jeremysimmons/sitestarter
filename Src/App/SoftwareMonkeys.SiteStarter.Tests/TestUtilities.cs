@@ -12,16 +12,6 @@ namespace SoftwareMonkeys.SiteStarter.Tests
 {
 	static public class TestUtilities
 	{
-		/*static public string GetApplicationPath()
-		{
-			Assembly assembly = Assembly.GetExecutingAssembly();
-			string location = assembly.Location;
-			
-			string[] parts = location.Split
-			
-			return Path.GetDirectoryName(location);
-		}*/
-		
 		static public string GetTestingPath(BaseTestFixture executingFixture)
 		{
 			if (executingFixture == null)
@@ -35,13 +25,18 @@ namespace SoftwareMonkeys.SiteStarter.Tests
 			string path = parts[0] + Path.DirectorySeparatorChar + "_testing";
 			
 			path = path + Path.DirectorySeparatorChar + executingFixture.TestID.ToString();
-			
+
 			return path;
 		}
 		
 		static public string GetTestApplicationPath(BaseTestFixture executingTestFixture, string applicationName)
 		{
-			return GetTestingPath(executingTestFixture) + Path.DirectorySeparatorChar + applicationName;
+			if (executingTestFixture == null)
+				throw new ArgumentNullException("executingTestFixture");
+			
+			string path = GetTestingPath(executingTestFixture);
+			                             
+			return path + Path.DirectorySeparatorChar + applicationName;
 		}
 		
 		static public string GetTestDataPath(BaseTestFixture executingTestFixture, string applicationName)
