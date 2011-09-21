@@ -13,7 +13,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	[XmlType("Strategy")]
 	public class StrategyInfo
 	{
-		private string key;
+		private string key = String.Empty;
 		/// <summary>
 		/// Gets/sets the key that separates the strategy from others that are similar.
 		/// </summary>
@@ -23,7 +23,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			set { key = value; }
 		}
 		
-		private string action;
+		private string action = String.Empty;
 		/// <summary>
 		/// Gets/sets the action that the strategy is responsible for carrying out in relation to an entity of the specified type.
 		/// </summary>
@@ -33,7 +33,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			set { action = value; }
 		}
 		
-		private string typeName;
+		private string typeName = String.Empty;
 		/// <summary>
 		/// Gets/sets the name of the type that is involved in the strategy.
 		/// </summary>
@@ -43,7 +43,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			set { typeName = value; }
 		}
 		
-		private string strategyType;
+		private string strategyType = String.Empty;
 		/// <summary>
 		/// Gets/sets the full string representation of the strategy object type that corresponds with the Actions and TypeName.
 		/// </summary>
