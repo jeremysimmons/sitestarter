@@ -58,7 +58,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 			// Get the specified type
 			Type type = null;
 			
-			if (Entities.EntityState.Entities.EntityExists(typeName))
+			if (Entities.EntityState.Entities.Contains(typeName))
 				type = Entities.EntityState.Entities[typeName].GetEntityType();
 			
 			// Create a direct part key for the specified type
