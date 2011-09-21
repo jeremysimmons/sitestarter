@@ -91,6 +91,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			set { ViewState["Format"] = value; }
 		}
 		
+		private ProjectionInfo dataSource;
+		public ProjectionInfo DataSource
+		{
+			get { return dataSource; }
+			set { dataSource = value; }
+		}
+		
 		public ProjectorControl()
 		{
 		}
@@ -130,6 +137,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				}
 				else
 					LogWriter.Debug("No projection specified by the query string.");
+				
+				DataSource = projection;
 				
 				Control control = projection.Load(Page);
 				
