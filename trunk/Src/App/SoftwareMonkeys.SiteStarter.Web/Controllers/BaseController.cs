@@ -55,7 +55,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			get
 			{
 				if (commandOnSuccess == String.Empty)
-					return ActionOnSuccess + " " + TypeName;
+					return ActionOnSuccess + "-" + TypeName;
 				return commandOnSuccess;
 			}
 			set { commandOnSuccess = value; }
