@@ -52,7 +52,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="command">The command string; either "[Action] [TypeName]" or "[TypeName] [Action]".</param>
 		public CommandInfo(string command)
 		{
-			string[] parts = command.Split(' ');
+			string[] parts = command.Replace(" ", "-").Split('-');
 			
 			if (EntityState.IsType(parts[0]))
 			{
