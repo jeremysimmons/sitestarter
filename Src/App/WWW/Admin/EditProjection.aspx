@@ -124,7 +124,7 @@
 							
 		var output = '';
 		
-		var url = '<%= WebUtilities.ConvertApplicationRelativeUrlToAbsoluteUrl("/") + "/Admin/SaveProjection.aspx" %>';
+		var url = '<%= Request.ApplicationPath + "/Admin/SaveProjection.aspx" %>';
 		
 		var projectionPath = document.getElementById('<%= ProjectionFilePath.ClientID %>').value;
 		var projectionContent = document.getElementById('<%= ProjectionContent.ClientID %>').value;
