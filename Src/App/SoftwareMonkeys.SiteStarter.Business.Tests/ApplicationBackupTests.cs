@@ -19,7 +19,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		public void Test_Backup_SkipLegacy()
 		{
 			
-			string applicationName = "TestApplication";
+			string applicationName = "MockApplication";
 			
 			
 			string applicationPath = TestUtilities.GetTestApplicationPath(this, applicationName);
@@ -170,7 +170,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		[Test]
 		public void Test_Suspend()
 		{
-			string dataDirectoryPath = TestUtilities.GetTestingPath(this) + Path.DirectorySeparatorChar + "App_Data";
+			string dataDirectoryPath = TestUtilities.GetTestDataPath(this, "MockApplication");
 			
 			CreateDummyFiles(dataDirectoryPath);
 			
