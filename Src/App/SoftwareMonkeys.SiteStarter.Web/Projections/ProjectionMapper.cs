@@ -485,20 +485,39 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		
 		public string AddQueryStrings(string path, Dictionary<string, string> queryStrings)
 		{
-			string output = path;
+			string output = string.Empty;
 			
-			UrlCreator urlCreator = new UrlCreator(ApplicationPath, path);
-			
-			foreach (string key in queryStrings.Keys)
+			using (LogGroup logGroup = LogGroup.StartDebug("Adding query strings to the path: " + path))
 			{
-				string separator = "?";
-				if (path.IndexOf("?") > -1)
-					separator = "&";
+				output = path;
 				
-				output = output + separator + urlCreator.PrepareForUrl(key)
-					+ "=" + urlCreator.PrepareForUrl(queryStrings[key]);
+				UrlCreator urlCreator = new UrlCreator(ApplicationPath, path);
+				
+				foreach (string key in queryStrings.Keys)
+				{
+					string separator = "?";
+					if (path.IndexOf("?") > -1)
+						separator = "&";
+					
+					LogWriter.Debug("Separator: " + separator);
+					
+					if (output.IndexOf("?" + key + "=") == -1
+					    && output.IndexOf("&" + key + "=") == -1)
+					{
+						LogWriter.Debug("Adding query string \"" + key + "=" + queryStrings[key] + "\"");
+						
+						output = output + separator + urlCreator.PrepareForUrl(key)
+							+ "=" + urlCreator.PrepareForUrl(queryStrings[key]);
+						
+						LogWriter.Debug("New path: " + output);
+					}
+					else
+						LogWriter.Debug("Query string key '" + key + "' found in path. Skipping append.");
+				}
+				
+				LogWriter.Debug("Output: " + output);
+				
 			}
-			
 			return output;
 		}
 		
@@ -536,6 +555,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			if (parts.Length > 0 && lastPart.IndexOf(".") > -1)
 				parts[parts.Length - 1] = lastPart.Substring(0, lastPart.IndexOf("."));
 			
+			string typeName = GetTypeName(GetCommandName(friendlyPath));
 			
 			for (int i = 1; i < parts.Length; i++)
 			{
