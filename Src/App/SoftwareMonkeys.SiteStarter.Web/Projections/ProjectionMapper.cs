@@ -535,7 +535,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				
 				ExtractOriginalQueryStrings(originalPath, queryStrings);
 				
-				newPath = AddQueryStrings(newPath, queryStrings);
+				output = AddQueryStrings(newPath, queryStrings);
 				
 				LogWriter.Debug("Output: " + output);
 			}
