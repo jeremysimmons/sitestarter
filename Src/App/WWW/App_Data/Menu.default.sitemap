@@ -4,7 +4,7 @@
   <siteMapNode title="My Details" url="~/User-Details.aspx" description="" />
   <siteMapNode title="Users" url="~/User-Index.aspx" description="" />
   <siteMapNode title="Roles" url="~/UserRole-Index.aspx" description="" />
-  <siteMapNode title="Settings" url="~/Index-Settings.aspx" description="" />
+  <siteMapNode title="Settings" url="~/Settings.aspx" description="" />
   <siteMapNode title="Backup" url="~/Admin/Backup.aspx" description="" />
   <siteMapNode title="Update" url="~/Admin/Update.aspx" description="" />
   <siteMapNode title="Cache" url="~/Admin/Cache.aspx" description="" />
