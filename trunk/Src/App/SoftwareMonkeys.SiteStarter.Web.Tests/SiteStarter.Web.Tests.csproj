@@ -151,6 +151,9 @@
     <Compile Include="Controllers\IndexControllerTests.cs" />
     <Compile Include="Controllers\MockController.cs" />
     <Compile Include="Controllers\ViewControllerTests.cs" />
+    <Compile Include="MockControlLoader.cs" />
+    <Compile Include="MockFileExistenceChecker.cs" />
+    <Compile Include="MockUrlConverter.cs" />
     <Compile Include="MockUrlCreator.cs" />
     <Compile Include="MockUserControl.cs">
       <SubType>ASPXCodeBehind</SubType>
@@ -166,17 +169,17 @@
     </Compile>
     <Compile Include="Projections\MockProjectionLoader.cs" />
     <Compile Include="Projections\MockProjectionScanner.cs" />
+    <Compile Include="Projections\ProjectionMapperTests.cs" />
     <Compile Include="Projections\ProjectionScannerTests.cs" />
     <Compile Include="Projections\ProjectionStateNameValueTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SetupCheckerTests.cs" />
     <Compile Include="SiteMapTests.cs" />
+    <Compile Include="UrlConverterTests.cs" />
     <Compile Include="UrlCreatorTests.cs" />
-    <Compile Include="UrlRewriterTests.cs" />
     <Compile Include="WebControls\EntityFormHelperTests.cs" />
     <Compile Include="WebControls\EntitySelectTests.cs" />
     <Compile Include="WebControls\IndexGridTests.cs" />
-    <Compile Include="WebUtilitiesTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
