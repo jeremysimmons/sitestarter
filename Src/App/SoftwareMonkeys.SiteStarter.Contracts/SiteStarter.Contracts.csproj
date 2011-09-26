@@ -90,7 +90,6 @@
     <Compile Include="Configuration\IConfig.cs" />
     <Compile Include="Configuration\IConfigSaver.cs" />
     <Compile Include="Configuration\IConfigurationDictionary.cs" />
-    <Compile Include="Configuration\IVirtualServerConfig.cs" />
     <Compile Include="Data\FilterGroupOperator.cs" />
     <Compile Include="Data\FilterOperator.cs" />
     <Compile Include="Data\IDataFilter.cs" />
