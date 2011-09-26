@@ -214,7 +214,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				link = link + "/" + entity.ID.ToString();
 				
 				if (entity is IUniqueEntity)
-					link = link + "/I--" + PrepareForUrl(((IUniqueEntity)entity).UniqueKey);
+					link = link + "/" + PrepareForUrl(((IUniqueEntity)entity).UniqueKey);
 				
 				link = link + ".aspx";
 				
