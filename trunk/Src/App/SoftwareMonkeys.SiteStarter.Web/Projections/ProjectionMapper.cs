@@ -378,36 +378,29 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		}
 		
 		/// <summary>
-		/// Extracts the query string from the provided part and adds it to the dictionary.
+		/// Extracts entity ID query string data from the provided part and adds it to the dictionary.
 		/// </summary>
-		/// <param name="typeName"></param>
-		/// <param name="part">The part/section of the URL to extract the query string from.</param>
+		/// <param name="friendlyPath"></param>
 		/// <param name="queryStrings"></param>
-		public void ExtractQueryString(string typeName, string part, Dictionary<string, string> queryStrings)
+		public void ExtractGuidQueryString(string friendlyPath, Dictionary<string, string> queryStrings)
 		{
-			// If it's a GUID then it's the ID of an entity
-			if (GuidValidator.IsValidGuid(part))
-				ExtractGuidQueryString(typeName, part, queryStrings);
-			// Otherwise it's a dynamic query string
-			else
-				ExtractDynamicQueryString(typeName, part, queryStrings);
-		}
-		
-		/// <summary>
-		/// Extracts a GUID query string from the provided part and adds it to the dictionary.
-		/// </summary>
-		/// <param name="typeName"></param>
-		/// <param name="part">The part/section of the URL to extract the query string from.</param>
-		/// <param name="queryStrings"></param>
-		public void ExtractGuidQueryString(string typeName, string part, Dictionary<string, string> queryStrings)
-		{
-			// If it's a GUID then it's the ID of an entity
-			if (GuidValidator.IsValidGuid(part))
+			using (LogGroup logGroup = LogGroup.StartDebug("Extracting the entity ID section of the path to add to the query string."))
 			{
-				queryStrings.Add(typeName + "-ID", part);
+				LogWriter.Debug("Friendly path: " + friendlyPath);
+				
+				Guid id = GetDynamicID(friendlyPath);
+				
+				string typeName = GetTypeName(GetCommandName(friendlyPath));
+				
+				if (id != Guid.Empty)
+				{
+					LogWriter.Debug("Adding '" + typeName + "-ID' query string.");
+					
+					queryStrings.Add(typeName + "-ID", id.ToString());
+				}
+				else
+					LogWriter.Debug("No ID found in path. Not adding query string.");
 			}
-			else
-				throw new ArgumentException("The provided part is not a valid GUID.");
 		}
 		
 		/// <summary>
@@ -418,22 +411,38 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <param name="queryStrings"></param>
 		public void ExtractDynamicQueryString(string typeName, string part, Dictionary<string, string> queryStrings)
 		{
-			// Replace the "--" with "|" then split it
-			string[] subParts = part.Replace("--", "|").Split('|');
-			
-			if (subParts.Length < 2)
-				throw new ArgumentException("The provided part '" + part + "' is not in the correct format of [PropertyName]-[Value].", "part");
-			
-			string propertyName = subParts[0];
-			string value = subParts[1];
-			
-			// If the property name is "K" it's short for "UniqueKey"
-			if (propertyName == "K")
-				propertyName = typeName + "-UniqueKey";
-			
-			// If it's not an ignored property then add it
-			if (propertyName != "I")
-				queryStrings.Add(propertyName, value);
+			using (LogGroup logGroup = LogGroup.StartDebug("Extracting query string data from the provided part of a path."))
+			{
+				// Replace the "--" with "|" then split it
+				string[] subParts = part.Replace("--", "|").Split('|');
+				
+				LogWriter.Debug("Type name: " + typeName);
+				LogWriter.Debug("Part: " + part);
+				
+				if (subParts.Length == 2)
+				{
+					LogWriter.Debug("Part is correct format.");
+					
+					string propertyName = subParts[0];
+					string value = subParts[1];
+					
+					LogWriter.Debug("Property name: " + propertyName);
+					LogWriter.Debug("Value: " + value);
+					
+					// If the property name is "K" it's short for "UniqueKey"
+					if (propertyName == "K")
+						propertyName = typeName + "-UniqueKey";
+					
+					// If it's not an ignored property then add it
+					if (propertyName != "I")
+					{
+						LogWriter.Debug("Adding '" + propertyName + "=" + value + "' query string.");
+						queryStrings.Add(propertyName, value);
+					}
+				}
+				else
+					LogWriter.Debug("Not the correct format. Skipping.");
+			}
 		}
 		
 		/// <summary>
@@ -527,13 +536,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			
 			using (LogGroup logGroup = LogGroup.StartDebug("Adding query strings to path: " + newPath))
 			{
+				
 				LogWriter.Debug("Original path: " + originalPath);
 				
 				Dictionary<string, string> queryStrings = new Dictionary<string, string>();
 				
-				ExtractFormatQueryString(originalPath, queryStrings);
-				
-				ExtractOriginalQueryStrings(originalPath, queryStrings);
+				ExtractQueryStringsFromFriendlyPath(originalPath, queryStrings);
 				
 				output = AddQueryStrings(newPath, queryStrings);
 				
@@ -545,6 +553,20 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		
 		public void ExtractQueryStringsFromFriendlyPath(string friendlyPath, Dictionary<string, string> queryStrings)
 		{
+			ExtractFormatQueryString(friendlyPath, queryStrings);
+			
+			ExtractOriginalQueryStrings(friendlyPath, queryStrings);
+			
+			ExtractGuidQueryString(friendlyPath, queryStrings);
+			
+			ExtractDynamicQueryStrings(friendlyPath, queryStrings);
+			
+		}
+		
+		public void ExtractDynamicQueryStrings(string friendlyPath, Dictionary<string, string> queryStrings)
+		{
+			string typeName = GetTypeName(GetCommandName(friendlyPath));
+			
 			string[] parts = GetShortPath(friendlyPath).Trim('/').Split('/');
 
 			if (parts != null)
@@ -555,13 +577,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			if (parts.Length > 0 && lastPart.IndexOf(".") > -1)
 				parts[parts.Length - 1] = lastPart.Substring(0, lastPart.IndexOf("."));
 			
-			string typeName = GetTypeName(GetCommandName(friendlyPath));
-			
 			for (int i = 1; i < parts.Length; i++)
 			{
-				ExtractQueryString(typeName, parts[i], queryStrings);
+				ExtractDynamicQueryString(typeName, parts[i], queryStrings);
 			}
-			
 		}
 		
 		public string UrlEncode(string original)
