@@ -247,18 +247,30 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <returns></returns>
 		public string GetCommandName(string originalPath)
 		{
-			string path = Converter.ToRelative(originalPath);
+			string commandName = String.Empty;
 			
-			path = path.TrimStart('/');
-			
-			string commandName = path;
-			
-			if (path.IndexOf('/') > -1)
-				commandName = path.Substring(0, path.IndexOf('/'));
-			
-			// Remove the extension if there is one
-			commandName = Path.GetFileNameWithoutExtension(commandName);
-			
+			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving command name from path: " + originalPath))
+			{
+				string path = Converter.ToRelative(originalPath);
+				
+				LogWriter.Debug("Relative path: " + path);
+				
+				path = path.TrimStart('/');
+				
+				commandName = path;
+				
+				if (path.IndexOf('/') > -1)
+				{
+					commandName = path.Substring(0, path.IndexOf('/'));
+					
+					LogWriter.Debug("Command (preliminary): " + commandName);
+				}
+				
+				// Remove the extension if there is one
+				commandName = Path.GetFileNameWithoutExtension(commandName);
+				
+				LogWriter.Debug("Command: " + commandName);
+			}
 			return commandName;
 		}
 		
