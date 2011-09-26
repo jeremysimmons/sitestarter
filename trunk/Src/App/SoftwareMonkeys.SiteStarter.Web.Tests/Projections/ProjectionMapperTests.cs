@@ -247,5 +247,30 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Projections
 
             Assert.AreEqual(expected.ToLower(), generated.ToLower(), "Result doesn't match expected.");
         }
+        
+        [Test]
+        public void Test_GetCommandName()
+        {
+        
+            string fullApplicationUrl = "http://localhost/MockApplication";
+            string applicationPath = "/MockApplication";
+
+            string action = "Edit";
+            string typeName = "TestUser";
+            
+            string original = fullApplicationUrl + "/" + action + "-" + typeName + ".aspx?TestKey=TestValue&TestKey2=TestValue2";
+
+            string expected = action + "-" + typeName;
+
+            ProjectionMapper mapper = new ProjectionMapper();
+            mapper.ApplicationPath = applicationPath;
+			mapper.Converter = new MockUrlConverter();
+			mapper.FileMapper = new MockFileMapper(this);
+			mapper.FileExistenceChecker = new MockFileExistenceChecker(this, false);
+            
+            string cmd = mapper.GetCommandName(original);
+
+            Assert.AreEqual(expected, cmd, "Result doesn't match expected.");
+        }
 	}
 }
