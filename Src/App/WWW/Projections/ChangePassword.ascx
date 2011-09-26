@@ -13,27 +13,47 @@
 <script runat="server">
     private void Page_Load(object sender, EventArgs e)
     {
-    	if (Request.QueryString["u"] == null || Request.QueryString["u"] == String.Empty)
-    		Navigator.Go("Recover", "Password");
-    		
-    	if (Request.QueryString["p"] == null || Request.QueryString["p"] == String.Empty)
-    		Navigator.Go("Recover", "Password");
-    		
-    	string emailAddress = Request.QueryString["u"];
+    	bool canChange = false;
+    
+    	using (LogGroup logGroup = LogGroup.StartDebug("Loading the ChangePassword page."))
+    	{
+	    	if (Request.QueryString["u"] == null || Request.QueryString["u"] == String.Empty)
+	    		Navigator.Go("Recover", "Password");
+	    		
+	    	if (Request.QueryString["p"] == null || Request.QueryString["p"] == String.Empty)
+	    		Navigator.Go("Recover", "Password");
+	    		
+	    	string emailAddress = Request.QueryString["u"];
+	    	
+	    	LogWriter.Debug("Email address: " + emailAddress);
+	    	
+	    	User user = RetrieveStrategy.New<User>(false).Retrieve<User>("Email", emailAddress);
+	    	
+	    	if (user == null)
+	    		Navigator.Go("Recover", "Password");
+	    		
+	    	string temporaryPassword = Request.QueryString["p"];
+	    	
+	    	LogWriter.Debug("Temporary password: " + temporaryPassword);
+	    		
+	    	// TODO: Check if needs to be encrypted
+	    	
+	    	canChange = user.Password != temporaryPassword;
+	    	
+    		if (!canChange)
+    		{
+	    		LogWriter.Debug("User password is not the temporary password. Cannot change password here.");
+    		}
     	
-    	User user = RetrieveStrategy.New<User>(false).Retrieve<User>("Email", emailAddress);
+	    	if (!IsPostBack)
+	    		DataBind();
+    	}
     	
-    	if (user == null)
-    		Navigator.Go("Recover", "Password");
-    		
-    	string temporaryPassword = Request.QueryString["p"];
-    		
-    	// TODO: Check if needs to be encrypted
-    	if (user.Password != temporaryPassword)
-    		Navigator.Go("Recover", "Password");
-    		
-    	if (!IsPostBack)
-    		DataBind();
+    	// Redirect outside the log group (extra precaution to avoid causing weird logs)
+    	if (!canChange)
+    	{
+	    	Navigator.Go("RecoverPassword");
+    	}	
     }
     
     private void UpdateButton_Click(object sender, EventArgs e)
