@@ -61,7 +61,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			using (LogGroup logGroup = LogGroup.StartDebug("Sending reset email."))
 			{
 				string title = Configuration.Config.Application.Title;
-				string resetUrl = applicationUrl.Trim('/') + "/Change-Password.aspx?p=" + user.Password + "&u=" + user.Email;
+				string resetUrl = applicationUrl.Trim('/') + "/ChangePassword.aspx?p=" + user.Password + "&u=" + user.Email;
 				
 				message = message.Replace("${ResetUrl}", resetUrl);
 				message = message.Replace("${Title}", title);
