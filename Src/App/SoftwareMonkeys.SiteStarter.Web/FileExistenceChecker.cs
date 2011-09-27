@@ -37,14 +37,18 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		
 		public virtual bool Exists(string relativeFilePath)
 		{
-			string physicalFile = FileMapper.MapPath(relativeFilePath);
+			bool isReal = false;
 			
-			LogWriter.Debug("Physical file: " + physicalFile);
-			
-			bool isReal = File.Exists(physicalFile);
-			
-			LogWriter.Debug("Is real? " + isReal.ToString());
-			
+			using (LogGroup logGroup = LogGroup.StartDebug("Checking whether the file exists: " + relativeFilePath))
+			{
+				string physicalFile = FileMapper.MapPath(relativeFilePath);
+				
+				LogWriter.Debug("Physical file: " + physicalFile);
+				
+				isReal = File.Exists(physicalFile);
+				
+				LogWriter.Debug("Is real? " + isReal.ToString());
+			}
 			return isReal;
 		}
 	}
