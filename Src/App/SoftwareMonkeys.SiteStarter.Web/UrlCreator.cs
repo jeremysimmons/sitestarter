@@ -709,9 +709,6 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <returns>The prepared version of the provided text.</returns>
 		public string PrepareForUrl(string text)
 		{
-			// The FormatUniqueKey takes care of characters that the UrlEncode function misses
-			text = EntitiesUtilities.FormatUniqueKey(text);
-			
 			return HttpUtility.UrlEncode(text);
 		}
 	}
