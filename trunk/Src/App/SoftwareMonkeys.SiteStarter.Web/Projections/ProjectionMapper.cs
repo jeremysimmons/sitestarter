@@ -133,7 +133,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				
 				newPath = String.Format("{0}/{1}?n={2}&f={3}",
 				                        ApplicationPath,
-					                    GetRealPageName(originalPath),
+				                        GetRealPageName(originalPath),
 				                        UrlEncode(projectionName),
 				                        format);
 				
@@ -234,6 +234,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			{
 				string idString = parts[1];
 				
+				// If the id string contains a dot then it's a file name and needs to be fixed
+				if (idString.IndexOf('.') > -1)
+					idString = Path.GetFileNameWithoutExtension(idString);
+				
 				if (GuidValidator.IsValidGuid(idString))
 				{
 					id = GuidValidator.ParseGuid(idString);
@@ -300,42 +304,53 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			{
 				originalPath = Converter.ToRelative(originalPath);
 				
-				LogWriter.Debug("Original path: " + originalPath);
-				
-				originalPath = originalPath.TrimStart('/');
-				
-				string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(originalPath);
-				string fileName = originalPath;
-				if (fileName.IndexOf('?') > -1)
-					fileName = fileName.Substring(0, fileName.IndexOf('?'));
-				if (fileName.IndexOf('/') > -1)
-					fileName = fileName.Substring(fileName.LastIndexOf('/'),
-					                              fileName.Length-fileName.LastIndexOf('/'));
-				
-				LogWriter.Debug("File name: " + fileName);
-				LogWriter.Debug("File name (without extension): " + fileNameWithoutExtension);
-				
-				string ext = Path.GetExtension(originalPath);
-				
-				ext = ext.Trim('.').ToLower();
-				
-				if (ext.IndexOf("?") > -1)
-					ext = ext.Substring(0, ext.IndexOf("?"));
-				
-				LogWriter.Debug("Ext: " + ext);
-				
-				if (ext == "js" // javascript file
-				    || ext == "script" // script file
-				    || ext == "css" // stylesheet
-				    || ext == "axd" // WebResource.axd file
-				    || fileName.ToLower() == "quicksetup.aspx" // quick setup page
-				    || fileName.ToLower() == "setup.aspx" // setup page
-				    || fileName.ToLower() == "projector.aspx"
-				    || fileName == String.Empty
-				    || IsRealFile(originalPath)) // no file name specified
+				if (IsRealFile(originalPath))
+				{
 					output = true;
-				
-				LogWriter.Debug("Output: " + output);
+				}
+				else
+				{
+					LogWriter.Debug("Original path: " + originalPath);
+					
+					originalPath = originalPath.TrimStart('/');
+					
+					string shortPath  = originalPath;
+					if (shortPath.IndexOf('?') > -1)
+						shortPath = shortPath.Substring(0, shortPath.IndexOf('?'));
+					
+					string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(shortPath);
+					string fileName = Path.GetFileName(shortPath);
+					
+					if (fileName.IndexOf('?') > -1)
+						fileName = fileName.Substring(0, fileName.IndexOf('?'));
+					if (fileName.IndexOf('/') > -1)
+						fileName = fileName.Substring(fileName.LastIndexOf('/'),
+						                              fileName.Length-fileName.LastIndexOf('/'));
+					
+					LogWriter.Debug("File name: " + fileName);
+					LogWriter.Debug("File name (without extension): " + fileNameWithoutExtension);
+					
+					string ext = Path.GetExtension(originalPath);
+					
+					ext = ext.Trim('.').ToLower();
+					
+					if (ext.IndexOf("?") > -1)
+						ext = ext.Substring(0, ext.IndexOf("?"));
+					
+					LogWriter.Debug("Ext: " + ext);
+					
+					if (ext == "js" // javascript file
+					    || ext == "script" // script file
+					    || ext == "css" // stylesheet
+					    || ext == "axd" // WebResource.axd file
+					    || fileName.ToLower() == "quicksetup.aspx" // quick setup page
+					    || fileName.ToLower() == "setup.aspx" // setup page
+					    || fileName.ToLower() == "projector.aspx"
+					    || fileName == String.Empty) // no file name specified
+						output = true;
+					
+					LogWriter.Debug("Output: " + output);
+				}
 			}
 			return output;
 		}
