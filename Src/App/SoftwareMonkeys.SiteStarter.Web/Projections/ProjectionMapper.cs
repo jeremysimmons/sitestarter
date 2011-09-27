@@ -131,8 +131,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			{
 				LogWriter.Debug("Found projection by name");
 				
-				newPath = String.Format("{0}/Projector.aspx?n={1}&f={2}",
+				newPath = String.Format("{0}/{1}?n={2}&f={3}",
 				                        ApplicationPath,
+					                    GetRealPageName(originalPath),
 				                        UrlEncode(projectionName),
 				                        format);
 				
@@ -203,8 +204,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 					
 					LogWriter.Debug("Found projection by action and type name.");
 					
-					newPath = String.Format("{0}/Projector.aspx?a={1}&t={2}&f={3}",
+					newPath = String.Format("{0}/{1}?a={2}&t={3}&f={4}",
 					                        ApplicationPath,
+					                        GetRealPageName(originalPath),
 					                        UrlEncode(action),
 					                        UrlEncode(typeName),
 					                        format);
@@ -257,17 +259,28 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				
 				path = path.TrimStart('/');
 				
-				commandName = path;
+				string x = path;
 				
-				if (path.IndexOf('/') > -1)
+				// Remove the query strings
+				if (x.IndexOf('?') > -1)
 				{
-					commandName = path.Substring(0, path.IndexOf('/'));
+					x = x.Substring(0, path.IndexOf('?'));
 					
-					LogWriter.Debug("Command (preliminary): " + commandName);
+					LogWriter.Debug("x (after removing query strings): " + x);
+				}
+				
+				// Get the first section
+				if (x.IndexOf('/') > -1)
+				{
+					x = path.Substring(0, path.IndexOf('/'));
+					
+					LogWriter.Debug("x (after shortening): " + x);
 				}
 				
 				// Remove the extension if there is one
-				commandName = Path.GetFileNameWithoutExtension(commandName);
+				x = Path.GetFileNameWithoutExtension(x);
+				
+				commandName = x;
 				
 				LogWriter.Debug("Command: " + commandName);
 			}
@@ -312,6 +325,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				LogWriter.Debug("Ext: " + ext);
 				
 				if (ext == "js" // javascript file
+				    || ext == "script" // script file
 				    || ext == "css" // stylesheet
 				    || ext == "axd" // WebResource.axd file
 				    || fileName.ToLower() == "quicksetup.aspx" // quick setup page
