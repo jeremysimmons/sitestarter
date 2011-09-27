@@ -13,15 +13,21 @@
 <script runat="server">
     private void Page_Load(object sender, EventArgs e)
     {
-    	bool canChange = false;
-    
     	using (LogGroup logGroup = LogGroup.StartDebug("Loading the ChangePassword page."))
     	{
 	    	if (Request.QueryString["u"] == null || Request.QueryString["u"] == String.Empty)
-	    		Navigator.Go("Recover", "Password");
+	    	{
+	    		LogWriter.Error("No user email parameter (\"u\" query string) provided. Redirecting back to recover page.");
+	    	
+	    		Navigator.Go("RecoverPassword");
+	    	}
 	    		
 	    	if (Request.QueryString["p"] == null || Request.QueryString["p"] == String.Empty)
-	    		Navigator.Go("Recover", "Password");
+	    	{
+	    		LogWriter.Error("No temporary password parameter (\"p\" query string) provided. Redirecting back to recover page.");
+	    		
+	    		Navigator.Go("RecoverPassword");
+	    	}
 	    		
 	    	string emailAddress = Request.QueryString["u"];
 	    	
@@ -30,7 +36,11 @@
 	    	User user = RetrieveStrategy.New<User>(false).Retrieve<User>("Email", emailAddress);
 	    	
 	    	if (user == null)
-	    		Navigator.Go("Recover", "Password");
+	    	{
+	    		LogWriter.Debug("Can't find user with the email address '" + emailAddress + "'.");
+	    		
+	    		Navigator.Go("RecoverPassword");
+	    	}
 	    		
 	    	string temporaryPassword = Request.QueryString["p"];
 	    	
@@ -38,22 +48,16 @@
 	    		
 	    	// TODO: Check if needs to be encrypted
 	    	
-	    	canChange = user.Password != temporaryPassword;
-	    	
-    		if (!canChange)
-    		{
+	    	if (user.Password != temporaryPassword)
+	    	{
 	    		LogWriter.Debug("User password is not the temporary password. Cannot change password here.");
+	    		
+	    		Navigator.Go("RecoverPassword");
     		}
     	
 	    	if (!IsPostBack)
 	    		DataBind();
     	}
-    	
-    	// Redirect outside the log group (extra precaution to avoid causing weird logs)
-    	if (!canChange)
-    	{
-	    	Navigator.Go("RecoverPassword");
-    	}	
     }
     
     private void UpdateButton_Click(object sender, EventArgs e)
