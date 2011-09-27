@@ -2,6 +2,7 @@
 using System.Web;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.IO;
+using SoftwareMonkeys.SiteStarter.State;
 
 namespace SoftwareMonkeys.SiteStarter.Web
 {
@@ -26,6 +27,24 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				}
 				return applicationPath; }
 			set {applicationPath = value; }
+		}
+		
+		private string physicalApplicationPath = String.Empty;
+		/// <summary>
+		/// Gets/sets the physical application path.
+		/// </summary>
+		public string PhysicalApplicationPath
+		{
+			get {
+				if (physicalApplicationPath == String.Empty)
+				{
+					if (Configuration.Config.IsInitialized)
+						physicalApplicationPath = Configuration.Config.Application.PhysicalApplicationPath;
+					else
+						physicalApplicationPath = HttpContext.Current.Request.PhysicalApplicationPath;
+				}
+				return physicalApplicationPath; }
+			set {physicalApplicationPath = value; }
 		}
 		
 		public FileMapper()
@@ -75,12 +94,16 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		{
 			string output = String.Empty;
 		
-			using (LogGroup logGroup = LogGroup.Start("Mapping the provided server root relative path.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Mapping the path: " + physicalApplicationPath, NLog.LogLevel.Debug))
 			{
 				
 				LogWriter.Debug("Server relative path: " + relativeUrl);
 				
-				output = HttpContext.Current.Server.MapPath(relativeUrl);
+				relativeUrl = relativeUrl.Replace(ApplicationPath, "").TrimStart('\\');
+				
+				LogWriter.Debug("Updated relative path: " + relativeUrl);
+				
+				output = PhysicalApplicationPath.TrimEnd('\\') + @"\" + relativeUrl.Replace("/", @"\").TrimStart('\\');
 				
 				LogWriter.Debug("Output: " + output);
 			}
