@@ -81,6 +81,7 @@
     <None Include="Admin\State.aspx" />
     <None Include="Admin\Tests\ChangePassword.aspx" />
     <None Include="Admin\Tests\ClearData.aspx" />
+    <None Include="Admin\Tests\DeleteProjection.aspx" />
     <None Include="Admin\Tests\Dispose.aspx" />
     <None Include="Admin\Tests\JavascriptError.aspx" />
     <None Include="Admin\Tests\LogContains.aspx" />
@@ -115,8 +116,8 @@
     <None Include="Projections\IEntity-Index.xml.ascx" />
     <None Include="Projections\IEntity-View.xml.ascx" />
     <None Include="Projections\Message-Send.ascx" />
-    <None Include="Projections\Password-Recover.ascx" />
-    <None Include="Projections\Password-Change.ascx" />
+    <None Include="Projections\RecoverPassword.ascx" />
+    <None Include="Projections\ChangePassword.ascx" />
     <None Include="Projections\Settings.ascx" />
     <None Include="Projections\TestSmtp.ascx" />
     <None Include="Projections\User-Create-Edit.ascx" />
