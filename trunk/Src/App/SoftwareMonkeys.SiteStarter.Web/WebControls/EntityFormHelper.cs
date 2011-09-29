@@ -12,11 +12,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 	public class EntityFormHelper
 	{
 		#region Field/control functions
-		/*static public void SetFieldValue(Control field, object value)
-        {
-            SetFieldValue(field, value, String.Empty);
-        }*/
-
 
 		static public void SetFieldValue(Control field, object value, string controlValuePropertyName, Type valueType)
 		{
@@ -33,10 +28,23 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 						LogWriter.Debug("ControlValuePropertyName: " + controlValuePropertyName);
 						LogWriter.Debug("Value: " + (value == null ? "[null]" : value.ToString()));
 						
-						PropertyInfo property = EntitiesUtilities.GetProperty(field.GetType(), controlValuePropertyName, valueType);
+						PropertyInfo property = null;
+						foreach (PropertyInfo p in field.GetType().GetProperties())
+						{
+							LogWriter.Debug("Checking property: " + p.Name);
+							
+							if (p.Name == controlValuePropertyName)
+							{
+								property = p;
+								
+								LogWriter.Debug("Matches");
+							}
+							else
+								LogWriter.Debug("Doesn't match");
+						}
 
 						if (property == null)
-							throw new Exception("The property '" + controlValuePropertyName + "' was not found on the control '" + field.ID + "', type '" + field.GetType().ToString() + "'.");
+							throw new Exception("The property '" + controlValuePropertyName + "' was not found on the control '" + field.ID + "', which is type '" + field.GetType().ToString() + "'.");
 						
 						property.SetValue(field, value, null);
 					}
