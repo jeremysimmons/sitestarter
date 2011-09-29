@@ -23,17 +23,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		protected TableRow HeadingRow = new TableRow();
 		protected TableCell HeadingCell = new TableCell();
 
-		/*private EntityFormItemCollection items;
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [PersistenceMode(PersistenceMode.InnerProperty)]
-        public EntityFormItemCollection Items
-        {
-            get { return items; }
-            set { items = value; }
-        }*/
-
-
-
 		#region Properties
 		/// <summary>
 		/// Gets the ID of the entity set to the DataSource.
@@ -129,17 +118,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		{
 			using (LogGroup logGroup = LogGroup.Start("Initializing the EntityForm control.", NLog.LogLevel.Debug))
 			{
-				//Controls.Add(table);
-				//table.Width = Unit.Percentage(100);
-				//if (!Page.IsPostBack)
-				//{
 				HeadingCell.Text = HeadingText;
 				HeadingCell.ColumnSpan = 2;
 				HeadingCell.CssClass = HeadingCssClass;
 				HeadingRow.Cells.Add(HeadingCell);
 				Rows.AddAt(0, HeadingRow);
 				
-				TableRow newButtonsRow = null;
 				foreach (TableRow row in Rows)
 				{
 					LogWriter.Debug("Row type: " + row.GetType().ToString());
@@ -150,24 +134,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
 						LogWriter.Debug("Binding item with field control ID: " + item.FieldControlID);
 						
-						newButtonsRow = CopyButtonsRow(item);
-						
 						foreach (Control control in item.Cells[1].Controls)
 						{
 							if (control is Button)
 							{
 								HandleEvents((Button)control);
-							}
-						}
-						
-						if (newButtonsRow != null)
-						{
-							foreach (Control control in newButtonsRow.Cells[0].Controls)
-							{
-								if (control is Button)
-								{
-									HandleEvents((Button)control);
-								}
 							}
 						}
 					}
@@ -188,50 +159,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 								// HandleEvents((Button)control);
 							}
 						}
-						
-						//Rows.Add(item);
 					}
 					else if (row is TableRow)
 					{
-						// Rows.Add(row);
 					}
 				}
-				if (newButtonsRow != null)
-					Rows.AddAt(0, newButtonsRow);
 				
-				//}
 			}
 			
 			base.OnInit(e);
-		}
-
-		private TableRow CopyButtonsRow(EntityFormButtonsItem item)
-		{
-			/*   TableRow newRow = new TableRow();
-            TableCell newCell = new TableCell();
-            newRow.Cells.Add(newCell);
-            newCell.ColumnSpan = 2;
-
-            foreach (Control control in item.Cells[1].Controls)
-            {
-                if (control is Button)
-                {
-                    Button button = new Button();
-                    button.Text = ((Button)control).Text;
-                    button.CommandName = ((Button)control).CommandName;
-                    button.CommandArgument = ((Button)control).CommandArgument;
-                    button.Visible = ((Button)control).Visible;
-                    newCell.Controls.Add(button);
-                }
-                else if (control is LiteralControl)
-                {
-                    LiteralControl literal = new LiteralControl(((LiteralControl)control).Text);
-                    newCell.Controls.Add(literal);
-                }
-            }
-
-            return newRow;*/
-			return null;
 		}
 
 		public override void DataBind()
@@ -297,36 +233,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			ReverseBind();
 		}
 
-		// TODO: Remove
-		/*public void ReverseBind()
-        {
-            foreach (TableRow row in this.Rows)
-            {
-                if (row is EntityFormItem)
-                {
-                    EntityFormItem item = (EntityFormItem)row;
-                    PropertyInfo property = DataSource.GetType().GetProperty(((EntityFormItem)item).PropertyName);
-                    if (property != null)
-                    {
-                        Control field = FindControl(item.FieldControlID);
-                        // Skip label fields, they're not editable
-                        if (field.GetType() != typeof(Label))
-                        {
-                            object value = EntityFormHelper.GetFieldValue(field, item.ControlValuePropertyName, property.PropertyType);
-                            // Collection<Entity> types need to be cast back to collection of base Entity objects to work
-                            // TODO: Check if needed
-                       //     if (value is Collection<Entity>)
-                      //      {
-                      //          property.SetValue(DataSource, value), null);
-                      //      }
-                     //       else
-                            property.SetValue(DataSource, value, null);
-                        }
-                    }
-                }
-            }
-        }*/
-
 		public void ReverseBind()
 		{
 			using (LogGroup logGroup = LogGroup.Start("Transferring data from form fields to entity.", NLog.LogLevel.Debug))
@@ -345,16 +251,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 							if (row.Enabled)
 							{
 								EntityFormItem item = (EntityFormItem)row;
-								//PropertyInfo property = Reflector.GetProperty(((EntityFormItem)item).PropertyName, DataSource);
 								
 								if (item.AutoBind && item.PropertyName != null && item.PropertyName != String.Empty)
 								{
 									LogWriter.Debug("Property name: " + item.PropertyName);
-									//LogWriter.Debug("Property type: " + property.PropertyType.ToString());
-									
-									//if (property != null)
-									//{
-									//	LogWriter.Debug("Property found");
 									
 									WebControl field = (WebControl)FindControl(item.FieldControlID);
 									// Skip label fields, they're not editable
@@ -374,9 +274,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 										
 										Reflector.SetPropertyValue(DataSource, item.PropertyName, castValue);
 									}
-									//}
-									//else
-									//	LogWriter.Debug("Property not found.");
 								}
 							}
 						}
@@ -420,19 +317,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		}
 		#endregion
 		
-		// TODO: Check if needed
-		/*
-		protected override void OnPreRender(EventArgs e)
-		{
-			RegisterFormScripts();
-			
-			base.OnPreRender(e);
-		}
-		
-		public void RegisterFormScripts()
-		{
-				Page.ClientScript.RegisterStartupScript(this.GetType(), "FormUtil", "<script language='javascript' src='" + HttpContext.Current.Request.ApplicationPath + "/Scripts/FormUtil.js'></script>");
-		}*/
 	}
 
 	#region Event types
