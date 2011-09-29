@@ -137,29 +137,35 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		static public SiteMap Load(string path)
 		{
 			SiteMap map = new SiteMap();
-			map.FilePath = path;
-
-			// load site map file
-			XmlDocument nodeData = new XmlDocument();
-			nodeData.Load(path);
-
-			// skip the <xml> document element
-			XmlNode first = nodeData.FirstChild;
-			if (first.NodeType == XmlNodeType.XmlDeclaration)
-				first = nodeData.FirstChild.NextSibling;//.FirstChild;
-			else
-				first = first.FirstChild;
-
-			if (first == null)
+			
+			using (LogGroup logGroup = LogGroup.StartDebug("Loading site map: " + path))
 			{
-				throw new Exception("The site map contains no elements.");
-			}
-			else
-			{
-				// NodeAddRoot.Enabled = false;
+				map.FilePath = path;
 
-				XmlToObjects(first.ChildNodes, map.ChildNodes);
+				// load site map file
+				XmlDocument nodeData = new XmlDocument();
+				nodeData.Load(path);
+
+				// skip the <xml> document element
+				XmlNode first = nodeData.FirstChild;
+				if (first.NodeType == XmlNodeType.XmlDeclaration)
+					first = nodeData.FirstChild.NextSibling;//.FirstChild;
+				else
+					first = first.FirstChild;
+
+				if (first == null)
+				{
+					throw new Exception("The site map contains no elements.");
+				}
+				else
+				{
+					// NodeAddRoot.Enabled = false;
+
+					XmlToObjects(first.ChildNodes, map.ChildNodes);
+					
+				}
 				
+				LogWriter.Debug("Root nodes: " + map.ChildNodes.Count.ToString());
 			}
 
 			return map;
@@ -480,26 +486,29 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				LogWriter.Debug("URL: " + url);
 
 				SiteMapNode existingNode = GetNodeByUrl(ChildNodes, url);
-				List<SiteMapNode> nodes = GetNodeListByUrl(ChildNodes, url);
 
 				if (existingNode != null)
 				{
 					if (item.Category != null && item.Category != String.Empty)
 					{
-						SiteMapNode categoryNode = GetNodeByTitle(nodes, item.Category);
+						SiteMapNode categoryNode = GetNodeByTitle(ChildNodes, item.Category);
+						
+						if (categoryNode == null)
+							throw new Exception("No node found with title '" + item.Category + "'.");
 						
 						categoryNode.ChildNodes.Remove(existingNode);
 						
+						// If no nodes are left in the category then remove it
 						if (categoryNode.ChildNodes.Count == 0)
-							nodes.Remove(categoryNode);
-
-						LogWriter.Debug("Removed node from category.");
+							ChildNodes.Remove(categoryNode);
+						
+						LogWriter.Debug("Removed node from category.");							
 					}
 					else
 					{
 						LogWriter.Debug("Removed node from root.");
 						
-						nodes.Remove(existingNode);
+						ChildNodes.Remove(existingNode);
 					}
 				}
 				else
@@ -552,9 +561,10 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		{
 			SiteMapNode node = null;
 			
-			using (LogGroup logGroup = LogGroup.StartDebug(""))
+			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving the node with the specified title."))
 			{
 				LogWriter.Debug("Title: " + title);
+				LogWriter.Debug("Node count: " + nodes.Count.ToString());
 				
 				title = title.Replace(@"\", "/").Trim('/');
 				
@@ -562,16 +572,28 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				
 				LogWriter.Debug("Title parts: " + parts.Length);
 				
+				string firstTitle = parts[0];
+				
+				LogWriter.Debug("First title section: " + firstTitle);
+				
 				foreach (SiteMapNode n in nodes)
 				{
-					if (n.Title == parts[0])
+					LogWriter.Debug("Comparing node '" + n.Title + "' with '" + firstTitle + "'.");
+					
+					if (n.Title == firstTitle)
 					{
 						LogWriter.Debug("Found node: " + n.Url);
 						
 						node = n;
 					}
+					else
+						LogWriter.Debug("Doesn't match.");
 				}
 				
+				if (node == null)
+					LogWriter.Debug("No node found with title '" + firstTitle);
+				
+				// If the category title has multiple parts (ie. it contains a slash)
 				if (parts.Length > 1 && node != null)
 				{
 					LogWriter.Debug("Title is multi level. Stepping down.");
