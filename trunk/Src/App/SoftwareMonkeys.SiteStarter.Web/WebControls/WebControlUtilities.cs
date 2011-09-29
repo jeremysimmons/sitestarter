@@ -87,6 +87,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			return returnValue;
 		}
 		
+		/// <summary>
+		/// Uses HtmlAgilityPack to sanitise the provided data.
+		/// </summary>
+		/// <param name="input"></param>
+		/// <returns></returns>
 		static public string Sanitize(string input)
 		{
 			if(String.IsNullOrEmpty(input))
@@ -96,15 +101,22 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
             return doc.DocumentNode.InnerText;
 		}
 		
+		/// <summary>
+		/// Checks whether the provided field matches the provided type.
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="type"></param>
+		/// <returns></returns>
 		static public bool IsType(Control field, Type type)
 		{
 			Type fieldType = field.GetType();
-			//while (fieldType != typeof(object))
-			//{
+			
 			if (fieldType.FullName == type.FullName)
 				return true;
-			//   fieldType = fieldType.BaseType;
-			//}
+			
+			if (fieldType.IsAssignableFrom(type))
+				return true;
+			
 			return false;
 		}
 		
