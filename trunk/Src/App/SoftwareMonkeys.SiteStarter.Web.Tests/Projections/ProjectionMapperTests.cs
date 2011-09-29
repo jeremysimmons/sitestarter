@@ -18,7 +18,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Projections
 		[Test]
 		public void Test_GetDynamicID()
 		{
-			string originalUrl = "http://localhost/MockApplication/Edit-UserRole/2a7ecbc7-b22c-4bca-908f-955f7a59ef51/I--Administrator.aspx";
+			Guid expectedID = new Guid("2a7ecbc7-b22c-4bca-908f-955f7a59ef51");
+			
+			string originalUrl = "http://localhost/MockApplication/Edit-UserRole/" + expectedID.ToString() + "/Administrator.aspx";
 			
 			ProjectionMapper mapper = new ProjectionMapper();
 			mapper.Converter = new MockUrlConverter();
@@ -26,8 +28,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Projections
 			string shortPath = mapper.GetShortPath(originalUrl);
 			
 			Guid foundID = mapper.GetDynamicID(originalUrl);
-			
-			Guid expectedID = new Guid("2a7ecbc7-b22c-4bca-908f-955f7a59ef51");
 			
 			Assert.AreEqual(expectedID.ToString(), foundID.ToString(), "ID doesn't match expected.");
 		}
@@ -116,7 +116,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Projections
 
             string original = fullApplicationUrl + "/" + action + "-" + typeName + "/" + entityID + ".aspx";
 
-            string expected = applicationPath + "/Projector.aspx?a=" + action + "&t=" + typeName + "&" + typeName + "-ID=" + entityID + "&f=Html";
+            string expected = applicationPath + "/Projector.aspx?a=" + action + "&t=" + typeName + "&f=Html&" + typeName + "-ID=" + entityID;
 
             ProjectionMapper mapper = new ProjectionMapper();
 			mapper.Converter = new MockUrlConverter();
@@ -142,7 +142,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Projections
 
             string original = fullApplicationUrl + "/" + action + "-" + typeName + "/" + entityID + "/I--" + entityName + ".aspx";
 
-            string expected = applicationPath + "/Projector.aspx?a=" + action + "&t=" + typeName + "&" + typeName + "-ID=" + entityID + "&f=Html";
+            string expected = applicationPath + "/Projector.aspx?a=" + action + "&t=" + typeName + "&f=Html&" + typeName + "-ID=" + entityID;
 
             IFileMapper fileMapper = new MockFileMapper(this, TestUtilities.GetTestingPath(this));
             
@@ -170,7 +170,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Projections
 
             string original = fullApplicationUrl + "/" + action + "-" + typeName + "/" + entityID + "/K--" + entityName + ".aspx";
 
-            string expected = applicationPath + "/Projector.aspx?a=" + action + "&t=" + typeName + "&" + typeName + "-ID=" + entityID + "&" + typeName + "-UniqueKey=" + entityName + "&f=Html";
+            string expected = applicationPath + "/Projector.aspx?a=" + action + "&t=" + typeName + "&f=Html&" + typeName + "-ID=" + entityID + "&" + typeName + "-UniqueKey=" + entityName;
 
             ProjectionMapper mapper = new ProjectionMapper();
 			mapper.Converter = new MockUrlConverter();
