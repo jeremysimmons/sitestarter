@@ -49,8 +49,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			// Create the strategy info variable to hold the return value
 			StrategyInfo strategyInfo = null;
 			
-			using (LogGroup logGroup = LogGroup.Start("Locating the strategy that is appropriate for carrying out the action '" + action + "' involving the type '" + typeName + "'.", NLog.LogLevel.Debug))
-			{
+			//using (LogGroup logGroup = LogGroup.Start("Locating the strategy that is appropriate for carrying out the action '" + action + "' involving the type '" + typeName + "'.", NLog.LogLevel.Debug))
+			//{
 				// Get the specified type
 				Type type = null;
 				if (EntityState.IsType(typeName))
