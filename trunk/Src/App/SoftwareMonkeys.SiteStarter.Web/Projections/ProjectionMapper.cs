@@ -556,8 +556,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 					{
 						LogWriter.Debug("Adding query string \"" + key + "=" + queryStrings[key] + "\"");
 						
-						output = output + separator + urlCreator.PrepareForUrl(key)
-							+ "=" + urlCreator.PrepareForUrl(queryStrings[key]);
+						output = output + separator + urlCreator.PrepareForQueryString(key)
+							+ "=" + urlCreator.PrepareForQueryString(queryStrings[key]);
 						
 						LogWriter.Debug("New path: " + output);
 					}

@@ -709,7 +709,20 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <returns>The prepared version of the provided text.</returns>
 		public string PrepareForUrl(string text)
 		{
+			text = EntitiesUtilities.FormatUniqueKey(text);
 			return HttpUtility.UrlEncode(text);
+		}
+		
+		/// <summary>
+		/// Prepares the provided text for use in a query string.
+		/// </summary>
+		/// <param name="text">The text to prepare for use in a query string.</param>
+		/// <returns>The prepared version of the provided text.</returns>
+		public string PrepareForQueryString(string text)
+		{
+			// TODO: Check if any formatting needs to be applied.
+			
+			return text;
 		}
 	}
 }
