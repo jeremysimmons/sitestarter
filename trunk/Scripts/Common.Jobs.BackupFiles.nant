@@ -40,6 +40,15 @@
     			</namespaces>
     	</xmlpeek>
 
+    	<xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.VirtualDirectoryName']/@value"
+		    property="Solution.VirtualDirectoryName">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+
     	
     	<property name="Backup.PropertiesPath" value="${path::combine(Project.RootPath, Project.Name + '.Backup.nant')}" />    	
     	
@@ -70,24 +79,25 @@
 	    			</namespaces>
 	    	</xmlpeek>
     	</if>
+		
+		<property name="backupProjectName" value="${Solution.VirtualDirectoryName}" />
     	
     	<property name="Backup.ExternalPath.Net" value="${string::replace(Backup.ExternalPath.Net, '${Company.Name}', Project.CompanyName)}"/>
-    	<property name="Backup.ExternalPath.Net" value="${string::replace(Backup.ExternalPath.Net, '${Project.Name}', Project.Name)}"/>
+    	<property name="Backup.ExternalPath.Net" value="${string::replace(Backup.ExternalPath.Net, '${Project.Name}', backupProjectName)}"/>
     	
     	<property name="Backup.ExternalPath.Mono" value="${string::replace(Backup.ExternalPath.Mono, '${Company.Name}', Project.CompanyName)}"/>
-    	<property name="Backup.ExternalPath.Mono" value="${string::replace(Backup.ExternalPath.Mono, '${Project.Name}', Project.Name)}"/>
-    	
+    	<property name="Backup.ExternalPath.Mono" value="${string::replace(Backup.ExternalPath.Mono, '${Project.Name}', backupProjectName)}"/>
     	
 		<echo message="External net path: ${Backup.ExternalPath.Net}"/>
 		<echo message="External mono path: ${Backup.ExternalPath.Mono}"/>
     	
 		<if test="${string::index-of(nant.settings.currentframework, 'net') > -1}">
-			<property name="Backup.ZipPath.Internal" value="${path::combine(path::combine(Project.RootPath, 'Backups'), Project.Name + '-' + Backup.Timestamp + '.zip')}"/>
-			<property name="Backup.ZipPath.External" value="${path::combine(string::trim(Backup.ExternalPath.Net), Project.Name + '-' + Backup.Timestamp + '.zip')}"/>
+			<property name="Backup.ZipPath.Internal" value="${path::combine(path::combine(Project.RootPath, 'Backups'), backupProjectName + '-' + Backup.Timestamp + '.zip')}"/>
+			<property name="Backup.ZipPath.External" value="${path::combine(string::trim(Backup.ExternalPath.Net), backupProjectName + '-' + Backup.Timestamp + '.zip')}"/>
 		</if>
 		<if test="${string::index-of(nant.settings.currentframework, 'mono') > -1}">
-			<property name="Backup.ZipPath.Internal" value="${path::combine(path::combine(Project.RootPath, 'Backups'), Project.Name)}-${Backup.Timestamp}.zip"/>
-			<property name="Backup.ZipPath.External" value="${path::combine(Backup.ExternalPath.Mono, Project.Name + '-' + Backup.Timestamp + '.zip')}"/>
+			<property name="Backup.ZipPath.Internal" value="${path::combine(path::combine(Project.RootPath, 'Backups'), backupProjectName)}-${Backup.Timestamp}.zip"/>
+			<property name="Backup.ZipPath.External" value="${path::combine(Backup.ExternalPath.Mono, backupProjectName + '-' + Backup.Timestamp + '.zip')}"/>
 		</if>
 		
 		<echo message="Internal path: ${Backup.ZipPath.Internal}"/>
@@ -101,7 +111,7 @@
 
   <!-- Actions.ZipBackup -->
   <target name="Common.Actions.ZipBackup">
-<echo message="Create dir: ${path::get-directory-name(Backup.ZipPath.Internal)}"/>
+	<echo message="Create dir: ${path::get-directory-name(Backup.ZipPath.Internal)}"/>
   	<if test="${directory::exists(path::get-directory-name(Backup.ZipPath.Internal)) == false}">
   		<mkdir dir="${path::get-directory-name(Backup.ZipPath.Internal)}"/>
   	</if>
@@ -136,6 +146,7 @@
 	        <exclude name="**/Backups/**"/>
 	        <exclude name="*_nant"/>
 	        <exclude name="**.eqbak"/>
+	        <exclude name="**/ProfilingSessions"/>
 	        <exclude name="**/bin/Debug/**"/>
 	        <exclude name="**/bin/Release/**"/>
 	        <exclude name="**/Releases/**"/>
