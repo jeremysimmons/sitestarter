@@ -1,13 +1,25 @@
 ﻿<%@ Page Language="C#" autoeventwireup="true" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Entities" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Business" %>
+<%@ Import namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
 <script runat="server">
 
 private void Page_Init(object sender, EventArgs e)
 {
-	User user = RetrieveStrategy.New<User>(false).Retrieve<User>("Email", Request.QueryString["Email"]);
+	string url = String.Empty;
+	using (LogGroup logGroup = LogGroup.StartDebug("Initializing the test change password page."))
+	{
+		string email = Request.QueryString["Email"];
+		
+		if (email == null || email == String.Empty)
+			throw new Exception("No email specified by the 'Email' query string.");
 	
-	Response.Redirect(Request.ApplicationPath + "/ChangePassword.aspx?u=" + Request.QueryString["Email"] + "&p=" + user.Password);
+		User user = RetrieveStrategy.New<User>(false).Retrieve<User>("Email", email);
+		
+		url = Request.ApplicationPath + "/ChangePassword.aspx?u=" + Request.QueryString["Email"] + "&p=" + user.Password;
+	}
+	
+	Response.Redirect(url);
 }
 
 </script>
