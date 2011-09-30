@@ -36,7 +36,7 @@
   	<target name="Common.Jobs.ImportLibrariesToWWW">
 
 		<if test="${directory::exists(Solution.RootPath + '\WWW\')}">	
-    		<copy todir="${Solution.RootPath}\WWW\bin\" overwrite="true">
+    	<copy todir="${Solution.RootPath}\WWW\bin\" overwrite="true">
     		<fileset>
         		<include name="${Project.RootPath}/lib/*.dll" />
         		<include name="${Project.RootPath}/lib/${Build.Mode}/*.dll" />

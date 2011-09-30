@@ -8,7 +8,7 @@
 		
 		<!-- Not needed because the selenium GUI is used to run the tests directly from the HTML suite -->
 		<!--call target="Common.Jobs.ConvertSeleniumToCSharp"/-->
-		<call target="Common.Jobs.BuildSolution" failonerror="false" />	
+		<call target="Common.Jobs.BuildSolution" />	
 		<call target="Common.Jobs.RunTests" failonerror="false" />	
 		
 		<property name="browser" value="*firefox" failonerror="false"  />
