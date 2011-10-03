@@ -11,7 +11,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
 {
 	public class StateProviderInitializer
 	{
-		//Initialization related variables and logic
 		private static bool isInitialized = false;
 		private static Exception initializationException;
 
@@ -29,9 +28,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
 		{
 			if (!isInitialized)
 			{
-						InitializeApplicationState();
+				InitializeApplicationState();
 
-						isInitialized = true;
+				isInitialized = true;
 
 			}
 		}
@@ -57,8 +56,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
 				providerCollection.SetReadOnly();
 				defaultProvider = providerCollection[qc.DefaultProvider];
 				
-				defaultProvider.ApplicationPath = HttpContext.Current.Request.ApplicationPath;
-				defaultProvider.PhysicalApplicationPath = HttpContext.Current.Server.MapPath(HttpContext.Current.Request.ApplicationPath);
+				if (HttpContext.Current != null)
+				{
+					defaultProvider.ApplicationPath = HttpContext.Current.Request.ApplicationPath;
+					defaultProvider.PhysicalApplicationPath = HttpContext.Current.Server.MapPath(HttpContext.Current.Request.ApplicationPath);
+				}
 				
 				if (defaultProvider == null)
 				{
