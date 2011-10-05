@@ -389,10 +389,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				if (!File.Exists(defaultSiteMapPath))
 				{
 					LogWriter.Error("Default site map file not found.");
-					throw new Exception("The default site map couldn't be found at: " + defaultSiteMapPath);
 				}
-
-				File.Copy(defaultSiteMapPath, siteMapPath, true);
+				else
+					File.Copy(defaultSiteMapPath, siteMapPath, true);
 			}
 		}
 		
