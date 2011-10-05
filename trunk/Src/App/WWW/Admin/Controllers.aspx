@@ -75,22 +75,22 @@ private string GetAssemblyName(ControllerInfo controller)
 			Assembly
 		</th>
 	</tr>
-	<% foreach (ControllerInfo strategy in ControllerState.Controllers){ %>
+	<% foreach (ControllerInfo controller in ControllerState.Controllers){ %>
 	<tr>
 		<td>
-			<%= GetShortTypeName(strategy) %>
+			<%= GetShortTypeName(controller) %>
 		</td>
 		<td>
-			<%= strategy.TypeName %>
+			<%= controller.TypeName %>
 		</td>
 		<td>
-			<%= strategy.Action %>
+			<%= controller.Action %>
 		</td>
 		<td>
-			<%= GetNamespace(strategy) %>
+			<%= GetNamespace(controller) %>
 		</td>
 		<td>
-			<%= GetAssemblyName(strategy) %>
+			<%= GetAssemblyName(controller) %>
 		</td>
 	</tr>
 	<% } %>
