@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<project name="WorkHub2.Business.Project" xmlns="http://nant.sf.net/schemas/nant.xsd">
-  <!-- Global Properties -->
-  		<property name="Assembly.Name" value="SiteStarter.Business.Tests" />
-	    <property name="Assembly.BaseNamespace" value="SoftwareMonkeys.SiteStarter.Tests" />
-	  <property name="Assembly.AssemblyName" value="${Assembly.BaseNamespace}.dll" />
-</project>

@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<project name="SiteStarter.Business.Project" xmlns="http://nant.sf.net/schemas/nant.xsd">
-  <!-- Global Properties -->
-  		<property name="WWW.Name" value="SiteStarter.WWW" />
-</project>
