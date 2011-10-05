@@ -1,0 +1,120 @@
+<?xml version="1.0"?>
+<project name="Common.Jobs.OutputFiles" default="Common.Jobs.OutputFiles" xmlns="http://nant.sf.net/schemas/nant.xsd">
+
+	
+  <target name="Common.Jobs.OutputFiles">
+  
+  
+		<xmlpeek
+		    file="${Project.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Project.Name']/@value"
+		    property="Project.Name">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+
+  
+  		<property name="versionFilePath" value="${path::combine(path::combine(Solution.RootPath, 'WWW'), 'Version.Number')}"/>
+  		
+		<loadfile
+		    file="${versionFilePath}"
+		    property="CurrentVersion" />
+			
+		<property name="CurrentVersion" value="${string::trim(CurrentVersion)}" />	
+			
+		<echo message="Current version: ${CurrentVersion}" />
+		
+		<property name="outputBaseDir" value="${Project.RootPath}-Archive\${string::replace(CurrentVersion, '.', '-')}\" />
+	
+		<if test="${not directory::exists(outputBaseDir)}">
+			<mkdir dir="${outputBaseDir}"/>
+		</if>
+			
+		<call target="OutputBuildLog" />
+		<call target="OutputScreenshots" />
+		<call target="OutputTestResults" />
+		
+		<property name="tmpFilePath" value="${path::get-full-path('tmpfile.txt')}" />
+		
+		<get src="http://10.0.0.1:8080/scripts/Scripts/UploadProjectFiles.script?Project=${Project.Name}&amp;Store=Default&amp;Group=softwaremonkeys" dest="${tmpFilePath}" failonerror="false" verbose="true" timeout="1800000" />
+
+		<loadfile
+		    file="${tmpFilePath}"
+		    property="uploadResults" />
+			
+		<echo message="${uploadResults}"/>
+			
+		<delete file="${tmpFilePath}"/>
+  </target>
+  
+  
+  <target name="OutputBuildLog">
+		
+		<property name="outputDir" value="${outputBaseDir}\BuildLog" />
+		
+		<if test="${not directory::exists(outputDir)}">
+			<mkdir dir="${outputDir}"/>
+		</if>
+		
+		<copy todir="${outputDir}" flatten="true">
+			<fileset basedir="${Project.RootPath}">
+				<include name="Build.txt" />
+			</fileset>
+		</copy>
+		
+  </target>
+  
+  <target name="OutputScreenshots">
+		
+		<property name="outputDir" value="${outputBaseDir}\Screenshots" />
+		
+		<if test="${not directory::exists(outputDir)}">
+			<mkdir dir="${outputDir}"/>
+		</if>
+		
+		<copy todir="${outputDir}" flatten="true">
+			<fileset basedir="${Project.RootPath}">
+				<include name="Src/App/Screenshots/*.png" />
+			</fileset>
+		</copy>
+		
+  </target>
+  
+  <target name="OutputTestResults">
+  
+		<property name="outputDir" value="${outputBaseDir}\Tests" />
+		
+		<if test="${not directory::exists(outputDir)}">
+			<mkdir dir="${outputDir}"/>
+		</if>
+  
+		<foreach item="File" property="filename">
+                <in>
+                    <items>
+                        <include name="${Project.RootPath}\TestResults\html\**\**\**.html" />
+                    </items>
+                </in>
+                <do>
+                    <echo message="File name: ${filename}" />
+					
+					<property name="testName" value="${path::get-file-name(path::get-directory-name(filename))}" />
+					<property name="shortFileName" value="${path::get-file-name(filename)}" />
+					<echo message="Test name: ${testName}" />
+					<property name="newFileName" value="${outputBaseDir}\Tests\${testName}\${shortFileName}" />
+					
+					<property name="testOutputDir" value="${outputBaseDir}Tests\${testName}" />
+		
+					<echo message="Test output dir: ${testOutputDir}" />
+		
+					<if test="${directory::exists(testOutputDir)}">
+						<mkdir dir="${testOutputDir}"/>
+					</if>
+					<copy todir="${testOutputDir}" file="${filename}" />
+                </do>
+            </foreach>
+			
+  </target>
+
+</project>
+  	

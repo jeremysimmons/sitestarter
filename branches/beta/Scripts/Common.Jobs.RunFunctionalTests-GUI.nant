@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<project name="Common.Jobs.RunFunctionalTests-GUI" default="Common.Jobs.RunFunctionalTests-GUI" xmlns="http://nant.sf.net/schemas/nant.xsd">
+
+
+	
+	<target name="Common.Jobs.RunFunctionalTests-GUI">
+
+		<xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.VirtualDirectoryName']/@value"
+		    property="Solution.VirtualDirectoryName">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+	    	</xmlpeek>
+
+		<xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.Name']/@value"
+		    property="Solution.Name">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+	    	</xmlpeek>
+			
+		<xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.BaseNamespace']/@value"
+		    property="Solution.BaseNamespace">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+	    	</xmlpeek>
+			
+		<!--property name="resultsDir" value="${path::get-full-path(path::combine(path::combine(Solution.RootPath, 'FunctionalTests'), 'Results'))}" /-->
+		
+		<property name="resultsDir" value="${path::get-full-path(path::combine(path::combine(Project.RootPath, 'TestResults'), 'html'))}" />
+			
+		<echo message="Results directory: ${resultsDir}"/>
+		  
+		<property name="testSuitePath" value="${path::get-full-path('../Src/App/FunctionalTests/' + Solution.Name + '.Index.html')}"/>
+
+		<echo message="Test Suite Path: ${testSuitePath}"/>
+
+		<property name="versionFile" value="${path::get-full-path('../Src/App/Version.number')}"/>
+
+		<if test="${file::exists(versionFile)}">
+			<loadfile
+			    file="${versionFile}"
+			    property="versionNumber" />
+		</if>
+
+		<property name="versionNumber" value="${string::trim-end(string::replace(versionNumber, '.', '-'))}"/>
+    	
+		<echo message="Version: ${versionNumber}"/>
+
+		<call target="Common.Jobs.ClearData" failonerror="false"/>	
+		<call target="Common.Jobs.ClearData"/>	
+		<call target="Common.Jobs.ClearCache"/>	
+
+		<property name="seleniumServer" value="../lib/selenium-server.jar"/>
+
+		<echo message="Selenium server: ${seleniumServer}"/>
+
+		<echo message="Selenium server mapped: ${path::get-full-path(seleniumServer)}"/>
+		
+		<!--if test="${directory::exists(resultsDir)}">
+  			<delete dir="${resultsDir}"/>
+  		</if-->
+		
+		<property name="resultsPath" value="${path::get-full-path(resultsDir + '/' + versionNumber + '/' + string::replace(Solution.BaseNamespace, '.', '-') + '-Functional-' + string::replace(browser, '*', '') + '-Tests/index.html')}"/>
+		
+		<mkdir dir="${path::get-directory-name(resultsPath)}"/>
+		
+		<echo message="Full results path: ${resultsPath}"/>
+		
+		<property name="execCommand" value="java"/>
+
+		<echo message="Exec command: ${execCommand}"/>
+
+		<property name="portNumber" value="${Network::GeneratePortNumber()}"/>
+
+		<echo message="Port: ${portNumber}"/>
+
+		<property name="startUrl" value="http://localhost/${Solution.VirtualDirectoryName}/" />
+
+		<echo message="Start URL: ${startUrl}"/>
+
+
+		<exec program="${execCommand}" verbose="true" failonerror="false">
+			<arg value="-jar"/>
+			<arg value="../lib/selenium-server.jar"/>
+			<arg value="-htmlSuite"/>
+			<arg value='"${browser}"'/>
+			<arg value='"${startUrl}"'/>
+			<arg value='"${testSuitePath}"'/>
+			<arg value='"${resultsPath}"'/>
+			<arg value="-port"/>
+			<arg value="${portNumber}"/>
+			<arg value="-debug"/>
+			<arg value="-singleWindow"/>
+			<arg value="-timeout"/>
+			<arg value="3600000"/>
+		</exec>
+  	</target>
+
+</project>
+  	

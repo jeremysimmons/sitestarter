@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://localhost/SiteStarter/" />
+<title>Update</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Update</td></tr>
+</thead><tbody>
+<tr>
+	<td>setTimeout</td>
+	<td>1000000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>Admin/Tests/TestReset.aspx</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>Admin/QuickSetup.aspx</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Users</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextNotPresent</td>
+	<td>Exception</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextNotPresent</td>
+	<td>aren't authorised</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Create User']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ctl00_Body_ctl00_FirstName</td>
+	<td>another</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ctl00_Body_ctl00_LastName</td>
+	<td>user</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ctl00_Body_ctl00_Email</td>
+	<td>anotheruser@softwaremonkeys.net</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ctl00_Body_ctl00_Username</td>
+	<td>anotheruser</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ctl00_Body_ctl00_Password</td>
+	<td>pass</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ctl00_Body_ctl00_PasswordConfirm</td>
+	<td>pass</td>
+</tr>
+<tr>
+	<td>addSelection</td>
+	<td>ctl00_Body_ctl00_UserRoles</td>
+	<td>label=Administrator</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>successfully</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Roles</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>ctl00_Body_ctl00_CreateButton</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ctl00_Body_ctl00_Name</td>
+	<td>another role</td>
+</tr>
+<tr>
+	<td>addSelection</td>
+	<td>ctl00_Body_ctl00_Users</td>
+	<td>label=another user</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>successfully</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>UpdateApplicationLink</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Application Update</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>current application version</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Begin »']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Ready for Upload</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Your data has been backed up</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Continue »']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Update Complete</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>successfully</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Users</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>anotheruser</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Roles</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>another role</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>

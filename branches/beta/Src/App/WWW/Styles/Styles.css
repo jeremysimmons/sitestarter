@@ -1,0 +1,162 @@
+﻿body, P, TD
+{
+	font-family: Verdana;
+	font-size: x-small;
+}
+
+/* Template */
+.PageHeader
+{
+	color: gray;
+	border-bottom: solid 1px gray;
+}
+
+.PageHeaderText
+{
+	font-size: 20px;
+	font-weight: bold;
+	font-family: Arial;
+}
+
+.PageHeaderIdentity
+{
+	text-align: right;
+}
+
+.Column
+{
+	width: 5%;
+	vertical-align: top;
+	border-right: dotted 1px gray;
+	padding: 10px;
+}
+
+.Column UL
+{
+	margin-left: 16px;
+}
+
+/* Headings */
+.Heading1, h1
+{
+	font-size: 16px;
+	font-weight: bold;
+	color: #515151;
+}
+
+DIV.Heading2,
+TD.Heading2,
+H2,
+TR.Heading2 TH
+{
+	font-family: Verdana;
+	font-size: 14px;
+	font-weight: bold;
+	padding: 3px;
+	color: #515151;
+	padding-left: 4px;
+	background-color: #F5F5F5;
+	vertical-align: middle;
+	height: 22px;
+	margin-top: 0px;
+	border-top: solid 1px #DEDEDE;
+}
+
+TD.Heading2
+{
+	margin: 0px;
+}
+
+.Heading2Right
+{
+	font-size: 11px;
+	font-weight: normal;
+}
+
+.Heading2Right SELECT
+{
+	margin: 0px 5px 0px 5px;
+}
+
+/* Form */
+.FieldLabel
+{
+	font-size: 11px;
+	font-family: Tahoma;
+	width: 200px;
+}
+
+.Field
+{
+	font-size: 11px;
+	font-family: Tahoma;
+}
+
+/* Misc */
+.Error
+{
+	color: Red;
+}
+
+.Message
+{
+	color: Green;
+}
+
+.AutoBackup
+{
+	text-align:right;
+}
+
+.AutoBackupSummary
+{
+	font-size: x-small;
+}
+
+Input
+{
+	font-family: verdana;
+	font-size: x-small;
+}
+
+OL LI
+{
+	margin-top: 8px;
+	margin-bottom: 8px;
+}
+
+.PagingContainer
+{
+	font-size: 11px;
+}
+
+.BodyContainer
+{
+	padding: 10px;
+	vertical-align: top;
+}
+
+.Column A
+{
+	color: blue;
+}
+
+#AdminFooter
+{
+	text-align: center;
+}
+
+TH
+{
+	text-align: left;
+}
+
+.PreviewPanel
+{
+	border: solid 1px black;
+}
+
+.ProjectorMenu
+{
+	text-align:right;
+}

@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<project name="SiteStarter.Functional.iexplore.Tests" xmlns="http://nant.sf.net/schemas/nant.xsd">
+  <!-- Global Properties -->
+  		<property name="Assembly.Name" value="SiteStarter.Functional.iexplore.Tests" />
+	    <property name="Assembly.BaseNamespace" value="SoftwareMonkeys.SiteStarter.Functional.iexplore.Tests" />
+	  <property name="Assembly.AssemblyName" value="${Assembly.BaseNamespace}.dll" />
+</project>

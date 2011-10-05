@@ -1,0 +1,120 @@
+<%@ Master Language="C#" AutoEventWireup="true" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.State" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business.Security" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Configuration" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
+<%@ Register Src="Controls/AuthMenu.ascx" TagName="AuthMenu" TagPrefix="uc" %>
+<%@ Register Src="Controls/AdminFooter.ascx" TagName="AdminFooter" TagPrefix="uc" %>
+<script runat="server">
+private void Page_Load(object sender, EventArgs e)
+{
+	using (LogGroup logGroup = LogGroup.Start("Loading the Site.master page at URL: " + Request.Url.ToString()))
+	{
+		MenuSource.DataBind();
+		
+        EnsureSetup();
+        
+        RegisterClientScript();
+    }
+}
+
+private void RegisterClientScript()
+{
+	Page.ClientScript.RegisterClientScriptInclude(GetType(), "ErrorsScript", Request.ApplicationPath + "/js/errors.js");
+	
+	string script = Page.Request.ApplicationPath + "/js/httpRequests.js";
+	string key = "HttpRequestsScript";
+			
+	if (!Page.ClientScript.IsClientScriptIncludeRegistered(key))
+		Page.ClientScript.RegisterClientScriptInclude(GetType(), key, script);
+		
+	string appPathScript = "<script type='text/javascript'>applicationPath = '" + Request.ApplicationPath + "';</" + "script>";
+	Page.ClientScript.RegisterClientScriptBlock(GetType(), "ApplicationPath",
+		appPathScript);
+	
+}
+
+private void EnsureSetup()
+{
+	using (LogGroup logGroup = LogGroup.Start("Ensuring that the application is set up and configured.", NLog.LogLevel.Debug))
+	{
+		SetupChecker setupChecker = new SetupChecker();
+		setupChecker.Check();
+	}
+}
+
+private string GetMenuDataFile()
+{
+
+	string pathVariation = WebUtilities.GetLocationVariation(Request.Url);
+
+	string siteMapFile = "Menu.sitemap";
+	if (pathVariation != String.Empty)
+		siteMapFile = "Menu." + pathVariation + ".sitemap";
+
+		return @"~\App_Data\" + siteMapFile;
+	
+}
+
+private string GetTitle()
+{
+	if (Config.IsInitialized && Config.Application.Title != null && Config.Application.Title != String.Empty)
+	{
+		return Config.Application.Title;
+	}
+	else
+		return Resources.Language.SiteStarter;
+}
+</script>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head runat="server">
+    <title><%= GetTitle() %></title>
+    <%= StyleUtilities.GetStyleSheet("Styles.css") %>
+</head>
+<body>
+    <form id="form1" runat="server">
+    <div>
+<% if (!Utilities.HideTemplate){ %>
+    	<div class="PageHeader">
+				<table width="100%">
+					<tr>
+						<td></td>
+						<td class="PageHeaderText"><%= GetTitle() %></td>
+						<td class="PageHeaderIdentity">
+        					&nbsp;
+        					<uc:AuthMenu runat="server"/>
+      					</td>
+					</tr>
+				</table>
+		</div>
+		<table width="100%">
+    		<tr>
+				<td class="Column" nowrap="nowrap">
+	        
+	                   <asp:TreeView ID="Menu" runat="server" DataSourceID="MenuSource">
+				          <Databindings>
+				            <asp:TreeNodeBinding DataMember="siteMapNode" TextField="title" NavigateUrlField="url"/>
+				          </Databindings>
+	
+	                    </asp:TreeView>
+	                                <asp:XmlDataSource ID="MenuSource" XPath="siteMap/*" DataFile='<%# GetMenuDataFile() %>' runat="server" />
+	        	</td>
+				<td class="BodyContainer">
+<% } %>
+        			<asp:contentplaceholder id="Body" runat="server">
+        			</asp:contentplaceholder>
+<% if (!Utilities.HideTemplate){ %>
+       			</td>
+			</tr>
+		</table>
+    	<uc:AdminFooter id="AdminFooter" runat="server">
+    	</uc:AdminFooter>
+<% } %>
+
+    </div>
+    </form>
+</body>
+</html>

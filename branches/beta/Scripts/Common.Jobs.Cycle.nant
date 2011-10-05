@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<project name="Common.Jobs.Cycle" default="Common.Jobs.Cycle" xmlns="http://nant.sf.net/schemas/nant.xsd">
+	
+  	<target name="Common.Jobs.Cycle">
+
+		<property name="Build.Mode" value="Release"/>
+		<!-- Import disabled because it's not working properly -->
+		<!--call target="Common.Jobs.ImportFiles"/-->
+
+		<call target="Common.Jobs.DetectVirtualDirectory" failonerror="false"/>
+		<call target="Common.Jobs.ConfigureIIS" failonerror="false"/>	
+		<call target="Common.Jobs.ConvertSeleniumToCSharp" failonerror="false"/>
+		<call target="Common.Jobs.BuildSolution" failonerror="false"/>	
+		<call target="Common.Jobs.CreateReleaseZips" failonerror="false"/>	
+		<call target="Common.Jobs.RunTests" failonerror="false"/>
+		
+		<property name="browser" value="*firefox" />
+		<call target="Common.Jobs.RunFunctionalTests-GUI" failonerror="false" />
+		
+		<!-- Disabled because test mechanism doesn't seem to be working with IE -->
+		<!--property name="browser" value="iexplore" /-->
+		<!--call target="Common.Jobs.RunFunctionalTests" failonerror="false" /-->
+		
+		<call target="Common.Jobs.GenerateScreenshots" failonerror="false" />	
+		<call target="Common.Jobs.UploadZips" failonerror="false" />	
+	
+		<call target="Common.Jobs.OutputFiles"/>	
+		
+		<echo message="============================================="/>
+		<echo message="Continuous integration cycle has finished."/>
+		<echo message="============================================="/>
+		
+	</target>
+
+</project>

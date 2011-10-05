@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<project name="Common.Jobs.ResetImportData" default="Common.Jobs.ResetImportData" xmlns="http://nant.sf.net/schemas/nant.xsd">
+	
+
+  	<target name="Common.Jobs.ResetImportData">
+  		<property name="Solution.DataPath" value="${path::combine(path::combine(Solution.RootPath, 'WWW'), 'App_Data')}" />
+  		<property name="Solution.DefaultImportPath" value="${path::combine(Solution.DataPath, 'ImportDefault')}"/>
+  		<property name="Solution.ImportPath" value="${path::combine(Solution.DataPath, 'Import')}"/>
+  		<property name="Solution.ImportConvertedPath" value="${path::combine(Solution.DataPath, 'ImportConverted')}"/>
+  		<property name="Solution.ImportedPath" value="${path::combine(Solution.DataPath, 'Imported')}"/>
+  		
+  		
+		<if test="${directory::exists(Solution.ImportPath) == false}">
+			<mkdir dir="${Solution.ImportPath}"/>
+		</if>
+  		
+		<if test="${directory::exists(Solution.DefaultImportPath)}">
+			<copy todir="${Solution.ImportPath}" overwrite="true">
+			    <fileset basedir="${Solution.DefaultImportPath}">
+			        <include name="**.xml" />
+			        <include name="**.config" />
+			        <include name="**.number" />
+			        <include name="**.txt" />
+			    </fileset>
+			</copy>
+		</if>
+
+		
+		<delete dir="${Solution.ImportedPath}"/>
+
+  	</target>  
+
+</project>
+  	

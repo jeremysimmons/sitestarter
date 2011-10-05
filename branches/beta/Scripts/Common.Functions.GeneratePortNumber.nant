@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<project name="Common.Functions.GeneratePortNumber" default="Private.InitProjectFunctions" xmlns="http://nant.sf.net/schemas/nant.xsd">
+
+  <target name="Private.InitProjectFunctions">
+    <script language="C#" prefix="Network">
+    	<references>
+              <include name="System.dll" />
+              <include name="System.IO.dll" />
+        </references>
+        <imports>
+              <import namespace="System.Net.Sockets" />
+              <import namespace="System.Net" />
+              <import namespace="System.Net.NetworkInformation" />
+        </imports>
+		<code>
+		<![CDATA[
+					
+			
+			[Function("GeneratePortNumber")]
+			public static string GeneratePortNumber()
+			{
+				TcpListener listener = new TcpListener(IPAddress.Any, 0);
+				listener.Start();
+				int port = ((IPEndPoint)listener.LocalEndpoint).Port;
+				listener.Stop();
+				return port.ToString();
+			}
+			
+		]]>
+		</code>
+	</script>
+  </target>
+</project>

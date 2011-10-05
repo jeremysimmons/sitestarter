@@ -1,0 +1,286 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A5D49D94-D936-4123-BA9A-572AA7C7F426}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SoftwareMonkeys.SiteStarter.Web</RootNamespace>
+    <AssemblyName>SoftwareMonkeys.SiteStarter.Web</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <SourceAnalysisOverrideSettingsFile>F:\Documents and Settings\Jose\Application Data\ICSharpCode/SharpDevelop3.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <NoStdLib>False</NoStdLib>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <SignAssembly>False</SignAssembly>
+    <DelaySign>False</DelaySign>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugType>Full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>PdbOnly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>3</WarningLevel>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <BaseAddress>4194304</BaseAddress>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <FileAlignment>4096</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="HtmlAgilityPack">
+      <HintPath>..\..\..\lib\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\..\..\Lib\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Abstractions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Web.Extensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Web.Routing">
+      <HintPath>..\..\..\lib\System.Web.Routing.dll</HintPath>
+    </Reference>
+    <Reference Include="System.XML" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ApplicationContext.cs" />
+    <Compile Include="AssemblyScanInfo.cs" />
+    <Compile Include="AutoBackupInitializer.cs" />
+    <Compile Include="BasePage.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controllers\AssemblyContainsControllersAttribute.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\BaseControllerScanner.cs" />
+    <Compile Include="Controllers\ControllerAttribute.cs" />
+    <Compile Include="Controllers\ControllerCreator.cs" />
+    <Compile Include="Controllers\ControllerFileNamer.cs" />
+    <Compile Include="Controllers\ControllerInfo.cs" />
+    <Compile Include="Controllers\ControllerLoader.cs" />
+    <Compile Include="Controllers\ControllerLocator.cs" />
+    <Compile Include="Controllers\ControllerNotFoundException.cs" />
+    <Compile Include="Controllers\ControllerSaver.cs" />
+    <Compile Include="Controllers\ControllerScanner.cs" />
+    <Compile Include="Controllers\ControllersDisposer.cs" />
+    <Compile Include="Controllers\ControllersInitializer.cs" />
+    <Compile Include="Controllers\ControllersResetter.cs" />
+    <Compile Include="Controllers\ControllerState.cs" />
+    <Compile Include="Controllers\ControllerStateCollection.cs" />
+    <Compile Include="Controllers\CreateController.cs" />
+    <Compile Include="Controllers\CreateSubEntityController.cs" />
+    <Compile Include="Controllers\CreateUserController.cs" />
+    <Compile Include="Controllers\DeleteController.cs" />
+    <Compile Include="Controllers\DeleteSubEntityController.cs" />
+    <Compile Include="Controllers\EditController.cs" />
+    <Compile Include="Controllers\EditSubEntityController.cs" />
+    <Compile Include="Controllers\EditUserController.cs" />
+    <Compile Include="Controllers\IController.cs" />
+    <Compile Include="Controllers\IndexController.cs" />
+    <Compile Include="Controllers\RegisterUserController.cs" />
+    <Compile Include="Controllers\ViewController.cs" />
+    <Compile Include="ControlLoader.cs" />
+    <Compile Include="Data\DataProviderInitializer.cs" />
+    <Compile Include="ExceptionHandler.cs" />
+    <Compile Include="FileExistenceChecker.cs" />
+    <Compile Include="FileMapper.cs" />
+    <Compile Include="GuidValidator.cs" />
+    <Compile Include="Navigation\Navigator.cs" />
+    <Compile Include="OperationManager.cs" />
+    <Compile Include="Parts\BasePart.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Parts\BasePartScanner.cs" />
+    <Compile Include="Parts\IPart.cs" />
+    <Compile Include="Parts\PartFileNamer.cs" />
+    <Compile Include="Parts\PartFormat.cs" />
+    <Compile Include="Parts\PartInfo.cs" />
+    <Compile Include="Parts\PartLoader.cs" />
+    <Compile Include="Parts\PartLocator.cs" />
+    <Compile Include="Parts\PartNotFoundException.cs" />
+    <Compile Include="Parts\PartSaver.cs" />
+    <Compile Include="Parts\PartScanner.cs" />
+    <Compile Include="Parts\PartsDisposer.cs" />
+    <Compile Include="Parts\PartsInitializer.cs" />
+    <Compile Include="Parts\PartsResetter.cs" />
+    <Compile Include="Parts\PartState.cs" />
+    <Compile Include="Parts\PartStateCollection.cs" />
+    <Compile Include="Projections\BaseCreateEditProjection.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Projections\BaseDeleteProjection.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Projections\BaseIndexProjection.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Projections\BaseProjection.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Projections\BaseProjectionScanner.cs">
+    </Compile>
+    <Compile Include="Projections\BaseViewProjection.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Projections\BaseXmlIndexProjection.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Projections\BaseXmlProjection.cs" />
+    <Compile Include="Projections\BaseXmlViewProjection.cs" />
+    <Compile Include="Projections\IProjection.cs" />
+    <Compile Include="Projections\ProjectionFileNamer.cs" />
+    <Compile Include="Projections\ProjectionFormat.cs" />
+    <Compile Include="Projections\ProjectionInfo.cs" />
+    <Compile Include="Projections\ProjectionInfoExtractor.cs" />
+    <Compile Include="Projections\ProjectionLoader.cs" />
+    <Compile Include="Projections\ProjectionLocator.cs" />
+    <Compile Include="Projections\ProjectionMapper.cs" />
+    <Compile Include="Projections\ProjectionNotFoundException.cs" />
+    <Compile Include="Projections\ProjectionSaver.cs" />
+    <Compile Include="Projections\ProjectionScanner.cs" />
+    <Compile Include="Projections\ProjectionsDisposer.cs" />
+    <Compile Include="Projections\ProjectionsInitializer.cs" />
+    <Compile Include="Projections\ProjectionsResetter.cs" />
+    <Compile Include="Projections\ProjectionStateCollection.cs" />
+    <Compile Include="Projections\ProjectionState.cs" />
+    <Compile Include="Projections\XmlProjectionRenderer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Language.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Language.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Providers\DynamicPersonalizationProvider.cs" />
+    <Compile Include="QueryStrings.cs" />
+    <Compile Include="Security\Authentication.cs" />
+    <Compile Include="Security\Authorisation.cs" />
+    <Compile Include="Security\Member.cs" />
+    <Compile Include="Security\MemberProvider.cs" />
+    <Compile Include="Security\RoleProvider.cs" />
+    <Compile Include="SetupChecker.cs" />
+    <Compile Include="SetupUtilities.cs" />
+    <Compile Include="SiteMap.cs" />
+    <Compile Include="SiteMapManager.cs" />
+    <Compile Include="SiteMapNode.cs" />
+    <Compile Include="State\Cookies\CookieCrypter.cs" />
+    <Compile Include="State\StateProviderInitializer.cs" />
+    <Compile Include="State\WebStateProvider.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="StyleUtilities.cs" />
+    <Compile Include="TextParser.cs" />
+    <Compile Include="TimeoutExtender.cs" />
+    <Compile Include="UrlConverter.cs" />
+    <Compile Include="UrlCreator.cs" />
+    <Compile Include="UrlRewriter.cs" />
+    <Compile Include="Utilities.cs" />
+    <Compile Include="WebControls\CommandSelect.cs" />
+    <Compile Include="WebControls\ContactForm.cs" />
+    <Compile Include="WebControls\DeleteLink.cs" />
+    <Compile Include="WebControls\DateSelect.cs" />
+    <Compile Include="WebControls\EntityFormPasswordConfirmItem.cs" />
+    <Compile Include="WebControls\EntityFormPasswordItem.cs" />
+    <Compile Include="WebControls\EntityFormEmailItem.cs" />
+    <Compile Include="WebControls\EntityForm.cs" />
+    <Compile Include="WebControls\EntityFormLabelItem.cs" />
+    <Compile Include="WebControls\EntityFormButtonsItem.cs" />
+    <Compile Include="WebControls\EntityFormCheckBoxItem.cs">
+    </Compile>
+    <Compile Include="WebControls\EntityFormHelper.cs" />
+    <Compile Include="WebControls\EntityFormItem.cs" />
+    <Compile Include="WebControls\EntityFormItemCollection.cs" />
+    <Compile Include="WebControls\EntityFormItemControlCollection.cs" />
+    <Compile Include="WebControls\EntityFormSpecificItem.cs" />
+    <Compile Include="WebControls\EntityFormTextBoxItem.cs" />
+    <Compile Include="WebControls\EntitySelect.cs" />
+    <Compile Include="WebControls\EntitySelectDeliverer.cs" />
+    <Compile Include="WebControls\EntitySelectRequester.cs" />
+    <Compile Include="WebControls\EntityTree.cs" />
+    <Compile Include="WebControls\IndexGrid.cs" />
+    <Compile Include="WebControls\PreviewControl.cs" />
+    <Compile Include="WebControls\ProjectorControl.cs" />
+    <Compile Include="WebControls\Result.cs" />
+    <Compile Include="WebControls\WebControlUtilities.cs" />
+    <Compile Include="WebUtilities.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Language.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Language.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Business\SiteStarter.Business.csproj">
+      <Project>{F294B839-0C1E-4187-AA58-6EA1C35E6B66}</Project>
+      <Name>SiteStarter.Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration\SiteStarter.Configuration.csproj">
+      <Project>{4B83307F-8307-43EF-A176-8AB1CDA78264}</Project>
+      <Name>SiteStarter.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Contracts\SiteStarter.Contracts.csproj">
+      <Project>{518735AC-EFA2-4205-AE47-CF4664EE3061}</Project>
+      <Name>SiteStarter.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Data\SiteStarter.Data.csproj">
+      <Project>{0D77AB54-E3BE-4B29-8750-91F16BC3DEDB}</Project>
+      <Name>SiteStarter.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.State\SiteStarter.State.csproj">
+      <Project>{34129651-3B9F-4A0D-AEBF-7DE2098DD98F}</Project>
+      <Name>SiteStarter.State</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Diagnostics\SiteStarter.Diagnostics.csproj">
+      <Project>{C3626F0A-DFD4-4EF2-8755-3532DE3712A4}</Project>
+      <Name>SiteStarter.Diagnostics</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Entities\SiteStarter.Entities.csproj">
+      <Project>{3609F512-9E15-41C7-95AF-D1B3E7F93562}</Project>
+      <Name>SiteStarter.Entities</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

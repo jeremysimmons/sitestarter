@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<project name="Common.Jobs.GenerateScreenshots" default="Common.Jobs.GenerateScreenshots" xmlns="http://nant.sf.net/schemas/nant.xsd">
+
+
+	
+	<target name="Common.Jobs.GenerateScreenshots">
+		  
+		  
+		<xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.VirtualDirectoryName']/@value"
+		    property="Solution.VirtualDirectoryName">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+    	
+
+			<!-- Call clear data twice and skip errors in the first one. If the first one fails it usually unlocks the file so the second one can proceed. -->
+			<call target="Common.Jobs.ClearData" failonerror="false" />
+
+			<call target="Common.Jobs.ClearData"/>
+			
+			<call target="Common.Jobs.ClearCache"/>
+
+			<call target="Common.Jobs.InitializeCache"/>
+			
+			<call target="Common.Jobs.ResetImportData"/>
+
+			<call target="DoGeneration"/>
+
+  </target>
+  
+  
+  <target name="DoGeneration">
+  
+	<property name="tmpFilePath" value="tmpfile.txt" />
+
+	<get src="http://localhost/${Solution.VirtualDirectoryName}/Admin/Import.aspx" dest="${tmpFilePath}" timeout="1800000" />
+
+	<delete file="${tmpFilePath}"/>
+  
+  	<foreach item="File" property="filename">
+		    <in>
+		        <items basedir="${Project.RootPath}">
+		            <include name="**.Screenshot.nant" />
+		        </items>
+		    </in>
+		    <do>
+				<xmlpeek
+				    file="${filename}"
+				    xpath="/x:project/x:property[@name = 'Screenshot.InitializationPath']/@value"
+				    property="Screenshot.InitializationPath">
+				        <namespaces>
+		        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+		    			</namespaces>
+		    	</xmlpeek>
+		    
+				<xmlpeek
+				    file="${filename}"
+				    xpath="/x:project/x:property[@name = 'Screenshot.Path']/@value"
+				    property="Screenshot.Path">
+				        <namespaces>
+		        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+		    			</namespaces>
+		    	</xmlpeek>
+		    
+				<xmlpeek
+				    file="${filename}"
+				    xpath="/x:project/x:property[@name = 'Screenshot.FileName']/@value"
+				    property="Screenshot.FileName">
+				        <namespaces>
+		        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+		    			</namespaces>
+		    	</xmlpeek>
+				
+				<property name="url" value="http://localhost/${Solution.VirtualDirectoryName + Screenshot.InitializationPath}" />
+					
+				<property name="queryStrings" value="" />
+					
+				<if test="${string::index-of(url, '?') == -1}">
+					<property name="queryStrings" value="?" />		
+				</if>
+				<if test="${string::index-of(url, '?') > -1}">
+					<property name="queryStrings" value="&amp;" />		
+				</if>
+				
+				<property name="queryStrings" value="${queryStrings}SendTo=${Screenshot.Path}" />		
+				
+				<property name="url" value="${url}${queryStrings}" />
+						
+				<echo message="URL: ${url}" />
+						
+		    	<property name="CaptureProgram" value="IECapt.exe"/>
+		    	<!-- The next line can be enabled and the previous line disabled to switch to use CutyCapt (Mozilla based engine)  -->
+		    	<!--property name="CaptureProgram" value="CutyCapt.exe"/-->
+
+				<!-- Capture the screenshot -->
+				<exec program="${Project.RootPath}\lib\nant\bin\${CaptureProgram}" verbose="true">
+				    <arg value="--url=${url}" />
+				    <arg value="--out=${Solution.RootPath}\Screenshots\${Screenshot.FileName}.png" />
+				    <arg value="--min-width=1000" />
+				</exec>
+				
+				
+			</do>
+	</foreach>
+  </target>
+
+</project>
+  	

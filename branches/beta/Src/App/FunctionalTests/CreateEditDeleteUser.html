@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://localhost/SiteStarter/" />
+<title>CreateEditDeleteUser</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">CreateEditDeleteUser</td></tr>
+</thead><tbody>
+<tr>
+	<td>setTimeout</td>
+	<td>1000000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>Admin/tests/testreset.aspx</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>Admin/QuickSetup.aspx</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Users</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>ctl00_Body_ctl00_CreateButton</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=ctl00_Body_ctl00_FirstName</td>
+	<td>Test1</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=ctl00_Body_ctl00_LastName</td>
+	<td>Test1</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ctl00_Body_ctl00_Email</td>
+	<td>test1@softwaremonkeys.net</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ctl00_Body_ctl00_Username</td>
+	<td>test1</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ctl00_Body_ctl00_Password</td>
+	<td>pass</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ctl00_Body_ctl00_PasswordConfirm</td>
+	<td>pass</td>
+</tr>
+<tr>
+	<td>addSelection</td>
+	<td>ctl00_Body_ctl00_UserRoles</td>
+	<td>label=Administrator</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>ctl00_Body_ctl00_SaveButton</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>successfully</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Test1</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>ctl00_Body_ctl00_IndexGrid_ctl03_EditButton</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ctl00_Body_ctl00_FirstName</td>
+	<td>Test2</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ctl00_Body_ctl00_LastName</td>
+	<td>Test2</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ctl00_Body_ctl00_Email</td>
+	<td>test2@softwaremonkeys.net</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>ctl00_Body_ctl00_Username</td>
+	<td>test2</td>
+</tr>
+<tr>
+	<td>removeSelection</td>
+	<td>ctl00_Body_ctl00_UserRoles</td>
+	<td>label=Administrator</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>ctl00_Body_ctl00_UpdateButton</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Users</td>
+	<td></td>
+</tr>
+<tr>
+	<td>chooseOkOnNextConfirmation</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>ctl00_Body_ctl00_IndexGrid_ctl04_DeleteButton</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertConfirmation</td>
+	<td>Are you sure you want to delete this user?</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>successfully</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>

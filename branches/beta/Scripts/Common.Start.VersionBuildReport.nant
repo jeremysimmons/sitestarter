@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<project name="Common.Start.VersionBuildReport" default="Common.Start.VersionBuildReport" xmlns="http://nant.sf.net/schemas/nant.xsd">
+  		
+		<property name="Argument.SolutionPath" value=""/>
+		<property name="Argument.ProjectPath" value=""/>	
+
+
+  		<property name="Solution.PropertiesPath" value="${Argument.SolutionPath}"/>
+  		<property name="Solution.RootPath" value="${path::get-directory-name(Solution.PropertiesPath)}"/>
+  		<property name="Project.PropertiesPath" value="${Argument.ProjectPath}"/>
+  		<property name="Project.RootPath" value="${path::get-directory-name(Project.PropertiesPath)}"/>
+  		
+	<include buildfile="Common.Jobs.VersionBuildReport.nant"/>
+
+	<target name="Common.Start.VersionBuildReport" description="Reports the build log to a version specific folder">		
+		<call target="Common.Jobs.VersionBuildReport"/>
+	</target>
+
+</project>
+  	

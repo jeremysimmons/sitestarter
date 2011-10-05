@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<project name="Common.Jobs.ConfigureIIS" default="Common.Jobs.ConfigureIIS" xmlns="http://nant.sf.net/schemas/nant.xsd">	
+  		
+	<target name="Common.Jobs.ConfigureIIS" description="Configures IIS to run app">
+
+
+		<loadtasks>
+
+            		<fileset>
+
+              		          <include name="../lib/nant/bin/tasks/NAnt.Contrib.Tasks.dll" />
+
+            		</fileset>
+
+		</loadtasks> 
+
+		<cd dir="${Solution.RootPath}\WWW"/>
+
+		<xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.VirtualDirectoryName']/@value"
+		    property="Solution.VirtualDirectoryName">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+	    	</xmlpeek>
+
+		<xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.NetRuntimeVersion']/@value"
+		    property="Solution.NetRuntimeVersion">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+	    	</xmlpeek>
+
+		<mkiisdir dirpath="${Solution.RootPath}\WWW" vdirname="${Solution.VirtualDirectoryName}" appfriendlyname="${Solution.VirtualDirectoryName}" verbose="true" />
+
+		<exec program="c:\Windows\Microsoft.NET\Framework\${Solution.NetRuntimeVersion}\aspnet_regiis">
+			<arg value="-s"/>
+			<arg value="w3svc/1/root/${Solution.VirtualDirectoryName}"/>
+		</exec>
+	</target>
+     
+</project>
+  	

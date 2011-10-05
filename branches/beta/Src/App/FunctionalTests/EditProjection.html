@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://localhost/SiteStarter-ManageProjections/" />
+<title>EditProjection</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">EditProjection</td></tr>
+</thead><tbody>
+<tr>
+	<td>setTimeout</td>
+	<td>100000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>Admin/tests/testreset.aspx</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextNotPresent</td>
+	<td>Exception</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>Admin/QuickSetup.aspx</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<!--Clear the existing test projection to ensure a clean slate-->
+<tr>
+	<td>openAndWait</td>
+	<td>Admin/Tests/DeleteProjection.aspx?Projection=TestProjection</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextNotPresent</td>
+	<td>Exception</td>
+	<td></td>
+</tr>
+<!--Open the edit projection page without specifying a projection to create a new one-->
+<tr>
+	<td>open</td>
+	<td>Admin/EditProjection.aspx</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=ctl00_Body_ProjectionFilePath</td>
+	<td>/Projections/TestProjection.ascx</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=ctl00_Body_ProjectionContent</td>
+	<td>&lt;%@ Control Language=&quot;C#&quot; Inherits=&quot;SoftwareMonkeys.SiteStarter.Web.Projections.BaseProjection&quot; %&gt;<br />&lt;h1&gt;Test Projection&lt;/h1&gt;<br />&lt;p&gt;Hello World&lt;/p&gt;</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=SaveContinueButton</td>
+	<td></td>
+</tr>
+<!--Now edit the test projection-->
+<tr>
+	<td>open</td>
+	<td>Admin/EditProjection.aspx?Projection=TestProjection</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=ctl00_Body_ProjectionContent</td>
+	<td>&lt;%@ Control Language=&quot;C#&quot; ClassName=&quot;TestProjection&quot; Inherits=&quot;SoftwareMonkeys.SiteStarter.Web.Projections.BaseProjection&quot; %&gt;<br />Hello Universe</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=SaveContinueButton</td>
+	<td></td>
+</tr>
+<tr>
+	<td>openAndWait</td>
+	<td>TestProjection.aspx</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Hello Universe</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>Admin/EditProjection.aspx?Projection=TestProjection</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=ctl00_Body_ProjectionContent</td>
+	<td>&lt;%@ Control Language=&quot;C#&quot; ClassName=&quot;TestProjection&quot; Inherits=&quot;SoftwareMonkeys.SiteStarter.Web.Projections.BaseProjection&quot; %&gt;<br />Hello World</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//input[@value='« Save &amp; Close']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextNotPresent</td>
+	<td>Exception</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Projections</td>
+	<td></td>
+</tr>
+<tr>
+	<td>openAndWait</td>
+	<td>TestProjection.aspx</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Hello World</td>
+	<td></td>
+</tr>
+<!--Clear the existing test projection to ensure a clean slate for other tests-->
+<tr>
+	<td>openAndWait</td>
+	<td>Admin/Tests/DeleteProjection.aspx?Projection=TestProjection</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextNotPresent</td>
+	<td>Exception</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>

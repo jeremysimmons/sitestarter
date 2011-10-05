@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<project name="Common.Start.ClearData" default="Common.Start.ClearData" xmlns="http://nant.sf.net/schemas/nant.xsd">
+  		
+  		
+  		<property name="Argument.ProjectPath" value=""/>
+  		<property name="Argument.SolutionPath" value=""/>
+  		
+  		<nant buildfile="Common.Functions.Initialize.nant"/>
+  		
+
+		
+  		<property name="Solution.PropertiesPath" value="${Argument.SolutionPath}"/>
+  		<property name="Solution.RootPath" value="${path::get-directory-name(Solution.PropertiesPath)}"/>
+  		
+  		<echo message="Solution.PropertiesPath: ${Solution.PropertiesPath}"/>
+  		<echo message="Solution.RootPath: ${Solution.RootPath}"/>
+  		
+  		
+  		
+	<include buildfile="Common.Jobs.ClearData.nant"/>
+	<include buildfile="Common.Jobs.KillDBServer.nant"/>
+
+	<target name="Common.Start.ClearData" description="Clears the data from all web applications (ie. /WWW/App_Data/)">		
+		<call target="Common.Jobs.ClearData"/>
+	</target>
+</project>
+  	
