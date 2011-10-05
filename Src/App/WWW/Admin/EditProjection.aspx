@@ -4,6 +4,7 @@
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Web.WebControls" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Web" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Web.Properties" %>
+<%@ Import namespace="SoftwareMonkeys.SiteStarter.Business" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Web.Security" %>
 <%@ Import namespace="System.IO" %>
 <script runat="server">
@@ -32,13 +33,18 @@
 	
 	public void LoadProjection(string projectionKey)
 	{
-		string[] parts = projectionKey.Split('-');
-		
 		ProjectionInfo info = null;
 		
 		// If the key contains a dash - then it's an Action/TypeName based projection
-		if (parts.Length == 2)
-			info = ProjectionState.Projections[parts[0], parts[1]];
+		if (projectionKey.IndexOf("-") > -1)
+		{
+			CommandInfo cmd = new CommandInfo(projectionKey);
+	
+			Action.Text = cmd.Action;
+			TypeName.Text = cmd.TypeName;
+	
+			info = ProjectionState.Projections[cmd.Action, cmd.TypeName];
+		}
 		else
 			info = ProjectionState.Projections[projectionKey];
 	
@@ -112,12 +118,68 @@
 		var cb = document.getElementById('<%= EnablePreviewBox.ClientID %>');
 		var isEnabled = cb.checked;
 		
+		var previewPath = createPreviewPath();
+			
 		if (isEnabled)
-			displayPreview('<%= GetPreviewLink() %>');
+		{
+			displayPreview(previewPath);
+		}
 		else
 			displayPreview("");
 	}
 	
+	function createPreviewPath()
+	{
+		var scriptElement = document.getElementById('<%= ProjectionFilePath.ClientID %>');
+		
+		var projectionPath = '';
+		
+		if (scriptElement)
+			projectionPath = scriptElement.value;
+		
+		var projectionName = getProjectionName(projectionPath);
+		
+		var previewPath = '<%= new UrlConverter(Request.ApplicationPath).ToAbsolute(Request.ApplicationPath) %>\/';
+		
+		if (projectionName.indexOf('-') == -1)
+		{
+			previewPath = previewPath + projectionName + ".aspx";
+		}
+		else
+		{
+			var action = getAction(projectionName);
+			var typeName = getTypeName(projectionName);
+		
+			previewPath = previewPath + action + "-" + typeName + ".aspx";
+		}
+		return previewPath;
+	}
+	
+	function getAction(projectionName)
+	{
+		var actionElement = document.getElementById('<%= Action.ClientID %>');
+		if (actionElement)
+			return actionElement.value;
+		else
+			return '';
+	}
+	
+	function getTypeName(projectionName)
+	{
+		var typeNameElement = document.getElementById('<%= TypeName.ClientID %>'); 
+		if (typeNameElement)
+			return typeNameElement.value;
+		else
+			return '';
+	}
+	
+	function getProjectionName(path)
+	{
+		path = path.replace(/^.*(\\|\/|\:)/, '');
+		path = path.substring(0, path.indexOf('.'));
+		return path;
+	}
+
 	function save()
 	{
 		var receiveReq = createHttpRequest();
@@ -232,6 +294,13 @@
 </p>
 <hr/>
 <p><%= Resources.Language.EnablePreview %>: <asp:CheckBox runat="Server" id="EnablePreviewBox" /></p>
+<p>
+	<%= Resources.Language.Action %>: * <asp:textbox runat="server" id="Action" width="200px"/>
+</p>
+<p>
+	<%= Resources.Language.TypeName %>: * <asp:textbox runat="server" id="TypeName" width="200px"/>
+</p>
+* 'Action' and 'Type Name' fields are only required if the projection uses the Action-Type mechanism.
 <cc:PreviewControl runat="server" CssClass="PreviewPanel" />
 <input type="hidden" name="OriginalProjectionFilePath" id="OriginalProjectionFilePath" value='<%= CurrentProjection != null ? CurrentProjection.ProjectionFilePath : String.Empty %>' />
 </asp:Content>

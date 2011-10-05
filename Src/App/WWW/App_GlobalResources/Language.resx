@@ -930,4 +930,10 @@ ${ResetUrl}</value>
   <data name="EditThisProjection" xml:space="preserve">
     <value>Edit Content</value>
   </data>
+  <data name="Action" xml:space="preserve">
+    <value>Action</value>
+  </data>
+  <data name="TypeName" xml:space="preserve">
+    <value>Type Name</value>
+  </data>
 </root>
