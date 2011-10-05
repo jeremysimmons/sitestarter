@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<project name="SiteStarter.Entities.Project" xmlns="http://nant.sf.net/schemas/nant.xsd">
-  <!-- Global Properties -->
-  		<property name="Assembly.Name" value="SiteStarter.Entities.Tests" />
-	    <property name="Assembly.BaseNamespace" value="SoftwareMonkeys.SiteStarter.Entities.Tests" />
-	  <property name="Assembly.AssemblyName" value="${Assembly.BaseNamespace}.dll" />
-</project>
