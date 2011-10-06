@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<project name="Common.Start.SwitchToBeta" default="Common.Start.SwitchToBeta" xmlns="http://nant.sf.net/schemas/nant.xsd">
+  		
+  		
+  		<property name="Argument.ProjectPath" value=""/>
+  		<property name="Argument.SolutionPath" value=""/>
+  		
+  		<nant buildfile="Common.Functions.Initialize.nant"/>
+  		
+
+		
+  		<property name="Solution.PropertiesPath" value="${Argument.SolutionPath}"/>
+  		<property name="Solution.RootPath" value="${path::get-directory-name(Solution.PropertiesPath)}"/>
+  		
+  		<echo message="Solution.PropertiesPath: ${Solution.PropertiesPath}"/>
+  		<echo message="Solution.RootPath: ${Solution.RootPath}"/>
+  		
+  		
+  		
+	<include buildfile="Common.Jobs.SetBuildStatus.nant"/>
+
+	<target name="Common.Start.SwitchToBeta" description="Switches the build status to 'beta'.">	
+		<property name="BuildStatus" value="beta" />	
+		<call target="Common.Jobs.SetBuildStatus"/>
+	</target>
+</project>
+  	
