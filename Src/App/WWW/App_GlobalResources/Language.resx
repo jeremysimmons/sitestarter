@@ -906,9 +906,6 @@ ${ResetUrl}</value>
   <data name="EnablePreview" xml:space="preserve">
     <value>Enable Preview</value>
   </data>
-  <data name="ProjectionSaved" xml:space="preserve">
-    <value>The projection was saved successfully.</value>
-  </data>
   <data name="Cache" xml:space="preserve">
     <value>Cache</value>
   </data>
@@ -929,6 +926,9 @@ ${ResetUrl}</value>
   </data>
   <data name="EditThisProjection" xml:space="preserve">
     <value>Edit Content</value>
+  </data>
+  <data name="ElementsReset" xml:space="preserve">
+    <value>The elements were reset successfully.</value>
   </data>
   <data name="Action" xml:space="preserve">
     <value>Action</value>
