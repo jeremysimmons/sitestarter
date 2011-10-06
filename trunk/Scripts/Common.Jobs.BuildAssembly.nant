@@ -79,6 +79,16 @@
     			</namespaces>
     	</xmlpeek>    	
     	
+
+    	 <xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.VersionMode']/@value"
+		    property="Solution.VersionMode">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
+    	
     	
 		<!-- Including both Assembly.Name and AssemblyProject.Name to avoid mistakes -->
     	<property name="AssemblyProject.BaseNamespace" value="${string::replace(AssemblyProject.BaseNamespace, '${Assembly.Name}', AssemblyProject.Name)}"/>
@@ -111,7 +121,7 @@
 				
 		<property name="AssemblyProject.Version" value="${ buildnumber.version }"/>
 		
-		<property name="versionKey" value="${string::replace(AssemblyProject.BaseNamespace, '.', '-')}"/>
+		<property name="versionKey" value="${string::replace(AssemblyProject.AssemblyName, '.', '-') + '--' + Solution.VersionMode}"/>
 
 		<get src="${ 'http://10.0.0.1:8080/scripts/Scripts/VersionNumber.script?Raw=true&amp;IncrementRevision=true&amp;Key=' + versionKey}" dest="${versionFilePath}" failonerror="false" />
 		
