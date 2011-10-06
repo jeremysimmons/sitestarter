@@ -261,6 +261,7 @@
 	        <exclude name="**.nant"/>
 	        <exclude name="**/tests/**"/>
 	        <exclude name="**.jar"/>
+	        <exclude name="**.WebDriver.dll"/>
 	        <exclude name="*MockCreate.ascx"/><!-- Exclude the mock/test create projections -->
 	        <exclude name="**/FunctionalTests/Results/**"/>
 	        <include name="${IncludeKey}" />

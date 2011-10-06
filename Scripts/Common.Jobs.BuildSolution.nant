@@ -28,6 +28,15 @@
         			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
     			</namespaces>
     	</xmlpeek>
+
+    	 <xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.VersionMode']/@value"
+		    property="Solution.VersionMode">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    	</xmlpeek>
     	
 	
   <target name="Common.Jobs.BuildSolution">
@@ -94,7 +103,7 @@
 		            	revisiontype="Increment"
 		            	path="${versionFilePath}" failonerror="false"/>
 
-			<property name="versionKey" value="${string::replace(Solution.BaseNamespace, '.', '-') + '-WWW'}"/>
+			<property name="versionKey" value="${string::replace(Solution.BaseNamespace, '.', '-')}-WWW--${Solution.VersionMode}"/>
 
 			<property name="versionUrl"  value='http://10.0.0.1:8080/scripts/Scripts/VersionNumber.script?Raw=true&amp;IncrementRevision=true&amp;Key=${versionKey}' />
 						
@@ -109,7 +118,7 @@
 
 			<property name="versionFilePath" value="${path::combine(Solution.RootPath, 'Version.Number')}"/>
 
-			<property name="versionKey" value="${string::replace(Solution.BaseNamespace, '.', '-')}--Project"/>
+			<property name="versionKey" value="${string::replace(Solution.BaseNamespace, '.', '-')}--${Solution.VersionMode}--Project"/>
 
 			<version buildtype="NoIncrement"
 	            		revisiontype="Increment"
