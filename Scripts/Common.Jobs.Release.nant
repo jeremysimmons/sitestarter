@@ -146,7 +146,7 @@
 	        <exclude name="**.pidb"/>
 	        <exclude name="**.cache"/>
 	        <exclude name="**.nunit"/>
-	        <exclude name="**/TestResults/**"/>
+	        <exclude name="**/TestResults/"/>
 	        <exclude name="**/FunctionalTests/Results/**"/>
 	        <exclude name="**.jar"/>
 	        <include name="**/${Solution.Alias}/**" />
