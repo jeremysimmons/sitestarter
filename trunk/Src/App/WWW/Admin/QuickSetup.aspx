@@ -9,6 +9,7 @@
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Web.Projections" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Web.Parts" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Web.Controllers" %>
+<%@ Import namespace="SoftwareMonkeys.SiteStarter.Web.Elements" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Web.Security" %>
 <%@ Import namespace="System.Collections.Generic" %>
 <%@ Import namespace="System.IO" %>
@@ -63,9 +64,10 @@
 
 	private void InitializeWeb()
 	{
-		new ControllersInitializer().Initialize();
 		new ProjectionsInitializer(this).Initialize();
+		new ControllersInitializer().Initialize();
 		new PartsInitializer(this).Initialize();
+		new ElementsInitializer().Initialize();
 	}
 
 

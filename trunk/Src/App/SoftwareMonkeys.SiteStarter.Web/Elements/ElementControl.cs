@@ -1,0 +1,195 @@
+﻿using System;
+using System.Collections.Specialized;
+using System.Reflection;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
+
+namespace SoftwareMonkeys.SiteStarter.Web.Elements
+{
+	/// <summary>
+	/// Displays a managed element dynamically without the need for a direct reference to the element library.
+	/// </summary>
+	public class ElementControl : WebControl
+	{
+		public IElement TargetElement = null;
+		
+		private string elementName = String.Empty;
+		/// <summary>
+		/// Gets/sets the name of the dynamic element to display. (Note: Both the Action and TypeName property need to be set OR the ElementName property.)
+		/// </summary>
+		public string ElementName
+		{
+			get { return elementName; }
+			set { elementName = value; }
+		}
+		
+		private string action = String.Empty;
+		/// <summary>
+		/// Gets/sets the action being carried out by the target element. (Note: Both the Action and TypeName property need to be set OR the ElementName property.)
+		/// </summary>
+		public string Action
+		{
+			get { return action; }
+			set { action = value; }
+		}
+		
+		private string typeName = String.Empty;
+		/// <summary>
+		/// Gets/sets the name of the type involved in the action being carried out by the target element. (Note: Both the Action and TypeName property need to be set OR the ElementName property.)
+		/// </summary>
+		public string TypeName
+		{
+			get { return typeName; }
+			set { typeName = value; }
+		}
+		
+		private NameValueCollection propertyValues = new NameValueCollection();
+		/// <summary>
+		/// Gets/sets the values to apply to the properties of the target element.
+		/// </summary>
+		public NameValueCollection PropertyValues
+		{
+			get { return propertyValues; }
+			set { propertyValues = value; }
+		}
+		
+		private string propertyValuesString = String.Empty;
+		/// <summary>
+		/// Gets/sets a string version of the PropertyValues property in the format of "[Property1]=[Value1]&[Property2]=[Value2]".
+		/// </summary>
+		public string PropertyValuesString
+		{
+			get { return propertyValuesString; }
+			set { propertyValuesString = value; }
+		}
+		
+		public ElementControl()
+		{
+		}
+		
+		protected override void OnInit(EventArgs e)
+		{
+			using (LogGroup logGroup = LogGroup.StartDebug("Initializing DynamicElement"))
+			{				
+				ElementInfo info = null;
+				
+				// If the Action and TypeName properties are specified
+				if (Action != String.Empty
+				    && TypeName != String.Empty)
+				{
+					LogWriter.Debug("Action: " + Action);
+					LogWriter.Debug("TypeName: " + TypeName);
+					
+					info = (ElementInfo)ElementState.Elements[Action, TypeName];
+				}
+				// Otherwise if the ElementName property is specified
+				else if (ElementName != String.Empty)
+				{
+					LogWriter.Debug("ElementName: " + ElementName);
+					
+					info = (ElementInfo)ElementState.Elements[ElementName];
+				}
+				// Otherwise throw error
+				else
+					throw new Exception("Either the Action and TypeName property both need to be specified OR the ElementName property.");
+				
+				// If cached info was found
+				if (info != null)
+				{
+					// Create a new instance of the dynamic element
+					TargetElement = (IElement)info.New();
+				}
+				else
+					LogWriter.Debug("No cached info found about element. Skipping.");
+				
+				// If a element was created
+				if (TargetElement != null)
+				{
+					Controls.Add((WebControl)TargetElement);
+				}
+				// Otherwise show a message
+				else
+				{
+					LogWriter.Debug("No element found.");
+					
+					Controls.Add(new LiteralControl("No element found."));
+				}
+				
+				base.OnInit(e);
+			}
+		}
+		
+		protected override void OnLoad(EventArgs e)
+		{
+			if (PropertyValuesString != String.Empty)
+				PropertyValues = ExtractPropertyValues(PropertyValuesString);
+			
+			ApplyProperties(TargetElement, PropertyValues);
+			
+			base.OnLoad(e);
+			
+		}
+		
+		/// <summary>
+		/// Extracts a NameValueCollection from the provided property values string.
+		/// </summary>
+		/// <param name="propertyValuesString"></param>
+		/// <returns></returns>
+		private NameValueCollection ExtractPropertyValues(string propertyValuesString)
+		{
+			NameValueCollection values = new NameValueCollection();
+			
+			string[] parts = PropertyValuesString.Split('&');
+			foreach (string part in parts)
+			{
+				string[] subParts = part.Split('=');
+				
+				if (subParts.Length != 2)
+					throw new ArgumentException("Invalid property values string: " + propertyValuesString, "propertyValuesString");
+				    
+				values.Add(subParts[0],  subParts[1]);
+			}
+			
+			return values;
+		}
+		
+		/// <summary>
+		/// Applies the provided values to the properties of the provided element.
+		/// </summary>
+		/// <param name="element"></param>
+		/// <param name="propertyValues"></param>
+		private void ApplyProperties(IElement element, NameValueCollection propertyValues)
+		{
+			using (LogGroup logGroup = LogGroup.StartDebug("Applying property values to dynamically loaded element."))
+			{
+				if (propertyValues == null)
+					throw new ArgumentNullException("propertyValues");
+				
+				foreach (string propertyName in propertyValues.Keys)
+				{
+					using (LogGroup logGroup2 = LogGroup.StartDebug("Applying property '" + propertyName + "'."))
+					{
+						LogWriter.Debug("Value: " + propertyValues[propertyName]);
+						
+						Type elementType = element.GetType();
+						
+						LogWriter.Debug("Element type: " + elementType.ToString());
+						
+						PropertyInfo propertyInfo = elementType.GetProperty(propertyName);
+						
+						if (propertyInfo == null)
+						{
+							LogWriter.Error("Property not found.");
+							
+							throw new ArgumentException("Can't find property '" + propertyName + "' on type '" + elementType + "'.");
+						}
+						
+						propertyInfo.SetValue(TargetElement, propertyValues[propertyName], null);
+					}
+				}
+			}
+		}
+	}
+}
+

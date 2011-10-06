@@ -27,7 +27,8 @@ private void Page_Load(object sender, EventArgs e)
 <h2>Web/UI</h2>
 <ul>
 <li><a href="Projections.aspx" id="ProjectionsCacheLink">Projections</a></li>
-<li><a href="Parts.aspx" id="PartsCacheLink">Parts</a></li>
 <li><a href="Controllers.aspx" id="ControllersCacheLink">Controllers</a></li>
+<li><a href="Parts.aspx" id="PartsCacheLink">Parts</a></li>
+<li><a href="Elements.aspx" id="ElementsCacheLink">Elements</a></li>
 </ul>
 </asp:Content>

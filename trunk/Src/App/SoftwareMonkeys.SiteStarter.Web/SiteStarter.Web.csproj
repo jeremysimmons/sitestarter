@@ -115,6 +115,26 @@
     <Compile Include="Controllers\RegisterUserController.cs" />
     <Compile Include="Controllers\ViewController.cs" />
     <Compile Include="ControlLoader.cs" />
+    <Compile Include="Elements\AssemblyContainsElementsAttribute.cs" />
+    <Compile Include="Elements\BaseElement.cs" />
+    <Compile Include="Elements\BaseElementScanner.cs" />
+    <Compile Include="Elements\ElementAttribute.cs" />
+    <Compile Include="Elements\ElementCreator.cs" />
+    <Compile Include="Elements\ElementFileNamer.cs" />
+    <Compile Include="Elements\ElementInfo.cs" />
+    <Compile Include="Elements\ElementLoader.cs" />
+    <Compile Include="Elements\ElementLocator.cs" />
+    <Compile Include="Elements\ElementNotFoundException.cs" />
+    <Compile Include="Elements\ElementSaver.cs" />
+    <Compile Include="Elements\ElementScanner.cs" />
+    <Compile Include="Elements\ElementsDisposer.cs" />
+    <Compile Include="Elements\ElementsInitializer.cs" />
+    <Compile Include="Elements\ElementsResetter.cs" />
+    <Compile Include="Elements\ElementState.cs" />
+    <Compile Include="Elements\ElementStateCollection.cs" />
+    <Compile Include="Elements\ElementControl.cs" />
+    <Compile Include="Elements\HelloWorldElement.cs" />
+    <Compile Include="Elements\IElement.cs" />
     <Compile Include="Data\DataProviderInitializer.cs" />
     <Compile Include="ExceptionHandler.cs" />
     <Compile Include="FileExistenceChecker.cs" />
@@ -274,6 +294,9 @@
       <Project>{3609F512-9E15-41C7-95AF-D1B3E7F93562}</Project>
       <Name>SiteStarter.Entities</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Elements" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
