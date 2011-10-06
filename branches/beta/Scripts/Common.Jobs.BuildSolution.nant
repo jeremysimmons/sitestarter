@@ -118,7 +118,7 @@
 
 			<property name="versionFilePath" value="${path::combine(Solution.RootPath, 'Version.Number')}"/>
 
-			<property name="versionKey" value="${string::replace(Solution.BaseNamespace, '.', '-')}--${Solution.VersionMode}--Project"/>
+			<property name="versionKey" value="${string::replace(Solution.BaseNamespace, '.', '-')}--Project--${Solution.VersionMode}"/>
 
 			<version buildtype="NoIncrement"
 	            		revisiontype="Increment"

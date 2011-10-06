@@ -106,7 +106,7 @@
 
 		<call target="Common.Actions.ZipBackup"/>
 
-		<call target="Common.Actions.CopyBackupToExternal"/>
+		<!--call target="Common.Actions.CopyBackupToExternal"/-->
 	</target>
 
   <!-- Actions.ZipBackup -->
