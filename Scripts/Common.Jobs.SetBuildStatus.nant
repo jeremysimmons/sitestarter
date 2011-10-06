@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<project name="Common.Jobs.SetBuildStatus" default="Common.Jobs.SetBuildStatus" xmlns="http://nant.sf.net/schemas/nant.xsd">
+
+<target name="Common.Jobs.SetBuildStatus">
+
+	<xmlpoke file="${Solution.PropertiesPath}" xpath="/x:project/x:property[@name = 'Solution.VersionMode']/@value" value="${BuildStatus}">
+	    <namespaces>
+	        <namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+	    </namespaces>
+	</xmlpoke>
+
+  </target>
+
+</project>
+  	
