@@ -8,6 +8,7 @@ using SoftwareMonkeys.SiteStarter.Data;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Business;
 using SoftwareMonkeys.SiteStarter.Web;
+using SoftwareMonkeys.SiteStarter.Web.Elements;
 using SoftwareMonkeys.SiteStarter.Web.Data;
 using SoftwareMonkeys.SiteStarter.Web.Projections;
 using SoftwareMonkeys.SiteStarter.Web.Controllers;
@@ -146,6 +147,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			if (Config.IsInitialized)
 			{
 				new ControllersInitializer().Initialize();
+				new ElementsInitializer().Initialize();
 				new ProjectionsInitializer().Initialize();
 				new PartsInitializer().Initialize();
 			}
