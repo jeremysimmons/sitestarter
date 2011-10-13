@@ -126,7 +126,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		}
 
 		/// <summary>
-		/// Retrieves the key for the specifid action and type.
+		/// Retrieves the key for the specified action and type.
 		/// </summary>
 		/// <param name="action"></param>
 		/// <param name="type"></param>
