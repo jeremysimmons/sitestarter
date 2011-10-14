@@ -7,7 +7,6 @@
 		<!-- Import disabled because it's not working properly -->
 		<!--call target="Common.Jobs.ImportFiles"/-->
 
-		<call target="Common.Jobs.DetectVirtualDirectory" failonerror="false"/>
 		<call target="Common.Jobs.ConfigureIIS" failonerror="false"/>	
 		<call target="Common.Jobs.ConvertSeleniumToCSharp" failonerror="false"/>
 		<call target="Common.Jobs.BuildSolution" failonerror="false"/>	

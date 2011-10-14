@@ -379,6 +379,10 @@
 				{
 					header = GetCsProjHeader(fileName, sourceFile);
 				}
+				else if (ext.ToLower() == ".js")
+				{
+					header = "";
+				}
 				// TODO: Check if needed
 				//else if (ext.ToLower() == ".nant")
 				//{
