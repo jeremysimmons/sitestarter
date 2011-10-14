@@ -11,6 +11,7 @@
 		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Projections" />
 		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Controllers" />
 		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Reactions" />
+		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Elements" />
 
 
   </target>

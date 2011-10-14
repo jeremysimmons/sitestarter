@@ -67,18 +67,7 @@
 		        <namespaces>
         			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
     			</namespaces>
-    	</xmlpeek>
-    	
-	<xmlpeek
-		    file="${AssemblyProject.PropertiesPath}"
-		    xpath="/x:project/x:property[@name = 'Assembly.Target']/@value"
-		    property="AssemblyProject.Target"
-		    failonerror="false">
-		        <namespaces>
-        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
-    			</namespaces>
     	</xmlpeek>    	
-    	
 
     	 <xmlpeek
 		    file="${Solution.PropertiesPath}"
