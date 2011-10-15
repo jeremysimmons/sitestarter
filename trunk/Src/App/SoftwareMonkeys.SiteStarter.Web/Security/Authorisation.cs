@@ -31,7 +31,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 				
 				IAuthoriseStrategy strategy = StrategyState.Strategies.Creator.New<IAuthoriseStrategy>("Authorise" + internalAction, typeName);
 				
+				LogWriter.Debug("Strategy type: " + strategy.GetType().ToString());
+				
 				isAuthorised = strategy.Authorise(typeName);
+				
+				LogWriter.Debug("Is authorised: " + isAuthorised.ToString());
 			}
 			
 			return isAuthorised;
@@ -48,7 +52,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 				
 				IAuthoriseStrategy strategy = StrategyState.Strategies.Creator.New<IAuthoriseStrategy>("Authorise" + internalAction, type.Name);
 				
+				LogWriter.Debug("Strategy type: " + strategy.GetType().ToString());
+				
 				isAuthorised = strategy.Authorise(type.Name);
+				
+				LogWriter.Debug("Is authorised: " + isAuthorised.ToString());
 			}
 			
 			return isAuthorised;
@@ -56,7 +64,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 
 		public static bool UserCan(string action, IEntity entity)
 		{
-			bool can = false;
+			bool isAuthorised = false;
 			
 			using (LogGroup logGroup = LogGroup.StartDebug("Checking whether the user can perform the action '" + action + "' with the entity type '" + entity.ShortTypeName + "'."))
 			{
@@ -66,22 +74,26 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 				
 				IAuthoriseStrategy strategy = StrategyState.Strategies.Creator.New<IAuthoriseStrategy>("Authorise" + internalAction, entity.GetType().Name);
 				
-				can = strategy.Authorise(entity);
+				LogWriter.Debug("Strategy type: " + strategy.GetType().ToString());
+				
+				isAuthorised = strategy.Authorise(entity);
+				
+				LogWriter.Debug("Is authorised: " + isAuthorised.ToString());
 			}
 			
-			return can;
+			return isAuthorised;
 			
 		}
 
 		public static bool UserCan(string action, IEntity[] entities)
 		{
-			bool can = false;
+			bool isAuthorised = false;
 			
 			using (LogGroup logGroup = LogGroup.StartDebug("Checking whether the user can perform the action '" + action + "'."))
 			{
 				if (entities == null || entities.Length == 0)
 				{
-					can = true;
+					isAuthorised = true;
 				}
 				else
 				{
@@ -101,11 +113,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 					
 					entities = matching.ToArray();
 					
-					can = UserCan(action, shortTypeName);
+					isAuthorised = UserCan(action, shortTypeName);
 				}
+				
+				LogWriter.Debug("Is authorised: " + isAuthorised.ToString());
 			}
 			
-			return can;
+			return isAuthorised;
 			
 		}
 		
@@ -132,6 +146,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 						internalAction = "Save";
 						break;
 				}
+				
+				LogWriter.Debug("Internal action: " + internalAction);
 			}
 			
 			return internalAction;
