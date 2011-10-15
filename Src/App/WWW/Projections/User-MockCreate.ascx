@@ -44,7 +44,8 @@
 		user.FirstName = "FirstName" + number;
 		user.LastName = "LastName" + number;
 		user.Email = "Email" + number;
-		user.IsApproved = false;
+		user.Password = Crypter.EncryptPassword("pass");
+		user.IsApproved = true;
 		
 		SaveStrategy.New(user, false).Save(user);
 	}
