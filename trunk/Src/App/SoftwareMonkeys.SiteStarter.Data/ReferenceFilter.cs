@@ -88,7 +88,6 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			bool typeMatches = false;
 			bool referenceMatches = false;
 			
-			
 			using (LogGroup logGroup = LogGroup.Start("Checking whether provided entity matches this filter.", LogLevel.Debug))
 			{
 				if (referenceType == null)
@@ -103,10 +102,11 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				if (this.ReferencedEntityID == Guid.Empty)
 					throw new InvalidOperationException("ReferencedEntityID is not set.");
 				
+				if (Types.Length == 0)
+					throw new Exception("No types have been added. Use the AddType function.");
+				
 				LogWriter.Debug("Property name: " + propertyName);
 				LogWriter.Debug("Referenced entity ID: " + referencedEntityID.ToString());
-				
-				
 				
 				LogWriter.Debug("Referenced type: " + referenceType.ToString());
 				
@@ -123,15 +123,10 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					{
 						typeMatches = true;
 					}
-				}
-				
-				/*PropertyInfo property = entityType.GetProperty(PropertyName);
-			object value = property.GetValue(entity, null);*/
-				
+				}				
 				
 				referenceMatches = DataAccess.Data.Referencer.MatchReference(entity.GetType(), entity.ID, propertyName, referenceType, referencedEntityID);
 				//bool referenceMatches = DataAccess.Data.Referencer.MatchReference(entity.GetType(), entity.ID, propertyName, property.Type, referencedEntityType, referencedEntityID);
-				
 				
 				LogWriter.Debug("Type matches: " + typeMatches.ToString());
 				LogWriter.Debug("Reference matches: " + referenceMatches.ToString());

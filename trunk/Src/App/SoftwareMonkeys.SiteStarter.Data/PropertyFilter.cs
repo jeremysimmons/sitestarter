@@ -68,6 +68,9 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			if (Types == null || Types.Length == 0)
 				throw new InvalidOperationException("No types have been added to the filter.");
 			
+			if (Types.Length == 0)
+					throw new Exception("No types have been added. Use the AddType function.");
+			
 			bool typeMatches = false;
 			Type entityType = entity.GetType();
 			
