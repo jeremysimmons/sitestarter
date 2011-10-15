@@ -71,7 +71,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 		protected override void OnInit(EventArgs e)
 		{
 			using (LogGroup logGroup = LogGroup.StartDebug("Initializing DynamicElement"))
-			{				
+			{
 				ElementInfo info = null;
 				
 				// If the Action and TypeName properties are specified
@@ -147,7 +147,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 				
 				if (subParts.Length != 2)
 					throw new ArgumentException("Invalid property values string: " + propertyValuesString, "propertyValuesString");
-				    
+				
 				values.Add(subParts[0],  subParts[1]);
 			}
 			
@@ -185,10 +185,33 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 							throw new ArgumentException("Can't find property '" + propertyName + "' on type '" + elementType + "'.");
 						}
 						
-						propertyInfo.SetValue(TargetElement, propertyValues[propertyName], null);
+						propertyInfo.SetValue(TargetElement, Convert(propertyValues[propertyName], propertyInfo.PropertyType), null);
 					}
 				}
 			}
+		}
+		
+		/// <summary>
+		/// Converts the provided value to the specified type.
+		/// </summary>
+		/// <param name="value"></param>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		private object Convert(object value, Type type)
+		{
+			if (type == typeof(Guid))
+			{
+				if (value is string)
+					return new Guid((string)value);
+				else
+					return value;
+			}
+			else if (type == typeof(string))
+			{
+				return value.ToString();
+			}
+			else
+				throw new NotSupportedException("The value of type '" + value.ToString() + "' cannot be converted to '" + type.ToString() + "'.");
 		}
 	}
 }
