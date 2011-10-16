@@ -30,7 +30,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			string expected = basePath + Path.DirectorySeparatorChar
 				+ role.ShortTypeName + "-" + user.ShortTypeName + Path.DirectorySeparatorChar
-				+ role.ID.ToString() + "-Users---" + user.ID.ToString() + "-Roles.xml";
+				+ reference.ID.ToString() + ".xml";
 			
 			Assert.AreEqual(expected, path, "The path doesn't match what's expected.");
 			

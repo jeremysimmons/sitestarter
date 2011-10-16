@@ -119,7 +119,11 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				referenceFileName = baseDirectoryPath + Path.DirectorySeparatorChar;
 				if (Path.GetDirectoryName(baseDirectoryPath) != type1Name + "-" + type2Name)
 					referenceFileName += typeName + Path.DirectorySeparatorChar;
-				referenceFileName += entity1ID + "-" + property1Name + "---" + entity2ID + "-" + property2Name + ".xml";
+				
+				referenceFileName += reference.ID.ToString() + ".xml";
+				
+				// TODO: Remove if not needed
+				//referenceFileName += entity1ID + "-" + property1Name + "---" + entity2ID + "-" + property2Name + ".xml";
 
 				LogWriter.Debug("Reference file name: " + referenceFileName);
 			}
