@@ -9,7 +9,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple=false)]
 	public class ElementAttribute : Attribute
 	{
-		private string name;
+		private string name = String.Empty;
 		/// <summary>
 		/// Gets/sets the name of the element.
 		/// </summary>
@@ -19,7 +19,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 			set { name = value; }
 		}
 		
-		private string typeName;
+		private string typeName = String.Empty;
 		/// <summary>
 		/// Gets/sets the name of the type involved in the element.
 		/// </summary>
@@ -29,7 +29,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 			set { typeName = value; }
 		}
 		
-		private string action;
+		private string action = String.Empty;
 		/// <summary>
 		/// Gets/sets the action that can be performed by this element.
 		/// </summary>
