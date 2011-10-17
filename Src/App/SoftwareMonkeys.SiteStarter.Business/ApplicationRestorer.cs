@@ -89,14 +89,25 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			get {
 				if (legacyVersion == null)
 				{
-					string versionFilePath = LegacyDirectoryPath + Path.DirectorySeparatorChar + VersionUtilities.GetVersionFileName(Config.Application.PathVariation);
-					
-					LogWriter.Debug("Version file path: " + versionFilePath);
-					
-					legacyVersion = VersionUtilities.LoadVersionFromFile(versionFilePath);
+					legacyVersion = GetLegacyVersion();
 				}
 				return legacyVersion; }
 			set { legacyVersion = value; }
+		}
+		
+		protected Version GetLegacyVersion()
+		{
+			Version legacyVersion = null;
+			
+			// Use a wildcard to get the Version.number file (and also match Version.local.number and Version.staging.number)
+			foreach (string versionFilePath in Directory.GetFiles(LegacyDirectoryPath, "Version*number"))
+			{
+					LogWriter.Debug("Version file path: " + versionFilePath);
+					
+					legacyVersion = VersionUtilities.LoadVersionFromFile(versionFilePath);
+			}
+			
+			return legacyVersion;
 		}
 		
 		public ApplicationRestorer(IFileMapper mapper)
