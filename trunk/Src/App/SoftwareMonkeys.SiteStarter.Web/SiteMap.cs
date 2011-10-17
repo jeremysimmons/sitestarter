@@ -362,7 +362,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				LogWriter.Debug("Item type name: " + item.TypeName);
 				
 				if (item.Title == null || item.Title == String.Empty)
-					throw new ArgumentException("A title must be specified on the provided site map item.");
+					throw new ArgumentException("A title must be specified on the provided site map item. URL: '" + item.Url + "', Action: '" + item.Action + "', TypeName: '" + item.TypeName + "', Category: '" + item.Category + "'");
 				
 				SiteMapNode node = new SiteMapNode();
 				
