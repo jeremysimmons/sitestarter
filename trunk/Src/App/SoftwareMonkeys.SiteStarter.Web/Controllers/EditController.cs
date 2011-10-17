@@ -2,6 +2,7 @@
 using SoftwareMonkeys.SiteStarter.Business;
 using SoftwareMonkeys.SiteStarter.Business.Security;
 using SoftwareMonkeys.SiteStarter.Entities;
+using SoftwareMonkeys.SiteStarter.Web.Projections;
 using SoftwareMonkeys.SiteStarter.Web.WebControls;
 using System.Web.UI.WebControls;
 using SoftwareMonkeys.SiteStarter.Web.Properties;
@@ -17,6 +18,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	[Controller("Edit", "IEntity")]
 	public class EditController : BaseController
 	{
+		/// <summary>
+		/// Gets/sets the data source.
+		/// </summary>
+		public new IEntity DataSource
+		{
+			get { return ((BaseCreateEditProjection)Container).DataSource; }
+			set { ((BaseCreateEditProjection)Container).DataSource = value; }
+		}
+		
 		private IRetrieveStrategy retriever;
 		/// <summary>
 		/// Gets/sets the strategy used to retrieve an entity.

@@ -3,6 +3,7 @@ using System.Web.UI.WebControls;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Business;
 using SoftwareMonkeys.SiteStarter.Business.Security;
+using SoftwareMonkeys.SiteStarter.Web.Projections;
 using SoftwareMonkeys.SiteStarter.Web.WebControls;
 using System.Collections.Generic;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
@@ -23,18 +24,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			set { language = value; }
 		}
 		
-		private IEntity[] dataSource;
 		/// <summary>
 		/// Gets/sets the data source of the index.
 		/// </summary>
 		public new IEntity[] DataSource
 		{
-			get {
-				if (dataSource == null)
-					dataSource = new IEntity[]{};
-				return dataSource; }
-			set { dataSource = value;
-			}
+			get { return ((BaseIndexProjection)Container).DataSource; }
+			set { ((BaseIndexProjection)Container).DataSource = value; }
 		}
 		
 		/// <summary>
