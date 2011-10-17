@@ -4,17 +4,30 @@ using System.Web.UI.WebControls;
 using System.ComponentModel;
 using System.Collections;
 using System.Collections.Generic;
+using SoftwareMonkeys.SiteStarter.Business.Security;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Business;
 using System.Reflection;
 using System.Xml.Serialization;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using SoftwareMonkeys.SiteStarter.Web.Security;
 
 namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 {
 	[ControlBuilder(typeof(EntitySelectControlBuilder))]
 	public class EntitySelect : ListBox, IPostBackDataHandler
 	{
+		private bool isEdit = true;
+		/// <summary>
+		/// Gets/sets a value indicating whether the entities are being edited (ie. their references).
+		/// When true, entities won't be added to the list if users can't edit them.
+		/// </summary>
+		public bool IsEdit
+		{
+			get { return isEdit; }
+			set { isEdit = value; }
+		}
+		
 		/// <summary>
 		/// Gets/sets the name of the property to use for the value of the items.
 		/// </summary>
@@ -427,6 +440,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				if (DataSource != null)
 				{
 					LogWriter.Debug("DataSource property != null");
+					
+					if (RequireAuthorisation)
+					{
+						if (IsEdit)
+							Authorisation.EnsureUserCan("Edit", (IEntity[])DataSource);
+					}
+					
 					// Organise the data.
 					Collection<E> data = new Collection<E>(DataSource);
 					data.Sort(TextPropertyName, Entities.SortDirection.Ascending);
