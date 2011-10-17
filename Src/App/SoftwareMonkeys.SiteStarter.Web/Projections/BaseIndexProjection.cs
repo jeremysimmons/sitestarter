@@ -34,13 +34,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		}
 		
 		/// <summary>
-		/// Gets/sets the data source in the index.
+		/// Gets/sets the data source.
 		/// </summary>
-		public IEntity[] DataSource
+		public new IEntity[] DataSource
 		{
-			get { return Controller.DataSource; }
-			set { Controller.DataSource = value; }
+			get { return (IEntity[])base.DataSource; }
+			set { base.DataSource = value; }
 		}
+		
+		// TODO: Remove if not needed
 		/*
 		/// <summary>
 		/// Gets/sets the current page index.

@@ -144,6 +144,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			set { unauthorisedUrl = value; }
 		}
 		
+		/// <summary>
+		/// Gets/sets the data source.
+		/// </summary>
+		public object DataSource
+		{
+			get { return ViewState["DataSource"]; }
+			set { ViewState["DataSource"] = value; }
+		}
 		
 		public BaseProjection()
 		{

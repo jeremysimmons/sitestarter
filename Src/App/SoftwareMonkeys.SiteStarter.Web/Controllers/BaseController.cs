@@ -6,6 +6,7 @@ using System.Web.UI.WebControls;
 using System.Collections.Generic;
 using System.Web.UI;
 using System.Web;
+using SoftwareMonkeys.SiteStarter.Web.Projections;
 using SoftwareMonkeys.SiteStarter.Web.WebControls;
 using System.Reflection;
 using SoftwareMonkeys.SiteStarter.Web.Properties;
@@ -123,15 +124,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			set { container = value; }
 		}
 		
-		private IEntity dataSource;
 		/// <summary>
 		/// Gets/sets the data source.
 		/// </summary>
-		public IEntity DataSource
+		public object DataSource
 		{
-			get { return dataSource; }
-			set { dataSource = value;
-			}
+			get { return ((BaseProjection)Container).DataSource; }
+			set { ((BaseProjection)Container).DataSource = value; }
 		}
 		
 		public string UniquePropertyName;

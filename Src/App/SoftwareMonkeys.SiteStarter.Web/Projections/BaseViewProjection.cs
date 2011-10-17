@@ -33,6 +33,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			set { form = value; }
 		}
 		
+		/// <summary>
+		/// Gets/sets the data source.
+		/// </summary>
+		public new IEntity DataSource
+		{
+			get { return (IEntity)base.DataSource; }
+			set { base.DataSource = value; }
+		}
+		
 		public override string InternalAction
 		{
 			get { return "Retrieve"; }
