@@ -10,8 +10,16 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		public static string GetVersionFileName(string pathVariation)
 		{		
 			string versionFile = "Version.number";
+			
 			if (pathVariation != null && pathVariation != String.Empty)
-				versionFile = "Version." + pathVariation + ".number";
+			{
+				string variedFile = "Version." + pathVariation + ".number";
+				
+				// If the varied file is found then use it
+				if (File.Exists(variedFile))
+					versionFile = variedFile;
+				// Otherwise the standard file is used
+			}
 			
 			return versionFile;
 		}
