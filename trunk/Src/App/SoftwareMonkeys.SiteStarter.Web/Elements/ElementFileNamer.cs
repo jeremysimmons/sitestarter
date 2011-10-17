@@ -79,7 +79,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 			string name = element.Name;
 			
 			// If the type and action are specified then use them as the name instead
-			if (element.TypeName != String.Empty && element.Action != String.Empty)
+			if (element.TypeName != null
+				&& element.TypeName != String.Empty
+				&& element.Action != null
+				&& element.Action != String.Empty)
 			{
 				name = element.TypeName + "-" + element.Action;
 			}
