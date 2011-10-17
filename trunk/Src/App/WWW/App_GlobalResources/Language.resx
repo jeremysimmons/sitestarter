@@ -163,7 +163,7 @@
     <value>Edit User</value>
   </data>
   <data name="EditUserIntro" xml:space="preserve">
-    <value>Edit the details of the user in the form below.</value>
+    <value>Edit the details in the form below.</value>
   </data>
   <data name="EditUserRole" xml:space="preserve">
     <value>Edit User Role</value>
