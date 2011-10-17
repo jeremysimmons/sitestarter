@@ -144,7 +144,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 						store.Commit();
 					}
 					else
-						throw new InvalidOperationException("Cannot update an entity that doesn't not already exist in the data store. Save the entity first.");
+						throw new InvalidOperationException("Cannot update an entity that doesn't already exist in the data store. Save the entity first.");
 				}
 				
 				
