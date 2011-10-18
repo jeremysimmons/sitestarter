@@ -23,8 +23,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// </summary>
 		public new IEntity DataSource
 		{
-			get { return ((BaseCreateEditProjection)Container).DataSource; }
-			set { ((BaseCreateEditProjection)Container).DataSource = value; }
+			get { return (IEntity)((BaseProjection)Container).DataSource; }
+			set { ((BaseProjection)Container).DataSource = value; }
 		}
 		
 		private string entitySavedLanguageKey = "EntitySaved";
