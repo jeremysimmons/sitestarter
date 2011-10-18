@@ -49,10 +49,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
             set
             {
                 ViewState["Text"] = value;
+                LabelCell.Text = value;
+
                 if (IsRequired)
-                    LabelCell.Text = "<span class='Required'>*</span>&nbsp;" + value;
-                else
-                    LabelCell.Text = "&nbsp;&nbsp;&nbsp;" + value;
+					LabelCell.Text = LabelCell.Text + " <span class='Required'>*</span>";
             }
         }
         
@@ -211,11 +211,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
             }
         }
 
-        //private ControlCollection Controls
-
         protected override void OnInit(EventArgs e)
         {
-            //Controls.Add(row);
             
             LabelCell.CssClass = "FieldLabel";
 
@@ -224,11 +221,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
             if (FieldTemplate != null)
                 FieldTemplate.InstantiateIn(FieldCell);
-
-            /*foreach (Control control in Controls)
-            {
-                fieldCell.Controls.Add(control);
-            }*/
 
             ReqVal = new RequiredFieldValidator();
 
@@ -240,7 +232,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
             if (IsRequired)
             {
                 ReqVal.ControlToValidate = FieldControlID;
-                //ReqVal.ErrorMessage = RequiredErrorMessage;
 
                 ReqVal.Text = " &laquo; ";
                 ReqVal.ID = FieldControlID + "ReqVal";
@@ -249,16 +240,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
             base.OnLoad(e);
         }
-
-        /*public void AddToTable(Table table)
-        {
-            table.Rows.Add(row);
-        }*/
-
-        /*protected override void Render(HtmlTextWriter writer)
-        {
-            row.RenderControl(writer);
-        }*/
 
         public override void DataBind()
         {
