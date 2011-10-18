@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace SoftwareMonkeys.SiteStarter.Data
 {
 	/// <summary>
-	/// Description of IDataIndexer.
+	/// Defines the interface for data indexer adapters.
 	/// </summary>
 	public interface IDataIndexer : IDataAdapter
 	{

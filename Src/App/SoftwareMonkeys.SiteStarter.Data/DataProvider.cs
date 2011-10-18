@@ -80,6 +80,30 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		}
 		#endregion
 		
+		#region Counter adapter
+		
+		private IDataCounter counter;
+		/// <summary>
+		/// Holds a JIT loaded instance of the data counter for the current data provider.
+		/// </summary>
+		public IDataCounter Counter
+		{
+			get {
+				if (counter == null)
+					counter = InitializeDataCounter();
+				return counter;  }
+		}
+		
+		/// <summary>
+		/// Must be overridden. Initializes the data counter adapter held by the Counter property.
+		/// </summary>
+		/// <returns>The provider specific Counter adapter.</returns>
+		public virtual IDataCounter InitializeDataCounter()
+		{
+			throw new NotImplementedException("This method should be overridden.");
+		}
+		#endregion
+		
 		#region Referencer adapter
 		private IDataReferencer referencer;
 		/// <summary>
