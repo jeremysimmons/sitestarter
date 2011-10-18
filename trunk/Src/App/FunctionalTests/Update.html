@@ -211,6 +211,32 @@
 	<td>another role</td>
 	<td></td>
 </tr>
+<!--Ensure admin can still sign in-->
+<tr>
+	<td>clickAndWait</td>
+	<td>id=SignOutLink</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=ctl00_Body_ctl00_Login_UserName</td>
+	<td>admin</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=ctl00_Body_ctl00_Login_Password</td>
+	<td>pass</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=ctl00_Body_ctl00_Login_LoginButton</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>signed in as: admin</td>
+	<td></td>
+</tr>
 </tbody></table>
 </body>
 </html>
