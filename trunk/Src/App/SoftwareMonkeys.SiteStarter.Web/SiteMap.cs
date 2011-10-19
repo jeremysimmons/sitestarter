@@ -370,7 +370,12 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				node.Url = item.Url;
 				
 				if (node.Url == String.Empty)
-					node.Url = UrlCreator.CreateUrl(item.Action, item.TypeName);
+				{
+					if (item.Action != String.Empty && item.TypeName != String.Empty)
+						node.Url = UrlCreator.CreateUrl(item.Action, item.TypeName);
+					else
+						node.Url = UrlCreator.CreateURl(item.ProjectionName);
+				}
 				
 				string url = node.Url;
 				
@@ -481,7 +486,12 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				string url = item.Url;
 				
 				if (url == String.Empty)
-					url = UrlCreator.CreateUrl(item.Action, item.TypeName);
+				{
+					if (item.Action != String.Empty && item.TypeName != String.Empty)
+						url = UrlCreator.CreateUrl(item.Action, item.TypeName);
+					else
+						url = UrlCreator.CreateUrl(item.ProjectionName);
+				}
 				
 				LogWriter.Debug("URL: " + url);
 

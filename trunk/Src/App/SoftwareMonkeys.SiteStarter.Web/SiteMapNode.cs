@@ -71,6 +71,14 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			get { return typeName; }
 			set { typeName = value; }
 		}
+
+		private string projectionName = String.Empty;
+		public string ProjectionName 
+		{
+			get { return projectionName; }
+			set { projectionName = value; }
+		}
+		
 		
 		private string category = String.Empty;
 		public string Category
@@ -110,15 +118,23 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		{
 			using (LogGroup logGroup = LogGroup.StartDebug("Constructing SiteMapNode from the provided projection."))
 			{
+				
 				Category = projection.MenuCategory;
 				Title = projection.MenuTitle;
 				Action = projection.Action;
 				TypeName = projection.TypeName;
+				ProjectionName = projection.Name;
 				
 				LogWriter.Debug("Category: " + Category);
 				LogWriter.Debug("Title: " + Title);
 				LogWriter.Debug("Action: " + Action);
 				LogWriter.Debug("Type name: " + TypeName);
+				LogWriter.Debug("Projection name: " + ProjectionName);
+
+				if (Action != String.Empty && TypeName != String.Empty)
+					Url = new UrlCreator().CreateUrl(Action, TypeName);
+				else
+					Url = new UrlCreator().CreateUrl(ProjectionName);
 			}
 		}
 		
