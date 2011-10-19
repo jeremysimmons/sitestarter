@@ -84,6 +84,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Navigation
 		{
 			return UrlCreator.CreateUrl(action, type);
 		}
+
+		public string GetLink(string projectionName)
+		{
+			return UrlCreator.CreateUrl(projectionName);
+		}
 		
 		public string GetStandardLink(string action, string type)
 		{
