@@ -374,7 +374,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 					if (item.Action != String.Empty && item.TypeName != String.Empty)
 						node.Url = UrlCreator.CreateUrl(item.Action, item.TypeName);
 					else
-						node.Url = UrlCreator.CreateURl(item.ProjectionName);
+						node.Url = UrlCreator.CreateUrl(item.ProjectionName);
 				}
 				
 				string url = node.Url;
