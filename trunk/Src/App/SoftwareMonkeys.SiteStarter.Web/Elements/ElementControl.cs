@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Reflection;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -12,7 +13,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 	/// </summary>
 	public class ElementControl : WebControl
 	{
-		public IElement TargetElement = null;
+		private IElement target;
+		[Bindable(true)]
+		public IElement Target
+		{
+			get { return target; }
+			set { target = value; }
+		}
 		
 		private string elementName = String.Empty;
 		/// <summary>
@@ -98,15 +105,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 				if (info != null)
 				{
 					// Create a new instance of the dynamic element
-					TargetElement = (IElement)info.New();
+					Target = (IElement)info.New();
 				}
 				else
 					LogWriter.Debug("No cached info found about element. Skipping.");
 				
 				// If a element was created
-				if (TargetElement != null)
+				if (Target != null)
 				{
-					Controls.Add((WebControl)TargetElement);
+					Controls.Add((WebControl)Target);
 				}
 				// Otherwise show a message
 				else
@@ -125,7 +132,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 			if (PropertyValuesString != String.Empty)
 				PropertyValues = ExtractPropertyValues(PropertyValuesString);
 			
-			ApplyProperties(TargetElement, PropertyValues);
+			ApplyProperties(Target, PropertyValues);
 			
 			base.OnLoad(e);
 			
@@ -185,7 +192,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 							throw new ArgumentException("Can't find property '" + propertyName + "' on type '" + elementType + "'.");
 						}
 						
-						propertyInfo.SetValue(TargetElement, Convert(propertyValues[propertyName], propertyInfo.PropertyType), null);
+						propertyInfo.SetValue(Target, ConvertValue(propertyValues[propertyName], propertyInfo.PropertyType), null);
 					}
 				}
 			}
@@ -197,7 +204,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 		/// <param name="value"></param>
 		/// <param name="type"></param>
 		/// <returns></returns>
-		private object Convert(object value, Type type)
+		private object ConvertValue(object value, Type type)
 		{
 			if (type == typeof(Guid))
 			{
@@ -209,6 +216,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 			else if (type == typeof(string))
 			{
 				return value.ToString();
+			}
+			else if (type == typeof(Int32))
+			{
+				return Convert.ToInt32(value.ToString());
 			}
 			else
 				throw new NotSupportedException("The value of type '" + value.ToString() + "' cannot be converted to '" + type.ToString() + "'.");
