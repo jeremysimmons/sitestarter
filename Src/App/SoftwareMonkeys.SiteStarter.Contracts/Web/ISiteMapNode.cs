@@ -12,5 +12,6 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		string Action { get;set; }
 		string TypeName { get;set; }
 		string Url { get;set; }
+		string ProjectionName { get;set; }
 	}
 }
