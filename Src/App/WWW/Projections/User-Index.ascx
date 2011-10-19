@@ -39,7 +39,7 @@
   
   private void SettingsButton_Click(object sender, EventArgs e)
   {
-  		Navigator.Go("Edit", "UserSettings");
+  		Navigator.Go("UserSettings");
   }
                     
 </script>
