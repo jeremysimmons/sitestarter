@@ -35,8 +35,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.State.Cookies
 			{
 				throw new ArgumentOutOfRangeException("Invalid expiration date: " + expires.ToString(), ex);
 			}
+			catch
+			{
+				// Ignore and return String.Empty
+			}
             
-            return encryptedValue;
+            		return encryptedValue;
 		}
 	}
 }
