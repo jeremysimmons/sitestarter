@@ -44,14 +44,16 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 				if (entity == null)
 					throw new ArgumentNullException("entity");
 				
-				if (AuthenticationState.IsAuthenticated)
-					isAuthorised = true;
+				isAuthorised = Authorise(entity.ShortTypeName);
+				
+				AuthoriseReferences(entity);
 				
 				LogWriter.Debug("Is authorised: " + isAuthorised);
 				
 			}
 			return isAuthorised;
 		}
+		
 		
 		#region New functions
 		/// <summary>
@@ -71,30 +73,15 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 			return StrategyState.Strategies.Creator.New<IAuthoriseUpdateStrategy>("AuthoriseUpdate", typeName);
 		}
 		
-		// TODO: Remove. Shouldn't be needed
-		/*/// <summary>
-		/// Creates a new strategy for authorising the updating of the specified type.
-		/// </summary>
-		/// <param name="requireAuthorisation">A value indicating whether the strategy requires authorisation.</param>
-		static public IAuthoriseUpdateStrategy New<T>(bool requireAuthorisation)
-		{
-			IAuthoriseUpdateStrategy strategy = StrategyState.Strategies.Creator.New<IAuthoriseUpdateStrategy>("AuthoriseUpdate", typeof(T).Name);
-			strategy.RequireAuthorisation = requireAuthorisation;
-			return strategy;
-		}
-		
 		/// <summary>
-		/// Creates a new strategy for authorising the updating the specified type.
+		/// Creates a new strategy for authorising the updating the provided entity.
 		/// </summary>
-		/// <param name="typeName">The short name of the type involved in the strategy.</param>
-		/// <param name="requireAuthorisation">A value indicating whether the strategy requires authorisation.</param>
-		static public IAuthoriseUpdateStrategy New(string typeName, bool requireAuthorisation)
+		/// <param name="entity">The entity involved in the strategy.</param>
+		static public IAuthoriseUpdateStrategy New(IEntity entity)
 		{
-			IAuthoriseUpdateStrategy strategy = StrategyState.Strategies.Creator.New<IAuthoriseUpdateStrategy>("AuthoriseUpdate", typeName);
-			strategy.RequireAuthorisation = requireAuthorisation;
-			return strategy;
-		}*/
-			#endregion
+			return New(entity.ShortTypeName);
+		}
+		#endregion
 
 	}
 }

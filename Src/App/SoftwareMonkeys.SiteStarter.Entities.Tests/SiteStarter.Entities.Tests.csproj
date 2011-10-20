@@ -66,6 +66,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyScanInfo.cs" />
+    <Compile Include="Entities\MockEntity.cs" />
+    <Compile Include="Entities\MockRestrictedEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration.Tests\SiteStarter.Configuration.Tests.csproj">
       <Project>{5DFB85CA-D338-425A-B382-64EFBE19C65D}</Project>
@@ -114,6 +116,7 @@
     <Compile Include="PagingLocationTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Entities" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

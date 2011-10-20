@@ -36,6 +36,8 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 			if (entity == null)
 				throw new ArgumentNullException("entity");
 			
+			AuthoriseReferences(entity);
+			
 			return Authorise(entity.ShortTypeName);
 		}
 		

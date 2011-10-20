@@ -81,6 +81,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Security" />
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Business\SiteStarter.Business.csproj">
       <Project>{F294B839-0C1E-4187-AA58-6EA1C35E6B66}</Project>
       <Name>SiteStarter.Business</Name>
@@ -165,6 +166,10 @@
     <Compile Include="ReactionTests.cs" />
     <Compile Include="RetrieveStrategyTests.cs" />
     <Compile Include="SaveStrategyTests.cs" />
+    <Compile Include="Security\AuthoriseReferenceStrategyTests.cs" />
+    <Compile Include="Security\MockAuthoriseSaveMockEntityStrategy.cs" />
+    <Compile Include="Security\MockAuthoriseUpdateMockEntityStrategy.cs" />
+    <Compile Include="Security\MockAuthoriseReferenceRestrictedEntityStrategy.cs" />
     <Compile Include="StrategyCreatorTests.cs" />
     <Compile Include="StrategyFileNamerTests.cs" />
     <Compile Include="StrategyInfoTests.cs" />
