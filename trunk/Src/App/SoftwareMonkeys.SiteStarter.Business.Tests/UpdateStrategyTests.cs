@@ -1,6 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 using SoftwareMonkeys.SiteStarter.Data;
+using SoftwareMonkeys.SiteStarter.Entities.Tests.Entities;
 using SoftwareMonkeys.SiteStarter.Tests.Entities;
 
 namespace SoftwareMonkeys.SiteStarter.Business.Tests
@@ -141,5 +142,31 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			
 			
 		}
+		
+		[Test]
+		public void Test_Update_RemovesUnauthorisedReferences()
+		{
+			MockEntity entity = new MockEntity();
+			entity.ID = Guid.NewGuid();
+			
+			MockRestrictedEntity restrictedEntity = new MockRestrictedEntity();
+			restrictedEntity.ID = Guid.NewGuid();
+			
+			SaveStrategy.New(restrictedEntity, false).Save(restrictedEntity);
+			SaveStrategy.New(entity, false).Save(entity);
+			
+			entity.RestrictedEntities = new MockRestrictedEntity[]{
+				restrictedEntity
+			};
+			
+			UpdateStrategy.New(entity).Update(entity);
+			
+			MockEntity foundEntity = RetrieveStrategy.New<MockEntity>(false).Retrieve<MockEntity>("ID", entity.ID);
+			
+			foundEntity.Activate();
+			
+			Assert.AreEqual(0, foundEntity.RestrictedEntities.Length, "Restricted entity wasn't removed from reference property.");
+		}
+		
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
+using SoftwareMonkeys.SiteStarter.Entities.Tests.Entities;
 using SoftwareMonkeys.SiteStarter.Tests.Entities;
 
 namespace SoftwareMonkeys.SiteStarter.Business.Tests
@@ -58,5 +59,29 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			// Ensure the user wasn't found and therefore wasn't saved
 			Assert.IsNull(foundUser, "The entity was found in the store even though it shouldn't have saved.");
 		}
+		
+		[Test]
+		public void Test_Save_RemovesUnauthorisedReferences()
+		{
+			MockEntity entity = new MockEntity();
+			entity.ID = Guid.NewGuid();
+			
+			MockRestrictedEntity restrictedEntity = new MockRestrictedEntity();
+			restrictedEntity.ID = Guid.NewGuid();
+			
+			entity.RestrictedEntities = new MockRestrictedEntity[]{
+				restrictedEntity
+			};
+			
+			SaveStrategy.New(restrictedEntity, false).Save(restrictedEntity);
+			SaveStrategy.New(entity).Save(entity);
+			
+			MockEntity foundEntity = RetrieveStrategy.New<MockEntity>(false).Retrieve<MockEntity>("ID", entity.ID);
+			
+			foundEntity.Activate();
+			
+			Assert.AreEqual(0, foundEntity.RestrictedEntities.Length, "Restricted entity wasn't removed from reference property.");
+		}
+		
 	}
 }

@@ -82,6 +82,7 @@
     <Compile Include="Business\Security\IAuthoriseCreateStrategy.cs" />
     <Compile Include="Business\Security\IAuthoriseDeleteStrategy.cs" />
     <Compile Include="Business\Security\IAuthoriseIndexStrategy.cs" />
+    <Compile Include="Business\Security\IAuthoriseReferenceStrategy.cs" />
     <Compile Include="Business\Security\IAuthoriseRetrieveStrategy.cs" />
     <Compile Include="Business\Security\IAuthoriseSaveStrategy.cs" />
     <Compile Include="Business\Security\IAuthoriseStrategy.cs" />

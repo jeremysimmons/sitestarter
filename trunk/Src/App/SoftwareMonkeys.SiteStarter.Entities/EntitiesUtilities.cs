@@ -91,7 +91,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				validType = EntityState.IsType(referenceType);
 				
 				// If it's not a valid type then try using the type sepcified on the attribute
-				if (!validType)
+				if (!validType && reference.TypeName != String.Empty)
 				{
 					referenceType = EntityState.GetType(reference.TypeName);
 					
@@ -99,7 +99,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				}
 				
 				if (!validType)
-					throw new Exception("Reference property '" + property.Name + "' of type '" + referenceType.Name + "', found on entity type '" + sourceType.Name + "', is not registered as a valid entity type. Make sure that the referenced type or interface has a ReferenceAttribute.");
+					throw new Exception("Reference property '" + property.Name + "' of type '" + referenceType.Name + "', found on entity type '" + sourceType.FullName + "', is not registered as a valid entity type. Make sure that the referenced type or interface has a ReferenceAttribute.");
 			}
 			
 			//	LogWriter.Debug("Is reference? " + isReference.ToString());
@@ -250,7 +250,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			
 			if (IsReference(sourceType, property))
 			{
-				if (attribute.TypeName != String.Empty)
+				if (attribute.TypeName != null && attribute.TypeName != String.Empty)
 				{
 					LogWriter.Debug("attribute.TypeName != String.Empty");
 					LogWriter.Debug("attribute.TypeName == " + attribute.TypeName);

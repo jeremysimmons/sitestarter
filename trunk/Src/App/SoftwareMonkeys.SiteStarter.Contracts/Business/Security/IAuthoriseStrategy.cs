@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using SoftwareMonkeys.SiteStarter.Entities;
 
 namespace SoftwareMonkeys.SiteStarter.Business.Security
@@ -33,5 +34,13 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// </summary>
 		/// <param name="entity">The entity involved in the operation in which authorisation is being ensured.</param>
 		void EnsureAuthorised(IEntity entity);
+		
+		/// <summary>
+		/// Checks whether the current user is authorised to perform an operation involving the provided entities.
+		/// </summary>
+		/// <param name="entities">The entities involved in the operation in which authorisation is required.</param>
+		/// <returns>The provided entities with unauthorised entitiese removed.</returns>
+		IEntity[] Authorise(IEntity[] entities);
+		
 	}
 }

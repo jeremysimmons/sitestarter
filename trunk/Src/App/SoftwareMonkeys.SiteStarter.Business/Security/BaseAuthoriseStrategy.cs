@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Entities;
 
 namespace SoftwareMonkeys.SiteStarter.Business.Security
@@ -7,7 +10,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 	/// The base of all authorise strategies.
 	/// </summary>
 	public abstract class BaseAuthoriseStrategy : BaseStrategy, IAuthoriseStrategy
-	{		
+	{
 		/// <summary>
 		/// Checks whether the current user is authorised to perform an operation involving an entity of the specified type.
 		/// </summary>
@@ -46,12 +49,48 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		}
 		
 		/// <summary>
+		/// Checks whether the current user is authorised to perform the desired action.
+		/// </summary>
+		/// <param name="entities">The entities involved in the strategy.</param>
+		/// <returns>The provided entities with unauthorised entitiese removed.</returns>
+		public virtual IEntity[] Authorise(IEntity[] entities)
+		{
+			using (LogGroup logGroup = LogGroup.StartDebug("Checking whether the current user is authorised to perform the desired action with the provided entities."))
+			{				
+				List<IEntity> matching = new List<IEntity>();
+				
+				foreach (IEntity entity in entities)
+				{
+					if (Authorise(entity))
+						matching.Add(entity);
+				}
+				
+				entities = matching.ToArray();
+			
+			}
+			return entities;
+		}
+		
+		/// <summary>
 		/// Retrieves the short type name specified by the Strategy attribute.
 		/// </summary>
 		/// <returns></returns>
 		public virtual string GetRestrictedAction()
 		{
 			return Action.Replace("Authorise", "");
+		}
+		
+		public virtual void AuthoriseReferences(IEntity entity)
+		{
+			Type type = entity.GetType();
+			
+			foreach (PropertyInfo property in type.GetProperties())
+			{
+				if (EntitiesUtilities.IsReference(type, property))
+				{
+					AuthoriseReferenceStrategy.New(entity, property).Authorise(entity, property);
+				}
+			}
 		}
 	}
 }
