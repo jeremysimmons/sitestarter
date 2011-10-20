@@ -17,15 +17,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 	[ControlBuilder(typeof(EntitySelectControlBuilder))]
 	public class EntitySelect : ListBox, IPostBackDataHandler
 	{
-		private bool isEdit = true;
+		private bool isReference = true;
 		/// <summary>
-		/// Gets/sets a value indicating whether the entities are being edited (ie. their references).
-		/// When true, entities won't be added to the list if users can't edit them.
+		/// Gets/sets a value indicating whether the entities are being referenced.
+		/// When true, entities won't be added to the list if users aren't authorised to reference them.
 		/// </summary>
-		public bool IsEdit
+		public bool IsReference
 		{
-			get { return isEdit; }
-			set { isEdit = value; }
+			get { return isReference; }
+			set { isReference = value; }
 		}
 		
 		/// <summary>
@@ -443,8 +443,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 					
 					if (RequireAuthorisation)
 					{
-						if (IsEdit)
-							Authorisation.EnsureUserCan("Edit", (IEntity[])DataSource);
+						if (IsReference)
+							DataSource = AuthoriseReferenceStrategy.New(typeof(E).Name).Authorise((IEntity[])DataSource);
 					}
 					
 					// Organise the data.
