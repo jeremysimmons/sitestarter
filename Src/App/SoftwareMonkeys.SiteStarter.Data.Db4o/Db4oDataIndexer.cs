@@ -300,57 +300,16 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			if (container == null)
 				throw new Exception("No object container for store '" + store.Name + "'.");
 			
-			int i = 0;
-			
 			string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(typeof(T), propertyName);
 			
-			// Load the references all in one go, to avoid individual loads
-			EntityReferenceCollection references = Provider.Referencer.GetReferences(referencedEntityType, referencedEntityID, mirrorPropertyName, typeof(T), false);
+			Predicate matches = new MatchReferencePredicate(Provider, typeof(T), propertyName, referencedEntityType, mirrorPropertyName, referencedEntityID);
 			
-			Guid[] entityIDs = references.GetEntityIDs(referencedEntityID);
+			IObjectSet os = store.ObjectContainer.Query(matches,
+				                                            new DynamicComparer(
+				                                            	type,
+				                                            	sortExpression));
 			
-			page.AddRange(container.Query<T>(
-				delegate(T e)
-				{
-					bool matches = true;
-					bool isInPage = false;
-					
-					//using (LogGroup logGroup2 = LogGroup.Start("Querying entity.", NLog.LogLevel.Debug))
-					//{
-
-					//LogWriter.Debug("Checking type " + e.GetType().ToString());
-					//LogWriter.Debug("Entity ID: " + e.ID);
-					
-					bool foundReference = Array.IndexOf(entityIDs, e.ID) > -1;
-					
-					// If a referenced entity ID is specified then entities match if a reference exists
-					if (referencedEntityID != Guid.Empty)
-						matches = foundReference;
-					// Otherwise the calling code is trying to get entities where NO reference exists, therefore it matches when no reference is found
-					else
-						matches = !foundReference;
-					
-					isInPage = location.IsInPage(i);
-					
-					// IMPORTANT: Increment if it matches, regardless of what page it's on
-					if (matches)
-						i++;
-					
-					//LogWriter.Debug("Matches: " + matches);
-					//}
-					
-					
-					return matches && isInPage;
-				},
-				new DynamicComparer<T>(
-					type,
-					sortExpression)));
-			
-			location.AbsoluteTotal = i;
-			
-
-			//LogWriter.Debug("Absolute total objects: " + location.AbsoluteTotal);
-			//}
+			page.AddRange(GetPage(os, location));
 
 			return Release((T[])page.ToArray());
 		}
@@ -365,6 +324,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <returns>An array of the objects retrieved.</returns>
 		public override T[] GetPageOfEntitiesWithReference<T>(string propertyName, IEntity[] referencedEntities, PagingLocation location, string sortExpression)
 		{
+			if (referencedEntities.Length == 0)
+				return new T[]{};
 			
 			Collection<T> page = new Collection<T>();
 			
@@ -405,44 +366,18 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				entityIDList.AddRange(references.GetEntityIDs(referencedEntity.ID));
 			}
 			
-			Guid[] entityIDs = entityIDList.ToArray();
-			page.AddRange(container.Query<T>(
-				delegate(T e)
-				{
-					bool matches = true;
-					bool isInPage = false;
-					
-					//using (LogGroup logGroup2 = LogGroup.Start("Querying entity.", NLog.LogLevel.Debug))
-					//{
-
-					//LogWriter.Debug("Checking type " + e.GetType().ToString());
-					//LogWriter.Debug("Entity ID: " + e.ID);
-					
-					bool foundReference = Array.IndexOf(entityIDs, e.ID) > -1;
-					
-					// If referenced entities were provided then entities match if a reference exists
-					if (referencedEntities != null && referencedEntities.Length > 0)
-						matches = foundReference;
-					// Otherwise the calling code is trying to get entities where NO reference exists, therefore it matches when no reference is found
-					else
-						matches = !foundReference;
-					
-					isInPage = location.IsInPage(i);
-					
-					// IMPORTANT: Increment if it matches, regardless of what page it's on
-					if (matches)
-						i++;
-					//LogWriter.Debug("Matches: " + matches);
-					//}
-					
-					
-					return matches && isInPage;
-				},
-				new DynamicComparer<T>(
-					type,
-					sortExpression)));
+			Type referencedEntityType = referencedEntities[0].GetType();
 			
-			location.AbsoluteTotal = i;
+			Guid[] entityIDs = entityIDList.ToArray();
+			
+			Predicate matches = new MatchReferencesPredicate(Provider, typeof(T), propertyName, referencedEntityType, mirrorPropertyName, entityIDList.ToArray());
+			
+			IObjectSet os = store.ObjectContainer.Query(matches,
+				                                            new DynamicComparer(
+				                                            	type,
+				                                            	sortExpression));
+			
+			page.AddRange(GetPage(os, location));
 			
 
 			//LogWriter.Debug("Absolute total objects: " + location.AbsoluteTotal);
@@ -666,21 +601,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 
 			IObjectSet os = query.Execute();
 
-			int i = 0;
-			//        os.Reset();
-
 			ArrayList page = new ArrayList();
-			while (os.HasNext())
-			{
-				if ((i >= location.PageIndex * location.PageSize) && (i < (location.PageIndex + 1) * location.PageSize))
-				{
-					page.Add(os.Next());
-				}
-				else
-					os.Next();
-				i++;
-			}
-			location.AbsoluteTotal = i;
+			
+			page.Add(GetPage(os, location));
+			
 			return Release((IEntity[])page.ToArray(type));
 		}
 		
@@ -752,33 +676,43 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			Collection<IEntity> list = new Collection<IEntity>();
 			
-			int i = 0;
+			IObjectSet os = null;
 			
 			if (store.DoesExist)
 			{
-				list.AddRange(
-					store.ObjectContainer.Query<IEntity>(
-						delegate(IEntity entity)
-						{
-							bool doesMatch = filterGroup.IsMatch(entity);
-							
-							bool isInPage = location.IsInPage(i);
-							
-							if (doesMatch)
-								i++;
-							
-							return doesMatch && isInPage;
-						},
-						new DynamicComparer<IEntity>(
-							type,
-							sortExpression)
-					)
-				);
+				Predicate matches = new MatchFilterGroupPredicate(filterGroup);
+				
+				os = store.ObjectContainer.Query(matches,
+				                                            new DynamicComparer(
+				                                            	type,
+				                                            	sortExpression));
+				
+				list.AddRange(GetPage(os, location));
+			}
+			
+			return Release((IEntity[])list.ToArray(type));
+		}
+		
+		protected virtual IEntity[] GetPage(IObjectSet objectSet, PagingLocation location)
+		{
+			int i = 0;
+			
+			List<IEntity> list = new List<IEntity>();
+			
+			// Loop through each index in the object set
+			for (i = 0; i < objectSet.Count; i++)
+			{
+				// If it's not in the current page then skip it
+				if (location.IsInPage(i))
+				{
+					// Add the entity to the collection
+					list.Add((IEntity)objectSet[i]);
+				}
 			}
 			
 			location.AbsoluteTotal = i;
 			
-			return Release((IEntity[])list.ToArray(type));
+			return list.ToArray();
 		}
 		
 		/// <summary>
@@ -822,36 +756,39 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				if (store.DoesExist)
 				{
 					
-					entities = new List<IEntity>(store.ObjectContainer.Query<IEntity>(delegate(IEntity e)
-					                                                                  {
-					                                                                  	LogWriter.Debug("Checking type " + e.GetType().ToString());
-					                                                                  	
-					                                                                  	bool matches = true;
-					                                                                  	foreach (string key in parameters.Keys)
-					                                                                  	{
-					                                                                  		LogWriter.Debug("Checking parameter '" + key + "' for value '" + parameters[key].ToString() + "'");
-					                                                                  		
-					                                                                  		Type parameterType = parameters[key] != null ? parameters[key].GetType() : null;
-					                                                                  		
-					                                                                  		PropertyInfo property = e.GetType().GetProperty(key, parameterType);
-					                                                                  		if (property == null)
-					                                                                  			throw new InvalidOperationException("The property '" + key + "' was not found on the type " + e.GetType().ToString());
-					                                                                  		else
-					                                                                  		{
-					                                                                  			object value = property.GetValue(e, null);
-					                                                                  			
-					                                                                  			LogWriter.Debug("Actual value is: " + (value == null ? "null" : value.ToString()));
-					                                                                  			
-					                                                                  			if (parameters[key] != value && parameters[key] != null && !parameters[key].Equals(value))
-					                                                                  			{
-					                                                                  				LogWriter.Debug("Parameter match failed for '" + key + "'.");
-					                                                                  				matches = false;
-					                                                                  			}
-					                                                                  		}
-					                                                                  	}
-					                                                                  	LogWriter.Debug("Matches: " + matches.ToString());
-					                                                                  	return matches;
-					                                                                  }));
+					
+					entities = new List<IEntity>(
+						store.ObjectContainer.Query<IEntity>(
+							delegate(IEntity e)
+							{
+								LogWriter.Debug("Checking type " + e.GetType().ToString());
+								
+								bool matches = true;
+								foreach (string key in parameters.Keys)
+								{
+									LogWriter.Debug("Checking parameter '" + key + "' for value '" + parameters[key].ToString() + "'");
+									
+									Type parameterType = parameters[key] != null ? parameters[key].GetType() : null;
+									
+									PropertyInfo property = e.GetType().GetProperty(key, parameterType);
+									if (property == null)
+										throw new InvalidOperationException("The property '" + key + "' was not found on the type " + e.GetType().ToString());
+									else
+									{
+										object value = property.GetValue(e, null);
+										
+										LogWriter.Debug("Actual value is: " + (value == null ? "null" : value.ToString()));
+										
+										if (parameters[key] != value && parameters[key] != null && !parameters[key].Equals(value))
+										{
+											LogWriter.Debug("Parameter match failed for '" + key + "'.");
+											matches = false;
+										}
+									}
+								}
+								LogWriter.Debug("Matches: " + matches.ToString());
+								return matches;
+							}));
 					
 
 					
@@ -903,7 +840,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			{
 				if (type == null)
 					throw new ArgumentNullException("type");
-			
+				
 				if (location == null)
 					throw new ArgumentNullException("location");
 				
@@ -942,8 +879,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				// Loop through each index in the object set
 				for (i = 0; i < os.Count; i++)
 				{
-					// ONLY execute during debug because it slows the indexing down by loading and instantiating every
-					// entity in the index, instead of only those on the current page as is intended
+					// ONLY execute during debug because it slows the indexing down
 					if (new ModeDetector().IsDebug)
 					{
 						LogWriter.Debug("At absolute position " + i + ": " + ((IEntity)os[i]).ToString());

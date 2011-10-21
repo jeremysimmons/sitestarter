@@ -87,6 +87,9 @@
     <Compile Include="Db4oReferenceFilter.cs" />
     <Compile Include="Db4oDataSchema.cs" />
     <Compile Include="DynamicQueryComparator.cs" />
+    <Compile Include="MatchFilterGroupPredicate.cs" />
+    <Compile Include="MatchReferencePredicate.cs" />
+    <Compile Include="MatchReferencesPredicate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

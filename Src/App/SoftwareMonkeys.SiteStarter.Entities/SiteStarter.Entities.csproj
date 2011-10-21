@@ -66,6 +66,7 @@
     <Compile Include="BaseEntity.cs" />
     <Compile Include="BaseUniqueEntity.cs" />
     <Compile Include="CorruptReferenceException.cs" />
+    <Compile Include="DynamicComparer%28E%29.cs" />
     <Compile Include="DynamicComparer.cs" />
     <Compile Include="EntitiesDisposer.cs" />
     <Compile Include="EntitiesResetter.cs" />
