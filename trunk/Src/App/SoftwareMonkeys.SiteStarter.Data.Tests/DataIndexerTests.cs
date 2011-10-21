@@ -389,7 +389,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		
 
 		[Test]
-		public void Test_GetEntitiesPageMatchReference()
+		public virtual void Test_GetEntitiesPageMatchReference()
 		{
 			using (LogGroup logGroup = LogGroup.Start("Testing the GetEntitiesPageMatchReference function to ensure it finds entities properly.", NLog.LogLevel.Debug))
 			{
