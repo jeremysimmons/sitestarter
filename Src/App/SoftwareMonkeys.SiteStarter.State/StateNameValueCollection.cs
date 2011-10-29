@@ -324,19 +324,18 @@ namespace SoftwareMonkeys.SiteStarter.State
 		
 		public new IEnumerator<T> GetEnumerator()
 		{
-			foreach (string key in Keys)
+			for (int i = 0; i < Count; i ++)
 			{
-				yield return this[key];
+				yield return this[i];
 			}
 		}
 		
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
 		{
-			foreach (string key in Keys)
+			for (int i = 0; i < Count; i ++)
 			{
-				yield return this[key];
+				yield return this[i];
 			}
-
 		}
 		
 		public virtual T[] ToArray()
@@ -346,5 +345,6 @@ namespace SoftwareMonkeys.SiteStarter.State
 				list.Add(item);
 			return list.ToArray();
 		}
+		
 	}
 }
