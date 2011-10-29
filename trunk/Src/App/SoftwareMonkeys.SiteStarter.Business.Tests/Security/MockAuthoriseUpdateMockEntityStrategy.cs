@@ -13,7 +13,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests.Security
 		{
 		}
 		
-		public override bool Authorise(string shortTypeName)
+		public override bool IsAuthorised(string shortTypeName)
 		{
 			// Authorised by default because it's only used during testing
 			return true;

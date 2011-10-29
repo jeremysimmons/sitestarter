@@ -102,6 +102,31 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		}
 		
 		[Test]
+		public void Test_Locate_MatchInheritedInterface()
+		{			
+			string type = "MockSubInterfaceEntity";
+			string action = "Index";
+			
+			StrategyStateNameValueCollection strategies = new StrategyStateNameValueCollection();
+			
+			strategies.Add(typeof(IndexStrategy));
+			strategies.Add(typeof(MockIndexWidgetStrategy));
+			strategies.Add(typeof(MockIndexInterfaceStrategy));
+			
+			StrategyLocator locator = new StrategyLocator(strategies);
+			
+			StrategyInfo info = locator.Locate(action, type);
+			
+			Assert.IsNotNull(info, "No strategy info found.");
+			
+			Type mockStrategyType = new MockIndexInterfaceStrategy().GetType();
+			
+			string expected = mockStrategyType.FullName + ", " + mockStrategyType.Assembly.GetName().Name;
+			
+			Assert.AreEqual(expected, info.StrategyType, "Wrong strategy type selected.");
+		}
+		
+		[Test]
 		public void Test_Locate()
 		{			
 			StrategyLocator locator = new StrategyLocator(StrategyState.Strategies);
