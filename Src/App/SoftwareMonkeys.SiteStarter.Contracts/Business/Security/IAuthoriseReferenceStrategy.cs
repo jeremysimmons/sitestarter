@@ -9,12 +9,14 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 	/// </summary>
 	public interface IAuthoriseReferenceStrategy : IAuthoriseStrategy
 	{
-		bool Authorise(IEntity fromEntity, IEntity toEntity);
+		IEntity SourceEntity { get;set; }
+		string SourceProperty { get;set; }
 		
-		IEntity[] Authorise(IEntity fromEntity, IEntity[] toEntities);
-			
-		void Authorise(IEntity fromEntity, PropertyInfo property);
+		/// <summary>
+		/// Authorises the reference on the source property of the source entity.
+		/// </summary>
+		void Authorise();
 		
-		void Authorise(IEntity fromEntity, string propertyName);
+		IEntity[] Authorise(IEntity[] toEntities);
 	}
 }
