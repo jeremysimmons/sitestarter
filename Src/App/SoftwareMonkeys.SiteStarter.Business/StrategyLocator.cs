@@ -57,7 +57,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					type = EntityState.GetType(typeName);
 				
 				// Create a direct strategy key for the specified type
-				string key = Strategies.GetStrategyKey(action, typeName);
+				string key = StrategyInfo.GetStrategyKey(action, typeName);
 				
 			//	LogWriter.Debug("Direct key: " + key);
 			//	LogWriter.Debug("Type name: " + typeName);
@@ -134,7 +134,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 						
 			//			using (LogGroup logGroup2 = LogGroup.Start("Checking interface: " + interfaceType.FullName, NLog.LogLevel.Debug))
 			//			{
-							string key = Strategies.GetStrategyKey(action, interfaceType.Name);
+							string key = StrategyInfo.GetStrategyKey(action, interfaceType.Name);
 							
 			//				LogWriter.Debug("Key: " + key);
 							
@@ -175,7 +175,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 						
 			//			using (LogGroup logGroup2 = LogGroup.Start("Checking base type: " + nextType.FullName, NLog.LogLevel.Debug))
 			//			{
-							string key = Strategies.GetStrategyKey(action, nextType.Name);
+							string key = StrategyInfo.GetStrategyKey(action, nextType.Name);
 							
 			//				LogWriter.Debug("Key: " + key);
 							

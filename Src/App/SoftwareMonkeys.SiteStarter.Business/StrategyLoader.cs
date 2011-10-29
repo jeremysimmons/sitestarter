@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Xml.Serialization;
+using SoftwareMonkeys.SiteStarter.Business.Security;
 using SoftwareMonkeys.SiteStarter.Entities;
 using System.Collections.Generic;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
@@ -58,12 +59,12 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			// Logging disabled to boost performance
 			//using (LogGroup logGroup = LogGroup.StartDebug("Loading the strategies from the XML files."))
 			//{
-				foreach (string file in Directory.GetFiles(StrategiesDirectoryPath))
-				{
-			//		LogWriter.Debug("File: " + file);
-					
-					strategies.Add(LoadFromFile(file));
-				}
+			foreach (string file in Directory.GetFiles(StrategiesDirectoryPath))
+			{
+				//		LogWriter.Debug("File: " + file);
+				
+				strategies.Add(LoadFromFile(file));
+			}
 			//}
 			
 			return strategies.ToArray();
@@ -81,20 +82,27 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			// Logging disabled to boost performance
 			//using (LogGroup logGroup = LogGroup.StartDebug("Loading the strategy from the specified path."))
 			//{
-				if (!File.Exists(strategyPath))
-					throw new ArgumentException("The specified file does not exist.");
-				
+			if (!File.Exists(strategyPath))
+				throw new ArgumentException("The specified file does not exist.");
+			
 			//	LogWriter.Debug("Path: " + strategyPath);
+			
+			Type type = typeof(StrategyInfo);
+			
+			string fileName  =Path.GetFileName(strategyPath);
+			
+			// If the info file name contains the '.ar' sub extension then it's an authorise reference strategy
+			if (fileName.IndexOf(".ar.strategy") > -1)
+				type = typeof(AuthoriseReferenceStrategyInfo);
+			
+			using (StreamReader reader = new StreamReader(File.OpenRead(strategyPath)))
+			{
+				XmlSerializer serializer = new XmlSerializer(type);
 				
+				info = (StrategyInfo)serializer.Deserialize(reader);
 				
-				using (StreamReader reader = new StreamReader(File.OpenRead(strategyPath)))
-				{
-					XmlSerializer serializer = new XmlSerializer(typeof(StrategyInfo));
-					
-					info = (StrategyInfo)serializer.Deserialize(reader);
-					
-					reader.Close();
-				}
+				reader.Close();
+			}
 			//}
 			
 			return info;

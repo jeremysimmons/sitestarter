@@ -69,5 +69,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			IsStrategy = isStrategy;
 		}
+		
+		public StrategyAttribute()
+		{}
 	}
 }

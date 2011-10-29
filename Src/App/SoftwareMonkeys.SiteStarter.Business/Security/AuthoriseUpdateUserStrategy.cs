@@ -15,17 +15,10 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// </summary>
 		/// <param name="shortTypeName">The type of entity being updated.</param>
 		/// <returns>A value indicating whether the current user is authorised to update an entity of the specified type.</returns>
-		public override bool Authorise(string shortTypeName)
+		public override bool IsAuthorised(string shortTypeName)
 		{
 			// Everyone can, as long as its their own account
-			return true;
-			/*bool isAuthenticated = AuthenticationState.IsAuthenticated;
-			
-			bool isAdministrator = AuthenticationState.UserIsInRole("Administrator");
-			
-			bool allowRegistration = Configuration.Config.Application.Settings.GetBool("EnableUserRegistration");
-			
-			return (isAuthenticated && isAdministrator);*/
+			return AuthenticationState.IsAuthenticated;
 		}
 		
 		/// <summary>
@@ -33,7 +26,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// </summary>
 		/// <param name="entity">The entity to be updated.</param>
 		/// <returns>A value indicating whether the current user is authorised to update the provided entity.</returns>
-		public override bool Authorise(IEntity entity)
+		public override bool IsAuthorised(IEntity entity)
 		{
 			if (entity == null)
 				throw new ArgumentNullException("entity");

@@ -17,14 +17,19 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// </summary>
 		/// <param name="shortTypeName">The type of entity being updated.</param>
 		/// <returns>A value indicating whether the current user is authorised to update an entity of the specified type.</returns>
-		public override bool Authorise(string shortTypeName)
+		public override bool IsAuthorised(string shortTypeName)
 		{
 			bool isAuthorised = false;
 			using (LogGroup logGroup = LogGroup.Start("Checking whether current user is authorised to update entities of type '" + shortTypeName + "'.", NLog.LogLevel.Debug))
 			{
-				if (AuthenticationState.IsAuthenticated
-				    && AuthenticationState.UserIsInRole("Administrator"))
+				if (!RequireAuthorisation)
 					isAuthorised = true;
+				else
+				{
+					if (AuthenticationState.IsAuthenticated
+					    && AuthenticationState.UserIsInRole("Administrator"))
+						isAuthorised = true;
+				}
 				
 				LogWriter.Debug("Is authorised: " + isAuthorised);
 			}
@@ -36,7 +41,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// </summary>
 		/// <param name="entity">The entity to be updated.</param>
 		/// <returns>A value indicating whether the current user is authorised to update the provided entity.</returns>
-		public override bool Authorise(IEntity entity)
+		public override bool IsAuthorised(IEntity entity)
 		{
 			bool isAuthorised = false;
 			using (LogGroup logGroup = LogGroup.Start("Checking whether the current user is authorised to update the provided entity.", NLog.LogLevel.Debug))
@@ -44,9 +49,14 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 				if (entity == null)
 					throw new ArgumentNullException("entity");
 				
-				isAuthorised = Authorise(entity.ShortTypeName);
-				
-				AuthoriseReferences(entity);
+				if (!RequireAuthorisation)
+					isAuthorised = true;
+				else
+				{
+					isAuthorised = IsAuthorised(entity.ShortTypeName);
+					
+					AuthoriseReferencesStrategy.New(entity).Authorise(entity);
+				}
 				
 				LogWriter.Debug("Is authorised: " + isAuthorised);
 				

@@ -9,7 +9,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// 
 	/// </summary>
 	public class ReactionInfoCollection : CollectionBase
-	{		
+	{
 		public ReactionInfoCollection()
 		{
 		}
@@ -24,7 +24,18 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			foreach (ReactionInfo reaction in reactions)
 			{
+				Add(reaction);
+			}
+		}
+		
+		public void AddRange(ReactionInfoCollection reactions)
+		{
+			if (reactions != null)
+			{
+				foreach (ReactionInfo reaction in reactions.ToArray())
+				{
 					Add(reaction);
+				}
 			}
 		}
 		

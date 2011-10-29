@@ -5,7 +5,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 	/// <summary>
 	/// 
 	/// </summary>
-	public class AuthoriseStrategyAttribute : StrategyAttribute
+	public class AuthoriseReactionAttribute : ReactionAttribute
 	{
 		private string restrictedAction;
 		/// <summary>
@@ -17,12 +17,9 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 			set { restrictedAction = value; }
 		}
 		
-		public AuthoriseStrategyAttribute(string restrictedAction, string typeName) : base("Authorise" + restrictedAction, typeName)
+		public AuthoriseReactionAttribute(string restrictedAction, string typeName) : base("Authorise" + restrictedAction, typeName)
 		{
 			RestrictedAction = restrictedAction;
 		}
-		
-		public AuthoriseStrategyAttribute()
-		{}
 	}
 }

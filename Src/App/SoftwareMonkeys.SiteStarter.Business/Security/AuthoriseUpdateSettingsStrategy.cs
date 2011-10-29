@@ -12,17 +12,10 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		{
 		}
 		
-		public override bool Authorise(string shortTypeName)
+		public override bool IsAuthorised(string shortTypeName)
 		{
 			return AuthenticationState.IsAuthenticated
 				&& AuthenticationState.UserIsInRole("Administrator");
 		}
-		
-		public override bool Authorise(SoftwareMonkeys.SiteStarter.Entities.IEntity entity)
-		{
-			return AuthenticationState.IsAuthenticated
-				&& AuthenticationState.UserIsInRole("Administrator");
-		}
-		
 	}
 }

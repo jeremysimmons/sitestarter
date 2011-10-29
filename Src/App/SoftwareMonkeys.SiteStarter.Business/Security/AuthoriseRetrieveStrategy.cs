@@ -15,28 +15,25 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// </summary>
 		/// <param name="shortTypeName">The type of entity being retrieved.</param>
 		/// <returns>A value indicating whether the current user is authorised to retrieve an entity of the specified type.</returns>
-		public override bool Authorise(string shortTypeName)
+		public override bool IsAuthorised(string shortTypeName)
 		{
-			if (!AuthenticationState.IsAuthenticated)
-				return false;
+			if (!RequireAuthorisation)
+				return true;
 			
-			return true;
+			return AuthenticationState.IsAuthenticated;
 		}
 		
 		/// <summary>
 		/// Checks whether the current user is authorised to retrieve the provided entity.
 		/// </summary>
-		/// <param name="entity">The entity to be retrieved.</param>
+		/// <param name="entity">The entity being retrieved.</param>
 		/// <returns>A value indicating whether the current user is authorised to retrieve the provided entity.</returns>
-		public override bool Authorise(IEntity entity)
+		public override bool IsAuthorised(IEntity entity)
 		{
-			if (entity == null)
-				throw new ArgumentNullException("entity");
+			if (!RequireAuthorisation)
+				return true;
 			
-			if (!AuthenticationState.IsAuthenticated)
-				return false;
-			
-			return true;
+			return AuthenticationState.IsAuthenticated;
 		}
 		
 		#region New functions
@@ -65,6 +62,18 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		{
 			return New(entity.ShortTypeName);
 		}
+		
+		/// <summary>
+		/// Creates a new strategy for authorising the retrieve of an entity of the specified type.
+		/// </summary>
+		/// <param name="typeName">The short name of the type involved in the strategy.</param>
+		static public IAuthoriseRetrieveStrategy New(string typeName, bool requireAuthorisation)
+		{
+			IAuthoriseRetrieveStrategy strategy = New(typeName);
+			strategy.RequireAuthorisation = requireAuthorisation;
+			return strategy;
+		}
+		
 		#endregion
 	}
 }

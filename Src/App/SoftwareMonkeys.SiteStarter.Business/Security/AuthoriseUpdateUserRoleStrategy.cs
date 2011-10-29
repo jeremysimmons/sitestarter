@@ -10,44 +10,17 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 	[AuthoriseStrategy("Update", "UserRole")]
 	public class AuthoriseUpdateUserRoleStrategy : AuthoriseUpdateStrategy
 	{
-		/// <summary>
-		/// Checks whether the current role is authorised to update an entity of the specified type.
-		/// </summary>
-		/// <param name="shortTypeName">The type of entity being updated.</param>
-		/// <returns>A value indicating whether the current role is authorised to update an entity of the specified type.</returns>
-		public override bool Authorise(string shortTypeName)
+		public override bool IsAuthorised(string shortTypeName)
 		{
-			// Everyone can, as long as its their own accoutn
-			return true;
-			/*bool isAuthenticated = AuthenticationState.IsAuthenticated;
-			
-			bool isAdministrator = AuthenticationState.UserRoleIsInRole("Administrator");
-			
-			bool allowRegistration = Configuration.Config.Application.Settings.GetBool("EnableUserRoleRegistration");
-			
-			return (isAuthenticated && isAdministrator);*/
+			return AuthenticationState.UserIsInRole("Administrator");
 		}
-		
-		/// <summary>
-		/// Checks whether the current role is authorised to update the provided entity.
-		/// </summary>
-		/// <param name="entity">The entity to be updated.</param>
-		/// <returns>A value indicating whether the current role is authorised to update the provided entity.</returns>
-		public override bool Authorise(IEntity entity)
+	
+		public override bool IsAuthorised(IEntity entity)
 		{
 			if (entity == null)
 				throw new ArgumentNullException("entity");
 		
-			UserRole role = (UserRole)entity;
-			
-			bool isAuthenticated = AuthenticationState.IsAuthenticated;
-			
-			bool isAdministrator = AuthenticationState.UserIsInRole("Administrator");
-			
-			bool isSelf = (role.ID.Equals(AuthenticationState.User.ID));
-			
-			return (isAuthenticated && isAdministrator) // Administrators
-				|| (isSelf); // Editing own account
+			return AuthenticationState.UserIsInRole("Administrator");
 		}
 		
 		

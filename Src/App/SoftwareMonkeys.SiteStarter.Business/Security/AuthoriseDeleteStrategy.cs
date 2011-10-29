@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace SoftwareMonkeys.SiteStarter.Business.Security
 {
 	/// <summary>
-	/// Used to check whether the current user is authorised to retrieve an entity.
+	/// Used to check whether the current user is authorised to delete an entity.
 	/// </summary>
 	[AuthoriseStrategy("Delete", "IEntity")]
 	public class AuthoriseDeleteStrategy : BaseAuthoriseStrategy, IAuthoriseDeleteStrategy
@@ -15,31 +15,25 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// </summary>
 		/// <param name="shortTypeName">The type of entity being deleted.</param>
 		/// <returns>A value indicating whether the current user is authorised to delete an entity of the specified type.</returns>
-		public override bool Authorise(string shortTypeName)
+		public override bool IsAuthorised(string shortTypeName)
 		{
-			if (!AuthenticationState.IsAuthenticated)
-				return false;
+			if (!RequireAuthorisation)
+				return true;
 			
-			if (!AuthenticationState.UserIsInRole("Administrator"))
-				return false;
-			
-			return true;
+			return AuthenticationState.UserIsInRole("Administrator");
 		}
 		
 		/// <summary>
-		/// Checks whether the current user is authorised to retrieve the provided entity.
+		/// Checks whether the current user is authorised to delete the provided entity.
 		/// </summary>
-		/// <param name="entity">The entity to be retrieved.</param>
-		/// <returns>A value indicating whether the current user is authorised to retrieve the provided entity.</returns>
-		public override bool Authorise(IEntity entity)
+		/// <param name="shortTypeName">The type of entity being deleted.</param>
+		/// <returns>A value indicating whether the current user is authorised to delete the provided entity.</returns>
+		public override bool IsAuthorised(IEntity entity)
 		{
-			if (entity == null)
-				throw new ArgumentNullException("entity");
+			if (!RequireAuthorisation)
+				return true;
 			
-			if (!AuthenticationState.IsAuthenticated)
-				return false;
-			
-			return true;
+			return AuthenticationState.UserIsInRole("Administrator");
 		}
 		
 		#region New functions
