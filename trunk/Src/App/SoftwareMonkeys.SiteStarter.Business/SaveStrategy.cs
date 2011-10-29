@@ -46,7 +46,12 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				LogWriter.Debug("Entity type: " + entity.GetType().FullName);
 				
 				if (RequireAuthorisation)
+				{
+					LogWriter.Debug("Authorisation required.");
 					AuthoriseSaveStrategy.New(entity.ShortTypeName).EnsureAuthorised(entity);
+				}
+				else
+					LogWriter.Debug("Authorisation NOT required. Skipping authorisation check.");
 				
 				CheckStrategies(entity);
 				
@@ -55,6 +60,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					LogWriter.Debug("Is valid.");
 					
 					DataAccess.Data.Saver.Save(entity);
+					
 					saved = true;
 					
 					// [Important] Trigger the reactions

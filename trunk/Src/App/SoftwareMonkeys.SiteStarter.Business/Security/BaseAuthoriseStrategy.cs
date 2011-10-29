@@ -16,14 +16,27 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// </summary>
 		/// <param name="shortTypeName">The type of entity involved in the operation in which authorisation is required.</param>
 		/// <returns>A value indicating whether the current user is authorised to perform an operation involving an entity of the specified type.</returns>
-		public abstract bool Authorise(string shortTypeName);
+		public abstract bool IsAuthorised(string shortTypeName);
+		
+		/// <summary>
+		/// Checks whether the current user is authorised to perform an operation involving the provided entity.
+		/// </summary>
+		/// <param name="entity">The entity involved in the operation in which authorisation is required.</param>
+		/// <returns>A value indicating whether the current user is authorised to perform an operation involving the provided entity.</returns>
+		public abstract bool IsAuthorised(IEntity entity);
 		
 		/// <summary>
 		/// Checks whether the current user is authorised to perform an operation involving to the provided entity.
 		/// </summary>
 		/// <param name="entity">The entity involved in the operation in which authorisation is required.</param>
-		/// <returns>A value indicating whether the current user is authorised to perform an operation involving the provided entity.</returns>
-		public abstract bool Authorise(IEntity entity);
+		/// <returns>The authorised entity. (Or null if not authorised)</returns>
+		public virtual IEntity Authorise(IEntity entity)
+		{
+			if (IsAuthorised(entity))
+				return entity;
+			else
+				return null;
+		}
 		
 		/// <summary>
 		/// Ensures that the current user is authorised to perform an operation involving an entity of the specified type and throws an exception if unauthorised.
@@ -31,7 +44,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// <param name="shortTypeName">The type of entity involved in the operation in which authorisation is required.</param>
 		public virtual void EnsureAuthorised(string shortTypeName)
 		{
-			if (!Authorise(shortTypeName))
+			if (!IsAuthorised(shortTypeName))
 				throw new UnauthorisedException(GetRestrictedAction(), shortTypeName);
 		}
 		
@@ -44,7 +57,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 			if (entity == null)
 				throw new ArgumentNullException("entity");
 			
-			if (!Authorise(entity))
+			if (!IsAuthorised(entity))
 				throw new UnauthorisedException(GetRestrictedAction(), entity);
 		}
 		
@@ -55,20 +68,22 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// <returns>The provided entities with unauthorised entitiese removed.</returns>
 		public virtual IEntity[] Authorise(IEntity[] entities)
 		{
+			List<IEntity> output = new List<IEntity>();
+			
 			using (LogGroup logGroup = LogGroup.StartDebug("Checking whether the current user is authorised to perform the desired action with the provided entities."))
-			{				
-				List<IEntity> matching = new List<IEntity>();
-				
-				foreach (IEntity entity in entities)
+			{
+				if (IsAuthorised(TypeName))
 				{
-					if (Authorise(entity))
-						matching.Add(entity);
+					foreach (IEntity entity in entities)
+					{
+						if (IsAuthorised(entity))
+							output.Add(entity);
+					}
 				}
 				
-				entities = matching.ToArray();
-			
 			}
-			return entities;
+			
+			return output.ToArray();
 		}
 		
 		/// <summary>
@@ -80,17 +95,5 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 			return Action.Replace("Authorise", "");
 		}
 		
-		public virtual void AuthoriseReferences(IEntity entity)
-		{
-			Type type = entity.GetType();
-			
-			foreach (PropertyInfo property in type.GetProperties())
-			{
-				if (EntitiesUtilities.IsReference(type, property))
-				{
-					AuthoriseReferenceStrategy.New(entity, property).Authorise(entity, property);
-				}
-			}
-		}
 	}
 }

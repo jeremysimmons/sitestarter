@@ -1,22 +1,15 @@
-﻿/*
- * Created by SharpDevelop.
- * User: Jose
- * Date: 10/05/2011
- * Time: 10:23 AM
- * 
- * To change this template use Tools | Options | Coding | Edit Standard Headers.
- */
-using System;
+﻿using System;
+using System.Collections.Generic;
 using SoftwareMonkeys.SiteStarter.Entities;
 
 namespace SoftwareMonkeys.SiteStarter.Business
 {
 	/// <summary>
-	/// Represents a command; a combination of a verb/action and a type name.
+	/// Represents a command; a combination of an action and a type name.
 	/// </summary>
-	public class CommandInfo
+	public class CommandInfo : ICommandInfo
 	{
-		private string action;
+		private string action = String.Empty;
 		/// <summary>
 		/// Gets/sets the action part of the command.
 		/// </summary>
@@ -26,7 +19,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			set { action = value; }
 		}
 		
-		private string typeName;
+		private string typeName = String.Empty;
 		/// <summary>
 		/// Gets/sets the name of the type involved in the command.
 		/// </summary>
@@ -36,6 +29,32 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			set { typeName = value; }
 		}
 		
+		private string[] aliasActions = new String[] {};
+		/// <summary>
+		/// Gets/sets the aliases for the actions. For example "Save" is an alias of "Create" and "Update" is an alias of "Edit".
+		/// </summary>
+		public string[] AliasActions
+		{
+			get { return aliasActions; }
+			set { aliasActions = value; }
+		}
+		
+		/// <summary>
+		/// Gets a list of all actions including the primary as well as all aliases.
+		/// </summary>
+		public string[] AllActions
+		{
+			get {
+				List<string> list = new List<string>();
+				if (Action != String.Empty)
+					list.Add(Action);
+				if (AliasActions.Length > 0)
+					list.AddRange(AliasActions);
+				return list.ToArray();
+			}
+		}
+		
+		
 		public CommandInfo()
 		{
 		}
@@ -44,6 +63,13 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			Action = action;
 			TypeName = typeName;
+		}
+		
+		public CommandInfo(string action, string typeName, params string[] aliasActions)
+		{
+			Action = action;
+			TypeName = typeName;
+			AliasActions = aliasActions;
 		}
 		
 		/// <summary>

@@ -15,7 +15,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// </summary>
 		/// <param name="shortTypeName">The type of entity being saved.</param>
 		/// <returns>A value indicating whether the current role is authorised to save an entity of the specified type.</returns>
-		public override bool Authorise(string shortTypeName)
+		public override bool IsAuthorised(string shortTypeName)
 		{
 			return AuthenticationState.UserIsInRole("Administrator");
 		}
@@ -25,12 +25,12 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// </summary>
 		/// <param name="entity">The entity to be saved.</param>
 		/// <returns>A value indicating whether the current role is authorised to save the provided entity.</returns>
-		public override bool Authorise(IEntity entity)
+		public override bool IsAuthorised(IEntity entity)
 		{
 			if (entity == null)
 				throw new ArgumentNullException("entity");
 		
-			return Authorise(entity.ShortTypeName);	
+			return IsAuthorised(entity.ShortTypeName);	
 		}
 		
 		

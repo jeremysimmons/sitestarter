@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Entities;
 using System.Collections.Generic;
 
@@ -15,15 +16,22 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// </summary>
 		/// <param name="shortTypeName">The type of entity being saved.</param>
 		/// <returns>A value indicating whether the current user is authorised to save an entity of the specified type.</returns>
-		public override bool Authorise(string shortTypeName)
+		public override bool IsAuthorised(string shortTypeName)
 		{
-			if (!AuthenticationState.IsAuthenticated)
-				return false;
+			bool isAuthorised = false;
 			
-			if (!AuthenticationState.UserIsInRole("Administrator"))
-				return false;
+			using (LogGroup logGroup = LogGroup.StartDebug("Authorising the save of the '" + shortTypeName + "' type."))
+			{
+				if (!AuthenticationState.IsAuthenticated)
+					isAuthorised = false;
+				
+				if (!AuthenticationState.UserIsInRole("Administrator"))
+					isAuthorised = false;
+				
+				LogWriter.Debug("Is authorised: " + isAuthorised.ToString());
+			}
 			
-			return true;
+			return isAuthorised;
 		}
 		
 		/// <summary>
@@ -31,14 +39,23 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// </summary>
 		/// <param name="entity">The entity to be saved.</param>
 		/// <returns>A value indicating whether the current user is authorised to save the provided entity.</returns>
-		public override bool Authorise(IEntity entity)
+		public override bool IsAuthorised(IEntity entity)
 		{
-			if (entity == null)
-				throw new ArgumentNullException("entity");
+			bool isAuthorised = false;
 			
-			AuthoriseReferences(entity);
-			
-			return Authorise(entity.ShortTypeName);
+				if (entity == null)
+					throw new ArgumentNullException("entity");
+				
+			using (LogGroup logGroup = LogGroup.StartDebug("Authorising the save of a '" + entity.ShortTypeName + "' entity."))
+			{
+				
+				AuthoriseReferencesStrategy.New(entity).Authorise(entity);
+				
+				isAuthorised = IsAuthorised(entity.ShortTypeName);
+				
+				LogWriter.Debug("Is authorised: " + isAuthorised);
+			}
+			return isAuthorised;
 		}
 		
 		

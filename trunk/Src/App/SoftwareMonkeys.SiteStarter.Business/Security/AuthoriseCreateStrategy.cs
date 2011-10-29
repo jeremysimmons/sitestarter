@@ -15,8 +15,11 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// </summary>
 		/// <param name="shortTypeName">The type of entity being created.</param>
 		/// <returns>A value indicating whether the current user is authorised to create an entity of the specified type.</returns>
-		public override bool Authorise(string shortTypeName)
+		public override bool IsAuthorised(string shortTypeName)
 		{
+			if (!RequireAuthorisation)
+				return true;
+			
 			if (!AuthenticationState.IsAuthenticated)
 				return false;
 			
@@ -28,10 +31,13 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// </summary>
 		/// <param name="entity">The entity to be created.</param>
 		/// <returns>A value indicating whether the current user is authorised to create the provided entity.</returns>
-		public override bool Authorise(IEntity entity)
+		public override bool IsAuthorised(IEntity entity)
 		{
 			if (entity == null)
 				throw new ArgumentNullException("entity");
+			
+			if (!RequireAuthorisation)
+				return true;
 			
 			if (!AuthenticationState.IsAuthenticated)
 				return false;

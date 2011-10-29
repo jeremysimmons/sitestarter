@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Data;
 
@@ -79,9 +80,12 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		
 		public void React(IEntity entity)
 		{
-			foreach (IReaction reaction in Reactions)
+			using (LogGroup logGroup = LogGroup.StartDebug("Reacting after executing strategy."))
 			{
-				reaction.React(entity);
+				foreach (IReaction reaction in Reactions)
+				{
+					reaction.React(entity);
+				}
 			}
 		}
 	}
