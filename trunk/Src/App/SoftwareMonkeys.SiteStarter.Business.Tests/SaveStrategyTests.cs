@@ -78,6 +78,8 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			
 			MockEntity foundEntity = RetrieveStrategy.New<MockEntity>(false).Retrieve<MockEntity>("ID", entity.ID);
 			
+			Assert.IsNotNull(foundEntity);
+			
 			foundEntity.Activate();
 			
 			Assert.AreEqual(0, foundEntity.RestrictedEntities.Length, "Restricted entity wasn't removed from reference property.");

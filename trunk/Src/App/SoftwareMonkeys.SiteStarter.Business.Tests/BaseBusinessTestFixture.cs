@@ -1,5 +1,6 @@
 ﻿using System;
 using SoftwareMonkeys.SiteStarter.Data.Tests;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Entities.Tests;
 using SoftwareMonkeys.SiteStarter.Entities;
 using NUnit.Framework;
@@ -51,35 +52,38 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		
 		public virtual void InitializeMockBusiness()
 		{
-			if (EnableBusinessState)
+			using (LogGroup logGroup = LogGroup.StartDebug("Initializing mock business tier."))
 			{
-				string businessAssemblyPath = Assembly.Load("SoftwareMonkeys.SiteStarter.Business").Location;
-				string businessTestsAssemblyPath = Assembly.Load("SoftwareMonkeys.SiteStarter.Business.Tests").Location;
-				
-				string[] assemblyPaths = new String[]
+				if (EnableBusinessState)
 				{
-					businessAssemblyPath,
-					businessTestsAssemblyPath
-				};
-				
-				// Strategies
-				
-				StrategyInitializer initializer = new StrategyInitializer();
-				
-				// Set the specific assemblies used during testing as it can't do it automatically in the mock environment
-				initializer.Scanner.AssemblyPaths = assemblyPaths;
-				
-				initializer.Initialize(true);
-				
-				
-				// Reactions
-				
-				ReactionInitializer reactionsInitializer = new ReactionInitializer();
-				
-				// Set the specific assemblies used during testing as it can't do it automatically in the mock environment
-				reactionsInitializer.Scanner.AssemblyPaths = assemblyPaths;
-				
-				reactionsInitializer.Initialize(true);
+					string businessAssemblyPath = Assembly.Load("SoftwareMonkeys.SiteStarter.Business").Location;
+					string businessTestsAssemblyPath = Assembly.Load("SoftwareMonkeys.SiteStarter.Business.Tests").Location;
+					
+					string[] assemblyPaths = new String[]
+					{
+						businessAssemblyPath,
+						businessTestsAssemblyPath
+					};
+					
+					// Strategies
+					
+					StrategyInitializer initializer = new StrategyInitializer();
+					
+					// Set the specific assemblies used during testing as it can't do it automatically in the mock environment
+					initializer.Scanner.AssemblyPaths = assemblyPaths;
+					
+					initializer.Initialize(true);
+					
+					
+					// Reactions
+					
+					ReactionInitializer reactionsInitializer = new ReactionInitializer();
+					
+					// Set the specific assemblies used during testing as it can't do it automatically in the mock environment
+					reactionsInitializer.Scanner.AssemblyPaths = assemblyPaths;
+					
+					reactionsInitializer.Initialize(true);
+				}
 			}
 		}
 		
