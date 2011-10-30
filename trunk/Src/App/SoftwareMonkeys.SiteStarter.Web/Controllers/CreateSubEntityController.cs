@@ -67,7 +67,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			
 			using (LogGroup logGroup = LogGroup.Start("Creating a new sub entity.", NLog.LogLevel.Debug))
 			{
-				CreateSubEntityStrategy createStrategy = (CreateSubEntityStrategy)CreateStrategy.New(TypeName, Container.RequireAuthorisation);
+				CreateSubEntityStrategy createStrategy = (CreateSubEntityStrategy)CreateStrategy.New(Command.TypeName, Container.RequireAuthorisation);
 				
 				entity = createStrategy.Create(parentID, parentUniqueKey);
 				

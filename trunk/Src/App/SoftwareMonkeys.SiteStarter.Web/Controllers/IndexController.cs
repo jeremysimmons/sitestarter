@@ -16,7 +16,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	/// </summary>
 	[Controller("Index", "IEntity")]
 	public class IndexController : BaseController
-	{		
+	{
 		private Dictionary<string, string> language = new Dictionary<string, string>();
 		public Dictionary<string, string> Language
 		{
@@ -158,9 +158,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			get {
 				if (indexer== null)
 				{
-					Container.CheckType();
+					Container.CheckCommand();
 					
-					indexer = IndexStrategy.New(TypeName, Container.RequireAuthorisation);
+					indexer = IndexStrategy.New(Container.Command.TypeName, Container.RequireAuthorisation);
 				}
 				return indexer; }
 			set { indexer = value; }
@@ -180,7 +180,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			{
 				CheckInitialized();
 				
-				LogWriter.Debug("Type name: " + TypeName);
+				LogWriter.Debug("Type name: " + Command.TypeName);
 				
 				DataSource = PrepareIndex();
 				
@@ -196,7 +196,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			using (LogGroup logGroup = LogGroup.Start("Display an index of the provided entities.", NLog.LogLevel.Debug))
 			{
-				LogWriter.Debug("Type name: " + TypeName);
+				LogWriter.Debug("Type name: " + Command.TypeName);
 				
 				DataSource = entities;
 				
@@ -218,7 +218,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			using (LogGroup logGroup = LogGroup.Start("Preparing to load an index of enitities for display."))
 			{
-				LogWriter.Debug("Type name: " + TypeName);
+				LogWriter.Debug("Type name: " + Command.TypeName);
 				
 				if (filterValues == null)
 					filterValues = new Dictionary<string, object>();
@@ -315,7 +315,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			using (LogGroup logGroup = LogGroup.Start("Loading entities (matching the provided filter values) to be displayed as an index.", NLog.LogLevel.Debug))
 			{
-				IEntity[] entities = IndexStrategy.New(TypeName).Index(filterValues);
+				IEntity[] entities = IndexStrategy.New(Command.TypeName).Index(filterValues);
 				
 				entities = Collection<IEntity>.Sort(entities, SortExpression);
 
@@ -344,7 +344,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				
 				// There will likely be an authorisation check before this function is called, checking based on just the type,
 				// but it's necessary to check the authorisation for the actual entities
-				Authorise(ref entities);
+				entities = Authorise(entities);
 				
 				DataSource = entities;
 			}
@@ -352,24 +352,30 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		
 		public virtual void CheckInitialized()
 		{
-			
-			if (TypeName == String.Empty)
+			if (Command.TypeName == String.Empty)
 				throw new InvalidOperationException("Type not specified.");
 		}
 		#endregion
-		
 		
 		/// <summary>
 		/// Ensures that the user is authorised to index entities of the specified type.
 		/// </summary>
 		/// <param name="entities">The entities involved in the authorisation check.</param>
 		/// <returns>A value indicating whether the user is authorised.</returns>
-		public bool Authorise(ref IEntity[] entities)
+		public IEntity[] Authorise(IEntity[] entities)
 		{
-			bool isAuthorised = StrategyState.Strategies["Authorise" + Container.InternalAction, TypeName]
-				.New<IAuthoriseIndexStrategy>(TypeName).Authorise(ref entities);
+			IEntity[] output = new IEntity[]{};
 			
-			return !Container.RequireAuthorisation || isAuthorised;
+			using (LogGroup logGroup = LogGroup.StartDebug("Authorising the display of the provided entities."))
+			{
+				LogWriter.Debug("# before: " + entities.Length);
+				
+				output = AuthoriseIndexStrategy.New(Command.TypeName, Container.RequireAuthorisation).Authorise(entities);
+				
+				LogWriter.Debug("# after: " + output.Length);
+			}
+			
+			return output;
 		}
 		
 		public static IndexController New(IControllable container, string typeName)
@@ -380,7 +386,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			{
 				LogWriter.Debug("Type name: " + typeName);
 				
-				container.CheckType();
+				container.CheckCommand();
 				
 				controller = ControllerState.Controllers.Creator.NewIndexer(typeName);
 				
@@ -399,7 +405,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		
 		public static IndexController New(IControllable container)
 		{
-			container.CheckType();
+			container.CheckCommand();
 			
 			IndexController controller = New(container, false);
 			
@@ -408,9 +414,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		
 		public static IndexController New(IControllable container, bool enablePaging)
 		{
-			container.CheckType();
+			container.CheckCommand();
 			
-			IndexController controller = ControllerState.Controllers.Creator.NewIndexer(container.Type.Name);
+			IndexController controller = ControllerState.Controllers.Creator.NewIndexer(container.Command.TypeName);
 			
 			controller.Container = container;
 			controller.EnablePaging = enablePaging;
@@ -425,9 +431,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		
 		public static IndexController New(IControllable container, PagingLocation location)
 		{
-			container.CheckType();
+			container.CheckCommand();
 			
-			IndexController controller = ControllerState.Controllers.Creator.NewIndexer(container.Type.Name);
+			IndexController controller = ControllerState.Controllers.Creator.NewIndexer(container.Command.TypeName);
 			
 			controller.Container = container;
 			controller.EnablePaging = true;

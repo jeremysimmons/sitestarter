@@ -21,9 +21,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			get {
 				if (retriever == null)
 				{
-					if (Container.Type == null)
-						throw new InvalidOperationException("Type property hasn't been initialized.");
-					retriever = StrategyState.Strategies.Creator.NewRetriever(Container.Type.Name);
+					CheckContainer();
+					Container.CheckCommand();
+					
+					retriever = StrategyState.Strategies.Creator.NewRetriever(Command.TypeName);
 				}
 				return retriever; }
 			set { retriever = value; }
@@ -35,9 +36,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			get {
 				if (deleter == null)
 				{
-					if (Container.Type == null)
-						throw new InvalidOperationException("Type property hasn't been initialized.");
-					deleter = StrategyState.Strategies.Creator.NewDeleter(Container.Type.Name);
+					CheckContainer();
+					Container.CheckCommand();
+					
+					deleter = StrategyState.Strategies.Creator.NewDeleter(Command.TypeName);
 				}
 				return deleter; }
 			set { deleter = value; }
@@ -111,10 +113,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <returns></returns>
 		public virtual IEntity Load()
 		{
-			Container.CheckType();
+			Container.CheckCommand();
+			
+			Type type = EntityState.GetType(Command.TypeName);
 			
 			return (IEntity)Reflector.InvokeGenericMethod(this, "Load",
-			                              new Type[] {Container.Type},
+			                              new Type[] {type},
 			                              new object[] {});
 		}
 		

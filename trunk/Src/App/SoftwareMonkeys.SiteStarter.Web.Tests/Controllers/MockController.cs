@@ -15,16 +15,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	/// </summary>
 	[Controller("Mock", "IEntity")]
 	public class MockController : BaseController
-	{
-		public override string Action
-		{
-			get { return "Mock"; }
-		}
-		
-		
+	{		
 		public MockController()
 		{
-			
 		}
 		
 		/// <summary>
@@ -59,7 +52,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		public void Start()
 		{
 			if (EnsureAuthorised())
-				OperationManager.StartOperation("Mock" + Container.Type.Name, null);
+				OperationManager.StartOperation("Mock" + Command.TypeName, null);
 		}
 		
 		/// <summary>
@@ -79,7 +72,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <returns>A value indicating whether the user is authorised.</returns>
 		public override bool EnsureAuthorised()
 		{
-			bool isAuthorised = AuthoriseSaveStrategy.New(Container.Type.Name).Authorise(Container.Type.Name);
+			bool isAuthorised = AuthoriseSaveStrategy.New(Command.TypeName).IsAuthorised(Command.TypeName);
 			
 			if (!isAuthorised)
 				FailAuthorisation();
@@ -98,7 +91,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			if (type.Name == "IEntity")
 				throw new ArgumentException("The provided type cannot be 'IEntity'.");
 			
-			MockController controller = ControllerState.Controllers.Creator.New<MockController>("Mock", type.Name);
+			MockController controller = ControllerState.Controllers.Creator.New<MockController>(container);
 			
 			controller.Container = container;
 			

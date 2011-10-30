@@ -147,7 +147,9 @@
     <Compile Include="BaseWebTestFixture.cs" />
     <Compile Include="Controllers\ControllerLocatorTests.cs" />
     <Compile Include="Controllers\ControllerScannerTests.cs" />
+    <Compile Include="Controllers\CreateControllerTests.cs" />
     <Compile Include="Controllers\CreateSubEntityControllerTests.cs" />
+    <Compile Include="Controllers\EditControllerTests.cs" />
     <Compile Include="Controllers\IndexControllerTests.cs" />
     <Compile Include="Controllers\MockController.cs" />
     <Compile Include="Controllers\ViewControllerTests.cs" />
@@ -164,6 +166,8 @@
     <Compile Include="Parts\MockPartLoader.cs" />
     <Compile Include="Parts\MockPartScanner.cs" />
     <Compile Include="Parts\PartScannerTests.cs" />
+    <Compile Include="Projections\MockCreateProjection.cs" />
+    <Compile Include="Projections\MockEditProjection.cs" />
     <Compile Include="Projections\MockProjection.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>

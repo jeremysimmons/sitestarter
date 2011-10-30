@@ -20,8 +20,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 		{
 			MockProjection projection = new MockProjection();
 			projection.RequireAuthorisation = false;
-			projection.Action = "Create";
-			projection.Type =  typeof(TestArticlePage);
+			projection.Command = new CreateComandInfo(typeof(TestArticlePage).Name);
 			
 			TestArticle article = CreateStrategy.New<TestArticle>(false).Create<TestArticle>();
 			article.ID = Guid.NewGuid();
@@ -29,7 +28,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 			
 			SaveStrategy.New<TestArticle>(false).Save(article);
 			
-			CreateController controller = CreateController.New(projection, typeof(TestArticlePage));
+			CreateController controller = CreateController.New(projection);
 			
 			Assert.IsTrue(controller is CreateSubEntityController, "Invalid controller type: " + controller.GetType().ToString());
 			
