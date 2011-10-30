@@ -130,7 +130,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <param name="isPaged"></param>
 		public void Initialize(Type type, IndexGrid indexGrid, bool isPaged)
 		{
-			Type = type;
+			Command = new IndexCommandInfo(type.Name);
+			
 			Grid = indexGrid;
 			controller = IndexController.New(this,
 			                                 new PagingLocation(Grid.CurrentPageIndex, Grid.PageSize));

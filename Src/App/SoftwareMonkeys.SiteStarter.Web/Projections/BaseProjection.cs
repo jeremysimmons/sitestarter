@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web.UI;
 using System.Web;
 using SoftwareMonkeys.SiteStarter.Entities;
@@ -16,39 +17,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 	public class BaseProjection : UserControl, IProjection, IControllable
 	{
 		
-		private string action = String.Empty;
-		public string Action
+		private ICommandInfo command;
+		public ICommandInfo Command
 		{
-			get
-			{
-				if (action == String.Empty && HttpContext.Current != null)
-					action = QueryStrings.Action;
-				return action;
-			}
-			set { action = value; }
-		}
-		
-		private string internalAction = String.Empty;
-		/// <summary>
-		/// Gets/sets the action name used internally. Example: The action "View" has the corresponding internal action of "Retrieve".
-		/// </summary>
-		public virtual string InternalAction
-		{
-			get {
-				if (internalAction == String.Empty)
-					internalAction = Action;
-				return internalAction; }
-			set { internalAction = value; }
-		}
-		
-		private Type type;
-		/// <summary>
-		/// The type of entity involved in the operation being controlled.
-		/// </summary>
-		public Type Type
-		{
-			get { return type; }
-			set { type = value; }
+			get { return command; }
+			set { command = value; }
 		}
 		
 		/// <summary>
@@ -153,6 +126,29 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			set { ViewState["DataSource"] = value; }
 		}
 		
+		private string actionAlias = String.Empty;
+		/// <summary>
+		/// Gets/sets the alternative term for the action. (Example: 'Create' may be an alternative to 'Report' or 'Post'.)
+		/// </summary>
+		public string ActionAlias
+		{
+			get
+			{
+				return actionAlias;
+			}
+			set { actionAlias = value; }
+		}
+		
+		private ProjectionInfo[] info = new ProjectionInfo[]{};
+		/// <summary>
+		/// Gets/sets the info for this projection (if manually set within the projection).
+		/// </summary>
+		public ProjectionInfo[] Info
+		{
+			get { return info; }
+			set { info = value; }
+		}
+		
 		public BaseProjection()
 		{
 		}
@@ -161,11 +157,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			using (LogGroup logGroup = LogGroup.Start("Constructing projection object.", NLog.LogLevel.Debug))
 			{
-				LogWriter.Debug("Action: " + Action);
-				LogWriter.Debug("Type: " + Type);
+				LogWriter.Debug("Action: " + action);
+				LogWriter.Debug("Type: " + type.Name);
 				
-				Action = action;
-				Type = type;
+				Command = new CommandInfo(action, type.Name);
 				
 			}
 		}
@@ -174,19 +169,34 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			using (LogGroup logGroup = LogGroup.Start("Constructing projection object.", NLog.LogLevel.Debug))
 			{
-				LogWriter.Debug("Action: " + Action);
-				LogWriter.Debug("Type: " + Type);
+				LogWriter.Debug("Action: " + action);
+				LogWriter.Debug("Type: " + type.Name);
 				LogWriter.Debug("RequireAuthorisation: " + RequireAuthorisation.ToString());
 				
-				Action = action;
-				Type = type;
+				Command = new CommandInfo(action, type.Name);
+				
 				RequireAuthorisation = requireAuthorisation;
 			}
 		}
 		
-		public virtual void InitializeMenu()
+		public virtual void InitializeInfo()
 		{
 			// override to set menu properties such as MenuTitle, MenuCategory, and ShowOnMenu
+		}
+		
+		/// <summary>
+		/// Adds the provided info object to the array held by the Info property.
+		/// </summary>
+		/// <param name="info"></param>
+		public void AddInfo(ProjectionInfo info)
+		{
+			List<ProjectionInfo> list = new List<ProjectionInfo>();
+			if (Info != null)
+				list.AddRange(Info);
+			
+			list.Add(info);
+			
+			Info = list.ToArray();
 		}
 		
 		protected override void OnInit(EventArgs e)
@@ -219,16 +229,28 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			}
 		}
 		
-		public void CheckType()
+		public void CheckCommand()
 		{
-			if (Type == null)
-				throw new InvalidOperationException("The Type property has not been set.");
+			if (Command == null)
+				throw new InvalidOperationException("The Command property must be set.");
+			
+			if (Command.Action == null || Command.Action == String.Empty)
+				throw new InvalidOperationException("The Command.Action property must be set.");
+			
+			if (Command.TypeName == null || Command.TypeName == String.Empty)
+				throw new InvalidOperationException("The Command.TypeName property must be set.");
 		}
 		
-		public void CheckAction()
+		[Obsolete("Use CheckCommand() instead.")]
+		public void CheckType()
 		{
-			if (Action == String.Empty)
-				throw new InvalidOperationException("The Action property has not been set.");
+			CheckCommand();
+		}
+		
+		[Obsolete("Use CheckCommandInfo() instead.")]
+		public void CheckActions()
+		{
+			CheckCommand();
 		}
 	}
 }

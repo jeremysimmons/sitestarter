@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftwareMonkeys.SiteStarter.Business;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Web.Controllers;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
@@ -29,7 +30,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <param name="type">The type of entity being viewed.</param>
 		public void Initialize(Type type)
 		{
-			Type = type;
+			Command = new ViewCommandInfo(type.Name);
+			
 			controller = ViewController.New(this);
 		}
 		

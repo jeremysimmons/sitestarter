@@ -119,6 +119,19 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			set { enabled = value; }
 		}
 		
+		private string actionAlias = String.Empty;
+		/// <summary>
+		/// Gets/sets the alternative term for the action. (Example: 'Create' may be an alternative to 'Report' or 'Post'.)
+		/// </summary>
+		public string ActionAlias
+		{
+			get
+			{
+				return actionAlias;
+			}
+			set { actionAlias = value; }
+		}
+		
 		public ProjectionInfo()
 		{
 		}

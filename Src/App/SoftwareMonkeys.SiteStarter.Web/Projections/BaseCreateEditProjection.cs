@@ -18,7 +18,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <summary>
 		/// Gets/sets the data source of the form (ie. the entity being created/edited).
 		/// </summary>
-		public IEntity DataSource
+		public new IEntity DataSource
 		{
 			get { return dataSource; }
 			set { dataSource = value; }
@@ -57,25 +57,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		public string CreateAction = "Create";
 		public string EditAction = "Edit";
 		
-		private string internalAction = String.Empty;
-		/// <summary>
-		/// Gets/sets the action name used internally. Example: The action "View" has the corresponding internal action of "Retrieve".
-		/// </summary>
-		public override string InternalAction
-		{
-			get {
-				if (base.InternalAction == String.Empty)
-				{
-					if (Action == CreateAction)
-						base.InternalAction = "Save";
-					else
-						base.InternalAction = "Update";
-				}
-				return base.InternalAction;
-			}
-			set { internalAction = value; }
-		}
-		
 		private string uniquePropertyName;
 		/// <summary>
 		/// Gets/sets the name of the unique property of the entity.
@@ -102,12 +83,28 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 					else
 						Create();
 				}
-			}
 			
-			base.OnLoad(e);
+				base.OnLoad(e);
+			}
 		}
 		
 		public void Initialize(Type type, EntityForm form, string uniquePropertyName)
+		{
+			Initialize(QueryStrings.Action, type, form, uniquePropertyName);
+		}
+		
+		public void Initialize(string action, Type type, EntityForm form, string uniquePropertyName)
+		{
+			CommandInfo command = null;
+			if (action == "Create")
+				command = new CreateComandInfo(type.Name);
+			else
+				command = new EditCommandInfo(type.Name);
+			
+			Initialize(command, form, uniquePropertyName);
+		}
+		
+		public void Initialize(CommandInfo command, EntityForm form, string uniquePropertyName)
 		{
 			using (LogGroup logGroup = LogGroup.Start("Initializing the base create/edit projection.", NLog.LogLevel.Debug))
 			{
@@ -115,13 +112,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				
 				LogWriter.Debug("Unique property name: " + uniquePropertyName);
 				
-				LogWriter.Debug("Type: " + type.ToString());
+				LogWriter.Debug("Type: " + command.TypeName);
 				
-				Type = type;
+				Command = command;
 				Form = form;
 				
-				createController = CreateController.New(this, CreateAction, Type, UniquePropertyName);
-				editController = EditController.New(this, EditAction, Type, UniquePropertyName);
+				if (Array.IndexOf(Command.AllActions, "Create") > -1)
+					createController = CreateController.New(this, UniquePropertyName);
+				else
+					editController = EditController.New(this, UniquePropertyName);
 				
 				Form.EntityCommand += new EntityFormEventHandler(Form_EntityCommand);
 			}
@@ -129,7 +128,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		
 		public void Initialize(Type type, EntityForm form)
 		{
-			Initialize(type, form, String.Empty);
+			Initialize(QueryStrings.Action, type, form, String.Empty);
 		}
 
 		void Form_EntityCommand(object sender, EntityFormEventArgs e)
