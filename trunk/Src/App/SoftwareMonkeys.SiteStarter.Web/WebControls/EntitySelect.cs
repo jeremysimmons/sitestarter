@@ -17,11 +17,45 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 	[ControlBuilder(typeof(EntitySelectControlBuilder))]
 	public class EntitySelect : ListBox, IPostBackDataHandler
 	{
+		private IEntity referenceSource = null;
+		/// <summary>
+		/// Gets/sets the entity which is referencing the entities on the list.
+		/// </summary>
+		[Bindable(true)]
+		public IEntity ReferenceSource
+		{
+			get { return referenceSource; }
+			set { referenceSource = value; }
+		}
+		
+		private string referenceProperty = String.Empty;
+		/// <summary>
+		/// Gets/sets the name of the property which references the entities on the list. (Only needed if IsReference is true.)
+		/// </summary>
+		[Bindable(true)]
+		public string ReferenceProperty
+		{
+			get { return referenceProperty; }
+			set { referenceProperty = value; }
+		}
+		
+		private string referenceMirrorProperty = String.Empty;
+		/// <summary>
+		/// Gets/sets the name of the mirror property in the reference. (Only needed if IsReference is true.)
+		/// </summary>
+		[Bindable(true)]
+		public string ReferenceMirrorProperty
+		{
+			get { return referenceMirrorProperty; }
+			set { referenceMirrorProperty = value; }
+		}
+		
 		private bool isReference = true;
 		/// <summary>
 		/// Gets/sets a value indicating whether the entities are being referenced.
 		/// When true, entities won't be added to the list if users aren't authorised to reference them.
 		/// </summary>
+		[Bindable(true)]
 		public bool IsReference
 		{
 			get { return isReference; }
@@ -311,13 +345,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
 		#region Properties
 
-			// TODO: Check if necessary
-			/// <summary>
-			/// Gets/sets the selected Entity.
-			/// </summary>
-			[Browsable(false)]
-			[Bindable(true)]
-			public new Guid SelectedEntityID
+		// TODO: Check if necessary
+		/// <summary>
+		/// Gets/sets the selected Entity.
+		/// </summary>
+		[Browsable(false)]
+		[Bindable(true)]
+		public new Guid SelectedEntityID
 		{
 			get
 			{
@@ -440,12 +474,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				if (DataSource != null)
 				{
 					LogWriter.Debug("DataSource property != null");
-					
-					if (RequireAuthorisation)
-					{
-						if (IsReference)
-							DataSource = AuthoriseReferenceStrategy.New(typeof(E).Name).Authorise((IEntity[])DataSource);
-					}
 					
 					// Organise the data.
 					Collection<E> data = new Collection<E>(DataSource);
@@ -599,7 +627,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			{
 				if (type.IsAbstract || type.IsInterface)
 					throw new InvalidOperationException("Cannot auto load post entities on EntitySelect '" + ID + "' with an abstract or interface entity specified.");
-					
+				
 				entities = IndexStrategy.New(type.Name, RequireAuthorisation).Index<E>(ids);
 			}
 			else
@@ -713,6 +741,20 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		{
 			using (LogGroup logGroup = LogGroup.Start("Populating the EntitySelect control.", NLog.LogLevel.Debug))
 			{
+				if (RequireAuthorisation)
+				{
+					if (IsReference)
+					{
+						if (ReferenceSource == null)
+							throw new Exception("The ReferenceSource property on the EntitySelect '" + ID + "' must be set if IsReference is true.");
+						
+						if (ReferenceProperty == String.Empty)
+							throw new Exception("The ReferenceProperty property on the EntitySelect '" + ID + "' must be set if IsReference is true.");
+						
+						DataSource = AuthoriseReferenceStrategy.New(ReferenceSource, ReferenceProperty).Authorise((IEntity[])DataSource);
+					}
+				}
+				
 				Items.Clear();
 
 				// Add the first item.
@@ -769,7 +811,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				
 				if (property == null)
 				{
-					LogWriter.Debug("Text property '" + TextPropertyName + "' NOT found.");
+					LogWriter.Error("Text property '" + TextPropertyName + "' NOT found.");
 					throw new Exception("Can't find '" + TextPropertyName + "' property on type '" + typeof(E).Name + "' as specified by the TextPropertyName property on the '" + ID + "' EntitySelect control.");
 				}
 				else
