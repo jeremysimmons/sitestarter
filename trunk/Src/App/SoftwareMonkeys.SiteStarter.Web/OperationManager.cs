@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Web.UI.WebControls;
 using System.Web;
+using SoftwareMonkeys.SiteStarter.Business;
 using SoftwareMonkeys.SiteStarter.State;
 
 namespace SoftwareMonkeys.SiteStarter.Web
@@ -61,6 +62,11 @@ namespace SoftwareMonkeys.SiteStarter.Web
             CurrentOperation = operation;
             if (view != null)
             	((MultiView)view.Parent).ActiveViewIndex = ((MultiView)view.Parent).Views.IndexOf(view);
+        }
+        
+        static public void StartOperation(ICommandInfo command, View view)
+        {
+        	StartOperation(command.Action + command.TypeName, view);
         }
     }
 }
