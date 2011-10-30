@@ -17,9 +17,9 @@
     	// TODO: Check if needed. Should be obsolete.
         RequireAuthorisation = false;
 		
-		CreateAction = "Register";
+		CommandInfo command = new CommandInfo("Register", "User", "Create");
         
-        Initialize(typeof(User), DataForm, "Username"); 
+        Initialize(command, DataForm, "Username"); 
         
         CreateController.EntitySavedLanguageKey = "UserRegistered";
         

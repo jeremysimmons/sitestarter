@@ -49,8 +49,14 @@
 		
 		SaveStrategy.New(user, false).Save(user);
 	}
-
-                    
+	
+	  public override void InitializeInfo()
+	  {
+	  	MenuTitle = "MockCreateUser";
+	  	MenuCategory = "TestCategory";
+	  	ShowOnMenu = false;
+	  	ActionAlias = "Create";
+	  }    
 </script>
 <h1>Creating Mock Users</h1>
 <p><b>...done!</b></p>

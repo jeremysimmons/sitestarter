@@ -25,7 +25,7 @@
         
     }
     
-    public override void InitializeMenu()
+    public override void InitializeInfo()
     {
       	MenuTitle = "Users";
       	MenuCategory = "Administration";
@@ -84,7 +84,7 @@
                                     <asp:TemplateColumn>
                                         <itemtemplate>	
                                         <ASP:Hyperlink id=EditButton runat="server"
-                                        	enabled='<%# AuthoriseUpdateStrategy.New<User>().Authorise((User)Container.DataItem) %>'
+                                        	enabled='<%# AuthoriseUpdateStrategy.New<User>().IsAuthorised((User)Container.DataItem) %>'
                                         	ToolTip='<%# DynamicLanguage.GetEntityText("EditThisEntity", QueryStrings.Type) %>'
                                         	text='<%# Resources.Language.Edit %>'
                                         	navigateurl='<%# Navigator.GetLink("Edit", (IEntity)Container.DataItem) %>'>
@@ -92,7 +92,7 @@
 										<cc:DeleteLink id=DeleteButton runat="server"
 											text='<%# Resources.Language.Delete %>'
 											ConfirmMessage='<%# DynamicLanguage.GetEntityText("ConfirmDeleteEntity", QueryStrings.Type) %>'
-											enabled='<%# AuthoriseDeleteStrategy.New<User>().Authorise((User)Container.DataItem) %>'
+											enabled='<%# AuthoriseDeleteStrategy.New<User>().IsAuthorised((User)Container.DataItem) %>'
 											ToolTip='<%# DynamicLanguage.GetEntityText("DeleteThisEntity", QueryStrings.Type) %>'
 											navigateurl='<%# Navigator.GetLink("Delete", (IEntity)Container.DataItem) %>'>
 										</cc:DeleteLink>	

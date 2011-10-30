@@ -24,7 +24,7 @@
 
     private void EditAccount()
     {
-    	Navigator.Go("Edit", "User");
+    	Navigator.Go("Edit", AuthenticationState.User);
     }
     
 
