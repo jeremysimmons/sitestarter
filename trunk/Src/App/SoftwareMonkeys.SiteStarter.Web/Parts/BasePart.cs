@@ -168,7 +168,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		{
 		}
 		
-		public virtual void InitializeMenu()
+		public virtual void InitializeInfo()
 		{
 			// override to set menu properties such as MenuTitle, MenuCategory, and ShowOnMenu
 		}
@@ -177,7 +177,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		{
 			base.OnInit(e);
 			
-			InitializeMenu();
+			InitializeInfo();
 		}
 		
 		protected override void OnPreRender(EventArgs e)
