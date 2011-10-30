@@ -23,7 +23,9 @@ namespace SoftwareMonkeys.SiteStarter.Web
 	{
 		
 		void Application_Start(object sender, EventArgs e)
-		{	
+		{
+			InitializeTimeout();
+			
 			// Initialze the core state management and diagnostics
 			InitializeCore();
 			
@@ -105,6 +107,17 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			HttpContext.Current.Items["Application_BeginRequest.LogGroup"] = null;
 		}
 
+		private void InitializeTimeout()
+		{
+			// If the application is running in debug mode then set the timeout to 60 minutes
+			// to prevent timeout due to debug logging slowing the application down (which isn't an issue
+			// in release mode)
+			if (new ModeDetector().IsDebug)
+				Context.Server.ScriptTimeout = 60 // minutes
+					* 60 // seconds
+					* 1000; // milliseconds
+		}
+		
 		private void InitializeCore()
 		{
 			InitializeState();
