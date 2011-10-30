@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -11,6 +12,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 	public class HelloWorldElement : WebControl, IElement
 	{
 		private string action = String.Empty;
+		[Bindable(true)]
 		public string Action
 		{
 			get { return action; }
@@ -18,6 +20,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 		}
 		
 		private string typeName = String.Empty;
+		[Bindable(true)]
 		public string TypeName
 		{
 			get { return typeName; }
@@ -25,6 +28,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 		}
 		
 		private string elementName = String.Empty;
+		[Bindable(true)]
 		public string ElementName
 		{
 			get { return elementName; }
@@ -32,11 +36,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 		}
 		
 		private string message = String.Empty;
+		[Bindable(true)]
 		public string Message
 		{
 			get { return message; }
-			set { message = value; }
+			set {
+				MessageLabel.Text = value;
+				message = value; }
 		}
+		
+		Label MessageLabel = new Label();
 		
 		public HelloWorldElement()
 		{
@@ -48,7 +57,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 			Controls.Add(new LiteralControl("Hello world!"));
 			Controls.Add(new LiteralControl("<br/>"));
 			if (Message != String.Empty)
-				Controls.Add(new LiteralControl(Message));
+				Controls.Add(MessageLabel);
 			Controls.Add(new LiteralControl("</p>"));
 			
 			base.OnLoad(e);
