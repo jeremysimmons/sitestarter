@@ -169,25 +169,22 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics.Tests
 			
 			LoggingConfiguration config = new LoggingConfiguration();
 			
-            FileTarget fileTarget = new FileTarget();
-            config.AddTarget("File", fileTarget);
+			FileTarget fileTarget = new FileTarget();
+			config.AddTarget("File", fileTarget);
+			
+			fileTarget.Layout = @"${message}";
+			
+			fileTarget.FileName = String.Format("{0}/App_Data/Logs/{1}-{2}-{3}/Log.xml",
+			                                    StateAccess.State.PhysicalApplicationPath,
+			                                    DateTime.Now.Year,
+			                                    DateTime.Now.ToString("MM"),
+			                                    DateTime.Now.Day);
 
-            fileTarget.Layout = @"<layout xsi:type=""LayoutWithHeaderAndFooter"">
-        		<header xsi:type=""SimpleLayout"" text=""&lt;?xml version='1.0'?&gt;${newline}&lt;Log&gt;""/>
-            		<layout xsi:type=""SimpleLayout"" text=""${message}"" />
-            		<footer xsi:type=""SimpleLayout"" text=""&lt;/Log&gt;""/>
-      		</layout>";
-            
-            fileTarget.FileName = String.Format("{0}/App_Data/Logs/{1}-{2}-{3}/Log.xml",
-                                                StateAccess.State.PhysicalApplicationPath,
-                                                DateTime.Now.Year,
-                                                DateTime.Now.ToString("MM"),
-                                               DateTime.Now.Day);
+			LoggingRule rule = new LoggingRule("*", NLog.LogLevel.Trace, fileTarget);
+			config.LoggingRules.Add(rule);
 
-            LoggingRule rule = new LoggingRule("*", NLog.LogLevel.Trace, fileTarget);
-            config.LoggingRules.Add(rule);
-
-            LogManager.Configuration = config; 
+			LogManager.Configuration = config;
+		
 		}
 		
 		public void DisposeLogging()
