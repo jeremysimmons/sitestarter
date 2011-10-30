@@ -82,6 +82,7 @@
     <None Include="Admin\State.aspx" />
     <None Include="Admin\Tests\ChangePassword.aspx" />
     <None Include="Admin\Tests\ClearData.aspx" />
+    <None Include="Admin\Tests\CommandDetails.aspx" />
     <None Include="Admin\Tests\DeleteProjection.aspx" />
     <None Include="Admin\Tests\Dispose.aspx" />
     <None Include="Admin\Tests\JavascriptError.aspx" />
@@ -105,7 +106,6 @@
     <None Include="App_Themes\Default\_svn\text-base\Styles.css.svn-base" />
     <None Include="Controls\AdminFooter.ascx" />
     <None Include="Controls\AuthMenu.ascx" />
-    <None Include="Controls\Guide.ascx" />
     <None Include="Controls\Testing.ascx" />
     <None Include="Default.aspx" />
     <None Include="Error.aspx" />
