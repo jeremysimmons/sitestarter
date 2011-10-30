@@ -66,7 +66,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyScanInfo.cs" />
+    <Compile Include="Entities\MockDerivedEntity.cs" />
     <Compile Include="Entities\MockEntity.cs" />
+    <Compile Include="Entities\MockPublicEntity.cs" />
     <Compile Include="Entities\MockRestrictedEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration.Tests\SiteStarter.Configuration.Tests.csproj">
