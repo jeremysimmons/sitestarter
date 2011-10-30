@@ -5,13 +5,13 @@ using SoftwareMonkeys.SiteStarter.Web.Projections;
 namespace SoftwareMonkeys.SiteStarter.Web.Tests.Projections
 {
 	/// <summary>
-	/// Description of MockProjection.
+	/// 
 	/// </summary>
-	public class MockProjection : BaseProjection
+	public class MockCreateProjection : BaseCreateEditProjection
 	{
-		public MockProjection()
+		public MockCreateProjection(Type entityType)
 		{
-			Command = new CommandInfo("MockAction", "MockEntity");
+			Command = new CreateComandInfo(entityType.Name);
 		}
 	}
 }

@@ -120,29 +120,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		public T New<T>()
 			where T : IController
 		{
-			T controller = New<T>(TypeName);
-			
-			return controller;
-		}
-		
-		/// <summary>
-		/// Creates a new instance of the corresponding controller for use by the system.
-		/// </summary>
-		/// <returns>An instance of the corresponding controller, cast to the specified type.</returns>
-		public T New<T>(string entityTypeName)
-			where T : IController
-		{
 			T controller = default(T);
 			
-			using (LogGroup logGroup = LogGroup.Start("Creating a new controller for the type: " + entityTypeName, NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Creating a new controller for the type: " + TypeName, NLog.LogLevel.Debug))
 			{
-				LogWriter.Debug("Entity type name: " + entityTypeName);
+				LogWriter.Debug("Entity type name: " + TypeName);
 				
 				LogWriter.Debug("Controller type: " + typeof(T).FullName);
 				
-				controller = (T)New();
-				
-				controller.TypeName = entityTypeName;
+				controller = (T)Creator.CreateController(this);
 			};
 			
 			return controller;

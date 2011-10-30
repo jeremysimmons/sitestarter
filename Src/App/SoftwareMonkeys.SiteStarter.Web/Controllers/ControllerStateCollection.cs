@@ -137,5 +137,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			
 			return fullKey;
 		}
+		
+		public bool Contains(string action, string type)
+		{
+			string key = GetControllerKey(action, type);
+			
+			return ContainsKey(key);
+		}
 	}
 }

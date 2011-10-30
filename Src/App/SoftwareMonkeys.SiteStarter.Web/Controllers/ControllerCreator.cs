@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftwareMonkeys.SiteStarter.Business;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Entities;
 
@@ -91,32 +92,21 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			return controller;
 		}
 		
-		#region Generic new function
+		#region Generic new function		
 		/// <summary>
-		/// Creates a new instance of the specified controller for the specified type.
+		/// Creates a new instance of the specified controller.
 		/// </summary>
-		/// <param name="action">The action to be performed by the controller.</param>
-		/// <param name="typeName">The short name of the type involved in the controller.</param>
-		/// <returns>A new insteance of the specified controller for the specified type.</returns>
-		public T New<T>(string action, string typeName)
+		/// <param name="container">The container controlled by the new controller.</param>
+		/// <returns>A new insteance of the specified controller.</returns>
+		public T New<T>(IControllable container)
 			where T : IController
 		{
-			T controller = Controllers[action, typeName].New<T>();
-			controller.TypeName = typeName;
+			container.CheckCommand();
+			
+			T controller = Controllers[container.Command.Action, container.Command.TypeName].New<T>();
+			controller.Container = container;
 			
 			return controller;
-		}
-		
-		/// <summary>
-		/// Creates a new instance of the specified controller for the specified type.
-		/// </summary>
-		/// <param name="action">The action to be performed by the controller.</param>
-		/// <param name="type">The type involved in the controller.</param>
-		/// <returns>A new insteance of the specified controller for the specified type.</returns>
-		public T New<T>(string action, Type type)
-			where T : IController
-		{
-			return New<T>(action, type.Name);
 		}
 		#endregion
 		
@@ -137,7 +127,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				CheckType(typeName);
 			
 				controller = Controllers["Index", typeName]
-					.New<IndexController>(typeName);
+					.New<IndexController>();
 			}
 			
 			return controller;
@@ -165,7 +155,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			CheckType(typeName);
 			
 			return Controllers["Save", typeName]
-				.New<CreateController>(typeName);
+				.New<CreateController>();
 		}
 		
 		/// <summary>
@@ -191,7 +181,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			CheckType(typeName);
 			
 			return Controllers["Edit", typeName]
-				.New<EditController>(typeName);
+				.New<EditController>();
 		}
 		
 		/// <summary>
@@ -216,7 +206,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			CheckType(typeName);
 			
 			return Controllers["Delete", typeName]
-				.New<DeleteController>(typeName);
+				.New<DeleteController>();
 		}
 		
 		/// <summary>
@@ -241,7 +231,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			CheckType(typeName);
 			
 			return Controllers["View", typeName]
-				.New<ViewController>(typeName);
+				.New<ViewController>();
 		}
 		
 		/// <summary>
