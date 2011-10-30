@@ -36,6 +36,9 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <returns></returns>
 		static public bool IsType(Type type)
 		{
+			if (type == null)
+				throw new ArgumentNullException("type");
+			
 			return IsType(type.Name);
 		}
 		
@@ -46,7 +49,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <returns></returns>
 		static public bool IsType(string typeName)
 		{
-			if (typeName == String.Empty)
+			if (typeName == null || typeName == String.Empty)
 				throw new ArgumentException("A type name must be provided.", "typeName");
 			
 			if (typeName == "IEntity"

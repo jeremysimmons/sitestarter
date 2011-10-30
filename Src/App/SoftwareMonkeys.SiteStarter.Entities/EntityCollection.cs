@@ -55,21 +55,11 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 					Add(value);
 			}
 		}
-
-		/*/// <summary>
-		/// Gets the type of E in the collection.
+		
+		/// <summary>
+		/// Empty constructor.
 		/// </summary>
-		public Type EType
-		{
-			get {
-
-			}
-		}*/
-
-			/// <summary>
-			/// Empty constructor.
-			/// </summary>
-			public Collection()
+		public Collection()
 		{ }
 
 		/// <summary>
@@ -293,115 +283,12 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			return (E[])list.ToArray(typeof(E));
 		}
 
-		// TODO: Check if needed
-		/*
-        /// <summary>
-        /// Converts the collection to an array of objects.
-        /// </summary>
-        /// <returns>An array of the objects in the collection.</returns>
-        public object[] ToObjectArray()
-        {
-            ArrayList list = new ArrayList();
-            foreach (E entity in this)
-                list.Add(entity);
-            return (object[])list.ToArray(typeof(object));
-        }*/
-
-		// TODO: Check if needed
-		/*/// <summary>
-		/// Casts the provided value back to a Collection&lt;E&gt; type then to an array.
+		/// <summary>
+		/// Sorts the collection as specified.
 		/// </summary>
-		/// <param name="value"></param>
-		/// <returns></returns>
-		static public E[] CastToArray(object value)
-		{
-			Collection<E> newCollection = new Collection<E>();
-			if (value is Collection<E>)
-			{
-				Type type = ((Collection<E>)value).EType;
-				foreach (object obj in (IEnumerable)value)
-				{
-					if (obj is E)
-						newCollection.Add((E)obj);
-				}
-				return newCollection.ToArray(type);
-			}
-			else
-				throw new ArgumentException("The provided object must be of type Collection<E> or a collection using a derivitive of the E class.");
-
-			
-		}*/
-
-			// TODO: Check if needed
-			/*/// <summary>
-			/// Casts the provided value back to a Collection&lt;E&gt; type then to an array of objects.
-			/// </summary>
-			/// <param name="value"></param>
-			/// <returns></returns>
-			static public object[] CastToObjectArray(object value)
-		{
-			Collection<E> newCollection = new Collection<E>();
-			if (value is Collection<E>)
-			{
-				foreach (object obj in (IEnumerable)value)
-				{
-					if (obj is E)
-						newCollection.Add((E)obj);
-				}
-			}
-			else
-				throw new ArgumentException("The provided object must be of type Collection<E> or a collection using a derivitive of the E class.");
-
-			return newCollection.ToObjectArray();
-		}*/
-
-			#region Conversion operators
-			/*public static implicit operator Collection<E>(E[] entities)
-        {
-            return new Collection<E>(entities);
-        }
-
-        public static implicit operator E[](Collection<E> entities)
-        {
-            return entities.ToArray();
-        }*/
-
-			/*public static implicit operator Collection<E>(Object[] entities)
-        {
-            return new Collection<E>(entities);
-        }
-
-        public static implicit operator Object[](Collection<E> entities)
-        {
-            return entities.ToObjectArray();
-        }*/
-
-			/* public static implicit operator Collection<E>(object collection)
-         {
-             if (collection is Collection<E>)
-             {
-                 return new Collection<E>((IEnumerable)collection);
-             }
-             throw new Exception("Cannot convert from object to Collection<E>.");
-         }
-
-         public static implicit operator object(Collection<E> entities)
-         {
-             return (object)entities;
-         }*/
-
-			/*  public static implicit operator Collection<E>(Collection<E> entities)
-          {
-              return new Collection<E>(entities);
-          }*/
-			#endregion
-
-			/// <summary>
-			/// Sorts the collection as specified.
-			/// </summary>
-			/// <param name="propertyName">The name of the property being sorted by.</param>
-			/// <param name="direction">The sort direction.</param>
-			public void Sort(string propertyName, SortDirection direction)
+		/// <param name="propertyName">The name of the property being sorted by.</param>
+		/// <param name="direction">The sort direction.</param>
+		public void Sort(string propertyName, SortDirection direction)
 		{
 			if (Count > 0 && this[0] != null)
 			{
@@ -432,13 +319,6 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <returns>A collection of entities with the specified IDs.</returns>
 		public Collection<E> GetByIDs(Guid[] ids)
 		{
-			// Get the inner type of the collection
-			/*  Type innerType = null; // TODO: Remove code
-              if (List.Count > 0)
-                  innerType = List[0].GetType();
-              else
-                  throw new Exception("The type of objects in this collection are not supported. They must be derived from E.");
-			 */
 			// Create the specific collection type
 			System.Type specificType = typeof(Collection<>).MakeGenericType(new System.Type[] { typeof(E) });
 			Collection<E> entities = (Collection<E>)Activator.CreateInstance(specificType);
@@ -617,13 +497,6 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			
 			return (E[])list.ToArray();
 		}
-
-		/*static public E[] ConvertAll(IEntity[] entities)
-        {
-			if (entities == null || entities.Length == 0)
-				return new E[] {};
-		    return (E[])Array.ConvertAll<IEntity, E>(entities, new Converter<IEntity, E>(IEntity_Convert));
-        }*/
 		
 		static public E[] ConvertAll(object entities)
 		{
@@ -643,7 +516,6 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				throw new NotSupportedException("Type note supported:" + entities.GetType().ToString());
 			
 			return (E[])collection.ToArray();
-			//return (E[])Array.ConvertAll<object, E>((object[])entities, new Converter<object, E>(object_Convert));
 		}
 		
 		static public E[] ConvertAll(Array entities, Type type)
@@ -662,22 +534,10 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			}
 			
 			return (E[])collection.ToArray(type);
-			//return (E[])Array.ConvertAll<object, E>((object[])entities, new Converter<object, E>(object_Convert));
 		}
-
-		/* static public E IEntity_Convert(IEntity entity)
-        {
-		//if (entity == null)
-		//	return null;
-		//else
-	            return (E)entity;
-        }*/
 		
 		static public E object_Convert(object entity)
 		{
-			//if (entity == null)
-			//	return null;
-			//else
 			if (entity is E)
 				return (E)entity;
 			else
