@@ -25,6 +25,14 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests.Entities
 			set { restrictedEntities = value; }
 		}
 		
+		private MockPublicEntity[] publicEntities;
+		[Reference]
+		public MockPublicEntity[] PublicEntities
+		{
+			get { return publicEntities; }
+			set { publicEntities = value; }
+		}
+		
 		public MockEntity()
 		{
 		}
