@@ -6,18 +6,15 @@ using SoftwareMonkeys.SiteStarter.Business;
 namespace SoftwareMonkeys.SiteStarter.Web
 {
 	/// <summary>
-	/// Description of IControllable.
+	/// Defines the interface of all controllable objects (such as projections).
 	/// </summary>
 	public interface IControllable
 	{
 		string WindowTitle { get;set; }
 		
-		string Action { get;set; }
-		string InternalAction { get;set; }
-		Type Type { get;set; }
-		
-		void CheckType();
-		void CheckAction();
+		ICommandInfo Command { get;set; }
+			
+		void CheckCommand();
 		
 		bool RequireAuthorisation {get;set;}
 	}
