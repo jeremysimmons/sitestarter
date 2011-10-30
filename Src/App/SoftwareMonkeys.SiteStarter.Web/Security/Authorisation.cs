@@ -33,7 +33,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 				
 				LogWriter.Debug("Strategy type: " + strategy.GetType().ToString());
 				
-				isAuthorised = strategy.Authorise(typeName);
+				isAuthorised = strategy.IsAuthorised(typeName);
 				
 				LogWriter.Debug("Is authorised: " + isAuthorised.ToString());
 			}
@@ -54,7 +54,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 				
 				LogWriter.Debug("Strategy type: " + strategy.GetType().ToString());
 				
-				isAuthorised = strategy.Authorise(type.Name);
+				isAuthorised = strategy.IsAuthorised(type.Name);
 				
 				LogWriter.Debug("Is authorised: " + isAuthorised.ToString());
 			}
@@ -76,7 +76,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 				
 				LogWriter.Debug("Strategy type: " + strategy.GetType().ToString());
 				
-				isAuthorised = strategy.Authorise(entity);
+				isAuthorised = strategy.IsAuthorised(entity);
 				
 				LogWriter.Debug("Is authorised: " + isAuthorised.ToString());
 			}
