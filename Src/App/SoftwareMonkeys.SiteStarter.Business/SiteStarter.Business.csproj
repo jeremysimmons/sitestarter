@@ -133,7 +133,6 @@
     <Compile Include="Security\AuthenticateStrategy.cs" />
     <Compile Include="Security\AuthenticationState.cs" />
     <Compile Include="Security\AuthoriseCreateStrategy.cs" />
-    <Compile Include="Security\AuthoriseCreateUserRoleStrategy.cs" />
     <Compile Include="Security\AuthoriseCreateUserStrategy.cs" />
     <Compile Include="Security\AuthoriseDeleteStrategy.cs" />
     <Compile Include="Security\AuthoriseDeleteUserStrategy.cs" />
