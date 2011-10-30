@@ -89,6 +89,7 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\BaseControllerScanner.cs" />
     <Compile Include="Controllers\ControllerAttribute.cs" />
+    <Compile Include="Controllers\ControllerAuthorisation.cs" />
     <Compile Include="Controllers\ControllerCreator.cs" />
     <Compile Include="Controllers\ControllerFileNamer.cs" />
     <Compile Include="Controllers\ControllerInfo.cs" />
