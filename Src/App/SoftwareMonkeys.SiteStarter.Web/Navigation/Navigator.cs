@@ -148,27 +148,33 @@ namespace SoftwareMonkeys.SiteStarter.Web.Navigation
 		
 		public virtual void Go(string action, IEntity entity)
 		{
-			
-			using (LogGroup logGroup = LogGroup.Start("Navigating.", NLog.LogLevel.Debug))
+			Go(action, entity, true);
+		}
+		
+		public virtual void Go(string action, IEntity entity, bool persistForm)
+		{
+			using (LogGroup logGroup = LogGroup.StartDebug("Navigating."))
 			{
 				string link = GetLink(action, entity);
 				
 				LogWriter.Debug("Link: " + link);
 				
-				Redirect(link);
+				Redirect(link, persistForm);
 			}
 		}
-
+		
 		public virtual void Redirect(string link)
+		{
+			Redirect(link, true);
+		}
+
+		public virtual void Redirect(string link, bool persistForm)
 		{
 			using (LogGroup logGroup = LogGroup.Start("Redirecting to the specified link.", NLog.LogLevel.Debug))
 			{
 				LogWriter.Debug("Link: " + link);
-				//string rewrittenUrl = CloakHandler.RewriteUrl(link, HttpContext.Current.Request.ApplicationPath);
-				//HttpContext.Current.Server.Transfer(link, false);
 				
-				//Parent.Page.Response.Redirect(link, false);
-				HttpContext.Current.Response.Redirect(link, true);
+				HttpContext.Current.Response.Redirect(link, persistForm);
 			}
 		}
 		
@@ -275,7 +281,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Navigation
 			}
 			
 			// Redirect (outside the log group)
-			HttpContext.Current.Response.Redirect(url);
+			Redirect(url);
 		}
 	}
 }
