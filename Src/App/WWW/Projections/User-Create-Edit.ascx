@@ -15,8 +15,10 @@
     {
         Initialize(typeof(User), DataForm, "Username");
         
-        CreateController.ActionOnSuccess = "Index";
-        EditController.ActionOnSuccess = "Index";
+        if (QueryStrings.Action == "Create")
+        	CreateController.ActionOnSuccess = "Index";
+        else
+        	EditController.ActionOnSuccess = "Index";
     }
 
     #region Main functions
@@ -53,6 +55,7 @@
                               <FieldTemplate>
                                   <cc:EntitySelect width="400" EntityType="SoftwareMonkeys.SiteStarter.Entities.UserRole, SoftwareMonkeys.SiteStarter.Entities" runat="server"
                                       TextPropertyName='Name' id="UserRoles" DisplayMode="Multiple" SelectionMode="Multiple"
+                                      ReferenceSource='<%# DataSource %>' ReferenceProperty="Roles"
                                       NoDataText='<%# "-- " + Resources.Language.NoRoles + " --" %>' OnDataLoading='UserRolesSelect_DataLoading'>
                                   </cc:EntitySelect>
                                     </FieldTemplate>

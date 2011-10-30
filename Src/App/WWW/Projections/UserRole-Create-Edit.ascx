@@ -14,8 +14,10 @@
     {
         Initialize(typeof(UserRole), DataForm);        
         
-        CreateController.ActionOnSuccess = "Index";
-        EditController.ActionOnSuccess = "Index";
+        if (QueryStrings.Action == "Create")
+        	CreateController.ActionOnSuccess = "Index";
+        else
+        	EditController.ActionOnSuccess = "Index";
     }
 
     protected void UsersSelect_DataLoading(object sender, EventArgs e)
@@ -33,7 +35,11 @@
                                    <%= OperationManager.CurrentOperation == "CreateUserRole" ? Resources.Language.CreateUserRoleIntro : Resources.Language.EditUserRoleIntro %></p>  
                             <cc:EntityForm runat="server" id="DataForm" DataSource='<%# DataSource %>' CssClass="Panel" headingtext='<%# OperationManager.CurrentOperation == "CreateUserRole" ? Resources.Language.NewUserRoleDetails : Resources.Language.UserRoleDetails %>' headingcssclass="Heading2" width="100%">
                              <cc:EntityFormTextBoxItem runat="server" PropertyName="Name" TextBox-Width="400" TextBox-Enabled='<%# DataForm.DataSource == null || ((UserRole)DataForm.DataSource).Name != Resources.Language.Administrator %>' FieldControlID="Name" IsRequired="true" text='<%# Resources.Language.Name + ":" %>' RequiredErrorMessage='<%# Resources.Language.UserRoleNameRequired %>'></cc:EntityFormTextBoxItem>
-				<cc:EntityFormItem runat="server" PropertyName="Users" FieldControlID="Users" ControlValuePropertyName="SelectedEntities" text='<%# Resources.Language.Users + ":" %>'><FieldTemplate><cc:EntitySelect width="400px" EntityType="SoftwareMonkeys.SiteStarter.Entities.User, SoftwareMonkeys.SiteStarter.Entities" runat="server" TextPropertyName='Name' id="Users" displaymode="multiple" selectionmode="multiple" NoDataText='<%# "-- " + Resources.Language.NoUsers + " --" %>' OnDataLoading='UsersSelect_DataLoading'></cc:EntitySelect></FieldTemplate></cc:EntityFormItem>
+				<cc:EntityFormItem runat="server" PropertyName="Users" FieldControlID="Users" ControlValuePropertyName="SelectedEntities" text='<%# Resources.Language.Users + ":" %>'>
+						<FieldTemplate>
+							<cc:EntitySelect width="400px" EntityType="SoftwareMonkeys.SiteStarter.Entities.User, SoftwareMonkeys.SiteStarter.Entities" runat="server"
+							TextPropertyName='Name' id="Users" displaymode="multiple" selectionmode="multiple" ReferenceProperty="Users" ReferenceSource='<%# DataSource %>'
+							NoDataText='<%# "-- " + Resources.Language.NoUsers + " --" %>' OnDataLoading='UsersSelect_DataLoading'></cc:EntitySelect></FieldTemplate></cc:EntityFormItem>
                                   <cc:EntityFormButtonsItem ID="EntityFormButtonsItem1" runat="server"><FieldTemplate><asp:Button ID="SaveButton" runat="server" CausesValidation="True" CommandName="Save"
                                                     Text='<%# Resources.Language.Save %>' Visible='<%# OperationManager.CurrentOperation == "CreateUserRole" %>'></asp:Button>
                                                     <asp:Button ID="UpdateButton" runat="server" CausesValidation="True" CommandName="Update"
