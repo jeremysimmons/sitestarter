@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftwareMonkeys.SiteStarter.Business;
 using SoftwareMonkeys.SiteStarter.Web;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Web.Security;
@@ -42,7 +43,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <param name="isPaged"></param>
 		public void Initialize(Type type, bool isPaged)
 		{
-			Type = type;
+			Command = new IndexCommandInfo(type.Name);
 			controller = IndexController.New(this);
 
 		}

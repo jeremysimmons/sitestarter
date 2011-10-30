@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Web.UI;
 using System.IO;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.State;
 using System.Collections.Generic;
 
@@ -10,7 +11,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 	/// Used to extract projection info from a file path.
 	/// </summary>
 	public class ProjectionInfoExtractor
-	{		
+	{
 		private ControlLoader controlLoader;
 		/// <summary>
 		/// Gets/sets component used to load user controls.
@@ -20,7 +21,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			get {
 				if (controlLoader == null)
 				{
-						throw new InvalidOperationException("ControlLoader has not been initialized, and cannot initialize automatically because the Page property is null.");
+					throw new InvalidOperationException("ControlLoader has not been initialized, and cannot initialize automatically because the Page property is null.");
 				}
 				return controlLoader; }
 			set { controlLoader = value; }
@@ -38,73 +39,106 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <returns></returns>
 		public ProjectionInfo[] ExtractProjectionInfo(string filePath)
 		{
-			string shortName = Path.GetFileNameWithoutExtension(filePath);
-			string extension = Path.GetExtension(filePath).Trim('.');
-			
-			string[] actions = ExtractActions(shortName);
-			
-			string typeName = ExtractType(shortName);
-			
 			List<ProjectionInfo> projections = new List<ProjectionInfo>();
 			
-			string relativeFilePath = filePath.Replace(StateAccess.State.PhysicalApplicationPath, "")
-				.Replace(@"\", "/");
-			
-			BaseProjection p = null;
-			try
+			using (LogGroup logGroup = LogGroup.StartDebug("Extracting projection info from file: " + filePath))
 			{
-				p = (BaseProjection)ControlLoader.LoadControl(filePath);
-			}
-			catch (Exception ex)
-			{
-				throw new Exception("Unable to load projection: " + filePath, ex);
-			}
-			
-			if (p == null)
-				throw new ArgumentException("Cannot find projection file at path: " + filePath);
-			
-			// Ensure that the menu properties have been set
-			p.InitializeMenu();
-			
-			string menuTitle = p.MenuTitle;
-			string menuCategory = p.MenuCategory;
-			bool showOnMenu = p.ShowOnMenu;
-			
-			// If the projection is type and action based
-			if (actions.Length > 0)
-			{
-				foreach (string action in actions)
+				string shortName = Path.GetFileNameWithoutExtension(filePath);
+				string extension = Path.GetExtension(filePath).Trim('.');
+				
+				string[] actions = ExtractActions(shortName);
+				
+				string typeName = ExtractType(shortName);
+				
+				string relativeFilePath = filePath.Replace(StateAccess.State.PhysicalApplicationPath, "")
+					.Replace(@"\", "/");
+				
+				BaseProjection p = null;
+				try
 				{
-					ProjectionInfo info = new ProjectionInfo();
-					info.Action = action;
-					info.TypeName = typeName;
-					info.Name = info.TypeName + "-" + info.Action;
-					info.ProjectionFilePath = relativeFilePath;
-					info.Format = GetFormatFromFileName(filePath);
+					p = (BaseProjection)ControlLoader.LoadControl(filePath);
+				}
+				catch (Exception ex)
+				{
+					throw new Exception("Unable to load projection: " + filePath, ex);
+				}
+				
+				if (p == null)
+					throw new ArgumentException("Cannot find projection file at path: " + filePath);
+				
+				// Ensure that the info has been initialized
+				p.InitializeInfo();
+				
+				string menuTitle = p.MenuTitle;
+				string menuCategory = p.MenuCategory;
+				bool showOnMenu = p.ShowOnMenu;
+				string actionAlias = p.ActionAlias;
+				
+				ProjectionInfo[] manualInfos = p.Info;
+				
+				// If no projection info was manually created within the projection
+				// then automatically generate them
+				if (manualInfos == null || manualInfos.Length == 0)
+				{
+					LogWriter.Debug("No info objects created within the projection. Automatically extracting.");
 					
-					info.MenuTitle = menuTitle;
-					info.MenuCategory = menuCategory;
-					info.ShowOnMenu = showOnMenu;
+					// If the projection is type and action based
+					if (actions.Length > 0)
+					{
+						foreach (string action in actions)
+						{
+							ProjectionInfo info = new ProjectionInfo();
+							info.Action = action;
+							info.TypeName = typeName;
+							info.Name = info.TypeName + "-" + info.Action;
+							info.ProjectionFilePath = relativeFilePath;
+							info.Format = GetFormatFromFileName(filePath);
+							
+							info.MenuTitle = menuTitle;
+							info.MenuCategory = menuCategory;
+							info.ShowOnMenu = showOnMenu;
+							info.ActionAlias = actionAlias;
+							
+							projections.Add(info);
+						}
+					}
+					// Otherwise it's just a simple name based projection
+					else
+					{
+						ProjectionInfo info = new ProjectionInfo();
+						
+						info.Name = shortName;
+						info.ProjectionFilePath = relativeFilePath;
+						info.Format = GetFormatFromFileName(filePath);
+						
+						info.MenuTitle = menuTitle;
+						info.MenuCategory = menuCategory;
+						info.ShowOnMenu = showOnMenu;
+						info.ActionAlias = actionAlias;
+						
+						projections.Add(info);
+					}
+				}
+				// Otherwise use the manually created info
+				else
+				{
+					LogWriter.Debug("Info objects created by projection: " + manualInfos.Length.ToString());
 					
-					projections.Add(info);
+					foreach (ProjectionInfo i in manualInfos)
+					{
+						LogWriter.Debug("Projection: " + i.MenuTitle);
+						
+						// If the name is not specified but the type name and action are then
+						// generate the name from them
+						if (i.Name == String.Empty && i.TypeName != String.Empty && i.Action != String.Empty)
+							i.Name = i.TypeName + "-" + i.Action;
+						
+						// Set the projection file path
+						i.ProjectionFilePath = relativeFilePath;
+					}
+					projections.AddRange(manualInfos);
 				}
 			}
-			// Otherwise it's just a simple name based projection
-			else
-			{
-				ProjectionInfo info = new ProjectionInfo();
-				
-				info.Name = shortName;
-				info.ProjectionFilePath = relativeFilePath;
-				info.Format = GetFormatFromFileName(filePath);
-				
-				info.MenuTitle = menuTitle;
-				info.MenuCategory = menuCategory;
-				info.ShowOnMenu = showOnMenu;
-				
-				projections.Add(info);
-			}
-			
 			return projections.ToArray();
 		}
 		
