@@ -118,8 +118,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 				if (p == null)
 					throw new ArgumentException("Cannot find part file at path: " + filePath);
 				
-				// Ensure that the menu properties have been set
-				p.InitializeMenu();
+				// Ensure that the info properties have been set
+				p.InitializeInfo();
 				
 				info.MenuTitle = p.MenuTitle;
 				info.MenuCategory = p.MenuCategory;
