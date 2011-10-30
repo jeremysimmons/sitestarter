@@ -11,10 +11,19 @@ namespace SoftwareMonkeys.SiteStarter.Web.State.Cookies
 		
 		static public string Decrypt(string value)
 		{
-			FormsAuthenticationTicket ticket = FormsAuthentication.Decrypt(value);
+			FormsAuthenticationTicket ticket = null;
+			
+			try
+			{
+				ticket = FormsAuthentication.Decrypt(value);
+			}
+			catch
+			{
+				// Ignore and return String.Empty
+			}
             
 			if (ticket != null)
-            	return ticket.UserData;
+            			return ticket.UserData;
 			else
 				return String.Empty;
 		}
