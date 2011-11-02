@@ -62,6 +62,7 @@
     <Compile Include="AliasAttribute.cs" />
     <Compile Include="AssemblyContainsEntitiesAttribute.cs" />
     <Compile Include="AssemblyScanInfo.cs" />
+    <Compile Include="BaseAuthoredEntity.cs" />
     <Compile Include="BaseEntityReferenceAttribute.cs" />
     <Compile Include="BaseEntity.cs" />
     <Compile Include="BaseUniqueEntity.cs" />

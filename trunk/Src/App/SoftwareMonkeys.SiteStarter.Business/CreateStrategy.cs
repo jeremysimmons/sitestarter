@@ -41,6 +41,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			// Assign a validation strategy
 			entity.Validator = ValidateStrategy.New(entity);
 			
+			React(entity);
+			
 			return entity;
 		}
 		
