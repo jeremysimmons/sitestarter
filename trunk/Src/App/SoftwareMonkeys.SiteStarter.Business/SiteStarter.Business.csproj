@@ -96,7 +96,7 @@
     <Compile Include="BaseUpdateReaction.cs" />
     <Compile Include="AssemblyContainsReactionsAttribute.cs" />
     <Compile Include="CommandInfo.cs" />
-    <Compile Include="CreateAuthoredReaction.cs" />
+    <Compile Include="CreateAuthoredEntityReaction.cs" />
     <Compile Include="CreateComandInfo.cs" />
     <Compile Include="CreateReaction.cs" />
     <Compile Include="CreateStrategy.cs" />
@@ -137,6 +137,7 @@
     <Compile Include="Security\AuthenticationState.cs" />
     <Compile Include="Security\AuthoriseCreateStrategy.cs" />
     <Compile Include="Security\AuthoriseCreateUserStrategy.cs" />
+    <Compile Include="Security\AuthoriseDeleteAuthoredEntityStrategy.cs" />
     <Compile Include="Security\AuthoriseDeleteStrategy.cs" />
     <Compile Include="Security\AuthoriseDeleteUserStrategy.cs" />
     <Compile Include="Security\AuthoriseReaction.cs" />
