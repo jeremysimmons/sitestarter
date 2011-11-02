@@ -1,6 +1,7 @@
 <%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/Site.master" %>
 <%@ Import Namespace="System.Reflection" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Data" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Entities" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Security" %>
 <%@ Import Namespace="Db4objects.Db4o" %>
@@ -57,6 +58,16 @@
                 label.Text = obj.GetType().ToString();
                 labelPanel.Controls.Add(label);
                 labelPanel.CssClass = "Heading2";
+                
+                Guid entityID = Guid.Empty;
+                if (obj is IEntity)
+                {
+                	entityID = ((IEntity)obj).ID;
+                	
+                	((IEntity)obj).Activator = ActivateStrategy.New((IEntity)obj);
+                	
+                	((IEntity)obj).Activate();
+                }
 
                 panel.Controls.Add(labelPanel);
 
@@ -71,39 +82,65 @@
                 {
                     foreach (PropertyInfo property in properties)
                     {
-                        Panel propertyPanel = new Panel();
-                        Label propertyLabel = new Label();
-                        try
-                        {
-                            object value = property.GetValue(obj, (object[])null);
-                            string stringValue = String.Empty;
-                            if (value is Guid[])
-                            {
-                                foreach (Guid id in (Guid[])value)
-                                    stringValue += "<br/>- " + id;
-                                stringValue = stringValue.TrimEnd('|');
-                            }
-                            else if (value is string[])
-                            {
-                                foreach (string s in (string[])value)
-                                    stringValue += "<br/>- " + s;
-                                stringValue = stringValue.TrimEnd('|');
-                            }
-                            else
-                            {
-                                if (value != null)
-                                    stringValue = value.ToString();
-                            }
-                            propertyLabel.Text = property.Name + ": " + stringValue;
-                        }
-                        catch (Exception ex)
-                        {
-                            propertyLabel.Text = property.Name + ": " + "[unavailable]";
-                        }
-                        propertyPanel.Controls.Add(propertyLabel);
-
-                        panel.Controls.Add(propertyPanel);
-                    }
+                    	if (!SkipProperty(property.Name))
+                    	{
+                    
+	                        Panel propertyPanel = new Panel();
+	                        
+	                        Label propertyLabel = new Label();
+		                        
+	                        if (!EntitiesUtilities.IsReference(obj.GetType(), property))
+	                        {
+		                        try
+		                        {
+		                            object value = property.GetValue(obj, (object[])null);
+		                            string stringValue = String.Empty;
+		                            if (value is Guid[])
+		                            {
+		                                foreach (Guid id in (Guid[])value)
+		                                    stringValue += "<br/>- " + id;
+		                                stringValue = stringValue.TrimEnd('|');
+		                            }
+		                            else if (value is string[])
+		                            {
+		                                foreach (string s in (string[])value)
+		                                    stringValue += "<br/>- " + s;
+		                                stringValue = stringValue.TrimEnd('|');
+		                            }
+		                            else
+		                            {
+		                                if (value != null)
+		                                    stringValue = value.ToString();
+		                            }
+		                            propertyLabel.Text = property.Name + ": " + stringValue;
+		                        }
+		                        catch (Exception ex)
+		                        {
+		                            propertyLabel.Text = property.Name + ": " + "[unavailable]";
+		                        }
+		                        
+		                    	propertyPanel.Controls.Add(propertyLabel);
+		                    }
+							else
+							{
+		                    	propertyPanel.Controls.Add(propertyLabel);
+		                    	
+		                    	int count = 1;
+		                    	if (EntitiesUtilities.IsMultipleReference(obj.GetType(), property))
+		                    	{
+		                    		count = ((IEntity[])property.GetValue(obj, null)).Length;
+		                    	}
+		                    	
+		                        propertyLabel.Text = property.Name + ": ";
+								HyperLink referencesLink = new HyperLink();
+								referencesLink.Text = "[" + count + "] View &raquo;";
+								referencesLink.NavigateUrl = "DataReferences.aspx?SourceType=" + obj.GetType().Name + "&SourceID=" + entityID.ToString() + "&ReferenceProperty=" + property.Name;
+								propertyPanel.Controls.Add(referencesLink);
+							}	
+		                    				
+	                        panel.Controls.Add(propertyPanel);
+	                    }
+	                }
                 }
 
                 panel.Style.Add("margin-bottom", "10px");
@@ -117,6 +154,21 @@
 
         PageViews.SetActiveView(OutputView);
 
+    }
+    
+    private bool SkipProperty(string name)
+    {
+    	string[] ignorable = new string[]{
+    		"IsActivated",
+    		"IsValid",
+    		"Activator",
+    		"Validator",
+    		"ShortTypeName",
+    		"AutoActivate",
+    		"RequiresValidation"
+    	};
+    	
+    	return Array.IndexOf(ignorable, name) > -1;
     }
 </script>
 <asp:Content runat="server" ContentPlaceHolderID="Body">
