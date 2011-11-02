@@ -88,6 +88,7 @@
     <Compile Include="ApplicationRestorer.cs" />
     <Compile Include="AssemblyContainsStrategiesAttribute.cs" />
     <Compile Include="AssemblyScanInfo.cs" />
+    <Compile Include="BaseCreateReaction.cs" />
     <Compile Include="BaseDeleteReaction.cs" />
     <Compile Include="BaseReaction.cs" />
     <Compile Include="BaseSaveReaction.cs" />
@@ -95,7 +96,9 @@
     <Compile Include="BaseUpdateReaction.cs" />
     <Compile Include="AssemblyContainsReactionsAttribute.cs" />
     <Compile Include="CommandInfo.cs" />
+    <Compile Include="CreateAuthoredReaction.cs" />
     <Compile Include="CreateComandInfo.cs" />
+    <Compile Include="CreateReaction.cs" />
     <Compile Include="CreateStrategy.cs" />
     <Compile Include="CreateSubEntityStrategy.cs" />
     <Compile Include="CreateUserStrategy.cs" />
