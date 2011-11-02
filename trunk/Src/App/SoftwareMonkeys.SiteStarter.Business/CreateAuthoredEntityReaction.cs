@@ -9,9 +9,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// Reacts to the creation of any authored entity (ie. an entity with an author).
 	/// </summary>
 	[Reaction("Create", "IAuthored")]
-	public class CreateAuthoredReaction : BaseCreateReaction
+	public class CreateAuthoredEntityReaction : BaseCreateReaction
 	{
-		public CreateAuthoredReaction()
+		public CreateAuthoredEntityReaction()
 		{
 		}
 		
