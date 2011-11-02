@@ -66,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyScanInfo.cs" />
+    <Compile Include="Entities\MockAuthoredEntity.cs" />
     <Compile Include="Entities\MockDerivedEntity.cs" />
     <Compile Include="Entities\MockEntity.cs" />
     <Compile Include="Entities\MockPublicEntity.cs" />
