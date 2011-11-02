@@ -144,6 +144,7 @@
     <Compile Include="ApplicationRestorerTests.cs" />
     <Compile Include="AssemblyScanInfo.cs" />
     <Compile Include="BaseBusinessTestFixture.cs" />
+    <Compile Include="CreateAuthoredReactionTests.cs" />
     <Compile Include="CreateSubEntityStrategyTests.cs" />
     <Compile Include="DeleteStrategyTests.cs" />
     <Compile Include="DeleteSubEntityStrategyTests.cs" />
