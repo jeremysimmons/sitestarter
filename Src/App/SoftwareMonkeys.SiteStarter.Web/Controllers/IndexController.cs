@@ -346,6 +346,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				// but it's necessary to check the authorisation for the actual entities
 				entities = Authorise(entities);
 				
+				// TODO: See if performance can be boosted by being able to disable activation or specify specific properties
+				ActivateStrategy.New(Command.TypeName).Activate(entities);
+				
 				DataSource = entities;
 			}
 		}
