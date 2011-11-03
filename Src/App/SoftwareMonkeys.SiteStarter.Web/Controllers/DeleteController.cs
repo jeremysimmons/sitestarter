@@ -1,6 +1,7 @@
 ﻿using System;
 using SoftwareMonkeys.SiteStarter.Business;
 using SoftwareMonkeys.SiteStarter.Entities;
+using SoftwareMonkeys.SiteStarter.Web.Navigation;
 using SoftwareMonkeys.SiteStarter.Web.WebControls;
 using System.Web.UI.WebControls;
 using SoftwareMonkeys.SiteStarter.Web.Properties;
@@ -57,7 +58,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			if (entity == null)
 				throw new ArgumentNullException("entity");
-				
+			
 			ExecuteDelete(entity);
 		}
 		
@@ -72,19 +73,22 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				if (entity == null)
 					throw new ArgumentNullException("entity");
 				
-				if (entity == null)
-					LogWriter.Debug("Entity: [null]");
-				else
-					LogWriter.Debug("Entity: " + entity.GetType().FullName);
-				
-				Deleter.Delete(entity);
-				
-				LogWriter.Debug("Done");
-				
-				// Display the result
-				Result.Display(DynamicLanguage.GetEntityText("EntityDeleted", entity.ShortTypeName));
-				
-				NavigateAfterDelete(entity);
+				if (EnsureAuthorised(entity))
+				{
+					if (entity == null)
+						LogWriter.Debug("Entity: [null]");
+					else
+						LogWriter.Debug("Entity: " + entity.GetType().FullName);
+					
+					Deleter.Delete(entity);
+					
+					LogWriter.Debug("Done");
+					
+					// Display the result
+					Result.Display(DynamicLanguage.GetEntityText("EntityDeleted", entity.ShortTypeName));
+					
+					NavigateAfterDelete(entity);
+				}
 			}
 		}
 		
@@ -118,8 +122,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			Type type = EntityState.GetType(Command.TypeName);
 			
 			return (IEntity)Reflector.InvokeGenericMethod(this, "Load",
-			                              new Type[] {type},
-			                              new object[] {});
+			                                              new Type[] {type},
+			                                              new object[] {});
 		}
 		
 		/// <summary>
@@ -135,7 +139,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			{
 				Guid id = QueryStrings.GetID(typeof(T).Name);
 				string uniqueKey = QueryStrings.GetUniqueKey(typeof(T).Name);
-			
+				
 				LogWriter.Debug("Entity ID: " + id.ToString());
 				LogWriter.Debug("Unique key: " + uniqueKey);
 				
@@ -163,41 +167,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			return controller;
 		}
 		
-		
-		
-		/*public void Delete(Type type, Guid entityID)
-		{
-			string action = "Delete";
-			object[] parameters = new object[]{};
-			if (Commands.CommandExists(action, type.Name, Commands.GetTypes(parameters)))
-			{
-				Commands.Execute(action, type.Name, parameters);
-			}
-			else
-			{
-				DefaultDelete(type, entityID);
-			}
-		}*/
-		
-		/*public void DefaultDelete(Type type, Guid entityID)
-		{
-			IEntity entity = (IEntity)Factory.Get(type, entityID);
-			
-			if (Commands.CommandExists("Delete", type.Name, Commands.GetTypes(new object[]{entityID})))
-			{
-				Commands.Execute("Delete", type.Name, new object[]{entityID});
-			}
-			else
-			{
-				Delete(entity, Container.Messages[type.Name + "Deleted"]);
-			}
-		}*/
-		
 		public virtual void NavigateAfterDelete(IEntity entity)
 		{
-			string url = UrlCreator.Current.CreateUrl("Index", entity.ShortTypeName);
-			
-			HttpContext.Current.Response.Redirect(url);
+			Navigator.Current.Go("Index", entity.ShortTypeName);
 		}
 	}
 }
