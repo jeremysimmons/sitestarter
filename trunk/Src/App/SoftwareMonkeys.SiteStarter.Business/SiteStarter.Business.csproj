@@ -90,7 +90,9 @@
     <Compile Include="AssemblyScanInfo.cs" />
     <Compile Include="BaseCreateReaction.cs" />
     <Compile Include="BaseDeleteReaction.cs" />
+    <Compile Include="BaseIndexReaction.cs" />
     <Compile Include="BaseReaction.cs" />
+    <Compile Include="BaseRetrieveReaction.cs" />
     <Compile Include="BaseSaveReaction.cs" />
     <Compile Include="BaseStrategy.cs" />
     <Compile Include="BaseUpdateReaction.cs" />
@@ -110,6 +112,7 @@
     <Compile Include="EditCommandInfo.cs" />
     <Compile Include="Emailer.cs" />
     <Compile Include="InactiveEntityException.cs" />
+    <Compile Include="IndexAuthoredEntityReaction.cs" />
     <Compile Include="IndexCommandInfo.cs" />
     <Compile Include="IndexStrategy.cs" />
     <Compile Include="InvalidEntityException.cs" />

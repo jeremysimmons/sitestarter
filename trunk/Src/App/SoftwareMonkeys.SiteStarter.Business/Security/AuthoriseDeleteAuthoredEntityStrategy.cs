@@ -23,17 +23,25 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 			if (AuthenticationState.UserIsInRole("Administrator"))
 				return true;
 			
-			// If the current use is authenticated
-			if (AuthenticationState.IsAuthenticated
-			    // and if the current user is the author
-			    && authoredEntity.Author != null
-			    && AuthenticationState.User != null
-			    && authoredEntity.Author.ID == AuthenticationState.User.ID)
-				// then they are authoried
+			// If the current user is the author
+			if (UserIsAuthor((IAuthored)entity))
 				return true;
 			else
 				// otherwise NOT authorised
 				return false;
+		}
+		
+		
+		protected virtual bool UserIsAuthor(IAuthored entity)
+		{
+			ActivateStrategy.New(entity).Activate(entity, "Author");
+			
+			// If the current use is authenticated
+			return AuthenticationState.IsAuthenticated
+				// and if the current user is the author
+				&& entity.Author != null
+				&& AuthenticationState.User != null
+				&& entity.Author.ID == AuthenticationState.User.ID;
 		}
 		
 		public override bool IsAuthorised(string shortTypeName)

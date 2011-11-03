@@ -88,5 +88,17 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				}
 			}
 		}
+		
+		public void React(IEntity[] entities)
+		{
+			foreach (IEntity entity in entities)
+				React(entity);
+		}
+		
+		public void React<T>(T[] entities)
+		{
+			foreach (T entity in entities)
+				React((IEntity)entity);
+		}
 	}
 }

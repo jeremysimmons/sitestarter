@@ -85,6 +85,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				if (RequireAuthorisation)
 					AuthoriseIndexStrategy.New(TypeName).EnsureAuthorised(ref entities);
 				
+				React(entities);
+				
 				LogWriter.Debug("Entity count: " + entities.Length);
 			}
 			return entities;
@@ -128,6 +130,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				LogWriter.Debug("Entity count: " + entities.Length);
 				
 				AssignStrategies(entities);
+				
+				React(entities);
 			}
 			
 			return entities;
@@ -168,6 +172,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				LogWriter.Debug("Entity count: " + entities.Length);
 				
 				AssignStrategies(entities);
+				
+				React(entities);
 			}
 			
 			return entities;
@@ -196,6 +202,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			if (RequireAuthorisation)
 				AuthoriseIndexStrategy.New<T>().EnsureAuthorised(ref entities);
+			
+			React(entities);
 			
 			return entities;
 		}
@@ -231,6 +239,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				LogWriter.Debug("Entity count: " + entities.Length);
 				
 				AssignStrategies(entities);
+				
+				React(entities);
 			}
 			
 			return entities;
@@ -255,6 +265,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			if (RequireAuthorisation)
 				AuthoriseIndexStrategy.New(TypeName).EnsureAuthorised(ref entities);
 			
+			React(entities);
+			
 			return entities;
 		}
 		
@@ -278,6 +290,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			if (RequireAuthorisation)
 				AuthoriseIndexStrategy.New(TypeName).EnsureAuthorised(ref entities);
+			
+			React(entities);
 			
 			return entities;
 		}
@@ -347,6 +361,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				AuthoriseIndexStrategy.New<T>().EnsureAuthorised(ref entities);
 			
 			AssignStrategies(entities);
+			
+			React(entities);
 			
 			return entities;
 		}
