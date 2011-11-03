@@ -28,6 +28,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			T entity = (T)Retrieve(group);
 			
+			React(entity);
+			
 			return entity;
 		}
 		
@@ -44,6 +46,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				AuthoriseRetrieveStrategy.New(TypeName).EnsureAuthorised(entity);
 			
 			AssignStrategies(entity);
+			
+			React(entity);
 			
 			return entity;
 		}
@@ -80,6 +84,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			if (RequireAuthorisation && entity != null)
 				AuthoriseRetrieveStrategy.New(TypeName).EnsureAuthorised(entity);
 			
+			React(entity);
+			
 			return entity;
 		}
 		
@@ -96,6 +102,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			if (RequireAuthorisation && entity != null)
 				AuthoriseRetrieveStrategy.New<T>().EnsureAuthorised(entity);
 			
+			React(entity);
+			
 			return entity;
 		}
 		
@@ -110,6 +118,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			if (RequireAuthorisation && entity != null)
 				AuthoriseRetrieveStrategy.New(TypeName).EnsureAuthorised(entity);
+			
+			React(entity);
 			
 			return entity;
 		}
@@ -126,6 +136,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			if (RequireAuthorisation && entity != null)
 				AuthoriseRetrieveStrategy.New<T>().EnsureAuthorised(entity);
+			
+			React(entity);
 			
 			return entity;
 		}
@@ -147,6 +159,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			AssignStrategies(entity);
 			
+			React(entity);
+			
 			return entity;
 		}
 		
@@ -165,6 +179,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				AuthoriseRetrieveStrategy.New<T>().EnsureAuthorised(entity);
 			
 			AssignStrategies(entity);
+			
+			React(entity);
 			
 			return entity;
 		}
@@ -185,6 +201,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			AssignStrategies(entity);
 			
+			React(entity);
+			
 			return entity;
 		}
 		
@@ -203,6 +221,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				AuthoriseRetrieveStrategy.New(TypeName).EnsureAuthorised(entity);
 			
 			AssignStrategies(entity);
+			
+			React(entity);
 			
 			return entity;
 		}
@@ -225,6 +245,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			if (RequireAuthorisation && entity != null)
 				AuthoriseRetrieveStrategy.New(type.Name).EnsureAuthorised(entity);
 			
+			React(entity);
+			
 			return entity;
 		}
 		
@@ -244,6 +266,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				AuthoriseRetrieveStrategy.New<T>().EnsureAuthorised(entity);
 			
 			AssignStrategies(entity);
+			
+			React(entity);
 			
 			return entity;
 		}
