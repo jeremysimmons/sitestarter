@@ -52,6 +52,11 @@
 	<td>smtp.newserver.com</td>
 </tr>
 <tr>
+	<td>type</td>
+	<td>ctl00_Body_ctl00_SystemEmail</td>
+	<td>noreply@softwaremonkeys.net</td>
+</tr>
+<tr>
 	<td>clickAndWait</td>
 	<td>//input[@value='Update']</td>
 	<td></td>
@@ -60,6 +65,21 @@
 	<td>assertTextPresent</td>
 	<td>updated successfully</td>
 	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Email Settings</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertValue</td>
+	<td>ctl00_Body_ctl00_SmtpServer</td>
+	<td>smtp.newserver.com</td>
+</tr>
+<tr>
+	<td>assertValue</td>
+	<td>ctl00_Body_ctl00_SystemEmail</td>
+	<td>noreply@softwaremonkeys.net</td>
 </tr>
 <!--Check security-->
 <tr>

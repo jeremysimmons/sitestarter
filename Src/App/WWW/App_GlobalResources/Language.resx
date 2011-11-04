@@ -936,4 +936,7 @@ ${ResetUrl}</value>
   <data name="TypeName" xml:space="preserve">
     <value>Type Name</value>
   </data>
+  <data name="SystemEmail" xml:space="preserve">
+    <value>System Email</value>
+  </data>
 </root>

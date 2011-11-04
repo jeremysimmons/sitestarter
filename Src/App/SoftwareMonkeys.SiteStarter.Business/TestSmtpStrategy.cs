@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftwareMonkeys.SiteStarter.Configuration;
 using SoftwareMonkeys.SiteStarter.Entities;
 using System.Configuration;
 using System.Net.Mail;
@@ -40,29 +41,26 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns>A boolean value indicating whether the test succeeded.</returns>
 		public bool RunTest(string smtpServer)
 		{
-				try
-				{
-					User administrator = RetrieveStrategy.New<User>().Retrieve<User>("ID", Configuration.Config.Application.PrimaryAdministratorID);
-					
-					if (administrator == null)
-						throw new Exception("The specified primary administrator could not be found.");
-					
-					if (administrator.Email == null || administrator.Email == String.Empty)
-						throw new Exception("The primary administrator doesn't have an email address specified.");
-					
-					MailMessage message = new MailMessage(administrator.Email,
-					    administrator.Email,
-                        "Test Email",
-                        "Test Worked!");
-
-                    new SmtpClient(smtpServer).Send(message);
-	
-					return true;
-				}
-				catch (SmtpException)
-				{
+			try
+			{
+				string systemEmail = Config.Application.Settings.GetString("SystemEmail");
+				
+				if (systemEmail == null || systemEmail == String.Empty)
 					return false;
-				}
+				
+				MailMessage message = new MailMessage(systemEmail,
+				                                      systemEmail,
+				                                      "Test Email",
+				                                      "Test Worked!");
+
+				new SmtpClient(smtpServer).Send(message);
+				
+				return true;
+			}
+			catch (SmtpException)
+			{
+				return false;
+			}
 		}
 		
 		static public TestSmtpStrategy New()
