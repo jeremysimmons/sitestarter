@@ -454,5 +454,14 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			if (DataProviderInitializer == null)
 				throw new InvalidOperationException("DataProviderInitializer property has not been set.");
 		}
+		
+		/// <summary>
+		/// Ensures that the administrator user has been set.
+		/// </summary>
+		public void CheckAdministrator()
+		{
+			if (Administrator == null)
+				throw new InvalidOperationException("Administrator property has not been set.");
+		}
 	}
 }
