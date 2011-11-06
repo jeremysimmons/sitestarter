@@ -255,6 +255,12 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			using (LogGroup logGroup = LogGroup.Start("Saving the provided user, role, and config.", NLog.LogLevel.Debug))
 			{
+				if (administrator == null)
+					throw new ArgumentNullException("administrator");
+				
+				if (administratorRole == null)
+					throw new ArgumentNullException("administratorRole");
+				
 				AuthenticationState.Username = administrator.Username;
 				
 				
@@ -263,12 +269,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					administratorRole.Users = new User[]{administrator};
 					
 					SaveStrategy.New<UserRole>(false).Save(administratorRole);
-					
-//					UserRoleFactory.Current.SaveUserRole(administratorRole);
-					
-					Config.Application.PrimaryAdministratorID = administrator.ID;
-					
-					Config.Application.Save();
 				}
 				else
 					LogWriter.Debug("User already exists. Skipping save.");
@@ -453,15 +453,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			if (DataProviderInitializer == null)
 				throw new InvalidOperationException("DataProviderInitializer property has not been set.");
-		}
-		
-		/// <summary>
-		/// Ensures that the administrator user has been set.
-		/// </summary>
-		public void CheckAdministrator()
-		{
-			if (Administrator == null)
-				throw new InvalidOperationException("Administrator property has not been set.");
 		}
 	}
 }
