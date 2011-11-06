@@ -247,6 +247,62 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			set { requireAuthorisation = value; }
 		}
 
+
+		/// <summary>
+		/// Gets/sets a value determining whether to hide the no selection option.
+		/// </summary>
+		public bool HideNoSelection
+		{
+			get
+			{
+				if (ViewState["HideNoSelection"] == null)
+					ViewState["HideNoSelection"] = false;
+				return (bool)ViewState["HideNoSelection"]; }
+			set { ViewState["HideNoSelection"] = value; }
+		}
+
+		/// <summary>
+		/// Gets/sets the text displayed on the no selection option.
+		/// </summary>
+		public string NoSelectionText
+		{
+			get
+			{
+				if (ViewState["NoSelectionText"] == null || (String)ViewState["NoSelectionText"] == String.Empty)
+				{
+					string shortTypeName = EntityState.GetType(EntityType).Name;
+					ViewState["NoSelectionText"] = "-- Select " + DynamicLanguage.GetText(shortTypeName) + " --";
+				}
+				return (string)ViewState["NoSelectionText"]; }
+			set { ViewState["NoSelectionText"] = value; }
+		}
+
+
+
+		/// <summary>
+		/// Gets/sets the display mode of the DropDownList.
+		/// </summary>
+		public ListSelectionMode DisplayMode
+		{
+			get
+			{
+				if (ViewState["DisplayMode"] == null)
+					ViewState["DisplayMode"] = ListSelectionMode.Single;
+				return (ListSelectionMode)ViewState["DisplayMode"]; }
+			set { ViewState["DisplayMode"] = value;
+				// If the HideNoSelection property hasn't been specified then set it
+				// based on the display mode
+				if (ViewState["HideNoSelection"] == null)
+				{
+					// If display mode is multiple then set HideNoSelection to true
+					if (value == ListSelectionMode.Multiple)
+						ViewState["HideNoSelection"] = true;
+					else
+						ViewState["HideNoSelection"] = false;
+				}
+			}
+		}
+
 		/// <summary>
 		/// Selects the appropriate items depending on the SelectedEntityIDs.
 		/// </summary>
@@ -285,6 +341,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				}
 			}
 		}
+
 
 		#region Events
 		/// <summary>
@@ -402,57 +459,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				base.SelectedEntities = Collection<IEntity>.ConvertAll(value);
 			}
 		}
-
-		/// <summary>
-		/// Gets/sets a value determining whether to hide the no selection option.
-		/// </summary>
-		public bool HideNoSelection
-		{
-			get
-			{
-				if (ViewState["HideNoSelection"] == null)
-					ViewState["HideNoSelection"] = false;
-				return (bool)ViewState["HideNoSelection"]; }
-			set { ViewState["HideNoSelection"] = value; }
-		}
-
-		/// <summary>
-		/// Gets/sets the text displayed on the no selection option.
-		/// </summary>
-		public string NoSelectionText
-		{
-			get
-			{
-				if (ViewState["NoSelectionText"] == null || (String)ViewState["NoSelectionText"] == String.Empty)
-					ViewState["NoSelectionText"] = "-- Select " + typeof(E).Name + " --";
-				return (string)ViewState["NoSelectionText"]; }
-			set { ViewState["NoSelectionText"] = value; }
-		}
-
-		/// <summary>
-		/// Gets/sets the display mode of the DropDownList.
-		/// </summary>
-		public ListSelectionMode DisplayMode
-		{
-			get
-			{
-				if (ViewState["DisplayMode"] == null)
-					ViewState["DisplayMode"] = ListSelectionMode.Single;
-				return (ListSelectionMode)ViewState["DisplayMode"]; }
-			set { ViewState["DisplayMode"] = value;
-				// If the HideNoSelection property hasn't been specified then set it
-				// based on the display mode
-				if (ViewState["HideNoSelection"] == null)
-				{
-					// If display mode is multiple then set HideNoSelection to true
-					if (value == ListSelectionMode.Multiple)
-						ViewState["HideNoSelection"] = true;
-					else
-						ViewState["HideNoSelection"] = false;
-				}
-			}
-		}
-
 		#endregion
 
 		/// <summary>
