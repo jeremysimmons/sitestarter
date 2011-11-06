@@ -210,14 +210,18 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
                 FieldCell.ColumnSpan = 1;
             }
         }
+        
+        public EntityFormItem()
+        {
+            Cells.Add(LabelCell);
+            Cells.Add(FieldCell);
+        }
+
 
         protected override void OnInit(EventArgs e)
         {
             
             LabelCell.CssClass = "FieldLabel";
-
-            Cells.Add(LabelCell);
-            Cells.Add(FieldCell);
 
             if (FieldTemplate != null)
                 FieldTemplate.InstantiateIn(FieldCell);
