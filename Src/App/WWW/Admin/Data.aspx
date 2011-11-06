@@ -182,7 +182,9 @@
 <asp:View ID="OutputView" runat="server">
     <div class="Heading1">Data Store Printout</div>
     <p>All objects found in the data store are shown below.</p>
+	<p>
     <asp:Panel runat='server' ID="ObjectsPanel">
     </asp:Panel>
+	</p>
     </asp:View></asp:MultiView>
 </asp:Content>
