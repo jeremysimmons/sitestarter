@@ -97,13 +97,13 @@
                                     <td colspan="2" class="Heading2"><%# Resources.Language.UserSettings %></td>
                                 </tr>
                                  <tr>
-                                    <td class="FieldLabel">&nbsp;&nbsp;&nbsp;<%# Resources.Language.EnableUserRegistration + ":"%></td>
+                                    <td class="FieldLabel"><%# Resources.Language.EnableUserRegistration + ":"%></td>
                                     <td class="Field">
                                     <asp:CheckBox runat="server" ID="EnableUserRegistration" CssClass="Form" width="400px" Checked='<%# Config.Application.Settings.GetBool("EnableUserRegistration") %>' text='<%# Resources.Language.EnableUserRegistrationNote %>' /></td>
                                 </tr>
                                 
                                  <tr>
-                                    <td class="FieldLabel">&nbsp;&nbsp;&nbsp;<%# Resources.Language.AutoApproveNewUsers + ":"%></td>
+                                    <td class="FieldLabel"><%# Resources.Language.AutoApproveNewUsers + ":"%></td>
                                     <td class="Field">
                                     <asp:CheckBox runat="server" ID="AutoApproveNewUsers" CssClass="Form" width="400px" Checked='<%# Config.Application.Settings.GetBool("AutoApproveNewUsers") %>' text='<%# Resources.Language.AutoApproveNewUsersNote %>' /></td>
                                 </tr>
