@@ -213,8 +213,8 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			
 				link = link + "/" + entity.ID.ToString();
 				
-				if (entity is IUniqueEntity)
-					link = link + "/" + PrepareForUrl(((IUniqueEntity)entity).UniqueKey);
+				if (entity.ToString() != entity.GetType().FullName)
+					link = link + "/" + PrepareForUrl(Utilities.Summarize(entity.ToString(), 80));
 				
 				link = link + ".aspx";
 				
