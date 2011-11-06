@@ -135,6 +135,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <returns>The entities of the specified type found in the data store.</returns>
 		public override T[] GetEntities<T>(Guid[] entityIDs)
 		{
+			if (entityIDs == null || entityIDs.Length == 0)
+				return new T[]{};
+			
 			List<T> list = new List<T>(
 				((Db4oDataStore)GetDataStore(typeof(T))).ObjectContainer.Query<T>(
 					delegate(T e)
@@ -305,9 +308,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			Predicate matches = new MatchReferencePredicate(Provider, typeof(T), propertyName, referencedEntityType, mirrorPropertyName, referencedEntityID);
 			
 			IObjectSet os = store.ObjectContainer.Query(matches,
-				                                            new DynamicComparer(
-				                                            	type,
-				                                            	sortExpression));
+			                                            new DynamicComparer(
+			                                            	type,
+			                                            	sortExpression));
 			
 			page.AddRange(GetPage(os, location));
 
@@ -373,9 +376,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			Predicate matches = new MatchReferencesPredicate(Provider, typeof(T), propertyName, referencedEntityType, mirrorPropertyName, entityIDList.ToArray());
 			
 			IObjectSet os = store.ObjectContainer.Query(matches,
-				                                            new DynamicComparer(
-				                                            	type,
-				                                            	sortExpression));
+			                                            new DynamicComparer(
+			                                            	type,
+			                                            	sortExpression));
 			
 			page.AddRange(GetPage(os, location));
 			
@@ -683,9 +686,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				Predicate matches = new MatchFilterGroupPredicate(filterGroup);
 				
 				os = store.ObjectContainer.Query(matches,
-				                                            new DynamicComparer(
-				                                            	type,
-				                                            	sortExpression));
+				                                 new DynamicComparer(
+				                                 	type,
+				                                 	sortExpression));
 				
 				list.AddRange(GetPage(os, location));
 			}
