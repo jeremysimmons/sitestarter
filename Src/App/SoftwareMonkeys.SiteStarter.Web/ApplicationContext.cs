@@ -85,6 +85,8 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		
 		void Application_BeginRequest(object sender, EventArgs e)
 		{
+			InitializeTimeout();
+
 			InitializeCore();
 			
 			// Create a log group for the request
