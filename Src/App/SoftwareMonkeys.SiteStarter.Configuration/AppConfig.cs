@@ -67,6 +67,7 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
         /// <summary>
         /// Gets/sets the universal ID of the project.
         /// </summary>
+        [Obsolete]
         public Guid PrimaryAdministratorID
         {
             get { return primaryAdministratorID; }
