@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using SoftwareMonkeys.SiteStarter.Entities;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Elements
 {
@@ -70,6 +71,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 			get { return propertyValuesString; }
 			set { propertyValuesString = value; }
 		}
+
+		private IEntity dataSource;
+		public IEntity DataSource
+		{
+			get { return dataSource; }
+			set { dataSource = value; }
+		}
 		
 		public ElementControl()
 		{
@@ -79,49 +87,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 		{
 			using (LogGroup logGroup = LogGroup.StartDebug("Initializing DynamicElement"))
 			{
-				ElementInfo info = null;
-				
-				// If the Action and TypeName properties are specified
-				if (Action != String.Empty
-				    && TypeName != String.Empty)
-				{
-					LogWriter.Debug("Action: " + Action);
-					LogWriter.Debug("TypeName: " + TypeName);
-					
-					info = (ElementInfo)ElementState.Elements[Action, TypeName];
-				}
-				// Otherwise if the ElementName property is specified
-				else if (ElementName != String.Empty)
-				{
-					LogWriter.Debug("ElementName: " + ElementName);
-					
-					info = (ElementInfo)ElementState.Elements[ElementName];
-				}
-				// Otherwise throw error
-				else
-					throw new Exception("Either the Action and TypeName property both need to be specified OR the ElementName property.");
-				
-				// If cached info was found
-				if (info != null)
-				{
-					// Create a new instance of the dynamic element
-					Target = (IElement)info.New();
-				}
-				else
-					LogWriter.Debug("No cached info found about element. Skipping.");
-				
-				// If a element was created
-				if (Target != null)
-				{
-					Controls.Add((WebControl)Target);
-				}
-				// Otherwise show a message
-				else
-				{
-					LogWriter.Debug("No element found.");
-					
-					Controls.Add(new LiteralControl("No element found."));
-				}
 				
 				base.OnInit(e);
 			}
@@ -136,6 +101,55 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 			
 			base.OnLoad(e);
 			
+		}
+
+		protected override void CreateChildControls()
+		{
+			ElementInfo info = null;
+			
+			// If the Action and TypeName properties are specified
+			if (Action != String.Empty
+			    && TypeName != String.Empty)
+			{
+				LogWriter.Debug("Action: " + Action);
+				LogWriter.Debug("TypeName: " + TypeName);
+				
+				info = (ElementInfo)ElementState.Elements[Action, TypeName];
+			}
+			// Otherwise if the ElementName property is specified
+			else if (ElementName != String.Empty)
+			{
+				LogWriter.Debug("ElementName: " + ElementName);
+				
+				info = (ElementInfo)ElementState.Elements[ElementName];
+			}
+			// Otherwise throw error
+			else
+				throw new Exception("Either the Action and TypeName property both need to be specified OR the ElementName property.");
+			
+			// If cached info was found
+			if (info != null)
+			{
+				// Create a new instance of the dynamic element
+				Target = (IElement)info.New();
+			}
+			else
+				LogWriter.Debug("No cached info found about element. Skipping.");
+			
+			// If a element was created
+			if (Target != null)
+			{
+				Controls.Add((WebControl)Target);
+			}
+			// Otherwise show a message
+			else
+			{
+				LogWriter.Debug("No element found.");
+				
+				Controls.Add(new LiteralControl("No element found."));
+			}
+			
+			base.CreateChildControls();
 		}
 		
 		/// <summary>
@@ -170,6 +184,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 		{
 			using (LogGroup logGroup = LogGroup.StartDebug("Applying property values to dynamically loaded element."))
 			{
+				ApplyDataSourceProperty(element);				
+
 				if (propertyValues == null)
 					throw new ArgumentNullException("propertyValues");
 				
@@ -194,6 +210,19 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 						
 						propertyInfo.SetValue(Target, ConvertValue(propertyValues[propertyName], propertyInfo.PropertyType), null);
 					}
+				}
+			}
+		}
+
+		private void ApplyDataSourceProperty(IElement element)
+		{
+			if (DataSource != null)
+			{
+				PropertyInfo property = element.GetType().GetProperty("DataSource");
+
+				if (property != null)
+				{
+					property.SetValue(element, DataSource, null);
 				}
 			}
 		}
