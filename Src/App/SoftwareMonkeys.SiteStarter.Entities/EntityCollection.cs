@@ -82,11 +82,16 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			{
 				foreach (object entity in list)
 				{
-					if (entity.GetType().FullName == typeof(E).FullName
-					    || typeof(E).IsAssignableFrom(entity.GetType()))
-						Add((E)entity);
-					else
-						throw new NotSupportedException("Invalid type: Expected " + typeof(E).ToString() + " but was " + entity.GetType() + ".");
+					if (entity != null)
+					{
+						if (entity.GetType().FullName == typeof(E).FullName
+						    || typeof(E).IsAssignableFrom(entity.GetType()))
+						{
+							Add((E)entity);
+						}
+						else
+							throw new NotSupportedException("Invalid type: Expected " + typeof(E).ToString() + " but was " + entity.GetType() + ".");
+					}
 				}
 			}
 		}
