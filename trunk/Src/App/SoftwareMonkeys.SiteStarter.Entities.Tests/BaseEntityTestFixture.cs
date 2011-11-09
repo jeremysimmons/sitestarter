@@ -32,8 +32,10 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 		protected virtual void InitializeMockEntities()
 		{
 			string testsAssemblyPath = Assembly.Load("SoftwareMonkeys.SiteStarter.Tests").Location;
+			string entitiesTestsAssemblyPath = Assembly.Load("SoftwareMonkeys.SiteStarter.Entities.Tests").Location;
 			
-			string[] assemblyPaths = new String[] {testsAssemblyPath};
+			string[] assemblyPaths = new String[] {testsAssemblyPath,
+				entitiesTestsAssemblyPath};
 			
 			EntityInitializer initializer = new EntityInitializer();
 			

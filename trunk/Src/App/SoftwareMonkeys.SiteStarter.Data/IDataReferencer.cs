@@ -64,5 +64,10 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <returns>A collection of the active entity references.</returns>
 		EntityReferenceCollection GetActiveReferences(IEntity entity);
 		
+		/// <summary>
+		/// Sets the reference count properties of the corresponding entities (if specified by the reference attribute).
+		/// </summary>
+		/// <param name="reference"></param>
+		void SetCountProperties(EntityReference reference);
 	}
 }

@@ -26,7 +26,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					// Constrain the query to the IEntity type to ensure both EntityIDReference and EntityReference objects are returned
 					EntityIDReference[] entities = Collection<EntityIDReference>.ConvertAll(
 						Provider.Stores[dataStoreName].Indexer.GetEntities());
-						
+					
 					references.AddRange(entities);
 				}
 			}
@@ -233,6 +233,8 @@ namespace SoftwareMonkeys.SiteStarter.Data
 							
 							DataAccess.Data.Updater.Update(reference);
 						}
+						
+						DataAccess.Data.Referencer.SetCountProperties(reference);
 					}
 				}
 			}
@@ -375,27 +377,6 @@ namespace SoftwareMonkeys.SiteStarter.Data
 						}
 					}
 				}
-				
-				// TODO: Clean up
-				/*foreach (PropertyInfo property in entity.GetType().GetProperties())
-				{
-					if (EntitiesUtilities.IsReference(entity.GetType(), property))
-					{
-						Type referenceType = EntitiesUtilities.GetReferenceType(entity.GetType(),
-						                                                        property.Name,
-						                                                        property.PropertyType);
-						
-						// TODO: See if performance can be improved by not loading the source entity, as it has been provided as a parameter.
-						// It should be possible to use the parameter instead of having to load it again
-						
-						references.AddRange(
-							GetReferences(entity.GetType(),
-							              entity.ID,
-							              property.Name,
-							              referenceType,
-							              activateAll));
-					}
-				}*/
 			}
 			
 			return references;
@@ -416,6 +397,80 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			}
 			
 			return false;
+		}
+		
+		public void SetCountProperties(EntityReference reference)
+		{
+			using (LogGroup logGroup = LogGroup.StartDebug("Setting count properties related to the provided reference."))
+			{
+				IEntity entity1 = reference.SourceEntity;
+				
+				LogWriter.Debug("Source entity type: " + entity1.ShortTypeName);
+				LogWriter.Debug("Source property name: " + reference.Property1Name);
+				
+				IEntity entity2 = reference.ReferenceEntity;
+				
+				LogWriter.Debug("Referenced entity type: " + entity1.ShortTypeName);
+				LogWriter.Debug("Mirror property name: " + reference.Property2Name);
+				
+				// If a reference property was specified on the source entity then try setting the corresponding count property
+				if (reference.Property1Name != String.Empty)
+					SetCountProperty(entity1, reference.Property1Name, entity2.ID);
+				
+				// If a reference property was specified on the referenced entity then try setting the corresponding count property
+				if (reference.Property2Name != String.Empty)
+					SetCountProperty(entity2, reference.Property2Name, entity1.ID);
+				
+				// Update the referenced entity if it is in the data store
+				if (DataAccess.Data.IsStored(entity2))
+					DataAccess.Data.Updater.Update(entity2);
+				
+				// Don't update the source entity because it'll be updated/saved anyway without doing it here
+			}
+		}
+		
+		public void SetCountProperty(IEntity entity, string referencePropertyName, Guid referencedEntityID)
+		{
+			using (LogGroup logGroup = LogGroup.StartDebug("Setting the specified reference count property."))
+			{
+				if (entity == null)
+					throw new ArgumentNullException("entity");
+				
+				LogWriter.Debug("Reference property name: " + referencePropertyName);
+				LogWriter.Debug("Referenced entity ID: " + referencedEntityID);
+				
+				ReferenceAttribute attribute = EntitiesUtilities.GetReferenceAttribute(entity, referencePropertyName);
+				
+				Type referencedType = EntitiesUtilities.GetReferenceType(entity.GetType(), referencePropertyName);
+				
+				LogWriter.Debug("Referenced type: " + referencedType.FullName);
+				
+				if (attribute.CountPropertyName != String.Empty)
+				{
+					LogWriter.Debug("Count property name: " + attribute.CountPropertyName);
+					
+					string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(entity.GetType(), referencePropertyName);
+					
+					PropertyInfo property = entity.GetType().GetProperty(attribute.CountPropertyName);
+					
+					if (property == null)
+						throw new Exception("'" + attribute.CountPropertyName + "' count property not found on type '" + entity.ShortTypeName + "'.");
+					
+					int count = Provider.Counter.CountEntitiesWithReference(
+						entity.GetType(),
+						entity.ID,
+						referencePropertyName,
+						referencedType,
+						mirrorPropertyName
+					);
+					
+					LogWriter.Debug("Count: " + count.ToString());
+					
+					property.SetValue(entity, count, null);
+				}
+				else
+					LogWriter.Debug("No count property specified on the reference attribute.");
+			}
 		}
 		
 		
@@ -444,7 +499,6 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					
 					foreach (EntityIDReference reference in GetActiveReferences(entity, property.Name, property.PropertyType))
 					{
-						
 						LogWriter.Debug("Saving reference.");
 						
 						collection.Add(reference);
@@ -622,17 +676,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				
 				Collection<IEntity> referencedEntities = new Collection<IEntity>();
 				
-				//if (propertyValue is Array)
-				//{
 				referencedEntities.AddRange(EntitiesUtilities.GetReferencedEntities(entity, property));
-				//}
-				//else
-				//{
-				//	foreach (IEntity entity in (Collection<IEntity>)propertyValue))
-				//	{
-				//		referencedEntities.Add(entity);
-				///	}
-				//}
 				
 				LogWriter.Debug("# of referenced entities found: " + referencedEntities.Count);
 				

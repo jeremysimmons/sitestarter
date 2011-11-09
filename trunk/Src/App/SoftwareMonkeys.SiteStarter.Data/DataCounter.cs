@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Entities;
 using System.Collections.Generic;
 
@@ -43,19 +44,9 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		
 		public abstract int CountEntities<T>(IDataFilterGroup filterGroup)
 			where T : IEntity;
-		
-		public abstract int CountEntitiesWithReference<T>(string propertyName, Type referencedEntityType, Guid referencedEntityID)
-			where T : IEntity;
-		
-		/// <summary>
-		/// Counts all the entities of the specified type with a reference to any of the provided entities.
-		/// </summary>
-		/// <param name="propertyName">The name of the property containing the reference.</param>
-		/// <param name="referencedEntities">An array of entities to check the reference to.</param>
-		/// <returns>The total number of entities found.</returns>
-		public abstract int CountEntitiesWithReference<T>(string propertyName, IEntity[] referencedEntities)
-			where T : IEntity;
-		
+				
+		public abstract int CountEntitiesWithReference(Type entityType, Guid entityID, string propertyName, Type referencedEntityType, string mirrorPropertyName);
+			
 		public abstract int CountEntities(Type type, string propertyName, object propertyValue);
 		
 		public abstract int CountEntities<T>(string propertyName, object propertyValue)

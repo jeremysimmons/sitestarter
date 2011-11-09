@@ -61,6 +61,9 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 						reference.Type1Name = sourceEntity.ShortTypeName;
 						reference.Type2Name = referencedEntity.ShortTypeName;
 						
+						reference.SourceEntity = sourceEntity;
+						reference.ReferenceEntity = referencedEntity;
+						
 						Add(reference);
 					}
 				}

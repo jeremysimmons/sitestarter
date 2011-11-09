@@ -47,39 +47,32 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				}
 				else
 				{
-					IEntity entity1 = DataAccess.Data.Reader.GetEntity(
-						type1,
-						"ID",
-						reference.Entity1ID);
+					// If the source entity is not yet set
+					if (reference.SourceEntity == null)
+					{
+						IEntity entity1 = DataAccess.Data.Reader.GetEntity(
+							type1,
+							"ID",
+							reference.Entity1ID);
+						
+						// TODO: Check if exceptions should be thrown when the entity isn't found
+						if (entity1 != null)
+							reference.SourceEntity = entity1;
+					}
 					
-					IEntity entity2 = DataAccess.Data.Reader.GetEntity(
-						type2,
-						"ID",
-						reference.Entity2ID);
-					
-					// TODO: Check if exceptions should be thrown when the entity isn't found
-					if (entity1 != null)
-						reference.SourceEntity = entity1;
-					//else
-					//	throw new Exception("Entity not found in data store '" + DataUtilities.GetDataStoreName(type1) + "' with ID '" + reference.Entity1ID.ToString() + "' and type " + type1.ToString() + ".");
-					
-					if (entity2 != null)
-						reference.ReferenceEntity = entity2;
-					//else
-					//	throw new Exception("Entity not found in data store '" + DataUtilities.GetDataStoreName(type2) + "' with ID '" + reference.Entity2ID.ToString() + "' and type " + type2.ToString() + ".");
-					
-				}
-				
-				//if (reference.SourceEntity == null)
-				//	LogWriter.Debug("reference.SourceEntity == null");
-				//else
-				//	LogWriter.Debug("reference.SourceEntity is " + reference.SourceEntity.GetType().ToString());
-				
-				//if (reference.ReferenceEntity == null)
-				//	LogWriter.Debug("reference.ReferenceEntity == null");
-				//else
-				//	LogWriter.Debug("reference.ReferenceEntity is " + reference.ReferenceEntity.GetType().ToString());
-				
+					// If the reference entity is not yet set
+					if (reference.ReferenceEntity == null)
+					{
+						IEntity entity2 = DataAccess.Data.Reader.GetEntity(
+							type2,
+							"ID",
+							reference.Entity2ID);
+
+						// TODO: Check if exceptions should be thrown when the entity isn't found
+						if (entity2 != null)
+							reference.ReferenceEntity = entity2;
+					}
+				}				
 			}
 		}
 		
@@ -209,16 +202,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					
 					IEntity[] referencedEntities = Provider.Referencer.GetReferencedEntities(references, entity);
 					
-					//	object value = Reflector.CreateGenericObject(typeof(Collection<>),
-					//	                                             new Type[] {referenceType},
-					//	                                             new Object[] {referencedEntities});
-					//
 					if (referencedEntities == null)
 						LogWriter.Debug("# of entities found: [null]");
 					else
 						LogWriter.Debug("# of entities found:" + referencedEntities.Length);
-					
-					//references.SwitchFor(entity);
 					
 					if (referencedEntities != null && referencedEntities.Length > 0)
 						property.SetValue(entity, referencedEntities[0], null);
