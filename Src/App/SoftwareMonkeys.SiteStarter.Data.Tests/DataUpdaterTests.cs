@@ -1,5 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
+using SoftwareMonkeys.SiteStarter.Entities.Tests.Entities;
 using SoftwareMonkeys.SiteStarter.Tests.Entities;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
@@ -237,10 +238,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				if (user3.Roles != null)
 					Assert.AreEqual(1, user3.Roles.Length, "Incorrect number of roles.");
-				
-				//IDataStore store = DataAccess.Data.Stores["Testing_Articles-Testing_Articles"];
-				
-				//Assert.IsNotNull(store, "The data store wasn't created/initialized.");
+			
 			}
 		}
 		
@@ -264,6 +262,31 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			Assert.AreEqual(1, foundArticles.Length, "Incorrect number of articles found.");
 		}
+		
+		[Test]
+		public virtual void Test_PreUpdate_SetsCountPropertyForReference()
+		{
+			MockEntity entity = new MockEntity();
+			entity.ID = Guid.NewGuid();
+			
+			MockPublicEntity publicEntity = new MockPublicEntity();
+			publicEntity.ID = Guid.NewGuid();
+			
+			DataAccess.Data.Saver.Save(publicEntity);
+			DataAccess.Data.Saver.Save(entity);
+			
+			entity.PublicEntities = new MockPublicEntity[]{
+				publicEntity
+			};
+			
+			DataAccess.Data.Updater.Update(entity);
+			
+			MockEntity foundEntity = DataAccess.Data.Reader.GetEntity<MockEntity>("ID", entity.ID);
+			
+			Assert.AreEqual(1, foundEntity.TotalPublicEntities, "The TotalPublicEntities property didn't have the expected value.");
+			
+		}
+		
 		
 	}
 }

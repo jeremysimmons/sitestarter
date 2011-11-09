@@ -43,17 +43,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <returns>The total number of entities found.</returns>
 		int CountEntities(IDataFilterGroup group);
 		
-		int CountEntitiesWithReference<T>(string propertyName, Type referencedEntityType, Guid referencedEntityID)
-			where T : IEntity;
-		
-		/// <summary>
-		/// Counts all the entities of the specified type with a reference to any of the provided entities.
-		/// </summary>
-		/// <param name="propertyName">The name of the property containing the reference.</param>
-		/// <param name="referencedEntities">An array of entities to check the reference to.</param>
-		/// <returns>The total number of entities found.</returns>
-		int CountEntitiesWithReference<T>(string propertyName, IEntity[] referencedEntities)
-			where T : IEntity;
+		int CountEntitiesWithReference(Type entityType, Guid entityID, string propertyName, Type referencedEntityType, string mirrorPropertyName);
 		
 		int CountEntities(Type type, string propertyName, object propertyValue);
 		

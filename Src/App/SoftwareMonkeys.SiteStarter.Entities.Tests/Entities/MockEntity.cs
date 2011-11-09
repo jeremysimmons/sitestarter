@@ -26,11 +26,18 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests.Entities
 		}
 		
 		private MockPublicEntity[] publicEntities;
-		[Reference]
+		[Reference(CountPropertyName="TotalPublicEntities")]
 		public MockPublicEntity[] PublicEntities
 		{
 			get { return publicEntities; }
 			set { publicEntities = value; }
+		}
+		
+		private int totalPublicEntities = 0;
+		public int TotalPublicEntities
+		{
+			get { return totalPublicEntities; }
+			set { totalPublicEntities = value; }
 		}
 		
 		public MockEntity()

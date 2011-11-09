@@ -1,6 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using SoftwareMonkeys.SiteStarter.Entities.Tests.Entities;
 using SoftwareMonkeys.SiteStarter.Tests.Entities;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Tests;
@@ -65,12 +66,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				DataAccess.Data.Saver.Save(role);
 				
-				
-				
 				EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences(user.GetType(), user.ID, "Roles", typeof(TestRole), false);
-				
-				
-				
 				
 				Assert.IsNotNull(references, "The references object returned was null.");
 				
@@ -81,8 +77,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 					Assert.IsTrue(references[0].Includes(userID, "Roles"), "The user ID wasn't found on the reference.");
 					Assert.IsTrue(references[0].Includes(roleID, "Users"), "The role ID wasn't found on the reference.");
 				}
-				
-				
 			}
 		}
 		
@@ -101,18 +95,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				Guid roleID = role.ID = Guid.NewGuid();
 				role.Name = "Test Role";
 				
-				
 				user.Roles = Collection<TestRole>.Add(user.Roles, role);
 				
 				DataAccess.Data.Saver.Save(user);
 				
-				
-				
-				
 				EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences(user.GetType(), user.ID, "Roles", typeof(TestRole), false);
-				
-				
-				
 				
 				Assert.IsNotNull(references, "The references object returned was null.");
 				
@@ -122,8 +109,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 					
 					Assert.IsTrue(references[0].Includes(userID, "Roles"), "The user ID wasn't found on the reference.");
 				}
-				
-				
 			}
 		}
 		
@@ -132,7 +117,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = LogGroup.Start("Testing the retrieval of references for an entity.", NLog.LogLevel.Debug))
 			{
-				
 				TestUser user = new TestUser();
 				Guid userID = user.ID = Guid.NewGuid();
 				user.FirstName = "Test";
@@ -146,25 +130,17 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				Guid role2ID = role2.ID = Guid.NewGuid();
 				role2.Name = "Test Role 2 ";
 				
-				
 				user.Roles = new TestRole[] {role, role2};
-				
 				
 				DataAccess.Data.Saver.Save(role);
 				DataAccess.Data.Saver.Save(role2);
 				DataAccess.Data.Saver.Save(user);
 				
-				
 				EntityReferenceCollection referenceEntities = DataAccess.Data.Referencer.GetReferences("TestUser", "TestRole");
 				
 				Assert.AreEqual(2, referenceEntities.Count, "Incorrect number of references found in the store after saving entities.");
 				
-				
-				
 				EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences(user.GetType(), user.ID, "Roles", typeof(TestRole), false);
-				
-				
-				
 				
 				Assert.IsNotNull(references, "The references object returned was null.");
 				
@@ -190,9 +166,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 					Assert.IsTrue(reference2.Includes(role2ID, "Users"), "The role2 ID wasn't found on the second reference.");
 				}
 			}
-			
 		}
-		
 		
 		[Test]
 		public void Test_GetReferences_FullyActivated()
@@ -208,19 +182,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				Guid roleID = role.ID = Guid.NewGuid();
 				role.Name = "Test Role";
 				
-				
 				user.Roles = Collection<TestRole>.Add(user.Roles, role);
 				
 				DataAccess.Data.Saver.Save(role);
 				DataAccess.Data.Saver.Save(user);
 				
-				
-				
-				
 				EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences(user.GetType(), user.ID, "Roles", typeof(TestRole), true);
-				
-				
-				
 				
 				Assert.IsNotNull(references, "The references object returned was null.");
 				
@@ -263,7 +230,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				                                                                    e6.ID,
 				                                                                    String.Empty,
 				                                                                    false);
-				
 				
 				Assert.IsNotNull(reference, "The return value is null.");
 				
@@ -322,9 +288,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				foreach (EntityIDReference r in DataAccess.Data.Referencer.GetActiveReferences(role2))
 					DataAccess.Data.Saver.Save(r);
 				
-				//DataAccess.Data.Saver.Save(user);
-				//DataAccess.Data.Saver.Save(role);
-				
 				EntityReference reference = DataAccess.Data.Referencer.GetReference(EntityState.GetType(originalReference.Type1Name),
 				                                                                    originalReference.Entity1ID,
 				                                                                    originalReference.Property1Name,
@@ -332,7 +295,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				                                                                    originalReference.Entity2ID,
 				                                                                    originalReference.Property2Name,
 				                                                                    false);
-				
 				
 				Assert.IsNotNull(reference, "The return value is null.");
 				
@@ -371,9 +333,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = LogGroup.Start("Testing the GetReference function with a synchronous reference to ensure it retrieves the correct reference.", NLog.LogLevel.Debug))
 			{
-				
 				TestUtilities.CreateDummyReferences(100);
-				
 				
 				TestUser user = new TestUser();
 				user.ID = Guid.NewGuid();
@@ -420,12 +380,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				LogWriter.Debug("Original reference - Type 1 name: " + originalReference1.Type1Name);
 				LogWriter.Debug("Original reference - Type 2 name: " + originalReference1.Type2Name);
 				
-				/*foreach (EntityIDReference r in EntitiesUtilities.GetReferences(user))
-					DataAccess.Data.Saver.Save(r);
-				
-				foreach (EntityIDReference r in EntitiesUtilities.GetReferences(role2))
-					DataAccess.Data.Saver.Save(r);*/
-				
 				DataAccess.Data.Saver.Save(user2);
 				DataAccess.Data.Saver.Save(role2);
 				DataAccess.Data.Saver.Save(user);
@@ -466,22 +420,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				Assert.IsTrue(secondReferenceMatches,
 				              "Second reference doesn't match original references.");
-				/*
-				Assert.AreEqual(originalReference1.Entity1ID.ToString(), referenceEntities[0].Entity1ID.ToString(), "Entity1ID of the first reference isn't what's expected.");
-				Assert.AreEqual(originalReference1.Property1Name.ToString(), referenceEntities[0].Property1Name.ToString(), "Property1Name of the first reference isn't what's expected.");
-				Assert.AreEqual(originalReference1.Type1Name.ToString(), referenceEntities[0].Type1Name.ToString(), "Type1Name of the first reference isn't what's expected.");
-				Assert.AreEqual(originalReference1.Entity2ID.ToString(), referenceEntities[0].Entity2ID.ToString(), "Entity2ID of the first reference isn't what's expected.");
-				Assert.AreEqual(originalReference1.Property2Name.ToString(), referenceEntities[0].Property2Name.ToString(), "Property2Name of the first reference isn't what's expected.");
-				Assert.AreEqual(originalReference1.Type2Name.ToString(), referenceEntities[0].Type2Name.ToString(), "Type2Name of the first reference isn't what's expected.");
-				
-				
-				Assert.AreEqual(originalReference1.Entity1ID.ToString(), referenceEntities[1].Entity1ID.ToString(), "Entity1ID of the second reference isn't what's expected.");
-				Assert.AreEqual(originalReference1.Property1Name.ToString(), referenceEntities[1].Property1Name.ToString(), "Property1Name of the second reference isn't what's expected.");
-				Assert.AreEqual(originalReference1.Type1Name.ToString(), referenceEntities[1].Type1Name.ToString(), "Type1Name of the second reference isn't what's expected.");
-				Assert.AreEqual(originalReference1.Entity2ID.ToString(), referenceEntities[1].Entity2ID.ToString(), "Entity2ID of the second reference isn't what's expected.");
-				Assert.AreEqual(originalReference1.Property2Name.ToString(), referenceEntities[1].Property2Name.ToString(), "Property2Name of the second reference isn't what's expected.");
-				Assert.AreEqual(originalReference1.Type2Name.ToString(), referenceEntities[1].Type2Name.ToString(), "Type2Name of the second reference isn't what's expected.");
-				 */
+			
 				EntityReference reference = DataAccess.Data.Referencer.GetReference(user.GetType(),
 				                                                                    user.ID,
 				                                                                    "Roles",
@@ -489,22 +428,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				                                                                    role2.ID,
 				                                                                    "Users",
 				                                                                    false);
-				/*GetReference(EntitiesUtilities.GetType(originalReference.Type1Name),
-				                                                         originalReference.Entity1ID,
-				                                                         originalReference.Property1Name,
-				                                                         EntitiesUtilities.GetType(originalReference.Type2Name),
-				                                                         originalReference.Entity2ID,
-				                                                         originalReference.Property2Name,
-				                                                         false);*/
-				
+			
 				Assert.IsNull(reference, "The return value should be null.");
-				
-				/*if ((reference.Entity1ID == user.ID &&
-					     reference.Entity2ID == role2.ID)
-					    ||(reference.Entity1ID == role2.ID &&
-					     reference.Entity2ID == user.ID))
-						Assert.Fail("Somehow a reference was created between two non reference entities.");*/
-				
 			}
 		}
 		
@@ -530,14 +455,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				TestCategory category2 = new TestCategory();
 				category2.ID = Guid.NewGuid();
 				category2.Name = "Test Category 2";
-				
-				//article.Categories = new TestCategory[] { category };
-				
-				
-				
-				article.Categories = new TestCategory[] {category};//, category2};
-				
-				//category2.Articles = new TestArticle[] {article, article2};
+			
+				article.Categories = new TestCategory[] {category};
 				
 				EntityReference originalReference = DataAccess.Data.Referencer.GetActiveReferences(article)[0];
 				
@@ -550,24 +469,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				foreach (EntityIDReference r in DataAccess.Data.Referencer.GetActiveReferences(article))
 					DataAccess.Data.Saver.Save(r);
-				
-				//foreach (EntityIDReference r in EntitiesUtilities.GetReferences(category2))
-				//	DataAccess.Data.Saver.Save(r);
-				
-				
-				/*
-				DataAccess.Data.Saver.Save(article);
-				DataAccess.Data.Saver.Save(category);*/
-				
-				
+
 				string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(article.GetType(),
 				                                                                    EntitiesUtilities.GetProperty(article.GetType(), "Categories", typeof(TestCategory[])));
-				
-				
+					
 				bool match = DataAccess.Data.Referencer.MatchReference(article.GetType(), article.ID, "Categories", category.GetType(), category.ID);
 				
 				Assert.IsTrue(match, "Didn't match when it should have.");
-				
 				
 				DataAccess.Data.Deleter.Delete(article);
 				DataAccess.Data.Deleter.Delete(category);
@@ -592,12 +500,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				DataAccess.Data.Saver.Save(article);
 				DataAccess.Data.Saver.Save(category);
-				
-				
-				//string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(category.GetType(),
-				//                                                                    EntitiesUtilities.GetProperty(category.GetType(), "Articles", typeof(TestArticle[])));
 
-				
 				bool match = DataAccess.Data.Referencer.MatchReference(article.GetType(), article.ID, "Categories", category.GetType(), category.ID);
 				bool match2 = DataAccess.Data.Referencer.MatchReference(category.GetType(), category.ID, "Articles", article.GetType(), article.ID);
 
@@ -639,16 +542,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				DataAccess.Data.Saver.Save(category2);
 				DataAccess.Data.Saver.Save(article);
 				DataAccess.Data.Saver.Save(category);
-				
-				
-				//string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(article.GetType(),
-				//                                                                    EntitiesUtilities.GetProperty(article.GetType(), "Categories", typeof(TestCategory[])));
-
-				
-				//bool match = DataAccess.Data.Referencer.MatchReference(article.GetType(), article.ID, "Categories", category.GetType(), category.ID);
-				
-				//Assert.IsFalse(match, "Matched when it shouldn't have #1.");
-				
 				
 				bool match = DataAccess.Data.Referencer.MatchReference(article.GetType(), article.ID, "Categories", category2.GetType(), category2.ID);
 				
@@ -736,6 +629,26 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			}
 		}
 		
-		
+		[Test]
+		public virtual void Test_SetCountProperties()
+		{
+			MockEntity entity = new MockEntity();
+			entity.ID = Guid.NewGuid();
+			
+			MockPublicEntity publicEntity = new MockPublicEntity();
+			publicEntity.ID = Guid.NewGuid();
+			
+			entity.PublicEntities = new MockPublicEntity[]{
+				publicEntity
+			};
+			EntityReferenceCollection references = DataAccess.Data.Referencer.GetActiveReferences(entity);
+			
+			DataAccess.Data.Saver.Save(publicEntity);
+			DataAccess.Data.Saver.Save(entity);
+			
+			DataAccess.Data.Referencer.SetCountProperties(references[0]);
+									
+			Assert.AreEqual(1, entity.TotalPublicEntities, "The TotalPublicEntities property didn't have the expected value.");
+		}
 	}
 }

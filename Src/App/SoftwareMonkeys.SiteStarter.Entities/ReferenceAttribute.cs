@@ -1,11 +1,3 @@
-/*
- * Created by SharpDevelop.
- * User: John
- * Date: 5/08/2009
- * Time: 3:44 PM
- * 
- * To change this template use Tools | Options | Coding | Edit Standard Headers.
- */
 using System;
 
 namespace SoftwareMonkeys.SiteStarter.Entities
@@ -46,6 +38,17 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 			get { return autoDiscoverMirror; }
 			set { autoDiscoverMirror = value; }
+		}
+		
+		private string countPropertyName = String.Empty;
+		/// <summary>
+		/// Gets/sets the name of the property containing a total count of the references. 
+		/// The count property is automatically set when any references are updated.
+		/// </summary>
+		public string CountPropertyName
+		{
+			get { return countPropertyName; }
+			set { countPropertyName = value; }
 		}
 		
 		public ReferenceAttribute()

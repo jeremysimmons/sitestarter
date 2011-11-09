@@ -1,13 +1,6 @@
-﻿/*
- * Created by SharpDevelop.
- * User: J
- * Date: 21/10/2011
- * Time: 10:10 AM
- * 
- * To change this template use Tools | Options | Coding | Edit Standard Headers.
- */
-using System;
+﻿using System;
 using Db4objects.Db4o.Query;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Entities;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Db4o
@@ -34,22 +27,21 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			bool doesMatch = true;
 			
-			//using (LogGroup logGroup2 = LogGroup.Start("Querying entity.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = LogGroup.Start("Querying entity.", NLog.LogLevel.Debug))
 			//{
-
-			//LogWriter.Debug("Checking type " + e.GetType().ToString());
-			//LogWriter.Debug("Entity ID: " + e.ID);
-			
-			bool foundReference = Array.IndexOf(ReferencedEntityIDs, entity.ID) > -1;
-			
-			// If a referenced entity ID is specified then entities match if a reference exists
-			if (ReferencedEntityID != Guid.Empty)
-				doesMatch = foundReference;
-			// Otherwise the calling code is trying to get entities where NO reference exists, therefore it matches when no reference is found
-			else
-				doesMatch = !foundReference;
-			
-			//LogWriter.Debug("Matches: " + matches);
+			//	LogWriter.Debug("Checking type " + entity.GetType().ToString());
+			//	LogWriter.Debug("Entity ID: " + entity.ID);
+				
+				bool foundReference = Array.IndexOf(ReferencedEntityIDs, entity.ID) > -1;
+				
+				// If a referenced entity ID is specified then entities match if a reference exists
+				if (ReferencedEntityID != Guid.Empty)
+					doesMatch = foundReference;
+				// Otherwise the calling code is trying to get entities where NO reference exists, therefore it matches when no reference is found
+				else
+					doesMatch = !foundReference;
+				
+			//	LogWriter.Debug("Matches: " + doesMatch);
 			//}
 			return doesMatch;
 		}

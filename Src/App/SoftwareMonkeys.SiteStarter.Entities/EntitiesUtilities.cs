@@ -99,7 +99,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				}
 				
 				if (!validType)
-					throw new Exception("Reference property '" + property.Name + "' of type '" + referenceType.Name + "', found on entity type '" + sourceType.FullName + "', is not registered as a valid entity type. Make sure that the referenced type or interface has a ReferenceAttribute.");
+					throw new Exception("Referenced type '" + referenceType.Name + "' on property '" + property.Name + "' of source entity type '" + sourceType.FullName + "' is not registered as a valid entity type. Make sure that the referenced type has an EntityAttribute.");
 			}
 			
 			//	LogWriter.Debug("Is reference? " + isReference.ToString());
@@ -108,25 +108,6 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			
 			return isReference && validType;
 		}
-		
-		/*static public bool IsReference(Type type)
-		{
-			bool isReference = false;
-			
-			// Logging disabled simply to reduce the size of the logs
-			//using (LogGroup logGroup = LogGroup.Start("Checking if the specified property is an entity reference.", NLog.LogLevel.Debug))
-			//{
-			
-			isReference = type.Name.IndexOf("EntityReferenceCollection") > -1
-				|| type.Name.IndexOf("EntityIDReferenceCollection") > -1
-				|| type.Name.IndexOf("EntityReference") > -1
-				|| type.Name.IndexOf("EntityIDReference") > -1;
-			
-			//	LogWriter.Debug("Is reference? " + isReference.ToString());
-			//}
-			
-			return isReference;
-		}*/
 		
 		static public bool IsReference(Type type)
 		{
@@ -160,6 +141,17 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			
 			//	LogWriter.Debug("Is reference? " + isReference.ToString());
 			//}
+			
+			return attribute;
+		}
+		
+		static public ReferenceAttribute GetReferenceAttribute(IEntity entity, string propertyName)
+		{
+			ReferenceAttribute attribute = null;
+			
+			PropertyInfo property = entity.GetType().GetProperty(propertyName);
+			
+			attribute = GetReferenceAttribute(property);
 			
 			return attribute;
 		}
@@ -304,82 +296,6 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		static public Type GetType(string typeName)
 		{
 			return EntityState.GetType(typeName);
-			
-			/*Type returnType = null;
-			
-			//using (LogGroup logGroup = LogGroup.Start("Retrieving the actual type based on the specified type/alias.", NLog.LogLevel.Debug))
-			//{
-			if (typeName == null || typeName == String.Empty)
-				throw new ArgumentNullException("typeName");
-			
-			if (typeName == "IEntity")
-				return typeof(IEntity);
-			if (typeName == "IUniqueEntity")
-				return typeof(IUniqueEntity);
-			
-			//LogWriter.Debug("Type name: " + typeName);
-			
-			// If a short type name was provided (eg. User)
-			if (typeName.IndexOf('.') == -1
-			    && typeName.IndexOf(',') == -1)
-			{
-				if (typeName == "EntityIDReference")
-					returnType = typeof(EntityIDReference);
-				else if (typeName == "EntityReference")
-					returnType = typeof(EntityReference);
-				else
-				{
-					MappingItem mappingItem = Config.Mappings.GetItem(typeName, true);
-					if (mappingItem == null)
-						throw new InvalidOperationException("No mapping item found for type " + typeName);
-					
-					string alias = String.Empty;
-					if (mappingItem.Settings.ContainsKey("Alias"))
-						alias = (string)mappingItem.Settings["Alias"];
-					
-					//if (mappingItem.Settings == null || mappingItem.Settings.Count == 0)
-					//LogWriter.Debug("No settings defined for this mapping item.");
-					//else
-					//LogWriter.Debug(mappingItem.Settings.Count.ToString() + " settings found for this mapping item.");
-					
-					// If no alias is specified then use the FullName specified
-					if (alias == null || alias == String.Empty)
-					{
-						//LogWriter.Debug("No alias. This is the actual type.");
-						
-						string fullTypeName = String.Empty;
-						if (mappingItem.Settings.ContainsKey("FullName"))
-							fullTypeName = (string)mappingItem.Settings["FullName"];
-						else
-							throw new InvalidOperationException("No 'FullName' specified in mappings for type " + typeName);
-						
-						
-						string assemblyName = String.Empty;
-						if (mappingItem.Settings.ContainsKey("AssemblyName"))
-							assemblyName = (string)mappingItem.Settings["AssemblyName"];
-						else
-							throw new InvalidOperationException("No 'AssemblyName' specified in mappings for type " + typeName);
-						
-						returnType = Type.GetType(fullTypeName + ", " + assemblyName);
-						
-						//LogWriter.Debug("Returning type: " + returnType.ToString());
-						
-					}
-					else
-					{
-						//LogWriter.Debug("Alias: " + alias);
-						// Use the alias if specified
-						returnType = GetType(alias);
-					}
-				}
-			} // Otherwise a long type name was provided
-			else
-			{
-				returnType = Type.GetType(typeName);
-			}
-			//}
-			
-			return returnType;*/
 			
 		}
 		
@@ -614,58 +530,6 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			
 			return mirrorPropertyName;
 		}
-		
-		/*public IEntity[] GetEntitiesFromArray(IEntity[] source, Guid[] ids)
-		{
-			if (source == null || source.Length == 0)
-				return new IEntity[]{};
-			
-			Collection<IEntity> entities = new Collection<IEntity>(source);
-		 */
-		/*foreach (Guid id in ids)
-			{
-				LogWriter.Debug("Post contains ID: " + id.ToString());
-								
-				if (id != Guid.Empty)
-				{
-					
-					IEntity entity = null;
-					
-					// TODO: Check if needed. Was throwing errors so it's been removed to simplify code.
-					// ////!May incur performance hit though by always reloading entities from DB instead of DataSource property
-					//if (DataSource != null)
-					//{
-					
-					//LogWriter.Debug("DataSource != null");
-					
-					LogWriter.Debug("Getting entity from DataSource");
-					
-					entity = Collection<IEntity>.GetByID(source, id);
-					
-					if (entity == null)
-						throw new Exception("Entity could not be retrieved from DataSource property.");
-					
-					LogWriter.Debug("Found entity from post ID: " + entity.GetType().ToString());
-					//}
-					//else
-					//{
-					//	LogWriter.Debug("DataSource == null");
-					
-					//	LogWriter.Debug("Getting entity from EntityFactory");
-					
-					//	entity = (E)EntityFactory.GetEntity<E>(id);
-					
-					//	LogWriter.Debug("Found entity from post ID: " + typeof(E).ToString());
-					//}
-					
-					LogWriter.Debug("Adding entity to list.");
-					entities.Add(entity);
-				}
-			}*/
-		
-		/*	return entities.GetByIDs(ids).ToArray();
-		
-		}*/
 
 		static public string FormatUniqueKey(string originalData)
 		{
@@ -725,42 +589,16 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				// Find the underscore _ prefixed field name
 				field = type.GetField(fieldName2, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
 			}
-			
-			// TODO: Finish implementing and testing
-			/*// If both attempts fail then look for a "CorrespondingField" attribute
-			if (field == null)
-			{
-				CorrespondingFieldAttribute attribute = GetCorrespondingFieldAttribute(type,  propertyName);
-				if (attribute != null)
-					field = type.GetField(attribute.Name, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
-			}*/
 				
-				// If neither field can be found then throw an exception.
-				// If the field doesn't follow a compatible naming convention then the developer should know as early as possible
-				if (field == null)
+			// If neither field can be found then throw an exception.
+			// If the field doesn't follow a compatible naming convention then the developer should know as early as possible
+			if (field == null)
 				throw new InvalidOperationException("Cannot find field on type '" + type.ToString() + "' with name '" + fieldName1 + "' or '" + fieldName2 + "' corresponding with property '" + propertyName + "'.");
 			
 			// Return the name of the field that was found
 			return field.Name;
 		}
 		
-		// TODO: Remove if not needed
-		/*
-		static private CorrespondingFieldAttribute GetCorrespondingFieldAttribute(Type type, string propertyName)
-		{
-			CorrespondingFieldAttribute attribute = null;
-			
-			PropertyInfo property = EntitiesUtilities.GetProperty(type, propertyName);
-			
-			foreach (Attribute a in property.GetCustomAttributes(true))
-			{
-				if (a is CorrespondingFieldAttribute)
-					attribute = (CorrespondingFieldAttribute)a;
-			}
-			
-			return attribute;
-		}
-		 */
 		static public string ToCamelCase(string propertyName)
 		{
 			string firstLetter = propertyName.Substring(0, 1);

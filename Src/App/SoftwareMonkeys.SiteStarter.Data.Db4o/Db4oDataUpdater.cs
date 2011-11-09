@@ -82,7 +82,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				Provider.Referencer.PersistReferences(toUpdate);
 			}
 		}
-		
+				
 		/// <summary>
 		/// Updates the provided entity.
 		/// </summary>
@@ -91,29 +91,19 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			using (LogGroup logGroup = LogGroup.Start("Updating the provided entity.", NLog.LogLevel.Debug))
 			{
+				if (entity == null)
+					throw new ArgumentNullException("entity");
+				
 				Db4oDataStore store = (Db4oDataStore)GetDataStore(entity);
 				
 				if (!store.IsStored(entity))
 					throw new ArgumentException("entity", "The provided entity of type '" + entity.GetType() + "' is not found in the store with name '" + store.Name + "'.");
 				
-				if (entity == null)
-					throw new ArgumentNullException("entity");
-				
 				if (entity.ID == Guid.Empty)
 					throw new ArgumentException("entity.ID must be set.");
-				
-				// TODO: Check if needed. Circular references are sometimes wanted.
-				//ReferenceValidator validator = new ReferenceValidator();
-				//validator.CheckForCircularReference(entity);
-				
-				// TODO: Check if needed - Deactivate function should be sufficient, which is called anyway
-				// If the entity is an EntityReference then cast it back to the simpler EntityIDReference
-				//if (EntitiesUtilities.IsReference(entity.GetType()))
-				//	entity = ((EntityReference)entity).ToData();
-				
+			
 				using (Batch batch = BatchState.StartBatch())
 				{
-					
 					LogWriter.Debug("Entity type: " + entity.GetType().ToString());
 					LogWriter.Debug("Entity ID: " + entity.ID);
 					
@@ -138,7 +128,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 						existingEntity.Deactivate();
 						
 						store.ObjectContainer.Store(existingEntity);
-
+						
 						LogWriter.Debug("Entity updated.");
 						
 						store.Commit();
