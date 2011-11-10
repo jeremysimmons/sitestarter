@@ -60,10 +60,10 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 			}
 		}
 		
-			/// <summary>
-			/// Gets a flag indicating whether the application configuration has been initialized.
-			/// </summary>
-			static public bool IsInitialized
+		/// <summary>
+		/// Gets a flag indicating whether the application configuration has been initialized.
+		/// </summary>
+		static public bool IsInitialized
 		{
 			get { return (Application != null); }
 		}
