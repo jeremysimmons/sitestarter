@@ -13,9 +13,15 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o.Tests
 		}
 		
 		[Test]
-		public override void Test_SetCountProperties()
+		public override void Test_SetCountProperty()
 		{
-			base.Test_SetCountProperties();
+			base.Test_SetCountProperty();
+		}
+		
+		[Test]
+		public override void Test_MatchReference_Exclusion()
+		{
+			base.Test_MatchReference_Exclusion();
 		}
 	}
 }

@@ -13,9 +13,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o.Tests
 		}
 		
 		[Test]
-		public override void Test_PreUpdate_SetsCountPropertyForReference()
+		public override void Test_Update_SetsCountPropertyForReference()
 		{
-			base.Test_PreUpdate_SetsCountPropertyForReference();
+			base.Test_Update_SetsCountPropertyForReference();
 		}
 	}
 }

@@ -68,8 +68,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				user.Roles = new TestRole[]{role};
 				
-				DataAccess.Data.Saver.Save(user);
 				DataAccess.Data.Saver.Save(role);
+				DataAccess.Data.Saver.Save(user);
 				
 				ReferenceFilter filter = (ReferenceFilter)DataAccess.Data.CreateFilter(typeof(ReferenceFilter));
 				filter.PropertyName = "Roles";
@@ -162,8 +162,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				user.Roles = new TestRole[]{role};
 				
-				DataAccess.Data.Saver.Save(user);
 				DataAccess.Data.Saver.Save(role);
+				DataAccess.Data.Saver.Save(user);
 				
 				ReferenceFilter filter = (ReferenceFilter)DataAccess.Data.CreateReferenceFilter();
 				filter.PropertyName = "Roles";
@@ -218,8 +218,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				user.Roles = new TestRole[]{role};
 				
-				DataAccess.Data.Saver.Save(user);
 				DataAccess.Data.Saver.Save(role);
+				DataAccess.Data.Saver.Save(user);
 				
 				ReferenceFilter filter = (ReferenceFilter)DataAccess.Data.CreateReferenceFilter();
 				filter.PropertyName = "Roles";
@@ -272,16 +272,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				article.Categories = new TestCategory[] { category };
 				
-				DataAccess.Data.Saver.Save(article);
 				DataAccess.Data.Saver.Save(category);
-				
-				
+				DataAccess.Data.Saver.Save(article);
 				
 				IEntity[] results = DataAccess.Data.Indexer.GetEntitiesWithReference<TestArticle>("Categories", typeof(TestCategory), category.ID);
 				
 				Assert.IsNotNull(results, "The results were null.");
-				
-				
+								
 				if (results != null)
 				{
 					Assert.AreEqual(1, results.Length, "Incorrect number of results found.");
@@ -320,11 +317,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				article.Categories = new TestCategory[] { category2 };
 				article2.Categories = new TestCategory[] { category };
 				
-				DataAccess.Data.Saver.Save(article);
-				DataAccess.Data.Saver.Save(article2);
 				DataAccess.Data.Saver.Save(category);
 				DataAccess.Data.Saver.Save(category2);
 				
+				DataAccess.Data.Saver.Save(article);
+				DataAccess.Data.Saver.Save(article2);
 				
 				IEntity[] categories = new TestCategory[] { category, category2 };
 				
@@ -888,12 +885,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				Guid roleID = role.ID = Guid.NewGuid();
 				role.Name = "Test Role";
 				
-				
 				user.Roles = Collection<TestRole>.Add(user.Roles, role);
 				
-				DataAccess.Data.Saver.Save(user);
-				
 				DataAccess.Data.Saver.Save(role);
+				DataAccess.Data.Saver.Save(user);
 				
 				
 				PagingLocation location = new PagingLocation(0, 10);

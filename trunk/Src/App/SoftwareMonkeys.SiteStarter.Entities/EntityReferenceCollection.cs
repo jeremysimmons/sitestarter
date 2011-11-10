@@ -45,6 +45,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 			if (sourceEntity != null && referencedEntities != null)
 			{
+				SourceEntity = sourceEntity;
+				
 				foreach (IEntity referencedEntity in referencedEntities)
 				{
 					if (referencedEntity != null)

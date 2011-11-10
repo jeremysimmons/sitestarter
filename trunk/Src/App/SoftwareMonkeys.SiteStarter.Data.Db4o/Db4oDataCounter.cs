@@ -263,14 +263,14 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		public override int CountEntitiesWithReference(Type entityType, Guid entityID, string propertyName, Type referencedEntityType, string mirrorPropertyName)
 		{
 			int count = 0;
-			// TODO: Boost performance by looping through an object set without actually loading the entities
 						
 			using (LogGroup logGroup = LogGroup.Start("Querying the data store based on the provided parameters.", NLog.LogLevel.Debug))
 			{
-				
-				
+				LogWriter.Debug("Entity type: " + entityType.FullName);
 				LogWriter.Debug("Property name: " + propertyName);
 				LogWriter.Debug("Entity ID: " + entityID);
+				LogWriter.Debug("Mirror property name: " + mirrorPropertyName);
+				LogWriter.Debug("Referenced entity type: " + referencedEntityType.FullName);
 				
 				Db4oDataStore store = (Db4oDataStore)GetDataStore(referencedEntityType);
 				

@@ -144,10 +144,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			user.Roles = new TestRole[] {role};
 			user2.Roles = new TestRole[] {role2};
 			
-			DataAccess.Data.Saver.Save(user2);
-			DataAccess.Data.Saver.Save(user);
 			DataAccess.Data.Saver.Save(role2);
 			DataAccess.Data.Saver.Save(role);
+			DataAccess.Data.Saver.Save(user2);
+			DataAccess.Data.Saver.Save(user);
 			
 			EntityReferenceCollection references = (EntityReferenceCollection)DataAccess.Data.Referencer.GetReferences("TestUser", "TestRole");
 			
@@ -206,8 +206,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				// This should remain commented out to check for exclusion
 				user.Roles = new TestRole[]{role};
 				
-				DataAccess.Data.Saver.Save(user);
 				DataAccess.Data.Saver.Save(role);
+				DataAccess.Data.Saver.Save(user);
 				
 				
 				EntityIDReference reference = new EntityIDReference();
@@ -264,26 +264,35 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		}
 		
 		[Test]
-		public virtual void Test_PreUpdate_SetsCountPropertyForReference()
+		public virtual void Test_Update_SetsCountPropertyForReference()
 		{
+			
 			MockEntity entity = new MockEntity();
 			entity.ID = Guid.NewGuid();
 			
-			MockPublicEntity publicEntity = new MockPublicEntity();
-			publicEntity.ID = Guid.NewGuid();
+			MockSyncEntity referencedEntity = new MockSyncEntity();
+			referencedEntity.ID = Guid.NewGuid();
 			
-			DataAccess.Data.Saver.Save(publicEntity);
-			DataAccess.Data.Saver.Save(entity);
-			
-			entity.PublicEntities = new MockPublicEntity[]{
-				publicEntity
+			entity.SyncEntities = new MockSyncEntity[]{
+				referencedEntity
 			};
+			
+			DataAccess.Data.Saver.Save(referencedEntity);
+			DataAccess.Data.Saver.Save(entity);
 			
 			DataAccess.Data.Updater.Update(entity);
 			
 			MockEntity foundEntity = DataAccess.Data.Reader.GetEntity<MockEntity>("ID", entity.ID);
+			MockSyncEntity foundReferencedEntity = DataAccess.Data.Reader.GetEntity<MockSyncEntity>("ID", referencedEntity.ID);
 			
-			Assert.AreEqual(1, foundEntity.TotalPublicEntities, "The TotalPublicEntities property didn't have the expected value.");
+			DataAccess.Data.Activator.Activate(foundEntity);
+			DataAccess.Data.Activator.Activate(foundReferencedEntity);
+			
+			Assert.AreEqual(1, foundEntity.TotalSyncEntities, "The TotalSyncEntities property didn't have the expected value.");
+			Assert.AreEqual(1, foundEntity.SyncEntities.Length, "The SyncEntities property didn't have the expected length.");
+					
+			Assert.AreEqual(1, foundReferencedEntity.TotalEntities, "The TotalEntities property didn't have the expected value.");
+			Assert.AreEqual(1, foundReferencedEntity.Entities.Length, "The Entities property didn't have the expected length.");
 			
 		}
 		

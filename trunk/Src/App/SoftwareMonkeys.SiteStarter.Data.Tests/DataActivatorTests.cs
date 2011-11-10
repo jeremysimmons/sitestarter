@@ -16,7 +16,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		
 		
 		[Test]
-		public void Test_Activate()
+		public virtual void Test_Activate()
 		{
 			using (LogGroup logGroup = LogGroup.Start("Testing the Active function.", NLog.LogLevel.Debug))
 			{
@@ -33,9 +33,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				user.Roles = Collection<TestRole>.Add(user.Roles, role);
 				
+				DataAccess.Data.Saver.Save(role);
 				DataAccess.Data.Saver.Save(user);
 				
-				DataAccess.Data.Saver.Save(role);
 				
 				user = null;
 				role = null;
@@ -279,9 +279,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				user.Roles = Collection<TestRole>.Add(user.Roles, role);
 				
-				DataAccess.Data.Saver.Save(user);
-				
 				DataAccess.Data.Saver.Save(role);
+				DataAccess.Data.Saver.Save(user);
 				
 				user = null;
 				role = null;
