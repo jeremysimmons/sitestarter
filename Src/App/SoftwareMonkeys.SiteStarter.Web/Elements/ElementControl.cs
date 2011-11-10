@@ -85,7 +85,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 		
 		protected override void OnInit(EventArgs e)
 		{
-			using (LogGroup logGroup = LogGroup.StartDebug("Initializing DynamicElement"))
+			using (LogGroup logGroup = LogGroup.StartDebug("Initializing ElementControl"))
 			{
 				
 				base.OnInit(e);
@@ -94,6 +94,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 		
 		protected override void OnLoad(EventArgs e)
 		{
+			EnsureChildControls();
+			
+			if (Target == null)
+				throw new Exception("No target element found or unable to load it.");
+			
 			if (PropertyValuesString != String.Empty)
 				PropertyValues = ExtractPropertyValues(PropertyValuesString);
 			
@@ -184,10 +189,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 		{
 			using (LogGroup logGroup = LogGroup.StartDebug("Applying property values to dynamically loaded element."))
 			{
-				ApplyDataSourceProperty(element);				
-
+				if (element == null)
+					throw new ArgumentNullException("element");
+				
 				if (propertyValues == null)
 					throw new ArgumentNullException("propertyValues");
+
+				ApplyDataSourceProperty(element);
 				
 				foreach (string propertyName in propertyValues.Keys)
 				{
