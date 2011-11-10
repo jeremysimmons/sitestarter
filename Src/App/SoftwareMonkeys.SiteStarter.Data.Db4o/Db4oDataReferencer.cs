@@ -10,7 +10,7 @@ using SoftwareMonkeys.SiteStarter.Diagnostics;
 namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 {
 	/// <summary>
-	/// Description of Db4oDataReferencer.
+	/// 
 	/// </summary>
 	public class Db4oDataReferencer : DataReferencer
 	{

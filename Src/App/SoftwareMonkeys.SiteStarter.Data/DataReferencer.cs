@@ -225,16 +225,16 @@ namespace SoftwareMonkeys.SiteStarter.Data
 						{
 							//LogWriter.Debug("Reference is new. Saving.");
 							
-							DataAccess.Data.Saver.Save(reference);
+							Provider.Saver.Save(reference);
 						}
 						else
 						{
 							//LogWriter.Debug("Reference already exists. Updating.");
 							
-							DataAccess.Data.Updater.Update(reference);
+							Provider.Updater.Update(reference);
 						}
 						
-						DataAccess.Data.Referencer.SetCountProperties(reference);
+						SetCountProperty(reference);
 					}
 				}
 			}
@@ -399,8 +399,10 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			return false;
 		}
 		
-		public void SetCountProperties(EntityReference reference)
+		public bool SetCountProperty(EntityReference reference)
 		{
+			bool wasChanged = false;
+				
 			using (LogGroup logGroup = LogGroup.StartDebug("Setting count properties related to the provided reference."))
 			{
 				IEntity entity1 = reference.SourceEntity;
@@ -415,27 +417,26 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				
 				// If a reference property was specified on the source entity then try setting the corresponding count property
 				if (reference.Property1Name != String.Empty)
-					SetCountProperty(entity1, reference.Property1Name, entity2.ID);
+					wasChanged = SetCountProperty(entity1, reference.Property1Name, entity2.ID);
 				
-				// If a reference property was specified on the referenced entity then try setting the corresponding count property
-				if (reference.Property2Name != String.Empty)
-					SetCountProperty(entity2, reference.Property2Name, entity1.ID);
+				LogWriter.Debug("Was changed: " + wasChanged);
 				
-				// Update the referenced entity if it is in the data store
-				if (DataAccess.Data.IsStored(entity2))
-					DataAccess.Data.Updater.Update(entity2);
-				
-				// Don't update the source entity because it'll be updated/saved anyway without doing it here
+				// Don't update the referenced entity because it'll be done at a different place (using this same method
+				// but switched)
 			}
+			return wasChanged;
 		}
 		
-		public void SetCountProperty(IEntity entity, string referencePropertyName, Guid referencedEntityID)
+		public bool SetCountProperty(IEntity entity, string referencePropertyName, Guid referencedEntityID)
 		{
+			bool wasChanged = false;
+			
 			using (LogGroup logGroup = LogGroup.StartDebug("Setting the specified reference count property."))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");
 				
+				LogWriter.Debug("Entity type: " + entity.GetType().FullName);
 				LogWriter.Debug("Reference property name: " + referencePropertyName);
 				LogWriter.Debug("Referenced entity ID: " + referencedEntityID);
 				
@@ -453,9 +454,15 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					
 					PropertyInfo property = entity.GetType().GetProperty(attribute.CountPropertyName);
 					
+					// Get the original reference count
+					int originalCount = (int)property.GetValue(entity, null);
+					
+					LogWriter.Debug("Original count: " + originalCount);
+					
 					if (property == null)
 						throw new Exception("'" + attribute.CountPropertyName + "' count property not found on type '" + entity.ShortTypeName + "'.");
 					
+					// Get the latest reference count
 					int count = Provider.Counter.CountEntitiesWithReference(
 						entity.GetType(),
 						entity.ID,
@@ -466,10 +473,52 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					
 					LogWriter.Debug("Count: " + count.ToString());
 					
-					property.SetValue(entity, count, null);
+					// If the new count is not the same as the old one then update the property
+					// otherwise skip
+					if (count != originalCount)
+					{
+						wasChanged = true;
+						property.SetValue(entity, count, null);
+					}
 				}
 				else
 					LogWriter.Debug("No count property specified on the reference attribute.");
+			}
+			return wasChanged;
+		}
+		
+		/// <summary>
+		/// Sets the mirror count property on entities referenced by the one provided.
+		/// </summary>
+		/// <param name="entity"></param>
+		public void SetMirrorCountProperties(IEntity entity)
+		{
+			using (LogGroup logGroup = LogGroup.StartDebug("Setting the mirror count property on entities referenced by the '" + entity.ShortTypeName + "' provided."))
+			{
+				EntityReferenceCollection references = Provider.Referencer.GetActiveReferences(entity);
+				
+				foreach (EntityReference reference in references)
+				{
+					// Activate the reference if the ReferenceProperty and SourceProperty are null
+					if (reference.ReferenceEntity == null || reference.SourceEntity == null)
+						Provider.Activator.ActivateReference(reference);
+					
+					// Get the referenced entity
+					IEntity referencedEntity = reference.GetOtherEntity(entity);
+					
+					// Switch the reference to be in the context of the reference entity (ie. the source entity becomes the referenced entity and the referenced entity becomes the source entity.)
+					EntityReference switched = reference.SwitchFor(referencedEntity);
+					
+					// Set the new count property on the referenced entity
+					bool wasChanged = Provider.Referencer.SetCountProperty(switched);
+					
+					// If the count property was changed then activate and update the referenced entity
+					if (wasChanged)
+					{
+						Provider.Activator.Activate(referencedEntity);
+						Provider.Updater.Update(referencedEntity);
+					}
+				}
 			}
 		}
 		
@@ -486,26 +535,22 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			if (entity == null)
 				throw new ArgumentNullException("entity");
 			
-			EntityReferenceCollection collection = new EntityReferenceCollection();
+			EntityReferenceCollection collection = new EntityReferenceCollection(entity);
 			
 			// Loop through all the properties on the entity class
 			foreach (PropertyInfo property in entity.GetType().GetProperties())
 			{
-				LogWriter.Debug("Checking property: " + property.Name);
-				
 				if (EntitiesUtilities.IsReference(entity.GetType(), property.Name, property.PropertyType))
 				{
-					LogWriter.Debug("Property is a reference.");
+					LogWriter.Debug("Property is a reference: " + property.Name);
 					
 					foreach (EntityIDReference reference in GetActiveReferences(entity, property.Name, property.PropertyType))
 					{
-						LogWriter.Debug("Saving reference.");
+						LogWriter.Debug("Found reference.");
 						
 						collection.Add(reference);
 					}
 				}
-				else
-					LogWriter.Debug("Property is NOT a reference.");
 				
 			}
 			
@@ -528,11 +573,11 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			// Loop through all the properties on the entity class
 			foreach (PropertyInfo property in entity.GetType().GetProperties())
 			{
-				LogWriter.Debug("Checking property: " + property.Name);
-				
 				
 				if (property.PropertyType.IsSubclassOf(typeof(EntityIDReferenceCollection)))
 				{
+					LogWriter.Debug("Reference property: " + property.Name);
+					
 					EntityIDReferenceCollection collection = (EntityIDReferenceCollection)property.GetValue(entity, null);
 					if (collection != null && collection.RemovedReferences != null)
 						references.AddRange(collection.RemovedReferences);
@@ -553,7 +598,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <returns>A collection of the entity references.</returns>
 		public virtual EntityReferenceCollection GetActiveReferences(IEntity entity, string propertyName, Type returnType)
 		{
-			EntityReferenceCollection collection = new EntityReferenceCollection();
+			EntityReferenceCollection collection = new EntityReferenceCollection(entity);
 			
 			using (LogGroup logGroup = LogGroup.Start("Retrieving the reference entities from the specified property on the provided entity.", LogLevel.Debug))
 			{
@@ -664,7 +709,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <returns>An array of the entity references.</returns>
 		protected virtual EntityIDReference[] GetActiveReferencesFromMultipleReferenceProperty(IEntity entity, PropertyInfo property, string mirrorPropertyName)
 		{
-			EntityReferenceCollection collection = new EntityReferenceCollection();
+			EntityReferenceCollection collection = new EntityReferenceCollection(entity);
 			
 			using (LogGroup logGroup = LogGroup.Start("Retrieving the references from a multiple reference property.", LogLevel.Debug))
 			{

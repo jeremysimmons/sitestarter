@@ -151,6 +151,9 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			
 			PropertyInfo property = entity.GetType().GetProperty(propertyName);
 			
+			if (property == null)
+				throw new ArgumentException("Can't find '" + propertyName + "' property on '" + entity.GetType().FullName + "' entity type.");
+			
 			attribute = GetReferenceAttribute(property);
 			
 			return attribute;

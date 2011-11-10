@@ -33,9 +33,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				user.Roles = Collection<TestRole>.Add(user.Roles, role);
 				
-				DataAccess.Data.Saver.Save(user);
-				
 				DataAccess.Data.Saver.Save(role);
+				DataAccess.Data.Saver.Save(user);
 				
 				references = DataAccess.Data.Referencer.GetReferences();
 				
@@ -62,9 +61,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				user.Roles = Collection<TestRole>.Add(user.Roles, role);
 				
-				DataAccess.Data.Saver.Save(user);
-				
 				DataAccess.Data.Saver.Save(role);
+				DataAccess.Data.Saver.Save(user);
 				
 				EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences(user.GetType(), user.ID, "Roles", typeof(TestRole), false);
 				
@@ -97,6 +95,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				user.Roles = Collection<TestRole>.Add(user.Roles, role);
 				
+				DataAccess.Data.Saver.Save(role);
 				DataAccess.Data.Saver.Save(user);
 				
 				EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences(user.GetType(), user.ID, "Roles", typeof(TestRole), false);
@@ -220,8 +219,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				e5.ReferencedEntities = new EntitySix[] {e6};
 				
-				DataAccess.Data.Saver.Save(e5);
 				DataAccess.Data.Saver.Save(e6);
+				DataAccess.Data.Saver.Save(e5);
 				
 				EntityReference reference = DataAccess.Data.Referencer.GetReference(e5.GetType(),
 				                                                                    e5.ID,
@@ -380,10 +379,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				LogWriter.Debug("Original reference - Type 1 name: " + originalReference1.Type1Name);
 				LogWriter.Debug("Original reference - Type 2 name: " + originalReference1.Type2Name);
 				
-				DataAccess.Data.Saver.Save(user2);
 				DataAccess.Data.Saver.Save(role2);
-				DataAccess.Data.Saver.Save(user);
 				DataAccess.Data.Saver.Save(role);
+				DataAccess.Data.Saver.Save(user);
+				DataAccess.Data.Saver.Save(user2);
 				
 				string referenceStoreName = DataUtilities.GetDataStoreName("TestUser", "TestRole");
 				
@@ -498,8 +497,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				article.Categories = new TestCategory[] { category };
 				
-				DataAccess.Data.Saver.Save(article);
 				DataAccess.Data.Saver.Save(category);
+				DataAccess.Data.Saver.Save(article);
 
 				bool match = DataAccess.Data.Referencer.MatchReference(article.GetType(), article.ID, "Categories", category.GetType(), category.ID);
 				bool match2 = DataAccess.Data.Referencer.MatchReference(category.GetType(), category.ID, "Articles", article.GetType(), article.ID);
@@ -514,7 +513,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		}
 		
 		[Test]
-		public void Test_MatchReference_Exclusion()
+		public virtual void Test_MatchReference_Exclusion()
 		{
 			using (LogGroup logGroup = LogGroup.Start("Testing the MatchReference function to ensure excludes properly.", NLog.LogLevel.Debug))
 			{
@@ -538,10 +537,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				article.Categories = new TestCategory[] { category };
 				article2.Categories = new TestCategory[] { category2 };
 				
-				DataAccess.Data.Saver.Save(article2);
 				DataAccess.Data.Saver.Save(category2);
-				DataAccess.Data.Saver.Save(article);
 				DataAccess.Data.Saver.Save(category);
+				DataAccess.Data.Saver.Save(article);
+				DataAccess.Data.Saver.Save(article2);
 				
 				bool match = DataAccess.Data.Referencer.MatchReference(article.GetType(), article.ID, "Categories", category2.GetType(), category2.ID);
 				
@@ -630,25 +629,26 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		}
 		
 		[Test]
-		public virtual void Test_SetCountProperties()
+		public virtual void Test_SetCountProperty()
 		{
 			MockEntity entity = new MockEntity();
 			entity.ID = Guid.NewGuid();
 			
-			MockPublicEntity publicEntity = new MockPublicEntity();
-			publicEntity.ID = Guid.NewGuid();
+			MockSyncEntity referencedEntity = new MockSyncEntity();
+			referencedEntity.ID = Guid.NewGuid();
 			
-			entity.PublicEntities = new MockPublicEntity[]{
-				publicEntity
+			entity.SyncEntities = new MockSyncEntity[]{
+				referencedEntity
 			};
+
 			EntityReferenceCollection references = DataAccess.Data.Referencer.GetActiveReferences(entity);
 			
-			DataAccess.Data.Saver.Save(publicEntity);
+			DataAccess.Data.Saver.Save(referencedEntity);
 			DataAccess.Data.Saver.Save(entity);
 			
-			DataAccess.Data.Referencer.SetCountProperties(references[0]);
+			DataAccess.Data.Referencer.SetCountProperty(references[0]);
 									
-			Assert.AreEqual(1, entity.TotalPublicEntities, "The TotalPublicEntities property didn't have the expected value.");
+			Assert.AreEqual(1, entity.TotalSyncEntities, "The TotalSyncEntities property didn't have the expected value.");
 		}
 	}
 }

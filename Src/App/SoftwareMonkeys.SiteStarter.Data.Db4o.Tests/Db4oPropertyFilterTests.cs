@@ -1,4 +1,5 @@
-﻿using SoftwareMonkeys.SiteStarter.Data.Tests;
+﻿using NUnit.Framework;
+using SoftwareMonkeys.SiteStarter.Data.Tests;
 using System;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Db4o.Tests
@@ -6,6 +7,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o.Tests
 	/// <summary>
 	/// 
 	/// </summary>
+	[TestFixture]
 	public class Db4oPropertyFilterTests : PropertyFilterTests
 	{
 		public Db4oPropertyFilterTests()

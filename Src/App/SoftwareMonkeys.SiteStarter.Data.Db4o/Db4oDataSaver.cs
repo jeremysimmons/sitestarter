@@ -19,7 +19,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		public Db4oDataSaver(Db4oDataProvider provider, Db4oDataStore store)
 		{
 			Initialize(provider, store);
-		}	
+		}
 		
 		/// <summary>
 		/// Prepares the provided entity for saving.
@@ -28,29 +28,45 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		public override void PreSave(IEntity entity)
 		{
 			using (LogGroup logGroup = LogGroup.Start("Preparing entity for saving: " + entity.GetType().ToString(), NLog.LogLevel.Debug))
-			{				
+			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");
 				
 				entity.PreStore();
 				
-				Type entityType = entity.GetType();
-				
-				LogWriter.Debug("Entity type: " + entityType.ToString());
-				
-				Provider.Referencer.MaintainReferences(entity);
-				
-				LogWriter.Debug("Presave complete.");
+				// If the entity is NOT a reference object (ie. it's a standard entity)
+				// then prepare the save.
+				// If is IS a reference object the preparation is not needed and should be skipped
+				if (!(entity is EntityReference) &&
+				    !(entity is EntityIDReference))
+				{
+					Type entityType = entity.GetType();
+					
+					LogWriter.Debug("Entity type: " + entityType.ToString());
+					
+					// Maintain the entity references
+					Provider.Referencer.MaintainReferences(entity);
+					
+					LogWriter.Debug("Presave complete.");
+				}
 			}
 		}
-			
+		
+		public void PostSave(IEntity entity)
+		{
+			using (LogGroup logGroup = LogGroup.StartDebug("Executing post-save for entity type '" + entity.ShortTypeName + "'."))
+			{
+				Provider.Referencer.SetMirrorCountProperties(entity);
+			}
+		}
+		
 		/// <summary>
 		/// Saves the provided entity into the provided data store.
 		/// </summary>
 		/// <param name="entity">The entity to save to the data store.</param>
 		public override void Save(IEntity entity)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Saving entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Saving entity of type '" + entity.ShortTypeName + "'.", NLog.LogLevel.Debug))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");
@@ -89,6 +105,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 							
 							// Save the entity
 							store.ObjectContainer.Store(clonedEntity);
+							
+							// Post save the original entity NOT the cloned entity
+							PostSave(entity);
+							
 							store.Commit();
 							
 							LogWriter.Debug("Entity stored in '" + store.Name + "' store.");

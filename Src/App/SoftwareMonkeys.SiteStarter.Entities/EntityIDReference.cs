@@ -11,7 +11,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 	/// Description of IDReference.
 	/// </summary>
 	[Serializable]
-	public class EntityIDReference : BaseEntity, IEntity//, IXmlSerializable
+	public class EntityIDReference : BaseEntity, IEntity
 	{
 		private Guid entity1ID = Guid.Empty;
 		public Guid Entity1ID
@@ -95,12 +95,6 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			return flag;
 		}
 		
-		// TODO: Check if needed. Remove if not n
-		/*public virtual EntityIDReference ToData()
-		{
-			return (EntityIDReference)this;
-		}*/
-				
 		public EntityIDReference SwitchFor(IEntity entity)
 		{
 			return SwitchFor(entity.GetType().Name, entity.ID);
@@ -113,48 +107,54 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		
 		public EntityIDReference SwitchFor(string typeName, Guid id)
 		{
-			
-			//using (LogGroup logGroup = LogGroup.Start("Switching reference data to the perspective of a specific entity.", NLog.LogLevel.Debug))
-			//{
-			if (typeName == null)
-				throw new ArgumentNullException("typeName");
-			
-			//	LogWriter.Debug("Existing target Entity type: " + typeName);
-			//	LogWriter.Debug("Existing source entity type: " + Type1Name);
-			//	LogWriter.Debug("Existing reference entity type: " + Type2Name);
-			//	LogWriter.Debug("Existing source entity ID: " + Entity1ID.ToString());
-			//	LogWriter.Debug("Existing reference entity ID: " + Entity2ID.ToString());
-			//	LogWriter.Debug("Existing source property name: " + Property1Name.ToString());
-			//	LogWriter.Debug("Existing reference property name: " + Property2Name.ToString());
-			
-			if (EntitiesUtilities.MatchAlias(typeName, Type1Name))
+			// TODO: Comment out logging to boost performance
+			using (LogGroup logGroup = LogGroup.StartDebug("Switching reference data to the perspective of a '" + typeName + "' entity."))
 			{
-				//		LogWriter.Debug("The reference is already suited for the specified entity. No need to switch.");
+				if (typeName == null)
+					throw new ArgumentNullException("typeName");
 				
+				LogWriter.Debug("Existing source entity type: " + Type1Name);
+				LogWriter.Debug("Existing reference entity type: " + Type2Name);
+				LogWriter.Debug("Existing source entity ID: " + Entity1ID.ToString());
+				LogWriter.Debug("Existing reference entity ID: " + Entity2ID.ToString());
+				LogWriter.Debug("Existing source property name: " + Property1Name.ToString());
+				LogWriter.Debug("Existing reference property name: " + Property2Name.ToString());
+				
+				if (EntitiesUtilities.MatchAlias(typeName, Type1Name))
+				{
+					LogWriter.Debug("The reference is already suited for the specified entity. No need to switch.");
+					
+				}
+				else
+				{
+					LogWriter.Debug("Switching to the perspective of entity type: " + typeName);
+					
+					Guid entity1ID = Entity1ID;
+					Guid entity2ID = Entity2ID;
+					
+					string type1Name = Type1Name;
+					string type2Name = Type2Name;
+					
+					string property1Name = Property1Name;
+					string property2Name = Property2Name;
+					
+					this.Entity1ID = entity2ID;
+					this.Entity2ID = entity1ID;
+					
+					this.Type1Name = type2Name;
+					this.Type2Name = type1Name;
+					
+					this.Property1Name = property2Name;
+					this.Property2Name = property1Name;
+					
+					LogWriter.Debug("New source entity type: " + Type1Name);
+					LogWriter.Debug("New reference entity type: " + Type2Name);
+					LogWriter.Debug("New source entity ID: " + Entity1ID.ToString());
+					LogWriter.Debug("New reference entity ID: " + Entity2ID.ToString());
+					LogWriter.Debug("New source property name: " + Property1Name.ToString());
+					LogWriter.Debug("New reference property name: " + Property2Name.ToString());
+				}
 			}
-			else
-			{
-				//		LogWriter.Debug("Switching to the perspective of entity type: " + typeName);
-				
-				Guid entity1ID = Entity1ID;
-				Guid entity2ID = Entity2ID;
-				
-				string type1Name = Type1Name;
-				string type2Name = Type2Name;
-				
-				string property1Name = Property1Name;
-				string property2Name = Property2Name;
-				
-				this.Entity1ID = entity2ID;
-				this.Entity2ID = entity1ID;
-				
-				this.Type1Name = type2Name;
-				this.Type2Name = type1Name;
-				
-				this.Property1Name = property2Name;
-				this.Property2Name = property1Name;
-			}
-			//}
 			
 			return this;
 		}

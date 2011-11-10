@@ -54,6 +54,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			user.Roles = new TestRole[] {role};
 			
+			DataAccess.Data.Saver.Save(role);
 			DataAccess.Data.Saver.Save(user);
 			
 			EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences(typeof(TestUser).Name, typeof(TestRole).Name);
@@ -83,6 +84,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			user.Roles = new TestRole[] {role};
 			
+			DataAccess.Data.Saver.Save(role);
 			DataAccess.Data.Saver.Save(user);
 			
 			EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences(typeof(TestUser).Name, typeof(TestRole).Name);
@@ -116,8 +118,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				// This should remain commented out to check for exclusion
 				user.Roles = new TestRole[]{role};
 				
-				DataAccess.Data.Saver.Save(user);
 				DataAccess.Data.Saver.Save(role);
+				DataAccess.Data.Saver.Save(user);
 				
 				DataAccess.Data.Deleter.Delete(role);
 				
