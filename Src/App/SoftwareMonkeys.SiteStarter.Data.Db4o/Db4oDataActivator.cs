@@ -55,10 +55,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 							"ID",
 							reference.Entity1ID);
 						
-						if (entity1 == null)
-							throw new Exception("Can't find '" + type1.Name + "' entity with ID '" + reference.Entity1ID.ToString() + "'. Make sure the entity has been saved BEFORE trying to reference it.");
-						
 						// TODO: Check if exceptions should be thrown when the entity isn't found
+						// Currently references are simply skipped if entity isn't found
+						//if (entity1 == null)
+						//	throw new Exception("Can't find '" + type1.Name + "' entity with ID '" + reference.Entity1ID.ToString() + "'. Make sure the entity has been saved BEFORE trying to reference it.");
+						
 						if (entity1 != null)
 							reference.SourceEntity = entity1;
 					}
@@ -71,10 +72,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 							"ID",
 							reference.Entity2ID);
 						
-						if (entity2 == null)
-							throw new Exception("Can't find '" + type2.Name + "' entity with ID '" + reference.Entity2ID.ToString() + "'. Make sure the entity has been saved BEFORE trying to reference it.");
-
 						// TODO: Check if exceptions should be thrown when the entity isn't found
+						// Currently references are simply skipped if entity isn't found
+						//if (entity2 == null)
+						//	throw new Exception("Can't find '" + type2.Name + "' entity with ID '" + reference.Entity2ID.ToString() + "'. Make sure the entity has been saved BEFORE trying to reference it.");
+
 						if (entity2 != null)
 							reference.ReferenceEntity = entity2;
 					}
