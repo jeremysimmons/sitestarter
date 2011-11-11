@@ -282,19 +282,19 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				EntityReferenceCollection updateList = new EntityReferenceCollection();
 				EntityReferenceCollection deleteList = new EntityReferenceCollection();
 				
-				// Get the removed references
-				foreach (EntityIDReference reference in GetRemovedReferences(entity))
-				{
-					deleteList.Add(reference);
-				}
-				
 				// Get the current/actives references
 				foreach (EntityIDReference reference in GetActiveReferences(entity))
 				{
 					updateList.Add(reference);
 				}
 				
-				// Delete the removed references
+				// Get the obsolete references
+				foreach (EntityIDReference reference in GetObsoleteReferences(entity, updateList.GetEntityIDs(entity.ID)))
+				{
+					deleteList.Add(reference);
+				}
+				
+				// Delete the obsolete references
 				LogWriter.Debug("References to delete: " + deleteList.Count);
 				
 				this.DeleteObsoleteReferences(deleteList);
@@ -552,39 +552,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			//}
 			
 			return collection;
-		}
-		
-		
-		/// <summary>
-		/// Gets the references that have been removed from the entity.
-		/// </summary>
-		/// <param name="entity">The entity that references have been removed from.</param>
-		/// <returns>A collection of the removed references.</returns>
-		public virtual EntityReferenceCollection GetRemovedReferences(IEntity entity)
-		{
-			if (entity == null)
-				throw new ArgumentNullException("entity");
-			
-			EntityReferenceCollection references = new EntityReferenceCollection();
-			
-			// Loop through all the properties on the entity class
-			foreach (PropertyInfo property in entity.GetType().GetProperties())
-			{
-				
-				if (property.PropertyType.IsSubclassOf(typeof(EntityIDReferenceCollection)))
-				{
-					LogWriter.Debug("Reference property: " + property.Name);
-					
-					EntityIDReferenceCollection collection = (EntityIDReferenceCollection)property.GetValue(entity, null);
-					if (collection != null && collection.RemovedReferences != null)
-						references.AddRange(collection.RemovedReferences);
-				}
-				
-			}
-			
-			return references;
-		}
-		
+		}	
 		
 		/// <summary>
 		/// Retrieves the active references from the provided property. This only includes those references currently active and not those in the data store.
