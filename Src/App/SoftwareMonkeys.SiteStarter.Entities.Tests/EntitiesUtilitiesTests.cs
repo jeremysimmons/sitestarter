@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Xml;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Entities;
+using SoftwareMonkeys.SiteStarter.Entities.Tests.Entities;
 using SoftwareMonkeys.SiteStarter.Tests.Entities;
 using SoftwareMonkeys.SiteStarter.Configuration;
 using System.Reflection;
@@ -18,7 +19,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 {
 	[TestFixture]
 	public class EntitiesUtilitiesTests : BaseEntityTestFixture
-	{		
+	{
 		#region Tests
 		[Test]
 		public void Test_IsReference_True_InterfaceType()
@@ -51,25 +52,25 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 			Assert.IsFalse(EntitiesUtilities.IsReference(article.GetType(), property), "Returned true when it should have returned false.");
 		}
 
-        [Test]
-        public void Test_IsEntity_True()
-        {
-            TestArticle article = new TestArticle();
+		[Test]
+		public void Test_IsEntity_True()
+		{
+			TestArticle article = new TestArticle();
 
 
-            Assert.IsTrue(EntitiesUtilities.IsEntity(article.GetType()), "Returned false when it should have returned true.");
-        }
+			Assert.IsTrue(EntitiesUtilities.IsEntity(article.GetType()), "Returned false when it should have returned true.");
+		}
 
 
-        [Test]
-        public void Test_IsEntity_False()
-        {
-            object obj = String.Empty;
+		[Test]
+		public void Test_IsEntity_False()
+		{
+			object obj = String.Empty;
 
 
-            Assert.IsFalse(EntitiesUtilities.IsEntity(obj.GetType()), "Returned true when it should have returned false.");
-        }
-				
+			Assert.IsFalse(EntitiesUtilities.IsEntity(obj.GetType()), "Returned true when it should have returned false.");
+		}
+		
 		[Test]
 		public void Test_IsMultipleReference_True()
 		{
@@ -102,7 +103,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 			Assert.AreEqual(String.Empty, mirrorPropertyName, "The mirror property name wasn't determined correctly.");
 		}
 		
-				[Test]
+		[Test]
 		public void Test_GetMirrorPropertyNameReverse_Multiple_Implicit_Sync()
 		{
 			TestUser user = new TestUser();
@@ -110,6 +111,16 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 			string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyNameReverse(user.GetType(), "Roles", typeof(TestRole));
 			
 			Assert.AreEqual("Users", mirrorPropertyName, "The mirror property name wasn't determined correctly.");
+		}
+		
+		[Test]
+		public void Test_GetMirrorPropertyNameReverse_Multiple_Implicit_Async()
+		{
+			MockEntity entity = new MockEntity();
+			
+			string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyNameReverse(typeof(MockPublicEntity), "", typeof(MockEntity));
+			
+			Assert.AreEqual("PublicEntities", mirrorPropertyName, "The mirror property name wasn't determined correctly.");
 		}
 		
 		[Test]
@@ -156,8 +167,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 		#endregion
 		
 		#region Utilities functions
-	
-			
-			#endregion
+		
+		
+		#endregion
 	}
 }

@@ -13,9 +13,15 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o.Tests
 		}
 		
 		[Test]
-		public override void Test_SetCountProperty()
+		public override void Test_SetCountProperty_TwoWayReference()
 		{
-			base.Test_SetCountProperty();
+			base.Test_SetCountProperty_TwoWayReference();
+		}
+		
+		[Test]
+		public override void Test_SetCountProperty_OneWayReference()
+		{
+			base.Test_SetCountProperty_OneWayReference();
 		}
 		
 		[Test]

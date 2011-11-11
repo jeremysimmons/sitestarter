@@ -13,9 +13,15 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o.Tests
 		}
 		
 		[Test]
-		public override void Test_Update_SetsCountPropertyForReference()
+		public override void Test_Update_SetsCountPropertyForReference_OneWay()
 		{
-			base.Test_Update_SetsCountPropertyForReference();
+			base.Test_Update_SetsCountPropertyForReference_OneWay();
+		}
+		
+		[Test]
+		public override void Test_Update_SetsCountPropertyForReference_TwoWay()
+		{
+			base.Test_Update_SetsCountPropertyForReference_TwoWay();
 		}
 	}
 }
