@@ -85,7 +85,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			// Logging disabled to boost performance
 			
 			// TODO: Comment out logging to improve performance
-			//using (LogGroup logGroup = LogGroup.Start("Checking whether the provided entity and specified property matches the specified referenced entity ID.", LogLevel.Debug))
+			//using (LogGroup logGroup = LogGroup.StartDebug("Checking whether a reference is found matching the details provided between '" + entityType.Name + "' and '" + referencedEntityType.Name + "'."))
 			//{
 			if (entityType == null)
 				throw new ArgumentNullException("entityType");
@@ -112,7 +112,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			else
 				mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(entityType, propertyName);
 			
-			EntityReference reference = DataAccess.Data.Referencer.GetReference(entityType, entityID, propertyName, referencedEntityType, referencedEntityID, mirrorPropertyName, false);
+			EntityReference reference = Provider.Referencer.GetReference(entityType, entityID, propertyName, referencedEntityType, referencedEntityID, mirrorPropertyName, false);
 			
 			//if (reference == null)
 			//	LogWriter.Debug("reference == null");
@@ -203,7 +203,12 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <returns>A collection of the references that involve the provided entity.</returns>
 		public virtual EntityReferenceCollection GetReferences(IEntity entity)
 		{
-			return GetReferences(entity, false);
+			EntityReferenceCollection collection = null;
+			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving the references that involve the provided entity."))
+			{
+				collection = GetReferences(entity, false);
+			}
+			return collection;
 		}
 		
 		/// <summary>
@@ -234,7 +239,8 @@ namespace SoftwareMonkeys.SiteStarter.Data
 							Provider.Updater.Update(reference);
 						}
 						
-						SetCountProperty(reference);
+						if (reference.Property1Name != String.Empty)
+							SetCountProperty(reference.SourceEntity, reference.Property1Name, reference.Entity2ID);
 					}
 				}
 			}
@@ -247,16 +253,19 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="references">The array of references to delete.</param>
 		public virtual void DeleteObsoleteReferences(EntityReferenceCollection references)
 		{
-			using (LogGroup logGroup2 = LogGroup.Start("Deleting all references that need to be deleted.", LogLevel.Debug))
+			using (LogGroup logGroup2 = LogGroup.Start("Deleting provided obsolete references.", LogLevel.Debug))
 			{
-				LogWriter.Debug("Reference #: " + references.Count);
+				LogWriter.Debug("References: " + references.Count);
 				
-				foreach (IEntity reference in references)
+				foreach (EntityReference reference in references)
 				{
 					if (DataAccess.Data.IsStored(reference))
 					{
+						LogWriter.Debug("Deleting reference.");
 						DataAccess.Data.Stores[reference].Deleter.Delete((IEntity)reference);
 					}
+					else
+						LogWriter.Debug("Reference not stored. Skipping.");
 				}
 			}
 		}
@@ -399,34 +408,6 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			return false;
 		}
 		
-		public bool SetCountProperty(EntityReference reference)
-		{
-			bool wasChanged = false;
-				
-			using (LogGroup logGroup = LogGroup.StartDebug("Setting count properties related to the provided reference."))
-			{
-				IEntity entity1 = reference.SourceEntity;
-				
-				LogWriter.Debug("Source entity type: " + entity1.ShortTypeName);
-				LogWriter.Debug("Source property name: " + reference.Property1Name);
-				
-				IEntity entity2 = reference.ReferenceEntity;
-				
-				LogWriter.Debug("Referenced entity type: " + entity1.ShortTypeName);
-				LogWriter.Debug("Mirror property name: " + reference.Property2Name);
-				
-				// If a reference property was specified on the source entity then try setting the corresponding count property
-				if (reference.Property1Name != String.Empty)
-					wasChanged = SetCountProperty(entity1, reference.Property1Name, entity2.ID);
-				
-				LogWriter.Debug("Was changed: " + wasChanged);
-				
-				// Don't update the referenced entity because it'll be done at a different place (using this same method
-				// but switched)
-			}
-			return wasChanged;
-		}
-		
 		public bool SetCountProperty(IEntity entity, string referencePropertyName, Guid referencedEntityID)
 		{
 			bool wasChanged = false;
@@ -478,6 +459,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					if (count != originalCount)
 					{
 						wasChanged = true;
+						
 						property.SetValue(entity, count, null);
 					}
 				}
@@ -509,14 +491,19 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					// Switch the reference to be in the context of the reference entity (ie. the source entity becomes the referenced entity and the referenced entity becomes the source entity.)
 					EntityReference switched = reference.SwitchFor(referencedEntity);
 					
-					// Set the new count property on the referenced entity
-					bool wasChanged = Provider.Referencer.SetCountProperty(switched);
+					string mirrorPropertyName = switched.Property1Name;
 					
-					// If the count property was changed then activate and update the referenced entity
-					if (wasChanged)
+					if (mirrorPropertyName != String.Empty)
 					{
-						Provider.Activator.Activate(referencedEntity);
-						Provider.Updater.Update(referencedEntity);
+						// Set the new count property on the referenced entity
+						bool wasChanged = Provider.Referencer.SetCountProperty(referencedEntity, mirrorPropertyName, entity.ID);
+						
+						// If the count property was changed then activate and update the referenced entity
+						if (wasChanged)
+						{
+							Provider.Activator.Activate(referencedEntity);
+							Provider.Updater.Update(referencedEntity);
+						}
 					}
 				}
 			}
@@ -544,15 +531,25 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				{
 					LogWriter.Debug("Property is a reference: " + property.Name);
 					
-					foreach (EntityIDReference reference in GetActiveReferences(entity, property.Name, property.PropertyType))
+					foreach (EntityReference reference in GetActiveReferences(entity, property.Name, property.PropertyType))
 					{
 						LogWriter.Debug("Found reference.");
 						
 						collection.Add(reference);
 					}
 				}
-				
 			}
+			
+			// TODO: Check if references actually need to be switched (below). In theory they shouldn't and the switch will incur a very
+			// minor performance hit (likely negligable) but is here as an added measure to avoid issues
+			
+			// Ensure that all references have the correct perspective
+			//for (int i = 0; i < collection.Count; i++)
+			//{
+			//	if (collection[i].SourceEntity == null || collection[i].ReferenceEntity == null)
+			//		Provider.Activator.ActivateReference(collection[i]);
+			//	collection[i] = collection[i].SwitchFor(entity);
+			//}
 			
 			return collection;
 		}
@@ -621,7 +618,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 						
 						if (EntitiesUtilities.IsMultipleReference(entity.GetType(), property))
 						{
-							foreach (EntityIDReference r in GetActiveReferencesFromMultipleReferenceProperty(entity, property, mirrorPropertyName))
+							foreach (EntityReference r in GetActiveReferencesFromMultipleReferenceProperty(entity, property, mirrorPropertyName))
 							{
 								if (r != null)
 									collection.Add(r);
@@ -629,7 +626,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 						}
 						else if (EntitiesUtilities.IsSingleReference(entityType, property))
 						{
-							EntityIDReference r = GetActiveReferenceFromSingleReferenceProperty(entity, property, mirrorPropertyName);
+							EntityReference r = GetActiveReferenceFromSingleReferenceProperty(entity, property, mirrorPropertyName);
 							if (r != null)
 								collection.Add(r);
 						}
@@ -657,7 +654,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="property">The property that the references are assigned to.</param>
 		/// <param name="mirrorPropertyName">The name of the mirror property.</param>
 		/// <returns>The active entity reference if it exists.</returns>
-		protected virtual EntityIDReference GetActiveReferenceFromSingleReferenceProperty(IEntity entity, PropertyInfo property, string mirrorPropertyName)
+		protected virtual EntityReference GetActiveReferenceFromSingleReferenceProperty(IEntity entity, PropertyInfo property, string mirrorPropertyName)
 		{
 			EntityReferenceCollection collection = new EntityReferenceCollection();
 			
@@ -695,7 +692,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			}
 			
 			if (collection.Count > 0)
-				return (EntityIDReference)collection[0];
+				return (EntityReference)collection[0];
 			else
 				return null;
 		}
@@ -707,7 +704,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="property">The property that the references are assigned to.</param>
 		/// <param name="mirrorPropertyName">The name of the mirror property.</param>
 		/// <returns>An array of the entity references.</returns>
-		protected virtual EntityIDReference[] GetActiveReferencesFromMultipleReferenceProperty(IEntity entity, PropertyInfo property, string mirrorPropertyName)
+		protected virtual EntityReference[] GetActiveReferencesFromMultipleReferenceProperty(IEntity entity, PropertyInfo property, string mirrorPropertyName)
 		{
 			EntityReferenceCollection collection = new EntityReferenceCollection(entity);
 			
@@ -730,7 +727,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				
 				LogWriter.Debug("Reference objects created.");
 				
-				foreach (EntityIDReference reference in references)
+				foreach (EntityReference reference in references)
 				{
 					LogWriter.Debug("Adding reference with ID: " + reference.ID.ToString());
 
@@ -744,7 +741,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					LogWriter.Debug("Mirror property name: " + reference.Property2Name);
 					
 					
-					collection.Add((EntityIDReference)reference);
+					collection.Add((EntityReference)reference);
 				}
 				
 				// Ensure the references are bound with those stored

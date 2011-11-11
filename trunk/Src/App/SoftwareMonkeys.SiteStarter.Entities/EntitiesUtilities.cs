@@ -437,19 +437,31 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 						{
 							LogWriter.Debug("Is reference == true");
 							
-							//string m = GetMirrorPropertyName(referencedEntityType, property);
-							
-							//LogWriter.Debug("Possible mirror property name: " + m);
-							
 							Type reverseReferenceType = GetReferenceType(referencedEntityType, property);
 							
 							LogWriter.Debug("reverseReferenceType: " + reverseReferenceType.ToString());
 							
 							ReferenceAttribute attribute = GetReferenceAttribute(property);
 							
-							if ((entityType.FullName.ToString() == reverseReferenceType.FullName.ToString()
-							     && attribute.AutoDiscoverMirror)
-							    || attribute.MirrorPropertyName == propertyName)
+							LogWriter.Debug("Mirror property name on attribute: " + attribute.MirrorPropertyName);
+							
+							LogWriter.Debug("Allow auto discovery (as specified by attribute): " + attribute.AutoDiscoverMirror);
+							
+							bool attributeMirrorPropertyMatches = attribute.MirrorPropertyName == propertyName;
+							
+							bool canAutoDiscover = attribute.AutoDiscoverMirror;
+							
+							bool typeMatches = entityType.FullName.ToString() == reverseReferenceType.FullName.ToString();
+							
+							LogWriter.Debug("Attribute mirror property matches: " + attributeMirrorPropertyMatches.ToString());
+							LogWriter.Debug("Can auto discover: " + canAutoDiscover);
+							LogWriter.Debug("Type matches: " + typeMatches.ToString());
+							
+							LogWriter.Debug("Equation: " + typeMatches.ToString() + " && (" + canAutoDiscover + " || " + attributeMirrorPropertyMatches + ")");
+							
+							if (typeMatches
+							    && (canAutoDiscover
+							        || attributeMirrorPropertyMatches))
 							{
 								LogWriter.Debug("Mirror property name decided: " + property.Name);
 								mirrorPropertyName = property.Name;

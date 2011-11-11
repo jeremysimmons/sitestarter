@@ -264,7 +264,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		}
 		
 		[Test]
-		public virtual void Test_Update_SetsCountPropertyForReference()
+		public virtual void Test_Update_SetsCountPropertyForReference_TwoWay()
 		{
 			
 			MockEntity entity = new MockEntity();
@@ -296,6 +296,32 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 		}
 		
-		
+		[Test]
+		public virtual void Test_Update_SetsCountPropertyForReference_OneWay()
+		{
+			MockEntity entity = new MockEntity();
+			entity.ID = Guid.NewGuid();
+			
+			MockPublicEntity referencedEntity = new MockPublicEntity();
+			referencedEntity.ID = Guid.NewGuid();
+			
+			entity.PublicEntities = new MockPublicEntity[]{
+				referencedEntity
+			};
+
+			DataAccess.Data.Saver.Save(referencedEntity);
+			DataAccess.Data.Saver.Save(entity);
+			
+			DataAccess.Data.Updater.Update(entity);
+			
+			MockEntity foundEntity = DataAccess.Data.Reader.GetEntity<MockEntity>("ID", entity.ID);
+			MockPublicEntity foundReferencedEntity = DataAccess.Data.Reader.GetEntity<MockPublicEntity>("ID", referencedEntity.ID);
+			
+			DataAccess.Data.Activator.Activate(foundEntity);
+			DataAccess.Data.Activator.Activate(foundReferencedEntity);
+			
+			Assert.AreEqual(1, foundEntity.TotalPublicEntities, "The TotalPublicEntities property didn't have the expected value.");
+			Assert.AreEqual(1, foundEntity.PublicEntities.Length, "The PublicEntities property didn't have the expected length.");		
+		}
 	}
 }

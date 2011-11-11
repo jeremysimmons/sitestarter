@@ -8,7 +8,7 @@ using SoftwareMonkeys.SiteStarter.Diagnostics;
 namespace SoftwareMonkeys.SiteStarter.Entities
 {
 	/// <summary>
-	/// Description of IDReference.
+	/// 
 	/// </summary>
 	[Serializable]
 	public class EntityIDReference : BaseEntity, IEntity
@@ -105,8 +105,11 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			return SwitchFor(type.Name, id);
 		}
 		
-		public EntityIDReference SwitchFor(string typeName, Guid id)
+		public virtual EntityIDReference SwitchFor(string typeName, Guid id)
 		{
+			//EntityIDReference reference = (EntityIDReference)Clone();
+			EntityIDReference reference = this;
+			
 			// TODO: Comment out logging to boost performance
 			using (LogGroup logGroup = LogGroup.StartDebug("Switching reference data to the perspective of a '" + typeName + "' entity."))
 			{
@@ -122,7 +125,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				
 				if (EntitiesUtilities.MatchAlias(typeName, Type1Name))
 				{
-					LogWriter.Debug("The reference is already suited for the specified entity. No need to switch.");
+					LogWriter.Debug("The reference is already in the perspective of the specified entity. No need to switch.");
 					
 				}
 				else
@@ -138,25 +141,25 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 					string property1Name = Property1Name;
 					string property2Name = Property2Name;
 					
-					this.Entity1ID = entity2ID;
-					this.Entity2ID = entity1ID;
+					reference.Entity1ID = entity2ID;
+					reference.Entity2ID = entity1ID;
 					
-					this.Type1Name = type2Name;
-					this.Type2Name = type1Name;
+					reference.Type1Name = type2Name;
+					reference.Type2Name = type1Name;
 					
-					this.Property1Name = property2Name;
-					this.Property2Name = property1Name;
+					reference.Property1Name = property2Name;
+					reference.Property2Name = property1Name;
 					
-					LogWriter.Debug("New source entity type: " + Type1Name);
-					LogWriter.Debug("New reference entity type: " + Type2Name);
-					LogWriter.Debug("New source entity ID: " + Entity1ID.ToString());
-					LogWriter.Debug("New reference entity ID: " + Entity2ID.ToString());
-					LogWriter.Debug("New source property name: " + Property1Name.ToString());
-					LogWriter.Debug("New reference property name: " + Property2Name.ToString());
+					LogWriter.Debug("New source entity type: " + reference.Type1Name);
+					LogWriter.Debug("New reference entity type: " + reference.Type2Name);
+					LogWriter.Debug("New source entity ID: " + reference.Entity1ID.ToString());
+					LogWriter.Debug("New reference entity ID: " + reference.Entity2ID.ToString());
+					LogWriter.Debug("New source property name: " + reference.Property1Name.ToString());
+					LogWriter.Debug("New reference property name: " + reference.Property2Name.ToString());
 				}
 			}
 			
-			return this;
+			return reference;
 		}
 		
 	}

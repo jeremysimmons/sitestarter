@@ -629,7 +629,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		}
 		
 		[Test]
-		public virtual void Test_SetCountProperty()
+		public virtual void Test_SetCountProperty_TwoWayReference()
 		{
 			MockEntity entity = new MockEntity();
 			entity.ID = Guid.NewGuid();
@@ -646,9 +646,32 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			DataAccess.Data.Saver.Save(referencedEntity);
 			DataAccess.Data.Saver.Save(entity);
 			
-			DataAccess.Data.Referencer.SetCountProperty(references[0]);
-									
+			DataAccess.Data.Referencer.SetCountProperty(entity, "SyncEntities", referencedEntity.ID);
+			
 			Assert.AreEqual(1, entity.TotalSyncEntities, "The TotalSyncEntities property didn't have the expected value.");
+		}
+		
+		[Test]
+		public virtual void Test_SetCountProperty_OneWayReference()
+		{
+			MockEntity entity = new MockEntity();
+			entity.ID = Guid.NewGuid();
+			
+			MockPublicEntity referencedEntity = new MockPublicEntity();
+			referencedEntity.ID = Guid.NewGuid();
+			
+			entity.PublicEntities = new MockPublicEntity[]{
+				referencedEntity
+			};
+
+			EntityReferenceCollection references = DataAccess.Data.Referencer.GetActiveReferences(entity);
+			
+			DataAccess.Data.Saver.Save(referencedEntity);
+			DataAccess.Data.Saver.Save(entity);
+			
+			DataAccess.Data.Referencer.SetCountProperty(entity, "PublicEntities", referencedEntity.ID);
+									
+			Assert.AreEqual(1, entity.TotalPublicEntities, "The PublicEntities property didn't have the expected length.");
 		}
 	}
 }

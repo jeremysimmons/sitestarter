@@ -76,11 +76,26 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 			List<IEntity> list = new List<IEntity>();
 			
-			foreach (EntityReference reference in this)
+			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving entities that are referenced by the one provided."))
 			{
-				list.Add(reference.GetOtherEntity(sourceReference));
+				LogWriter.Debug("Total references: " + Count.ToString());
+				
+				foreach (EntityReference reference in this)
+				{
+					list.Add(reference.GetOtherEntity(sourceReference));
+				}
+				
+				LogWriter.Debug("Total matching: " + list.Count.ToString());
 			}
 			
+			return list.ToArray();
+		}
+		
+		public new EntityReference[] ToArray()
+		{
+			List<EntityReference> list = new List<EntityReference>();
+			foreach (EntityReference r in this)
+				list.Add(r);
 			return list.ToArray();
 		}
 	}

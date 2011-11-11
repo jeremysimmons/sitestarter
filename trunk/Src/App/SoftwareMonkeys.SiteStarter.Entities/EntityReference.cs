@@ -22,6 +22,10 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 			get
 			{
+				// If the source entity doesn't match Type1Name property then return null
+				if (sourceEntity != null && Type1Name != sourceEntity.ShortTypeName)
+					return null;
+				
 				return sourceEntity;
 			}
 			set
@@ -63,6 +67,10 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 			get
 			{
+				// If the reference entity doesn't match Type2Name property then return null
+				if (referenceEntity != null && Type2Name != referenceEntity.ShortTypeName)
+					return null;
+				
 				return referenceEntity;
 			}
 			set
@@ -152,12 +160,20 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		
 		public new EntityReference SwitchFor(IEntity entity)
 		{
+			//EntityReference reference = (EntityReference)this.Clone();
 			EntityReference reference = this;
 			
 			using (LogGroup logGroup = LogGroup.StartDebug("Switching the reference to the perspective of '" + entity.ShortTypeName + "' entity."))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");
+				
+				LogWriter.Debug("Existing source entity type: " + Type1Name);
+				LogWriter.Debug("Existing reference entity type: " + Type2Name);
+				LogWriter.Debug("Existing source entity ID: " + Entity1ID.ToString());
+				LogWriter.Debug("Existing reference entity ID: " + Entity2ID.ToString());
+				LogWriter.Debug("Existing source property name: " + Property1Name.ToString());
+				LogWriter.Debug("Existing reference property name: " + Property2Name.ToString());
 				
 				// Switch the SourceEntity and ReferencedEntity properties if needed
 				if (reference.SourceEntity == null || reference.SourceEntity.ID != entity.ID)
@@ -176,12 +192,12 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 					reference.Property1Name = originalProperty2;
 					reference.Property2Name = originalProperty1;
 					
-					LogWriter.Debug("New source entity type: " + Type1Name);
-					LogWriter.Debug("New reference entity type: " + Type2Name);
-					LogWriter.Debug("New source entity ID: " + Entity1ID.ToString());
-					LogWriter.Debug("New reference entity ID: " + Entity2ID.ToString());
-					LogWriter.Debug("New source property name: " + Property1Name.ToString());
-					LogWriter.Debug("New reference property name: " + Property2Name.ToString());
+					LogWriter.Debug("New source entity type: " + reference.Type1Name);
+					LogWriter.Debug("New reference entity type: " + reference.Type2Name);
+					LogWriter.Debug("New source entity ID: " + reference.Entity1ID.ToString());
+					LogWriter.Debug("New reference entity ID: " + reference.Entity2ID.ToString());
+					LogWriter.Debug("New source property name: " + reference.Property1Name.ToString());
+					LogWriter.Debug("New reference property name: " + reference.Property2Name.ToString());
 				}
 				else
 					LogWriter.Debug("No need to switch. Skipping.");
