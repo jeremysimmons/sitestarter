@@ -9,18 +9,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 	/// </summary>
 	[Serializable]
 	public class EntityIDReferenceCollection : List<EntityIDReference>
-	{
-		
-		private EntityIDReference[] removedReferences;
-		/// <summary>
-		/// Gets/sets the removed references.
-		/// </summary>
-		public EntityIDReference[] RemovedReferences
-		{
-			get { return removedReferences; }
-			set { removedReferences = value; }
-		}
-		
+	{		
 		private string referenceTypeName;
 		/// <summary>
 		/// Gets/sets the short name of the referenced entity type.
