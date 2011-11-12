@@ -6,6 +6,8 @@
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Security" %>
 <%@ Import Namespace="Db4objects.Db4o" %>
 <script runat="server">
+	public int TotalObjects = 0;
+
     protected void Page_Load(object sender, EventArgs e)
     {
     	EnsureAuthorised();
@@ -47,6 +49,8 @@
 
         if (objects != null)
         {
+        	TotalObjects = objects.Length;
+        	
             foreach (object obj in objects)
             {
                 Panel panel = new Panel();
@@ -182,6 +186,7 @@
 <asp:View ID="OutputView" runat="server">
     <div class="Heading1">Data Store Printout</div>
     <p>All objects found in the data store are shown below.</p>
+    <p>Total: <%= TotalObjects %></p>
 	<p>
     <asp:Panel runat='server' ID="ObjectsPanel">
     </asp:Panel>
