@@ -14,7 +14,7 @@
 <script runat="server">
     private void Page_Init(object sender, EventArgs e)
     {
-    	// TODO: Check if needed. Should be obsolete.
+    	// TODO: Check if needed. Should be obsolete because RegisterUserController takes care of it
         RequireAuthorisation = false;
 		
 		CommandInfo command = new CommandInfo("Register", "User", "Create");

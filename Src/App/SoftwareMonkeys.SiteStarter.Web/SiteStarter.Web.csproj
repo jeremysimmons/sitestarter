@@ -230,6 +230,9 @@
     <Compile Include="UrlCreator.cs" />
     <Compile Include="UrlRewriter.cs" />
     <Compile Include="Utilities.cs" />
+    <Compile Include="Validation\UserValidation.cs" />
+    <Compile Include="Validation\ValidationFacade.cs" />
+    <Compile Include="Validation\ValidationMessageNotFoundException.cs" />
     <Compile Include="WebControls\CommandSelect.cs" />
     <Compile Include="WebControls\ContactForm.cs" />
     <Compile Include="WebControls\DeleteLink.cs" />
@@ -262,7 +265,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Properties\Language.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Language.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
@@ -298,6 +301,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Elements" />
+    <Folder Include="Validation" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

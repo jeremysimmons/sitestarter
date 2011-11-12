@@ -3,6 +3,7 @@ using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Business;
 using SoftwareMonkeys.SiteStarter.Business.Security;
 using SoftwareMonkeys.SiteStarter.Web.Navigation;
+using SoftwareMonkeys.SiteStarter.Web.Validation;
 using SoftwareMonkeys.SiteStarter.Web.WebControls;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Controllers
@@ -23,6 +24,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		
 		public EditUserController()
 		{
+			Validation = new UserValidation();
 		}
 		
 		public override bool Update(IEntity entity)

@@ -14,6 +14,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities
         /// <summary>
         /// Gets/sets the name of the role.
         /// </summary>
+		[Required]
+		[Unique]
         public string Name
         {
             get

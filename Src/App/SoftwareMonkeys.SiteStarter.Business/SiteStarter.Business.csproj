@@ -184,9 +184,12 @@
     <Compile Include="StrategyScanner.cs" />
     <Compile Include="StrategyStateNameValueCollection.cs" />
     <Compile Include="TestSmtpStrategy.cs" />
-    <Compile Include="CreateUniqueEntityStrategy.cs" />
-    <Compile Include="UniqueValidateStrategy.cs" />
+    <Compile Include="ValidateRegExStrategy.cs" />
+    <Compile Include="ValidateStrategyAttribute.cs" />
+    <Compile Include="ValidateUniqueStrategy.cs" />
     <Compile Include="UpdateStrategy.cs" />
+    <Compile Include="BaseValidatePropertyStrategy.cs" />
+    <Compile Include="ValidateRequiredStrategy.cs" />
     <Compile Include="ValidateStrategy.cs" />
     <Compile Include="ViewCommandInfo.cs" />
     <Compile Include="ZipAnalyzer.cs">

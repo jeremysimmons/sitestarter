@@ -7,17 +7,28 @@
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Properties" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Data" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Validation" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Entities" %>
 <%@ Import Namespace="System.Collections.Generic" %>
 <script runat="server">
     private void Page_Init(object sender, EventArgs e)
     {
-        Initialize(typeof(UserRole), DataForm);        
-        
+        Initialize(typeof(UserRole), DataForm);      
+
+		ValidationFacade validation = new ValidationFacade();
+		validation.AddError("Name", "Required", "UserRoleNameRequired");
+		validation.AddError("Name", "Unique", "UserRoleNameTaken");
+
         if (QueryStrings.Action == "Create")
+        {
         	CreateController.ActionOnSuccess = "Index";
+        	CreateController.Validation = validation;
+        }
         else
+        {
         	EditController.ActionOnSuccess = "Index";
+        	EditController.Validation = validation;
+        }
     }
 
     protected void UsersSelect_DataLoading(object sender, EventArgs e)
