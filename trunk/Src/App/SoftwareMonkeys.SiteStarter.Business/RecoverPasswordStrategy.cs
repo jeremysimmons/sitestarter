@@ -28,12 +28,12 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			{
 				User user = RetrieveStrategy.New<User>(RequireAuthorisation).Retrieve<User>("Email", emailAddress);
 				
-				user.Password = CreateTemporaryPassword();
-				
 				if (user == null)
 					foundUser = false;
 				else
 				{
+					user.Password = CreateTemporaryPassword();
+				
 					SendResetEmail(user, subject, message, applicationUrl);
 					
 					foundUser = true;
