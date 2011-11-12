@@ -51,32 +51,32 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			//using (LogGroup logGroup = LogGroup.Start("Locating the strategy that is appropriate for carrying out the action '" + action + "' involving the type '" + typeName + "'.", NLog.LogLevel.Debug))
 			//{
-				// Get the specified type
-				Type type = null;
-				if (EntityState.IsType(typeName))
-					type = EntityState.GetType(typeName);
-				
-				// Create a direct strategy key for the specified type
-				string key = StrategyInfo.GetStrategyKey(action, typeName);
-				
+			// Get the specified type
+			Type type = null;
+			if (EntityState.IsType(typeName))
+				type = EntityState.GetType(typeName);
+			
+			// Create a direct strategy key for the specified type
+			string key = StrategyInfo.GetStrategyKey(action, typeName);
+			
 			//	LogWriter.Debug("Direct key: " + key);
 			//	LogWriter.Debug("Type name: " + typeName);
+			
+			// Check the direct key to see if a strategy exists
+			if (Strategies.ContainsKey(key))
+			{
+				//		LogWriter.Debug("Found strategy with key: " + key);
 				
-				// Check the direct key to see if a strategy exists
-				if (Strategies.ContainsKey(key))
-				{
-			//		LogWriter.Debug("Found strategy with key: " + key);
-					
-					strategyInfo = Strategies[key];
-				}
-				// If not then navigate up the heirarchy looking for a matching strategy
-				else if (type != null) // If no type was found then skip the hierarchy check as it's just a name without a corresponding type
-				{
-			//		LogWriter.Debug("Not found with direct key. Looking through the hierarchy.");
-					
-					strategyInfo = LocateFromHeirarchy(action, type);
-				}
+				strategyInfo = Strategies[key];
+			}
+			// If not then navigate up the heirarchy looking for a matching strategy
+			else if (type != null) // If no type was found then skip the hierarchy check as it's just a name without a corresponding type
+			{
+				//		LogWriter.Debug("Not found with direct key. Looking through the hierarchy.");
 				
+				strategyInfo = LocateFromHeirarchy(action, type);
+			}
+			
 			//	LogWriter.Debug("Strategy found: " + (strategyInfo != null ? strategyInfo.StrategyType : "[null]"));
 			//	LogWriter.Debug("Strategy key: " + (strategyInfo != null ? strategyInfo.Key : "[null]"));
 			//}
@@ -96,13 +96,13 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			//using (LogGroup logGroup = LogGroup.Start("Locating a strategy by navigating the hierarchy of the provided type.", NLog.LogLevel.Debug))
 			//{
-				strategyInfo = LocateFromInterfaces(action, type);
-				
-				if (strategyInfo == null)
-				{
-					strategyInfo = LocateFromBaseTypes(action, type);
-				}
-				
+			strategyInfo = LocateFromInterfaces(action, type);
+			
+			if (strategyInfo == null)
+			{
+				strategyInfo = LocateFromBaseTypes(action, type);
+			}
+			
 			//	LogWriter.Debug("Strategy found: " + (strategyInfo != null ? strategyInfo.StrategyType : "[null]"));
 			//	LogWriter.Debug("Strategy key: " + (strategyInfo != null ? strategyInfo.Key : "[null]"));
 			//}
@@ -122,6 +122,14 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			//using (LogGroup logGroup = LogGroup.Start("Locating a strategy by checking the interfaces of the provided type.", NLog.LogLevel.Debug))
 			//{
+			
+			string key = StrategyInfo.GetStrategyKey(action, type.Name);
+			
+			if (type.IsInterface && Strategies.ContainsKey(key))
+				strategyInfo = Strategies[key];
+			else
+			{
+				
 				Type[] interfaceTypes = type.GetInterfaces();
 				
 				// Loop backwards through the interface types
@@ -132,23 +140,24 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					{
 						Type interfaceType = interfaceTypes[i];
 						
-			//			using (LogGroup logGroup2 = LogGroup.Start("Checking interface: " + interfaceType.FullName, NLog.LogLevel.Debug))
-			//			{
-							string key = StrategyInfo.GetStrategyKey(action, interfaceType.Name);
+						//			using (LogGroup logGroup2 = LogGroup.Start("Checking interface: " + interfaceType.FullName, NLog.LogLevel.Debug))
+						//			{
+						string key2 = StrategyInfo.GetStrategyKey(action, interfaceType.Name);
+						
+						//				LogWriter.Debug("Key: " + key);
+						
+						if (Strategies.ContainsKey(key2))
+						{
+							strategyInfo = Strategies[key2];
 							
-			//				LogWriter.Debug("Key: " + key);
-							
-							if (Strategies.ContainsKey(key))
-							{
-								strategyInfo = Strategies[key];
-								
-			//					LogWriter.Debug("Strategy found: " + strategyInfo.StrategyType);
-							}
-			//				else
-			//					LogWriter.Debug("No strategy found for that key.");
-			//			}
+							//					LogWriter.Debug("Strategy found: " + strategyInfo.StrategyType);
+						}
+						//				else
+						//					LogWriter.Debug("No strategy found for that key.");
+						//			}
 					}
 				}
+			}
 			//}
 			return strategyInfo;
 		}
@@ -164,40 +173,40 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			StrategyInfo strategyInfo = null;
 			//using (LogGroup logGroup = LogGroup.Start("Locating strategy via the base types of the provided type.", NLog.LogLevel.Debug))
 			//{
-				TypeNavigator navigator = new TypeNavigator(type);
+			TypeNavigator navigator = new TypeNavigator(type);
+			
+			while (navigator.HasNext && strategyInfo == null)
+			{
+				Type nextType = navigator.Next();
 				
-				while (navigator.HasNext && strategyInfo == null)
+				if (strategyInfo == null)
 				{
-					Type nextType = navigator.Next();
 					
-					if (strategyInfo == null)
+					//			using (LogGroup logGroup2 = LogGroup.Start("Checking base type: " + nextType.FullName, NLog.LogLevel.Debug))
+					//			{
+					string key = StrategyInfo.GetStrategyKey(action, nextType.Name);
+					
+					//				LogWriter.Debug("Key: " + key);
+					
+					// If a strategy exists for the base type then use it
+					if (Strategies.StrategyExists(key))
 					{
+						strategyInfo = Strategies[key];
 						
-			//			using (LogGroup logGroup2 = LogGroup.Start("Checking base type: " + nextType.FullName, NLog.LogLevel.Debug))
-			//			{
-							string key = StrategyInfo.GetStrategyKey(action, nextType.Name);
-							
-			//				LogWriter.Debug("Key: " + key);
-							
-							// If a strategy exists for the base type then use it
-							if (Strategies.StrategyExists(key))
-							{
-								strategyInfo = Strategies[key];
-								
-								
-			//					LogWriter.Debug("Strategy found: " + strategyInfo.StrategyType);
-								
-							}
-							// TODO: Check if needed. It shouldn't be. The other call to LocateFromInterfaces in LocateFromHeirarchy should be sufficient
-							// Otherwise check the interfaces of that base type
-							//else
-							//{
-							//	strategyInfo = LocateFromInterfaces(action, nextType);
-							//}
-			//			}
-					}			
+						
+						//					LogWriter.Debug("Strategy found: " + strategyInfo.StrategyType);
+						
+					}
+					// TODO: Check if needed. It shouldn't be. The other call to LocateFromInterfaces in LocateFromHeirarchy should be sufficient
+					// Otherwise check the interfaces of that base type
+					//else
+					//{
+					//	strategyInfo = LocateFromInterfaces(action, nextType);
+					//}
+					//			}
 				}
-				
+			}
+			
 			//}
 			return strategyInfo;
 		}

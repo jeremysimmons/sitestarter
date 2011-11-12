@@ -42,8 +42,8 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			
 			StrategyStateNameValueCollection strategies = new StrategyStateNameValueCollection();
 			
-			strategies.Add(typeof(SaveStrategy));
-			strategies.Add(typeof(UpdateStrategy));
+			strategies.Add(typeof(SaveStrategy)); // Save-IEntity
+			strategies.Add(typeof(UpdateStrategy)); // Update-IEntity
 			
 			StrategyLocator locator = new StrategyLocator(strategies);
 			
