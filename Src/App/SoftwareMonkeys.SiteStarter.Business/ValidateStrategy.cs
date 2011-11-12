@@ -75,36 +75,46 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		
 		public virtual void ValidateProperty(IEntity entity, PropertyInfo property)
 		{
-			foreach (IValidatePropertyAttribute attribute in GetValidationAttributes(entity, property))
+			using (LogGroup logGroup = LogGroup.StartDebug("Validating the provided '" + property.Name + "' property on the provided '" + entity.ShortTypeName + "' entity."))
 			{
-				string name = attribute.ValidatorName;
-				
-				if (name == null || name == String.Empty)
-					// TODO: Create and use a specific exception
-					throw new Exception("No validor name has been set on the validation attribute of the '" + property.Name + "' property on the '" + entity.ShortTypeName + "' type.");
-				
-				string action = name;
-				// If the action doesn't include the "Validate" prefix then add it
-				if (action.IndexOf("Validate") != 0)
-					action = "Validate" + action;
-				
-				IValidatePropertyStrategy strategy = StrategyState.Strategies.Creator.New<IValidatePropertyStrategy>(action, entity.GetType());
-				
-				bool isValid = strategy.IsValid(entity, property, attribute);
-				
-				if (!isValid)
-					AddFailure(property.Name, attribute);
+				foreach (IValidatePropertyAttribute attribute in GetValidationAttributes(entity, property))
+				{
+					using (LogGroup logGroup2 = LogGroup.StartDebug("Applying validation according to '" + attribute.ValidatorName + "' validation attribute."))
+					{
+						string name = attribute.ValidatorName;
+						
+						if (name == null || name == String.Empty)
+							// TODO: Create and use a specific exception
+							throw new Exception("No validor name has been set on the validation attribute of the '" + property.Name + "' property on the '" + entity.ShortTypeName + "' type.");
+						
+						string action = name;
+						// If the action doesn't include the "Validate" prefix then add it
+						if (action.IndexOf("Validate") != 0)
+							action = "Validate" + action;
+						
+						LogWriter.Debug("Validation strategy action: " + action);
+						
+						IValidatePropertyStrategy strategy = StrategyState.Strategies.Creator.New<IValidatePropertyStrategy>(action, entity.GetType());
+						
+						bool isValid = strategy.IsValid(entity, property, attribute);
+						
+						LogWriter.Debug("Is valid: " + isValid);
+						
+						if (!isValid)
+							AddFailure(property.Name, attribute);
+					}
+				}
 			}
 		}
 		
-		public virtual BaseValidatePropertyAttribute[] GetValidationAttributes(IEntity entity, PropertyInfo property)
+		public virtual IValidatePropertyAttribute[] GetValidationAttributes(IEntity entity, PropertyInfo property)
 		{
-			List<BaseValidatePropertyAttribute> list = new List<BaseValidatePropertyAttribute>();
+			List<IValidatePropertyAttribute> list = new List<IValidatePropertyAttribute>();
 			
-			foreach (Attribute attribute in property.GetCustomAttributes(typeof(BaseValidatePropertyAttribute), true))
+			foreach (Attribute attribute in property.GetCustomAttributes(typeof(IValidatePropertyAttribute), true))
 			{
-				if (attribute is BaseValidatePropertyAttribute)
-					list.Add((BaseValidatePropertyAttribute)attribute);
+				if (attribute is IValidatePropertyAttribute)
+					list.Add((IValidatePropertyAttribute)attribute);
 			}
 			
 			return list.ToArray();
