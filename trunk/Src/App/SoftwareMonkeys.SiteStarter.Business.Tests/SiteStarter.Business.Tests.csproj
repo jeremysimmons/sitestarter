@@ -193,8 +193,6 @@
     <Compile Include="StrategyScannerTests.cs" />
     <Compile Include="StrategyStateNameValueCollectionTests.cs" />
     <Compile Include="MockRetrieveTestUserStrategy.cs" />
-    <Compile Include="UniqueSaveStrategyTests.cs" />
-    <Compile Include="UniqueUpdateStrategyTests.cs" />
     <Compile Include="ValidateRequiredStrategyTests.cs" />
     <Compile Include="ValidateUniqueStrategyTests.cs" />
     <Compile Include="UpdateStrategyTests.cs" />
