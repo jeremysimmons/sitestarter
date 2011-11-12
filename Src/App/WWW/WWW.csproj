@@ -57,6 +57,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Admin\DataReferences.aspx" />
     <None Include="Admin\Elements.aspx" />
     <None Include="Admin\EditProjection.aspx" />
     <None Include="Admin\Errors.aspx" />
@@ -91,6 +92,9 @@
     <None Include="Admin\Tests\ResetDefaultData.aspx" />
     <None Include="Admin\Tests\TestBreakableLogging.aspx" />
     <None Include="Admin\Tests\TestContactForm.aspx" />
+    <None Include="Admin\Tests\TestEntitySelect_MultipleEmpty.aspx" />
+    <None Include="Admin\Tests\TestEntitySelect_Single.aspx" />
+    <None Include="Admin\Tests\TestEntitySelect_SingleEmpty.aspx" />
     <None Include="Admin\Tests\TestLogging.aspx" />
     <None Include="Admin\Tests\TestElementControl.aspx" />
     <None Include="Admin\Tests\TestReset.aspx" />
@@ -209,5 +213,8 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="App_GlobalResources\Language.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Admin\Tests\TestEntitySelect_Multiple.aspx" />
   </ItemGroup>
 </Project>
