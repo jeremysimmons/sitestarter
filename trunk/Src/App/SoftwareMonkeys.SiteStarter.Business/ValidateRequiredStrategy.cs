@@ -18,7 +18,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			object value = property.GetValue(entity, null);
 			
 			if (property.PropertyType == typeof(string))
-				return value != String.Empty;
+				return (string)value != String.Empty;
 			else
 				return value != null;
 
