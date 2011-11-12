@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Business;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
@@ -6,39 +7,23 @@ using SoftwareMonkeys.SiteStarter.Diagnostics;
 namespace SoftwareMonkeys.SiteStarter.Business
 {
 	/// <summary>
-	/// Used to validate entities and ensure they're unique.
+	/// Used to validate entity properties to ensure they're unique.
 	/// </summary>
-	[Strategy("Validate", "IUniqueEntity")]
-	[Serializable]
-	public class UniqueValidateStrategy : ValidateStrategy, IUniqueValidateStrategy
-	{
-		private string uniquePropertyName = "UniqueKey";
-		/// <summary>
-		/// Gets/sets the name of the property on the target entity that is unique.
-		/// </summary>
-		public string UniquePropertyName
+	[ValidateStrategy("Unique", "IEntity")]
+	public class ValidateUniqueStrategy : BaseValidatePropertyStrategy, IValidateUniqueStrategy
+	{		
+		public ValidateUniqueStrategy()
 		{
-			get { return uniquePropertyName; }
-			set { uniquePropertyName = value; }
-		}
-		
-		public UniqueValidateStrategy()
-		{
-		}
-		
-		public override bool Validate(IEntity entity)
-		{
-			return base.Validate(entity) // Run base validation
-				&& Validate(entity, UniquePropertyName); // and unique validation
 		}
 		
 		/// <summary>
-		/// Validates the provided entity by checking whether the provided value of the specified unique property is unique to all entities currently in the system.
+		/// Checks whether the specified property of the provided entity is unique.
 		/// </summary>
 		/// <param name="entity">The entity to validate by checking whether the provided property value is unique.</param>
-		/// <param name="propertyName">The name of the property that is to remain unique.</param>
+		/// <param name="property">The property that is to remain unique.</param>
+		/// <param name="attribute">The validate property attribute that caused the validation.</param>
 		/// <returns>A value to indicate whether the provided value is unique to the provided property.</returns>
-		public bool Validate(IEntity entity, string propertyName)
+		public override bool IsValid(IEntity entity, PropertyInfo property, IValidatePropertyAttribute attribute)
 		{
 			bool isTaken = false;
 			
@@ -47,20 +32,20 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				if (entity == null)
 					throw new ArgumentNullException("entity");
 				
-				if (propertyName == null || propertyName == String.Empty)
-					throw new ArgumentNullException("propertyName");
+				if (property == null)
+					throw new ArgumentNullException("property");
 				
-				LogWriter.Debug("Property name: " + propertyName);
+				LogWriter.Debug("Property name: " + property.Name);
 				
 				LogWriter.Debug("Entity: " + entity.GetType().FullName);
 				
 				IRetrieveStrategy strategy = RetrieveStrategy.New(entity.ShortTypeName, false);
 				
-				object propertyValue = EntitiesUtilities.GetPropertyValue(entity, propertyName);
+				object propertyValue = property.GetValue(entity, null);
 				
 				LogWriter.Debug("Property value: " + propertyValue.ToString());
 				
-				IEntity existingEntity = (IEntity)strategy.Retrieve(propertyName, propertyValue);
+				IEntity existingEntity = (IEntity)strategy.Retrieve(property.Name, propertyValue);
 				
 				LogWriter.Debug("Existing entity found: " + (existingEntity != null).ToString());
 				
@@ -75,12 +60,12 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			return !isTaken;
 		}
 		
-		new static public UniqueValidateStrategy New(IEntity entity)
+		/*new static public ValidateUniqueStrategy New(IEntity entity)
 		{
 			return New(entity.ShortTypeName);
 		}
 		
-		new static public UniqueValidateStrategy New(string typeName)
+		new static public ValidateUniqueStrategy New(string typeName)
 		{
 			UniqueValidateStrategy strategy = null;
 			
@@ -91,12 +76,12 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			return strategy;
 		}
 		
-		new static public UniqueValidateStrategy New(IEntity entity, bool requireAuthorisation)
+		/*new static public ValidateUniqueStrategy New(IEntity entity, bool requireAuthorisation)
 		{
 			return New(entity.ShortTypeName, requireAuthorisation);
 		}
 		
-		new static public UniqueValidateStrategy New(string typeName, bool requireAuthorisation)
+		new static public ValidateUniqueStrategy New(string typeName, bool requireAuthorisation)
 		{
 			UniqueValidateStrategy strategy = null;
 			
@@ -107,6 +92,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				strategy.RequireAuthorisation = requireAuthorisation;
 			}
 			return strategy;
-		}
+		}*/
 	}
 }

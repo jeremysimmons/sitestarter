@@ -56,24 +56,6 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		}
 		
 		[Test]
-		public void Test_this_IUniqueEntityInterface()
-		{
-			StrategyStateNameValueCollection collection = new StrategyStateNameValueCollection();
-			
-			string type = "TestUser";
-			string action = "Validate";
-			
-			collection.Add(typeof(ValidateStrategy));
-			collection.Add(typeof(UniqueValidateStrategy));
-			
-			StrategyInfo foundStrategy = collection[action, type];
-			
-			Assert.IsNotNull(foundStrategy);
-			
-			Assert.AreEqual("UniqueValidateStrategy", foundStrategy.New(type).GetType().Name, "Loaded the wrong type.");
-		}
-		
-		[Test]
 		[ExpectedException("SoftwareMonkeys.SiteStarter.Business.StrategyNotFoundException")]
 		public void Test_this_Interface_StrategyNotFound()
 		{

@@ -3,6 +3,7 @@ using SoftwareMonkeys.SiteStarter.Business;
 using SoftwareMonkeys.SiteStarter.Business.Security;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Web.Projections;
+using SoftwareMonkeys.SiteStarter.Web.Validation;
 using SoftwareMonkeys.SiteStarter.Web.WebControls;
 using System.Web.UI.WebControls;
 using SoftwareMonkeys.SiteStarter.Web.Properties;
@@ -71,12 +72,22 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		}
 		
 		private string entityPropertyTakenLanguageKey = "EntityPropertyTaken";
+		[ObsoleteAttribute()]
 		public string EntityPropertyTakenLanguageKey
 		{
 			get { return entityPropertyTakenLanguageKey; }
 			set { entityPropertyTakenLanguageKey = value; }
 		}
 		
+		private ValidationFacade validation;
+		public ValidationFacade Validation
+		{
+			get {
+				if (validation == null)
+					validation = new ValidationFacade();
+				return validation; }
+			set { validation = value; }
+		}
 		
 		public EditController()
 		{
@@ -240,6 +251,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			using (LogGroup logGroup = LogGroup.Start("Editing the provided entity.", NLog.LogLevel.Debug))
 			{
+				Validation.CheckMessages(entity);
+				
 				if (EnsureAuthorised(entity))
 				{
 					StartEdit();
@@ -336,17 +349,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 					}
 					else
 					{
-						CheckUniquePropertyName();
-						
-						// Get the "entity exists" language entry
-						string error = DynamicLanguage.GetEntityText(EntityPropertyTakenLanguageKey, Command.TypeName);
-						
-						// Insert the name of the unique property
-						error = error.Replace("${property}", DynamicLanguage.GetText(UniquePropertyName).ToLower());
-						
-						// Display the error
-						Result.DisplayError(error);
-						
+						// Add the validation error to the result control
+						Validation.DisplayError(entity);
+												
 						didSucceed = false;
 					}
 				}

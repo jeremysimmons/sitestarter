@@ -1,17 +1,19 @@
 ﻿using System;
+using System.Reflection;
 using NUnit.Framework;
+using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Tests.Entities;
 using SoftwareMonkeys.SiteStarter.Data;
 
 namespace SoftwareMonkeys.SiteStarter.Business.Tests
 {
 	[TestFixture]
-	public class UniqueValidateStrategyTests : BaseBusinessTestFixture
+	public class ValidateUniqueStrategyTests : BaseBusinessTestFixture
 	{
 		[Test]
 		public void Test_Found_ForIEntityInterface()
 		{
-			StrategyInfo strategy = StrategyState.Strategies["Validate", "IUniqueEntity"];
+			StrategyInfo strategy = StrategyState.Strategies["Validate", "IEntity"];
 			
 			Assert.IsNotNull(strategy);
 		}
@@ -34,29 +36,28 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			DataAccess.Data.Saver.Save(article);
 			DataAccess.Data.Saver.Save(article2);
 			
-			IUniqueValidateStrategy strategy = new UniqueValidateStrategy();
+			IValidateUniqueStrategy strategy = new ValidateUniqueStrategy();
 			
 			// Check that the strategy was found
 			Assert.IsNotNull(strategy);
 			
+			PropertyInfo titleProperty = article2.GetType().GetProperty("Title");
+			
 			// Execute the validate function on the strategy
-			bool isUnique = strategy.Validate(article2, "Title");
+			bool isUnique = strategy.IsValid(article2, titleProperty, new UniqueAttribute());
 			
 			// Check that the validate function returned true
 			Assert.IsTrue(isUnique, "The Validate function returned false when it shouldn't have.");
 			
 			article3.Title = article2.Title;
 			
+			PropertyInfo titleProperty2 = article3.GetType().GetProperty("Title");
+			
 			// Execute the validate function on the strategy and expect it to fail
-			bool isNotUnique = strategy.Validate(article3, "Title");
+			bool isNotUnique = strategy.IsValid(article3, titleProperty2, new UniqueAttribute());
 			
 			// Check that the validate function returned false when it's supposed to
 			Assert.IsFalse(isNotUnique, "The Validate function returned true when it shouldn't have.");
-			/*
-			// Load the original article to ensure it's there
-			TestArticle foundArticle = Data.DataAccess.Data.Reader.GetEntity<TestArticle>("ID", article.ID);
-			
-			Assert.IsNotNull(foundArticle);*/
 			
 		}
 	}

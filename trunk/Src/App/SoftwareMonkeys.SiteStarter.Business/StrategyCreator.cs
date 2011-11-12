@@ -260,11 +260,12 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		
 		#region New validater strategy functions
 		/// <summary>
-		/// Creates a new validator strategy for the specified type.
+		/// Creates a new property validator strategy for the specified type.
 		/// </summary>
+		/// <param name="validatorName">The name of the validator such as "Required".</param>
 		/// <param name="typeName"></param>
 		/// <returns></returns>
-		public IValidateStrategy NewValidator(string typeName)
+		public IValidateStrategy NewPropertyValidator(string validatorName, string typeName)
 		{
 			IValidateStrategy strategy = null;
 			
@@ -274,7 +275,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				
 				LogWriter.Debug("Type name: " + typeName);
 				
-				strategy = Strategies["Validate", typeName]
+				strategy = Strategies["Validate_" + validatorName, typeName]
 					.New<IValidateStrategy>(typeName);
 			}
 			
@@ -282,13 +283,14 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		}
 		
 		/// <summary>
-		/// Creates a new validator strategy for the specified type.
+		/// Creates a new property validator strategy for the specified type.
 		/// </summary>
+		/// <param name="validatorName"></param>
 		/// <param name="type"></param>
 		/// <returns></returns>
-		public IValidateStrategy NewValidator(Type type)
+		public IValidateStrategy NewPropertyValidator(string validatorName, Type type)
 		{
-			return NewValidator(type.Name);
+			return NewPropertyValidator(validatorName, type.Name);
 		}
 		#endregion
 		
@@ -368,6 +370,31 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			}
 			
 			return strategy;
+		}
+		#endregion
+		
+		#region New validator strategy functions
+		/// <summary>
+		/// Creates a new validator strategy for the specified type.
+		/// </summary>
+		/// <param name="typeName"></param>
+		/// <returns></returns>
+		public IValidateStrategy NewValidator(string typeName)
+		{
+			CheckType(typeName);
+			
+			return Strategies["Validate", typeName]
+				.New<IValidateStrategy>(typeName);
+		}
+		
+		/// <summary>
+		/// Creates a new validator strategy for the specified type.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public IValidateStrategy NewValidator(Type type)
+		{
+			return NewValidator(type.Name);
 		}
 		#endregion
 		

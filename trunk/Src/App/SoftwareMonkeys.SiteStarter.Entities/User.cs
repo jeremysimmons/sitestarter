@@ -17,6 +17,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <summary>
 		/// Gets/sets the first name of the user.
 		/// </summary>
+		[Required]
 		public virtual string FirstName
 		{
 			get { return this.firstName; }
@@ -27,6 +28,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <summary>
 		/// Gets/sets the last name of the user.
 		/// </summary>
+		[Required]
 		public virtual string LastName
 		{
 			get { return this.lastName; }
@@ -38,13 +40,16 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// </summary>
 		public virtual string Name
 		{
-			get { return this.FirstName + " " + LastName; }
+			get { return FirstName + " " + LastName; }
 		}
 
 		private string email;
 		/// <summary>
 		/// Gets/sets the email address of the user.
 		/// </summary>
+		[Required]
+		[Unique]
+		[Email]
 		public virtual string Email
 		{
 			get { return this.email; }
@@ -55,6 +60,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <summary>
 		/// Gets/sets the username of the user.
 		/// </summary>
+		[Required]
+		[Unique]
 		public virtual string Username
 		{
 			get { return this.username; }
@@ -67,6 +74,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <summary>
 		/// Gets/sets the password of the user.
 		/// </summary>
+		[Required]
 		public virtual string Password
 		{
 			get { return this.password; }

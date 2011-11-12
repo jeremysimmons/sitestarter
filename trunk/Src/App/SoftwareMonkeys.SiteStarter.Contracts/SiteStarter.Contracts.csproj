@@ -74,9 +74,10 @@
     <Compile Include="Business\ISaveReaction.cs" />
     <Compile Include="Business\IStrategy.cs" />
     <Compile Include="Business\ISaveStrategy.cs" />
-    <Compile Include="Business\IUniqueValidateStrategy.cs" />
+    <Compile Include="Business\IValidateUniqueStrategy.cs" />
     <Compile Include="Business\IUpdateReaction.cs" />
     <Compile Include="Business\IUpdateStrategy.cs" />
+    <Compile Include="Business\IValidatePropertyStrategy.cs" />
     <Compile Include="Business\IValidateStrategy.cs" />
     <Compile Include="Business\Security\IAuthenticateStrategy.cs" />
     <Compile Include="Business\Security\IAuthoriseCreateStrategy.cs" />
@@ -106,6 +107,7 @@
     <Compile Include="Entities\IUser.cs" />
     <Compile Include="Entities\IUserPermission.cs" />
     <Compile Include="Entities\IUserRole.cs" />
+    <Compile Include="Entities\IValidatePropertyAttribute.cs" />
     <Compile Include="IAppComponent.cs" />
     <Compile Include="IO\IFileMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

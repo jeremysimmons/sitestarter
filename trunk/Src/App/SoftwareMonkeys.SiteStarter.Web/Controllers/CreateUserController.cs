@@ -3,9 +3,11 @@ using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Business;
 using SoftwareMonkeys.SiteStarter.Business.Security;
 using SoftwareMonkeys.SiteStarter.Web.Navigation;
+using SoftwareMonkeys.SiteStarter.Web.Properties;
 using SoftwareMonkeys.SiteStarter.Web.Security;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Configuration;
+using SoftwareMonkeys.SiteStarter.Web.Validation;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 {
@@ -14,18 +16,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	/// </summary>
 	[Controller("Create", "User")]
 	public class CreateUserController : CreateController
-	{
-		/// <summary>
-		/// Gets a value indicating whether the current user object belongs to the current user.
-		/// </summary>
-		// TODO: Check if needed. Should be obsolete.
-		public bool IsSelf
-		{
-			get { return ((User)DataSource).ID == AuthenticationState.User.ID; }
-		}
-		
+	{		
 		public CreateUserController()
 		{
+			Validation = new UserValidation();
 		}
 		
 		public override bool ExecuteSave(SoftwareMonkeys.SiteStarter.Entities.IEntity entity)
@@ -49,36 +43,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				LogWriter.Debug("Auto navigate: " + AutoNavigate.ToString());
 				
 				user.Password = Crypter.EncryptPassword(user.Password);
-				
-				// Cancel the base automatic navigation
-				//AutoNavigate = false;
-				
+								
 				success = base.ExecuteSave(user);
-				
-				// Now the AutoNavigate flag for the custom function depends on the AutoApproveNewUsers setting
-				//AutoNavigate = Config.Application.Settings.GetBool("AutoApproveNewUsers");
 				
 				LogWriter.Debug("Success: " + success.ToString());
 				
-				if (success)
-				{
-					//LogWriter.Debug("Is approved: " + user.IsApproved.ToString());
-					//LogWriter.Debug("User is already signed in: " + AuthenticationState.IsAuthenticated.ToString());
-					
-					// If it's a new user registering and the new user was automatically approved (during create strategy, from configuration settings)
-					// then sign the user in automatically
-					//if (!AuthenticationState.IsAuthenticated && IsSelf)
-					//{
-					//	LogWriter.Debug("Signing the new user in.");
-						
-					//	Authentication.SetAuthenticatedUsername(user.Username);
-						
-						// Navigate only if automatically logged in
-					//	NavigateAfterSave();
-					//}
-					
-				}
-				else
+				if (!success)
 				{
 					LogWriter.Debug("Failed to save (username in use).");
 				}
