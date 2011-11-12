@@ -35,6 +35,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Validation
 		/// <returns></returns>
 		public string GetError(IEntity entity)
 		{
+			if (entity == null)
+				throw new ArgumentNullException("entity");
+			
 			if (entity.IsValid)
 				return String.Empty;
 			else
@@ -48,7 +51,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Validation
 					string validatorName = GetValidatorNameFromKey(pair.Key);
 					
 					if (ErrorMessages.ContainsKey(msgKey))
-						error = DynamicLanguage.GetText(GetType(), ErrorMessages[msgKey]);
+						error = ErrorMessages[msgKey];
 					else
 						throw new ValidationMessageNotFoundException(entity, propertyName, validatorName);
 					
@@ -63,6 +66,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Validation
 		
 		public void DisplayError(IEntity entity)
 		{
+			if (entity == null)
+				throw new ArgumentNullException("entity");
+			
 			string error = GetError(entity);
 			Result.DisplayError(error);
 		}
@@ -73,6 +79,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Validation
 		/// <param name="entity"></param>
 		public void CheckMessages(IEntity entity)
 		{
+			if (entity == null)
+				throw new ArgumentNullException("entity");
+			
+			if (entity.Validator == null)
+				throw new ArgumentNullException("entity.Validator");
+			
 			foreach (KeyValuePair<string, IValidatePropertyAttribute> pair in entity.Validator.GetPotentialFailures(entity))
 			{
 				string msgKey = pair.Key; // '[PropertyName]_[ValidatorName]' format
@@ -82,11 +94,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Validation
 				
 				if (!ErrorMessages.ContainsKey(msgKey))
 					throw new ValidationMessageNotFoundException(entity, propertyName, validatorName);
-				
-				string msg = DynamicLanguage.GetText(GetType(), ErrorMessages[msgKey]);
-				
-				//// If the msg matches 
-				//if (msg == msgKey)
 			}
 		}
 		

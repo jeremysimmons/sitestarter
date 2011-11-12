@@ -16,8 +16,8 @@
         Initialize(typeof(UserRole), DataForm);      
 
 		ValidationFacade validation = new ValidationFacade();
-		validation.AddError("Name", "Required", "UserRoleNameRequired");
-		validation.AddError("Name", "Unique", "UserRoleNameTaken");
+		validation.AddError("Name", "Required", Resources.Language.UserRoleNameRequired);
+		validation.AddError("Name", "Unique", Resources.Language.UserRoleNameTaken);
 
         if (QueryStrings.Action == "Create")
         {

@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftwareMonkeys.SiteStarter.Business;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Validation
 {
@@ -9,14 +10,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.Validation
 	{
 		public UserValidation()
 		{
-			AddError("Username", "Unique", "UsernameTaken");
-			AddError("Username", "Required", "UsernameRequired");
-			AddError("FirstName", "Required", "FirstNameRequired");
-			AddError("LastName", "Required", "LastNameRequired");
-			AddError("Email", "Required", "EmailRequired");
-			AddError("Email", "Unique", "EmailTaken");
-			AddError("Email", "Email", "InvalidEmail");
-			AddError("Password", "Required", "PasswordRequired");
+			AddError("Username", "Unique", DynamicLanguage.GetText(GetType(), "UsernameTaken"));
+			AddError("Username", "Required", DynamicLanguage.GetText(GetType(), "UsernameRequired"));
+			AddError("FirstName", "Required", DynamicLanguage.GetText(GetType(), "FirstNameRequired"));
+			AddError("LastName", "Required", DynamicLanguage.GetText(GetType(), "LastNameRequired"));
+			AddError("Email", "Required", DynamicLanguage.GetText(GetType(), "EmailRequired"));
+			AddError("Email", "Unique", DynamicLanguage.GetText(GetType(), "EmailTaken"));
+			AddError("Email", "Email", DynamicLanguage.GetText(GetType(), "InvalidEmail"));
+			AddError("Password", "Required", DynamicLanguage.GetText(GetType(), "PasswordRequired"));
 		}
 	}
 }
