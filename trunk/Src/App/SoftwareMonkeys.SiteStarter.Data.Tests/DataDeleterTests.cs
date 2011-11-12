@@ -100,7 +100,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		}
 		
 		[Test]
-		public void Test_Delete_EntityAndReference_Async()
+		public virtual void Test_Delete_EntityAndReference_Async()
 		{
 			MockEntity entity = new MockEntity();
 			entity.ID = Guid.NewGuid();
@@ -126,10 +126,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		
 		
 		[Test]
-		public void Test_Delete_RemoveReferences()
+		public virtual void Test_Delete_RemoveReferences()
 		{
 			
-			using (LogGroup logGroup = LogGroup.Start("Testing saving of an EntityIDReference.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Testing saving of an EntityIDReference."))
 			{
 				
 				TestUser user = new TestUser();
@@ -157,12 +157,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				if (user2.Roles != null)
 					Assert.AreEqual(0, user2.Roles.Length, "Incorrect number of roles. The role should have been removed.");
-				//Assert.AreEqual(newFirstName, user3.FirstName, "First name mismatch.");
-				
-				//IDataStore store = DataAccess.Data.Stores["Testing_Articles-Testing_Articles"];
-				
-				//Assert.IsNotNull(store, "The data store wasn't created/initialized.");
-				
 			}
 		}
 		
