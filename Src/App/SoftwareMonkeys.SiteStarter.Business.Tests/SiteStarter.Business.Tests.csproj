@@ -160,7 +160,6 @@
     <Compile Include="MockIndexInterfaceStrategy.cs" />
     <Compile Include="MockIndexWidgetStrategy.cs" />
     <Compile Include="MockFileMapper.cs" />
-    <Compile Include="MockInvalidValidateEntityStrategy.cs" />
     <Compile Include="MockNonEntityStrategy.cs" />
     <Compile Include="MockSaveEntityReaction.cs" />
     <Compile Include="MockSaveTestArticleReaction.cs" />
