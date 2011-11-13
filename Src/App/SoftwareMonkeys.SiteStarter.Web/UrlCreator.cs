@@ -204,6 +204,9 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			string link = String.Empty;
 			using (LogGroup logGroup = LogGroup.Start("Creating a friendly URL for the specified action and provided entity type.", NLog.LogLevel.Debug))
 			{
+				if (entity == null)
+					throw new ArgumentNullException("entity");
+				
 				LogWriter.Debug("Action: " + action);
 				LogWriter.Debug("Entity type: " + entity.ShortTypeName);
 				
