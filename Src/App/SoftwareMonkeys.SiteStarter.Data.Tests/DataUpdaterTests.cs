@@ -117,6 +117,55 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		}
 		
 		[Test]
+		public virtual void Test_Update_RemoveObsoleteReference_Sync()
+		{
+			using (LogGroup logGroup = LogGroup.Start("Testing the DataAccess.Data.Updater.Update function to ensure obsolete references are removed.", NLog.LogLevel.Debug))
+			{
+				TestUser user = new TestUser();
+				user.ID = Guid.NewGuid();
+				Guid userID = user.ID;
+				user.FirstName = "Test-Before";
+				user.LastName = "User";
+				
+				TestRole role = new TestRole();
+				role.ID = Guid.NewGuid();
+				Guid roleID = role.ID;
+				role.Name = "Test Role";
+				
+				user.Roles = new TestRole[] { role };
+
+				// Save the user and the role with a reference between them				
+				DataAccess.Data.Saver.Save(role);
+				DataAccess.Data.Saver.Save(user);
+				
+				TestUser user2 = (TestUser)DataAccess.Data.Reader.GetEntity(typeof(TestUser), "ID", user.ID);
+				
+				Assert.IsNotNull(user2, "user2 == null");
+				
+				Assert.AreEqual(user.FirstName, user2.FirstName, "The name doesn't appear to have been saved.");
+				
+				DataAccess.Data.Activator.Activate(user2);
+				
+				// Clear the roles from the user
+				user2.Roles = new TestRole[]{};
+				
+				// Update the user which should remove the obsolete reference
+				DataAccess.Data.Updater.Update(user2);
+				
+				TestUser user3 = (TestUser)DataAccess.Data.Reader.GetEntity<TestUser>("ID", user2.ID);
+				
+				Assert.IsNotNull(user3, "user3 == null");
+				
+				Assert.AreEqual(user2.ID, user3.ID, "The IDs don't match.");
+				
+				EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences("TestUser", "TestRole");
+				
+				Assert.AreEqual(0, references.Count, "Invalid number of references found.");
+				
+			}
+		}
+		
+		[Test]
 		public void Test_Update_2References_CheckLocationOfReferencedEntities()
 		{
 			TestUser user = new TestUser();
