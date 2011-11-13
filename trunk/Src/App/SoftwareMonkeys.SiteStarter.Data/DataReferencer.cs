@@ -485,24 +485,27 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					if (reference.ReferenceEntity == null || reference.SourceEntity == null)
 						Provider.Activator.ActivateReference(reference);
 					
-					// Get the referenced entity
-					IEntity referencedEntity = reference.GetOtherEntity(entity);
-					
-					// Switch the reference to be in the context of the reference entity (ie. the source entity becomes the referenced entity and the referenced entity becomes the source entity.)
-					EntityReference switched = reference.SwitchFor(referencedEntity);
-					
-					string mirrorPropertyName = switched.Property1Name;
-					
-					if (mirrorPropertyName != String.Empty)
+					if (reference.ReferenceEntity != null && reference.SourceEntity != null)
 					{
-						// Set the new count property on the referenced entity
-						bool wasChanged = Provider.Referencer.SetCountProperty(referencedEntity, mirrorPropertyName, entity.ID);
+						// Get the referenced entity
+						IEntity referencedEntity = reference.GetOtherEntity(entity);
 						
-						// If the count property was changed then activate and update the referenced entity
-						if (wasChanged)
+						// Switch the reference to be in the context of the reference entity (ie. the source entity becomes the referenced entity and the referenced entity becomes the source entity.)
+						EntityReference switched = reference.SwitchFor(referencedEntity);
+						
+						string mirrorPropertyName = switched.Property1Name;
+						
+						if (mirrorPropertyName != String.Empty)
 						{
-							Provider.Activator.Activate(referencedEntity);
-							Provider.Updater.Update(referencedEntity);
+							// Set the new count property on the referenced entity
+							bool wasChanged = Provider.Referencer.SetCountProperty(referencedEntity, mirrorPropertyName, entity.ID);
+							
+							// If the count property was changed then activate and update the referenced entity
+							if (wasChanged)
+							{
+								Provider.Activator.Activate(referencedEntity);
+								Provider.Updater.Update(referencedEntity);
+							}
 						}
 					}
 				}
@@ -552,7 +555,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			//}
 			
 			return collection;
-		}	
+		}
 		
 		/// <summary>
 		/// Retrieves the active references from the provided property. This only includes those references currently active and not those in the data store.
