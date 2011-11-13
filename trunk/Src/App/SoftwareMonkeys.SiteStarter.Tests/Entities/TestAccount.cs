@@ -168,30 +168,12 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
 			set { creationDate = value; }
 		}
 
-		/*  [NonSerialized]
-        private EntityReferenceCollection<ITestAccount, ITestRole> roles;
-        /// <summary>
-        /// Gets/sets the roles to this issue.
-        /// </summary>
-        public EntityReferenceCollection<ITestAccount, ITestRole> Roles
-        {
-            get {
-        		if (roles == null)
-        			roles = new EntityReferenceCollection<ITestAccount, ITestRole>(this);
-        		return roles; }
-            set
-            {
-            	roles = value;//(EntityReferenceCollection<ITestAccount, ITestRole>)value.SwitchFor(this);
-            }
-        }
-		 */
-
 		[NonSerialized]
 		private TestRole[] grantedRoles;
 		/// <summary>
 		/// Gets/sets the roles granted to this account.
 		/// </summary>
-		[Reference(MirrorPropertyName="Accounts")]
+		[Reference]
 		public TestRole[] GrantedRoles
 		{
 			get {
