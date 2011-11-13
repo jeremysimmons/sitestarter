@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Entities;
 using System.IO;
@@ -89,32 +90,41 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				{
 					foreach (string file in LoadEntitiesFileList())
 					{
-						IEntity entity = LoadEntityFromFile(file);
-						
-						LogWriter.Debug("Entity type: " + entity.GetType().ToString());
-						
-						if (IsValid(entity))
+						using (LogGroup logGroup2 = LogGroup.StartDebug("Attempting import of: " + file))
 						{
-							if (!DataAccess.Data.IsStored((IEntity)entity))
+							IEntity entity = LoadEntityFromFile(file);
+							
+							LogWriter.Debug("Entity type: " + entity.GetType().ToString());
+							
+							if (IsValid(entity))
 							{
-								LogWriter.Debug("New entity. Importing.");
+								LogWriter.Debug("Is valid entity.");
 								
-								DataAccess.Data.Saver.Save(entity);
+								if (!DataAccess.Data.IsStored((IEntity)entity))
+								{
+									LogWriter.Debug("New entity. Importing.");
+									
+									DataAccess.Data.Saver.Save(entity);
+								}
+								else
+								{
+									LogWriter.Debug("Entity already exists in store. Skipping.");
+								}
+								
+								MoveToImported(entity, file);
 							}
 							else
 							{
-								LogWriter.Debug("Entity already exists in store. Skipping.");
+								LogWriter.Error("Cannot import invalid entity...\nID: " + entity.ID.ToString() + "\nType: " + entity.ShortTypeName);
+								
+								MoveToFailed(entity, file);
 							}
-							
-							MoveToImported(entity, file);
-						}
-						else
-						{
-							LogWriter.Error("Cannot import invalid entity...\nID: " + entity.ID.ToString() + "\nType: " + entity.ShortTypeName);
-							
-							MoveToFailed(entity, file);
 						}
 					}
+					
+					// Refresh the entities to ensure that all count properties are up to date.
+					// This must be done AFTER ALL entities and references are imported.
+					RefreshEntities();
 				}
 			}
 		}
@@ -138,12 +148,56 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				{
 					LogWriter.Debug("Directory exists");
 					
-					foreach (string subDirectory in Directory.GetDirectories(directory))
+					// Get a list of entities
+					list.AddRange(LoadStandardEntitiesFileList(directory));
+					
+					// Get list of references
+					// (IMPORTANT: Must be imported AFTER the standard entities or the references will break)
+					list.AddRange(LoadReferencesFileList(directory));
+					
+				}
+			}
+			
+			return list.ToArray();
+		}
+		
+		public string[] LoadStandardEntitiesFileList(string dir)
+		{
+			List<string> list = new List<string>();
+			
+			foreach (string subDirectory in Directory.GetDirectories(dir))
+			{
+				string folderName = Path.GetFileName(subDirectory);
+				
+				// If the folder name contains a dot then it contains standard entities
+				if (folderName.IndexOf(".") > -1)
+				{
+					foreach (string file in Directory.GetFiles(subDirectory, "*.xml"))
 					{
-						foreach (string file in Directory.GetFiles(subDirectory, "*.xml"))
-						{
+						if (!list.Contains(file))
 							list.Add(file);
-						}
+					}
+				}
+			}
+			
+			return list.ToArray();
+		}
+		
+		public string[] LoadReferencesFileList(string dir)
+		{
+			List<string> list = new List<string>();
+			
+			foreach (string subDirectory in Directory.GetDirectories(dir))
+			{
+				string folderName = Path.GetFileName(subDirectory);
+				
+				// If the folder name contains a dash then it contains references
+				if (folderName.IndexOf("-") > -1)
+				{
+					foreach (string file in Directory.GetFiles(subDirectory, "*.xml"))
+					{
+						if (!list.Contains(file))
+							list.Add(file);
 					}
 				}
 			}
@@ -298,15 +352,15 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		
 		public bool IsValid(IEntity entity)
 		{
-			if (entity is EntityIDReference)
+			if (entity is EntityReference)
 			{
-				return IsValidReference((EntityIDReference)entity);
+				return IsValidReference((EntityReference)entity);
 			}
 			else
 				return IsValidEntity(entity);
 		}
 		
-		public bool IsValidReference(EntityIDReference reference)
+		public bool IsValidReference(EntityReference reference)
 		{
 			if (reference.Entity1ID == Guid.Empty)
 				return false;
@@ -328,24 +382,10 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		}
 		
 		public bool IsValidEntity(IEntity entity)
-		{			
+		{
 			return entity.ID != Guid.Empty
 				&& EntityState.IsType(entity.ShortTypeName);
 		}
-		
-		// TODO: Remove if not needed
-		/*
-		/// <summary>
-		/// Moves the provided entity to the specified imported directory. This is called so data doesn't get imported twice.
-		/// </summary>
-		/// <param name="importedDirectoryPath">The directory containing imported entity XML files after they're imported.</param>
-		/// <param name="reference">The reference to move.</param>
-		public void MoveReferenceToImported(string importedDirectoryPath, EntityReference reference)
-		{
-			using (LogGroup logGroup = LogGroup.Start("Moving the provided entity to the imported directory.", LogLevel.Debug))
-			{
-			}
-		}*/
 		
 		/// <summary>
 		/// Creates the file path for the provided entity in the folder specified by the ImportedDirectoryPath property.
@@ -404,7 +444,24 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			else
 				version = importVersion;
 			
-			return version;			
+			return version;
+		}
+		
+		/// <summary>
+		/// Refreshes all entities to ensure reference count properties are up to date. Simply loads each entity from the
+		/// data store, activates it, then updates it back to the data store. The update sets count properties.
+		/// </summary>
+		public void RefreshEntities()
+		{
+			foreach (EntityInfo info in EntityState.Entities)
+			{
+				foreach (IEntity entity in Provider.Indexer.GetEntities(info.GetEntityType()))
+				{
+					Provider.Activator.Activate(entity);
+					
+					Provider.Updater.Update(entity);
+				}
+			}
 		}
 	}
 }
