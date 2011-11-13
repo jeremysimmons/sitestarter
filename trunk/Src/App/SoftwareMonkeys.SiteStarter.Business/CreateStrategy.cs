@@ -35,15 +35,25 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			if (RequireAuthorisation)
 				AuthoriseCreateStrategy.New(TypeName).EnsureAuthorised(entity);
 			
-			// Assign an activation strategy
-			entity.Activator = ActivateStrategy.New(entity);
+			AssignValidator(entity);
 			
-			// Assign a validation strategy
-			entity.Validator = ValidateStrategy.New(entity);
+			AssignActivator(entity);
 			
 			React(entity);
 			
 			return entity;
+		}
+		
+		public virtual void AssignValidator(IEntity entity)
+		{
+			// Assign a validation strategy
+			entity.Validator = ValidateStrategy.New(entity);
+		}
+		
+		public virtual void AssignActivator(IEntity entity)
+		{
+			// Assign an activation strategy
+			entity.Activator = ActivateStrategy.New(entity);
 		}
 		
 		#region New functions
