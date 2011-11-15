@@ -23,5 +23,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o.Tests
 		{
 			base.Test_Update_SetsCountPropertyForReference_TwoWay();
 		}
+		
+		[Test]
+		public override void Test_Update_RemoveObsoleteReference_Sync()
+		{
+			base.Test_Update_RemoveObsoleteReference_Sync();
+		}
 	}
 }
