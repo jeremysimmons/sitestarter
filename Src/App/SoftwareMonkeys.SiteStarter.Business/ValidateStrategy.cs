@@ -60,6 +60,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			using (LogGroup logGroup = LogGroup.Start("Validating the provided entity.", NLog.LogLevel.Debug))
 			{
+				if (entity == null)
+					throw new ArgumentNullException("entity");
+				
 				// Clear old failures to start fresh
 				Failures.Clear();
 				
