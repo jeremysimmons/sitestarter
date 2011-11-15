@@ -564,6 +564,15 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <returns>The entities of the specified type found in the data store.</returns>
 		public override IEntity[] GetEntities(Type type, string propertyName, object propertyValue)
 		{
+			if (type == null)
+				throw new ArgumentNullException("type");
+			
+			if (propertyName == null || propertyName == String.Empty)
+				throw new ArgumentException("A property name must be provided.", "propertyName");
+			
+			if (!EntityState.IsType(type))
+				throw new ArgumentException("The provided '" + type.Name + "' type is not registered as a valid entity type.");
+			
 			return (IEntity[])Reflector.InvokeGenericMethod(this, // Source object
 			                                                "GetEntities", // Method name
 			                                                new Type[] {type}, // Generic types
