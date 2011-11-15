@@ -154,12 +154,15 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			                                                  propertyName,
 			                                                  value);
 			
-			if (RequireAuthorisation && entity != null)
-				AuthoriseRetrieveStrategy.New(TypeName).EnsureAuthorised(entity);
-			
-			AssignStrategies(entity);
-			
-			React(entity);
+			if (entity != null)
+			{
+				if (RequireAuthorisation && entity != null)
+					AuthoriseRetrieveStrategy.New(TypeName).EnsureAuthorised(entity);
+				
+				AssignStrategies(entity);
+				
+				React(entity);
+			}
 			
 			return entity;
 		}
@@ -175,12 +178,15 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			T entity = DataAccess.Data.Reader.GetEntity<T>(propertyName, value);
 			
-			if (RequireAuthorisation && entity != null)
-				AuthoriseRetrieveStrategy.New<T>().EnsureAuthorised(entity);
-			
-			AssignStrategies(entity);
-			
-			React(entity);
+			if (entity != null)
+			{
+				if (RequireAuthorisation)
+					AuthoriseRetrieveStrategy.New<T>().EnsureAuthorised(entity);
+				
+				AssignStrategies(entity);
+				
+				React(entity);
+			}
 			
 			return entity;
 		}

@@ -43,7 +43,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				
 				object propertyValue = property.GetValue(entity, null);
 				
-				LogWriter.Debug("Property value: " + propertyValue.ToString());
+				LogWriter.Debug("Property value: " + (propertyValue != null ? propertyValue.ToString() : String.Empty));
 				
 				IEntity existingEntity = (IEntity)strategy.Retrieve(property.Name, propertyValue);
 				

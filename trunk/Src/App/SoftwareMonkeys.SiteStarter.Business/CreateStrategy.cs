@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Business.Security;
 
@@ -31,6 +32,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				AuthoriseCreateStrategy.New(TypeName).EnsureAuthorised(TypeName);
 			
 			IEntity entity = (IEntity)Activator.CreateInstance(type);
+			
+			if (entity == null)
+				throw new Exception("Failed to create instance of '" + type.Name + "'.");
 			
 			if (RequireAuthorisation)
 				AuthoriseCreateStrategy.New(TypeName).EnsureAuthorised(entity);
