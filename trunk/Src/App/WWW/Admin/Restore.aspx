@@ -28,9 +28,10 @@
         
             if (!IsPostBack)
             {
-				using (TimeoutExtender extender = TimeoutExtender.NewMinutes(60)) // TODO: See if this timeout can be reduced
+            	// Set a long timeout because the import process can take a long time especially if there's a lot of data
+				using (TimeoutExtender extender = TimeoutExtender.NewMinutes(120))
 				{
-					Update();
+					Restore();
 				}
             }
         }
@@ -44,13 +45,13 @@
 				Response.Redirect(Request.ApplicationPath);
     }
 
-    private void Update()
+    private void Restore()
     {
         using (LogGroup logGroup = LogGroup.Start("Starting the import.", NLog.LogLevel.Debug))
         {
         	ExecuteSetup();
         
-            ExecuteUpdate();
+            ExecuteRestore();
         }
     }
     
@@ -77,7 +78,7 @@
 	}
 
 
-    private void ExecuteUpdate()
+    private void ExecuteRestore()
     {
 		using (LogGroup logGroup = LogGroup.Start("Running the import process.", NLog.LogLevel.Debug))
         {
