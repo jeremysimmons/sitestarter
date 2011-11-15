@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using SoftwareMonkeys.SiteStarter.Data;
 using SoftwareMonkeys.SiteStarter.Data.Tests;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Tests;
 using System.IO;
@@ -87,27 +88,32 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		[Test]
 		public void Test_Setup()
 		{
-			CreateDummyVersionFile(TestUtilities.GetTestApplicationPath(this, "MockApplication"));
-			
-			User admin = new User();
-			admin.ID = Guid.NewGuid();
-			admin.Username = "admin";
-			admin.Password = Crypter.EncryptPassword("pass");
-			
-			ApplicationInstaller installer = new ApplicationInstaller();
-			installer.ApplicationPath = "/MockApplication";
-			installer.Administrator = admin;
-			installer.AdministratorRoleName = "Administrator";
-			installer.PathVariation = "testing";
-			installer.FileMapper = new MockFileMapper(this);
-			installer.DataProviderInitializer = new MockDb4oDataProviderInitializer(this);
-			installer.Setup();
-			
-			User foundAdministrator = DataAccess.Data.Reader.GetEntity<User>("ID", admin.ID);
-			
-			DataAccess.Data.Activator.Activate(foundAdministrator);
-			
-			Assert.AreEqual(1, foundAdministrator.Roles.Length, "Administrator isn't in admin role.");
+			using (LogGroup logGroup = LogGroup.StartDebug("Testing the ApplicationInstaller.Setup function."))
+			{
+				CreateDummyVersionFile(TestUtilities.GetTestApplicationPath(this, "MockApplication"));
+				
+				User admin = new User();
+				admin.ID = Guid.NewGuid();
+				admin.Username = "admin";
+				admin.Password = Crypter.EncryptPassword("pass");
+				admin.Validator = ValidateStrategy.New(admin);
+				
+				ApplicationInstaller installer = new ApplicationInstaller();
+				installer.ApplicationPath = "/MockApplication";
+				installer.Administrator = admin;
+				installer.AdministratorRoleName = "Administrator";
+				installer.PathVariation = "testing";
+				installer.FileMapper = new MockFileMapper(this);
+				installer.DataProviderInitializer = new MockDb4oDataProviderInitializer(this);
+				installer.EnableTesting = true;
+				installer.Setup();
+				
+				User foundAdministrator = DataAccess.Data.Reader.GetEntity<User>("ID", admin.ID);
+				
+				DataAccess.Data.Activator.Activate(foundAdministrator);
+				
+				Assert.AreEqual(1, foundAdministrator.Roles.Length, "The administrator user isn't in the administrator role.");
+			}
 		}
 		
 		public void CreateDummyVersionFile(string appPath)
