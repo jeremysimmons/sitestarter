@@ -173,7 +173,7 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
 		/// <summary>
 		/// Gets/sets the roles granted to this account.
 		/// </summary>
-		[Reference]
+		[Reference(MirrorPropertyName="Accounts")]
 		public TestRole[] GrantedRoles
 		{
 			get {
