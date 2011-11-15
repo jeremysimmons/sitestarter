@@ -17,25 +17,11 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
 			get { return name; }
 			set { name = value; }
 		}
-		/*
-		[NonSerialized]
-		private IUserPermission[] permissions;
-        /// <summary>
-        /// Gets/sets the permissions available to the role.
-		[XmlIgnore]
-        public IUserPermission[] Permissions
-        {
-            get
-            {
-                return permissions;
-            }
-            set { permissions = value; }
-        }*/
-        
+		
         [NonSerialized]
         private TestUser[] users;
         /// <summary>
-        /// Gets/sets the users to this role.
+        /// Gets/sets the users in this role.
         /// </summary>
         [Reference(MirrorPropertyName="Roles")]
         public TestUser[] Users
@@ -47,6 +33,24 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
             set
             {
             	users = value;//(EntityReferenceCollection<ITestRole, ITestUser>)value.SwitchFor(this);
+            }
+        }
+        
+        [NonSerialized]
+        private TestAccount[] accounts;
+        /// <summary>
+        /// Gets/sets the account in this role.
+        /// </summary>
+        [Reference(MirrorPropertyName="GrantedRoles")]
+        public TestAccount[] Accounts
+        {
+            get {
+        		if (accounts == null)
+        			accounts = new TestAccount[]{};
+        		return accounts; }
+            set
+            {
+            	accounts = value;
             }
         }
         
