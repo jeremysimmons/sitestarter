@@ -49,13 +49,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			Assert.AreEqual(2, references.Count, "Incorrect number of references found.");
 			
-			EntityIDReference reference1 = (EntityIDReference)references[0];
-			EntityIDReference reference2 = (EntityIDReference)references[1];
+			EntityReference reference1 = (EntityReference)references[0];
+			EntityReference reference2 = (EntityReference)references[1];
 			
 			// Switch the references around if necessary to match (so they can be found in any order)
 			if (!reference1.Includes(user2.ID, "Roles"))
 			{
-				EntityIDReference tmp = reference1;
+				EntityReference tmp = reference1;
 				reference1 = reference2;
 				reference2 = tmp;
 			}
@@ -70,11 +70,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			Assert.IsFalse(reference2.Includes(user2.ID, "Roles"), "Second reference includes unexpected user.");
 			Assert.IsFalse(reference2.Includes(role2.ID, "Users"), "Second reference includes unexpected role.");
 			
-			//Assert.AreEqual(role2.ID.ToString(), ((EntityIDReference)references[0]).Entity1ID.ToString(), "First reference has invalid entity 1 ID.");
-			//Assert.AreEqual(user2.ID.ToString(), ((EntityIDReference)references[0]).Entity2ID.ToString(), "First reference has invalid entity 2 ID.");
+			//Assert.AreEqual(role2.ID.ToString(), ((EntityReference)references[0]).Entity1ID.ToString(), "First reference has invalid entity 1 ID.");
+			//Assert.AreEqual(user2.ID.ToString(), ((EntityReference)references[0]).Entity2ID.ToString(), "First reference has invalid entity 2 ID.");
 			
-			//Assert.AreEqual(role1.ID.ToString(), ((EntityIDReference)references[1]).Entity1ID.ToString(), "Second reference has invalid entity 1 ID.");
-			//Assert.AreEqual(user1.ID.ToString(), ((EntityIDReference)references[1]).Entity2ID.ToString(), "Second reference has invalid entity 2 ID.");
+			//Assert.AreEqual(role1.ID.ToString(), ((EntityReference)references[1]).Entity1ID.ToString(), "Second reference has invalid entity 1 ID.");
+			//Assert.AreEqual(user1.ID.ToString(), ((EntityReference)references[1]).Entity2ID.ToString(), "Second reference has invalid entity 2 ID.");
 			
 		}
 		
@@ -115,13 +115,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			Assert.AreEqual(2, references.Count, "Incorrect number of references found.");
 			
-			EntityIDReference reference1 = (EntityIDReference)references[0];
-			EntityIDReference reference2 = (EntityIDReference)references[1];
+			EntityReference reference1 = (EntityReference)references[0];
+			EntityReference reference2 = (EntityReference)references[1];
 			
 			// Switch the references around if necessary to match (so they can be found in any order)
 			if (!reference1.Includes(role.ID, "Users"))
 			{
-				EntityIDReference tmp = reference1;
+				EntityReference tmp = reference1;
 				reference1 = reference2;
 				reference2 = tmp;
 			}
@@ -213,10 +213,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		
 		
 		[Test]
-		public void Test_Save_EntityReference()
+		public virtual void Test_Save_EntityReference()
 		{
 			
-			using (LogGroup logGroup = LogGroup.Start("Testing saving of an EntityIDReference.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing saving of an EntityReference.", NLog.LogLevel.Debug))
 			{
 				EntityReference reference = new EntityReference();
 				reference.ID = Guid.NewGuid();

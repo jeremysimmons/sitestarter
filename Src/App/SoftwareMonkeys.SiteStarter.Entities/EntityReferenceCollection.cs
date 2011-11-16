@@ -8,7 +8,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 	/// Description of EntityReferenceCollection.
 	/// </summary>
 	[Serializable]
-	public class EntityReferenceCollection : EntityIDReferenceCollection
+	public class EntityReferenceCollection : List<EntityReference>
 	{
 		public new EntityReference this[int i]
 		{
@@ -32,7 +32,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			
 		}
 		
-		public EntityReferenceCollection(EntityReference[] references) : base(Collection<EntityIDReference>.ConvertAll(references))
+		public EntityReferenceCollection(EntityReference[] references) : base(Collection<EntityReference>.ConvertAll(references))
 		{
 		}
 		
@@ -96,6 +96,32 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			List<EntityReference> list = new List<EntityReference>();
 			foreach (EntityReference r in this)
 				list.Add(r);
+			return list.ToArray();
+		}
+		
+		/// <summary>
+		/// Retrieves all the IDs of the entities from the collection that are associated with the specified entity.
+		/// </summary>
+		/// <param name="sourceEntityID">The entity that the referenced IDs are being retrieved for. If this is Guid.Empty then all IDs from both sides of the reference are returned.</param>
+		/// <returns>The IDs of the referenced entities.</returns>
+		public Guid[] GetEntityIDs(Guid sourceEntityID)
+		{
+			List<Guid> list = new List<Guid>();
+			foreach (EntityReference reference in this)
+			{
+				if (sourceEntityID == Guid.Empty || reference.Entity1ID == sourceEntityID)
+				{
+					if (!list.Contains(reference.Entity2ID))
+						list.Add(reference.Entity2ID);
+				}
+				
+				if (sourceEntityID == Guid.Empty || reference.Entity2ID == sourceEntityID)
+				{
+					if (!list.Contains(reference.Entity1ID))
+						list.Add(reference.Entity1ID);
+				}
+			}
+			
 			return list.ToArray();
 		}
 	}

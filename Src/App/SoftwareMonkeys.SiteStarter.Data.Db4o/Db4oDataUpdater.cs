@@ -43,17 +43,16 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				// If the entity is NOT a reference object (ie. it's a standard entity)
 				// then prepare the update.
 				// If is IS a reference object the preparation is not needed and should be skipped
-				if (!(entity is EntityReference) &&
-				    !(entity is EntityIDReference))
+				if (!(entity is EntityReference))
 				{					
 					using (LogGroup logGroup2 = LogGroup.Start("Creating list of deletable obsolete references.", NLog.LogLevel.Debug))
 					{
-						// Delete the old references
-						//foreach (EntityIDReference reference in DataAccess.Data.GetObsoleteReferences(entity, new Collection<IEntity>(DataUtilities.GetReferencedEntities(latestReferences, entity)).IDs))
-						foreach (EntityIDReference reference in DataAccess.Data.Referencer.GetObsoleteReferences(entity, new Guid[]{}))
+						// TODO: Provide a list of active IDs to the GetObsoleteReferences function below so they're skipped and not deleted, otherwise they'll get
+						// deleted then saved again and will be a waste of processing power
+						//foreach (EntityIDReference reference in DataAccess.Data.GetObsoleteReferences(entity, toUpdate.GetEntityIDs(entity.ID)))
+						
+						foreach (EntityReference reference in DataAccess.Data.Referencer.GetObsoleteReferences(entity, new Guid[]{}))
 						{
-							DataAccess.Data.Activator.ActivateReference((EntityReference)reference); // TODO: Check if activation is needed here. It shouldn't be.
-							
 							LogWriter.Debug("Reference type #1: " + reference.Type1Name);
 							LogWriter.Debug("Reference ID #1: " + reference.Entity1ID.ToString());
 							LogWriter.Debug("Reference type #2: " + reference.Type2Name);
@@ -63,23 +62,22 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 						}
 					}
 					
-					Provider.Referencer.DeleteObsoleteReferences(toDelete);
-					
 					LogWriter.Debug("# to delete: " + toDelete.Count);
+					
+					Provider.Referencer.DeleteObsoleteReferences(toDelete);
 					
 					using (LogGroup logGroup2 = LogGroup.Start("Creating list of references to be updated.", NLog.LogLevel.Debug))
 					{
 						EntityReferenceCollection latestReferences = Provider.Referencer.GetActiveReferences(entity);
 					
-						foreach (EntityIDReference reference in latestReferences)
+						foreach (EntityReference reference in latestReferences)
 						{
 							LogWriter.Debug("Reference type #1: " + reference.Type1Name);
 							LogWriter.Debug("Reference ID #1: " + reference.Entity1ID.ToString());
 							LogWriter.Debug("Reference type #2: " + reference.Type2Name);
 							LogWriter.Debug("Reference ID #2: " + reference.Entity2ID.ToString());
 							
-							Data.DataAccess.Data.Activator.ActivateReference((EntityReference)reference);
-							toUpdate.Add((EntityIDReference)reference);
+							toUpdate.Add((EntityReference)reference);
 						}
 					}
 					

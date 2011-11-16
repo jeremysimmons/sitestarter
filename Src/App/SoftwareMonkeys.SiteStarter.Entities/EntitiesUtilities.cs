@@ -118,7 +118,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			//{
 			
 			isReference = type.FullName.IndexOf("EntityReference") > -1
-				|| type.FullName.IndexOf("EntityIDReference") > -1;
+				|| type.FullName.IndexOf("EntityReference") > -1;
 			//	LogWriter.Debug("Is reference? " + isReference.ToString());
 			//}
 			

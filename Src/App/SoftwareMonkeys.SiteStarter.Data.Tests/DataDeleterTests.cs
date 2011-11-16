@@ -129,7 +129,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		public virtual void Test_Delete_RemoveReferences()
 		{
 			
-			using (LogGroup logGroup = LogGroup.StartDebug("Testing saving of an EntityIDReference."))
+			using (LogGroup logGroup = LogGroup.StartDebug("Testing saving of an EntityReference."))
 			{
 				
 				TestUser user = new TestUser();

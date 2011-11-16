@@ -205,10 +205,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				
 				if(dataStore.DoesExist)
 				{
-					EntityIDReferenceCollection list = new EntityIDReferenceCollection();
+					EntityReferenceCollection list = new EntityReferenceCollection();
 					
 					IQuery query1 = dataStore.ObjectContainer.Query();
-					query1.Constrain(typeof(EntityIDReference));
+					query1.Constrain(typeof(EntityReference));
 					
 					IConstraint constraint1 = query1.Descend("property1Name").Constrain(propertyName).Equal().And(
 						query1.Descend("type1Name").Constrain(EntitiesUtilities.GetShortType(entityType.Name)).Equal().And(
@@ -218,7 +218,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 						constraint1.And(query1.Descend("entity1ID").Constrain(entityID).Equal());
 					
 					IQuery query2 = dataStore.ObjectContainer.Query();
-					query2.Constrain(typeof(EntityIDReference));
+					query2.Constrain(typeof(EntityReference));
 					
 					IConstraint constraint2 = query2.Descend("property2Name").Constrain(propertyName).Equal().And(
 						query2.Descend("type2Name").Constrain(EntitiesUtilities.GetShortType(entityType.Name)).Equal().And(
@@ -231,7 +231,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					
 					while (os1.HasNext())
 					{
-						EntityIDReference reference = (EntityIDReference)os1.Next();
+						EntityReference reference = (EntityReference)os1.Next();
 						
 						list.Add(reference);
 					}
@@ -240,7 +240,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					
 					while (os2.HasNext())
 					{
-						EntityIDReference reference = (EntityIDReference)os2.Next();
+						EntityReference reference = (EntityReference)os2.Next();
 						
 						list.Add(reference);
 					}
@@ -253,7 +253,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					{
 						LogWriter.Debug("Count: " + list.Count);
 						
-						foreach (EntityIDReference r in list)
+						foreach (EntityReference r in list)
 						{
 							using (LogGroup logGroup2 = LogGroup.Start("Processing ID reference.", NLog.LogLevel.Debug))
 							{

@@ -17,5 +17,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o.Tests
 		{
 			base.Test_Save_SetsCountPropertyForReference();
 		}
+		
+		[Test]
+		public override void Test_Save_EntityReference()
+		{
+			base.Test_Save_EntityReference();
+		}
 	}
 }

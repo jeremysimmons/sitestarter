@@ -287,9 +287,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 					
 					Assert.AreEqual(article.GetType().FullName, entity.GetType().FullName, "The types don't match.");
 				}
-				
-				DataAccess.Data.Deleter.Delete(article);
-				DataAccess.Data.Deleter.Delete(category);
 			}
 		}
 		
@@ -433,11 +430,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 					
 					Assert.AreEqual(article.GetType().FullName, entity.GetType().FullName, "The types don't match.");
 				}
-				
-				DataAccess.Data.Deleter.Delete(article);
-				DataAccess.Data.Deleter.Delete(category);
-				DataAccess.Data.Deleter.Delete(article2);
-				DataAccess.Data.Deleter.Delete(category2);
 			}
 		}
 		
@@ -515,8 +507,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				if (found != null)
 					Assert.AreEqual(1, found.Length, "Entities weren't retrieved properly.");
 				
-				
-				DataAccess.Data.Deleter.Delete(e1);
 			}
 		}
 		

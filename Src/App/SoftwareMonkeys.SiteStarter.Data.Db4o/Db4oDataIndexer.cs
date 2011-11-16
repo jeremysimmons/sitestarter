@@ -557,13 +557,18 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		}
 		
 		/// <summary>
-		/// Retrieves the entities of the specified type from the data store.
+		/// Retrieves all the entities of the specified type with the specified property matching the provided value.
 		/// </summary>
-		/// <param name="propertyName">Name of the property to match.</param>
-		/// <param name="propertyValue">The value of the property to match.</param>
-		/// <returns>The entities of the specified type found in the data store.</returns>
+		/// <param name="propertyName">The name of the property to check the value of.</param>
+		/// <param name="propertyValue">The value to check for on the specified property.</param>
+		/// <returns>The entities that match the provided parameters.</returns>
 		public override IEntity[] GetEntities(Type type, string propertyName, object propertyValue)
 		{
+			Collection<IEntity> results = new Collection<IEntity>();
+			
+			//using (LogGroup logGroup = LogGroup.Start("Retrieving the entities of the specified type with a property matching the provided name and value.", NLog.LogLevel.Debug))
+			//{
+			
 			if (type == null)
 				throw new ArgumentNullException("type");
 			
@@ -572,12 +577,35 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			if (!EntityState.IsType(type))
 				throw new ArgumentException("The provided '" + type.Name + "' type is not registered as a valid entity type.");
+						
+			//	LogWriter.Debug("Type: " + type.ToString());
+			//	LogWriter.Debug("Property name: " + propertyName);
+			//	LogWriter.Debug("Property value: " + (propertyValue == null ? "[null]" : propertyValue.ToString()));
 			
-			return (IEntity[])Reflector.InvokeGenericMethod(this, // Source object
-			                                                "GetEntities", // Method name
-			                                                new Type[] {type}, // Generic types
-			                                                new object[] {propertyName, propertyValue}); // Method arguments);
+			Db4oDataStore store = ((Db4oDataStore)GetDataStore(type));
 			
+			if (store != null)
+			{
+				if (store.ObjectContainer != null)
+				{
+					IQuery query = store.ObjectContainer.Query();
+					query.Constrain(type);
+					query.Descend(EntitiesUtilities.GetFieldName(type,propertyName))
+						.Constrain(propertyValue);
+					
+					IObjectSet os = query.Execute();
+					
+					while (os.HasNext())
+					{
+						results.Add((IEntity)os.Next());
+					}
+				}
+			}
+			
+			//	LogWriter.Debug("Entities #: " + results.Count.ToString());
+			
+			//}
+			return Release(results.ToArray());
 		}
 		
 		/// <summary>
@@ -919,78 +947,14 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		}
 		
 		/// <summary>
-		/// Retrieves all the entities of the specified type matching the specified values.
+		/// Retrieves all the entities of the specified type with the specified property matching the provided value.
 		/// </summary>
-		/// <param name="type">The type of entity to retrieve.</param>
-		/// <param name="parameters">The parameters to query with.</param>
+		/// <param name="propertyName">The name of the property to check the value of.</param>
+		/// <param name="propertyValue">The value to check for on the specified property.</param>
 		/// <returns></returns>
 		public override T[] GetEntities<T>(string propertyName, object propertyValue)
 		{
-			Collection<T> results = new Collection<T>();
-			
-			Type type = typeof(T);
-			
-			//using (LogGroup logGroup = LogGroup.Start("Retrieving the entities of the specified type with a property matching the provided name and value.", NLog.LogLevel.Debug))
-			//{
-			//	LogWriter.Debug("Type: " + type.ToString());
-			//	LogWriter.Debug("Property name: " + propertyName);
-			//	LogWriter.Debug("Property value: " + (propertyValue == null ? "[null]" : propertyValue.ToString()));
-			
-			Db4oDataStore store = ((Db4oDataStore)GetDataStore(type));
-			
-			if (store != null)
-			{
-				if (store.ObjectContainer != null)
-				{
-					IQuery query = store.ObjectContainer.Query();
-					query.Constrain(typeof(T));
-					query.Descend(EntitiesUtilities.GetFieldName(typeof(T),propertyName)).Constrain(propertyValue);
-					
-					IObjectSet os = query.Execute();
-					
-					while (os.HasNext())
-					{
-						results.Add((T)os.Next());
-					}
-				}
-			}
-			
-			//	LogWriter.Debug("Entities #: " + results.Count.ToString());
-			
-			// TODO: See if performance can be improved by switching to SODA using the code below.
-			// Won't work because it can't pick up UniqueKeys, as they don't have a private field corresponding with them
-			/*
-				string fieldName = EntitiesUtilities.GetFieldName(type, propertyName);
-				LogWriter.Debug("Field name: " + fieldName);
-				
-				IQuery query = ((Db4oDataStore)GetDataStore(type)).ObjectContainer.Query();
-				query.Constrain(type).And(
-					query.Descend(fieldName).Constrain(propertyValue).Equal());
-				
-				IObjectSet os = query.Execute();
-				
-				while (os.HasNext())
-				{
-					object obj = os.Next();
-					if (type.IsAssignableFrom(obj.GetType()))
-					{
-						//object v = EntitiesUtilities.GetPropertyValue((IEntity)obj, propertyName);
-						
-						//if (propertyValue == v || (propertyValue != null && propertyValue.Equals(v)))
-						//{
-						LogWriter.Debug("Adding entity of type: " + obj.GetType().ToString() + " and with ID " + ((IEntity)obj).ID.ToString());
-						results.Add((IEntity)obj);
-						//}
-						//else
-						//	LogWriter.Error("Entity loaded when it doesn't match. Expected '" + propertyValue.ToString() + "' but was '" + v.ToString() + ".");
-					}
-					else
-						throw new InvalidOperationException("Invalid type found. Expected '" + type.ToString() + "' but was '" + obj.GetType().ToString() + "'.");
-				}
-			 */
-			//LogWriter.Debug("Results: " + results.Count.ToString());
-			//}
-			return Release<T>((T[])results.ToArray());
+			return Collection<T>.ConvertAll(GetEntities(typeof(T), propertyName, propertyValue));
 		}
 		
 		

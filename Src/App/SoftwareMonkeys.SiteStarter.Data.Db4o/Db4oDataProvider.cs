@@ -234,7 +234,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				{
 					LogWriter.Debug("Is reference == true");
 					
-					EntityIDReference reference = (EntityIDReference)entity;
+					EntityReference reference = (EntityReference)entity;
 					
 					//if (reference.Type1Name == String.Empty)
 

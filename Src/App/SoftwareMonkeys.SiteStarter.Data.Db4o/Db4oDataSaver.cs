@@ -37,8 +37,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				// If the entity is NOT a reference object (ie. it's a standard entity)
 				// then prepare the save.
 				// If is IS a reference object the preparation is not needed and should be skipped
-				if (!(entity is EntityReference) &&
-				    !(entity is EntityIDReference))
+				if (!(entity is EntityReference))
 				{
 					Type entityType = entity.GetType();
 					
