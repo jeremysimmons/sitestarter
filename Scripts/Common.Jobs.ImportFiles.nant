@@ -184,10 +184,12 @@
 
 		    		<echo message="Solution.RootPath: ${Solution.RootPath}"/>
 		    		<echo message="Import.FromProject.RootPath: ${Import.FromProject.RootPath}"/>
-		    		
+				
+				<property name="Solution.Alias" value="${path::get-file-name(Solution.RootPath)}" />
 
+				<echo message="Solution.Alias: ${Solution.Alias}" />
 
-		    		<property name="Import.FromSolution.RootPath" value="${Import.FromProject.RootPath}\Src\${Solution.Name}"/>
+		    		<property name="Import.FromSolution.RootPath" value="${Import.FromProject.RootPath}\Src\${Solution.Alias}"/>
 
 		    		
 		    		<property name="Import.FromPath" value="${Import.From}"/>
@@ -378,6 +380,10 @@
 				else if (ext.ToLower() == ".csproj")
 				{
 					header = GetCsProjHeader(fileName, sourceFile);
+				}
+				else if (ext.ToLower() == ".js")
+				{
+					header = "";
 				}
 				// TODO: Check if needed
 				//else if (ext.ToLower() == ".nant")

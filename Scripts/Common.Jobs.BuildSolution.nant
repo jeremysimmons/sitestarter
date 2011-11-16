@@ -108,7 +108,8 @@
 			<property name="versionUrl"  value='http://10.0.0.1:8080/scripts/Scripts/VersionNumber.script?Raw=true&amp;IncrementRevision=true&amp;Key=${versionKey}' />
 						
 			<echo message="Version URL: ${versionUrl}" />
-			<get src="${ versionUrl }" dest="${versionFilePath}" failonerror="false" />
+
+			<get src="${ versionUrl }" dest="${versionFilePath}" failonerror="false" timeout="50000" />
 
 			<loadfile
 		    		file="${versionFilePath}"
@@ -128,7 +129,7 @@
 						
 			<echo message="Version URL: ${versionUrl}" />
 						
-			<get src="${ versionUrl }" dest="${versionFilePath}" failonerror="false" />
+			<get src="${ versionUrl }" dest="${versionFilePath}" failonerror="false" timeout="50000" />
 
 			<loadfile
 		    		file="${versionFilePath}"

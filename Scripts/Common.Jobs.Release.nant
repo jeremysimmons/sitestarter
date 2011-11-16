@@ -111,12 +111,6 @@
 	        <exclude name="**/App_Data/Legacy/**"/>
 	        <exclude name="**/App_Data/Imported/**"/>
 	        <exclude name="**/App_Data/Converted/**"/>
-	        <exclude name="**/App_Data/Reactions/**"/>
-	        <exclude name="**/App_Data/Controllers/**"/>
-	        <exclude name="**/App_Data/Strategies/**"/>
-	        <exclude name="**/App_Data/Entities/**"/>
-	        <exclude name="**/App_Data/Projections/**"/>
-	        <exclude name="**/App_Data/Parts/**"/>
 	        <exclude name="**/fckeditor/**"/>
 	        <exclude name="**/Backups/*.zip"/>
 	        <exclude name="**/App_Data/**.xml"/>
@@ -146,7 +140,8 @@
 	        <exclude name="**.pidb"/>
 	        <exclude name="**.cache"/>
 	        <exclude name="**.nunit"/>
-	        <exclude name="**/TestResults/"/>
+	        <exclude name="**/TestResults/Logs"/>
+	        <exclude name="**/TestResults/xml"/>
 	        <exclude name="**/FunctionalTests/Results/**"/>
 	        <exclude name="**.jar"/>
 	        <include name="**/${Solution.Alias}/**" />
@@ -261,8 +256,8 @@
 	        <exclude name="**.nant"/>
 	        <exclude name="**/tests/**"/>
 	        <exclude name="**.jar"/>
-	        <exclude name="**.WebDriver.dll"/>
-	        <exclude name="*MockCreate.ascx"/><!-- Exclude the mock/test create projections -->
+	        <exclude name="*.WebDriver.dll"/>
+	        <exclude name="*MockCreate*"/><!-- Exclude the mock/test create projections -->
 	        <exclude name="**/FunctionalTests/Results/**"/>
 	        <include name="${IncludeKey}" />
 	    </fileset>	   

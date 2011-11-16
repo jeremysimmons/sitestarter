@@ -67,18 +67,7 @@
 		        <namespaces>
         			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
     			</namespaces>
-    	</xmlpeek>
-    	
-	<xmlpeek
-		    file="${AssemblyProject.PropertiesPath}"
-		    xpath="/x:project/x:property[@name = 'Assembly.Target']/@value"
-		    property="AssemblyProject.Target"
-		    failonerror="false">
-		        <namespaces>
-        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
-    			</namespaces>
     	</xmlpeek>    	
-    	
 
     	 <xmlpeek
 		    file="${Solution.PropertiesPath}"
@@ -123,7 +112,7 @@
 		
 		<property name="versionKey" value="${string::replace(AssemblyProject.AssemblyName, '.', '-') + '--' + Solution.VersionMode}"/>
 
-		<get src="${ 'http://10.0.0.1:8080/scripts/Scripts/VersionNumber.script?Raw=true&amp;IncrementRevision=true&amp;Key=' + versionKey}" dest="${versionFilePath}" failonerror="false" />
+		<get src="${ 'http://10.0.0.1:8080/scripts/Scripts/VersionNumber.script?Raw=true&amp;IncrementRevision=true&amp;Key=' + versionKey}" dest="${versionFilePath}" failonerror="false" timeout="50000" />
 		
 		<loadfile
 		    file="${versionFilePath}"
