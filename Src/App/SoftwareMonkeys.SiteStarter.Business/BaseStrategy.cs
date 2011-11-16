@@ -82,9 +82,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			using (LogGroup logGroup = LogGroup.StartDebug("Reacting after executing strategy."))
 			{
-				if (entity == null)
-					throw new ArgumentNullException("entity");
-				
 				foreach (IReaction reaction in Reactions)
 				{
 					reaction.React(entity);
