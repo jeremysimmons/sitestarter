@@ -16,13 +16,13 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		/// </summary>
 		public void Test_LocateFromInterfaces_Immediate()
 		{
-			Type type = typeof(BaseUniqueEntity);
-			string action = "Validate";
+			Type type = typeof(IEntity);
+			string action = "Save";
 			
 			StrategyStateNameValueCollection strategies = new StrategyStateNameValueCollection();
 			
-			strategies.Add(typeof(ValidateStrategy));
-			strategies.Add(typeof(UniqueValidateStrategy));
+			strategies.Add(typeof(SaveStrategy));
+			strategies.Add(typeof(UpdateStrategy));
 			
 			StrategyLocator locator = new StrategyLocator(strategies);
 			
@@ -38,12 +38,12 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		public void Test_LocateFromInterfaces_Heirarchy()
 		{
 			Type type = typeof(TestArticle);
-			string action = "Validate";
+			string action = "Save";
 			
 			StrategyStateNameValueCollection strategies = new StrategyStateNameValueCollection();
 			
-			strategies.Add(typeof(ValidateStrategy));
-			strategies.Add(typeof(UniqueValidateStrategy));
+			strategies.Add(typeof(SaveStrategy)); // Save-IEntity
+			strategies.Add(typeof(UpdateStrategy)); // Update-IEntity
 			
 			StrategyLocator locator = new StrategyLocator(strategies);
 			
@@ -80,6 +80,31 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		public void Test_Locate_InterfaceOverride()
 		{			
 			string type = "MockInterfaceEntity";
+			string action = "Index";
+			
+			StrategyStateNameValueCollection strategies = new StrategyStateNameValueCollection();
+			
+			strategies.Add(typeof(IndexStrategy));
+			strategies.Add(typeof(MockIndexWidgetStrategy));
+			strategies.Add(typeof(MockIndexInterfaceStrategy));
+			
+			StrategyLocator locator = new StrategyLocator(strategies);
+			
+			StrategyInfo info = locator.Locate(action, type);
+			
+			Assert.IsNotNull(info, "No strategy info found.");
+			
+			Type mockStrategyType = new MockIndexInterfaceStrategy().GetType();
+			
+			string expected = mockStrategyType.FullName + ", " + mockStrategyType.Assembly.GetName().Name;
+			
+			Assert.AreEqual(expected, info.StrategyType, "Wrong strategy type selected.");
+		}
+		
+		[Test]
+		public void Test_Locate_MatchInheritedInterface()
+		{			
+			string type = "MockSubInterfaceEntity";
 			string action = "Index";
 			
 			StrategyStateNameValueCollection strategies = new StrategyStateNameValueCollection();

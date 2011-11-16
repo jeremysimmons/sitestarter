@@ -204,6 +204,9 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			string link = String.Empty;
 			using (LogGroup logGroup = LogGroup.Start("Creating a friendly URL for the specified action and provided entity type.", NLog.LogLevel.Debug))
 			{
+				if (entity == null)
+					throw new ArgumentNullException("entity");
+				
 				LogWriter.Debug("Action: " + action);
 				LogWriter.Debug("Entity type: " + entity.ShortTypeName);
 				
@@ -213,8 +216,8 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			
 				link = link + "/" + entity.ID.ToString();
 				
-				if (entity is IUniqueEntity)
-					link = link + "/" + PrepareForUrl(((IUniqueEntity)entity).UniqueKey);
+				if (entity.ToString() != entity.GetType().FullName)
+					link = link + "/" + PrepareForUrl(Utilities.Summarize(entity.ToString(), 80));
 				
 				link = link + ".aspx";
 				

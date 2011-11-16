@@ -1,10 +1,13 @@
 <%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/Site.master" %>
 <%@ Import Namespace="System.Reflection" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Data" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Entities" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Security" %>
 <%@ Import Namespace="Db4objects.Db4o" %>
 <script runat="server">
+	public int TotalObjects = 0;
+
     protected void Page_Load(object sender, EventArgs e)
     {
     	EnsureAuthorised();
@@ -46,6 +49,8 @@
 
         if (objects != null)
         {
+        	TotalObjects = objects.Length;
+        	
             foreach (object obj in objects)
             {
                 Panel panel = new Panel();
@@ -57,6 +62,16 @@
                 label.Text = obj.GetType().ToString();
                 labelPanel.Controls.Add(label);
                 labelPanel.CssClass = "Heading2";
+
+                Guid entityID = Guid.Empty;
+                if (obj is IEntity)
+                {
+                	entityID = ((IEntity)obj).ID;
+                	
+                	((IEntity)obj).Activator = ActivateStrategy.New((IEntity)obj);
+                	
+                	((IEntity)obj).Activate();
+                }
 
                 panel.Controls.Add(labelPanel);
 
@@ -71,8 +86,15 @@
                 {
                     foreach (PropertyInfo property in properties)
                     {
+                    	if (!SkipProperty(property.Name))
+                    	{
+                    
                         Panel propertyPanel = new Panel();
+	                        
                         Label propertyLabel = new Label();
+		                        
+	                        if (!EntitiesUtilities.IsReference(obj.GetType(), property))
+	                        {
                         try
                         {
                             object value = property.GetValue(obj, (object[])null);
@@ -100,10 +122,29 @@
                         {
                             propertyLabel.Text = property.Name + ": " + "[unavailable]";
                         }
+		                        
                         propertyPanel.Controls.Add(propertyLabel);
+		                    }
+							else
+							{
+		                    	propertyPanel.Controls.Add(propertyLabel);
 
+		                    	int count = 1;
+		                    	if (EntitiesUtilities.IsMultipleReference(obj.GetType(), property))
+		                    	{
+		                    		count = ((IEntity[])property.GetValue(obj, null)).Length;
+		                    	}
+		                    	
+		                        propertyLabel.Text = property.Name + ": ";
+								HyperLink referencesLink = new HyperLink();
+								referencesLink.Text = "[" + count + "] View &raquo;";
+								referencesLink.NavigateUrl = "DataReferences.aspx?SourceType=" + obj.GetType().Name + "&SourceID=" + entityID.ToString() + "&ReferenceProperty=" + property.Name;
+								propertyPanel.Controls.Add(referencesLink);
+							}	
+		                    				
                         panel.Controls.Add(propertyPanel);
                     }
+                }
                 }
 
                 panel.Style.Add("margin-bottom", "10px");
@@ -118,6 +159,21 @@
         PageViews.SetActiveView(OutputView);
 
     }
+    
+    private bool SkipProperty(string name)
+    {
+    	string[] ignorable = new string[]{
+    		"IsActivated",
+    		"IsValid",
+    		"Activator",
+    		"Validator",
+    		"ShortTypeName",
+    		"AutoActivate",
+    		"RequiresValidation"
+    	};
+    	
+    	return Array.IndexOf(ignorable, name) > -1;
+    }
 </script>
 <asp:Content runat="server" ContentPlaceHolderID="Body">
 <asp:MultiView runat="server" ID="PageViews">
@@ -130,7 +186,10 @@
 <asp:View ID="OutputView" runat="server">
     <div class="Heading1">Data Store Printout</div>
     <p>All objects found in the data store are shown below.</p>
+    <p>Total: <%= TotalObjects %></p>
+	<p>
     <asp:Panel runat='server' ID="ObjectsPanel">
     </asp:Panel>
+	</p>
     </asp:View></asp:MultiView>
 </asp:Content>

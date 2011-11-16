@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftwareMonkeys.SiteStarter.Configuration;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Business;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
@@ -38,6 +39,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			SendNotification(null, subject, message);
 		}
 		
+		
 		/// <summary>
 		/// Sends the provided notification message to all notifiable users.
 		/// </summary>
@@ -50,11 +52,18 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			{
 				if (user != null)
 				{
-					User administrator = RetrieveStrategy.New<User>(false).Retrieve<User>("ID", Configuration.Config.Application.PrimaryAdministratorID);
+					string replyTo = "noreply@noreply.com";
+					if (Config.Application.Settings.ContainsKey("SystemEmail"))
+					{
+						replyTo = Config.Application.Settings.GetString("SystemEmail");
+					}
+					else
+						LogWriter.Error("No primary administrator has been assigned. Notification emails have 'noreply@noreply.com' in the reply field instead of the admistrator's email address.");
 					
 					try
 					{
-						MailMessage mm = new MailMessage(administrator.Email,
+					
+						MailMessage mm = new MailMessage(replyTo,
 						                                                                 user.Email,
 						                                                                 PrepareNotificationText(subject, entity),
 						                                                                 PrepareNotificationText(message, entity));

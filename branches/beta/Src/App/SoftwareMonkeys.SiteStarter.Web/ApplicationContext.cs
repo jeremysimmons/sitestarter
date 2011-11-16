@@ -8,6 +8,7 @@ using SoftwareMonkeys.SiteStarter.Data;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Business;
 using SoftwareMonkeys.SiteStarter.Web;
+using SoftwareMonkeys.SiteStarter.Web.Elements;
 using SoftwareMonkeys.SiteStarter.Web.Data;
 using SoftwareMonkeys.SiteStarter.Web.Projections;
 using SoftwareMonkeys.SiteStarter.Web.Controllers;
@@ -23,6 +24,8 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		
 		void Application_Start(object sender, EventArgs e)
 		{	
+			InitializeTimeout();
+			
 			// Initialze the core state management and diagnostics
 			InitializeCore();
 			
@@ -82,6 +85,8 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		
 		void Application_BeginRequest(object sender, EventArgs e)
 		{
+			InitializeTimeout();
+
 			InitializeCore();
 			
 			// Create a log group for the request
@@ -104,6 +109,17 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			HttpContext.Current.Items["Application_BeginRequest.LogGroup"] = null;
 		}
 
+		private void InitializeTimeout()
+		{
+			// If the application is running in debug mode then set the timeout to 60 minutes
+			// to prevent timeout due to debug logging slowing the application down (which isn't an issue
+			// in release mode)
+			if (new ModeDetector().IsDebug)
+				Context.Server.ScriptTimeout = 60 // minutes
+					* 60 // seconds
+					* 1000; // milliseconds
+		}
+		
 		private void InitializeCore()
 		{
 			InitializeState();
@@ -146,6 +162,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			if (Config.IsInitialized)
 			{
 				new ControllersInitializer().Initialize();
+				new ElementsInitializer().Initialize();
 				new ProjectionsInitializer().Initialize();
 				new PartsInitializer().Initialize();
 			}

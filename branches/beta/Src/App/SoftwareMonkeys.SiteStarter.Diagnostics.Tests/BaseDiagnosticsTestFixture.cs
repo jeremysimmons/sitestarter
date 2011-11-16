@@ -172,11 +172,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics.Tests
             FileTarget fileTarget = new FileTarget();
             config.AddTarget("File", fileTarget);
 
-            fileTarget.Layout = @"<layout xsi:type=""LayoutWithHeaderAndFooter"">
-        		<header xsi:type=""SimpleLayout"" text=""&lt;?xml version='1.0'?&gt;${newline}&lt;Log&gt;""/>
-            		<layout xsi:type=""SimpleLayout"" text=""${message}"" />
-            		<footer xsi:type=""SimpleLayout"" text=""&lt;/Log&gt;""/>
-      		</layout>";
+			fileTarget.Layout = @"${message}";
             
             fileTarget.FileName = String.Format("{0}/App_Data/Logs/{1}-{2}-{3}/Log.xml",
                                                 StateAccess.State.PhysicalApplicationPath,
@@ -188,6 +184,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics.Tests
             config.LoggingRules.Add(rule);
 
             LogManager.Configuration = config; 
+		
 		}
 		
 		public void DisposeLogging()

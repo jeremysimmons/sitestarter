@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Xml.Serialization;
+using SoftwareMonkeys.SiteStarter.Business.Security;
 using SoftwareMonkeys.SiteStarter.Entities;
 using System.Collections.Generic;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
@@ -86,10 +87,17 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				
 			//	LogWriter.Debug("Path: " + strategyPath);
 				
+			Type type = typeof(StrategyInfo);
 				
+			string fileName  =Path.GetFileName(strategyPath);
+			
+			// If the info file name contains the '.ar' sub extension then it's an authorise reference strategy
+			if (fileName.IndexOf(".ar.strategy") > -1)
+				type = typeof(AuthoriseReferenceStrategyInfo);
+			
 				using (StreamReader reader = new StreamReader(File.OpenRead(strategyPath)))
 				{
-					XmlSerializer serializer = new XmlSerializer(typeof(StrategyInfo));
+				XmlSerializer serializer = new XmlSerializer(type);
 					
 					info = (StrategyInfo)serializer.Deserialize(reader);
 					

@@ -126,7 +126,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		}
 
 		/// <summary>
-		/// Retrieves the key for the specifid action and type.
+		/// Retrieves the key for the specified action and type.
 		/// </summary>
 		/// <param name="action"></param>
 		/// <param name="type"></param>
@@ -137,5 +137,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			
 			return fullKey;
 		}
+		
+		public bool Contains(string action, string type)
+		{
+			string key = GetControllerKey(action, type);
+			
+			return ContainsKey(key);
 	}
+}
 }

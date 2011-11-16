@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-
+using SoftwareMonkeys.SiteStarter.Business.Security;
 using SoftwareMonkeys.SiteStarter.Data;
 using SoftwareMonkeys.SiteStarter.State;
 
@@ -47,9 +47,14 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				throw new ArgumentNullException("strategy");
 			
 			if (strategy.Action == null)
-				throw new ArgumentNullException("strategy.Action", "No action has been set to the Action property.");
+				throw new ArgumentNullException("strategy.Key", "No key has been set to the Key property.");
 			
-			string name = strategy.TypeName + "-" + strategy.Action + ".strategy";
+			string name = strategy.Key.Replace("*", "'");
+			
+			if (strategy is AuthoriseReferenceStrategyInfo)
+				name = name + ".ar";
+					
+			name = name + ".strategy";
 			
 			return name;
 		}

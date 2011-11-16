@@ -12,5 +12,17 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o.Tests
 		{
 			new MockDb4oDataProviderInitializer(this).Initialize();
 		}
+		
+		[Test]
+		public override void Test_Delete_RemoveReferences()
+		{
+			base.Test_Delete_RemoveReferences();
+	}
+		
+		[Test]
+		public override void Test_Delete_EntityAndReference_Async()
+		{
+			base.Test_Delete_EntityAndReference_Async();
+}
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftwareMonkeys.SiteStarter.Business;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 {
@@ -7,8 +8,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	/// </summary>
 	public interface IController
 	{
-		string TypeName {get;set;}
-		string Action {get;}
-		IControllable Container {get;}
+		ICommandInfo Command { get; }
+		IControllable Container { get;set; }
 	}
 }

@@ -1,5 +1,9 @@
 ﻿using System;
 using NUnit.Framework;
+using SoftwareMonkeys.SiteStarter.Data;
+using SoftwareMonkeys.SiteStarter.Data.Tests;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
+using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Tests;
 using System.IO;
 using SoftwareMonkeys.SiteStarter.IO;
@@ -79,6 +83,49 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			bool isInstalled = installer.IsInstalled;
 			
 			Assert.IsFalse(isInstalled, "Returned true when it should have returned false.");
+		}
+		
+		[Test]
+		public void Test_Setup()
+		{
+			using (LogGroup logGroup = LogGroup.StartDebug("Testing the ApplicationInstaller.Setup function."))
+			{
+				CreateDummyVersionFile(TestUtilities.GetTestApplicationPath(this, "MockApplication"));
+		
+				User admin = new User();
+				admin.ID = Guid.NewGuid();
+				admin.Username = "admin";
+				admin.Password = Crypter.EncryptPassword("pass");
+				admin.Validator = ValidateStrategy.New(admin);
+				
+				ApplicationInstaller installer = new ApplicationInstaller();
+				installer.ApplicationPath = "/MockApplication";
+				installer.Administrator = admin;
+				installer.AdministratorRoleName = "Administrator";
+				installer.PathVariation = "testing";
+				installer.FileMapper = new MockFileMapper(this);
+				installer.DataProviderInitializer = new MockDb4oDataProviderInitializer(this);
+				installer.EnableTesting = true;
+				installer.Setup();
+				
+				User foundAdministrator = DataAccess.Data.Reader.GetEntity<User>("ID", admin.ID);
+				
+				DataAccess.Data.Activator.Activate(foundAdministrator);
+				
+				Assert.AreEqual(1, foundAdministrator.Roles.Length, "The administrator user isn't in the administrator role.");
+			}
+		}
+		
+		public void CreateDummyVersionFile(string appPath)
+		{
+			string filePath = Path.Combine(appPath, "Version.number");
+			
+			string content = "1.2.3.4";
+			
+			using (StreamWriter writer = File.CreateText(filePath))
+			{
+				writer.Write(content);
+			}
 		}
 		
 		

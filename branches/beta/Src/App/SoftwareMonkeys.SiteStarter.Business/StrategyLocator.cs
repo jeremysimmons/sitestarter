@@ -57,7 +57,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					type = EntityState.GetType(typeName);
 				
 				// Create a direct strategy key for the specified type
-				string key = Strategies.GetStrategyKey(action, typeName);
+			string key = StrategyInfo.GetStrategyKey(action, typeName);
 				
 			//	LogWriter.Debug("Direct key: " + key);
 			//	LogWriter.Debug("Type name: " + typeName);
@@ -122,6 +122,14 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			//using (LogGroup logGroup = LogGroup.Start("Locating a strategy by checking the interfaces of the provided type.", NLog.LogLevel.Debug))
 			//{
+			
+			string key = StrategyInfo.GetStrategyKey(action, type.Name);
+			
+			if (type.IsInterface && Strategies.ContainsKey(key))
+				strategyInfo = Strategies[key];
+			else
+			{
+				
 				Type[] interfaceTypes = type.GetInterfaces();
 				
 				// Loop backwards through the interface types
@@ -134,13 +142,13 @@ namespace SoftwareMonkeys.SiteStarter.Business
 						
 			//			using (LogGroup logGroup2 = LogGroup.Start("Checking interface: " + interfaceType.FullName, NLog.LogLevel.Debug))
 			//			{
-							string key = Strategies.GetStrategyKey(action, interfaceType.Name);
+						string key2 = StrategyInfo.GetStrategyKey(action, interfaceType.Name);
 							
 			//				LogWriter.Debug("Key: " + key);
 							
-							if (Strategies.ContainsKey(key))
+						if (Strategies.ContainsKey(key2))
 							{
-								strategyInfo = Strategies[key];
+							strategyInfo = Strategies[key2];
 								
 			//					LogWriter.Debug("Strategy found: " + strategyInfo.StrategyType);
 							}
@@ -149,6 +157,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			//			}
 					}
 				}
+			}
 			//}
 			return strategyInfo;
 		}
@@ -175,7 +184,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 						
 			//			using (LogGroup logGroup2 = LogGroup.Start("Checking base type: " + nextType.FullName, NLog.LogLevel.Debug))
 			//			{
-							string key = Strategies.GetStrategyKey(action, nextType.Name);
+					string key = StrategyInfo.GetStrategyKey(action, nextType.Name);
 							
 			//				LogWriter.Debug("Key: " + key);
 							

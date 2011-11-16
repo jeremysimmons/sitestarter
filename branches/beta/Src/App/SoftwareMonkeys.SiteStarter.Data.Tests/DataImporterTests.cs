@@ -161,9 +161,15 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			command2.TypeName = user.ShortTypeName;
 			command2.NewTypeName = typeof(TestAccount).Name;
 			
+			RenamePropertyCommand command3 = new RenamePropertyCommand();
+			command3.TypeName = role.ShortTypeName;
+			command3.PropertyName = "Users";
+			command3.NewPropertyName = "Accounts";
+			
 			DataSchemaCommandCollection commands = new DataSchemaCommandCollection();
 			commands.Add(command1);
 			commands.Add(command2);
+			commands.Add(command3);
 			
 			schema.SchemaCommands = commands;
 			
@@ -203,7 +209,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_IsValid_ReferenceParameter_False()
 		{
-			EntityIDReference reference = new EntityIDReference();
+			EntityReference reference = new EntityReference();
 			
 			bool isValid = DataAccess.Data.Importer.IsValid(reference);
 			
@@ -213,7 +219,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_IsValid_ReferenceParameter_True()
 		{
-			EntityIDReference reference = new EntityIDReference();
+			EntityReference reference = new EntityReference();
 			reference.Entity1ID = Guid.NewGuid();
 			reference.Entity2ID = Guid.NewGuid();
 			reference.Type2Name = "TestArticle";
@@ -229,7 +235,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_IsValid_EntityParameter_False()
 		{
-			EntityIDReference reference = new EntityIDReference();
+			EntityReference reference = new EntityReference();
 			
 			bool isValid = DataAccess.Data.Importer.IsValid(reference);
 			

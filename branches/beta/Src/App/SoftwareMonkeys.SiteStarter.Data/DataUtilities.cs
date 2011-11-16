@@ -190,7 +190,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			{
 				if (EntitiesUtilities.IsReference(entity.GetType()))
 				{
-					EntityIDReference reference = (EntityIDReference)entity;
+					EntityReference reference = (EntityReference)entity;
 					
 					dataStoreName = GetDataStoreName(new string[] {reference.Type1Name, reference.Type2Name});//GetType(names[0]), GetType(names[1]));//dataStoreNames[0] + "-" + dataStoreNames[1];
 				}
@@ -284,10 +284,10 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					//type = property.PropertyType.GetGenericArguments()[0];
 				}*/
 				
-				/*if (property.PropertyType.FullName == typeof(EntityIDReference).FullName
+				/*if (property.PropertyType.FullName == typeof(EntityReference).FullName
 				    || property.PropertyType.FullName == typeof(EntityReference).FullName)
 				{
-					EntityIDReference reference = (EntityIDReference)property.GetValue(entity, null);
+					EntityReference reference = (EntityReference)property.GetValue(entity, null);
 					
 					LogWriter.Debug("Reference - Source entity ID: " + reference.EntityIDs[0]);
 					LogWriter.Debug("Reference - Reference entity ID: " + reference.EntityIDs[1]);
@@ -302,11 +302,11 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				}
 				else
 				{
-					EntityIDReferenceCollection collection = (EntityIDReferenceCollection)property.GetValue(entity, null);
+					EntityReferenceCollection collection = (EntityReferenceCollection)property.GetValue(entity, null);
 					//if (collection.Count == 0)
 					//	throw new InvalidOperationException("No references have been added.");
 					
-					//EntityIDReference reference = collection[0];
+					//EntityReference reference = collection[0];
 					
 	//				LogWriter.Debug("Reference - Source entity ID: " + reference.EntityIDs[0]);
 	//				LogWriter.Debug("Reference - Reference entity ID: " + reference.EntityIDs[1]);

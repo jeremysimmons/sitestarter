@@ -11,14 +11,14 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		[Test]
 		public void Test_this()
 		{
-			StrategyInfo testStrategy = StrategyInfo.ExtractInfo(typeof(RetrieveStrategy))[0];
+			StrategyInfo testStrategy = StrategyInfo.ExtractInfo(typeof(MockRetrieveTestUserStrategy))[0];
 			
 			StrategyStateNameValueCollection collection = new StrategyStateNameValueCollection();
 			
 			string type = "TestUser";
-			string action = "TestAction";
+			string action = "Retrieve";
 			
-			collection[action, type] = testStrategy;
+			collection.Add(testStrategy);
 			
 			StrategyInfo foundStrategy = collection[action, type];
 			
@@ -30,12 +30,10 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		[ExpectedException("SoftwareMonkeys.SiteStarter.Business.StrategyNotFoundException")]
 		public void Test_this_StrategyNotFound()
 		{
-			StrategyInfo testStrategy = StrategyInfo.ExtractInfo(typeof(RetrieveStrategy))[0];
-			
 			StrategyStateNameValueCollection collection = new StrategyStateNameValueCollection();
 			
-			string type = "TestUser";
-			string action = "TestAction";
+			string action = "MockAction";
+			string type = "MockType";
 			
 			StrategyInfo notFoundStrategy = collection[action + "Mismatch", type];
 		}
@@ -50,31 +48,11 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			string type = "TestArticle";
 			string action = "Retrieve";
 			
-			string key = collection.GetStrategyKey(testStrategy.Action, testStrategy.TypeName);
-			
 			collection.Add(testStrategy);
 			
 			StrategyInfo foundStrategy = collection[action, type];
 			
 			Assert.IsNotNull(foundStrategy);
-		}
-		
-		[Test]
-		public void Test_this_IUniqueEntityInterface()
-		{
-			StrategyStateNameValueCollection collection = new StrategyStateNameValueCollection();
-			
-			string type = "TestUser";
-			string action = "Validate";
-			
-			collection.Add(typeof(ValidateStrategy));
-			collection.Add(typeof(UniqueValidateStrategy));
-			
-			StrategyInfo foundStrategy = collection[action, type];
-			
-			Assert.IsNotNull(foundStrategy);
-			
-			Assert.AreEqual("UniqueValidateStrategy", foundStrategy.New().GetType().Name, "Loaded the wrong type.");
 		}
 		
 		[Test]
@@ -96,54 +74,5 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		
 		}
 		
-		// TODO: Remove if not needed
-		/*
-		[Test]
-		public void Test_GetStrategyFromInterfaces()
-		{
-			string interfaceType = "IEntity";
-			string type = "TestArticle";
-			string action = "TestAction";
-			
-			StrategyInfo testStrategy = new StrategyInfo(new RetrieveStrategy());
-			testStrategy.TypeName = interfaceType;
-			testStrategy.Action = action;
-			
-			StrategyStateNameValueCollection collection = new StrategyStateNameValueCollection();
-			
-			
-			collection[action, interfaceType] = testStrategy;
-			
-			StrategyInfo foundStrategy = collection.GetStrategyFromInterfaces(typeof(TestArticle), action, type);
-			StrategyInfo notFoundStrategy = collection.GetStrategyFromInterfaces(typeof(TestArticle), action + "Mismatch", type + "Mismatch");
-			
-			Assert.IsNotNull(foundStrategy);
-			Assert.IsNull(notFoundStrategy);
 		}
-		
-		[Test]
-		public void Test_GetStrategyFromBaseTypes()
-		{
-			string baseType = "BaseEntity";
-			string type = "TestArticle";
-			string action = "TestAction";
-			
-			StrategyInfo testStrategy = new StrategyInfo(new RetrieveStrategy());
-			testStrategy.TypeName = baseType;
-			testStrategy.Action = action;
-			
-			StrategyStateNameValueCollection collection = new StrategyStateNameValueCollection();
-			
-			
-			collection[action, baseType] = testStrategy;
-			
-			StrategyInfo foundStrategy = collection.GetStrategyFromBaseTypes(action, type);
-			StrategyInfo notFoundStrategy = collection.GetStrategyFromBaseTypes(action + "Mismatch", type);
-			
-			Assert.IsNotNull(foundStrategy);
-			Assert.IsNull(notFoundStrategy);
 		}
-		*/
-		
-	}
-}

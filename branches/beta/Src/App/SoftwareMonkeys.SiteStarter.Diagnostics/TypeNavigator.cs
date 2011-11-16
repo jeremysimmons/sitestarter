@@ -17,17 +17,6 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			set { startType = value; }
 		}
 		
-		// TODO: Remove if not needed
-		/*private bool includeStartType;
-		/// <summary>
-		/// Gets/sets a value indicating whether the start type should be included in the navigation loop. If false, the parent type will be the first in the loop.
-		/// </summary>
-		public bool IncludeStartType
-		{
-			get { return includeStartType; }
-			set { includeStartType =value; }
-		}*/
-		
 		private Type currentType;
 		/// <summary>
 		/// Gets/sets the type that the navigator currently has in focus.
@@ -44,7 +33,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		/// </summary>
 		public bool HasNext
 		{
-			get { return CurrentType.FullName != typeof(object).FullName; }
+			get { return CurrentType != null && CurrentType.FullName != typeof(object).FullName; }
 		}
 		
 		/// <summary>

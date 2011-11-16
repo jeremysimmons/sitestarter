@@ -112,6 +112,11 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		}
 		
 		/// <summary>
+		/// A flag used to indicate whether the installer should prepare for use during testing. If true then test entities, etc. are initialized.
+		/// </summary>
+		public bool EnableTesting = false;
+		
+		/// <summary>
 		/// Empty constructor.
 		/// </summary>
 		public ApplicationInstaller()
@@ -234,7 +239,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			using (LogGroup logGroup = LogGroup.Start("Creating the administrator role.", NLog.LogLevel.Debug))
 			{
-				administratorRole = new UserRole();
+				administratorRole = CreateStrategy.New<UserRole>(false).Create<UserRole>();
 				administratorRole.ID = Guid.NewGuid();
 				
 				if (AdministratorRoleName == String.Empty)
@@ -247,14 +252,20 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		}
 
 		/// <summary>
-		/// Saves the provided user, administrator role, and application configuration.
+		/// Saves the administrator user and administrator role.
 		/// </summary>
 		/// <param name="administrator">The default administrator user.</param>
 		/// <param name="administratorRole">The administrator role.</param>
 		private void Save(User administrator, UserRole administratorRole)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Saving the provided user, role, and config.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Saving the provided user and role.", NLog.LogLevel.Debug))
 			{
+				if (administrator == null)
+					throw new ArgumentNullException("administrator");
+				
+				if (administratorRole == null)
+					throw new ArgumentNullException("administratorRole");
+				
 				AuthenticationState.Username = administrator.Username;
 				
 				
@@ -263,12 +274,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					administratorRole.Users = new User[]{administrator};
 					
 					SaveStrategy.New<UserRole>(false).Save(administratorRole);
-					
-//					UserRoleFactory.Current.SaveUserRole(administratorRole);
-					
-					Config.Application.PrimaryAdministratorID = administrator.ID;
-					
-					Config.Application.Save();
 				}
 				else
 					LogWriter.Debug("User already exists. Skipping save.");
@@ -343,7 +348,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		private void InitializeEntities()
 		{
 			// TODO: Add the initializer to a property so it can be customized for specific cases
-	    	new EntityInitializer().Initialize();
+	    	new EntityInitializer().Initialize(EnableTesting);
 		}
 		
 		private void InitializeData()
@@ -356,8 +361,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		private void InitializeBusiness()
 		{
 			// TODO: Add the initializer to a property so it can be customized for specific cases
-	    	new StrategyInitializer().Initialize();
-	    	new ReactionInitializer().Initialize();
+	    	new StrategyInitializer().Initialize(EnableTesting);
+	    	new ReactionInitializer().Initialize(EnableTesting);
 		}
 
 		/// <summary>

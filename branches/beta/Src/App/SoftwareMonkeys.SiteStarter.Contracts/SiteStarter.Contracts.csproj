@@ -63,7 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Business\IActivateStrategy.cs" />
-    <Compile Include="Business\ICommandManager.cs" />
+    <Compile Include="Business\ICommandInfo.cs" />
     <Compile Include="Business\ICreateStrategy.cs" />
     <Compile Include="Business\IDeleteReaction.cs" />
     <Compile Include="Business\IDeleteStrategy.cs" />
@@ -74,14 +74,17 @@
     <Compile Include="Business\ISaveReaction.cs" />
     <Compile Include="Business\IStrategy.cs" />
     <Compile Include="Business\ISaveStrategy.cs" />
-    <Compile Include="Business\IUniqueValidateStrategy.cs" />
+    <Compile Include="Business\IValidateUniqueStrategy.cs" />
     <Compile Include="Business\IUpdateReaction.cs" />
     <Compile Include="Business\IUpdateStrategy.cs" />
+    <Compile Include="Business\IValidatePropertyStrategy.cs" />
     <Compile Include="Business\IValidateStrategy.cs" />
     <Compile Include="Business\Security\IAuthenticateStrategy.cs" />
     <Compile Include="Business\Security\IAuthoriseCreateStrategy.cs" />
     <Compile Include="Business\Security\IAuthoriseDeleteStrategy.cs" />
     <Compile Include="Business\Security\IAuthoriseIndexStrategy.cs" />
+    <Compile Include="Business\Security\IAuthoriseReferencesStrategy.cs" />
+    <Compile Include="Business\Security\IAuthoriseReferenceStrategy.cs" />
     <Compile Include="Business\Security\IAuthoriseRetrieveStrategy.cs" />
     <Compile Include="Business\Security\IAuthoriseSaveStrategy.cs" />
     <Compile Include="Business\Security\IAuthoriseStrategy.cs" />
@@ -94,6 +97,7 @@
     <Compile Include="Data\FilterOperator.cs" />
     <Compile Include="Data\IDataFilter.cs" />
     <Compile Include="Data\IDataFilterGroup.cs" />
+    <Compile Include="Entities\IAuthored.cs" />
     <Compile Include="Entities\IEntity.cs" />
     <Compile Include="Entities\IKeyword.cs" />
     <Compile Include="Entities\IPagingLocation.cs" />
@@ -103,6 +107,7 @@
     <Compile Include="Entities\IUser.cs" />
     <Compile Include="Entities\IUserPermission.cs" />
     <Compile Include="Entities\IUserRole.cs" />
+    <Compile Include="Entities\IValidatePropertyAttribute.cs" />
     <Compile Include="IAppComponent.cs" />
     <Compile Include="IO\IFileMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

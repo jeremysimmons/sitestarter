@@ -2,6 +2,8 @@
 using SoftwareMonkeys.SiteStarter.Business;
 using SoftwareMonkeys.SiteStarter.Business.Security;
 using SoftwareMonkeys.SiteStarter.Entities;
+using SoftwareMonkeys.SiteStarter.Web.Projections;
+using SoftwareMonkeys.SiteStarter.Web.Validation;
 using SoftwareMonkeys.SiteStarter.Web.WebControls;
 using System.Web.UI.WebControls;
 using SoftwareMonkeys.SiteStarter.Web.Properties;
@@ -17,6 +19,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	[Controller("Edit", "IEntity")]
 	public class EditController : BaseController
 	{
+		/// <summary>
+		/// Gets/sets the data source.
+		/// </summary>
+		public new IEntity DataSource
+		{
+			get { return ((BaseCreateEditProjection)Container).DataSource; }
+			set { ((BaseCreateEditProjection)Container).DataSource = value; }
+		}
+		
 		private IRetrieveStrategy retriever;
 		/// <summary>
 		/// Gets/sets the strategy used to retrieve an entity.
@@ -26,9 +37,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			get {
 				if (retriever == null)
 				{
-					if (Container.Type == null)
-						throw new InvalidOperationException("Type property hasn't been initialized.");
-					retriever = StrategyState.Strategies.Creator.NewRetriever(Container.Type.Name);
+					CheckContainer();
+					Container.CheckCommand();
+					
+					retriever = StrategyState.Strategies.Creator.NewRetriever(Command.TypeName);
 				}
 				return retriever; }
 			set { retriever = value; }
@@ -43,9 +55,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			get {
 				if (updater == null)
 				{
-					if (Container.Type == null)
-						throw new InvalidOperationException("Type property hasn't been initialized.");
-					updater = StrategyState.Strategies.Creator.NewUpdater(Container.Type.Name);
+					CheckContainer();
+					Container.CheckCommand();
+					
+					updater = StrategyState.Strategies.Creator.NewUpdater(Command.TypeName);
 				}
 				return updater; }
 			set { updater = value; }
@@ -59,12 +72,22 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		}
 		
 		private string entityPropertyTakenLanguageKey = "EntityPropertyTaken";
+		[ObsoleteAttribute()]
 		public string EntityPropertyTakenLanguageKey
 		{
 			get { return entityPropertyTakenLanguageKey; }
 			set { entityPropertyTakenLanguageKey = value; }
 		}
 		
+		private ValidationFacade validation;
+		public ValidationFacade Validation
+		{
+			get {
+				if (validation == null)
+					validation = new ValidationFacade();
+				return validation; }
+			set { validation = value; }
+		}
 		
 		public EditController()
 		{
@@ -80,11 +103,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			{
 				if (EnsureAuthorised())
 				{
-					string typeName = Container.Type.Name;
+					string typeName = Command.TypeName;
 					
 					LogWriter.Debug("Type name: " + typeName);
 					
-					OperationManager.StartOperation("Edit" + typeName, null);
+					OperationManager.StartOperation(Command, null);
 				}
 			}
 		}
@@ -139,7 +162,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <returns></returns>
 		public virtual Guid GetID()
 		{
-			return QueryStrings.GetID(Container.Type.Name);
+			return QueryStrings.GetID(Command.TypeName);
 		}
 		
 		/// <summary>
@@ -148,7 +171,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <returns></returns>
 		public virtual string GetUniqueKey()
 		{
-			return QueryStrings.GetUniqueKey(Container.Type.Name);
+			return QueryStrings.GetUniqueKey(Command.TypeName);
 		}
 		
 		/// <summary>
@@ -167,7 +190,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 					IEntity e = Load(entityID);
 					
 					if (e == null)
-						throw new Exception("Can't load entity of type '" + Container.Type.Name + "' with ID '" + entityID.ToString() + ".");
+						throw new Exception("Can't load entity of type '" + Command.TypeName + "' with ID '" + entityID.ToString() + ".");
 					
 					entity = PrepareEdit(e);
 				}
@@ -191,7 +214,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 					entity = Load(uniqueKey);
 					
 					if (entity == null)
-						throw new Exception("Can't load entity of type '" + Container.Type.Name + "' with unique key '" + uniqueKey + "'.");
+						throw new Exception("Can't load entity of type '" + Command.TypeName + "' with unique key '" + uniqueKey + "'.");
 					
 					PrepareEdit(entity);
 				}
@@ -228,11 +251,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			using (LogGroup logGroup = LogGroup.Start("Editing the provided entity.", NLog.LogLevel.Debug))
 			{
+				Validation.CheckMessages(entity);
+				
 				if (EnsureAuthorised(entity))
 				{
 					StartEdit();
 					
-					Container.WindowTitle = DynamicLanguage.GetEntityText("EditEntity", Container.Type.Name);
+					Container.WindowTitle = DynamicLanguage.GetEntityText("EditEntity", Command.TypeName);
 					
 					Load(entity);
 				}
@@ -315,7 +340,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 					// Update the entity
 					if (Updater.Update(entity))
 					{
-						Result.Display(DynamicLanguage.GetEntityText(EntityUpdatedLanguageKey, Container.Type.Name));
+						Result.Display(DynamicLanguage.GetEntityText(EntityUpdatedLanguageKey, Command.TypeName));
 
 						didSucceed = true;
 						
@@ -324,16 +349,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 					}
 					else
 					{
-						CheckUniquePropertyName();
-						
-						// Get the "entity exists" language entry
-						string error = DynamicLanguage.GetEntityText(EntityPropertyTakenLanguageKey, Container.Type.Name);
-						
-						// Insert the name of the unique property
-						error = error.Replace("${property}", DynamicLanguage.GetText(UniquePropertyName).ToLower());
-						
-						// Display the error
-						Result.DisplayError(error);
+						// Add the validation error to the result control
+						Validation.DisplayError(entity);
 						
 						didSucceed = false;
 					}
@@ -342,18 +359,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				LogWriter.Debug("Did succeed: " + didSucceed.ToString());
 			}
 			return didSucceed;
-		}
-		
-		public override bool AuthoriseStrategies()
-		{
-			return Security.Authorisation.UserCan("Edit", TypeName)
-				&& Security.Authorisation.UserCan("Update", TypeName);
-		}
-		
-		public override bool AuthoriseStrategies(IEntity entity)
-		{
-			return Security.Authorisation.UserCan("Edit", entity)
-				&& Security.Authorisation.UserCan("Update", entity);
 		}
 		
 		/// <summary>
@@ -367,32 +372,24 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			Navigation.Navigator.Current.NavigateAfterOperation(new CommandInfo(CommandOnSuccess), DataSource);
 		}
 		
-		public static EditController New(IControllable container, Type type)
+		public static EditController New(IControllable container)
 		{
-			return New(container, type);
+			return New(container);
 		}
 		
-		public static EditController New(IControllable container, Type type, string uniquePropertyName)
+		public static EditController New(IControllable container, string uniquePropertyName)
 		{
 			EditController controller = null;
 			using (LogGroup logGroup = LogGroup.Start("Instantiating a new edit controller.", NLog.LogLevel.Debug))
 			{
-				controller = New(container, container.Action, type, uniquePropertyName);
-			}
-			return controller;
-		}
+				container.CheckCommand();
 		
-		public static EditController New(IControllable container, string action, Type type, string uniquePropertyName)
-		{
-			EditController controller = null;
-			using (LogGroup logGroup = LogGroup.Start("Instantiating a new edit controller.", NLog.LogLevel.Debug))
-			{
-				controller = ControllerState.Controllers.Creator.New<EditController>(action, type.Name);
+				controller = ControllerState.Controllers.Creator.New<EditController>(container);
 				
 				controller.Container = container;
 				controller.UniquePropertyName = uniquePropertyName;
 				
-				LogWriter.Debug("Type name: " + type.Name);
+				LogWriter.Debug("Type name: " + container.Command.TypeName);
 				LogWriter.Debug("Unique property name: " + uniquePropertyName);
 			}
 			return controller;

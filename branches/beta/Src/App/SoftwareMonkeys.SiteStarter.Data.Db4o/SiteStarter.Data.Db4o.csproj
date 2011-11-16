@@ -70,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Db4oDataActivator.cs" />
+    <Compile Include="Db4oDataCounter.cs" />
     <Compile Include="Db4oDataDeleter.cs" />
     <Compile Include="Db4oDataExporter.cs" />
     <Compile Include="Db4oDataImporter.cs" />
@@ -86,6 +87,9 @@
     <Compile Include="Db4oReferenceFilter.cs" />
     <Compile Include="Db4oDataSchema.cs" />
     <Compile Include="DynamicQueryComparator.cs" />
+    <Compile Include="MatchFilterGroupPredicate.cs" />
+    <Compile Include="MatchReferencePredicate.cs" />
+    <Compile Include="MatchReferencesPredicate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

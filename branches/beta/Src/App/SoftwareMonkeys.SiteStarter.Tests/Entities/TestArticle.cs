@@ -65,5 +65,11 @@ namespace SoftwareMonkeys.SiteStarter.Tests.Entities
             get { return editors; }
             set { editors = value; }
         }
+        
+        public override string ToString()
+		{
+        	return Title;
     }
+
+}
 }

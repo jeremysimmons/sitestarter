@@ -13,7 +13,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	/// </summary>
 	public class ControllerInfo
 	{
-		private string key;
+		private string key = String.Empty;
 		/// <summary>
 		/// Gets/sets the key that is used as an identifier for this controller.
 		/// </summary>
@@ -23,7 +23,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			set { key = value; }
 		}
 		
-		private string action;
+		private string action = String.Empty;
 		/// <summary>
 		/// Gets/sets the action that the controller is responsible for carrying out in relation to an entity of the specified type.
 		/// </summary>
@@ -33,7 +33,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			set { action = value; }
 		}
 		
-		private string typeName;
+		private string typeName = String.Empty;
 		/// <summary>
 		/// Gets/sets the name of the type that is involved in the controller.
 		/// </summary>
@@ -43,7 +43,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			set { typeName = value; }
 		}
 		
-		private string controllerType;
+		private string controllerType = String.Empty;
 		/// <summary>
 		/// Gets/sets the full string representation of the controller object type that corresponds with the Actions and TypeName.
 		/// </summary>
@@ -52,16 +52,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			get { return controllerType; }
 			set { controllerType = value; }
 		}
-		
-		/*private ControllerFormat format = ControllerFormat.Html;
-		/// <summary>
-		/// Gets/sets the format of the controller output.
-		/// </summary>
-		public ControllerFormat Format
-		{
-			get { return format; }
-			set { format = value; }
-		}*/
 		
 		private ControllerCreator creator;
 		/// <summary>
@@ -130,29 +120,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		public T New<T>()
 			where T : IController
 		{
-			T controller = New<T>(TypeName);
-			
-			return controller;
-		}
-		
-		/// <summary>
-		/// Creates a new instance of the corresponding controller for use by the system.
-		/// </summary>
-		/// <returns>An instance of the corresponding controller, cast to the specified type.</returns>
-		public T New<T>(string entityTypeName)
-			where T : IController
-		{
 			T controller = default(T);
 			
-			using (LogGroup logGroup = LogGroup.Start("Creating a new controller for the type: " + entityTypeName, NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Creating a new controller for the type: " + TypeName, NLog.LogLevel.Debug))
 			{
-				LogWriter.Debug("Entity type name: " + entityTypeName);
+				LogWriter.Debug("Entity type name: " + TypeName);
 				
 				LogWriter.Debug("Controller type: " + typeof(T).FullName);
 				
-				controller = (T)New();
-				
-				controller.TypeName = entityTypeName;
+				controller = (T)Creator.CreateController(this);
 			};
 			
 			return controller;

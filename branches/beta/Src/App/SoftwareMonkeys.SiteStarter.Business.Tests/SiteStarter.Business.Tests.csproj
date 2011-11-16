@@ -81,6 +81,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Security" />
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Business\SiteStarter.Business.csproj">
       <Project>{F294B839-0C1E-4187-AA58-6EA1C35E6B66}</Project>
       <Name>SiteStarter.Business</Name>
@@ -143,28 +144,44 @@
     <Compile Include="ApplicationRestorerTests.cs" />
     <Compile Include="AssemblyScanInfo.cs" />
     <Compile Include="BaseBusinessTestFixture.cs" />
+    <Compile Include="CreateAuthoredReactionTests.cs" />
     <Compile Include="CreateSubEntityStrategyTests.cs" />
     <Compile Include="DeleteStrategyTests.cs" />
     <Compile Include="DeleteSubEntityStrategyTests.cs" />
     <Compile Include="DirectoryZipperTests.cs" />
     <Compile Include="DualStrategyTests.cs" />
+    <Compile Include="Entities\IMockSubInterface.cs" />
     <Compile Include="Entities\MockInterfaceEntity.cs" />
     <Compile Include="Entities\IMockInterface.cs" />
+    <Compile Include="Entities\MockSubInterfaceEntity.cs" />
     <Compile Include="IndexStrategyTests.cs" />
     <Compile Include="MockActionStrategy.cs" />
     <Compile Include="MockDualStrategy.cs" />
     <Compile Include="MockIndexInterfaceStrategy.cs" />
     <Compile Include="MockIndexWidgetStrategy.cs" />
     <Compile Include="MockFileMapper.cs" />
-    <Compile Include="MockInvalidValidateEntityStrategy.cs" />
     <Compile Include="MockNonEntityStrategy.cs" />
+    <Compile Include="MockSaveEntityReaction.cs" />
     <Compile Include="MockSaveTestArticleReaction.cs" />
     <Compile Include="MockSaveTestArticleStrategy.cs" />
+    <Compile Include="MockValidateInvalidStrategy.cs" />
+    <Compile Include="MockValidateValidStrategy.cs" />
     <Compile Include="NonEntityStrategyTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReactionLocatorTests.cs" />
     <Compile Include="ReactionTests.cs" />
     <Compile Include="RetrieveStrategyTests.cs" />
+    <Compile Include="SaveMockEntityReaction.cs" />
     <Compile Include="SaveStrategyTests.cs" />
+    <Compile Include="Security\AuthoriseReferenceMockPublicEntityStrategy.cs" />
+    <Compile Include="Security\AuthoriseReferenceMockRestrictedEntityStrategy.cs" />
+    <Compile Include="Security\AuthoriseReferenceStrategyLocatorTests.cs" />
+    <Compile Include="Security\AuthoriseReferenceStrategyTests.cs" />
+    <Compile Include="Security\AuthoriseRetrieveMockPublicEntityStrategy.cs" />
+    <Compile Include="Security\AuthoriseSaveMockPublicEntityStrategy.cs" />
+    <Compile Include="Security\AuthoriseUpdateMockPublicEntityStrategy.cs" />
+    <Compile Include="Security\MockAuthoriseSaveMockEntityStrategy.cs" />
+    <Compile Include="Security\MockAuthoriseUpdateMockEntityStrategy.cs" />
     <Compile Include="StrategyCreatorTests.cs" />
     <Compile Include="StrategyFileNamerTests.cs" />
     <Compile Include="StrategyInfoTests.cs" />
@@ -174,11 +191,11 @@
     <Compile Include="StrategySaverTests.cs" />
     <Compile Include="StrategyScannerTests.cs" />
     <Compile Include="StrategyStateNameValueCollectionTests.cs" />
-    <Compile Include="MockRetrieveStrategy.cs" />
-    <Compile Include="UniqueSaveStrategyTests.cs" />
-    <Compile Include="UniqueUpdateStrategyTests.cs" />
-    <Compile Include="UniqueValidateStrategyTests.cs" />
+    <Compile Include="MockRetrieveTestUserStrategy.cs" />
+    <Compile Include="ValidateRequiredStrategyTests.cs" />
+    <Compile Include="ValidateUniqueStrategyTests.cs" />
     <Compile Include="UpdateStrategyTests.cs" />
+    <Compile Include="ValidateStrategyTests.cs" />
     <Compile Include="VersionTestUtilities.cs" />
     <Compile Include="ZipAnalyzerTests.cs" />
     <Folder Include="Entities" />

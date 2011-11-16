@@ -21,10 +21,13 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="entity">The entity to activate.</param>
 			public virtual void Activate(SoftwareMonkeys.SiteStarter.Entities.IEntity entity)
 		{
+			if (DataAccess.IsInitialized)
+			{
 			DataAccess.Data.Activator.Activate(entity);
 			
 			// Mark the entity as activated because all reference properties have been activated
 			entity.IsActivated = true;
+		}
 		}
 		
 		/// <summary>
@@ -34,8 +37,10 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="propertyName">The name of the property to activate.</param>
 		public virtual void Activate(SoftwareMonkeys.SiteStarter.Entities.IEntity entity, string propertyName)
 		{
+			if (DataAccess.IsInitialized)
+			{
 			DataAccess.Data.Activator.Activate(entity, propertyName);
-			
+			}
 			// DO NOT mark the entity as activated because not all reference properties have been activated
 		}
 		
@@ -56,10 +61,13 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="propertyName">The name of the property to activate.</param>
 		public virtual void Activate(SoftwareMonkeys.SiteStarter.Entities.IEntity[] entities, string propertyName)
 		{
+			if (DataAccess.IsInitialized)
+			{
 			foreach (IEntity entity in entities)
 			{
 				DataAccess.Data.Activator.Activate(entity, propertyName);
 			}
+		}
 		}
 		
 		
@@ -83,11 +91,14 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="depth">The number of levels to activate.</param>
 		public virtual void Activate(SoftwareMonkeys.SiteStarter.Entities.IEntity entity, int depth)
 		{
+			if (DataAccess.IsInitialized)
+			{
 				DataAccess.Data.Activator.Activate(entity, depth);
 				
 				// Mark the entity as activated because all reference properties have been activated
 				if (depth >= 1)
 					entity.IsActivated = true;
+		}
 		}
 		
 		#region New functions

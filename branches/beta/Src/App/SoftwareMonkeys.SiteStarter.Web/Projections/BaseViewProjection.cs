@@ -33,9 +33,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			set { form = value; }
 		}
 		
-		public override string InternalAction
+		/// <summary>
+		/// Gets/sets the data source.
+		/// </summary>
+		public new IEntity DataSource
 		{
-			get { return "Retrieve"; }
+			get { return (IEntity)base.DataSource; }
+			set { base.DataSource = value; }
 		}
 		
 		public BaseViewProjection()
@@ -78,7 +82,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <param name="form">The form used to display entity data.</param>
 		public void Initialize(Type type, EntityForm form)
 		{
-			Type = type;
+			Command = new ViewCommandInfo(type.Name);
+			
 			controller = ViewController.New(this);
 			Form = form;
 			if (Form != null)
@@ -89,7 +94,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			if (e.CommandName == "Edit")
 			{
-				Navigator.Go("Edit", "Goal", "ID", e.CommandArgument.ToString());
+				Navigator.Go("Edit", Command.TypeName, "ID", e.CommandArgument.ToString());
 			}
 		}
 		

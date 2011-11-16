@@ -12,8 +12,8 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// Checks whether the current user is authorised to index the provided entities.
 		/// </summary>
 		/// <param name="entities">The entities being indexed.</param>
-		/// <returns>A value indicating whether the current user is authorised to index the provided entities.</returns>
-		bool Authorise(ref IEntity[] entities);
+		/// <returns>The authorised entities. (Or empty if none are authorised)</returns>
+		IEntity[] Authorise(IEntity[] entities);
 		
 		/// <summary>
 		/// Ensures that the current user is authorised to access an index of entities including the one provided.

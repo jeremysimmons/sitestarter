@@ -51,6 +51,7 @@
 	<td>Exception</td>
 	<td></td>
 </tr>
+<!--Entities cache-->
 <tr>
 	<td>clickAndWait</td>
 	<td>EntitiesCacheLink</td>
@@ -81,6 +82,7 @@
 	<td>CacheIndexLink</td>
 	<td></td>
 </tr>
+<!--Strategies cache-->
 <tr>
 	<td>clickAndWait</td>
 	<td>link=Strategies</td>
@@ -111,6 +113,7 @@
 	<td>CacheIndexLink</td>
 	<td></td>
 </tr>
+<!--Reactions cache-->
 <tr>
 	<td>clickAndWait</td>
 	<td>link=Reactions</td>
@@ -126,6 +129,7 @@
 	<td>CacheIndexLink</td>
 	<td></td>
 </tr>
+<!--Parts cache-->
 <tr>
 	<td>clickAndWait</td>
 	<td>link=Parts</td>
@@ -141,6 +145,7 @@
 	<td>CacheIndexLink</td>
 	<td></td>
 </tr>
+<!--Controllers cache-->
 <tr>
 	<td>clickAndWait</td>
 	<td>link=Controllers</td>
@@ -176,6 +181,7 @@
 	<td>CacheIndexLink</td>
 	<td></td>
 </tr>
+<!--Projections cache-->
 <tr>
 	<td>clickAndWait</td>
 	<td>link=Projections</td>
@@ -204,6 +210,27 @@
 <tr>
 	<td>assertTextPresent</td>
 	<td>/Projections/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>CacheIndexLink</td>
+	<td></td>
+</tr>
+<!--Elements cache-->
+<tr>
+	<td>clickAndWait</td>
+	<td>ElementsCacheLink</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextNotPresent</td>
+	<td>Exception</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>HelloWorldElement</td>
 	<td></td>
 </tr>
 <!--Sign out and ensure that caches restrict unauthorised users-->
@@ -305,6 +332,21 @@
 <tr>
 	<td>open</td>
 	<td>Admin/Projections.aspx</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextNotPresent</td>
+	<td>Exception</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Sign In Details</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>Admin/Elements.aspx</td>
 	<td></td>
 </tr>
 <tr>

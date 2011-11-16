@@ -362,7 +362,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				LogWriter.Debug("Item type name: " + item.TypeName);
 				
 				if (item.Title == null || item.Title == String.Empty)
-					throw new ArgumentException("A title must be specified on the provided site map item.");
+					throw new ArgumentException("A title must be specified on the provided site map item. URL: '" + item.Url + "', Action: '" + item.Action + "', TypeName: '" + item.TypeName + "', Category: '" + item.Category + "'");
 				
 				SiteMapNode node = new SiteMapNode();
 				
@@ -370,7 +370,12 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				node.Url = item.Url;
 				
 				if (node.Url == String.Empty)
-					node.Url = UrlCreator.CreateUrl(item.Action, item.TypeName);
+				{
+					if (item.Action != String.Empty && item.TypeName != String.Empty)
+						node.Url = UrlCreator.CreateUrl(item.Action, item.TypeName);
+					else
+						node.Url = UrlCreator.CreateUrl(item.ProjectionName);
+				}
 				
 				string url = node.Url;
 				
@@ -481,7 +486,12 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				string url = item.Url;
 				
 				if (url == String.Empty)
-					url = UrlCreator.CreateUrl(item.Action, item.TypeName);
+				{
+					if (item.Action != String.Empty && item.TypeName != String.Empty)
+						url = UrlCreator.CreateUrl(item.Action, item.TypeName);
+					else
+						url = UrlCreator.CreateUrl(item.ProjectionName);
+				}
 				
 				LogWriter.Debug("URL: " + url);
 

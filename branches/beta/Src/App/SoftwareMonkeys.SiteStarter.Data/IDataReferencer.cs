@@ -48,15 +48,6 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		
 		EntityReferenceCollection GetReferences(IEntity entity, bool activateAll);
 		
-		
-		/// <summary>
-		/// Gets the references that have been removed from the entity.
-		/// </summary>
-		/// <param name="entity">The entity that references have been removed from.</param>
-		/// <returns>A collection of the removed references.</returns>
-		EntityReferenceCollection GetRemovedReferences(IEntity entity);
-		
-		
 		/// <summary>
 		/// Retrieves the active references from the provided entity. This only includes those references currently active and not those in the data store.
 		/// </summary>
@@ -64,5 +55,19 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <returns>A collection of the active entity references.</returns>
 		EntityReferenceCollection GetActiveReferences(IEntity entity);
 		
+		/// <summary>
+		/// Sets the reference count properties of the provided entity (if a count property is specified by the reference attribute on the specified property).
+		/// </summary>
+		/// <param name="entity"></param>
+		/// <param name="referencePropertyName"></param>
+		/// <param name="referenceEntityID"></param>
+		/// <returns>A value indicating whether the source entity was changed.</returns>
+		bool SetCountProperty(IEntity entity, string referencePropertyName, Guid referencedEntityID);
+		
+		/// <summary>
+		/// Sets the count properties on the entities referenced by the one provided.
+		/// </summary>
+		/// <param name="entity"></param>
+		void SetMirrorCountProperties(IEntity entity);
 	}
 }

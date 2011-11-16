@@ -24,13 +24,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			string basePath = TestUtilities.GetTestingPath(this) + Path.DirectorySeparatorChar + "Export";
 			
-			EntityIDReference reference = DataAccess.Data.Referencer.GetActiveReferences(user)[0];
+			EntityReference reference = DataAccess.Data.Referencer.GetActiveReferences(user)[0];
 			
 			string path = new EntityFileNamer(reference, basePath).CreateFilePath();
 			
 			string expected = basePath + Path.DirectorySeparatorChar
 				+ role.ShortTypeName + "-" + user.ShortTypeName + Path.DirectorySeparatorChar
-				+ role.ID.ToString() + "-Users---" + user.ID.ToString() + "-Roles.xml";
+				+ reference.ID.ToString() + ".xml";
 			
 			Assert.AreEqual(expected, path, "The path doesn't match what's expected.");
 			

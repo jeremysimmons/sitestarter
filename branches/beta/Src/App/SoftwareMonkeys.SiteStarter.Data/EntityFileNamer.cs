@@ -64,7 +64,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			string referenceFileName = String.Empty;
 			using (LogGroup logGroup = LogGroup.Start("Creating the path to the specified reference file.", LogLevel.Debug))
 			{
-				EntityIDReference reference = (EntityIDReference)entity;
+				EntityReference reference = (EntityReference)entity;
 				
 				string type1Name = reference.Type1Name;
 				string type2Name = reference.Type2Name;
@@ -119,8 +119,9 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				referenceFileName = baseDirectoryPath + Path.DirectorySeparatorChar;
 				if (Path.GetDirectoryName(baseDirectoryPath) != type1Name + "-" + type2Name)
 					referenceFileName += typeName + Path.DirectorySeparatorChar;
-				referenceFileName += entity1ID + "-" + property1Name + "---" + entity2ID + "-" + property2Name + ".xml";
-
+				
+				referenceFileName += reference.ID.ToString() + ".xml";
+				
 				LogWriter.Debug("Reference file name: " + referenceFileName);
 			}
 			return referenceFileName;

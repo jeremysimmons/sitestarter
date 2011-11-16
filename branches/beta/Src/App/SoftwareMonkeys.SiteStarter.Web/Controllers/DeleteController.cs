@@ -1,6 +1,7 @@
 ﻿using System;
 using SoftwareMonkeys.SiteStarter.Business;
 using SoftwareMonkeys.SiteStarter.Entities;
+using SoftwareMonkeys.SiteStarter.Web.Navigation;
 using SoftwareMonkeys.SiteStarter.Web.WebControls;
 using System.Web.UI.WebControls;
 using SoftwareMonkeys.SiteStarter.Web.Properties;
@@ -21,9 +22,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			get {
 				if (retriever == null)
 				{
-					if (Container.Type == null)
-						throw new InvalidOperationException("Type property hasn't been initialized.");
-					retriever = StrategyState.Strategies.Creator.NewRetriever(Container.Type.Name);
+					CheckContainer();
+					Container.CheckCommand();
+					
+					retriever = StrategyState.Strategies.Creator.NewRetriever(Command.TypeName);
 				}
 				return retriever; }
 			set { retriever = value; }
@@ -35,9 +37,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			get {
 				if (deleter == null)
 				{
-					if (Container.Type == null)
-						throw new InvalidOperationException("Type property hasn't been initialized.");
-					deleter = StrategyState.Strategies.Creator.NewDeleter(Container.Type.Name);
+					CheckContainer();
+					Container.CheckCommand();
+					
+					deleter = StrategyState.Strategies.Creator.NewDeleter(Command.TypeName);
 				}
 				return deleter; }
 			set { deleter = value; }
@@ -70,6 +73,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				if (entity == null)
 					throw new ArgumentNullException("entity");
 				
+				if (EnsureAuthorised(entity))
+				{
 				if (entity == null)
 					LogWriter.Debug("Entity: [null]");
 				else
@@ -84,6 +89,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				
 				NavigateAfterDelete(entity);
 			}
+		}
 		}
 		
 		/// <summary>
@@ -111,10 +117,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <returns></returns>
 		public virtual IEntity Load()
 		{
-			Container.CheckType();
+			Container.CheckCommand();
+			
+			Type type = EntityState.GetType(Command.TypeName);
 			
 			return (IEntity)Reflector.InvokeGenericMethod(this, "Load",
-			                              new Type[] {Container.Type},
+			                                              new Type[] {type},
 			                              new object[] {});
 		}
 		
@@ -159,41 +167,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			return controller;
 		}
 		
-		
-		
-		/*public void Delete(Type type, Guid entityID)
-		{
-			string action = "Delete";
-			object[] parameters = new object[]{};
-			if (Commands.CommandExists(action, type.Name, Commands.GetTypes(parameters)))
-			{
-				Commands.Execute(action, type.Name, parameters);
-			}
-			else
-			{
-				DefaultDelete(type, entityID);
-			}
-		}*/
-		
-		/*public void DefaultDelete(Type type, Guid entityID)
-		{
-			IEntity entity = (IEntity)Factory.Get(type, entityID);
-			
-			if (Commands.CommandExists("Delete", type.Name, Commands.GetTypes(new object[]{entityID})))
-			{
-				Commands.Execute("Delete", type.Name, new object[]{entityID});
-			}
-			else
-			{
-				Delete(entity, Container.Messages[type.Name + "Deleted"]);
-			}
-		}*/
-		
 		public virtual void NavigateAfterDelete(IEntity entity)
 		{
-			string url = UrlCreator.Current.CreateUrl("Index", entity.ShortTypeName);
-			
-			HttpContext.Current.Response.Redirect(url);
+			Navigator.Current.Go("Index", entity.ShortTypeName);
 		}
 	}
 }

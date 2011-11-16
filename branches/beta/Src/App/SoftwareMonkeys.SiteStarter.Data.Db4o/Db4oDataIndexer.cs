@@ -135,6 +135,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <returns>The entities of the specified type found in the data store.</returns>
 		public override T[] GetEntities<T>(Guid[] entityIDs)
 		{
+			if (entityIDs == null || entityIDs.Length == 0)
+				return new T[]{};
+			
 			List<T> list = new List<T>(
 				((Db4oDataStore)GetDataStore(typeof(T))).ObjectContainer.Query<T>(
 					delegate(T e)
@@ -300,58 +303,17 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			if (container == null)
 				throw new Exception("No object container for store '" + store.Name + "'.");
 			
-			int i = 0;
-			
 			string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(typeof(T), propertyName);
 			
-			// Load the references all in one go, to avoid individual loads
-			EntityReferenceCollection references = Provider.Referencer.GetReferences(referencedEntityType, referencedEntityID, mirrorPropertyName, typeof(T), false);
+			Predicate matches = new MatchReferencePredicate(Provider, typeof(T), propertyName, referencedEntityType, mirrorPropertyName, referencedEntityID);
 			
-			Guid[] entityIDs = references.GetEntityIDs(referencedEntityID);
-			
-			page.AddRange(container.Query<T>(
-				delegate(T e)
-				{
-					bool matches = true;
-					bool isInPage = false;
-					
-					//using (LogGroup logGroup2 = LogGroup.Start("Querying entity.", NLog.LogLevel.Debug))
-					//{
-
-					//LogWriter.Debug("Checking type " + e.GetType().ToString());
-					//LogWriter.Debug("Entity ID: " + e.ID);
-					
-					bool foundReference = Array.IndexOf(entityIDs, e.ID) > -1;
-					
-					// If a referenced entity ID is specified then entities match if a reference exists
-					if (referencedEntityID != Guid.Empty)
-						matches = foundReference;
-					// Otherwise the calling code is trying to get entities where NO reference exists, therefore it matches when no reference is found
-					else
-						matches = !foundReference;
-					
-					isInPage = location.IsInPage(i);
-					
-					// IMPORTANT: Increment if it matches, regardless of what page it's on
-					if (matches)
-						i++;
-					
-					//LogWriter.Debug("Matches: " + matches);
-					//}
-					
-					
-					return matches && isInPage;
-				},
-				new DynamicComparer<T>(
+			IObjectSet os = store.ObjectContainer.Query(matches,
+			                                            new DynamicComparer(
 					type,
-					sortExpression)));
+			                                            	sortExpression));
 			
-			location.AbsoluteTotal = i;
+			page.AddRange(GetPage(os, location));
 			
-
-			//LogWriter.Debug("Absolute total objects: " + location.AbsoluteTotal);
-			//}
-
 			return Release((T[])page.ToArray());
 		}
 		
@@ -365,6 +327,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <returns>An array of the objects retrieved.</returns>
 		public override T[] GetPageOfEntitiesWithReference<T>(string propertyName, IEntity[] referencedEntities, PagingLocation location, string sortExpression)
 		{
+			if (referencedEntities.Length == 0)
+				return new T[]{};
 			
 			Collection<T> page = new Collection<T>();
 			
@@ -405,44 +369,18 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				entityIDList.AddRange(references.GetEntityIDs(referencedEntity.ID));
 			}
 			
-			Guid[] entityIDs = entityIDList.ToArray();
-			page.AddRange(container.Query<T>(
-				delegate(T e)
-				{
-					bool matches = true;
-					bool isInPage = false;
-					
-					//using (LogGroup logGroup2 = LogGroup.Start("Querying entity.", NLog.LogLevel.Debug))
-					//{
-
-					//LogWriter.Debug("Checking type " + e.GetType().ToString());
-					//LogWriter.Debug("Entity ID: " + e.ID);
-					
-					bool foundReference = Array.IndexOf(entityIDs, e.ID) > -1;
-					
-					// If referenced entities were provided then entities match if a reference exists
-					if (referencedEntities != null && referencedEntities.Length > 0)
-						matches = foundReference;
-					// Otherwise the calling code is trying to get entities where NO reference exists, therefore it matches when no reference is found
-					else
-						matches = !foundReference;
-					
-					isInPage = location.IsInPage(i);
-					
-					// IMPORTANT: Increment if it matches, regardless of what page it's on
-					if (matches)
-						i++;
-					//LogWriter.Debug("Matches: " + matches);
-					//}
-					
-					
-					return matches && isInPage;
-				},
-				new DynamicComparer<T>(
-					type,
-					sortExpression)));
+			Type referencedEntityType = referencedEntities[0].GetType();
 			
-			location.AbsoluteTotal = i;
+			Guid[] entityIDs = entityIDList.ToArray();
+					
+			Predicate matches = new MatchReferencesPredicate(Provider, typeof(T), propertyName, referencedEntityType, mirrorPropertyName, entityIDList.ToArray());
+
+			IObjectSet os = store.ObjectContainer.Query(matches,
+			                                            new DynamicComparer(
+					type,
+			                                            	sortExpression));
+			
+			page.AddRange(GetPage(os, location));
 			
 
 			//LogWriter.Debug("Absolute total objects: " + location.AbsoluteTotal);
@@ -619,18 +557,55 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		}
 		
 		/// <summary>
-		/// Retrieves the entities of the specified type from the data store.
+		/// Retrieves all the entities of the specified type with the specified property matching the provided value.
 		/// </summary>
-		/// <param name="propertyName">Name of the property to match.</param>
-		/// <param name="propertyValue">The value of the property to match.</param>
-		/// <returns>The entities of the specified type found in the data store.</returns>
+		/// <param name="propertyName">The name of the property to check the value of.</param>
+		/// <param name="propertyValue">The value to check for on the specified property.</param>
+		/// <returns>The entities that match the provided parameters.</returns>
 		public override IEntity[] GetEntities(Type type, string propertyName, object propertyValue)
 		{
-			return (IEntity[])Reflector.InvokeGenericMethod(this, // Source object
-			                                                "GetEntities", // Method name
-			                                                new Type[] {type}, // Generic types
-			                                                new object[] {propertyName, propertyValue}); // Method arguments);
+			Collection<IEntity> results = new Collection<IEntity>();
 			
+			//using (LogGroup logGroup = LogGroup.Start("Retrieving the entities of the specified type with a property matching the provided name and value.", NLog.LogLevel.Debug))
+			//{
+			
+			if (type == null)
+				throw new ArgumentNullException("type");
+			
+			if (propertyName == null || propertyName == String.Empty)
+				throw new ArgumentException("A property name must be provided.", "propertyName");
+			
+			if (!EntityState.IsType(type))
+				throw new ArgumentException("The provided '" + type.Name + "' type is not registered as a valid entity type.");
+						
+			//	LogWriter.Debug("Type: " + type.ToString());
+			//	LogWriter.Debug("Property name: " + propertyName);
+			//	LogWriter.Debug("Property value: " + (propertyValue == null ? "[null]" : propertyValue.ToString()));
+			
+			Db4oDataStore store = ((Db4oDataStore)GetDataStore(type));
+			
+			if (store != null)
+			{
+				if (store.ObjectContainer != null)
+				{
+					IQuery query = store.ObjectContainer.Query();
+					query.Constrain(type);
+					query.Descend(EntitiesUtilities.GetFieldName(type,propertyName))
+						.Constrain(propertyValue);
+					
+					IObjectSet os = query.Execute();
+					
+					while (os.HasNext())
+					{
+						results.Add((IEntity)os.Next());
+		}
+				}
+			}
+		
+			//	LogWriter.Debug("Entities #: " + results.Count.ToString());
+			
+			//}
+			return Release(results.ToArray());
 		}
 		
 		/// <summary>
@@ -666,21 +641,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 
 			IObjectSet os = query.Execute();
 
-			int i = 0;
-			//        os.Reset();
-
 			ArrayList page = new ArrayList();
-			while (os.HasNext())
-			{
-				if ((i >= location.PageIndex * location.PageSize) && (i < (location.PageIndex + 1) * location.PageSize))
-				{
-					page.Add(os.Next());
-				}
-				else
-					os.Next();
-				i++;
-			}
-			location.AbsoluteTotal = i;
+			
+			page.Add(GetPage(os, location));
+			
 			return Release((IEntity[])page.ToArray(type));
 		}
 		
@@ -752,33 +716,43 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			Collection<IEntity> list = new Collection<IEntity>();
 			
-			int i = 0;
+			IObjectSet os = null;
 			
 			if (store.DoesExist)
 			{
-				list.AddRange(
-					store.ObjectContainer.Query<IEntity>(
-						delegate(IEntity entity)
-						{
-							bool doesMatch = filterGroup.IsMatch(entity);
+				Predicate matches = new MatchFilterGroupPredicate(filterGroup);
 							
-							bool isInPage = location.IsInPage(i);
+				os = store.ObjectContainer.Query(matches,
+				                                 new DynamicComparer(
+				                                 	type,
+				                                 	sortExpression));
 							
-							if (doesMatch)
-								i++;
+				list.AddRange(GetPage(os, location));
+			}
 							
-							return doesMatch && isInPage;
-						},
-						new DynamicComparer<IEntity>(
-							type,
-							sortExpression)
-					)
-				);
+			return Release((IEntity[])list.ToArray(type));
+			}
+			
+		protected virtual IEntity[] GetPage(IObjectSet objectSet, PagingLocation location)
+		{
+			int i = 0;
+			
+			List<IEntity> list = new List<IEntity>();
+			
+			// Loop through each index in the object set
+			for (i = 0; i < objectSet.Count; i++)
+			{
+				// If it's not in the current page then skip it
+				if (location.IsInPage(i))
+				{
+					// Add the entity to the collection
+					list.Add((IEntity)objectSet[i]);
+				}
 			}
 			
 			location.AbsoluteTotal = i;
 			
-			return Release((IEntity[])list.ToArray(type));
+			return list.ToArray();
 		}
 		
 		/// <summary>
@@ -822,7 +796,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				if (store.DoesExist)
 				{
 					
-					entities = new List<IEntity>(store.ObjectContainer.Query<IEntity>(delegate(IEntity e)
+					
+					entities = new List<IEntity>(
+						store.ObjectContainer.Query<IEntity>(
+							delegate(IEntity e)
 					                                                                  {
 					                                                                  	LogWriter.Debug("Checking type " + e.GetType().ToString());
 					                                                                  	
@@ -942,8 +919,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				// Loop through each index in the object set
 				for (i = 0; i < os.Count; i++)
 				{
-					// ONLY execute during debug because it slows the indexing down by loading and instantiating every
-					// entity in the index, instead of only those on the current page as is intended
+					// ONLY execute during debug because it slows the indexing down
 					if (new ModeDetector().IsDebug)
 					{
 						LogWriter.Debug("At absolute position " + i + ": " + ((IEntity)os[i]).ToString());
@@ -971,82 +947,18 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		}
 		
 		/// <summary>
-		/// Retrieves all the entities of the specified type matching the specified values.
+		/// Retrieves all the entities of the specified type with the specified property matching the provided value.
 		/// </summary>
-		/// <param name="type">The type of entity to retrieve.</param>
-		/// <param name="parameters">The parameters to query with.</param>
+		/// <param name="propertyName">The name of the property to check the value of.</param>
+		/// <param name="propertyValue">The value to check for on the specified property.</param>
 		/// <returns></returns>
 		public override T[] GetEntities<T>(string propertyName, object propertyValue)
 		{
-			Collection<T> results = new Collection<T>();
-			
-			Type type = typeof(T);
-			
-			//using (LogGroup logGroup = LogGroup.Start("Retrieving the entities of the specified type with a property matching the provided name and value.", NLog.LogLevel.Debug))
-			//{
-			//	LogWriter.Debug("Type: " + type.ToString());
-			//	LogWriter.Debug("Property name: " + propertyName);
-			//	LogWriter.Debug("Property value: " + (propertyValue == null ? "[null]" : propertyValue.ToString()));
-			
-			Db4oDataStore store = ((Db4oDataStore)GetDataStore(type));
-			
-			if (store != null)
-			{
-				if (store.ObjectContainer != null)
-				{
-					IQuery query = store.ObjectContainer.Query();
-					query.Constrain(typeof(T));
-					query.Descend(EntitiesUtilities.GetFieldName(typeof(T),propertyName)).Constrain(propertyValue);
-					
-					IObjectSet os = query.Execute();
-					
-					while (os.HasNext())
-					{
-						results.Add((T)os.Next());
+			return Collection<T>.ConvertAll(GetEntities(typeof(T), propertyName, propertyValue));
 					}
-				}
-			}
 			
-			//	LogWriter.Debug("Entities #: " + results.Count.ToString());
 			
-			// TODO: See if performance can be improved by switching to SODA using the code below.
-			// Won't work because it can't pick up UniqueKeys, as they don't have a private field corresponding with them
-			/*
-				string fieldName = EntitiesUtilities.GetFieldName(type, propertyName);
-				LogWriter.Debug("Field name: " + fieldName);
 				
-				IQuery query = ((Db4oDataStore)GetDataStore(type)).ObjectContainer.Query();
-				query.Constrain(type).And(
-					query.Descend(fieldName).Constrain(propertyValue).Equal());
-				
-				IObjectSet os = query.Execute();
-				
-				while (os.HasNext())
-				{
-					object obj = os.Next();
-					if (type.IsAssignableFrom(obj.GetType()))
-					{
-						//object v = EntitiesUtilities.GetPropertyValue((IEntity)obj, propertyName);
-						
-						//if (propertyValue == v || (propertyValue != null && propertyValue.Equals(v)))
-						//{
-						LogWriter.Debug("Adding entity of type: " + obj.GetType().ToString() + " and with ID " + ((IEntity)obj).ID.ToString());
-						results.Add((IEntity)obj);
-						//}
-						//else
-						//	LogWriter.Error("Entity loaded when it doesn't match. Expected '" + propertyValue.ToString() + "' but was '" + v.ToString() + ".");
-					}
-					else
-						throw new InvalidOperationException("Invalid type found. Expected '" + type.ToString() + "' but was '" + obj.GetType().ToString() + "'.");
-				}
-			 */
-			//LogWriter.Debug("Results: " + results.Count.ToString());
-			//}
-			return Release<T>((T[])results.ToArray());
-		}
-		
-		
-		
 		/// <summary>
 		/// Applies the specified sort expression to the provided query.
 		/// </summary>

@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftwareMonkeys.SiteStarter.Configuration;
 using SoftwareMonkeys.SiteStarter.Entities;
 using System.Configuration;
 using System.Net.Mail;
@@ -42,16 +43,13 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 				try
 				{
-					User administrator = RetrieveStrategy.New<User>().Retrieve<User>("ID", Configuration.Config.Application.PrimaryAdministratorID);
+				string systemEmail = Config.Application.Settings.GetString("SystemEmail");
 					
-					if (administrator == null)
-						throw new Exception("The specified primary administrator could not be found.");
+				if (systemEmail == null || systemEmail == String.Empty)
+					return false;
 					
-					if (administrator.Email == null || administrator.Email == String.Empty)
-						throw new Exception("The primary administrator doesn't have an email address specified.");
-					
-					MailMessage message = new MailMessage(administrator.Email,
-					    administrator.Email,
+				MailMessage message = new MailMessage(systemEmail,
+				                                      systemEmail,
                         "Test Email",
                         "Test Worked!");
 

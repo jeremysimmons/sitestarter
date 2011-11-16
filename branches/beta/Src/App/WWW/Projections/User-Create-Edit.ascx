@@ -15,7 +15,9 @@
     {
         Initialize(typeof(User), DataForm, "Username");
         
+        if (QueryStrings.Action == "Create")
         CreateController.ActionOnSuccess = "Index";
+        else
         EditController.ActionOnSuccess = "Index";
     }
 
@@ -45,14 +47,15 @@
                                     <cc:EntityFormTextBoxItem runat="server" PropertyName="Username" TextBox-Width="400" FieldControlID="Username" IsRequired="true" text='<%# Resources.Language.Username + ":" %>' RequiredErrorMessage='<%# Resources.Language.UsernameRequired %>'></cc:EntityFormTextBoxItem>
                                     <cc:EntityFormPasswordItem runat="server" PropertyName="Password" TextBox-Width="400" FieldControlID="Password" IsRequired='<%# OperationManager.CurrentOperation == "CreateUser" %>' text='<%# Resources.Language.Password + ":" %>' RequiredErrorMessage='<%# Resources.Language.PasswordRequired %>'></cc:EntityFormPasswordItem>
                                      <cc:EntityFormPasswordConfirmItem runat="server" PropertyName="Password" AutoBind="false" TextBox-Width="400" FieldControlID="PasswordConfirm" IsRequired='<%# OperationManager.CurrentOperation == "CreateUser" %>' text='<%# Resources.Language.PasswordConfirm + ":" %>' CompareTo="Password" CompareToErrorMessage='<%# Resources.Language.PasswordsDontMatch %>'></cc:EntityFormPasswordConfirmItem>
-                                     <cc:EntityFormCheckBoxItem runat="server" PropertyName="IsApproved" Text='<%# Resources.Language.IsApproved + ":" %>' FieldControlID="IsApproved" TextBox-Text='<%# Resources.Language.IsApprovedNote %>'></cc:EntityFormCheckBoxItem>
-                                      <cc:EntityFormCheckBoxItem runat="server" PropertyName="IsLockedOut" Text='<%# Resources.Language.IsLockedOut + ":" %>' FieldControlID="IsLockedOut" TextBox-Text='<%# Resources.Language.IsLockedOutNote %>'></cc:EntityFormCheckBoxItem>
+                                     <cc:EntityFormCheckBoxItem visible='<%# Authorisation.IsInRole("Administrator") %>' runat="server" PropertyName="IsApproved" Text='<%# Resources.Language.IsApproved + ":" %>' FieldControlID="IsApproved" TextBox-Text='<%# Resources.Language.IsApprovedNote %>'></cc:EntityFormCheckBoxItem>
+                                      <cc:EntityFormCheckBoxItem visible='<%# Authorisation.IsInRole("Administrator") %>' runat="server" PropertyName="IsLockedOut" Text='<%# Resources.Language.IsLockedOut + ":" %>' FieldControlID="IsLockedOut" TextBox-Text='<%# Resources.Language.IsLockedOutNote %>'></cc:EntityFormCheckBoxItem>
                                       <cc:EntityFormCheckBoxItem runat="server" PropertyName="EnableNotifications" Text='<%# Resources.Language.EnableNotifications + ":" %>' FieldControlID="EnableNotifications" TextBox-Text='<%# Resources.Language.EnableNotifications %>'></cc:EntityFormCheckBoxItem>
-                                      <cc:EntityFormItem runat="server" PropertyName="Roles" FieldControlID="UserRoles" ControlValuePropertyName="SelectedEntities"
+                                      <cc:EntityFormItem visible='<%# Authorisation.IsInRole("Administrator") %>' runat="server" PropertyName="Roles" FieldControlID="UserRoles" ControlValuePropertyName="SelectedEntities"
                               text='<%# Resources.Language.Roles + ":" %>'>
                               <FieldTemplate>
                                   <cc:EntitySelect width="400" EntityType="SoftwareMonkeys.SiteStarter.Entities.UserRole, SoftwareMonkeys.SiteStarter.Entities" runat="server"
                                       TextPropertyName='Name' id="UserRoles" DisplayMode="Multiple" SelectionMode="Multiple"
+                                      ReferenceSource='<%# DataSource %>' ReferenceProperty="Roles"
                                       NoDataText='<%# "-- " + Resources.Language.NoRoles + " --" %>' OnDataLoading='UserRolesSelect_DataLoading'>
                                   </cc:EntitySelect>
                                     </FieldTemplate>

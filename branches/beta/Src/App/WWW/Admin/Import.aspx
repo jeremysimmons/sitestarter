@@ -27,7 +27,8 @@
         {
             if (!IsPostBack)
             {
-				using (TimeoutExtender extender = TimeoutExtender.NewMinutes(30))
+            	// Set a long timeout because the import process can take a long time especially if there's a lot of data
+				using (TimeoutExtender extender = TimeoutExtender.NewMinutes(120))
 				{
 					Import();
 				}

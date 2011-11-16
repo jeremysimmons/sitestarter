@@ -96,7 +96,7 @@
                                     <td colspan="2" class="Heading2"><%# Resources.Language.WebSiteSettings %></td>
                                 </tr>
                                  <tr>
-                                    <td class="FieldLabel">&nbsp;&nbsp;&nbsp;<%# Resources.Language.Title + ":"%></td>
+                                    <td class="FieldLabel"><%# Resources.Language.Title + ":"%></td>
                                     <td class="Field">
                                     <asp:TextBox runat="server" ID="ApplicationTitle" CssClass="Form" width="400px" Text='<%# Config.Application.Title %>' /></td>
                                 </tr>

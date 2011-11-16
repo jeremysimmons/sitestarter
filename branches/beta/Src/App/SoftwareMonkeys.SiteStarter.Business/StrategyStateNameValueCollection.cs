@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using SoftwareMonkeys.SiteStarter.Business.Security;
 using SoftwareMonkeys.SiteStarter.State;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 
@@ -7,7 +9,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// <summary>
 	/// Holds a name/value collection of strategies in state.
 	/// </summary>
-	public class StrategyStateNameValueCollection : StateNameValueCollection<StrategyInfo>
+	public class StrategyStateNameValueCollection : StateNameValueCollection<StrategyInfo>, IEnumerable
 	{
 		/// <summary>
 		/// Gets/sets the strategy for the specifid action and type.
@@ -51,7 +53,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			foreach (StrategyInfo strategy in strategies)
 			{
-				SetStrategy(strategy.Action, strategy.TypeName, strategy);
+				Add(strategy);
 			}
 		}
 		
@@ -64,9 +66,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			if (strategy == null)
 				throw new ArgumentNullException("strategy");
 			
-			string key = GetStrategyKey(strategy.Action, strategy.TypeName);
-			
-			this[key] = strategy;
+			this[strategy.Key] = strategy;
 		}
 		
 		
@@ -104,6 +104,11 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns>The strategy matching the provided action and type.</returns>
 		public StrategyInfo GetStrategy(string action, string typeName)
 		{
+			return GetStrategy(action, typeName, true);
+		}
+		
+		public StrategyInfo GetStrategy(string action, string typeName, bool throwErrorIfNotFound)
+		{
 			StrategyInfo foundStrategy = null;
 			
 			using (LogGroup logGroup = LogGroup.Start("Retrieving the strategy for performing the action '" + action + "' with the type '" + typeName + "'.", NLog.LogLevel.Debug))
@@ -112,7 +117,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				
 				foundStrategy = locator.Locate(action, typeName);
 				
-				if (foundStrategy == null)
+				if (foundStrategy == null && throwErrorIfNotFound)
 					throw new StrategyNotFoundException(action, typeName);
 			}
 			
@@ -127,20 +132,12 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="strategy">The strategy that corresponds with the specified action and type.</param>
 		public void SetStrategy(string action, string type, StrategyInfo strategy)
 		{
-			this[GetStrategyKey(action, type)] = strategy;
+			this[StrategyInfo.GetStrategyKey(action, type)] = strategy;
 		}
 
-		/// <summary>
-		/// Retrieves the key for the specifid action and type.
-		/// </summary>
-		/// <param name="action"></param>
-		/// <param name="type"></param>
-		/// <returns></returns>
-		public string GetStrategyKey(string action, string type)
+		public bool Contains(string action, string type)
 		{
-			string fullKey = action + "_" + type;
-			
-			return fullKey;
+			return GetStrategy(action, type, false) != null;
 		}
 	}
 }

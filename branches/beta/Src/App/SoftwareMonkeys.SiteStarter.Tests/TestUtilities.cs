@@ -50,59 +50,6 @@ namespace SoftwareMonkeys.SiteStarter.Tests
 			// The whole testing directory gets deleted so this is skipped
 		}
 
-		/*static public void ClearTestEntities()
-		{
-			TestArticle.RegisterType();
-			TestArticlePage.RegisterType();
-			TestCategory.RegisterType();
-			TestUser.RegisterType();
-			TestRole.RegisterType();
-			TestEntity.RegisterType();
-			EntityOne.RegisterType();
-			EntityTwo.RegisterType();
-			EntityThree.RegisterType();
-			EntityFour.RegisterType();
-			TestSample.RegisterType();
-			
-			Type[] types = new Type[] {
-				typeof(TestArticle),
-				typeof(TestArticlePage),
-				typeof(TestCategory),
-				typeof(TestUser),
-				typeof(TestRole),
-				typeof(TestEntity),
-				typeof(EntityOne),
-				typeof(EntityTwo),
-				typeof(EntityThree),
-				typeof(EntityFour),
-				typeof(TestSample)
-			};
-
-			Collection<IEntity> entities = new Collection<IEntity>();
-			foreach (Type type in types)
-				entities.Add(DataAccess.Data.Indexer.GetEntities(type));
-
-			foreach (IEntity entity in entities)
-			{
-				DataAccess.Data.Deleter.Delete(entity);
-			}
-			
-			foreach (EntityIDReference r in DataAccess.Data.Referencer.GetReferences("TestUser", "TestRole"))
-			{
-				DataAccess.Data.Deleter.Delete(r);
-			}
-			
-			foreach (EntityIDReference r in DataAccess.Data.Referencer.GetReferences("TestArticle", "TestArticlePage"))
-			{
-				DataAccess.Data.Deleter.Delete(r);
-			}
-			foreach (EntityIDReference r in DataAccess.Data.Referencer.GetReferences("TestArticle", "TestCategory"))
-			{
-				DataAccess.Data.Deleter.Delete(r);
-			}
-		}*/
-		
-		
 		static public void CreateDummyReferences(int count)
 		{
 			EntityReference reference = new EntityReference();

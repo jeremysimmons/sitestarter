@@ -17,6 +17,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	{
 		public RegisterUserController()
 		{
+			ActionOnSuccess = "Details";
 		}
 		
 		public override bool ExecuteSave(User user)
@@ -63,15 +64,5 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			if (((User)DataSource).IsApproved)
 				Navigator.Current.Go("Details", "User");
 		}
-		
-		public override bool AuthoriseStrategies()
-		{
-			return Security.Authorisation.UserCan("Register", TypeName);
 		}
-		
-		public override bool AuthoriseStrategies(IEntity entity)
-		{
-			return Security.Authorisation.UserCan("Create", entity);
 		}
-	}
-}

@@ -61,13 +61,21 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				if (!Directory.Exists(Path.GetDirectoryName(path)))
 					Directory.CreateDirectory(Path.GetDirectoryName(path));
 				
+				try
+				{
 				using (StreamWriter writer = File.CreateText(path))
 				{
-					XmlSerializer serializer = new XmlSerializer(typeof(StrategyInfo));
+					XmlSerializer serializer = new XmlSerializer(strategy.GetType());
 					
 					serializer.Serialize(writer, strategy);
+					
 					writer.Close();
 				}
+			}
+				catch (Exception ex)
+				{
+					throw new Exception("Failed to save strategy info to file '" + path + "'.", ex);
+		}
 			}
 		}
 		

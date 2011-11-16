@@ -60,8 +60,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				article.Categories = new TestCategory[] {category};
 				
-				DataAccess.Data.Saver.Save(article);
 				DataAccess.Data.Saver.Save(category);
+				DataAccess.Data.Saver.Save(article);
 				
 				ReferenceFilter filter = (ReferenceFilter)DataAccess.Data.CreateFilter(typeof(ReferenceFilter));
 				filter.Operator = FilterOperator.Equal;
@@ -99,10 +99,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				article.Categories = new TestCategory[] {category};
 				article2.Categories = new TestCategory[] {category2};
 				
-				DataAccess.Data.Saver.Save(article2);
 				DataAccess.Data.Saver.Save(category2);
-				DataAccess.Data.Saver.Save(article);
 				DataAccess.Data.Saver.Save(category);
+				DataAccess.Data.Saver.Save(article);
+				DataAccess.Data.Saver.Save(article2);
 				
 				ReferenceFilter filter = (ReferenceFilter)DataAccess.Data.CreateFilter(typeof(ReferenceFilter));
 				filter.Operator = FilterOperator.Equal;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using SoftwareMonkeys.SiteStarter.Entities;
 
 namespace SoftwareMonkeys.SiteStarter.Data
 {
@@ -101,5 +102,17 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		public BatchState()
 		{
 		}
+		
+		/// <summary>
+		/// Queues the provided entity to be updated when the batch ends.
+		/// </summary>
+		/// <param name="entity"></param>
+		static public void QueueUpdate(IEntity entity)
+		{
+			if (Batches.Count == 0)
+				throw new InvalidOperationException("No batch has been started.");
+			
+			Batches.ToArray()[0].QueueUpdate(entity);
 	}
+}
 }

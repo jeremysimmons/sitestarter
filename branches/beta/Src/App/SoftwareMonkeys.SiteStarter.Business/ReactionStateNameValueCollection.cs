@@ -10,6 +10,19 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// </summary>
 	public class ReactionStateNameValueCollection : StateNameValueCollection<ReactionInfo[]>
 	{
+		public new ReactionInfoCollection this[string key]
+		{
+			get {
+				if (base.ContainsKey(key))
+					return new ReactionInfoCollection(base[key]);
+				else
+					return new ReactionInfoCollection();
+			}
+			set {
+				base[key] = value.ToArray();
+			}
+		}
+		
 		/// <summary>
 		/// Gets/sets the reaction for the specifid action and type.
 		/// </summary>
@@ -52,7 +65,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			foreach (ReactionInfo reaction in reactions)
 			{
-				SetReactions(reaction.Action, reaction.TypeName, reactions);
+				SetReaction(reaction.Action, reaction.TypeName, reaction);
 			}
 		}
 		
@@ -67,11 +80,14 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			string key = GetReactionsKey(reaction.Action, reaction.TypeName);
 			
-			ReactionInfoCollection list = new ReactionInfoCollection(this[key]);
+			ReactionInfoCollection list = new ReactionInfoCollection();
+			
+			if (ContainsKey(key))
+				list.AddRange(this[key]);
 			
 			list.Add(reaction);
 			
-			this[key] = list.ToArray();
+			this[key] = list;
 		}
 		
 		
@@ -123,7 +139,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				if (typeName == String.Empty)
 					throw new ArgumentException("A type name must be provided other than String.Empty.", "typeName");
 				
-				
 				ReactionLocator locator = new ReactionLocator(this);
 				
 				foundReactions = locator.Locate(action, typeName);
@@ -136,11 +151,11 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		}
 
 		/// <summary>
-		/// Sets the reaction with the provided action and type.
+		/// Sets the reactions with the provided action and type.
 		/// </summary>
 		/// <param name="action">The action that the reaction performs.</param>
 		/// <param name="type">The type of entity involved in the reaction</param>
-		/// <param name="reaction">The reaction that corresponds with the specified action and type.</param>
+		/// <param name="reactions">The reactions that correspond with the specified action and type.</param>
 		public void SetReactions(string action, string type, ReactionInfoCollection reactions)
 		{
 			if (reactions == null)
@@ -150,13 +165,30 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		}
 		
 		/// <summary>
+		/// Sets the reactions with the provided action and type.
+		/// </summary>
+		/// <param name="action">The action that the reaction performs.</param>
+		/// <param name="type">The type of entity involved in the reaction</param>
+		/// <param name="reactions">The reactions that correspond with the specified action and type.</param>
+		public void SetReactions(string action, string type, ReactionInfo[] reactions)
+		{
+			this[GetReactionsKey(action, type)] = new ReactionInfoCollection(reactions);
+		}
+		
+		/// <summary>
 		/// Sets the reaction with the provided action and type.
 		/// </summary>
 		/// <param name="action">The action that the reaction performs.</param>
 		/// <param name="type">The type of entity involved in the reaction</param>
 		/// <param name="reaction">The reaction that corresponds with the specified action and type.</param>
-		public void SetReactions(string action, string type, ReactionInfo[] reactions)
+		public void SetReaction(string action, string type, ReactionInfo reaction)
 		{
+			ReactionInfoCollection reactions = new ReactionInfoCollection();
+			
+			reactions.AddRange(this[GetReactionsKey(action, type)]);
+			
+			reactions.Add(reaction);
+			
 			this[GetReactionsKey(action, type)] = reactions;
 		}
 
@@ -171,6 +203,12 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			string fullKey = action + "_" + type;
 			
 			return fullKey;
+		}
+		
+		public void Remove(ReactionInfoCollection reactions)
+		{
+			if (reactions != null)
+				Remove(reactions.ToArray());
 		}
 		
 		public new ReactionInfo[] ToArray()

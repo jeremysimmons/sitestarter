@@ -1,5 +1,6 @@
 ﻿using System;
 using SoftwareMonkeys.SiteStarter.Data.Tests;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Entities.Tests;
 using SoftwareMonkeys.SiteStarter.Entities;
 using NUnit.Framework;
@@ -36,9 +37,10 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		{
 			string testsAssemblyPath = Assembly.Load("SoftwareMonkeys.SiteStarter.Tests").Location;
 			string entitiesAssemblyPath = Assembly.Load("SoftwareMonkeys.SiteStarter.Entities").Location;
+			string entitiesTestsAssemblyPath = Assembly.Load("SoftwareMonkeys.SiteStarter.Entities.Tests").Location;
 			string businessTestsAssemblyPath = Assembly.Load("SoftwareMonkeys.SiteStarter.Business.Tests").Location;
 			
-			string[] assemblyPaths = new String[] {testsAssemblyPath, entitiesAssemblyPath, businessTestsAssemblyPath};
+			string[] assemblyPaths = new String[] {testsAssemblyPath, entitiesAssemblyPath, entitiesTestsAssemblyPath, businessTestsAssemblyPath};
 			
 			EntityInitializer initializer = new EntityInitializer();
 			
@@ -50,6 +52,8 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		
 		public virtual void InitializeMockBusiness()
 		{
+			using (LogGroup logGroup = LogGroup.StartDebug("Initializing mock business tier."))
+			{
 			if (EnableBusinessState)
 			{
 				string businessAssemblyPath = Assembly.Load("SoftwareMonkeys.SiteStarter.Business").Location;
@@ -80,6 +84,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 				
 				reactionsInitializer.Initialize(true);
 			}
+		}
 		}
 		
 		public void DisposeMockBusiness()

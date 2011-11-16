@@ -74,6 +74,7 @@
     <Compile Include="BatchState.cs" />
     <Compile Include="DataActivator.cs" />
     <Compile Include="DataAdapter.cs" />
+    <Compile Include="DataCounter.cs" />
     <Compile Include="DataExporter.cs" />
     <Compile Include="DataDeleter.cs" />
     <Compile Include="DataImporter.cs" />
@@ -90,6 +91,7 @@
     <Compile Include="EntityFileNamer.cs" />
     <Compile Include="IDataActivator.cs" />
     <Compile Include="IDataAdapter.cs" />
+    <Compile Include="IDataCounter.cs" />
     <Compile Include="IDataExporter.cs" />
     <Compile Include="IDataDeleter.cs" />
     <Compile Include="DataAccess.cs" />

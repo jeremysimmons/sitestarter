@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using SoftwareMonkeys.SiteStarter.Entities;
 
 namespace SoftwareMonkeys.SiteStarter.Data
 {
@@ -46,6 +47,16 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			if (Committed != null)
 				Committed(this, EventArgs.Empty);
+		}
+		
+		private IEntity[] pendingUpdate = new IEntity[]{};
+		/// <summary>
+		/// Gets/sets the entities pending update when the batch ends.
+		/// </summary>
+		public IEntity[] PendingUpdate
+		{
+			get { return pendingUpdate; }
+			set { pendingUpdate = value; }
 		}
 		
 		/// <summary>
@@ -98,12 +109,6 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			}
 		}
 		
-		/*public void Handle(IDataStore store)
-		{
-			if (!DataStores.Contains(store))
-				DataStores.Add(store);
-		}*/
-		
 		/// <summary>
 		/// Commits and disposes the batch.
 		/// </summary>
@@ -112,6 +117,11 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			using (LogGroup logGroup = LogGroup.Start("Disposing the batch and finishing operations.", LogLevel.Debug))
 			{
+				foreach (IEntity entity in PendingUpdate)
+				{
+					DataAccess.Data.Activator.Activate(entity);
+					DataAccess.Data.Updater.Update(entity);
+				}
 				
 				// Get rid of this batch and all others within it from the stack
 				while (BatchState.Batches.Contains(this))
@@ -126,5 +136,12 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			
 			base.Dispose(disposing);
 		}
+		
+		public void QueueUpdate(IEntity entity)
+		{
+			List<IEntity> entities = new List<IEntity>(PendingUpdate);
+			entities.Add(entity);
+			PendingUpdate = entities.ToArray();
 	}
+}
 }

@@ -111,8 +111,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			List<StrategyInfo> strategies = new List<StrategyInfo>();
 			
-			//using (LogGroup logGroup = LogGroup.Start("Finding strategies by scanning the attributes of the available type.", NLog.LogLevel.Debug))
-			//{
+			using (LogGroup logGroup = LogGroup.Start("Finding strategies by scanning the attributes of the available type.", NLog.LogLevel.Debug))
+			{
 			foreach (string assemblyPath in AssemblyPaths)
 			{
 				Assembly assembly = Assembly.LoadFrom(assemblyPath);
@@ -136,26 +136,29 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					{
 						if (IsStrategy(type))
 						{
-							//LogWriter.Debug("Found strategy type: " + type.ToString());
-							
+								using (LogGroup logGroup2 = LogGroup.StartDebug("Found strategy type: " + type.ToString()))
+								{
 							foreach (StrategyInfo strategyInfo in  StrategyInfo.ExtractInfo(type))
 							{
 								if (strategyInfo.TypeName != null && strategyInfo.TypeName != String.Empty
 								    && strategyInfo.Action != null && strategyInfo.Action != String.Empty)
 								{
-									//LogWriter.Debug("Found match.");
+											LogWriter.Debug("Found match.");
 									
-									//LogWriter.Debug("Type name: " + strategyInfo.TypeName);
-									//LogWriter.Debug("Action: " + strategyInfo.Action);
+											LogWriter.Debug("Type name: " + strategyInfo.TypeName);
+											LogWriter.Debug("Action: " + strategyInfo.Action);
 									
 									strategies.Add(strategyInfo);
 								}
+										else
+											LogWriter.Debug("Not all necessary properties were set. Skipping.");
 							}
 						}
 					}
 				}
 			}
-			//}
+				}
+			}
 			
 			return strategies.ToArray();
 		}
@@ -172,9 +175,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			bool isNotAbstract = false;
 			bool hasAttribute = false;
 			
-			//using (LogGroup logGroup = LogGroup.Start("Checks whether the provided type is a strategy.", NLog.LogLevel.Debug))
-			//{
-			//	LogWriter.Debug("Type: " + type.ToString());
+			using (LogGroup logGroup = LogGroup.Start("Checks whether the provided '" + type.FullName + "' type is a strategy.", NLog.LogLevel.Debug))
+			{
+				LogWriter.Debug("Type: " + type.ToString());
 			
 			matchesInterface = typeof(IStrategy).IsAssignableFrom(type)
 				|| type.GetInterface("IStrategy") != null;
@@ -183,11 +186,23 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			isNotAbstract = (!type.IsAbstract);
 			
-			hasAttribute = type.GetCustomAttributes(typeof(StrategyAttribute), true).Length > 0;
+				hasAttribute = false;
 			
-			//	LogWriter.Debug("Matches interface: " + matchesInterface);
-			//	LogWriter.Debug("Is not strategy interface: " + isNotInterface);
-			//}
+				foreach (Attribute attribute in type.GetCustomAttributes(false))
+				{
+					// If the attribute is a StrategyAttribute
+					if (attribute is StrategyAttribute
+					    // Or a sub class of StrategyAttribute
+					    || attribute.GetType().IsSubclassOf(typeof(StrategyAttribute)))
+					{
+						hasAttribute = true;
+					}
+				}
+			
+				LogWriter.Debug("Has attribute: " + hasAttribute);
+				LogWriter.Debug("Matches interface: " + matchesInterface);
+				LogWriter.Debug("Is not strategy interface: " + isNotInterface);
+			}
 			
 			return matchesInterface
 				&& isNotInterface

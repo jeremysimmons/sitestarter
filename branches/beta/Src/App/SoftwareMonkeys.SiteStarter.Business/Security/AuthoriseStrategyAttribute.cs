@@ -21,5 +21,8 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		{
 			RestrictedAction = restrictedAction;
 		}
+		
+		public AuthoriseStrategyAttribute()
+		{}
 	}
 }

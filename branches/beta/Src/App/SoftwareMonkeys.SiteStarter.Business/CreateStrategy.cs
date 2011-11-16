@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Business.Security;
 
@@ -32,16 +33,31 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			IEntity entity = (IEntity)Activator.CreateInstance(type);
 			
+			if (entity == null)
+				throw new Exception("Failed to create instance of '" + type.Name + "'.");
+			
 			if (RequireAuthorisation)
 				AuthoriseCreateStrategy.New(TypeName).EnsureAuthorised(entity);
 			
-			// Assign an activation strategy
-			entity.Activator = ActivateStrategy.New(entity);
+			AssignValidator(entity);
 			
-			// Assign a validation strategy
-			entity.Validator = ValidateStrategy.New(entity);
+			AssignActivator(entity);
+			
+			React(entity);
 			
 			return entity;
+		}
+		
+		public virtual void AssignValidator(IEntity entity)
+		{
+			// Assign a validation strategy
+			entity.Validator = ValidateStrategy.New(entity);
+		}
+			
+		public virtual void AssignActivator(IEntity entity)
+		{
+			// Assign an activation strategy
+			entity.Activator = ActivateStrategy.New(entity);
 		}
 		
 		#region New functions

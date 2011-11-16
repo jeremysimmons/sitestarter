@@ -68,8 +68,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				user.Roles = new TestRole[]{role};
 				
-				DataAccess.Data.Saver.Save(user);
 				DataAccess.Data.Saver.Save(role);
+				DataAccess.Data.Saver.Save(user);
 				
 				ReferenceFilter filter = (ReferenceFilter)DataAccess.Data.CreateFilter(typeof(ReferenceFilter));
 				filter.PropertyName = "Roles";
@@ -162,8 +162,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				user.Roles = new TestRole[]{role};
 				
-				DataAccess.Data.Saver.Save(user);
 				DataAccess.Data.Saver.Save(role);
+				DataAccess.Data.Saver.Save(user);
 				
 				ReferenceFilter filter = (ReferenceFilter)DataAccess.Data.CreateReferenceFilter();
 				filter.PropertyName = "Roles";
@@ -218,8 +218,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				user.Roles = new TestRole[]{role};
 				
-				DataAccess.Data.Saver.Save(user);
 				DataAccess.Data.Saver.Save(role);
+				DataAccess.Data.Saver.Save(user);
 				
 				ReferenceFilter filter = (ReferenceFilter)DataAccess.Data.CreateReferenceFilter();
 				filter.PropertyName = "Roles";
@@ -272,15 +272,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				article.Categories = new TestCategory[] { category };
 				
-				DataAccess.Data.Saver.Save(article);
 				DataAccess.Data.Saver.Save(category);
-				
-				
+				DataAccess.Data.Saver.Save(article);
 				
 				IEntity[] results = DataAccess.Data.Indexer.GetEntitiesWithReference<TestArticle>("Categories", typeof(TestCategory), category.ID);
 				
 				Assert.IsNotNull(results, "The results were null.");
-				
 				
 				if (results != null)
 				{
@@ -290,9 +287,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 					
 					Assert.AreEqual(article.GetType().FullName, entity.GetType().FullName, "The types don't match.");
 				}
-				
-				DataAccess.Data.Deleter.Delete(article);
-				DataAccess.Data.Deleter.Delete(category);
 			}
 		}
 		
@@ -320,11 +314,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				article.Categories = new TestCategory[] { category2 };
 				article2.Categories = new TestCategory[] { category };
 				
-				DataAccess.Data.Saver.Save(article);
-				DataAccess.Data.Saver.Save(article2);
 				DataAccess.Data.Saver.Save(category);
 				DataAccess.Data.Saver.Save(category2);
 				
+				DataAccess.Data.Saver.Save(article);
+				DataAccess.Data.Saver.Save(article2);
 				
 				IEntity[] categories = new TestCategory[] { category, category2 };
 				
@@ -389,7 +383,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		
 
 		[Test]
-		public void Test_GetEntitiesPageMatchReference()
+		public virtual void Test_GetEntitiesPageMatchReference()
 		{
 			using (LogGroup logGroup = LogGroup.Start("Testing the GetEntitiesPageMatchReference function to ensure it finds entities properly.", NLog.LogLevel.Debug))
 			{
@@ -436,11 +430,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 					
 					Assert.AreEqual(article.GetType().FullName, entity.GetType().FullName, "The types don't match.");
 				}
-				
-				DataAccess.Data.Deleter.Delete(article);
-				DataAccess.Data.Deleter.Delete(category);
-				DataAccess.Data.Deleter.Delete(article2);
-				DataAccess.Data.Deleter.Delete(category2);
 			}
 		}
 		
@@ -518,8 +507,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				if (found != null)
 					Assert.AreEqual(1, found.Length, "Entities weren't retrieved properly.");
 				
-				
-				DataAccess.Data.Deleter.Delete(e1);
 			}
 		}
 		
@@ -888,12 +875,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				Guid roleID = role.ID = Guid.NewGuid();
 				role.Name = "Test Role";
 				
-				
 				user.Roles = Collection<TestRole>.Add(user.Roles, role);
 				
-				DataAccess.Data.Saver.Save(user);
-				
 				DataAccess.Data.Saver.Save(role);
+				DataAccess.Data.Saver.Save(user);
 				
 				
 				PagingLocation location = new PagingLocation(0, 10);
