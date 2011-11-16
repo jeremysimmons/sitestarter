@@ -19,20 +19,15 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			using (LogGroup logGroup = LogGroup.Start("Trying to open a data server.", NLog.LogLevel.Debug))
 			{
 				IServerConfiguration configuration = Db4oClientServer.NewServerConfiguration();
+								
+				configuration.Common.ObjectClass(typeof(IEntity)).ObjectField("id").Indexed(true);
 				
-				/*configuration.ActivationDepth(2);
-				configuration.UpdateDepth(0);
-				
-				configuration.ObjectClass(typeof(IEntity)).ObjectField("id").Indexed(true);
-				
-				configuration.ObjectClass(typeof(EntityIDReference)).ObjectField("property1Name").Indexed(true);
-				configuration.ObjectClass(typeof(EntityIDReference)).ObjectField("type1Name").Indexed(true);
-				configuration.ObjectClass(typeof(EntityIDReference)).ObjectField("entity1ID").Indexed(true);
-				configuration.ObjectClass(typeof(EntityIDReference)).ObjectField("property2Name").Indexed(true);
-				configuration.ObjectClass(typeof(EntityIDReference)).ObjectField("type2Name").Indexed(true);
-				configuration.ObjectClass(typeof(EntityIDReference)).ObjectField("entity2ID").Indexed(true);
-				*/
-				//configuration.AutomaticShutDown(false);
+				configuration.Common.ObjectClass(typeof(EntityReference)).ObjectField("property1Name").Indexed(true);
+				configuration.Common.ObjectClass(typeof(EntityReference)).ObjectField("type1Name").Indexed(true);
+				configuration.Common.ObjectClass(typeof(EntityReference)).ObjectField("entity1ID").Indexed(true);
+				configuration.Common.ObjectClass(typeof(EntityReference)).ObjectField("property2Name").Indexed(true);
+				configuration.Common.ObjectClass(typeof(EntityReference)).ObjectField("type2Name").Indexed(true);
+				configuration.Common.ObjectClass(typeof(EntityReference)).ObjectField("entity2ID").Indexed(true);
 				
 				LogWriter.Debug("Full file name: " + yapFilePath);
 				
