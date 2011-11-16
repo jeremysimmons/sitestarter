@@ -140,7 +140,8 @@
 	        <exclude name="**.pidb"/>
 	        <exclude name="**.cache"/>
 	        <exclude name="**.nunit"/>
-	        <exclude name="**/TestResults/"/>
+	        <exclude name="**/TestResults/Logs"/>
+	        <exclude name="**/TestResults/xml"/>
 	        <exclude name="**/FunctionalTests/Results/**"/>
 	        <exclude name="**.jar"/>
 	        <include name="**/${Solution.Alias}/**" />
@@ -255,8 +256,8 @@
 	        <exclude name="**.nant"/>
 	        <exclude name="**/tests/**"/>
 	        <exclude name="**.jar"/>
-	        <exclude name="**.WebDriver.dll"/>
-	        <exclude name="*MockCreate.ascx"/><!-- Exclude the mock/test create projections -->
+	        <exclude name="*.WebDriver.dll"/>
+	        <exclude name="*MockCreate*"/><!-- Exclude the mock/test create projections -->
 	        <exclude name="**/FunctionalTests/Results/**"/>
 	        <include name="${IncludeKey}" />
 	    </fileset>	   

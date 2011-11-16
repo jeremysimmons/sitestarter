@@ -1,8 +1,7 @@
 <?xml version="1.0"?>
 <project name="Common.Jobs.BackupFiles" default="Common.Jobs.BackupFiles" xmlns="http://nant.sf.net/schemas/nant.xsd">
 
-	
-<target name="Common.Jobs.BackupFiles">
+	<target name="Common.Jobs.BackupFiles">
 
    		<loadtasks>		
 		            <fileset>
@@ -10,83 +9,103 @@
 		            </fileset>
 		</loadtasks> 
     	
-    	<xmlpeek
+    		<xmlpeek
 		    file="${Project.PropertiesPath}"
 		    xpath="/x:project/x:property[@name = 'Project.Name']/@value"
 		    property="Project.Name">
 		        <namespaces>
         			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
     			</namespaces>
-    	</xmlpeek>
+    		</xmlpeek>
     	
     	
-    	<xmlpeek
-		    file="${Project.PropertiesPath}"
-		    xpath="/x:project/x:property[@name = 'Project.Name']/@value"
-		    property="Project.Name">
+    		<xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.Name']/@value"
+		    property="Solution.Name">
 		        <namespaces>
         			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
     			</namespaces>
-    	</xmlpeek>
+    		</xmlpeek>
     	
     	    	
     	
-    	<xmlpeek
+    		<xmlpeek
 		    file="${Project.PropertiesPath}"
 		    xpath="/x:project/x:property[@name = 'Project.CompanyName']/@value"
 		    property="Project.CompanyName">
 		        <namespaces>
         			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
     			</namespaces>
-    	</xmlpeek>
+    		</xmlpeek>
 
-    	<xmlpeek
+    		<xmlpeek
 		    file="${Solution.PropertiesPath}"
 		    xpath="/x:project/x:property[@name = 'Solution.VirtualDirectoryName']/@value"
 		    property="Solution.VirtualDirectoryName">
 		        <namespaces>
         			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
     			</namespaces>
-    	</xmlpeek>
+    		</xmlpeek>
 
+    		<property name="Solution.Branch" value="trunk" />    	
+
+    		<xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.Branch']/@value"
+		    property="Solution.Branch"
+			failonerror="false">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    		</xmlpeek>
+
+    		<xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.VersionMode']/@value"
+		    property="Solution.VersionMode">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    		</xmlpeek>
+
+    		<property name="Backup.PropertiesPath" value="${path::combine(Project.RootPath, Project.Name + '.Backup.nant')}" />    	
     	
-    	<property name="Backup.PropertiesPath" value="${path::combine(Project.RootPath, Project.Name + '.Backup.nant')}" />    	
+    		<if test="${file::exists(Backup.PropertiesPath) == false}">	
+	    		<property name="Backup.PropertiesPath" value="${path::get-full-path(path::combine(path::combine(path::combine(Project.RootPath, '..'), '..'), 'Projects.Backup.nant'))}" />   
+    		</if>
     	
-    	<if test="${file::exists(Backup.PropertiesPath) == false}">	
-	    	<property name="Backup.PropertiesPath" value="${path::get-full-path(path::combine(path::combine(path::combine(Project.RootPath, '..'), '..'), 'Projects.Backup.nant'))}" />   
-    	</if>
+    		<property name="Backup.Timestamp" value="${datetime::get-year(datetime::now())}-${datetime::get-month(datetime::now())}-${datetime::get-day(datetime::now())}--${datetime::get-hour(datetime::now())}-${datetime::get-minute(datetime::now())}-${datetime::get-second(datetime::now())}"/>
     	
-    	<property name="Backup.Timestamp" value="${datetime::get-year(datetime::now())}-${datetime::get-month(datetime::now())}-${datetime::get-day(datetime::now())}--${datetime::get-hour(datetime::now())}-${datetime::get-minute(datetime::now())}-${datetime::get-second(datetime::now())}"/>
-    	
-    	<if test="${file::exists(Backup.PropertiesPath)}">
-	    	<echo message="Backup properties path: ${Backup.PropertiesPath}"/>
+    		<if test="${file::exists(Backup.PropertiesPath)}">
+	    		<echo message="Backup properties path: ${Backup.PropertiesPath}"/>
 	    	
-	    	<xmlpeek
+	    		<xmlpeek
 			    file="${Backup.PropertiesPath}"
 			    xpath="/x:project/x:property[@name = 'Backup.ExternalPath.Net']/@value"
 			    property="Backup.ExternalPath.Net">
 			        <namespaces>
 	        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
 	    			</namespaces>
-	    	</xmlpeek>
+	    		</xmlpeek>
 	    	
-	    	<xmlpeek
+	    		<xmlpeek
 			    file="${Backup.PropertiesPath}"
 			    xpath="/x:project/x:property[@name = 'Backup.ExternalPath.Mono']/@value"
 			    property="Backup.ExternalPath.Mono">
 			        <namespaces>
 	        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
 	    			</namespaces>
-	    	</xmlpeek>
-    	</if>
+	    		</xmlpeek>
+    		</if>
 		
-		<property name="backupProjectName" value="${Solution.VirtualDirectoryName}" />
+		<property name="backupProjectName" value="${Solution.Name}-${Solution.Branch}-${Solution.VersionMode}" />
     	
-    	<property name="Backup.ExternalPath.Net" value="${string::replace(Backup.ExternalPath.Net, '${Company.Name}', Project.CompanyName)}"/>
-    	<property name="Backup.ExternalPath.Net" value="${string::replace(Backup.ExternalPath.Net, '${Project.Name}', backupProjectName)}"/>
+    		<property name="Backup.ExternalPath.Net" value="${string::replace(Backup.ExternalPath.Net, '${Company.Name}', Project.CompanyName)}"/>
+    		<property name="Backup.ExternalPath.Net" value="${string::replace(Backup.ExternalPath.Net, '${Project.Name}', backupProjectName)}"/>
     	
-    	<property name="Backup.ExternalPath.Mono" value="${string::replace(Backup.ExternalPath.Mono, '${Company.Name}', Project.CompanyName)}"/>
-    	<property name="Backup.ExternalPath.Mono" value="${string::replace(Backup.ExternalPath.Mono, '${Project.Name}', backupProjectName)}"/>
+    		<property name="Backup.ExternalPath.Mono" value="${string::replace(Backup.ExternalPath.Mono, '${Company.Name}', Project.CompanyName)}"/>
+    		<property name="Backup.ExternalPath.Mono" value="${string::replace(Backup.ExternalPath.Mono, '${Project.Name}', backupProjectName)}"/>
     	
 		<echo message="External net path: ${Backup.ExternalPath.Net}"/>
 		<echo message="External mono path: ${Backup.ExternalPath.Mono}"/>
@@ -106,78 +125,79 @@
 
 		<call target="Common.Actions.ZipBackup"/>
 
-		<!--call target="Common.Actions.CopyBackupToExternal"/-->
+		<call target="Common.Actions.CopyBackupToExternal"/>
 	</target>
 
-  <!-- Actions.ZipBackup -->
-  <target name="Common.Actions.ZipBackup">
-	<echo message="Create dir: ${path::get-directory-name(Backup.ZipPath.Internal)}"/>
-  	<if test="${directory::exists(path::get-directory-name(Backup.ZipPath.Internal)) == false}">
-  		<mkdir dir="${path::get-directory-name(Backup.ZipPath.Internal)}"/>
-  	</if>
-  	<zip zipfile="${Backup.ZipPath.Internal}" verbose="true">
-	    <fileset basedir="${Project.RootPath}">
-	        <exclude name="**/Archive"/>
-	        <exclude name="**/*.db4o"/>
-	        <exclude name="**/*.local.config"/>
-	        <exclude name="**/obj/**/*.*"/>
-	        <exclude name="**/Logs/**/*.*"/>
-	        <exclude name="**/LogsArchive/**/*"/>
-	        <exclude name="**/*.pdb"/>
-	        <exclude name="**/*._cs"/>
-	        <exclude name="**/*._*"/>
-	        <exclude name="**/*.csexclude"/>
-	        <exclude name="**/*.excluded"/>
-	        <exclude name="**/*.excludecs"/>
-	        <exclude name="**/*.csproj.user"/>
-	        <exclude name="**/*.exclude"/>
-	        <exclude name="**/*.security"/>
-	        <exclude name="**/*.dll.r*"/>
-	        <exclude name="**/*.exe.r*"/>
-	        <exclude name="**/App_Data/VS/**"/>
-	        <exclude name="**/App_Data/Import/**"/>
-	        <exclude name="**/App_Data/ImportDefault/**"/>
-	        <exclude name="**/App_Data/LegacyDefault/**"/>
-	        <exclude name="**/App_Data/Legacy/**"/>
-	        <exclude name="**/App_Data/Imported/**"/>
-	        <exclude name="**/App_Data/LegacyConverted/**"/>
-	        <exclude name="**/App_Data/Suspended/**"/>
-	        <exclude name="**/fckeditor/**"/>
-	        <exclude name="**/Backups/**"/>
-	        <exclude name="*_nant"/>
-	        <exclude name="**.eqbak"/>
-	        <exclude name="**/ProfilingSessions"/>
-	        <exclude name="**/bin/Debug/**"/>
-	        <exclude name="**/bin/Release/**"/>
-	        <exclude name="**/Releases/**"/>
-	        <exclude name="**/Deployment/**"/>
-	        <exclude name="*.refresh"/>
-	        <exclude name="**/Docs/Reference/**"/>
-	        <exclude name="**.jar"/>
-	        <include name="**/lib/**" />
-	        <include name="**/Src/**" />
-	        <include name="**/Docs/**" />
-	        <include name="**/Scripts/**" />
-	        <include name="**/bin/**" />
-	        <include name="**/Commander.*" />
-	        <include name="**/InstallCommander.*" />
-	        <include name="**/*.Project.nant" />
-	        <include name="**/*.Solution.nant" />
-	        <include name="**/*.Assembly.nant" />
-	    </fileset>	   
+  	<target name="Common.Actions.ZipBackup">
+		<echo message="Create dir: ${path::get-directory-name(Backup.ZipPath.Internal)}"/>
 
-	</zip>
-  </target>
+  		<if test="${directory::exists(path::get-directory-name(Backup.ZipPath.Internal)) == false}">
+  			<mkdir dir="${path::get-directory-name(Backup.ZipPath.Internal)}"/>
+  		</if>
+
+  		<zip zipfile="${Backup.ZipPath.Internal}" verbose="true">
+	    		<fileset basedir="${Project.RootPath}">
+		        	<exclude name="**/Archive"/>
+		        	<exclude name="**/*.db4o"/>
+		        	<exclude name="**/*.local.config"/>
+		        	<exclude name="**/obj/**/*.*"/>
+		        	<exclude name="**/Logs/**/*.*"/>
+		        	<exclude name="**/LogsArchive/**/*"/>
+		        	<exclude name="**/*.pdb"/>
+		        	<exclude name="**/*._cs"/>
+	        		<exclude name="**/*._*"/>
+		        	<exclude name="**/*.csexclude"/>
+		        	<exclude name="**/*.excluded"/>
+		        	<exclude name="**/*.excludecs"/>
+		        	<exclude name="**/*.csproj.user"/>
+		        	<exclude name="**/*.exclude"/>
+		        	<exclude name="**/*.security"/>
+		        	<exclude name="**/*.dll.r*"/>
+		        	<exclude name="**/*.exe.r*"/>
+		        	<exclude name="**/App_Data/VS/**"/>
+	        		<exclude name="**/App_Data/Import/**"/>
+	        		<exclude name="**/App_Data/ImportDefault/**"/>
+	        		<exclude name="**/App_Data/LegacyDefault/**"/>
+	        		<exclude name="**/App_Data/Legacy/**"/>
+	        		<exclude name="**/App_Data/Imported/**"/>
+	        		<exclude name="**/App_Data/LegacyConverted/**"/>
+	        		<exclude name="**/App_Data/Suspended/**"/>
+	        		<exclude name="**/fckeditor/**"/>
+	        		<exclude name="**/Backups/**"/>
+	        		<exclude name="*_nant"/>
+	        		<exclude name="**.eqbak"/>
+	        		<exclude name="**/ProfilingSessions"/>
+	        		<exclude name="**/bin/Debug/**"/>
+	        		<exclude name="**/bin/Release/**"/>
+	        		<exclude name="**/Releases/**"/>
+	        		<exclude name="**/Deployment/**"/>
+	        		<exclude name="*.refresh"/>
+	        		<exclude name="**/Docs/Reference/**"/>
+	        		<exclude name="**.jar"/>
+	        		<include name="**/lib/**" />
+	        		<include name="**/Src/**" />
+	        		<include name="**/Docs/**" />
+	        		<include name="**/Scripts/**" />
+	        		<include name="**/bin/**" />
+	        		<include name="**/Commander.*" />
+	        		<include name="**/InstallCommander.*" />
+	        		<include name="**/*.Project.nant" />
+	        		<include name="**/*.Solution.nant" />
+	        		<include name="**/*.Assembly.nant" />
+	    		</fileset>	   
+
+		</zip>
+	</target>
   
-    <target name="Common.Actions.CopyBackupToExternal">
-    	<echo message="External backup path: ${Backup.ZipPath.External}"/>
-    	<if test="${file::exists(Backup.PropertiesPath)}">
+	<target name="Common.Actions.CopyBackupToExternal">
+    		<echo message="External backup path: ${Backup.ZipPath.External}"/>
+    		<if test="${file::exists(Backup.PropertiesPath)}">
 		  	<if test="${directory::exists(path::get-directory-name(Backup.ZipPath.External)) == false}">
 		  		<mkdir dir="${path::get-directory-name(Backup.ZipPath.External)}"/>
 		  	</if>
 		  	<copy 
-		    file="${Backup.ZipPath.Internal}"
-		    tofile="${Backup.ZipPath.External}" />
+		    		file="${Backup.ZipPath.Internal}"
+		    		tofile="${Backup.ZipPath.External}" />
 		</if>
 	</target>
 </project>
