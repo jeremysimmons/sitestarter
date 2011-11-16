@@ -374,7 +374,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			foreach (string storeName in referenceStoreNames)
 			{
-				foreach (IEntity entity in DataAccess.Data.Stores[storeName].Indexer.GetEntities<EntityIDReference>())
+				foreach (IEntity entity in DataAccess.Data.Stores[storeName].Indexer.GetEntities<EntityReference>())
 				{
 					DataAccess.Data.Stores[storeName].Deleter.Delete(entity);
 				}

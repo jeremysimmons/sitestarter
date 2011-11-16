@@ -47,7 +47,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				LogWriter.Debug("Document type: "+ documentType);
 				
 				if (documentType == "EntityReference" ||
-				    documentType == "EntityIDReference")
+				    documentType == "EntityReference")
 				{
 					LogWriter.Debug("Checking applicability to reference.");
 					doesApply = AppliesToReference(document);
@@ -126,7 +126,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				LogWriter.Debug("Type name: "+ typeName);
 				
 				if (typeName == "EntityReference" ||
-				    typeName == "EntityIDReference")
+				    typeName == "EntityReference")
 				{
 					LogWriter.Debug("Reference entity");
 					

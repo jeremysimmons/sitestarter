@@ -44,12 +44,19 @@
 		user.FirstName = "FirstName" + number;
 		user.LastName = "LastName" + number;
 		user.Email = "Email" + number;
-		user.IsApproved = false;
+		user.Password = Crypter.EncryptPassword("pass");
+		user.IsApproved = true;
 		
 		SaveStrategy.New(user, false).Save(user);
 	}
 
-                    
+	  public override void InitializeInfo()
+	  {
+	  	MenuTitle = "MockCreateUser";
+	  	MenuCategory = "TestCategory";
+	  	ShowOnMenu = false;
+	  	ActionAlias = "Create";
+	  }    
 </script>
 <h1>Creating Mock Users</h1>
 <p><b>...done!</b></p>

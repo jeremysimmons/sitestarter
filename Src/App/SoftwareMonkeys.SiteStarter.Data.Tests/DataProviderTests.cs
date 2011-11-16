@@ -51,8 +51,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 
 				article.Categories = new TestCategory[] { category };
 
-				DataAccess.Data.Saver.Save(article);
 				DataAccess.Data.Saver.Save(category);
+				DataAccess.Data.Saver.Save(article);
 
 				EntityReferenceCollection collection = DataAccess.Data.Referencer.GetReferences(article.GetType(), article.ID, "Categories", category.GetType(), false);
 

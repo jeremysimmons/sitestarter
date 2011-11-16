@@ -29,9 +29,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				user.Roles = Collection<TestRole>.Add(user.Roles, role);
 				
-				DataAccess.Data.Saver.Save(user);
 				
 				DataAccess.Data.Saver.Save(role);
+				DataAccess.Data.Saver.Save(user);
 				
 				user = null;
 				role = null;

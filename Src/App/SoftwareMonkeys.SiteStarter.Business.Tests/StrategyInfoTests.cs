@@ -1,5 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
+using SoftwareMonkeys.SiteStarter.Business.Security;
+using SoftwareMonkeys.SiteStarter.Business.Tests.Security;
 
 namespace SoftwareMonkeys.SiteStarter.Business.Tests
 {
@@ -66,5 +68,25 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			//Assert.AreEqual("Index_Widget", info.Key, "Key doesn't match what's expected.");
 			Assert.AreEqual(strategy.GetType().FullName + ", " + strategy.GetType().Assembly.GetName().Name, info.StrategyType, "Strategy type doesn't match what's expected.");
 		}
+		
+		[Test]
+		public void Test_ExtractInfo_AuthoriseReferenceStrategy()
+		{
+			AuthoriseReferenceMockPublicEntityStrategy strategy = new AuthoriseReferenceMockPublicEntityStrategy();
+			
+			StrategyInfo info = StrategyInfo.ExtractInfo(strategy.GetType())[0];
+			
+			Assert.IsTrue(info is AuthoriseReferenceStrategyInfo, "Should have returned an AuthoriseReferenceStrategyInfo object.");
+			              
+			AuthoriseReferenceStrategyInfo authoriseStrategyInfo = (AuthoriseReferenceStrategyInfo)info;
+			
+			Assert.AreEqual("MockEntity", authoriseStrategyInfo.TypeName, "Type name doesn't match what's expected.");
+			Assert.AreEqual("MockPublicEntity", authoriseStrategyInfo.ReferencedTypeName, "Type name doesn't match what's expected.");
+			Assert.AreEqual("AuthoriseReference", authoriseStrategyInfo.Action, "Action doesn't match what's expected.");
+			Assert.AreEqual("PublicEntities", authoriseStrategyInfo.ReferenceProperty, "Reference property doesn't match what's expected.");
+			Assert.AreEqual("", authoriseStrategyInfo.MirrorProperty, "Mirror property doesn't match what's expected.");
+			
+			Assert.AreEqual(strategy.GetType().FullName + ", " + strategy.GetType().Assembly.GetName().Name, info.StrategyType, "Strategy type doesn't match what's expected.");
 	}
+}
 }

@@ -65,10 +65,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			
 			using (LogGroup logGroup = LogGroup.Start("Finding projections by scanning the attributes of the available type.", NLog.LogLevel.Debug))
 			{
+				LogWriter.Debug("Projections directory: " + FileNamer.ProjectionsDirectoryPath);
+				
 				foreach (string file in Directory.GetFiles(FileNamer.ProjectionsDirectoryPath))
 				{
 					if (IsProjection(file))
 					{
+						LogWriter.Debug("Found projection file: " + file);
+						
 						foreach (ProjectionInfo info in ExtractProjectionInfo(file))
 						{
 							projections.Add(info);

@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftwareMonkeys.SiteStarter.Configuration;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 
@@ -27,12 +28,12 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			{
 				User user = RetrieveStrategy.New<User>(RequireAuthorisation).Retrieve<User>("Email", emailAddress);
 				
-				user.Password = CreateTemporaryPassword();
-				
 				if (user == null)
 					foundUser = false;
 				else
 				{
+					user.Password = CreateTemporaryPassword();
+				
 					SendResetEmail(user, subject, message, applicationUrl);
 					
 					foundUser = true;
@@ -66,17 +67,20 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				message = message.Replace("${ResetUrl}", resetUrl);
 				message = message.Replace("${Title}", title);
 				
-				User admin = RetrieveStrategy.New<User>(RequireAuthorisation).Retrieve<User>("ID", Configuration.Config.Application.PrimaryAdministratorID);
+				string fromEmail = "noreply@noreply.com";
+				if (Config.Application.Settings.ContainsKey("SystemEmail")
+				    && Config.Application.Settings.GetString("SystemEmail") != String.Empty)
+					fromEmail = Config.Application.Settings.GetString("SystemEmail");
 				
 				LogWriter.Debug("To email: " + user.Email);
-				LogWriter.Debug("From email: " + admin.Email);
+				LogWriter.Debug("From email: " + fromEmail);
 				LogWriter.Debug("Subject: " + subject);
 				LogWriter.Debug("Message: " + message);
 				
 				SendEmailStrategy.New(RequireAuthorisation).SendEmail(subject,
 				                                  	message,
-				                                  	admin.Name,
-				                                  	admin.Email,
+				                                  	"System",
+				                                  	fromEmail,
 				                                  	user.Name,
 				                                  	user.Email);
 			}

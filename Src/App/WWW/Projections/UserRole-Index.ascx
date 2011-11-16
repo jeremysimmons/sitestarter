@@ -52,8 +52,13 @@
                                     <asp:BoundColumn DataField="Name" HeaderText="Name" SortExpression="Name" />
                                     <asp:TemplateColumn>
                                         <itemtemplate>
+                                       		<%= Resources.Language.Users %>: <%# Eval("TotalUsers") %>
+										</itemtemplate>
+                                    </asp:TemplateColumn>
+                                    <asp:TemplateColumn>
+                                        <itemtemplate>
                                         <ASP:Hyperlink id=EditButton runat="server"
-                                        	enabled='<%# AuthoriseUpdateStrategy.New<UserRole>().Authorise((UserRole)Container.DataItem) %>'
+	                                        	enabled='<%# AuthoriseUpdateStrategy.New<UserRole>().IsAuthorised((UserRole)Container.DataItem) %>'
                                         	ToolTip='<%# DynamicLanguage.GetEntityText("EditThisEntity", QueryStrings.Type) %>'
                                         	text='<%# Resources.Language.Edit %>'
                                         	navigateurl='<%# Navigator.GetLink("Edit", (UserRole)Container.DataItem) %>'>
@@ -61,7 +66,7 @@
 										<cc:DeleteLink id=DeleteButton runat="server"
 											text='<%# Resources.Language.Delete %>'
 											ConfirmMessage='<%# DynamicLanguage.GetEntityText("ConfirmDeleteEntity", QueryStrings.Type) %>'
-											enabled='<%# AuthoriseDeleteStrategy.New<UserRole>().Authorise((UserRole)Container.DataItem) %>'
+												enabled='<%# AuthoriseDeleteStrategy.New<UserRole>().IsAuthorised((UserRole)Container.DataItem) %>'
 											ToolTip='<%# DynamicLanguage.GetEntityText("DeleteThisEntity", QueryStrings.Type) %>'
 											navigateurl='<%# Navigator.GetLink("Delete", (UserRole)Container.DataItem) %>'>
 										</cc:DeleteLink>

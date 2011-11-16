@@ -1,5 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
+using SoftwareMonkeys.SiteStarter.Entities.Tests.Entities;
 using SoftwareMonkeys.SiteStarter.Tests.Entities;
 
 namespace SoftwareMonkeys.SiteStarter.Business.Tests
@@ -31,32 +32,53 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			Assert.IsNotNull(foundArticle);
 		}
 		
-		
 		[Test]
 		public void Test_Save_InvalidEntityMustNotSave()
 		{
 			// Create the mock entity
-			TestUser user = CreateStrategy.New<TestUser>(false).Create<TestUser>();
-			user.ID = Guid.NewGuid();
-			user.FirstName = "Test";
-			user.LastName = "User";
+			MockInvalidEntity entity = new MockInvalidEntity();
 			
-			// Set a mock validator that will always fail
-			user.Validator = new MockInvalidValidateEntityStrategy();
+			entity.Validator = new ValidateStrategy();
 			
-			Assert.IsFalse(user.IsValid, "The validator returned true when it should return false.");
+			Assert.IsFalse(entity.IsValid, "The validator returned true when it should return false.");
 			
 			// Try to save the entity
-			bool isValid = SaveStrategy.New(user, false).Save(user);
+			bool isValid = SaveStrategy.New(entity, false).Save(entity);
 			
 			// Ensure that the save was rejected
 			Assert.IsFalse(isValid, "The save strategy didn't recognise the entity as invalid.");
 			
-			// Try loading the user from the data store to see if it's found
-			TestUser foundUser = RetrieveStrategy.New<TestUser>(false).Retrieve<TestUser>("ID", user.ID);
+			// Try loading the entity from the data store to see if it's found
+			MockInvalidEntity foundEntity = RetrieveStrategy.New<MockInvalidEntity>(false).Retrieve<MockInvalidEntity>("ID", entity.ID);
 			
-			// Ensure the user wasn't found and therefore wasn't saved
-			Assert.IsNull(foundUser, "The entity was found in the store even though it shouldn't have saved.");
+			// Ensure the entity wasn't found and therefore wasn't saved
+			Assert.IsNull(foundEntity, "The entity was found in the store even though it shouldn't have saved.");
 		}
+		
+		[Test]
+		public void Test_Save_RemovesUnauthorisedReferences()
+		{
+			MockEntity entity = new MockEntity();
+			entity.ID = Guid.NewGuid();
+			
+			MockRestrictedEntity restrictedEntity = new MockRestrictedEntity();
+			restrictedEntity.ID = Guid.NewGuid();
+			
+			entity.RestrictedEntities = new MockRestrictedEntity[]{
+				restrictedEntity
+			};
+			
+			SaveStrategy.New(restrictedEntity, false).Save(restrictedEntity);
+			SaveStrategy.New(entity).Save(entity);
+			
+			MockEntity foundEntity = RetrieveStrategy.New<MockEntity>(false).Retrieve<MockEntity>("ID", entity.ID);
+			
+			Assert.IsNotNull(foundEntity);
+			
+			foundEntity.Activate();
+			
+			Assert.AreEqual(0, foundEntity.RestrictedEntities.Length, "Restricted entity wasn't removed from reference property.");
 	}
+		
+}
 }

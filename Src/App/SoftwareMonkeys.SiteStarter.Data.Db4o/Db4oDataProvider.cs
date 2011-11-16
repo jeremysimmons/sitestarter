@@ -47,6 +47,15 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		}
 		
 		/// <summary>
+		/// Initializes the data counter adapter for this provider.
+		/// </summary>
+		/// <returns>The data counter adapter for this provider.</returns>
+		public override IDataCounter InitializeDataCounter()
+		{
+			return new Db4oDataCounter(this, null);
+		}
+		
+		/// <summary>
 		/// Initializes the data indexer adapter for this provider.
 		/// </summary>
 		/// <returns>The data indexer adapter for this provider.</returns>
@@ -225,7 +234,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				{
 					LogWriter.Debug("Is reference == true");
 					
-					EntityIDReference reference = (EntityIDReference)entity;
+					EntityReference reference = (EntityReference)entity;
 					
 					//if (reference.Type1Name == String.Empty)
 

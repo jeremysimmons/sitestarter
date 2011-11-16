@@ -11,10 +11,12 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		[Test]
 		public void Test_CreateStrategy()
 		{
+			string typeName = "MockEntity";
+			
 			IStrategy strategy = new RetrieveStrategy();
 			StrategyInfo info = StrategyInfo.ExtractInfo(strategy.GetType())[0];
 			
-			IStrategy created = info.New();
+			IStrategy created = info.New(typeName);
 			
 			Assert.IsNotNull(created);
 			

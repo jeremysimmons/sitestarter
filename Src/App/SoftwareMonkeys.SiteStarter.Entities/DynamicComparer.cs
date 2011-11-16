@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace SoftwareMonkeys.SiteStarter.Entities
@@ -8,7 +9,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 	/// <summary>
 	/// Provides a way to dynamically create comparers for any property of any object.
 	/// </summary>
-	public class DynamicComparer<E> : IComparer<E>
+	public class DynamicComparer : IComparer
 	{
 		private Type objectType;
 		/// <summary>
@@ -90,7 +91,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <param name="a">The first object to compare.</param>
 		/// <param name="b">The second object to compare.</param>
 		/// <returns>The comparison value.</returns>
-		public int Compare(E a, E b)
+		public int Compare(object a, object b)
 		{
 			PropertyInfo property = ObjectType.GetProperty(PropertyName);
 
@@ -116,7 +117,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			}
 		}
 		
-		public object GetPropertyValue(E obj, PropertyInfo property)
+		public object GetPropertyValue(object obj, PropertyInfo property)
 		{
 			object value = property.GetValue(obj, null);
 			

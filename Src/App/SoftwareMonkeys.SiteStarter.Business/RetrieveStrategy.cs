@@ -28,6 +28,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			T entity = (T)Retrieve(group);
 			
+			React(entity);
+			
 			return entity;
 		}
 		
@@ -44,6 +46,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				AuthoriseRetrieveStrategy.New(TypeName).EnsureAuthorised(entity);
 			
 			AssignStrategies(entity);
+			
+			React(entity);
 			
 			return entity;
 		}
@@ -73,12 +77,14 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="uniqueKey">The unique key of the entity to retrieve.</param>
 		/// <returns>The entity with the provided unique key.</returns>
-		public IEntity Retrieve(string uniqueKey)
+		public virtual IEntity Retrieve(string uniqueKey)
 		{
 			IEntity entity = Retrieve("UniqueKey", uniqueKey);
 			
 			if (RequireAuthorisation && entity != null)
 				AuthoriseRetrieveStrategy.New(TypeName).EnsureAuthorised(entity);
+			
+			React(entity);
 			
 			return entity;
 		}
@@ -88,7 +94,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="uniqueKey">The unique key of the entity to retrieve.</param>
 		/// <returns>The entity with the provided unique key.</returns>
-		public T Retrieve<T>(string uniqueKey)
+		public virtual T Retrieve<T>(string uniqueKey)
 			where T : IEntity
 		{
 			T entity = (T)Retrieve("UniqueKey", uniqueKey);
@@ -96,6 +102,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			if (RequireAuthorisation && entity != null)
 				AuthoriseRetrieveStrategy.New<T>().EnsureAuthorised(entity);
 			
+			React(entity);
+			
 			return entity;
 		}
 		
@@ -104,13 +112,15 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="entityID">The ID of the entity to retrieve.</param>
 		/// <returns>The entity with the provided ID.</returns>
-		public IEntity Retrieve(Guid entityID)
+		public virtual IEntity Retrieve(Guid entityID)
 		{
 			IEntity entity = Retrieve("ID", entityID);
 			
 			if (RequireAuthorisation && entity != null)
 				AuthoriseRetrieveStrategy.New(TypeName).EnsureAuthorised(entity);
 			
+			React(entity);
+			
 			return entity;
 		}
 		
@@ -119,7 +129,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="entityID">The ID of the entity to retrieve.</param>
 		/// <returns>The entity with the provided ID.</returns>
-		public T Retrieve<T>(Guid entityID)
+		public virtual T Retrieve<T>(Guid entityID)
 			where T : IEntity
 		{
 			T entity = (T)Retrieve("ID", entityID);
@@ -127,6 +137,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			if (RequireAuthorisation && entity != null)
 				AuthoriseRetrieveStrategy.New<T>().EnsureAuthorised(entity);
 			
+			React(entity);
+			
 			return entity;
 		}
 		
@@ -136,16 +148,21 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="propertyName">The name of the property to match to the provided value.</param>
 		/// <param name="value">The name of the value to match to the specified property.</param>
 		/// <returns>The entity with the specified property matching the provided value.</returns>
-		public IEntity Retrieve(string propertyName, object value)
+		public virtual IEntity Retrieve(string propertyName, object value)
 		{
 			IEntity entity = DataAccess.Data.Reader.GetEntity(EntityState.GetType(TypeName),
 			                                                  propertyName,
 			                                                  value);
 			
+			if (entity != null)
+			{
 			if (RequireAuthorisation && entity != null)
 				AuthoriseRetrieveStrategy.New(TypeName).EnsureAuthorised(entity);
 			
 			AssignStrategies(entity);
+			
+				React(entity);
+			}
 			
 			return entity;
 		}
@@ -156,15 +173,20 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="propertyName">The name of the property to match to the provided value.</param>
 		/// <param name="value">The name of the value to match to the specified property.</param>
 		/// <returns>The entity with the specified property matching the provided value.</returns>
-		public T Retrieve<T>(string propertyName, object value)
+		public virtual T Retrieve<T>(string propertyName, object value)
 			where T : IEntity
 		{
 			T entity = DataAccess.Data.Reader.GetEntity<T>(propertyName, value);
 			
-			if (RequireAuthorisation && entity != null)
+			if (entity != null)
+			{
+				if (RequireAuthorisation)
 				AuthoriseRetrieveStrategy.New<T>().EnsureAuthorised(entity);
 			
 			AssignStrategies(entity);
+			
+				React(entity);
+			}
 			
 			return entity;
 		}
@@ -175,7 +197,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="parameters">The parameters to use as filters when retrieving the entities. Corresponds with properties and their values.</param>
 		/// <returns>The entity with the specified property matching the provided value.</returns>
-		public T Retrieve<T>(Dictionary<string, object> parameters)
+		public virtual T Retrieve<T>(Dictionary<string, object> parameters)
 			where T : IEntity
 		{
 			T entity = DataAccess.Data.Reader.GetEntity<T>(parameters);
@@ -185,6 +207,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			AssignStrategies(entity);
 			
+			React(entity);
+			
 			return entity;
 		}
 		
@@ -194,7 +218,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		/// <param name="parameters">The parameters to use as filters when retrieving the entities. Corresponds with properties and their values.</param>
 		/// <returns>The entity with the specified property matching the provided value.</returns>
-		public IEntity Retrieve(Dictionary<string, object> parameters)
+		public virtual IEntity Retrieve(Dictionary<string, object> parameters)
 		{
 			IEntity entity = DataAccess.Data.Reader.GetEntity(EntityState.Entities[TypeName].GetEntityType(),
 			                                                  parameters);
@@ -203,6 +227,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				AuthoriseRetrieveStrategy.New(TypeName).EnsureAuthorised(entity);
 			
 			AssignStrategies(entity);
+			
+			React(entity);
 			
 			return entity;
 		}
@@ -215,7 +241,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="referencedEntityType">The type of the entity being referenced.</param>
 		/// <param name="referencedEntityID">The ID of the entity being referenced.</param>
 		/// <returns>The entity matching the provided parameters.</returns>
-		public IEntity RetrieveWithReference(Type type, string propertyName, string referencedEntityType, Guid referencedEntityID)
+		public virtual IEntity RetrieveWithReference(Type type, string propertyName, string referencedEntityType, Guid referencedEntityID)
 		{
 			IEntity entity = (IEntity)Reflector.InvokeGenericMethod(this,
 			                                                        "RetrieveWithReference",
@@ -224,6 +250,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			if (RequireAuthorisation && entity != null)
 				AuthoriseRetrieveStrategy.New(type.Name).EnsureAuthorised(entity);
+			
+			React(entity);
 			
 			return entity;
 		}
@@ -235,7 +263,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="referencedEntityType">The type of the entity being referenced.</param>
 		/// <param name="referencedEntityID">The ID of the entity being referenced.</param>
 		/// <returns>The entity matching the provided parameters.</returns>
-		public T RetrieveWithReference<T>(string propertyName, string referencedEntityType, Guid referencedEntityID)
+		public virtual T RetrieveWithReference<T>(string propertyName, string referencedEntityType, Guid referencedEntityID)
 			where T : IEntity
 		{
 			T entity = (T)DataAccess.Data.Reader.GetEntityWithReference<T>(propertyName, EntityState.GetType(referencedEntityType), referencedEntityID);
@@ -244,6 +272,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				AuthoriseRetrieveStrategy.New<T>().EnsureAuthorised(entity);
 			
 			AssignStrategies(entity);
+			
+			React(entity);
 			
 			return entity;
 		}

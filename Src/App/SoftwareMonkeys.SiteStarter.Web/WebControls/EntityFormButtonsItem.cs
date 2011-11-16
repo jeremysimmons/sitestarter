@@ -43,5 +43,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				ApplyCssClass(control.Controls);
 			}
 		}
+
+		public void Add(Button button)
+		{
+			Cells[1].Controls.Add(button);
     }
+}
 }

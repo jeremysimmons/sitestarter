@@ -1,6 +1,7 @@
 ﻿using System;
 using SoftwareMonkeys.SiteStarter.Data;
 using SoftwareMonkeys.SiteStarter.Entities;
+using SoftwareMonkeys.SiteStarter.Entities.Tests.Entities;
 using SoftwareMonkeys.SiteStarter.Tests.Entities;
 using NUnit.Framework;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
@@ -54,6 +55,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			user.Roles = new TestRole[] {role};
 			
+			DataAccess.Data.Saver.Save(role);
 			DataAccess.Data.Saver.Save(user);
 			
 			EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences(typeof(TestUser).Name, typeof(TestRole).Name);
@@ -69,7 +71,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		
 		
 		[Test]
-		public void Test_Delete_EntityAndReference()
+		public void Test_Delete_EntityAndReference_Sync()
 		{
 			
 			TestUser user = new TestUser();
@@ -83,6 +85,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			user.Roles = new TestRole[] {role};
 			
+			DataAccess.Data.Saver.Save(role);
 			DataAccess.Data.Saver.Save(user);
 			
 			EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences(typeof(TestUser).Name, typeof(TestRole).Name);
@@ -96,12 +99,37 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			Assert.AreEqual(0, references2.Count, "Reference not deleted.");
 		}
 		
+		[Test]
+		public virtual void Test_Delete_EntityAndReference_Async()
+		{
+			MockEntity entity = new MockEntity();
+			entity.ID = Guid.NewGuid();
+		
+			MockPublicEntity referencedEntity = new MockPublicEntity();
+			referencedEntity.ID = Guid.NewGuid();
+			
+			entity.PublicEntities = new MockPublicEntity[]{referencedEntity};
+			
+			DataAccess.Data.Saver.Save(referencedEntity);
+			DataAccess.Data.Saver.Save(entity);
+			
+			EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences(typeof(MockEntity).Name, typeof(MockPublicEntity).Name);
+			
+			Assert.AreEqual(1, references.Count, "Incorrect number of references found.");
+			
+			DataAccess.Data.Deleter.Delete(entity);
+			
+			EntityReferenceCollection references2 = DataAccess.Data.Referencer.GetReferences(typeof(MockEntity).Name, typeof(MockPublicEntity).Name);
+			
+			Assert.AreEqual(0, references2.Count, "Reference not deleted.");
+		}
+		
 		
 		[Test]
-		public void Test_Delete_RemoveReferences()
+		public virtual void Test_Delete_RemoveReferences()
 		{
 			
-			using (LogGroup logGroup = LogGroup.Start("Testing saving of an EntityIDReference.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Testing saving of an EntityReference."))
 			{
 				
 				TestUser user = new TestUser();
@@ -116,8 +144,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				// This should remain commented out to check for exclusion
 				user.Roles = new TestRole[]{role};
 				
-				DataAccess.Data.Saver.Save(user);
 				DataAccess.Data.Saver.Save(role);
+				DataAccess.Data.Saver.Save(user);
 				
 				DataAccess.Data.Deleter.Delete(role);
 				
@@ -129,12 +157,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				if (user2.Roles != null)
 					Assert.AreEqual(0, user2.Roles.Length, "Incorrect number of roles. The role should have been removed.");
-				//Assert.AreEqual(newFirstName, user3.FirstName, "First name mismatch.");
-				
-				//IDataStore store = DataAccess.Data.Stores["Testing_Articles-Testing_Articles"];
-				
-				//Assert.IsNotNull(store, "The data store wasn't created/initialized.");
-				
 			}
 		}
 		

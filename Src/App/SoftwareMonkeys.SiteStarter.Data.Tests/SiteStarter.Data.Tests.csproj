@@ -129,6 +129,7 @@
     <Compile Include="BaseDataTestFixture.cs" />
     <Compile Include="BatchTests.cs" />
     <Compile Include="DataActivatorTests.cs" />
+    <Compile Include="DataCounterTests.cs" />
     <Compile Include="DataDeleterTests.cs" />
     <Compile Include="DataExporterTests.cs" />
     <Compile Include="DataImporterTests.cs" />

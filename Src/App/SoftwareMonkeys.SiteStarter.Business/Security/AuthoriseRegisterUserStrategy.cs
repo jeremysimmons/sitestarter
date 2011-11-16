@@ -15,23 +15,12 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// </summary>
 		/// <param name="shortTypeName">The type of entity being saved.</param>
 		/// <returns>A value indicating whether the current user is authorised to save an entity of the specified type.</returns>
-		public override bool Authorise(string shortTypeName)
+		public override bool IsAuthorised(string shortTypeName)
 		{
 			bool allowRegistration = Configuration.Config.Application.Settings.GetBool("EnableUserRegistration");
 			
 			return allowRegistration;
 		}
-		
-		/// <summary>
-		/// Checks whether the current user is authorised to save the provided entity.
-		/// </summary>
-		/// <param name="entity">The entity to be saved.</param>
-		/// <returns>A value indicating whether the current user is authorised to save the provided entity.</returns>
-		public override bool Authorise(IEntity entity)
-		{		
-			return Authorise(entity.ShortTypeName);
-		}
-		
 		
 		#region New functions
 		/// <summary>

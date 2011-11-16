@@ -2,6 +2,8 @@
 using SoftwareMonkeys.SiteStarter.Business;
 using SoftwareMonkeys.SiteStarter.Business.Security;
 using SoftwareMonkeys.SiteStarter.Entities;
+using SoftwareMonkeys.SiteStarter.Web.Projections;
+using SoftwareMonkeys.SiteStarter.Web.Validation;
 using SoftwareMonkeys.SiteStarter.Web.WebControls;
 using System.Web.UI.WebControls;
 using SoftwareMonkeys.SiteStarter.Web.Properties;
@@ -17,18 +19,23 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	[Controller("Create", "IEntity")]
 	public class CreateController : BaseController
 	{
+		/// <summary>
+		/// Gets/sets the data source.
+		/// </summary>
+		public new IEntity DataSource
+		{
+			get { return (IEntity)((BaseProjection)Container).DataSource; }
+			set { ((BaseProjection)Container).DataSource = value; }
+		}
+		
 		private string entitySavedLanguageKey = "EntitySaved";
+		/// <summary>
+		/// Gets/sets the language key for the "[entity] saved successfully" message.
+		/// </summary>
 		public string EntitySavedLanguageKey
 		{
 			get { return entitySavedLanguageKey; }
 			set { entitySavedLanguageKey = value; }
-		}
-		
-		private string entityPropertyTakenLanguageKey = "EntityPropertyTaken";
-		public string EntityPropertyTakenLanguageKey
-		{
-			get { return entityPropertyTakenLanguageKey; }
-			set { entityPropertyTakenLanguageKey = value; }
 		}
 		
 		private ISaveStrategy saver;
@@ -40,18 +47,34 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			get {
 				if (saver == null)
 				{
-					if (Container.Type == null)
-						throw new InvalidOperationException("Type property hasn't been initialized.");
-					saver = StrategyState.Strategies.Creator.NewSaver(Container.Type.Name);
+					CheckContainer();
+					Container.CheckCommand();
+					
+					saver = StrategyState.Strategies.Creator.NewSaver(Command.TypeName);
 					saver.RequireAuthorisation = Container.RequireAuthorisation;
 				}
 				return saver; }
 			set { saver = value; }
 		}
 		
+		private ValidationFacade validation;
+		public ValidationFacade Validation
+		{
+			get {
+				if (validation == null)
+					validation = new ValidationFacade();
+				return validation; }
+			set { validation = value; }
+		}
+		
 		public CreateController()
 		{
 			ActionOnSuccess = "View";
+		}
+		
+		public CreateController(IControllable container) : base()
+		{
+			Container = container;
 		}
 		
 		/// <summary>
@@ -65,7 +88,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			{
 				if (EnsureAuthorised())
 				{
-					entity = CreateStrategy.New(Container.Type.Name).Create();
+					entity = CreateStrategy.New(Command.TypeName).Create();
 					
 					ExecuteCreate(entity);
 				}
@@ -94,10 +117,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			using (LogGroup logGroup = LogGroup.Start("Starting the create entity process.", NLog.LogLevel.Debug))
 			{
+				Validation.CheckMessages(entity);
+				
 				DataSource = entity;
 				
 				if (EnsureAuthorised(entity))
-					OperationManager.StartOperation("Create" + Container.Type.Name, null);
+					OperationManager.StartOperation(Command, null);
 			}
 		}
 		
@@ -131,7 +156,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 					if (Saver.Save(entity))
 					{
 						// Display the result
-						Result.Display(DynamicLanguage.GetEntityText(EntitySavedLanguageKey, Container.Type.Name));
+						Result.Display(DynamicLanguage.GetEntityText(EntitySavedLanguageKey, Command.TypeName));
 
 						saved = true;
 						
@@ -140,17 +165,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 					}
 					else
 					{
-						// TODO: Should be obsolete. Remove if it is.
-						//CheckUniquePropertyName();
-						
-						// Get the "entity exists" language entry
-						string error = DynamicLanguage.GetEntityText(EntityPropertyTakenLanguageKey, Container.Type.Name);
-						
-						// Insert the name of the unique property
-						error = error.Replace("${property}", DynamicLanguage.GetText(UniquePropertyName).ToLower());
-						
-						// Display the error
-						Result.DisplayError(error);
+						// Add the validation error to the result control		
+						Validation.DisplayError(entity);
 						
 						saved = false;
 					}
@@ -158,18 +174,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				LogWriter.Debug("Saved: " + saved.ToString());
 			}
 			return saved;
-		}
-		
-		public override bool AuthoriseStrategies()
-		{
-			return Security.Authorisation.UserCan("Create", TypeName)
-				&& Security.Authorisation.UserCan("Save", TypeName);
-		}
-		
-		public override bool AuthoriseStrategies(IEntity entity)
-		{
-			return Security.Authorisation.UserCan("Create", entity)
-				&& Security.Authorisation.UserCan("Save", entity);
 		}
 		
 		/// <summary>
@@ -194,64 +198,33 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// Creates a new create controller.
 		/// </summary>
 		/// <param name="container"></param>
-		/// <param name="type"></param>
 		/// <returns></returns>
-		public static CreateController New(IControllable container, Type type)
+		public static CreateController New(IControllable container)
 		{
-			return New(container, type, String.Empty);
+			return New(container, String.Empty);
 		}
 		
 		/// <summary>
 		/// Creates a new create controller.
 		/// </summary>
 		/// <param name="container"></param>
-		/// <param name="type"></param>
+		/// <param name="uniquePropertyName"></param>
 		/// <returns></returns>
-		public static CreateController New(IControllable container, Type type, string uniquePropertyName)
+		public static CreateController New(IControllable container, string uniquePropertyName)
 		{
 			CreateController controller = null;
 			
 			using (LogGroup logGroup = LogGroup.Start("Instantiating a new create controller.", NLog.LogLevel.Debug))
 			{
-				controller = New(container, container.Action, type, uniquePropertyName);
-			}
+				controller = ControllerState.Controllers.Creator.New<CreateController>(container);
 			
-			return controller;
-		}
-		
-		/// <summary>
-		/// Creates a new create controller.
-		/// </summary>
-		/// <param name="container"></param>
-		/// <param name="type"></param>
-		/// <returns></returns>
-		public static CreateController New(IControllable container, string action, Type type, string uniquePropertyName)
-		{
-			CreateController controller = null;
-			
-			using (LogGroup logGroup = LogGroup.Start("Instantiating a new create controller.", NLog.LogLevel.Debug))
-			{
-				
-				if (type.Name == "IEntity")
-					throw new ArgumentException("The provided type cannot be 'IEntity'.");
-				
-				controller = ControllerState.Controllers.Creator.New<CreateController>(action, type.Name);
-				
-				controller.Container = container;
 				controller.UniquePropertyName = uniquePropertyName;
 				
-				LogWriter.Debug("Type name: " + type.Name);
+				LogWriter.Debug("Type name: " + container.Command.TypeName);
 				LogWriter.Debug("Unique property name: " + uniquePropertyName);
 			}
 			
 			return controller;
 		}
-		
-		// TODO: Should be obsolete. Remove if it is.
-		public void CheckUniquePropertyName()
-		{
-			if (UniquePropertyName == null || UniquePropertyName == String.Empty)
-				throw new InvalidOperationException("The UniquePropertyName property has not been set.");
 		}
 	}
-}

@@ -182,48 +182,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 					//                UserRoleFactory.Current.UpdateUserRole(role);
 				}
 			}
-
-			/*try
-            {
-                conn.Open();
-                tran = conn.BeginTransaction();
-                cmd.Transaction = tran;
-
-                foreach (string username in usernames)
-                {
-                    foreach (string rolename in rolenames)
-                    {
-                        userParm.Value = username;
-                        roleParm.Value = rolename;
-                        cmd.ExecuteNonQuery();
                     }
-                }
-
-                tran.Commit();
-            }
-            catch (OdbcException e)
-            {
-                try
-                {
-                    tran.Rollback();
-                }
-                catch { }
-
-
-                if (WriteExceptionsToEventLog)
-                {
-                    WriteToEventLog(e, "AddUsersToRoles");
-                }
-                else
-                {
-                    throw e;
-                }
-            }
-            finally
-            {
-                conn.Close();
-            }*/
-		}
 
 
 		//
@@ -413,6 +372,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 
 					IUserRole role = RetrieveStrategy.New<User>().Retrieve<UserRole>("Name", rolename);
 
+					user.Activate();
+					role.Activate();
 
 					user.Roles = Collection<IUserRole>.Remove(user.Roles, role);
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using SoftwareMonkeys.SiteStarter.Business;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Entities;
 using NUnit.Framework;
 using SoftwareMonkeys.SiteStarter.Tests.Entities;
@@ -15,6 +16,8 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		[Test]
 		public void Test_Delete_Reorder()
 		{
+			using (LogGroup logGroup = LogGroup.StartDebug("Testing deletion of sub entities to ensure their position is updated."))
+			{
 			TestArticle article = CreateStrategy.New<TestArticle>(false).Create<TestArticle>();
 			
 			article.ID = Guid.NewGuid();
@@ -56,7 +59,8 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			Assert.AreEqual(1, foundArticle.Pages[0].PageNumber, "First page has wrong number.");
 			Assert.AreEqual("Page 1", foundArticle.Pages[0].Title, "First page has wrong title.");
 			Assert.AreEqual(2, foundArticle.Pages[1].PageNumber, "Third page has wrong number (should now be 2 as it's moved up one spot).");
-			Assert.AreEqual("Page 3", foundArticle.Pages[1].Title, "Third page has wrong title.");
+				Assert.AreEqual("Page 3", foundArticle.Pages[1].Title, "Third page has wrong title."); // Page 3 should now be at position 1 (ie. second place)
 		}
 	}
+}
 }

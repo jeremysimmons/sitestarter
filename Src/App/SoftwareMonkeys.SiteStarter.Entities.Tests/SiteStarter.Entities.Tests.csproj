@@ -66,6 +66,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyScanInfo.cs" />
+    <Compile Include="Entities\MockAuthoredEntity.cs" />
+    <Compile Include="Entities\MockDerivedEntity.cs" />
+    <Compile Include="Entities\MockEntity.cs" />
+    <Compile Include="Entities\MockInvalidEntity.cs" />
+    <Compile Include="Entities\MockPublicEntity.cs" />
+    <Compile Include="Entities\MockRequiredEntity.cs" />
+    <Compile Include="Entities\MockRestrictedEntity.cs" />
+    <Compile Include="Entities\MockValidEntity.cs" />
+    <Compile Include="MockInvalidAttribute.cs" />
+    <Compile Include="Entities\MockSyncEntity.cs" />
+    <Compile Include="MockValidAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <ProjectReference Include="..\SoftwareMonkeys.SiteStarter.Configuration.Tests\SiteStarter.Configuration.Tests.csproj">
       <Project>{5DFB85CA-D338-425A-B382-64EFBE19C65D}</Project>
@@ -107,13 +118,13 @@
     <Compile Include="EntitiesUtilitiesTests.cs" />
     <Compile Include="BaseEntityTestFixture.cs" />
     <Compile Include="EntityCollectionTests.cs" />
-    <Compile Include="EntityIDReferenceTests.cs" />
     <Compile Include="EntityReferenceTests.cs" />
     <Compile Include="EntityScannerTests.cs" />
     <Compile Include="EntityStateTests.cs" />
     <Compile Include="PagingLocationTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Entities" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

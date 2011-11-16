@@ -51,9 +51,9 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		
 		public StrategyInfo CreateMockStrategy()
 		{
-			IStrategy mockStrategy = new MockRetrieveStrategy();
+			IStrategy mockStrategy = new MockRetrieveTestUserStrategy();
 			
-			return StrategyInfo.ExtractInfo(typeof(MockRetrieveStrategy))[0];
+			return StrategyInfo.ExtractInfo(typeof(MockRetrieveTestUserStrategy))[0];
 		}
 		
 		public string GetMockStrategiesDirectoryPath(string applicationName)

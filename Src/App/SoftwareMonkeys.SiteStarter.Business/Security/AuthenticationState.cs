@@ -99,7 +99,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		{
 			bool isInRole = false;
 			
-			using (LogGroup logGroup = LogGroup.Start("Checking to see whether the current user is in the specified role.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Checking to see whether the current user is in the '" + roleName + "' role."))
 			{
 				
 				LogWriter.Debug("User is authenticated: " + IsAuthenticated.ToString());

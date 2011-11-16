@@ -38,7 +38,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		
 		public void Initialize(Type type)
 		{
-			Type = type;
+			Command = new DeleteCommandInfo(type.Name);
+			
 			controller = DeleteController.New(this, type);
 		}
 		

@@ -1,6 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 using SoftwareMonkeys.SiteStarter.Data;
+using SoftwareMonkeys.SiteStarter.Entities.Tests.Entities;
 using SoftwareMonkeys.SiteStarter.Tests.Entities;
 
 namespace SoftwareMonkeys.SiteStarter.Business.Tests
@@ -88,30 +89,30 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		public void Test_Update_InvalidEntityMustNotUpdate()
 		{
 			// Create the mock entity
-			TestUser user = CreateStrategy.New<TestUser>(false).Create<TestUser>();
-			user.ID = Guid.NewGuid();
-			user.FirstName = "Test";
-			user.LastName = "User";
+			MockRequiredEntity entity = new MockRequiredEntity();
+			entity.TestProperty = "Test1";
+			
+			entity.Validator = new ValidateStrategy();
+			
 			
 			// Save the entity
-			SaveStrategy.New(user, false).Save(user);
+			SaveStrategy.New(entity, false).Save(entity);
 			
-			// Change a standard property value
-			user.FirstName = "Test2";
+			// Set the required property to empty
+			entity.TestProperty = "";
 			
-			// Set a mock validator that will always fail
-			user.Validator = new MockInvalidValidateEntityStrategy();
-			
-			Assert.IsFalse(user.IsValid, "The validator returned true when it should return false.");
+			Assert.IsFalse(entity.IsValid, "The validator returned true when it should return false.");
 			
 			// Update the invalid entity
-			bool isValid = UpdateStrategy.New(user, false).Update(user);
+			bool isValid = UpdateStrategy.New(entity, false).Update(entity);
 			
 			Assert.IsFalse(isValid, "The update strategy didn't recognise the entity as invalid.");
 			
-			TestUser foundUser = RetrieveStrategy.New<TestUser>(false).Retrieve<TestUser>("ID", user.ID);
+			MockRequiredEntity foundEntity = RetrieveStrategy.New<MockRequiredEntity>(false).Retrieve<MockRequiredEntity>("ID", entity.ID);
 			
-			Assert.AreNotEqual(foundUser.FirstName, user.FirstName, "The entity was updated despite being invalid.");
+			Assert.IsNotNull(foundEntity);
+			
+			Assert.AreNotEqual(foundEntity.TestProperty, entity.TestProperty, "The entity was updated despite being invalid.");
 		}
 		
 		[Test]
@@ -141,5 +142,31 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 			
 			
 		}
+		
+		[Test]
+		public void Test_Update_RemovesUnauthorisedReferences()
+		{
+			MockEntity entity = new MockEntity();
+			entity.ID = Guid.NewGuid();
+			
+			MockRestrictedEntity restrictedEntity = new MockRestrictedEntity();
+			restrictedEntity.ID = Guid.NewGuid();
+			
+			SaveStrategy.New(restrictedEntity, false).Save(restrictedEntity);
+			SaveStrategy.New(entity, false).Save(entity);
+			
+			entity.RestrictedEntities = new MockRestrictedEntity[]{
+				restrictedEntity
+			};
+			
+			UpdateStrategy.New(entity).Update(entity);
+			
+			MockEntity foundEntity = RetrieveStrategy.New<MockEntity>(false).Retrieve<MockEntity>("ID", entity.ID);
+			
+			foundEntity.Activate();
+			
+			Assert.AreEqual(0, foundEntity.RestrictedEntities.Length, "Restricted entity wasn't removed from reference property.");
 	}
+		
+}
 }

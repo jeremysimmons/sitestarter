@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Xml;
 using System.Xml.Serialization;
+using SoftwareMonkeys.SiteStarter.Business.Security;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using System.Collections.Generic;
+using SoftwareMonkeys.SiteStarter.Entities;
 
 namespace SoftwareMonkeys.SiteStarter.Business
 {
@@ -11,6 +13,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// </summary>
 	[XmlRoot("Strategy")]
 	[XmlType("Strategy")]
+	[XmlInclude(typeof(AuthoriseReferenceStrategyInfo))]
 	public class StrategyInfo
 	{
 		private string key = String.Empty;
@@ -19,7 +22,10 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		public string Key
 		{
-			get { return key; }
+			get {
+				if (key == null || key == String.Empty)
+					key = GetStrategyKey(this);
+				return key; }
 			set { key = value; }
 		}
 		
@@ -41,6 +47,15 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			get { return typeName; }
 			set { typeName = value; }
+		}
+		
+		private Type type;
+		public Type Type
+		{
+			get {
+				if (type == null && TypeName != String.Empty && EntityState.IsType(TypeName))
+					type = EntityState.GetType(TypeName);
+				return type; }
 		}
 		
 		private string strategyType = String.Empty;
@@ -120,14 +135,16 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			{
 				if (a is StrategyAttribute)
 				{
-					StrategyAttribute attribute = (StrategyAttribute)a;
-					
-					StrategyInfo info = new StrategyInfo();
-					info.Action = attribute.Action;
-					info.TypeName = attribute.TypeName;
-					info.StrategyType = type.FullName + ", " + type.Assembly.GetName().Name;
-					
-					list.Add(info);
+					// If it's an authorise reference strategy
+					if (a is AuthoriseReferenceStrategyAttribute)
+					{
+						list.Add(ExtractAuthoriseReferenceStrategyInfo(type, (AuthoriseReferenceStrategyAttribute)a));
+				}
+					// Otherwise it's a standard strategy
+					else
+					{
+						list.Add(ExtractStandardStrategyInfo(type, (StrategyAttribute)a));
+			}
 				}
 			}
 			
@@ -143,13 +160,37 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			return list.ToArray();
 		}
 		
+		static public AuthoriseReferenceStrategyInfo ExtractAuthoriseReferenceStrategyInfo(Type type, AuthoriseReferenceStrategyAttribute attribute)
+		{
+			AuthoriseReferenceStrategyInfo info = new AuthoriseReferenceStrategyInfo();
+			info.TypeName = attribute.TypeName;
+			info.ReferenceProperty = attribute.PropertyName;
+			info.ReferencedTypeName = attribute.ReferencedTypeName;
+			info.MirrorProperty = attribute.MirrorPropertyName;
+			info.StrategyType = type.FullName + ", " + type.Assembly.GetName().Name;
+			
+			return info;
+		}
+		
+		
+		static public StrategyInfo ExtractStandardStrategyInfo(Type type, StrategyAttribute attribute)
+		{
+			StrategyInfo info = new StrategyInfo();
+			info.Action = attribute.Action;
+			info.TypeName = attribute.TypeName;
+			info.StrategyType = type.FullName + ", " + type.Assembly.GetName().Name;
+			
+			return info;
+		}
+		
 		/// <summary>
 		/// Creates a new instance of the corresponding strategy for use by the system.
 		/// </summary>
+		/// <param name="entityTypeName"></param>
 		/// <returns>An instance of the corresponding strategy.</returns>
-		public IStrategy New()
+		public IStrategy New(string entityTypeName)
 		{
-			return Creator.CreateStrategy(this);
+			return Creator.CreateStrategy(entityTypeName, this);
 		}
 		
 		/// <summary>
@@ -171,18 +212,47 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			T strategy = default(T);
 			
-			// Logging disabled to boost performance
-			//using (LogGroup logGroup = LogGroup.Start("Creating a new strategy for the type '" + entityTypeName + "' and action '" + Action + "'.", NLog.LogLevel.Debug))
-			//{
-			//	LogWriter.Debug("Entity type name: " + entityTypeName);
+			// TODO: Comment out logging to boost performance
+			using (LogGroup logGroup = LogGroup.Start("Creating a new strategy for the type '" + entityTypeName + "' and action '" + Action + "'.", NLog.LogLevel.Debug))
+			{
+				LogWriter.Debug("Entity type name: " + entityTypeName);
 			
-			//	LogWriter.Debug("Strategy type: " + typeof(T).FullName);
+				LogWriter.Debug("Strategy type: " + typeof(T).FullName);
 			
-			strategy = (T)New();
-			strategy.TypeName = entityTypeName;
-			//}
+				strategy = (T)New(entityTypeName);
+			}
 			
 			return strategy;
+		}
+		
+		static public string GetStrategyKey(StrategyInfo strategy)
+		{
+			if (strategy is AuthoriseReferenceStrategyInfo)
+			{
+				AuthoriseReferenceStrategyInfo authoriseStrategy = (AuthoriseReferenceStrategyInfo)strategy;
+				
+				return GetAuthoriseReferenceStrategyKey(authoriseStrategy.TypeName, authoriseStrategy.ReferenceProperty, authoriseStrategy.ReferencedTypeName, authoriseStrategy.MirrorProperty);
+	}
+			else
+				return GetStrategyKey(strategy.Action, strategy.TypeName);
+}
+		
+		/// <summary>
+		/// Retrieves the key for the specifid action and type.
+		/// </summary>
+		/// <param name="action"></param>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		static public string GetStrategyKey(string action, string type)
+		{
+			string fullKey = action + "_" + type;
+			
+			return fullKey;
+		}
+		
+		static public string GetAuthoriseReferenceStrategyKey(string typeName1, string propertyName1, string typeName2, string propertyName2)
+		{
+			return "AuthoriseReference_" + typeName1 + "--" + propertyName1 + "---" + typeName2 + "--" + propertyName2;
 		}
 	}
 }

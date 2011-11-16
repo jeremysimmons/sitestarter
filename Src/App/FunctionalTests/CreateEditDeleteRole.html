@@ -52,6 +52,11 @@
 	<td>Test Role #1</td>
 </tr>
 <tr>
+	<td>addSelection</td>
+	<td>id=ctl00_Body_ctl00_Users</td>
+	<td>label=System Administrator</td>
+</tr>
+<tr>
 	<td>clickAndWait</td>
 	<td>ctl00_Body_ctl00_SaveButton</td>
 	<td></td>
@@ -109,6 +114,37 @@
 <tr>
 	<td>assertTextNotPresent</td>
 	<td>Test Role</td>
+	<td></td>
+</tr>
+<!--Ensure reference was deleted-->
+<tr>
+	<td>open</td>
+	<td>Admin/Data.aspx</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=UserRole</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Users: [1] View »</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>Admin/Data.aspx</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=User-UserRole</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Total: 1</td>
 	<td></td>
 </tr>
 </tbody></table>

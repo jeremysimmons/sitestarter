@@ -4,17 +4,64 @@ using System.Web.UI.WebControls;
 using System.ComponentModel;
 using System.Collections;
 using System.Collections.Generic;
+using SoftwareMonkeys.SiteStarter.Business.Security;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Business;
 using System.Reflection;
 using System.Xml.Serialization;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
+using SoftwareMonkeys.SiteStarter.Web.Security;
 
 namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 {
 	[ControlBuilder(typeof(EntitySelectControlBuilder))]
 	public class EntitySelect : ListBox, IPostBackDataHandler
 	{
+		private IEntity referenceSource = null;
+		/// <summary>
+		/// Gets/sets the entity which is referencing the entities on the list.
+		/// </summary>
+		[Bindable(true)]
+		public IEntity ReferenceSource
+		{
+			get { return referenceSource; }
+			set { referenceSource = value; }
+		}
+		
+		private string referenceProperty = String.Empty;
+		/// <summary>
+		/// Gets/sets the name of the property which references the entities on the list. (Only needed if IsReference is true.)
+		/// </summary>
+		[Bindable(true)]
+		public string ReferenceProperty
+		{
+			get { return referenceProperty; }
+			set { referenceProperty = value; }
+		}
+		
+		private string referenceMirrorProperty = String.Empty;
+		/// <summary>
+		/// Gets/sets the name of the mirror property in the reference. (Only needed if IsReference is true.)
+		/// </summary>
+		[Bindable(true)]
+		public string ReferenceMirrorProperty
+		{
+			get { return referenceMirrorProperty; }
+			set { referenceMirrorProperty = value; }
+		}
+		
+		private bool isReference = true;
+		/// <summary>
+		/// Gets/sets a value indicating whether the entities are being referenced.
+		/// When true, entities won't be added to the list if users aren't authorised to reference them.
+		/// </summary>
+		[Bindable(true)]
+		public bool IsReference
+		{
+			get { return isReference; }
+			set { isReference = value; }
+		}
+		
 		/// <summary>
 		/// Gets/sets the name of the property to use for the value of the items.
 		/// </summary>
@@ -200,6 +247,62 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			set { requireAuthorisation = value; }
 		}
 
+
+		/// <summary>
+		/// Gets/sets a value determining whether to hide the no selection option.
+		/// </summary>
+		public bool HideNoSelection
+		{
+			get
+			{
+				if (ViewState["HideNoSelection"] == null)
+					ViewState["HideNoSelection"] = false;
+				return (bool)ViewState["HideNoSelection"]; }
+			set { ViewState["HideNoSelection"] = value; }
+		}
+
+		/// <summary>
+		/// Gets/sets the text displayed on the no selection option.
+		/// </summary>
+		public string NoSelectionText
+		{
+			get
+			{
+				if (ViewState["NoSelectionText"] == null || (String)ViewState["NoSelectionText"] == String.Empty)
+				{
+					string shortTypeName = EntityState.GetType(EntityType).Name;
+					ViewState["NoSelectionText"] = "-- Select " + DynamicLanguage.GetText(shortTypeName) + " --";
+				}
+				return (string)ViewState["NoSelectionText"]; }
+			set { ViewState["NoSelectionText"] = value; }
+		}
+
+
+
+		/// <summary>
+		/// Gets/sets the display mode of the DropDownList.
+		/// </summary>
+		public ListSelectionMode DisplayMode
+		{
+			get
+			{
+				if (ViewState["DisplayMode"] == null)
+					ViewState["DisplayMode"] = ListSelectionMode.Single;
+				return (ListSelectionMode)ViewState["DisplayMode"]; }
+			set { ViewState["DisplayMode"] = value;
+				// If the HideNoSelection property hasn't been specified then set it
+				// based on the display mode
+				if (ViewState["HideNoSelection"] == null)
+				{
+					// If display mode is multiple then set HideNoSelection to true
+					if (value == ListSelectionMode.Multiple)
+						ViewState["HideNoSelection"] = true;
+					else
+						ViewState["HideNoSelection"] = false;
+				}
+			}
+		}
+
 		/// <summary>
 		/// Selects the appropriate items depending on the SelectedEntityIDs.
 		/// </summary>
@@ -238,6 +341,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				}
 			}
 		}
+
 
 		#region Events
 		/// <summary>
@@ -355,57 +459,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				base.SelectedEntities = Collection<IEntity>.ConvertAll(value);
 			}
 		}
-
-		/// <summary>
-		/// Gets/sets a value determining whether to hide the no selection option.
-		/// </summary>
-		public bool HideNoSelection
-		{
-			get
-			{
-				if (ViewState["HideNoSelection"] == null)
-					ViewState["HideNoSelection"] = false;
-				return (bool)ViewState["HideNoSelection"]; }
-			set { ViewState["HideNoSelection"] = value; }
-		}
-
-		/// <summary>
-		/// Gets/sets the text displayed on the no selection option.
-		/// </summary>
-		public string NoSelectionText
-		{
-			get
-			{
-				if (ViewState["NoSelectionText"] == null || (String)ViewState["NoSelectionText"] == String.Empty)
-					ViewState["NoSelectionText"] = "-- Select " + typeof(E).Name + " --";
-				return (string)ViewState["NoSelectionText"]; }
-			set { ViewState["NoSelectionText"] = value; }
-		}
-
-		/// <summary>
-		/// Gets/sets the display mode of the DropDownList.
-		/// </summary>
-		public ListSelectionMode DisplayMode
-		{
-			get
-			{
-				if (ViewState["DisplayMode"] == null)
-					ViewState["DisplayMode"] = ListSelectionMode.Single;
-				return (ListSelectionMode)ViewState["DisplayMode"]; }
-			set { ViewState["DisplayMode"] = value;
-				// If the HideNoSelection property hasn't been specified then set it
-				// based on the display mode
-				if (ViewState["HideNoSelection"] == null)
-				{
-					// If display mode is multiple then set HideNoSelection to true
-					if (value == ListSelectionMode.Multiple)
-						ViewState["HideNoSelection"] = true;
-					else
-						ViewState["HideNoSelection"] = false;
-				}
-			}
-		}
-
 		#endregion
 
 		/// <summary>
@@ -427,6 +480,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				if (DataSource != null)
 				{
 					LogWriter.Debug("DataSource property != null");
+					
 					// Organise the data.
 					Collection<E> data = new Collection<E>(DataSource);
 					data.Sort(TextPropertyName, Entities.SortDirection.Ascending);
@@ -693,6 +747,20 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		{
 			using (LogGroup logGroup = LogGroup.Start("Populating the EntitySelect control.", NLog.LogLevel.Debug))
 			{
+				if (RequireAuthorisation)
+				{
+					if (IsReference)
+					{
+						if (ReferenceSource == null)
+							throw new Exception("The ReferenceSource property on the EntitySelect '" + ID + "' must be set if IsReference is true.");
+						
+						if (ReferenceProperty == String.Empty)
+							throw new Exception("The ReferenceProperty property on the EntitySelect '" + ID + "' must be set if IsReference is true.");
+						
+						DataSource = AuthoriseReferenceStrategy.New(ReferenceSource, ReferenceProperty).Authorise((IEntity[])DataSource);
+					}
+				}
+				
 				Items.Clear();
 
 				// Add the first item.
@@ -749,7 +817,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				
 				if (property == null)
 				{
-					LogWriter.Debug("Text property '" + TextPropertyName + "' NOT found.");
+					LogWriter.Error("Text property '" + TextPropertyName + "' NOT found.");
 					throw new Exception("Can't find '" + TextPropertyName + "' property on type '" + typeof(E).Name + "' as specified by the TextPropertyName property on the '" + ID + "' EntitySelect control.");
 				}
 				else

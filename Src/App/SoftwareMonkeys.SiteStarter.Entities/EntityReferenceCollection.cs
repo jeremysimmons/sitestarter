@@ -8,7 +8,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 	/// Description of EntityReferenceCollection.
 	/// </summary>
 	[Serializable]
-	public class EntityReferenceCollection : EntityIDReferenceCollection
+	public class EntityReferenceCollection : List<EntityReference>
 	{
 		public new EntityReference this[int i]
 		{
@@ -32,7 +32,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			
 		}
 		
-		public EntityReferenceCollection(EntityReference[] references) : base(Collection<EntityIDReference>.ConvertAll(references))
+		public EntityReferenceCollection(EntityReference[] references) : base(Collection<EntityReference>.ConvertAll(references))
 		{
 		}
 		
@@ -41,33 +41,12 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			SourceEntity = sourceEntity;
 		}
 		
-		// TODO: Remove
-		/*public void Add(IEntity entity)
-		{
-			using (LogGroup logGroup = LogGroup.Start("Adding entity to the reference collection: " + entity.GetType().ToString()))
-			{
-				if (sourceEntity == null)
-					throw new InvalidOperationException("The SourceEntity property needs to be set before entities can be added.");
-				
-				if (entity == null)
-					throw new ArgumentNullException("entity");
-				
-				
-				
-				EntityReference reference = Reflector.CreateGenericObject(typeof(EntityReference<,>),
-				                                                          new Type[] {},
-				                                                          new Object[] {});
-				
-				//	new EntityReference((E1)sourceEntity, (E2)entity);
-				
-				Add(reference);
-			}
-		}*/
-		
 		public EntityReferenceCollection(IEntity sourceEntity, string sourcePropertyName, IEntity[] referencedEntities, string referencedPropertyName)
 		{
 			if (sourceEntity != null && referencedEntities != null)
 			{
+				SourceEntity = sourceEntity;
+				
 				foreach (IEntity referencedEntity in referencedEntities)
 				{
 					if (referencedEntity != null)
@@ -84,245 +63,66 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 						reference.Type1Name = sourceEntity.ShortTypeName;
 						reference.Type2Name = referencedEntity.ShortTypeName;
 						
+						reference.SourceEntity = sourceEntity;
+						reference.ReferenceEntity = referencedEntity;
+						
 						Add(reference);
 					}
 				}
 			}
 		}
-	}
-}
 
-/*	/// <summary>
-	/// Description of EntityReferenceCollection.
-	/// </summary>
-	[Serializable]
-	public class EntityReferenceCollection<E1, E2> : EntityReferenceCollection
-		where E1 : IEntity
-		where E2 : IEntity
+		public IEntity[] GetReferencedEntities(IEntity sourceReference)
 	{
+			List<IEntity> list = new List<IEntity>();
 		
-		private Guid[] referenceIDs;
-		/// <summary>
-		/// Gets/sets the IDs of the references.
-		/// </summary>
-		public Guid[] ReferenceIDs
+			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving entities that are referenced by the one provided."))
 		{
-			get { return GetReferenceIDs(); }
-			//	set { SetReferenceIDs(value); }
+				LogWriter.Debug("Total references: " + Count.ToString());
+		
+				foreach (EntityReference reference in this)
+		{
+					list.Add(reference.GetOtherEntity(sourceReference));
 		}
 		
-		/// <summary>
-		/// Gets/sets the IDs of the referenced entities.
-		/// </summary>
-		public Guid[] IDs
-		{
-			get { return GetIDs(); }
-			set { SetIDs(value); }
+				LogWriter.Debug("Total matching: " + list.Count.ToString());
 		}
 		
-		public EntityReferenceCollection()
-		{
-			
-		}
-		
-		public EntityReferenceCollection(E1 sourceEntity)
-		{
-			SourceEntity = sourceEntity;
-		}
-		
-//		public EntityReferenceCollection()
-//		{
-//
-//		}
-		
-		protected new void Add(EntityReference<E1, E2> reference)
-		{
-			using (LogGroup logGroup = LogGroup.Start("Adding a reference to the collection.", NLog.LogLevel.Debug))
-			{
-				if (reference == null)
-					throw new ArgumentNullException("reference");
-				
-				//	if (reference.SourceEntity == null)
-				//		reference.SourceEntity = SourceEntity;
-				
-				base.Add(reference);
-			}
-			
-		}
-		
-//		public new void Add(EntityIDReference reference)
-//		{
-//			if (reference == null)
-//				throw new ArgumentNullException("reference");
-//
-//			Add((EntityReference<E1, E2>)reference);
-//		}
-		
-		public void Add(E2 entity)
-		{
-			using (LogGroup logGroup = LogGroup.Start("Adding entity to the reference collection: " + entity.GetType().ToString()))
-			{
-				if (SourceEntity == null)
-					throw new InvalidOperationException("The SourceEntity property needs to be set before entities can be added.");
-				
-				if (entity == null)
-					throw new ArgumentNullException("entity");
-				
-				EntityReference<E1, E2> reference = new EntityReference<E1, E2>((E1)SourceEntity, (E2)entity);
-				
-				Add(reference);
-			}
-
-			
-		}
-		
-		public EntityReference<E1, E2> GetReference(params IEntity[] entities)
-		{
-			bool match = false;
-			foreach (EntityReference<E1, E2> reference in this)
-			{
-				foreach (IEntity entity in entities)
-				{
-					match = reference.Includes(entity);
-				}
-				if (match)
-					return reference;
-			}
-			return null;
-		}
-		
-		
-		public EntityReference<E1, E2> GetReference(params Guid[] ids)
-		{
-			bool match = false;
-			foreach (EntityReference<E1, E2> reference in this)
-			{
-				foreach (Guid id in ids)
-				{
-					match = (reference.EntityIDs[0] == id
-					         || reference.EntityIDs[1] == id);
-				}
-				if (match)
-					return reference;
-			}
-			return null;
-		}
-		
-		public Guid[] GetIDs()
-		{
-			List<Guid> list = new List<Guid>();
-			
-			using (LogGroup logGroup = LogGroup.Start("Retrieving IDs of referenced entities.", NLog.LogLevel.Debug))
-			{
-				foreach (object reference in this)
-				{
-					LogWriter.Debug("ID: " + ((EntityReference)reference).GetOtherEntity(SourceEntity).ID);
-					list.Add(((EntityReference)reference).GetOtherEntity(SourceEntity).ID);
-				}
-			}
 			return list.ToArray();
 		}
 		
-		
-		public void SetIDs(Guid[] ids)
+		public new EntityReference[] ToArray()
 		{
-			List<Guid> list = new List<Guid>();
-			
-			EntityIDReferenceCollection obsoleteReferences = new EntityIDReferenceCollection();
-			
-			
-			
-			using (LogGroup logGroup = LogGroup.Start("Setting IDs of referenced entities.", NLog.LogLevel.Debug))
-			{
-				
-				// Add all references to the obsolete list. They'll be removed one by one if they're still in use.
-				foreach (EntityIDReference reference in this)
-				{
-					obsoleteReferences.Add(reference);
-				}
-
-				foreach (Guid id in ids)
-				{
-					LogWriter.Debug("ID: " + id.ToString());
-					
-					EntityReference reference = this.GetReference(id);
-					
-					if (reference != null)
-					{
-						LogWriter.Debug("Reference already exists.");
-						
-//						// Change the reference entity ID
-//						reference.EntityIDs[1] = id;
-//						if (reference.ReferenceEntity != null && !reference.ReferenceEntity.ID.Equals(id))
-//							reference.ReferenceEntity = null;
-							
-							// Remove from the 'obsolete' list because it's still in use
-							obsoleteReferences.Remove(reference);
-					}
-					else
-					{
-						LogWriter.Debug("Creating new reference.");
-						
-						// Add a new reference with the specified ID
-						reference = new EntityReference<E1, E2>();
-						reference.SourceEntity = SourceEntity;
-						reference.EntityIDs[1] = id;
-						
-						Add(reference);
-					}
-				}
-				
-				//  Remove any obsolete references from the current list.
-				foreach (EntityReference reference in obsoleteReferences)
-				{
-					LogWriter.Debug("Removing obsolete reference: " + reference.ID.ToString());
-					
-					this.Remove(reference);
-				}
-				
-				LogWriter.Debug("# of obsolete references: " +
-				                (obsoleteReferences == null
-				                 ? "0"
-				                 : obsoleteReferences.Count.ToString()));
-				
-				// Set the obsolete list
-				this.RemovedReferences = (obsoleteReferences == null ? null : obsoleteReferences.ToArray());
-			}
-		}
-		
-		public Guid[] GetReferenceIDs()
-		{
-			List<Guid> list = new List<Guid>();
-			
-			using (LogGroup logGroup = LogGroup.Start("Retrieving IDs of referenced entities.", NLog.LogLevel.Debug))
-			{
-				foreach (object reference in this)
-				{
-					LogWriter.Debug("ID: " + ((EntityReference)reference).ID);
-					list.Add(((EntityReference)reference).ID);
-				}
-			}
+			List<EntityReference> list = new List<EntityReference>();
+			foreach (EntityReference r in this)
+				list.Add(r);
 			return list.ToArray();
 		}
 		
-		public void Remove(E2 entity)
+		/// <summary>
+		/// Retrieves all the IDs of the entities from the collection that are associated with the specified entity.
+		/// </summary>
+		/// <param name="sourceEntityID">The entity that the referenced IDs are being retrieved for. If this is Guid.Empty then all IDs from both sides of the reference are returned.</param>
+		/// <returns>The IDs of the referenced entities.</returns>
+		public Guid[] GetEntityIDs(Guid sourceEntityID)
 		{
-			EntityReference<E1, E2> reference = GetReference(entity);
-			Remove(reference);
+			List<Guid> list = new List<Guid>();
+			foreach (EntityReference reference in this)
+			{
+				if (sourceEntityID == Guid.Empty || reference.Entity1ID == sourceEntityID)
+				{
+					if (!list.Contains(reference.Entity2ID))
+						list.Add(reference.Entity2ID);
+				}
+
+				if (sourceEntityID == Guid.Empty || reference.Entity2ID == sourceEntityID)
+				{
+					if (!list.Contains(reference.Entity1ID))
+						list.Add(reference.Entity1ID);
+					}
+					}
+				
+			return list.ToArray();
 		}
-		
-		// TODO: Remove
-//		public static implicit operator EntityReferenceCollection<E1, E2>(EntityIDReferenceCollection c)
-//		//	where E1 : IEntity
-//		//	where E2 : IEntity
-//		{
-//			EntityReferenceCollection<E1, E2> newCollection = new EntityReferenceCollection<E1, E2>(c.SourceEntity);
-			
-//			foreach (EntityReference reference in c)
-//			{
-//
-//			}
-//		}
-//	}
-//}
- */
+		}
+}

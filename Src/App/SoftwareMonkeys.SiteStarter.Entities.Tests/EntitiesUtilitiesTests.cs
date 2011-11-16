@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Xml;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Entities;
+using SoftwareMonkeys.SiteStarter.Entities.Tests.Entities;
 using SoftwareMonkeys.SiteStarter.Tests.Entities;
 using SoftwareMonkeys.SiteStarter.Configuration;
 using System.Reflection;
@@ -110,6 +111,16 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 			string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyNameReverse(user.GetType(), "Roles", typeof(TestRole));
 			
 			Assert.AreEqual("Users", mirrorPropertyName, "The mirror property name wasn't determined correctly.");
+		}
+		
+		[Test]
+		public void Test_GetMirrorPropertyNameReverse_Multiple_Implicit_Async()
+		{
+			MockEntity entity = new MockEntity();
+			
+			string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyNameReverse(typeof(MockPublicEntity), "", typeof(MockEntity));
+			
+			Assert.AreEqual("PublicEntities", mirrorPropertyName, "The mirror property name wasn't determined correctly.");
 		}
 		
 		[Test]

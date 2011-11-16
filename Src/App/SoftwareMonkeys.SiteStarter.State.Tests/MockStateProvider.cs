@@ -268,9 +268,8 @@ namespace SoftwareMonkeys.SiteStarter.State.Tests
 		
 		public override void Initialize()
 		{
+			StateAccess.State = this;
 
-			SoftwareMonkeys.SiteStarter.State.StateAccess.State = this;
-			
 			this.PhysicalApplicationPath = TestUtilities.GetTestApplicationPath(fixture, "MockApplication");
 			this.ApplicationPath = "/MockApplication";
 

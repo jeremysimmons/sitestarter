@@ -1,6 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 using SoftwareMonkeys.SiteStarter.Entities;
+using SoftwareMonkeys.SiteStarter.Entities.Tests.Entities;
 using SoftwareMonkeys.SiteStarter.Tests.Entities;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Tests;
@@ -39,22 +40,22 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			user.Roles = new TestRole[] {role};
 			user2.Roles = new TestRole[] {role2};
 			
-			DataAccess.Data.Saver.Save(user2);
-			DataAccess.Data.Saver.Save(user);
 			DataAccess.Data.Saver.Save(role2);
 			DataAccess.Data.Saver.Save(role);
+			DataAccess.Data.Saver.Save(user2);
+			DataAccess.Data.Saver.Save(user);
 			
 			EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences(user.GetType().Name, role.GetType().Name);
 			
 			Assert.AreEqual(2, references.Count, "Incorrect number of references found.");
 			
-			EntityIDReference reference1 = (EntityIDReference)references[0];
-			EntityIDReference reference2 = (EntityIDReference)references[1];
+			EntityReference reference1 = (EntityReference)references[0];
+			EntityReference reference2 = (EntityReference)references[1];
 			
 			// Switch the references around if necessary to match (so they can be found in any order)
 			if (!reference1.Includes(user2.ID, "Roles"))
 			{
-				EntityIDReference tmp = reference1;
+				EntityReference tmp = reference1;
 				reference1 = reference2;
 				reference2 = tmp;
 			}
@@ -69,11 +70,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			Assert.IsFalse(reference2.Includes(user2.ID, "Roles"), "Second reference includes unexpected user.");
 			Assert.IsFalse(reference2.Includes(role2.ID, "Users"), "Second reference includes unexpected role.");
 			
-			//Assert.AreEqual(role2.ID.ToString(), ((EntityIDReference)references[0]).Entity1ID.ToString(), "First reference has invalid entity 1 ID.");
-			//Assert.AreEqual(user2.ID.ToString(), ((EntityIDReference)references[0]).Entity2ID.ToString(), "First reference has invalid entity 2 ID.");
+			//Assert.AreEqual(role2.ID.ToString(), ((EntityReference)references[0]).Entity1ID.ToString(), "First reference has invalid entity 1 ID.");
+			//Assert.AreEqual(user2.ID.ToString(), ((EntityReference)references[0]).Entity2ID.ToString(), "First reference has invalid entity 2 ID.");
 			
-			//Assert.AreEqual(role1.ID.ToString(), ((EntityIDReference)references[1]).Entity1ID.ToString(), "Second reference has invalid entity 1 ID.");
-			//Assert.AreEqual(user1.ID.ToString(), ((EntityIDReference)references[1]).Entity2ID.ToString(), "Second reference has invalid entity 2 ID.");
+			//Assert.AreEqual(role1.ID.ToString(), ((EntityReference)references[1]).Entity1ID.ToString(), "Second reference has invalid entity 1 ID.");
+			//Assert.AreEqual(user1.ID.ToString(), ((EntityReference)references[1]).Entity2ID.ToString(), "Second reference has invalid entity 2 ID.");
 			
 		}
 		
@@ -105,24 +106,22 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			role2.Name = "Test Role2";
 			
 			user.Roles = new TestRole[] {role, role2};
-			//user2.Roles = new TestRole[] {role2};
 			
-			//DataAccess.Data.Saver.Save(user2);
-			DataAccess.Data.Saver.Save(user);
 			DataAccess.Data.Saver.Save(role2);
 			DataAccess.Data.Saver.Save(role);
+			DataAccess.Data.Saver.Save(user);
 
 			EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences("TestUser", "TestRole");
 			
 			Assert.AreEqual(2, references.Count, "Incorrect number of references found.");
 			
-			EntityIDReference reference1 = (EntityIDReference)references[0];
-			EntityIDReference reference2 = (EntityIDReference)references[1];
+			EntityReference reference1 = (EntityReference)references[0];
+			EntityReference reference2 = (EntityReference)references[1];
 			
 			// Switch the references around if necessary to match (so they can be found in any order)
 			if (!reference1.Includes(role.ID, "Users"))
 			{
-				EntityIDReference tmp = reference1;
+				EntityReference tmp = reference1;
 				reference1 = reference2;
 				reference2 = tmp;
 			}
@@ -138,40 +137,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			Assert.IsFalse(reference2.Includes(role.ID, "Users"), "Second reference includes unexpected role.");
 			
 		}
-		/*
-		[Test]
-		public void Test_PreSave()
-		{
 			
-			TestUser.RegisterType();
-			TestRole.RegisterType();
-			
-			
-			TestUser user = new TestUser();
-			Guid userID = user.ID = Guid.NewGuid();
-			user.FirstName = "Test";
-			user.LastName = "User";
-			
-			TestRole role = new TestRole();
-			Guid roleID = role.ID = Guid.NewGuid();
-			role.Name = "Test Role";
-			
-			user.Roles = Collection<TestRole>.Add(user.Roles, role);
-			
-			
-			DataAccess.Data.Saver.PreSave(user);
-			
-			TestUser user2 = (TestUser)DataAccess.Data.Reader.GetEntity(typeof(TestUser), "ID", user.ID);
-			
-			DataAccess.Data.Activator.Activate(user2, "Roles");
-			
-			// Check the roles list on the newly loaded user object
-			// Should be Length == 0
-			Assert.AreEqual(0, user2.Roles.Length, "Incorrect number of roles found on retrieved user entity.");
-			
-		}*/
-		
-		
 		[Test]
 		public void Test_Save_2References_CheckLocationOfReferencedEntities()
 		{
@@ -203,42 +169,14 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				user.Roles = new TestRole[] {role};
 				user2.Roles = new TestRole[] {role2};
 				
-				DataAccess.Data.Saver.Save(user2);
-				DataAccess.Data.Saver.Save(user);
 				DataAccess.Data.Saver.Save(role2);
 				DataAccess.Data.Saver.Save(role);
+				DataAccess.Data.Saver.Save(user2);
+				DataAccess.Data.Saver.Save(user);
 				
 				EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences(user.GetType().Name, role.GetType().Name);
 				
 				Assert.AreEqual(2, references.Count, "Incorrect number of references found.");
-				
-				//EntityIDReference reference1 = (EntityIDReference)references[0];
-				//EntityIDReference reference2 = (EntityIDReference)references[1];
-				
-				// Switch the references around if necessary to match (so they can be found in any order)
-				/*if (!reference1.Includes(user2.ID, "Roles"))
-			{
-				EntityIDReference tmp = reference1;
-				reference1 = reference2;
-				reference2 = tmp;
-			}*/
-				
-				//Assert.IsTrue(reference1.Includes(user.ID, "Roles"), "First reference does not include expected user.");
-				//Assert.IsTrue(reference1.Includes(role.ID, "Users"), "First reference does not include expected role.");
-				//Assert.IsTrue(reference2.Includes(user.ID, "Roles"), "Second reference does not include expected user.");
-				//Assert.IsTrue(reference2.Includes(role.ID, "Users"), "Second reference does not include expected role.");
-				
-				//Assert.IsFalse(reference1.Includes(user.ID, "Roles"), "First reference includes unexpected user.");
-				//Assert.IsFalse(reference1.Includes(role.ID, "Users"), "First reference includes unexpected role.");
-				//Assert.IsFalse(reference2.Includes(user2.ID, "Roles"), "Second reference includes unexpected user.");
-				//Assert.IsFalse(reference2.Includes(role2.ID, "Users"), "Second reference includes unexpected role.");
-				
-				//Assert.AreEqual(role2.ID.ToString(), ((EntityIDReference)references[0]).Entity1ID.ToString(), "First reference has invalid entity 1 ID.");
-				//Assert.AreEqual(user2.ID.ToString(), ((EntityIDReference)references[0]).Entity2ID.ToString(), "First reference has invalid entity 2 ID.");
-				
-				//Assert.AreEqual(role1.ID.ToString(), ((EntityIDReference)references[1]).Entity1ID.ToString(), "Second reference has invalid entity 1 ID.");
-				//Assert.AreEqual(user1.ID.ToString(), ((EntityIDReference)references[1]).Entity2ID.ToString(), "Second reference has invalid entity 2 ID.");
-				
 				
 				// Load the roles out of the users store (there should be none)
 				IEntity[] rolesInUsersStore = DataAccess.Data.Stores[typeof(TestUser)].Indexer.GetEntities<TestRole>();
@@ -275,10 +213,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		
 		
 		[Test]
-		public void Test_Save_EntityReference()
+		public virtual void Test_Save_EntityReference()
 		{
 			
-			using (LogGroup logGroup = LogGroup.Start("Testing saving of an EntityIDReference.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Testing saving of an EntityReference.", NLog.LogLevel.Debug))
 			{
 				EntityReference reference = new EntityReference();
 				reference.ID = Guid.NewGuid();
@@ -322,5 +260,36 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 		}
 		
+		[Test]
+		public virtual void Test_Save_SetsCountPropertyForReference()
+		{
+			using (LogGroup logGroup = LogGroup.StartDebug("Testing the Save function to ensure it sets the reference count properties."))
+			{
+				MockEntity entity = new MockEntity();
+				entity.ID = Guid.NewGuid();
+				
+				MockSyncEntity referencedEntity = new MockSyncEntity();
+				referencedEntity.ID = Guid.NewGuid();
+				
+				entity.SyncEntities = new MockSyncEntity[]{
+					referencedEntity
+				};
+				
+				DataAccess.Data.Saver.Save(referencedEntity);
+				DataAccess.Data.Saver.Save(entity);
+				
+				MockEntity foundEntity = DataAccess.Data.Reader.GetEntity<MockEntity>("ID", entity.ID);
+				MockSyncEntity foundReferencedEntity = DataAccess.Data.Reader.GetEntity<MockSyncEntity>("ID", referencedEntity.ID);
+				
+				DataAccess.Data.Activator.Activate(foundEntity);
+				DataAccess.Data.Activator.Activate(foundReferencedEntity);
+				
+				Assert.AreEqual(1, foundEntity.TotalSyncEntities, "The TotalSyncEntities property didn't have the expected value.");
+				Assert.AreEqual(1, foundEntity.SyncEntities.Length, "The SyncEntities property didn't have the expected length.");
+				
+				Assert.AreEqual(1, foundReferencedEntity.TotalEntities, "The TotalEntities property didn't have the expected value.");
+				Assert.AreEqual(1, foundReferencedEntity.Entities.Length, "The Entities property didn't have the expected length.");
+	}
+}
 	}
 }

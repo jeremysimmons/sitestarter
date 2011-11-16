@@ -14,6 +14,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities
         /// <summary>
         /// Gets/sets the name of the role.
         /// </summary>
+		[Required]
+		[Unique]
         public string Name
         {
             get
@@ -27,63 +29,12 @@ namespace SoftwareMonkeys.SiteStarter.Entities
             }
         }
 
-       /* private UserPermission[] permioss;
-        /// <summary>
-        /// Gets/sets the users to this role.
-        /// </summary>
-        [Reference]
-        public User[] Users
-        {
-            get {
-        		if (users == null)
-        			users = new User[]{};
-        		return users; }
-            set
-            {
-            	users = value;//(EntityReferenceCollection<IUserRole, IUser>)value.SwitchFor(this);
-            }
-        }       
-        
-        /// <summary>
-        /// Gets/sets the permissions available to the role.
-       	IUserPermission[] IUserRole.Permissions
-        {
-            get
-            {
-                return permissions;
-            }
-            set { permissions = value; }
-        }*/
-/*
-        private Guid[] userIDs = new Guid[] { };
-        /// <summary>
-        /// Gets/sets the IDs of the users for this role.
-        /// </summary>
-        [EntityIDReferences(MirrorName = "RoleIDs",
-            EntitiesPropertyName = "Users",
-            IDsPropertyName = "UserIDs",
-           ReferenceTypeName="User")]
-        public Guid[] UserIDs
-        {
-            get
-            {
-                if (users != null)
-                    return Collection<IUser>.GetIDs(users);
-                return userIDs;
-            }
-            set
-            {
-                userIDs = value;
-                if (userIDs == null || (users != null && !userIDs.Equals(Collection<IUser>.GetIDs(users))))
-                    users = null;
-            }
-        }*/
-
         private User[] users;
         /// <summary>
         /// Gets/sets the users to this role.
         /// </summary>
-        [Reference(MirrorPropertyName="Roles")]
+        [Reference(MirrorPropertyName="Roles",
+                  CountPropertyName="TotalUsers")]
         public User[] Users
         {
             get {
@@ -92,11 +43,20 @@ namespace SoftwareMonkeys.SiteStarter.Entities
         		return users; }
             set
             {
-            	users = value;//(EntityReferenceCollection<IUserRole, IUser>)value.SwitchFor(this);
+            	users = value;
             }
-        }        
+        }       
+        
+        private int totalUsers;
+        /// <summary>
+        /// Gets/sets the total number of users assigned to the role.
+        /// </summary>
+        public int TotalUsers
+        {
+        	get { return totalUsers; }
+        	set { totalUsers = value; }
+            }
 
-        //[Reference]
         IUser[] IUserRole.Users
         {
         	get { return Collection<IUser>.ConvertAll(users); }

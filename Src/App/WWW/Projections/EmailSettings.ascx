@@ -35,6 +35,7 @@
         AppConfig config = (AppConfig)Config.Application;
 
         config.Settings["SmtpServer"] = SmtpServer.Text;
+        config.Settings["SystemEmail"] = SystemEmail.Text;
     
     	config.Save();
 		
@@ -96,9 +97,15 @@
                                     <td colspan="2" class="Heading2"><%# Resources.Language.EmailSettings %></td>
                                 </tr>
                                  <tr>
-                                    <td class="FieldLabel">&nbsp;&nbsp;&nbsp;<%# Resources.Language.SmtpServer + ":"%></td>
+                                    <td class="FieldLabel"><%# Resources.Language.SmtpServer + ":"%></td>
                                     <td class="Field">
                                     <asp:TextBox runat="server" ID="SmtpServer" CssClass="Form" width="400px" Text='<%# Config.Application.Settings["SmtpServer"] %>' /></td>
+                                </tr>
+                                
+                                <tr>
+                                    <td class="FieldLabel"><%# Resources.Language.SystemEmail + ":"%></td>
+                                    <td class="Field">
+                                    <asp:TextBox runat="server" ID="SystemEmail" CssClass="Form" width="400px" Text='<%# Config.Application.Settings["SystemEmail"] %>' /></td>
                                 </tr>
                                 
                                 <tr>

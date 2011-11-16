@@ -26,7 +26,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Tests
 		[Test]
 		public void Test_Initialize_StrategiesProvided()
 		{
-			IStrategy strategy = new MockRetrieveStrategy();
+			IStrategy strategy = new MockRetrieveTestUserStrategy();
 			StrategyInfo info = StrategyInfo.ExtractInfo(strategy.GetType())[0];
 			
 			StrategyInfo[] strategies = new StrategyInfo[]{info};

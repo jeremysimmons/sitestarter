@@ -115,7 +115,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <summary>
 		/// Initializes the strategies and loads all strategies to state. Note: Skips initialization if already initialized.
 		/// </summary>
-		public void Initialize(bool includeTestEntities)
+		public void Initialize(bool includeTestStrategies)
 		{
 			using (LogGroup logGroup = LogGroup.Start("Initializing the business strategies.", NLog.LogLevel.Debug))
 			{
@@ -132,7 +132,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					{
 						LogWriter.Debug("Is not mapped. Scanning from type attributes.");
 						
-						strategies = FindStrategies(includeTestEntities);
+						strategies = FindStrategies(includeTestStrategies);
 						SaveToFile(strategies);
 					}
 					

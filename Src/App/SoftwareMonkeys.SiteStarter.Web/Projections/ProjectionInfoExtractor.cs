@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Web.UI;
 using System.IO;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.State;
 using System.Collections.Generic;
 
@@ -38,14 +39,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <returns></returns>
 		public ProjectionInfo[] ExtractProjectionInfo(string filePath)
 		{
+			List<ProjectionInfo> projections = new List<ProjectionInfo>();
+			
+			using (LogGroup logGroup = LogGroup.StartDebug("Extracting projection info from file: " + filePath))
+			{
 			string shortName = Path.GetFileNameWithoutExtension(filePath);
 			string extension = Path.GetExtension(filePath).Trim('.');
 			
 			string[] actions = ExtractActions(shortName);
 			
 			string typeName = ExtractType(shortName);
-			
-			List<ProjectionInfo> projections = new List<ProjectionInfo>();
 			
 			string relativeFilePath = filePath.Replace(StateAccess.State.PhysicalApplicationPath, "")
 				.Replace(@"\", "/");
@@ -63,13 +66,22 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			if (p == null)
 				throw new ArgumentException("Cannot find projection file at path: " + filePath);
 			
-			// Ensure that the menu properties have been set
-			p.InitializeMenu();
+				// Ensure that the info has been initialized
+				p.InitializeInfo();
 			
 			string menuTitle = p.MenuTitle;
 			string menuCategory = p.MenuCategory;
 			bool showOnMenu = p.ShowOnMenu;
+				string actionAlias = p.ActionAlias;
 			
+				ProjectionInfo[] manualInfos = p.Info;
+				
+				// If no projection info was manually created within the projection
+				// then automatically generate them
+				if (manualInfos == null || manualInfos.Length == 0)
+				{
+					LogWriter.Debug("No info objects created within the projection. Automatically extracting.");
+					
 			// If the projection is type and action based
 			if (actions.Length > 0)
 			{
@@ -85,6 +97,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 					info.MenuTitle = menuTitle;
 					info.MenuCategory = menuCategory;
 					info.ShowOnMenu = showOnMenu;
+							info.ActionAlias = actionAlias;
 					
 					projections.Add(info);
 				}
@@ -101,10 +114,31 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				info.MenuTitle = menuTitle;
 				info.MenuCategory = menuCategory;
 				info.ShowOnMenu = showOnMenu;
+						info.ActionAlias = actionAlias;
 				
 				projections.Add(info);
 			}
+				}
+				// Otherwise use the manually created info
+				else
+				{
+					LogWriter.Debug("Info objects created by projection: " + manualInfos.Length.ToString());
 			
+					foreach (ProjectionInfo i in manualInfos)
+					{
+						LogWriter.Debug("Projection: " + i.MenuTitle);
+						
+						// If the name is not specified but the type name and action are then
+						// generate the name from them
+						if (i.Name == String.Empty && i.TypeName != String.Empty && i.Action != String.Empty)
+							i.Name = i.TypeName + "-" + i.Action;
+						
+						// Set the projection file path
+						i.ProjectionFilePath = relativeFilePath;
+					}
+					projections.AddRange(manualInfos);
+				}
+			}
 			return projections.ToArray();
 		}
 		

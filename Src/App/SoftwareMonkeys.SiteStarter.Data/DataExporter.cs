@@ -103,7 +103,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="reference">The reference to create the file path for.</param>
 		/// <param name="baseDirectory">The base directory containing the entities XML files.</param>
 		/// <returns>The full file path unique to the provided reference.</returns>
-		public string CreateReferenceExportPath(EntityIDReference reference, string baseDirectory)
+		public string CreateReferenceExportPath(EntityReference reference, string baseDirectory)
 		{
 			return new EntityFileNamer(reference, baseDirectory).CreateFilePath();
 		}

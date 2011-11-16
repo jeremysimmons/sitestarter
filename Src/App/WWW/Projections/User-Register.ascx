@@ -14,12 +14,12 @@
 <script runat="server">
     private void Page_Init(object sender, EventArgs e)
     {
-    	// TODO: Check if needed. Should be obsolete.
+    	// TODO: Check if needed. Should be obsolete because RegisterUserController takes care of it
         RequireAuthorisation = false;
 		
-		CreateAction = "Register";
+		CommandInfo command = new CommandInfo("Register", "User", "Create");
         
-        Initialize(typeof(User), DataForm, "Username"); 
+        Initialize(command, DataForm, "Username"); 
         
         CreateController.EntitySavedLanguageKey = "UserRegistered";
         
@@ -86,9 +86,9 @@
 <cc:EntityFormTextBoxItem runat="server" PropertyName="FirstName" TextBox-Width="400" FieldControlID="FirstName" IsRequired="true" text='<%# Resources.Language.FirstName + ":" %>' RequiredErrorMessage='<%# Resources.Language.FirstNameRequired %>'></cc:EntityFormTextBoxItem>
 <cc:EntityFormTextBoxItem runat="server" PropertyName="LastName" TextBox-Width="400" FieldControlID="LastName" IsRequired="true" text='<%# Resources.Language.LastName + ":" %>' RequiredErrorMessage='<%# Resources.Language.LastNameRequired %>'></cc:EntityFormTextBoxItem>
    <cc:EntityFormTextBoxItem runat="server" PropertyName="Email" TextBox-Width="400" FieldControlID="Email" IsRequired="true" text='<%# Resources.Language.Email + ":" %>' RequiredErrorMessage='<%# Resources.Language.EmailRequired %>'></cc:EntityFormTextBoxItem>
-                                    <cc:EntityFormTextBoxItem runat="server" PropertyName="Username" TextBox-Width="400" FieldControlID="Username" IsRequired="true" text='<%# Resources.Language.Username + ":" %>' RequiredErrorMessage='<%# Resources.Language.UsernameRequired %>'></cc:EntityFormTextBoxItem>
-                                    <cc:EntityFormPasswordItem runat="server" PropertyName="Password" TextBox-Width="400" FieldControlID="Password" IsRequired="true" text='<%# Resources.Language.Password + ":" %>' RequiredErrorMessage='<%# Resources.Language.PasswordRequired %>'></cc:EntityFormPasswordItem>
-                                     <cc:EntityFormPasswordConfirmItem runat="server" PropertyName="Password" AutoBind="false" TextBox-Width="400" FieldControlID="PasswordConfirm" IsRequired="true" text='<%# Resources.Language.PasswordConfirm + ":" %>' CompareTo="Password" CompareToErrorMessage='<%# Resources.Language.PasswordsDontMatch %>'></cc:EntityFormPasswordConfirmItem>
+                                    <cc:EntityFormTextBoxItem runat="server" PropertyName="Username" TextBox-Width="200" FieldControlID="Username" IsRequired="true" text='<%# Resources.Language.Username + ":" %>' RequiredErrorMessage='<%# Resources.Language.UsernameRequired %>'></cc:EntityFormTextBoxItem>
+                                    <cc:EntityFormPasswordItem runat="server" PropertyName="Password" TextBox-Width="200" FieldControlID="Password" IsRequired="true" text='<%# Resources.Language.Password + ":" %>' RequiredErrorMessage='<%# Resources.Language.PasswordRequired %>'></cc:EntityFormPasswordItem>
+                                     <cc:EntityFormPasswordConfirmItem runat="server" PropertyName="Password" AutoBind="false" TextBox-Width="200" FieldControlID="PasswordConfirm" IsRequired="true" text='<%# Resources.Language.PasswordConfirm + ":" %>' CompareTo="Password" CompareToErrorMessage='<%# Resources.Language.PasswordsDontMatch %>'></cc:EntityFormPasswordConfirmItem>
                                       <cc:EntityFormCheckBoxItem runat="server" PropertyName="EnableNotifications" Text='<%# Resources.Language.EnableNotifications + ":" %>' FieldControlID="EnableNotifications" TextBox-Text='<%# Resources.Language.EnableNotifications %>'></cc:EntityFormCheckBoxItem>
                                                         <cc:EntityFormButtonsItem ID="EntityFormButtonsItem1" runat="server"><FieldTemplate><asp:Button ID="RegisterButton" runat="server" CausesValidation="True" CommandName="Save"
                                                     Text='<%# Resources.Language.Register %>'></asp:Button>

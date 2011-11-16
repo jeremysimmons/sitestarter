@@ -53,19 +53,34 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 						
 						if (isReference)
 						{
+							using (LogGroup logGroup2 = LogGroup.StartDebug("Checking reference property '" + property.Name + "' for obsolete references."))
+							{
 							Type referenceType = EntitiesUtilities.GetReferenceType(entity.GetType(), property.Name);
 							
-							foreach (EntityIDReference reference in DataAccess.Data.Referencer.GetReferences(entity.GetType(),
+								EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences(entity.GetType(),
 							                                                                                 entity.ID,
 							                                                                                 property.Name,
 							                                                                                 referenceType,
-							                                                                                 false))
+								                                                                                false);
+								if (references.Count > 0)
 							{
+									LogWriter.Debug("Found references: " + references.Count.ToString());
+									
+									foreach (EntityReference reference in references)
+									{
+										LogWriter.Debug("Found reference between '" + reference.Type1Name + "' and '" + reference.Type2Name + "'.");
+										
 								toDelete.Add(reference);
 							}
 						}
+								else
+									LogWriter.Debug("No references found associated with this property.");
 					}
 				}
+					}
+				}
+				
+				LogWriter.Debug("References to delete: " + toDelete.Count);
 				
 				//entitiesToUpdate = toUpdate.ToArray();
 				Provider.Referencer.DeleteObsoleteReferences(toDelete);
@@ -81,15 +96,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <param name="entity">The entity to delete.</param>
 		public override void Delete(IEntity entity)
 		{
-			using (LogGroup logGroup = LogGroup.StartDebug("Deleting the provided entity."))
-			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");
 				
+			using (LogGroup logGroup = LogGroup.StartDebug("Deleting provided '" + entity.ShortTypeName + "' entity."))
+			{
 				Db4oDataStore store = (Db4oDataStore)GetDataStore(entity);
-			
-				//if (entity.ID == Guid.Empty)
-				//	throw new ArgumentException("entity.ID is set to Guid.Empty on type " + entity.GetType().ToString());
 			
 				if (DataAccess.Data.IsStored(entity))
 				{

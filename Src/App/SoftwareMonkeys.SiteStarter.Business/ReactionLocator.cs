@@ -144,10 +144,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				// Loop backwards through the interface types
 				for (int i = interfaceTypes.Length-1; i >= 0; i --)
 				{
-				// Clean up - Reactions aren't exclusive, so even if one is found more can still be located
-					// If a reaction is already found then skip the rest
-					//if (reactionInfos == null)
-					//{
 						Type interfaceType = interfaceTypes[i];
 						
 						using (LogGroup logGroup2 = LogGroup.Start("Checking interface: " + interfaceType.FullName, NLog.LogLevel.Debug))
@@ -165,7 +161,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 							else
 								LogWriter.Debug("No reaction found for that key.");
 						}
-					//}
 				}
 			}
 			return reactionInfos.ToArray();
@@ -181,19 +176,25 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			ReactionInfoCollection reactionInfos = new ReactionInfoCollection();
 			
-			using (LogGroup logGroup = LogGroup.Start("Locating reaction via the base types of the provided type.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Locating reaction via the base types of the '" + (type != null ? type.FullName : "[null]") + "' type."))
 			{
+				if (action == null)
+					throw new ArgumentNullException("action");
+				
+				if (action == String.Empty)
+					throw new ArgumentException("An action must be specified.");
+				
+				if (type == null)
+					throw new ArgumentNullException("type");
 				
 				TypeNavigator navigator = new TypeNavigator(type);
 				
-				while (navigator.HasNext && reactionInfos == null)
+				while (navigator.HasNext)
 				{
 					Type nextType = navigator.Next();
 					
-				// Clean up - Reactions aren't exclusive, so even if one is found more can still be located
-					//if (reactionInfos == null)
-					//{
-						
+					if (nextType != null)
+					{
 						using (LogGroup logGroup2 = LogGroup.Start("Checking base type: " + nextType.FullName, NLog.LogLevel.Debug))
 						{
 							string key = Reactions.GetReactionsKey(action, nextType.Name);
@@ -203,20 +204,14 @@ namespace SoftwareMonkeys.SiteStarter.Business
 							// If a reaction exists for the base type then use it
 							if (Reactions.ReactionExists(key))
 							{
+								if (Reactions.ContainsKey(key))
 								reactionInfos.AddRange(Reactions[key]);
-								
 								
 								LogWriter.Debug("Reactions found: " + reactionInfos.Count.ToString());
 								
 							}
-							// TODO: Check if needed. It shouldn't be. The other call to LocateFromInterfaces in LocateFromHeirarchy should be sufficient
-							// Otherwise check the interfaces of that base type
-							//else
-							//{
-							//	reactionInfo = LocateFromInterfaces(action, nextType);
-							//}
 						}
-					//}			
+				}
 				}
 				
 			}

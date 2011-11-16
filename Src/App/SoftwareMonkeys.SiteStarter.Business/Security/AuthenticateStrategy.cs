@@ -35,6 +35,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 			
 			if (isAuthenticated)
 			{
+				user.Activate();
 				user.LastLoginDate = DateTime.Now;
 				UpdateStrategy.New(user, false).Update(user);
 			}

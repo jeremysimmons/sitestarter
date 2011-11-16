@@ -40,16 +40,19 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 				entity.PreStore();
 				
-				EntityReferenceCollection latestReferences = Provider.Referencer.GetActiveReferences(entity);
-				
+				// If the entity is NOT a reference object (ie. it's a standard entity)
+				// then prepare the update.
+				// If is IS a reference object the preparation is not needed and should be skipped
+				if (!(entity is EntityReference))
+				{					
 				using (LogGroup logGroup2 = LogGroup.Start("Creating list of deletable obsolete references.", NLog.LogLevel.Debug))
 				{
-					// Delete the old references
-					//foreach (EntityIDReference reference in DataAccess.Data.GetObsoleteReferences(entity, new Collection<IEntity>(DataUtilities.GetReferencedEntities(latestReferences, entity)).IDs))
-					foreach (EntityIDReference reference in DataAccess.Data.Referencer.GetObsoleteReferences(entity, new Guid[]{}))
-					{
-						DataAccess.Data.Activator.ActivateReference((EntityReference)reference);
+						// TODO: Provide a list of active IDs to the GetObsoleteReferences function below so they're skipped and not deleted, otherwise they'll get
+						// deleted then saved again and will be a waste of processing power
+						//foreach (EntityIDReference reference in DataAccess.Data.GetObsoleteReferences(entity, toUpdate.GetEntityIDs(entity.ID)))
 						
+						foreach (EntityReference reference in DataAccess.Data.Referencer.GetObsoleteReferences(entity, new Guid[]{}))
+					{
 						LogWriter.Debug("Reference type #1: " + reference.Type1Name);
 						LogWriter.Debug("Reference ID #1: " + reference.Entity1ID.ToString());
 						LogWriter.Debug("Reference type #2: " + reference.Type2Name);
@@ -59,27 +62,37 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					}
 				}
 				
+					LogWriter.Debug("# to delete: " + toDelete.Count);
+					
 				Provider.Referencer.DeleteObsoleteReferences(toDelete);
-				
-				LogWriter.Debug("# to delete: " + toDelete.Count);
 				
 				using (LogGroup logGroup2 = LogGroup.Start("Creating list of references to be updated.", NLog.LogLevel.Debug))
 				{
-					foreach (EntityIDReference reference in latestReferences)
+						EntityReferenceCollection latestReferences = Provider.Referencer.GetActiveReferences(entity);
+					
+						foreach (EntityReference reference in latestReferences)
 					{
 						LogWriter.Debug("Reference type #1: " + reference.Type1Name);
 						LogWriter.Debug("Reference ID #1: " + reference.Entity1ID.ToString());
 						LogWriter.Debug("Reference type #2: " + reference.Type2Name);
 						LogWriter.Debug("Reference ID #2: " + reference.Entity2ID.ToString());
 						
-						Data.DataAccess.Data.Activator.ActivateReference((EntityReference)reference);
-						toUpdate.Add((EntityIDReference)reference);
+							toUpdate.Add((EntityReference)reference);
 					}
 				}
 				
 				LogWriter.Debug("# to update: " + toUpdate.Count);
 				
 				Provider.Referencer.PersistReferences(toUpdate);
+			}
+		}
+		}
+		
+		public void PostUpdate(IEntity entity)
+		{
+			using (LogGroup logGroup = LogGroup.StartDebug("Executing post-update."))
+			{
+				Provider.Referencer.SetMirrorCountProperties(entity);
 			}
 		}
 		
@@ -91,29 +104,19 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			using (LogGroup logGroup = LogGroup.Start("Updating the provided entity.", NLog.LogLevel.Debug))
 			{
+				if (entity == null)
+					throw new ArgumentNullException("entity");
+				
 				Db4oDataStore store = (Db4oDataStore)GetDataStore(entity);
 				
 				if (!store.IsStored(entity))
 					throw new ArgumentException("entity", "The provided entity of type '" + entity.GetType() + "' is not found in the store with name '" + store.Name + "'.");
 				
-				if (entity == null)
-					throw new ArgumentNullException("entity");
-				
 				if (entity.ID == Guid.Empty)
 					throw new ArgumentException("entity.ID must be set.");
 				
-				// TODO: Check if needed. Circular references are sometimes wanted.
-				//ReferenceValidator validator = new ReferenceValidator();
-				//validator.CheckForCircularReference(entity);
-				
-				// TODO: Check if needed - Deactivate function should be sufficient, which is called anyway
-				// If the entity is an EntityReference then cast it back to the simpler EntityIDReference
-				//if (EntitiesUtilities.IsReference(entity.GetType()))
-				//	entity = ((EntityReference)entity).ToData();
-				
 				using (Batch batch = BatchState.StartBatch())
 				{
-					
 					LogWriter.Debug("Entity type: " + entity.GetType().ToString());
 					LogWriter.Debug("Entity ID: " + entity.ID);
 					
@@ -141,10 +144,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 
 						LogWriter.Debug("Entity updated.");
 						
+						PostUpdate(entity);
+						
 						store.Commit();
 					}
 					else
-						throw new InvalidOperationException("Cannot update an entity that doesn't not already exist in the data store. Save the entity first.");
+						throw new InvalidOperationException("Cannot update an entity that doesn't already exist in the data store. Save the entity first.");
 				}
 				
 				

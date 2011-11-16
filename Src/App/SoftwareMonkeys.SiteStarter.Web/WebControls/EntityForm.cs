@@ -9,6 +9,7 @@ using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
 using System.ComponentModel;
 using System.Reflection;
+using SoftwareMonkeys.SiteStarter.Business;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Entities;
 
@@ -243,12 +244,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				}
 				else
 				{
+					ActivateStrategy.New((IEntity)DataSource).Activate((IEntity)DataSource);
 
 					foreach (TableRow row in this.Rows)
 					{
 						if (row is EntityFormItem)
 						{
-							if (row.Enabled)
+							if (row.Enabled && row.Visible)
 							{
 								EntityFormItem item = (EntityFormItem)row;
 								
