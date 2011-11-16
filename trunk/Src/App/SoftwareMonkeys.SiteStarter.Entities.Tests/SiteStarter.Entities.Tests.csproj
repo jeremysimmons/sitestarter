@@ -118,7 +118,6 @@
     <Compile Include="EntitiesUtilitiesTests.cs" />
     <Compile Include="BaseEntityTestFixture.cs" />
     <Compile Include="EntityCollectionTests.cs" />
-    <Compile Include="EntityIDReferenceTests.cs" />
     <Compile Include="EntityReferenceTests.cs" />
     <Compile Include="EntityScannerTests.cs" />
     <Compile Include="EntityStateTests.cs" />

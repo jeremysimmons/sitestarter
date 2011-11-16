@@ -23,8 +23,8 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				// If the name contains a dash then the store contains references
 				if (dataStoreName.IndexOf('-') > -1)
 				{
-					// Constrain the query to the IEntity type to ensure both EntityIDReference and EntityReference objects are returned
-					EntityIDReference[] entities = Collection<EntityIDReference>.ConvertAll(
+					// Constrain the query to the IEntity type to ensure both EntityReference and EntityReference objects are returned
+					EntityReference[] entities = Collection<EntityReference>.ConvertAll(
 						Provider.Stores[dataStoreName].Indexer.GetEntities());
 					
 					references.AddRange(entities);
@@ -44,8 +44,8 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			string dataStoreName = DataUtilities.GetDataStoreName(type1Name, type2Name);
 			
-			EntityIDReference[] entities =
-				Provider.Stores[dataStoreName].Indexer.GetEntities<EntityIDReference>();
+			EntityReference[] entities =
+				Provider.Stores[dataStoreName].Indexer.GetEntities<EntityReference>();
 			
 			EntityReferenceCollection references = new EntityReferenceCollection();
 			
@@ -91,7 +91,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				throw new ArgumentNullException("entityType");
 			
 			if (entityID == Guid.Empty)
-				throw new ArgumentException("entityID");
+				throw new ArgumentException("An entity ID must be provided.", "entityID");
 			
 			if (referencedEntityType == null)
 				throw new ArgumentNullException("referencedEntityType");
@@ -283,13 +283,13 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				EntityReferenceCollection deleteList = new EntityReferenceCollection();
 				
 				// Get the current/actives references
-				foreach (EntityIDReference reference in GetActiveReferences(entity))
+				foreach (EntityReference reference in GetActiveReferences(entity))
 				{
 					updateList.Add(reference);
 				}
 				
 				// Get the obsolete references
-				foreach (EntityIDReference reference in GetObsoleteReferences(entity, updateList.GetEntityIDs(entity.ID)))
+				foreach (EntityReference reference in GetObsoleteReferences(entity, updateList.GetEntityIDs(entity.ID)))
 				{
 					deleteList.Add(reference);
 				}
@@ -381,8 +381,8 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					{
 						if (StoresReferencesToType(store, entity.ShortTypeName))
 						{
-							references.AddRange(store.Indexer.GetEntities<EntityIDReference>("Entity1ID", entity.ID));
-							references.AddRange(store.Indexer.GetEntities<EntityIDReference>("Entity2ID", entity.ID));
+							references.AddRange(store.Indexer.GetEntities<EntityReference>("Entity1ID", entity.ID));
+							references.AddRange(store.Indexer.GetEntities<EntityReference>("Entity2ID", entity.ID));
 						}
 					}
 				}
@@ -643,7 +643,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					// It's only a single reference so the collection is unnecessary
 					collection = new EntityReferenceCollection(entity, property.Name, new IEntity[] {referencedEntity}, mirrorPropertyName);
 					
-					//foreach (EntityIDReference r in references)
+					//foreach (EntityReference r in references)
 					//{
 					//LogWriter.Debug("Adding reference with ID: " + r.ID.ToString());
 					

@@ -220,12 +220,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			// If it's a reference entity then use the referencer to retrieve a bound version
 			if (entity is EntityReference
-			    || entity is EntityIDReference)
+			    || entity is EntityReference)
 			{
 				IDataReferencer referencer = Provider.InitializeDataReferencer();
 				referencer.AutoRelease = AutoRelease;
 				
-				EntityIDReference reference = (EntityIDReference)entity;
+				EntityReference reference = (EntityReference)entity;
 				
 				found = referencer.GetReference(EntityState.GetType(reference.Type1Name),
 				                               reference.Entity1ID,

@@ -147,13 +147,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				{
 					Assert.AreEqual(2, references.Count, "Wrong number of references returned.");
 					
-					EntityIDReference reference1 = references[0];
-					EntityIDReference reference2 = references[1];
+					EntityReference reference1 = references[0];
+					EntityReference reference2 = references[1];
 					
 					// Switch the references around if necessary to match (so they can be found in any order)
 					if (!reference1.Includes(role.ID, "Users"))
 					{
-						EntityIDReference tmp = reference1;
+						EntityReference tmp = reference1;
 						reference1 = reference2;
 						reference2 = tmp;
 					}
@@ -281,10 +281,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				LogWriter.Debug("Original reference - Type 1 name: " + originalReference.Type1Name);
 				LogWriter.Debug("Original reference - Type 2 name: " + originalReference.Type2Name);
 				
-				foreach (EntityIDReference r in DataAccess.Data.Referencer.GetActiveReferences(user))
+				foreach (EntityReference r in DataAccess.Data.Referencer.GetActiveReferences(user))
 					DataAccess.Data.Saver.Save(r);
 				
-				foreach (EntityIDReference r in DataAccess.Data.Referencer.GetActiveReferences(role2))
+				foreach (EntityReference r in DataAccess.Data.Referencer.GetActiveReferences(role2))
 					DataAccess.Data.Saver.Save(r);
 				
 				EntityReference reference = DataAccess.Data.Referencer.GetReference(EntityState.GetType(originalReference.Type1Name),
@@ -466,7 +466,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				LogWriter.Debug("Original reference - Type 1 name: " + originalReference.Type1Name);
 				LogWriter.Debug("Original reference - Type 2 name: " + originalReference.Type2Name);
 				
-				foreach (EntityIDReference r in DataAccess.Data.Referencer.GetActiveReferences(article))
+				foreach (EntityReference r in DataAccess.Data.Referencer.GetActiveReferences(article))
 					DataAccess.Data.Saver.Save(r);
 
 				string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(article.GetType(),

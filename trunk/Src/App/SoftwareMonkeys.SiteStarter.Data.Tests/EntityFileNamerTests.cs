@@ -24,7 +24,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			string basePath = TestUtilities.GetTestingPath(this) + Path.DirectorySeparatorChar + "Export";
 			
-			EntityIDReference reference = DataAccess.Data.Referencer.GetActiveReferences(user)[0];
+			EntityReference reference = DataAccess.Data.Referencer.GetActiveReferences(user)[0];
 			
 			string path = new EntityFileNamer(reference, basePath).CreateFilePath();
 			

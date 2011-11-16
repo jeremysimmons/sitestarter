@@ -259,7 +259,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				DataAccess.Data.Saver.Save(user);
 				
 				
-				EntityIDReference reference = new EntityIDReference();
+				EntityReference reference = new EntityReference();
 				reference.ID = Guid.NewGuid();
 				reference.Type1Name = "TestUser";
 				reference.Type2Name = "TestRole";

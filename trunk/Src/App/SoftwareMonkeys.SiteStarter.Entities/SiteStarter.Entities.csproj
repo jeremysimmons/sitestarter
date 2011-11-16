@@ -77,7 +77,6 @@
     <Compile Include="EntityAttribute.cs" />
     <Compile Include="EntityEventArgs.cs" />
     <Compile Include="EntityFileNamer.cs" />
-    <Compile Include="EntityIDReferenceCollection.cs" />
     <Compile Include="EntityInfo.cs" />
     <Compile Include="EntityInitializer.cs" />
     <Compile Include="EntityLoader.cs" />
@@ -86,7 +85,6 @@
     <Compile Include="EntityPointer.cs" />
     <Compile Include="EntityReference.cs" />
     <Compile Include="EntityReferenceCollection.cs" />
-    <Compile Include="EntityIDReference.cs" />
     <Compile Include="EntitySaver.cs" />
     <Compile Include="EntityScanner.cs" />
     <Compile Include="EntityState.cs" />
