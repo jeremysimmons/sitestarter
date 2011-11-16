@@ -19,7 +19,7 @@
     			</namespaces>
 	    	</xmlpeek>
 
-		<get src="${ 'http://10.0.0.1:8080/scripts/Scripts/VersionNumber.script?Raw=true&amp;Key=' + versionKey}" dest="${versionFilePath}" failonerror="false" />
+		<get src="${ 'http://10.0.0.1:8080/scripts/Scripts/VersionNumber.script?Raw=true&amp;Key=' + versionKey}" dest="${versionFilePath}" failonerror="false" timeout="50000" />
 		
 		<loadfile
 		    file="${versionFilePath}"
