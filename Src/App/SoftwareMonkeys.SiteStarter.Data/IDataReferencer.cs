@@ -56,6 +56,14 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		EntityReferenceCollection GetActiveReferences(IEntity entity);
 		
 		/// <summary>
+		/// Retrieves the active references from the provided entity. This only includes those references currently active and not those in the data store.
+		/// </summary>
+		/// <param name="entity">The entity containing that the references are assigned to.</param>
+		/// <param name="autoBind"></param>
+		/// <returns>A collection of the active entity references.</returns>
+		EntityReferenceCollection GetActiveReferences(IEntity entity, bool autoBind);
+		
+		/// <summary>
 		/// Sets the reference count properties of the provided entity (if a count property is specified by the reference attribute on the specified property).
 		/// </summary>
 		/// <param name="entity"></param>
@@ -63,6 +71,20 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="referenceEntityID"></param>
 		/// <returns>A value indicating whether the source entity was changed.</returns>
 		bool SetCountProperty(IEntity entity, string referencePropertyName, Guid referencedEntityID);
+		
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="entity"></param>
+		/// <returns></returns>
+		bool SetCountProperties(IEntity entity);
+		
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="entity"></param>
+		/// <returns></returns>
+		bool SetCountProperties(IEntity entity, bool autoUpdate);
 		
 		/// <summary>
 		/// Sets the count properties on the entities referenced by the one provided.
