@@ -26,10 +26,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// </summary>
 		/// <param name="entity">The entity to be prepared for update.</param>
 		public override void PreUpdate(IEntity entity)
-		{
-			EntityReferenceCollection toUpdate = new EntityReferenceCollection();
-			EntityReferenceCollection toDelete = new EntityReferenceCollection();
-			
+		{			
 			using (LogGroup logGroup = LogGroup.Start("Preparing entity to be updated.", NLog.LogLevel.Debug))
 			{
 				if (entity == null)
@@ -42,51 +39,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				
 				// If the entity is NOT a reference object (ie. it's a standard entity)
 				// then prepare the update.
-				// If is IS a reference object the preparation is not needed and should be skipped
+				// If it IS a reference object the preparation is not needed and should be skipped
 				if (!(entity is EntityReference))
 				{
 					Provider.Referencer.MaintainReferences(entity);
-					/*using (LogGroup logGroup2 = LogGroup.Start("Creating list of references to be updated.", NLog.LogLevel.Debug))
-					{
-						EntityReferenceCollection latestReferences = Provider.Referencer.GetActiveReferences(entity);
-						
-						foreach (EntityReference reference in latestReferences)
-						{
-							LogWriter.Debug("Reference type #1: " + reference.Type1Name);
-							LogWriter.Debug("Reference ID #1: " + reference.Entity1ID.ToString());
-							LogWriter.Debug("Reference type #2: " + reference.Type2Name);
-							LogWriter.Debug("Reference ID #2: " + reference.Entity2ID.ToString());
-							
-							toUpdate.Add((EntityReference)reference);
-						}
-					}
-					
-					using (LogGroup logGroup2 = LogGroup.Start("Creating list of deletable obsolete references.", NLog.LogLevel.Debug))
-					{
-						// TODO: Provide a list of active IDs to the GetObsoleteReferences function below so they're skipped and not deleted, otherwise they'll get
-						// deleted then saved again and will be a waste of processing power
-						foreach (EntityReference reference in DataAccess.Data.Referencer.GetObsoleteReferences(entity, toUpdate.GetEntityIDs(entity.ID)))
-							
-							//foreach (EntityReference reference in DataAccess.Data.Referencer.GetObsoleteReferences(entity, new Guid[]{}))
-						{
-							LogWriter.Debug("Reference type #1: " + reference.Type1Name);
-							LogWriter.Debug("Reference ID #1: " + reference.Entity1ID.ToString());
-							LogWriter.Debug("Reference type #2: " + reference.Type2Name);
-							LogWriter.Debug("Reference ID #2: " + reference.Entity2ID.ToString());
-							
-							toDelete.Add(reference);
-						}
-					}
-					
-					
-					LogWriter.Debug("# to delete: " + toDelete.Count);
-					
-					Provider.Referencer.DeleteObsoleteReferences(toDelete);
-					
-					LogWriter.Debug("# to update: " + toUpdate.Count);
-					
-					Provider.Referencer.PersistReferences(toUpdate);
-					*/
 				}
 			}
 		}
