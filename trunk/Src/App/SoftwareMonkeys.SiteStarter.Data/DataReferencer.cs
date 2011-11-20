@@ -306,13 +306,15 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				// Delete the obsolete references
 				LogWriter.Debug("References to delete: " + deleteList.Count);
 				
-				this.DeleteObsoleteReferences(deleteList);
+				DeleteObsoleteReferences(deleteList);
 				
 				
 				// Update/save the current references
 				LogWriter.Debug("References to update: " + updateList.Count);
 				
-				this.PersistReferences(updateList);
+				PersistReferences(updateList);
+				
+				Provider.Referencer.SetCountProperties(entity, false);
 			}
 		}
 		
