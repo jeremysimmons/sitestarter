@@ -216,6 +216,29 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		}
 		
 		/// <summary>
+		/// Checks whether the provided entity is bound in the corresponding data store.
+		/// </summary>
+		/// <param name="entity">The entity to look for in the corresponding data store.</param>
+		/// <returns>A boolean value indicating whether the entity was found.</returns>
+		public override bool IsBound(IEntity entity)
+		{
+			bool isBound = false;
+			using (LogGroup logGroup = LogGroup.Start("Checking whether the provided entity has already been bound.", NLog.LogLevel.Debug))
+			{
+				if (entity == null)
+					throw new ArgumentNullException("entity");
+
+				LogWriter.Debug("Entity type: " + entity.GetType());
+
+				isBound = Stores[entity].IsStored(entity);
+			}
+			
+			LogWriter.Debug("Is bound: " + isBound.ToString());
+			
+			return isBound;
+		}
+		
+		/// <summary>
 		/// Checks whether the provided entity is stored in the corresponding data store.
 		/// </summary>
 		/// <param name="entity">The entity to look for in the corresponding data store.</param>
@@ -244,13 +267,24 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					LogWriter.Debug("Type 1: " + type.ToString());
 					LogWriter.Debug("Type 2: " + type2.ToString());
 					
-					isStored = Referencer.MatchReference(
-						type,
-						reference.Entity1ID,
-						reference.Property1Name,
-						type2,
-						reference.Entity2ID,
-						reference.Property2Name);
+					if (Stores[entity].IsStored(entity))
+					{
+						LogWriter.Debug("Reference object found in store.");
+						                
+						isStored = true;
+					}
+					else
+					{
+						LogWriter.Debug("Reference object NOT found. Checking for one with matching properties.");
+						
+						isStored = Referencer.MatchReference(
+							type,
+							reference.Entity1ID,
+							reference.Property1Name,
+							type2,
+							reference.Entity2ID,
+							reference.Property2Name);
+					}
 				}
 				else
 				{
