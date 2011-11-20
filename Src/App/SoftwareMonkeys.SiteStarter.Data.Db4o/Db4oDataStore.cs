@@ -338,10 +338,14 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			bool foundBound = ObjectContainer.Ext().IsStored(entity);
 			
-			bool foundByID = (Reader.GetEntity(entity.GetType(), "ID", entity.ID) != null);
+			if (foundBound)
+				return true;
+			else
+			{
+				bool foundByID = (Reader.GetEntity(entity.GetType(), "ID", entity.ID) != null);
 			
-			return foundBound
-				|| foundByID;
+				return foundByID;
+			}
 		}
 		
 
