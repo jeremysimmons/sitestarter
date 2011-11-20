@@ -219,8 +219,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			IEntity found = null;
 			
 			// If it's a reference entity then use the referencer to retrieve a bound version
-			if (entity is EntityReference
-			    || entity is EntityReference)
+			if (entity is EntityReference)
 			{
 				IDataReferencer referencer = Provider.InitializeDataReferencer();
 				referencer.AutoRelease = AutoRelease;
