@@ -29,5 +29,17 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o.Tests
 		{
 			base.Test_Update_RemoveObsoleteReference_Sync();
 		}
+		
+		[Test]
+		public override void Test_PreUpdate()
+		{
+			base.Test_PreUpdate();
+		}
+		
+		[Test]
+		public override void Test_Update()
+		{
+			base.Test_Update();
+		}
 	}
 }
