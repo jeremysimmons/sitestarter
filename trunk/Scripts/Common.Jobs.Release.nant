@@ -122,6 +122,8 @@
 	        <exclude name="**/App_Data/LogReports/**"/>
 	        <exclude name="**/App_Data/Version.number"/>
 	        <exclude name="**/App_Data/Suspended/**"/>
+	        <exclude name="**/App_Data/Projections/" />
+	        <exclude name="**/App_Data/Projections/**" />
 	        <exclude name="**/Deployment/**"/>
 	        <exclude name="**/Releases/**"/>
 	        <exclude name="**/Backups/**"/>
@@ -143,7 +145,6 @@
 	        <exclude name="**/TestResults/Logs"/>
 	        <exclude name="**/TestResults/xml"/>
 	        <exclude name="**/FunctionalTests/Results/**"/>
-	        <exclude name="**.jar"/>
 	        <include name="**/${Solution.Alias}/**" />
 	        <include name="bin/**" />
 	        <include name="lib/**" />
@@ -232,6 +233,8 @@
 	        <exclude name="**/App_Data/LegacyConverted/**"/>
 	        <exclude name="**/App_Data/Version.number"/>
 	        <exclude name="**/App_Data/Suspended"/>
+	        <exclude name="**/App_Data/Projections/"/>
+	        <exclude name="**/App_Data/Projections/**" />
 	        <exclude name="**/Deployment/**"/>
 	        <exclude name="*.Import.nant"/>
 	        <exclude name="**/Releases/**"/>
@@ -256,7 +259,7 @@
 	        <exclude name="**.nant"/>
 	        <exclude name="**/tests/**"/>
 	        <exclude name="**.jar"/>
-	        <exclude name="*.WebDriver.dll"/>
+	        <exclude name="**/WebDriver.dll"/>
 	        <exclude name="*MockCreate*"/><!-- Exclude the mock/test create projections -->
 	        <exclude name="**/FunctionalTests/Results/**"/>
 	        <include name="${IncludeKey}" />
