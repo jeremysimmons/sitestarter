@@ -178,6 +178,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.Properties {
 		}
 		
 		/// <summary>
+		///   Looks up a localized string similar to Report Issue.
+		/// </summary>
+		public static string ReportIssue {
+			get {
+				return ResourceManager.GetString("ReportIssue", resourceCulture);
+			}
+		}
+		
+		/// <summary>
 		///   Looks up a localized string similar to Run.
 		/// </summary>
 		public static string Run {

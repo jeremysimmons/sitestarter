@@ -455,13 +455,18 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			foreach (EntityInfo info in EntityState.Entities)
 			{
-				foreach (IEntity entity in Provider.Indexer.GetEntities(info.GetEntityType()))
+				Type type = info.GetEntityType();
+				
+				if (type != null)
 				{
+					foreach (IEntity entity in Provider.Indexer.GetEntities(type))
+					{
 					Provider.Activator.Activate(entity);
 					
 					Provider.Updater.Update(entity);
 	}
 }
 		}
+	}
 	}
 }

@@ -32,7 +32,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			// TODO: Clean up this function
 			
-			EntityReferenceCollection collection = new EntityReferenceCollection();
+			EntityReferenceCollection output = new EntityReferenceCollection();
 			
 			// TODO: Check if logging should be commented out to boost performance
 			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving reference."))
@@ -61,8 +61,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				LogWriter.Debug("Data store name: " + storeName);
 			
 			Db4oDataStore dataStore = (Db4oDataStore)GetDataStore(entityType.Name, referenceType.Name);
-
-				EntityReferenceCollection list = new EntityReferenceCollection();
 			
 			IQuery query1 = dataStore.ObjectContainer.Query();
 				query1.Constrain(typeof(EntityReference));
@@ -91,13 +89,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			while (os1.HasNext())
 			{
 					EntityReference reference = (EntityReference)os1.Next();
-				if (reference != null)
+					if (reference != null && reference.Entity1ID != Guid.Empty && reference.Entity2ID != Guid.Empty)
 				{
 					if (reference.Includes(entityID, propertyName) &&
 					    reference.Includes(referenceEntityID, mirrorPropertyName))
 					{
-						//				LogWriter.Debug("1 Reference matches expected. Adding to the list.");
-						list.Add(reference);
+							output.Add(reference);
 					}
 					}
 				}
@@ -107,18 +104,17 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			while (os2.HasNext())
 			{
 					EntityReference reference = (EntityReference)os2.Next();
-				if (reference != null)
+					if (reference != null && reference.Entity1ID != Guid.Empty && reference.Entity2ID != Guid.Empty)
 				{
 					if (reference.Includes(entityID, propertyName) &&
 					    reference.Includes(referenceEntityID, mirrorPropertyName))
 					{
-						//				LogWriter.Debug("2 Reference matches expected. Adding to the list.");
-						list.Add(reference);
+							output.Add(reference);
 					}
 					}
 				}
 			
-			if (list.Count == 0)
+				if (output.Count == 0)
 			{
 					LogWriter.Debug("No references loaded from the data store.");
 			}
@@ -126,14 +122,14 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			{
 				
 				
-					LogWriter.Debug("# references loaded: " + list.Count.ToString());
+					LogWriter.Debug("# references loaded: " + output.Count.ToString());
 				
-				if (list.Count > 1)
-					throw new Exception("Multiple (" + list.Count.ToString() + ") references found when there should only be one.");
+					if (output.Count > 1)
+						LogWriter.Error("Multiple (" + output.Count.ToString() + ") references found when there should only be one.");
 				
 				int i = 0;
 				
-					foreach (EntityReference r in list)
+					foreach (EntityReference r in output)
 				{
 					i++;
 					
@@ -145,8 +141,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 							EntityReference reference = (EntityReference)r.SwitchFor(entityType, entityID);
 					
 					
-							LogWriter.Debug("Loaded reference " + i + "/" + list.Count.ToString() + " - Property name 1: " + reference.Property1Name);
-							LogWriter.Debug("Loaded reference " + i + "/" + list.Count.ToString() + " - Property name 2: " + reference.Property2Name);
+							LogWriter.Debug("Loaded reference " + i + "/" + output.Count.ToString() + " - Property name 1: " + reference.Property1Name);
+							LogWriter.Debug("Loaded reference " + i + "/" + output.Count.ToString() + " - Property name 2: " + reference.Property2Name);
 					
 					
 					
@@ -155,22 +151,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 								LogWriter.Debug("Activating reference.");
 						Provider.Activator.ActivateReference(reference);
 					}
-					if (reference.Entity1ID != Guid.Empty
-					    && reference.Entity2ID != Guid.Empty)
-					{
-								LogWriter.Debug("Adding to the collection.");
-						collection.Add(reference);
 					}
-					else
-					{
-								LogWriter.Debug("Reference not added to the collection. IDs are empty.");
 					}
 				}
 			}
-				}
-			}
-			if (collection != null && collection.Count > 0)
-				return collection[0];
+			if (output != null && output.Count > 0)
+				return output[0];
 			else
 				return null;
 		}

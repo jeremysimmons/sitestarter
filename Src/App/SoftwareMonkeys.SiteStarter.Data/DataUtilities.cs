@@ -267,86 +267,8 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				LogWriter.Debug("Entity type: " + entity.GetType().ToString());
 				LogWriter.Debug("Property name: " + property.Name);
 				LogWriter.Debug("Property type: " + property.PropertyType.Name);
-				
+					
 				type = EntitiesUtilities.GetReferenceType(entity.GetType(), property);
-				
-				/*if (typeof(IEntity).IsAssignableFrom(property.PropertyType))
-				{
-					LogWriter.Debug("typeof(IEntity).IsAssignableFrom(property.PropertyType)");
-					type = property.PropertyType;
-				}
-				else
-				{
-					LogWriter.Debug("!typeof(IEntity).IsAssignableFrom(property.PropertyType)");
-					
-					EntityReference reference = EntitiesUtilities.GetReferen
-					
-					//type = property.PropertyType.GetGenericArguments()[0];
-				}*/
-				
-				/*if (property.PropertyType.FullName == typeof(EntityReference).FullName
-				    || property.PropertyType.FullName == typeof(EntityReference).FullName)
-				{
-					EntityReference reference = (EntityReference)property.GetValue(entity, null);
-					
-					LogWriter.Debug("Reference - Source entity ID: " + reference.EntityIDs[0]);
-					LogWriter.Debug("Reference - Reference entity ID: " + reference.EntityIDs[1]);
-					LogWriter.Debug("Reference - Source entity type: " + reference.TypeNames[0]);
-					LogWriter.Debug("Reference - Reference entity type: " + reference.TypeNames[1]);
-					
-					if (reference.TypeNames == null || reference.TypeNames.Length < 2)
-						throw new InvalidOperationException("The reference doesn't have the correct number of type names specified.");
-					
-					if (reference != null)
-						type = GetType(reference.TypeNames[1]);
-				}
-				else
-				{
-					EntityReferenceCollection collection = (EntityReferenceCollection)property.GetValue(entity, null);
-					//if (collection.Count == 0)
-					//	throw new InvalidOperationException("No references have been added.");
-					
-					//EntityReference reference = collection[0];
-					
-	//				LogWriter.Debug("Reference - Source entity ID: " + reference.EntityIDs[0]);
-	//				LogWriter.Debug("Reference - Reference entity ID: " + reference.EntityIDs[1]);
-	//				LogWriter.Debug("Reference - Source entity type: " + reference.TypeNames[0]);
-	//				LogWriter.Debug("Reference - Reference entity type: " + reference.TypeNames[1]);
-					
-					//if (reference.TypeNames == null || reference.TypeNames.Length < 2)
-					//	throw new InvalidOperationException("The reference doesn't have the correct number of type names specified.");
-					
-					//if (reference != null)
-						type = GetType(collection.ReferenceTypeName);//reference.TypeNames[1]);
-				}
-				 */
-				/*if (property == null)
-					throw new ArgumentNullException("property");
-
-				if (entity == null)
-					throw new ArgumentNullException("entity");
-				
-				
-
-				//BaseEntityReferenceAttribute attribute = DataUtilities.GetReferenceAttribute(property);
-
-				LogWriter.Debug("Property name: " + property.Name);
-
-				type = property.PropertyType;
-
-				LogWriter.Debug("Property type: " + property.PropertyType.ToString());
-
-				if (type.IsSubclassOf(typeof(Array)))
-				{
-					LogWriter.Debug("type.IsSubclassOf(typeof(Array))");
-					type = type.GetElementType();
-				}
-				else if (type.IsSubclassOf(typeof(IEntity)))
-				{
-					LogWriter.Debug("type.IsSubclassOf(typeof(IEntity))");
-					type = property.PropertyType;
-				}*/
-
 			}
 
 			if (type == null)
@@ -357,6 +279,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			return type;
 		}
 		
+		// TODO: Check if function should be removed
 		static public void StripReferences(IEntity entity)
 		{
 			using (LogGroup logGroup2 = LogGroup.Start("Clearing all the object references so that they don't cascade automatically.", LogLevel.Debug))
