@@ -15,7 +15,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 	{		
 		
 		[Test]
-		public void Test_PreUpdate()
+		public virtual void Test_PreUpdate()
 		{
 			
 			// Create the dummy objects
@@ -44,7 +44,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			// Remove the role from the list
 			user2.Roles = Collection<TestRole>.RemoveAt(user2.Roles, 0);
 			
-			// Run the DataStore.PreUpdate function
+			// Test the DataStore.PreUpdate function
 			DataAccess.Data.Updater.PreUpdate(user2);
 			
 			// Load the user again to a new variable, which should now reflect the changes
@@ -60,7 +60,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		}
 		
 		[Test]
-		public void Test_Update()
+		public virtual void Test_Update()
 		{
 			using (LogGroup logGroup = LogGroup.Start("Testing the DataAccess.Data.Updater.Update function.", NLog.LogLevel.Debug))
 			{
@@ -238,7 +238,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 	
 		
 		[Test]
-		public void Test_Update_MaintainReferences()
+		public virtual void Test_Update_MaintainReferences()
 		{
 			
 			using (LogGroup logGroup = LogGroup.Start("Testing the update function to see if it maintains references.", NLog.LogLevel.Debug))

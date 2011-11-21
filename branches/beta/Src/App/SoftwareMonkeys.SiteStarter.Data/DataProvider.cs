@@ -328,6 +328,13 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		public abstract bool IsStored(IEntity entity);
 
 		/// <summary>
+		/// Checks whether the provided entity or entity reference is currently bound to the corresponding data store. An entity must be bound before being updated.
+		/// </summary>
+		/// <param name="entity">The entity to look for.</param>
+		/// <returns>A bool value indicating whether the entity is bound.</returns>
+		public abstract bool IsBound(IEntity entity);
+
+		/// <summary>
 		/// Initializes the data store with the provided name.
 		/// </summary>
 		/// <param name="dataStoreName">The name of the data store to initialize.</param>

@@ -96,32 +96,30 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			if (referencedEntityType == null)
 				throw new ArgumentNullException("referencedEntityType");
 			
-			/*if (referencedEntityID == Guid.Empty)
-					throw new ArgumentException("referencedEntityID");*/
-
+				LogWriter.Debug("Entity type: " + entityType);
+			//	LogWriter.Debug("Entity ID: " + entityID);
+			//	LogWriter.Debug("Property name: " + propertyName);
+			//	LogWriter.Debug("Referenced entity type: " + referencedEntityType.ToString());
+			//	LogWriter.Debug("Referenced entity ID: " + referencedEntityID.ToString());
 			
-			/*LogWriter.Debug("Entity type: " + entityType);
-				LogWriter.Debug("Entity ID: " + entityID);
-				LogWriter.Debug("Property name: " + propertyName);
-				LogWriter.Debug("Referenced entity type: " + referencedEntityType.ToString());
-				LogWriter.Debug("Referenced entity ID: " + referencedEntityID.ToString());
-			 */
 			string mirrorPropertyName = String.Empty;
 			if (propertyName == String.Empty)
 				mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyNameReverse(entityType, propertyName, referencedEntityType);
 			else
 				mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(entityType, propertyName);
 			
+			//	LogWriter.Debug("Mirror property name: " + mirrorPropertyName);
+				
 			EntityReference reference = Provider.Referencer.GetReference(entityType, entityID, propertyName, referencedEntityType, referencedEntityID, mirrorPropertyName, false);
 			
-			//if (reference == null)
+			//	if (reference == null)
 			//	LogWriter.Debug("reference == null");
-			//else
+			//	else
 			//	LogWriter.Debug("reference != null");
 			
 			matches = (reference != null);
 			
-			//LogWriter.Debug("Matches: " + matches.ToString());
+			//	LogWriter.Debug("Matches: " + matches.ToString());
 			//}
 			return matches;
 		}
@@ -153,12 +151,16 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			EntityReferenceCollection collection = new EntityReferenceCollection(entity);
 			
+			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving the obsolete references for the entity provided."))
+			{
 			Type entityType = entity.GetType();
 			
 			foreach (PropertyInfo property in entityType.GetProperties())
 			{
 				if (EntitiesUtilities.IsReference(entityType, property.Name, property.PropertyType))
 				{
+						LogWriter.Debug("Checking reference property: " + property.Name);
+						
 					collection.AddRange(
 						GetObsoleteReferences(entity,
 						                      property.Name,
@@ -167,6 +169,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 						                     )
 					);
 				}
+			}
 			}
 			return collection;
 		}
@@ -183,14 +186,22 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			EntityReferenceCollection collection = new EntityReferenceCollection(entity);
 			
+			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving the obsolete references for the '" + propertyName + "' property."))
+			{
 			foreach (EntityReference r in GetReferences(entity.GetType(), entity.ID, propertyName, referenceType, false))
 			{
 				EntityReference reference = (EntityReference)r;
 				
 				// If the ID is NOT found in the idsOfEntitiesToKeep array then it should be added to the list.
 				// The list is references intended for deletion
-				if (Array.IndexOf(idsOfEntitiesToKeep, reference.Entity2ID) == -1)
+					if (Array.IndexOf(idsOfEntitiesToKeep, reference.Entity1ID) == -1
+					    && Array.IndexOf(idsOfEntitiesToKeep, reference.Entity2ID) == -1)
+					{
+						LogWriter.Debug("Neither entity was found in the list to keep. Adding to list to delete.");
+						
 					collection.Add(reference);
+			}
+				}
 			}
 			
 			return collection;
@@ -212,7 +223,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		}
 		
 		/// <summary>
-		/// Persists/saves the provided references into the data store.
+		/// Persists the provided references into the data store. Checks each of the provided references and saves those that are missing.
 		/// </summary>
 		/// <param name="references">The collection of entity references to persist.</param>
 		public virtual void PersistReferences(EntityReferenceCollection references)
@@ -224,27 +235,25 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					
 					LogWriter.Debug("Reference count: " + references.Count.ToString());
 					
+					// TODO: Check if binding is needed. Shouldn't be because
+					// existing references are skipped and only new references get saved
+					//BindReferences(references);
+					
 					foreach (EntityReference reference in references)
 					{
-						if (!DataAccess.Data.IsStored(reference))
+						// If the reference is new then save it
+						if (!Provider.IsStored(reference))
 						{
-							//LogWriter.Debug("Reference is new. Saving.");
+							LogWriter.Debug("Reference is new. Saving.");
 							
 							Provider.Saver.Save(reference);
 						}
-						else
-						{
-							//LogWriter.Debug("Reference already exists. Updating.");
-							
-							Provider.Updater.Update(reference);
+						// Otherwise just leave the existing reference as-is
+						// Existing references shouldn't need to change
 						}
-						
-						if (reference.Property1Name != String.Empty)
-							SetCountProperty(reference.SourceEntity, reference.Property1Name, reference.Entity2ID);
 					}
 				}
 			}
-		}
 		
 		
 		/// <summary>
@@ -297,13 +306,15 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				// Delete the obsolete references
 				LogWriter.Debug("References to delete: " + deleteList.Count);
 				
-				this.DeleteObsoleteReferences(deleteList);
+				DeleteObsoleteReferences(deleteList);
 				
 				
 				// Update/save the current references
 				LogWriter.Debug("References to update: " + updateList.Count);
 				
-				this.PersistReferences(updateList);
+				PersistReferences(updateList);
+				
+				Provider.Referencer.SetCountProperties(entity, false);
 			}
 		}
 		
@@ -349,7 +360,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 						else
 						{
 							throw new Exception("otherEntity == null");
-							LogWriter.Debug("Other entity == null");
+							//LogWriter.Debug("Other entity == null");
 						}
 					}
 				}
@@ -468,12 +479,21 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			}
 			return wasChanged;
 		}
-			
 		/// <summary>
 		/// Sets the mirror count property on entities referenced by the one provided.
 		/// </summary>
 		/// <param name="entity"></param>
 		public void SetMirrorCountProperties(IEntity entity)
+		{
+			SetMirrorCountProperties(entity, true);
+			
+		}
+		
+		/// <summary>
+		/// Sets the mirror count property on entities referenced by the one provided.
+		/// </summary>
+		/// <param name="entity"></param>
+		public void SetMirrorCountProperties(IEntity entity, bool autoUpdate)
 		{
 			using (LogGroup logGroup = LogGroup.StartDebug("Setting the mirror count property on entities referenced by the '" + entity.ShortTypeName + "' provided."))
 			{
@@ -490,27 +510,52 @@ namespace SoftwareMonkeys.SiteStarter.Data
 						// Get the referenced entity
 						IEntity referencedEntity = reference.GetOtherEntity(entity);
 						
-						// Switch the reference to be in the context of the reference entity (ie. the source entity becomes the referenced entity and the referenced entity becomes the source entity.)
-						EntityReference switched = reference.SwitchFor(referencedEntity);
-						
-						string mirrorPropertyName = switched.Property1Name;
-						
-						if (mirrorPropertyName != String.Empty)
-						{
-							// Set the new count property on the referenced entity
-							bool wasChanged = Provider.Referencer.SetCountProperty(referencedEntity, mirrorPropertyName, entity.ID);
-							
-							// If the count property was changed then activate and update the referenced entity
-							if (wasChanged)
-							{
-								Provider.Activator.Activate(referencedEntity);
-								Provider.Updater.Update(referencedEntity);
-		}
-						}
+						SetCountProperties(referencedEntity, autoUpdate);
 					}
 				}
 			}
 		}
+						
+		public bool SetCountProperties(IEntity entity)
+		{
+			return SetCountProperties(entity, true);
+		}
+						
+		public bool SetCountProperties(IEntity entity, bool autoUpdate)
+						{
+			bool changed = false;
+			foreach (PropertyInfo property in entity.GetType().GetProperties())
+			{
+				if (EntitiesUtilities.IsReference(entity.GetType(), property))
+				{
+					if (SetCountProperties(entity, property))
+						changed = true;
+				}
+			}
+							
+							// If the count property was changed then activate and update the referenced entity
+			if (changed && autoUpdate)
+							{
+				LogWriter.Debug("Entity was updated. Updating to data store.");
+				
+				if (Provider.IsStored(entity))
+				{
+					Provider.Activator.Activate(entity);
+					Provider.Updater.Update(entity);
+		}
+				else
+					Provider.Saver.Save(entity);
+						}
+			
+			return changed;
+					}
+		
+		public bool SetCountProperties(IEntity entity, PropertyInfo property)
+		{
+			// Set the new count property on the referenced entity
+			bool wasChanged = SetCountProperty(entity, property.Name, entity.ID);
+			return wasChanged;
+				}
 		
 		
 		#region Active references functions
@@ -521,6 +566,17 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="entity">The entity containing that the references are assigned to.</param>
 		/// <returns>A collection of the active entity references.</returns>
 		public virtual EntityReferenceCollection GetActiveReferences(IEntity entity)
+		{
+			return GetActiveReferences(entity, true);
+		}
+		
+		/// <summary>
+		/// Retrieves the active references from the provided entity. This only includes those references currently active and not those in the data store.
+		/// </summary>
+		/// <param name="entity">The entity containing that the references are assigned to.</param>
+		/// <param name="autoBind">A value indicating whether to bind the reference objects to the data store ready for updating.</param>
+		/// <returns>A collection of the active entity references.</returns>
+		public virtual EntityReferenceCollection GetActiveReferences(IEntity entity, bool autoBind)
 		{
 			if (entity == null)
 				throw new ArgumentNullException("entity");
@@ -534,7 +590,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				{
 					LogWriter.Debug("Property is a reference: " + property.Name);
 				
-					foreach (EntityReference reference in GetActiveReferences(entity, property.Name, property.PropertyType))
+					foreach (EntityReference reference in GetActiveReferences(entity, property.Name, property.PropertyType, autoBind))
 				{
 						LogWriter.Debug("Found reference.");
 				
@@ -544,7 +600,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			}
 			
 			// TODO: Check if references actually need to be switched (below). In theory they shouldn't and the switch will incur a very
-			// minor performance hit (likely negligable) but is here as an added measure to avoid issues
+			// minor performance hit (likely negligable)
 			
 			// Ensure that all references have the correct perspective
 			//for (int i = 0; i < collection.Count; i++)
@@ -563,8 +619,9 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="entity">The entity containing the property that the references are assigned to.</param>
 		/// <param name="propertyName">The name of the property that the references are assigned to.</param>
 		/// <param name="returnType">The type of the property that the references are assigned to.</param>
+		/// /// <param name="autoBind">A value indicating whether to bind the reference objects to the data store ready for updating.</param>
 		/// <returns>A collection of the entity references.</returns>
-		public virtual EntityReferenceCollection GetActiveReferences(IEntity entity, string propertyName, Type returnType)
+		public virtual EntityReferenceCollection GetActiveReferences(IEntity entity, string propertyName, Type returnType, bool autoBind)
 		{
 			EntityReferenceCollection collection = new EntityReferenceCollection(entity);
 			
@@ -613,6 +670,9 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				{
 					throw new Exception("Cannot find property '" + propertyName + "' on type '" + entity.GetType().ToString() + "'.");
 				}
+				
+				if (autoBind)
+					BindReferences(collection);
 			}
 			
 			return collection;
@@ -657,9 +717,6 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				}
 				else
 					LogWriter.Debug("referencedEntities == null || referencedEntities.Length = 0");
-				
-				// Ensure the references are bound with those stored
-				BindReferences(collection);
 			}
 			
 			if (collection.Count > 0)
@@ -715,8 +772,6 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					collection.Add((EntityReference)reference);
 				}
 				
-				// Ensure the references are bound with those stored
-				BindReferences(collection);
 			}
 			
 			return collection.ToArray();
@@ -728,24 +783,28 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="references">The collection of references to be bound.</param>
 		public virtual void BindReferences(EntityReferenceCollection references)
 		{
+			// TODO: Comment out logging
 			// Logging commented out to boost performance
-			//using (LogGroup logGroup = LogGroup.Start("Binding the provided references with those in the data storer.", LogLevel.Debug))
-			//{
+			using (LogGroup logGroup = LogGroup.Start("Binding the provided references with those in the data storer.", LogLevel.Debug))
+			{
 			if (references == null)
 				throw new ArgumentNullException("references");
 			
+				LogWriter.Debug("Total #: " + references.Count.ToString());
+				
 			for (int i = 0; i < references.Count; i++)
 			{
 				EntityReference reference = references[i];
 				
+					bool isBound = DataAccess.Data.IsBound(reference);
 				bool exists = DataAccess.Data.IsStored(reference);
 				
-				if (exists)
+					if (exists && !isBound)
 				{
-					//LogWriter.Debug("Already exists: " + exists.ToString());
+						LogWriter.Debug("Already exists: " + exists.ToString());
 					
-					Type type1 = EntitiesUtilities.GetType(reference.Type1Name);
-					Type type2 = EntitiesUtilities.GetType(reference.Type2Name);
+						Type type1 = EntityState.GetType(reference.Type1Name);
+						Type type2 = EntityState.GetType(reference.Type2Name);
 					
 					EntityReference foundReference = DataAccess.Data.Referencer
 						.GetReference(type1,
@@ -757,12 +816,22 @@ namespace SoftwareMonkeys.SiteStarter.Data
 						              false);
 					
 					if (foundReference != null)
+						{
+							// Copy the unbound info to the bound object
+							references[i].CopyTo(foundReference);
+							
+							// Put the bound object back into the list in place of the unbound object
 						references[i] = foundReference;
+							
+							LogWriter.Debug("Found corresponding reference. Binding.");
+						}
 					else
 						throw new Exception("Reference matched IsStored check but failed to load.");
 				}
+					else
+						LogWriter.Debug("Doesn't exist. Skipping.");
 			}
-			//}
+		}
 		}
 		
 		#endregion

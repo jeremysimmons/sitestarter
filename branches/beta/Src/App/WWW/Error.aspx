@@ -3,9 +3,11 @@
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Entities" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Configuration" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Data" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.Projections" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Web.State" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
+<%@ Register Namespace="SoftwareMonkeys.SiteStarter.Web.WebControls" Assembly="SoftwareMonkeys.SiteStarter.Web" TagPrefix="cc" %>
 <script runat="server">
     protected Exception CurrentException = null;
     
@@ -30,15 +32,14 @@
 		}
     }    
     
-    private string GetReportIssueUrl()
+    private string GetIssueSubject()
     {
-    	string path = ConfigurationSettings.AppSettings["ReportIssueUrl"];
-    	path = path.Replace("${Project.ID}", ConfigurationSettings.AppSettings["UniversalProjectID"]);
-
-		if (Request.QueryString["ProjectVersion"] != null && Request.QueryString["ProjectVersion"] != String.Empty)
-    		path = path.Replace("${Project.Version}", Request.QueryString["ProjectVersion"]);
-    	
-    	return path;
+    	return CurrentException.GetType().Name + ": " + Utilities.Summarize(CurrentException.Message, 100);
+    }
+    
+    private string GetIssueDescription()
+    {
+    	return CurrentException.ToString();
     }
 
 </script>
@@ -51,33 +52,6 @@
 	</head>
 	<body>
 	    <form id="form1" runat="server">
-			<script language="javascript">
-			function ReportIssue(project)
-			{
-				var path = '';
-				if (project == 'SiteStarter')
-				{
-					path = '<%= GetReportIssueUrl() %>';
-				}
-				
-				if (path != '')
-				{
-					var newWindow = window.open(path,
-					'ReportError_<%= Guid.NewGuid().ToString().Replace("-","") %>',
-					'menubar=no,height=800,width=800,resizable=yes,toolbar=no,location=yes,scrollbars=yes');
-				}
-			}
-			
-			function GetIssueSubject()
-			{
-				return "Application Exception";
-			}
-			
-			function GetIssueDescription()
-			{
-				return document.getElementById('ErrorDetails').value;
-			}
-			</script>
 			<asp:MultiView runat="server" id="PageViews">
 				<asp:View runat="server" id="ErrorView">
 				<h1><%# Resources.Language.ErrorPageTitle %></h1>
@@ -87,7 +61,7 @@
 				</textarea>
 				</p>
 				<p>
-				<%= Resources.Language.SiteStarter %>: <a href="javascript:;" onclick="ReportIssue('SiteStarter');"><%= Resources.Language.ReportIssue %> &raquo;</a>
+				<cc:ReportIssueLink runat="server" IssueSubject='<%# GetIssueSubject() %>' IssueDescription='<%# GetIssueDescription() %>' />
 				</p>
 				<p>
 					<a href='<%= Request.ApplicationPath %>'><%= Resources.Language.BackToHome %> &raquo;</a>
