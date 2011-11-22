@@ -66,6 +66,19 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			set { ViewState["IssueDescription"] = value; }
 		}
 		
+		[Browsable(true)]
+		[Bindable(true)]
+		public string ProjectID
+		{
+			get
+			{
+				if (ViewState["ProjectID"] == null)
+					ViewState["ProjectID"] = ConfigurationSettings.AppSettings["UniversalProjectID"];
+				return (string)ViewState["ProjectID"];
+			}
+			set { ViewState["ProjectID"] = value; }
+		}
+		
 		public ReportIssueLink()
 		{
 		}
@@ -86,9 +99,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			LinkControl.Text = Text;
 			LinkControl.NavigateUrl = "javascript:ReportIssue_" + ClientID + "();";
 			
-			//<!--add key="ReportIssueUrl" value="http://www.softwaremonkeys.net/hub/Report-Issue.aspx?CurrentProjectID=${Project.ID}&amp;ProjectVersion=${Project.Version}" /-->
-			//<!--add key="PostSuggestionUrl" value="http://www.softwaremonkeys.net/hub/Post-Suggestion.aspx?CurrentProjectID=${Project.ID}&amp;ProjectVersion=${Project.Version}" /-->
-			
 			Controls.Add(LinkControl);
 			
 			
@@ -97,8 +107,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		
 		private string GetReportIssueUrl()
 		{
-			string path = ConfigurationSettings.AppSettings["ReportIssueUrl"];
-			path = path.Replace("${Project.ID}", ConfigurationSettings.AppSettings["UniversalProjectID"]);
+			string path = String.Empty;
+			
+			// If running on localhost use the test page
+			if (WebUtilities.GetLocationVariation(Page.Request.Url) == "local")
+				path = new UrlConverter().ToAbsolute(Page.Request.ApplicationPath) + "/Admin/Tests/TestReportIssue.aspx";
+			else
+				path = ConfigurationSettings.AppSettings["ReportIssueUrl"];
+			
+			path = path.Replace("${Project.ID}", ProjectID);
 			
 			path = path.Replace("${Project.Version}", VersionUtilities.GetCurrentVersion().ToString());
 			
