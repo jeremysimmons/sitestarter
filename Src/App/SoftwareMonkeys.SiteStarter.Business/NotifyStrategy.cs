@@ -47,7 +47,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="subject">The subject of the email to send to all notifiable users.</param>
 		/// <param name="message">The message of the email to send to all notifiable users.</param>
 		public virtual void SendNotification(IEntity entity, string subject, string message)
-		{			
+		{
 			foreach (User user in IndexStrategy.New<User>(false).Index<User>("EnableNotifications", true))
 			{
 				if (user != null)
@@ -62,13 +62,13 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					
 					try
 					{
-					
-						MailMessage mm = new MailMessage(replyTo,
-						                                                                 user.Email,
-						                                                                 PrepareNotificationText(subject, entity),
-						                                                                 PrepareNotificationText(message, entity));
 						
-						new SmtpClient(SmtpServer).Send(mm);
+						MailMessage mm = new MailMessage(replyTo,
+						                                 user.Email,
+						                                 PrepareNotificationText(subject, entity),
+						                                 PrepareNotificationText(message, entity));
+						
+						new Emailer().CreateSmtpClient().Send(mm);
 					}
 					catch(FormatException ex)
 					{
