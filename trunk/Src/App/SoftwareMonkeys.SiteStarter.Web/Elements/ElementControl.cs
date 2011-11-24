@@ -194,7 +194,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 				
 				if (propertyValues == null)
 					throw new ArgumentNullException("propertyValues");
-
+				
+				((BaseElement)element).Width = Width;
+				
 				ApplyDataSourceProperty(element);
 				
 				foreach (string propertyName in propertyValues.Keys)
