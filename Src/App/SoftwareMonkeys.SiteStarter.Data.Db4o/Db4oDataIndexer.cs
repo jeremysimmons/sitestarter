@@ -74,7 +74,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <returns>The entities of the specified type found in the data store.</returns>
 		public override IEntity[] GetEntities(IDataFilterGroup group)
 		{
-			List<IEntity> entities = new List<IEntity>();
+			Collection<IEntity> entities = new Collection<IEntity>();
 
 			using (LogGroup logGroup = LogGroup.Start("Retrieving entities by type and filter.", NLog.LogLevel.Debug))
 			{
@@ -89,7 +89,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					foreach (IDataFilter filter in group.Filters)
 					{
 						if (filter.Types != null)
-							allTypes.AddRange(filter.Types);
+						{
+							foreach (Type type in filter.Types)
+								if (!allTypes.Contains(type))
+									allTypes.Add(type);
+						}
 					}
 
 					// Loop through the types and load them
@@ -112,7 +116,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					{
 						using (LogGroup logGroup2 = LogGroup.Start("Entity found.", NLog.LogLevel.Debug))
 						{
-							//IEntity entity = (IEntity)os.Next();
 							LogWriter.Debug("Entity ID: " + entity.ID);
 							LogWriter.Debug("Entity .ToString(): " + entity.ToString());
 						}
