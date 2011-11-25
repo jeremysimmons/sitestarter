@@ -177,6 +177,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 				values.Add(subParts[0],  subParts[1]);
 			}
 			
+			if (values["Width"] != null)
+				values["Width"] = Width.ToString();
+			
 			return values;
 		}
 		

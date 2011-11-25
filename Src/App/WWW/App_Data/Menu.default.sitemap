@@ -9,4 +9,5 @@
   <siteMapNode title="Update" url="~/Admin/Update.aspx" description="" />
   <siteMapNode title="Cache" url="~/Admin/Cache.aspx" description="" />
   <siteMapNode title="Data" url="~/Admin/Data.aspx" description="" />
+  <siteMapNode title="Errors" url="~/Admin/Errors.aspx" description="" />
 </siteMap>
