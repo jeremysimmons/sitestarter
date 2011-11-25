@@ -33,7 +33,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		public override int CountEntities(IDataFilter filter)
 		{
 			// TODO: Boost performance by looping through an object set without actually loading the entities
-			List<IEntity> entities = new List<IEntity>();
+			Collection<IEntity> entities = new Collection<IEntity>();
 
 			using (LogGroup logGroup = LogGroup.Start("Counting entities by type and filter.", NLog.LogLevel.Debug))
 			{
@@ -78,7 +78,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			// TODO: Boost performance by looping through an object set without actually loading the entities
 			
-			List<IEntity> entities = new List<IEntity>();
+			Collection<IEntity> entities = new Collection<IEntity>();
 
 			using (LogGroup logGroup = LogGroup.Start("Counting entities by type and filter.", NLog.LogLevel.Debug))
 			{
@@ -93,7 +93,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					foreach (IDataFilter filter in group.Filters)
 					{
 						if (filter.Types != null)
-							allTypes.AddRange(filter.Types);
+						{
+							foreach (Type type in filter.Types)
+								if (!allTypes.Contains(type))
+									allTypes.Add(type);
+					}
 					}
 
 					// Loop through the types and load them

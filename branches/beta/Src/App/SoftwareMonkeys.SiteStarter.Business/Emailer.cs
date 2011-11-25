@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using SoftwareMonkeys.SiteStarter.Configuration;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Business;
@@ -49,7 +50,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			string systemEmail = "noreply@softwaremonkeys.net";
 			
 			SendEmail(systemName, systemEmail, recipientName, recipientEmail, subject, message);
-		}		
+		}
 		
 		public virtual void SendEmail(string senderName, string senderEmail, string recipientName, string recipientEmail, string subject, string message)
 		{
@@ -61,7 +62,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				                                 PrepareEmailText(message, senderName, senderEmail, recipientName, recipientEmail)
 				                                );
 				
-				new SmtpClient(SmtpServer).Send(mm);
+				CreateSmtpClient().Send(mm);
 			}
 			catch(FormatException ex)
 			{
@@ -91,6 +92,22 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			text = text.Replace("${Recipient.Name}", recipientName);
 			
 			return original;
+		}
+		
+		public virtual SmtpClient CreateSmtpClient()
+		{
+			SmtpClient smtp = new SmtpClient(SmtpServer);
+			
+			// If the SMTP authentication is enabled then use the username and password in the settings
+			if (Config.Application.Settings.GetBool("EnableSmtpAuthentication")
+			    && Config.Application.Settings.GetString("SmtpUsername") != String.Empty
+			    && Config.Application.Settings.GetString("SmtpPassword") != String.Empty)
+			{
+				smtp.Credentials = new NetworkCredential(Config.Application.Settings.GetString("SmtpUsername"),
+				                                         Config.Application.Settings.GetString("SmtpPassword"));
+				
+			}
+			return smtp;
 		}
 		
 		public static Emailer New()

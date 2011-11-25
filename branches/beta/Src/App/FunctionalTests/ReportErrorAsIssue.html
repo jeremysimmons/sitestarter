@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://localhost/SiteStarter/" />
+<title>ReportErrorAsIssue</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">ReportErrorAsIssue</td></tr>
+</thead><tbody>
+<tr>
+	<td>setTimeout</td>
+	<td>1000000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>Admin/tests/testreset.aspx?Config=true</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>Admin/QuickSetup.aspx</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>NonExistentPage.aspx</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Oops</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Report Issue</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Report Issue »</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPopUp</td>
+	<td></td>
+	<td>30000</td>
+</tr>
+<tr>
+	<td>assertHtmlSource</td>
+	<td>System.Web.HttpException: The file '/SiteStarter/NonExistentPage.aspx' does not exist.&nbsp;&nbsp;&nbsp;&nbsp;at System.Web.UI.Util.CheckVirtualFileExists(VirtualPath virtualPath)&nbsp;&nbsp;&nbsp;&nbsp;at System.Web.Compilation.BuildManager.GetVPathBuildResultInternal(VirtualPath virtualPath, Boolean noBuild, Boolean allowCrossApp, Boolean allowBuildInPrecompile)&nbsp;&nbsp;&nbsp;&nbsp;at System.Web.Compilation.BuildManager.GetVPathBuildResultWithNoAssert(HttpContext context, VirtualPath virtualPath, Boolean noBuild, Boolean allowCrossApp, Boolean allowBuildInPrecompile)&nbsp;&nbsp;&nbsp;&nbsp;at System.Web.Compilation.BuildManager.GetVirtualPathObjectFactory(VirtualPath virtualPath, HttpContext context, Boolean allowCrossApp, Boolean noAssert)&nbsp;&nbsp;&nbsp;&nbsp;at System.Web.Compilation.BuildManager.CreateInstanceFromVirtualPath(VirtualPath virtualPath, Type requiredBaseType, HttpContext context, Boolean allowCrossApp, Boolean noAssert)&nbsp;&nbsp;&nbsp;&nbsp;at System.Web.UI.PageHandlerFactory.GetHandlerHelper(HttpContext context, String requestType, VirtualPath virtualPath, String physicalPath)&nbsp;&nbsp;&nbsp;&nbsp;at System.Web.UI.PageHandlerFactory.System.Web.IHttpHandlerFactory2.GetHandler(HttpContext context, String requestType, VirtualPath virtualPath, String physicalPath)&nbsp;&nbsp;&nbsp;&nbsp;at System.Web.HttpApplication.MapHttpHandler(HttpContext context, String requestType, VirtualPath path, String pathTranslated, Boolean useAppConfig)&nbsp;&nbsp;&nbsp;&nbsp;at System.Web.HttpApplication.MapHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()&nbsp;&nbsp;&nbsp;&nbsp;at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean&amp; completedSynchronously)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertNotHtmlSource</td>
+	<td>${Project.Version}</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>

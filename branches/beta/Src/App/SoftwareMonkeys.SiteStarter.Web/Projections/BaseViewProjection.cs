@@ -59,8 +59,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <param name="e"></param>
 		protected override void OnLoad(EventArgs e)
 		{
-			if (!IsPostBack)
-				View();
+			View();
 			
 			base.OnLoad(e);
 		}

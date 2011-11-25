@@ -35,6 +35,12 @@
         AppConfig config = (AppConfig)Config.Application;
 
         config.Settings["SmtpServer"] = SmtpServer.Text;
+        config.Settings["EnableSmtpAuthentication"] = EnableSmtpAuthentication.Checked;
+        config.Settings["SmtpUsername"] = SmtpUsername.Text;
+        
+        if (SmtpPassword.Text != String.Empty)
+        	config.Settings["SmtpPassword"] = SmtpPassword.Text;
+        	
         config.Settings["SystemEmail"] = SystemEmail.Text;
     
     	config.Save();
@@ -97,15 +103,33 @@
                                     <td colspan="2" class="Heading2"><%# Resources.Language.EmailSettings %></td>
                                 </tr>
                                  <tr>
+                                    <td class="FieldLabel"><%# Resources.Language.SystemEmail + ":"%></td>
+                                    <td class="Field">
+                                    <asp:TextBox runat="server" ID="SystemEmail" CssClass="Form" width="400px" Text='<%# Config.Application.Settings.GetString("SystemEmail") %>' /></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" class="Heading2"><%# Resources.Language.SmtpSettings %></td>
+                                </tr>
+                                 <tr>
                                     <td class="FieldLabel"><%# Resources.Language.SmtpServer + ":"%></td>
                                     <td class="Field">
-                                    <asp:TextBox runat="server" ID="SmtpServer" CssClass="Form" width="400px" Text='<%# Config.Application.Settings["SmtpServer"] %>' /></td>
+                                    <asp:TextBox runat="server" ID="SmtpServer" CssClass="Form" width="400px" Text='<%# Config.Application.Settings.GetString("SmtpServer") %>' /></td>
                                 </tr>
                                 
                                 <tr>
-                                    <td class="FieldLabel"><%# Resources.Language.SystemEmail + ":"%></td>
+                                    <td class="FieldLabel"><%# Resources.Language.EnableSmtpAuthentication + ":"%></td>
                                     <td class="Field">
-                                    <asp:TextBox runat="server" ID="SystemEmail" CssClass="Form" width="400px" Text='<%# Config.Application.Settings["SystemEmail"] %>' /></td>
+                                    <asp:CheckBox runat="server" ID="EnableSmtpAuthentication" CssClass="Form" Checked='<%# Config.Application.Settings.GetBool("EnableSmtpAuthentication") %>' /></td>
+                                </tr>
+                                 <tr>
+                                    <td class="FieldLabel"><%# Resources.Language.SmtpServer + ":"%></td>
+                                    <td class="Field">
+                                    <asp:TextBox runat="server" ID="SmtpUsername" CssClass="Form" width="400px" Text='<%# Config.Application.Settings.GetString("SmtpUsername") %>' /></td>
+                                </tr>
+                                 <tr>
+                                    <td class="FieldLabel"><%# Resources.Language.SmtpPassword + ":"%></td>
+                                    <td class="Field">
+                                    <asp:TextBox runat="server" ID="SmtpPassword" CssClass="Form" width="400px" Text='<%# Config.Application.Settings.GetString("SmtpPassword") %>' /></td>
                                 </tr>
                                 
                                 <tr>
