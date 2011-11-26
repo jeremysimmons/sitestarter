@@ -52,7 +52,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		
 		void Application_Error(object sender, EventArgs e)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Application error.", NLog.LogLevel.Error))
+			using (LogGroup logGroup = LogGroup.StartDebug("Application error."))
 			{
 				LogWriter.Debug("${Application.Error}");
 				
