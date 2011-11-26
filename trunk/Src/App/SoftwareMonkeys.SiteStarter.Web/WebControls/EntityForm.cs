@@ -250,33 +250,45 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 					{
 						if (row is EntityFormItem)
 						{
-							if (row.Enabled && row.Visible)
+							using (LogGroup logGroup2 = LogGroup.StartDebug("Checking row with field control ID '" + ((EntityFormItem)row).FieldControlID + "'."))
 							{
-								EntityFormItem item = (EntityFormItem)row;
+								LogWriter.Debug("Enabled: " + row.Enabled);
+								LogWriter.Debug("Visible: " + row.Visible);
 								
-								if (item.AutoBind && item.PropertyName != null && item.PropertyName != String.Empty)
+								if (row.Enabled && row.Visible)
 								{
-									LogWriter.Debug("Property name: " + item.PropertyName);
+									LogWriter.Debug("Enabled and visible.");
 									
-									WebControl field = (WebControl)FindControl(item.FieldControlID);
-									// Skip label fields, they're not editable
-									if (field.GetType() != typeof(Label)
-									   && field.Enabled)
+									EntityFormItem item = (EntityFormItem)row;
+									
+									if (item.AutoBind && item.PropertyName != null && item.PropertyName != String.Empty)
 									{
-										Type propertyType = Reflector.GetPropertyType(DataSource, item.PropertyName);
+										LogWriter.Debug("Property name: " + item.PropertyName);
 										
-										LogWriter.Debug("Property type: " + (propertyType == null ? "[null]" : propertyType.ToString()));
-										
-										object value = EntityFormHelper.GetFieldValue(field, item.ControlValuePropertyName, propertyType);
-										
-										LogWriter.Debug("Field value type: " + (value == null ? "[null]" : value.GetType().ToString()));
-										LogWriter.Debug("Field value: " + (value == null ? "[null]" : value.ToString()));
-										
-										object castValue = EntityFormHelper.Convert(value, propertyType);
-										
-										Reflector.SetPropertyValue(DataSource, item.PropertyName, castValue);
+										WebControl field = (WebControl)FindControl(item.FieldControlID);
+										// Skip label fields, they're not editable
+										if (field.GetType() != typeof(Label)
+										    && field.Enabled)
+										{
+											Type propertyType = Reflector.GetPropertyType(DataSource, item.PropertyName);
+											
+											LogWriter.Debug("Property type: " + (propertyType == null ? "[null]" : propertyType.ToString()));
+											
+											object value = EntityFormHelper.GetFieldValue(field, item.ControlValuePropertyName, propertyType);
+											
+											LogWriter.Debug("Field value type: " + (value == null ? "[null]" : value.GetType().ToString()));
+											LogWriter.Debug("Field value: " + (value == null ? "[null]" : value.ToString()));
+											
+											object castValue = EntityFormHelper.Convert(value, propertyType);
+											
+											Reflector.SetPropertyValue(DataSource, item.PropertyName, castValue);
+										}
 									}
+									else
+										LogWriter.Debug("Not auto binding or no property name specified.");
 								}
+								else
+									LogWriter.Debug("Skipping.");
 							}
 						}
 					}
