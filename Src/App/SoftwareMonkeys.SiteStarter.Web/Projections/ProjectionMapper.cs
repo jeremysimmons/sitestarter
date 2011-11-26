@@ -674,10 +674,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				
 				foreach (string part in queryParts)
 				{
-					string[] subParts = part.Split('=');
+					int pos = part.IndexOf('=');
 					
-					string key = subParts[0];
-					string value = subParts[1];
+					string key = part.Substring(0, pos);
+					string value = part.Substring(pos+1, part.Length-pos-1);
 					
 					if (!parameters.ContainsKey(key))
 						parameters.Add(key, value);
