@@ -94,67 +94,72 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 		
 		protected override void OnLoad(EventArgs e)
 		{
-			EnsureChildControls();
-			
-			if (Target == null)
-				throw new Exception("No target element found or unable to load it.");
-			
-			if (PropertyValuesString != String.Empty)
-				PropertyValues = ExtractPropertyValues(PropertyValuesString);
-			
-			ApplyProperties(Target, PropertyValues);
-			
-			base.OnLoad(e);
-			
+			using (LogGroup logGroup = LogGroup.StartDebug("Loading ElementControl '" + ClientID + "'."))
+			{
+				EnsureChildControls();
+				
+				if (Target == null)
+					throw new Exception("No target element found or unable to load it.");
+				
+				if (PropertyValuesString != String.Empty)
+					PropertyValues = ExtractPropertyValues(PropertyValuesString);
+				
+				ApplyProperties(Target, PropertyValues);
+				
+				base.OnLoad(e);
+			}
 		}
 
 		protected override void CreateChildControls()
 		{
-			ElementInfo info = null;
-			
-			// If the Action and TypeName properties are specified
-			if (Action != String.Empty
-			    && TypeName != String.Empty)
+			using (LogGroup logGroup = LogGroup.StartDebug("Creating child controls for ElementControl '" + ClientID + "'."))
 			{
-				LogWriter.Debug("Action: " + Action);
-				LogWriter.Debug("TypeName: " + TypeName);
+				ElementInfo info = null;
+			
+				// If the Action and TypeName properties are specified
+				if (Action != String.Empty
+				    && TypeName != String.Empty)
+				{
+					LogWriter.Debug("Action: " + Action);
+					LogWriter.Debug("TypeName: " + TypeName);
+					
+					info = (ElementInfo)ElementState.Elements[Action, TypeName];
+				}
+				// Otherwise if the ElementName property is specified
+				else if (ElementName != String.Empty)
+				{
+					LogWriter.Debug("ElementName: " + ElementName);
+					
+					info = (ElementInfo)ElementState.Elements[ElementName];
+				}
+				// Otherwise throw error
+				else
+					throw new Exception("Either the Action and TypeName property both need to be specified OR the ElementName property.");
 				
-				info = (ElementInfo)ElementState.Elements[Action, TypeName];
-			}
-			// Otherwise if the ElementName property is specified
-			else if (ElementName != String.Empty)
-			{
-				LogWriter.Debug("ElementName: " + ElementName);
+				// If cached info was found
+				if (info != null)
+				{
+					// Create a new instance of the dynamic element
+					Target = (IElement)info.New();
+				}
+				else
+					LogWriter.Debug("No cached info found about element. Skipping.");
 				
-				info = (ElementInfo)ElementState.Elements[ElementName];
-			}
-			// Otherwise throw error
-			else
-				throw new Exception("Either the Action and TypeName property both need to be specified OR the ElementName property.");
-			
-			// If cached info was found
-			if (info != null)
-			{
-				// Create a new instance of the dynamic element
-				Target = (IElement)info.New();
-			}
-			else
-				LogWriter.Debug("No cached info found about element. Skipping.");
-			
-			// If a element was created
-			if (Target != null)
-			{
-				Controls.Add((WebControl)Target);
-			}
-			// Otherwise show a message
-			else
-			{
-				LogWriter.Debug("No element found.");
-				
-				Controls.Add(new LiteralControl("No element found."));
+				// If a element was created
+				if (Target != null)
+				{
+					Controls.Add((WebControl)Target);
+				}
+				// Otherwise show a message
+				else
+				{
+					LogWriter.Debug("No element found.");
+					
+					Controls.Add(new LiteralControl("No element found."));
+				}
+				base.CreateChildControls();
 			}
 			
-			base.CreateChildControls();
 		}
 		
 		/// <summary>
@@ -197,7 +202,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 				
 				if (propertyValues == null)
 					throw new ArgumentNullException("propertyValues");
-								
+				
 				ApplyDataSourceProperty(element);
 				
 				foreach (string propertyName in propertyValues.Keys)
