@@ -137,6 +137,7 @@
     <Compile Include="Elements\HelloWorldElement.cs" />
     <Compile Include="Elements\IElement.cs" />
     <Compile Include="Data\DataProviderInitializer.cs" />
+    <Compile Include="Elements\ViewEntityElement.cs" />
     <Compile Include="ExceptionHandler.cs" />
     <Compile Include="FileExistenceChecker.cs" />
     <Compile Include="FileMapper.cs" />
