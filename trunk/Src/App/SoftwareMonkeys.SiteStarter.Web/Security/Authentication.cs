@@ -252,9 +252,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 		
 		public static string GetReturnUrl()
 		{
-			string returnUrl = HttpContext.Current.Request.QueryString["ReturnUrl"];
-			
-			returnUrl = HttpContext.Current.Server.UrlDecode(returnUrl);
+			string returnUrl = (string)HttpContext.Current.Session["ReturnUrl"];
 			
 			return returnUrl;
 		}
