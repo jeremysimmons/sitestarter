@@ -122,7 +122,7 @@
                                     <asp:CheckBox runat="server" ID="EnableSmtpAuthentication" CssClass="Form" Checked='<%# Config.Application.Settings.GetBool("EnableSmtpAuthentication") %>' /></td>
                                 </tr>
                                  <tr>
-                                    <td class="FieldLabel"><%# Resources.Language.SmtpServer + ":"%></td>
+                                    <td class="FieldLabel"><%# Resources.Language.SmtpUsername + ":"%></td>
                                     <td class="Field">
                                     <asp:TextBox runat="server" ID="SmtpUsername" CssClass="Form" width="400px" Text='<%# Config.Application.Settings.GetString("SmtpUsername") %>' /></td>
                                 </tr>
