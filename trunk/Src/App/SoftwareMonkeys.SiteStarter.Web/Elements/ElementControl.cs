@@ -224,7 +224,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 							throw new ArgumentException("Can't find property '" + propertyName + "' on type '" + elementType + "'.");
 						}
 						
-						propertyInfo.SetValue(Target, ConvertValue(propertyValues[propertyName], propertyInfo.PropertyType), null);
+						if (propertyInfo.CanWrite)
+							propertyInfo.SetValue(Target, ConvertValue(propertyValues[propertyName], propertyInfo.PropertyType), null);
 					}
 				}
 			}
