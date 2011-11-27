@@ -94,6 +94,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 		
 		protected override void OnLoad(EventArgs e)
 		{
+			using (LogGroup logGroup = LogGroup.StartDebug("Loading ElementControl '" + ClientID + "'."))
+			{
 			EnsureChildControls();
 			
 			if (Target == null)
@@ -105,11 +107,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 			ApplyProperties(Target, PropertyValues);
 			
 			base.OnLoad(e);
-			
+		}
 		}
 
 		protected override void CreateChildControls()
 		{
+			using (LogGroup logGroup = LogGroup.StartDebug("Creating child controls for ElementControl '" + ClientID + "'."))
+			{
 				ElementInfo info = null;
 				
 				// If the Action and TypeName properties are specified
@@ -153,9 +157,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 					
 					Controls.Add(new LiteralControl("No element found."));
 				}
-				
 			base.CreateChildControls();
 			}
+		
+		}
 		
 		/// <summary>
 		/// Extracts a NameValueCollection from the provided property values string.
@@ -219,6 +224,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 							throw new ArgumentException("Can't find property '" + propertyName + "' on type '" + elementType + "'.");
 						}
 						
+						if (propertyInfo.CanWrite)
 						propertyInfo.SetValue(Target, ConvertValue(propertyValues[propertyName], propertyInfo.PropertyType), null);
 					}
 				}

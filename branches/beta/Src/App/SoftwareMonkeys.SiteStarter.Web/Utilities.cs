@@ -45,17 +45,16 @@ namespace SoftwareMonkeys.SiteStarter.Web
             else
                 return secondaryText;
         }
+
         /// <summary>
         /// Retrieves the specified Guid from the query string.
         /// </summary>
         /// <param name="name">The name of the query string data.</param>
         /// <returns>The Guid retrieved from the query string.</returns>
+        [Obsolete("Use QueryStrings.GetID(...)")]
         static public Guid GetQueryStringID(string name)
         {
-            if (HttpContext.Current.Request.QueryString[name] != null)
-                return new Guid(HttpContext.Current.Request.QueryString[name]);
-            else
-                return Guid.Empty;
+        	return QueryStrings.GetID(name);
         }
 
         /// <summary>

@@ -20,16 +20,18 @@
 
 private void Page_Load(object sender, EventArgs e)
 {
-	using (TimeoutExtender extender = TimeoutExtender.NewMinutes(30)) // 30 minutes
+	using (TimeoutExtender extender = TimeoutExtender.NewMinutes(30))
 	{
 		StateProviderInitializer.Initialize();
 		
 		new EntityInitializer().Initialize();
 		new StrategyInitializer().Initialize();
 		new ReactionInitializer().Initialize();
-		new ProjectionsInitializer(this).Initialize();
 		new PartsInitializer(this).Initialize();
 		new ControllersInitializer().Initialize();
+
+		// Skip projection initialization to work around issue. Initialization instead occurs during setup.
+		//new ProjectionsInitializer(this).Initialize();
 	}
 }
    

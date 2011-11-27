@@ -19,6 +19,8 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				{
 					string url = new ProjectionMapper().GetInternalPath(HttpContext.Current.Request.Url.ToString());
 					
+					HttpContext.Current.Items["OriginalUrl"] = HttpContext.Current.Request.Url.ToString();
+					
 					if (url != null && url != String.Empty)
 					{
 						//HttpContext.Current.Server.Execute(url, true);

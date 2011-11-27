@@ -114,6 +114,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		{
 			using (LogGroup logGroup = LogGroup.Start("Pre rendering the EntitySelectDeliverer with the ID: " + ID, NLog.LogLevel.Debug))
 			{
+				EnsureDataBound();
+				
 				if (Page.IsPostBack)
 				{
 					LogWriter.Debug("Page.IsPostBack.");
@@ -238,6 +240,20 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			}
 			
 			return requesterID;
+		}
+		
+		public bool IsDataBound = false;
+		
+		public virtual void EnsureDataBound()
+		{
+			if (!IsDataBound)
+				DataBind();
+		}
+		
+		public override void DataBind()
+		{
+			base.DataBind();
+			IsDataBound = true;
 		}
 	}
 }
