@@ -354,7 +354,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		/// </summary>
 		protected void RaiseDataLoading()
 		{
-			if (DataLoading != null)
+			if (DataLoading != null && Visible)
 				DataLoading(this, EventArgs.Empty);
 		}
 		#endregion

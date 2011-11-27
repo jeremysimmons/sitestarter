@@ -184,9 +184,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 			
 			Result.DisplayError(Language.Unauthorised);
 			
-			// TODO: This shouldn't be hard coded.
-			HttpContext.Current.Response.Redirect("~/User-SignIn.aspx?ReturnUrl="
-			                                      + HttpContext.Current.Server.UrlEncode(Authentication.GetUrl()));
+			HttpContext.Current.Session["ReturnUrl"] = Authentication.GetUrl();
+			
+			// TODO: This path shouldn't be hard coded.
+			HttpContext.Current.Response.Redirect("~/User-SignIn.aspx");
 		}
 
 		public static void EnsureIsAuthenticated()
