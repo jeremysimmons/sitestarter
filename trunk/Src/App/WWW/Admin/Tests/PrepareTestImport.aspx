@@ -34,6 +34,8 @@ protected override void OnLoad(EventArgs e)
 			
 			ExportData();
 			
+			ExportConfig();
+			
 			MoveExportedToImportable();
 		}
 	}
@@ -69,6 +71,23 @@ protected void MoveExportedToImportable()
 	string importablePath = DataAccess.Data.DataDirectoryPath + Path.DirectorySeparatorChar + "Import";
 	
 	Directory.Move(exportPath, importablePath);
+}
+
+protected void ExportConfig()
+{
+	Config.Application.Title = "Custom Title";
+	Config.Application.Settings["SystemEmail"] = "testemail@testdomain.com";
+	
+	Config.Application.Save();
+	
+	string file = Config.Application.FilePath;
+	
+	string exportPath = DataAccess.Data.Exporter.ExportDirectoryPath;
+	
+	string toFile = exportPath + Path.DirectorySeparatorChar +
+					Path.GetFileName(file);
+				
+	File.Copy(file, toFile, true);
 }
 
 </script>
