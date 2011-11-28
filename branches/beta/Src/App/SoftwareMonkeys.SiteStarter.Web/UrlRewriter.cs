@@ -15,6 +15,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		{
 			using (LogGroup logGroup = LogGroup.StartDebug("Initializing the URL rewriter."))
 			{
+				
 				if (StateAccess.IsInitialized && ProjectionState.IsInitialized)
 				{
 					string url = new ProjectionMapper().GetInternalPath(HttpContext.Current.Request.Url.ToString());
@@ -27,6 +28,8 @@ namespace SoftwareMonkeys.SiteStarter.Web
 						HttpContext.Current.RewritePath(url, false); // Pass false parameter to ensure the form post back path is correct.
 					}
 				}
+				else
+					new SetupChecker().Check();
 			}
 		}
 	}
