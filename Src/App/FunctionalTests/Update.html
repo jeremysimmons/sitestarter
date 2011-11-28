@@ -38,6 +38,41 @@
 </tr>
 <tr>
 	<td>clickAndWait</td>
+	<td>link=Settings</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=WebSiteSettingsLink</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=ctl00_Body_ctl00_ApplicationTitle</td>
+	<td>Custom Title</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=ctl00_Body_ctl00_UpdateButton</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=EmailSettingsLink</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=ctl00_Body_ctl00_SystemEmail</td>
+	<td>testemail@testdomain.com</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=ctl00_Body_ctl00_UpdateButton</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
 	<td>link=Users</td>
 	<td></td>
 </tr>
@@ -177,8 +212,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>waitForPageToLoad</td>
-	<td></td>
+	<td>assertTextPresent</td>
+	<td>Custom Title</td>
 	<td></td>
 </tr>
 <tr>
@@ -189,6 +224,21 @@
 <tr>
 	<td>assertTextPresent</td>
 	<td>successfully</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Settings</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=EmailSettingsLink</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertElementPresent</td>
+	<td>//input[@value=&quot;testemail@testdomain.com&quot;]</td>
 	<td></td>
 </tr>
 <tr>
