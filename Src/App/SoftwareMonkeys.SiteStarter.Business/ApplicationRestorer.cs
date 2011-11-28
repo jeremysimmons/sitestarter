@@ -97,7 +97,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		
 		protected Version GetLegacyVersion()
 		{
-			Version legacyVersion = null;
+			Version legacyVersion = new Version(0, 0, 0, 1);
 			
 			// Use a wildcard to get the Version.number file (and also match Version.local.number and Version.staging.number)
 			foreach (string versionFilePath in Directory.GetFiles(LegacyDirectoryPath, "Version*number"))
