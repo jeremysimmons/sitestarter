@@ -101,12 +101,20 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 
 				if (CurrentGroup != null)
 					parentGroup = CurrentGroup.Parent;
-				
-				GroupStack.Pop();
 
-				// TODO: Check if needed. If the parent group is null then it can still be set to CurrentGroup to make CurrentGroup == null
-				//if (parentGroup != null)
-					CurrentGroup = parentGroup;
+				try
+				{
+					GroupStack.Pop();
+				}
+				catch (ArgumentOutOfRangeException ex)
+				{
+					LogWriter.Error(ex);
+					// Skip argument out of range exception
+					// Should be rare and only happen if the application gets unloaded before the groups are all popped out of the list.
+					// For some reason checking the count before popping doesn't work
+				}
+
+				CurrentGroup = parentGroup;
 			}
 		}
 		
