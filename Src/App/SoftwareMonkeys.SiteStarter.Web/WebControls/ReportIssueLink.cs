@@ -79,6 +79,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			set { ViewState["ProjectID"] = value; }
 		}
 		
+		public bool IsDataBound = false;
+		
+		
 		public ReportIssueLink()
 		{
 		}
@@ -131,8 +134,20 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		
 		protected void RegisterScript()
 		{
+			EnsureDataBound();
+			
 			// TODO: See if script can be reduced in size to boost performance
 			string script = @"<script language=""javascript"">
+	
+			function GetIssueSubject_" + ClientID + @"()
+			{
+				return """ + WebUtilities.EncodeJsString(IssueSubject) + @""";
+			}
+			
+			function GetIssueDescription_" + ClientID + @"()
+			{
+				return """ + WebUtilities.EncodeJsString(IssueDescription) + @""";
+			}
 			
 			var reportIssue_" + ClientID + @"_window;
 			
@@ -153,19 +168,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				}
 				else
 				{
-					reportIssue_" + ClientID + @"_window.setFieldValue(""Subject"", GetIssueSubject());
-					reportIssue_" + ClientID + @"_window.setFieldValue(""Description"", GetIssueDescription());
+					reportIssue_" + ClientID + @"_window.setFieldValue(""Subject"", GetIssueSubject_" + ClientID + @"());
+					reportIssue_" + ClientID + @"_window.setFieldValue(""Description"", GetIssueDescription_" + ClientID + @"());
 				}
-			}
-	
-			function GetIssueSubject()
-			{
-				return """ + WebUtilities.EncodeJsString(IssueSubject) + @""";
-			}
-			
-			function GetIssueDescription()
-			{
-				return """ + WebUtilities.EncodeJsString(IssueDescription) + @""";
 			}
 			</script>";
 			
@@ -173,6 +178,19 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			
 			if (!Page.ClientScript.IsClientScriptBlockRegistered(key))
 				Page.ClientScript.RegisterClientScriptBlock(GetType(), key, script);
+		}
+		
+		public void EnsureDataBound()
+		{
+			if (!IsDataBound)
+				DataBind();
+		}
+		
+		public override void DataBind()
+		{
+			base.DataBind();
+			
+			IsDataBound = true;
 		}
 	}
 }
