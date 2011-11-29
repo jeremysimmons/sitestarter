@@ -71,6 +71,27 @@
 	<td>Import Complete</td>
 	<td></td>
 </tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Custom Title</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Settings</td>
+	<td></td>
+</tr>
+<!--Ensure that the settings were imported-->
+<tr>
+	<td>clickAndWait</td>
+	<td>id=EmailSettingsLink</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertElementPresent</td>
+	<td>//input[@value=&quot;testemail@testdomain.com&quot;]</td>
+	<td></td>
+</tr>
 </tbody></table>
 </body>
 </html>

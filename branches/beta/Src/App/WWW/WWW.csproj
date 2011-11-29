@@ -101,8 +101,6 @@
     <None Include="Admin\Update.aspx" />
     <None Include="Admin\UpdateReady.html" />
     <None Include="App_Data\Menu.default.sitemap" />
-    <None Include="App_LocalResources\_svn\entries" />
-    <None Include="App_LocalResources\_svn\format" />
     <None Include="App_Themes\Default\Site.skin" />
     <None Include="App_Themes\Default\_svn\entries" />
     <None Include="App_Themes\Default\_svn\format" />
@@ -148,7 +146,6 @@
     <Folder Include="Admin\Tests" />
     <Folder Include="App_Data" />
     <Folder Include="App_GlobalResources" />
-    <Folder Include="App_LocalResources" />
     <Folder Include="App_Themes" />
     <Folder Include="App_Themes\Default" />
     <Folder Include="Controls" />
