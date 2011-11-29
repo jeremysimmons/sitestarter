@@ -109,6 +109,27 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		}
 		
 		/// <summary>
+		/// Creates the file name for the serialized info for the specified projection.
+		/// </summary>
+		/// <param name="action"></param>
+		/// <param name="typeName"></param>
+		/// <param name="format"></param>
+		/// <returns>The full file name for the serialized info for the provided projection.</returns>
+		public virtual string CreateInfoFileName(string action, string typeName, ProjectionFormat format)
+		{			
+			string name = String.Empty;
+			
+			if (typeName != String.Empty && action != String.Empty)
+			{
+				name = typeName + "-" + action;
+			}
+			
+			name = name + "." + format.ToString().ToLower() + ".projection";
+			
+			return name;
+		}
+		
+		/// <summary>
 		/// Creates the full file path for the serialized info for the provided projection.
 		/// </summary>
 		/// <param name="projection">The projection to create the file path for.</param>
@@ -118,6 +139,17 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			return ProjectionsInfoDirectoryPath + Path.DirectorySeparatorChar + CreateInfoFileName(projection);
 		}
 		
+		/// <summary>
+		/// Creates the full file path for the serialized info for the specified projection.
+		/// </summary>
+		/// <param name="action"></param>
+		/// <param name="typeName"></param>
+		/// <param name="format"></param>
+		/// <returns>The full file path for the serialized info for the provided projection.</returns>
+		public string CreateInfoFilePath(string action, string typeName, ProjectionFormat format)
+		{
+			return ProjectionsInfoDirectoryPath + Path.DirectorySeparatorChar + CreateInfoFileName(action, typeName, format);
+		}
 		
 		/// <summary>
 		/// Creates the full file path for the provided projection.
