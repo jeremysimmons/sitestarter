@@ -8,6 +8,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 	/// </summary>
 	public class ProjectionLocator
 	{
+		private bool enableLoading = true;
+		/// <summary>
+		/// Gets/sets a value indicating whether the locator can try loading projection info from file if not found in memory.
+		/// </summary>
+		public bool EnableLoading
+		{
+			get { return enableLoading; }
+			set { enableLoading = value; }
+		}
+
 		private ProjectionStateCollection projections;
 		/// <summary>
 		/// Gets/sets the projections that are available to the projection locator.
@@ -71,6 +81,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				else if (type != null)
 				{
 					projectionInfo = LocateFromHeirarchy(action, type, format);
+				}
+				
+				// If the projection wasn't found in memory then try loading it
+				if (EnableLoading && projectionInfo == null)
+				{
+					projectionInfo = new ProjectionLoader().LoadInfoFromFile(
+						new ProjectionFileNamer().CreateInfoFilePath(action, typeName, format)
+					);
+
+					Projections.Add(projectionInfo);
 				}
 				
 				if (projectionInfo == null)
