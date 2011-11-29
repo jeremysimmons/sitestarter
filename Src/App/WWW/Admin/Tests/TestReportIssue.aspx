@@ -1,16 +1,24 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN">
+﻿<%@ Page Language="C#" autoeventwireup="true" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>
 	Report Issue
 </title>
+<style>
+body
+{
+	font-family: verdana;
+	font-size: 11px;
+}
+</style>
 </head>
 <body>
-	<form runat="server">
+	<form method="post" action="TestReportIssue.aspx">
             <h1>
                  Report Issue
             </h1>
-            
+	<% if (Request.Form["Subject"] == null) { %>
             <p class="Intro">
             	Please describe the issue in the form below. Most fields are optional so that you can report the issue quickly, but the more information that is provided the easier it is to resolve.</p>  
             	
@@ -19,9 +27,9 @@
 		<td class="Heading2" colspan="2">New Issue Details</td>
 	</tr><tr>
 
-		<td class="FieldLabel">Subject: <span class='Required'>*</span></td><td><input name="ctl00$Body$ctl00$Subject" type="text" id="ctl00_Body_ctl00_Subject" style="width:400px;" /><span id="ctl00_Body_ctl00_SubjectReqVal" style="color:Red;visibility:hidden;"> &laquo; </span></td>
+		<td class="FieldLabel">Subject: <span class='Required'>*</span></td><td><input name="Subject" type="text" id="Subject" style="width:400px;" /><span id="ctl00_Body_ctl00_SubjectReqVal" style="color:Red;visibility:hidden;"> &laquo; </span></td>
 	</tr><tr>
-		<td class="FieldLabel">Description:</td><td><textarea name="ctl00$Body$ctl00$Description" rows="6" cols="20" id="ctl00_Body_ctl00_Description" style="width:400px;"></textarea></td>
+		<td class="FieldLabel">Description:</td><td><textarea name="Description" rows="6" cols="20" id="Description" style="width:400px;"></textarea></td>
 	</tr><tr>
 		<td class="FieldLabel">How to recreate:</td><td><textarea name="ctl00$Body$ctl00$HowToRecreate" rows="6" cols="20" id="ctl00_Body_ctl00_HowToRecreate" style="width:400px;"></textarea></td>
 
@@ -35,16 +43,13 @@
 
 		<td class="FieldLabel">Request Reply:</td><td><input id="ctl00_Body_ctl00_NeedsReply" type="checkbox" name="ctl00$Body$ctl00$NeedsReply" /><label for="ctl00_Body_ctl00_NeedsReply">Please notify me when this issue has been resolved.</label></td>
 	</tr><tr>
-		<td class="FieldLabel">Project: <span class='Required'>*</span></td><td><select name="ctl00$Body$ctl00$Project" id="ctl00_Body_ctl00_Project" class="Field" style="width:400px;">
-			<option value="00000000-0000-0000-0000-000000000000">-- Select Project --</option>
-
-		</select><span id="ctl00_Body_ctl00_ProjectReqVal" style="color:Red;visibility:hidden;"> &laquo; </span></td>
+		<td class="FieldLabel">Project: <span class='Required'>*</span></td><td><input name="ProjectID" type="text" id="ProjectID" style="width:400px;" value='<%= Request.QueryString["ProjectID"] %>' />
 
 	</tr><tr>
-		<td class="FieldLabel">Project Version:</td><td><input name="ctl00$Body$ctl00$ProjectVersion" type="text" id="ctl00_Body_ctl00_ProjectVersion" style="width:200px;" /></td>
+		<td class="FieldLabel">Project Version:</td><td><input name="ProjectVersion" type="text" id="ProjectVersion" style="width:200px;" value='<%= Request.QueryString["ProjectVersion"] %>' /></td>
 	</tr><tr>
 		<td class="FieldLabel"></td><td>
-								<input type="submit" name="ctl00$Body$ctl00$SaveButton" value="Save" onclick="javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;ctl00$Body$ctl00$SaveButton&quot;, &quot;&quot;, true, &quot;&quot;, &quot;&quot;, false, false))" id="ctl00_Body_ctl00_SaveButton" class="FormButton" />
+								<input type="submit" name="ctl00$Body$ctl00$SaveButton" value="Save" id="ctl00_Body_ctl00_SaveButton" class="FormButton" />
 								&nbsp;
 
 						</td>
@@ -56,21 +61,36 @@
 				{
 					if (shortId == "Subject")
 					{
-						var field = document.getElementById('ctl00_Body_ctl00_Subject');
+						var field = document.getElementById('Subject');
 
 						field.value = v;
 						
 					}
 					if (shortId == "Description")
 					{
-						var field = document.getElementById('ctl00_Body_ctl00_Description');
+						var field = document.getElementById('Description');
 						
 						field.value = v;
 						
 					}
 				}
 			</script>
-    
+	<% } %>
+	<% if (Request.Form["Subject"] != null) { %>
+	<h2>Submitted Data</h2>
+    <p>
+    Subject: <%= Request.Form["Subject"] %>
+    </p>
+    <p>
+    Description: <%= Request.Form["Description"] %>
+    </p>
+    <p>
+    Project ID: <%= Request.Form["ProjectID"] != null ? Request.Form["ProjectID"] : "[n/a]" %>
+    </p>
+    <p>
+    Project Version: <%= Request.Form["ProjectVersion"] != null ? Request.Form["ProjectVersion"] : "[n/a]" %>
+    </p>
+    <% } %>
 </form>
 </body>
 </html>

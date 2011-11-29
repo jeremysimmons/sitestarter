@@ -11,9 +11,10 @@ private void Page_Load(object sender, EventArgs e)
 {
 	using (LogGroup logGroup = LogGroup.Start("Loading the Site.master page at URL: " + Request.Url.ToString()))
 	{
+	    EnsureSetup();
+
 		MenuSource.DataBind();
 		
-        EnsureSetup();
         
         RegisterClientScript();
     }

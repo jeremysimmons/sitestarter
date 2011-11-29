@@ -67,13 +67,54 @@
 	<td>30000</td>
 </tr>
 <tr>
-	<td>assertHtmlSource</td>
-	<td>System.Web.HttpException: The file '/SiteStarter/NonExistentPage.aspx' does not exist.&nbsp;&nbsp;&nbsp;&nbsp;at System.Web.UI.Util.CheckVirtualFileExists(VirtualPath virtualPath)&nbsp;&nbsp;&nbsp;&nbsp;at System.Web.Compilation.BuildManager.GetVPathBuildResultInternal(VirtualPath virtualPath, Boolean noBuild, Boolean allowCrossApp, Boolean allowBuildInPrecompile)&nbsp;&nbsp;&nbsp;&nbsp;at System.Web.Compilation.BuildManager.GetVPathBuildResultWithNoAssert(HttpContext context, VirtualPath virtualPath, Boolean noBuild, Boolean allowCrossApp, Boolean allowBuildInPrecompile)&nbsp;&nbsp;&nbsp;&nbsp;at System.Web.Compilation.BuildManager.GetVirtualPathObjectFactory(VirtualPath virtualPath, HttpContext context, Boolean allowCrossApp, Boolean noAssert)&nbsp;&nbsp;&nbsp;&nbsp;at System.Web.Compilation.BuildManager.CreateInstanceFromVirtualPath(VirtualPath virtualPath, Type requiredBaseType, HttpContext context, Boolean allowCrossApp, Boolean noAssert)&nbsp;&nbsp;&nbsp;&nbsp;at System.Web.UI.PageHandlerFactory.GetHandlerHelper(HttpContext context, String requestType, VirtualPath virtualPath, String physicalPath)&nbsp;&nbsp;&nbsp;&nbsp;at System.Web.UI.PageHandlerFactory.System.Web.IHttpHandlerFactory2.GetHandler(HttpContext context, String requestType, VirtualPath virtualPath, String physicalPath)&nbsp;&nbsp;&nbsp;&nbsp;at System.Web.HttpApplication.MapHttpHandler(HttpContext context, String requestType, VirtualPath path, String pathTranslated, Boolean useAppConfig)&nbsp;&nbsp;&nbsp;&nbsp;at System.Web.HttpApplication.MapHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()&nbsp;&nbsp;&nbsp;&nbsp;at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean&amp; completedSynchronously)</td>
+	<td>selectPopUp</td>
+	<td></td>
+	<td></td>
+</tr>
+<!--Pause to let the fields get populated via javascript-->
+<tr>
+	<td>pause</td>
+	<td>3000</td>
 	<td></td>
 </tr>
 <tr>
-	<td>assertNotHtmlSource</td>
-	<td>${Project.Version}</td>
+	<td>clickAndWait</td>
+	<td>id=ctl00_Body_ctl00_SaveButton</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Subject: HttpException: The file '/SiteStarter/NonExistentPage.aspx' does not exist. </td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Description: System.Web.HttpException: The file '/SiteStarter/NonExistentPage.aspx' does not exist. at</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextNotPresent</td>
+	<td>Project ID: [n/a]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextNotPresent</td>
+	<td>Project Version: [n/a]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>close</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>selectWindow</td>
+	<td></td>
 	<td></td>
 </tr>
 </tbody></table>
