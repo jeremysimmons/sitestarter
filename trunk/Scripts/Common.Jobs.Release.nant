@@ -199,6 +199,7 @@
 	<echo message="Zip file path after: ${zipFilePath}"/>
   	<zip zipfile="${zipFilePath}">
 	    <fileset basedir="${InstallablePath}">
+	        <exclude name="**/InitializeScreenshots.aspx"/>
 	        <exclude name="**/Archive"/>
 	        <exclude name="**/*.db4o"/>
 	        <exclude name="**/*.local.config"/>

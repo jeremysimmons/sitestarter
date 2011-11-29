@@ -73,6 +73,7 @@
 		        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
 		    			</namespaces>
 		    	</xmlpeek>
+
 				
 				<property name="url" value="http://localhost/${Solution.VirtualDirectoryName + Screenshot.InitializationPath}" />
 					
