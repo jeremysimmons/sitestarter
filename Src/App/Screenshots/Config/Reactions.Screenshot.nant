@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<project name="Import" xmlns="http://nant.sf.net/schemas/nant.xsd">
+		  <property name="Screenshot.ApplicationType" value="Web" />
+		  <property name="Screenshot.InitializationPath" value="/Admin/InitializeScreenshots.aspx" />
+		  <property name="Screenshot.Path" value="/Admin/Reactions.aspx" />
+		  <property name="Screenshot.FileName" value="Reactions" />
+</project>
