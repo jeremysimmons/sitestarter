@@ -8,12 +8,17 @@
 <script runat="server">
     private void Page_Load(object sender, EventArgs e)
     {
-	EnsureNotLive();
+		EnsureNotLive();
 
     	// This page initializes a session for the screenshot program to be able to view the program in action
-    
+	
+		User[] users  = IndexStrategy.New<User>(false).Index<User>();
+
+		if (users.Length == 0)
+			throw new InvalidOperationException("No users were found. Make sure the application is installed and/or the data was imported.");
+
     	// Load the administrator user
-		User administrator = IndexStrategy.New<User>(false).Index<User>()[0];
+		User administrator = users[0];
 	
 		if (administrator == null)
 			throw new Exception("administrator wasn't found.");
