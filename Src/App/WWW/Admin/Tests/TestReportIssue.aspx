@@ -20,7 +20,8 @@ body
             </h1>
 	<% if (Request.Form["Subject"] == null) { %>
             <p class="Intro">
-            	Please describe the issue in the form below. Most fields are optional so that you can report the issue quickly, but the more information that is provided the easier it is to resolve.</p>  
+            	IMPORTANT! This application is running as a development/debugging installation. Therefore this test page has been used instead of the official link so that functional testing can complete without remote dependencies.
+            	DO NOT use this form to report actual issues because it won't be logged.</p>  
             	
                <table id="ctl00_Body_ctl00_DataForm" class="Panel" border="0" style="width:100%;">
 	<tr>
