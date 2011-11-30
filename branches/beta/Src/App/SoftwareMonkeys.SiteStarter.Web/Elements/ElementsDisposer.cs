@@ -38,27 +38,26 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 		{
 			using (LogGroup logGroup = LogGroup.Start("Disposing the elements.", NLog.LogLevel.Debug))
 			{
-				ElementInfo[] elements = new ElementInfo[]{};
-				
-				Dispose(ElementState.Elements.ToArray());		
+				if (ElementState.IsInitialized)
+				{
+					Dispose(ElementState.Elements);
+				}
 			}
 		}
 		
 		/// <summary>
 		/// Disposes the provided elements.
 		/// </summary>
-		public void Dispose(ElementInfo[] elements)
+		public void Dispose(ElementStateCollection elements)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Disposing the elements.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Disposing the provided elements.", NLog.LogLevel.Debug))
 			{
 				foreach (ElementInfo element in elements)
-				{
-					ElementState.Elements.Remove(
-						ElementState.Elements[element.Name]
-					);
-					
+				{					
 					DeleteInfo(element);
 				}
+				
+				elements.Clear();
 			}
 		}
 		

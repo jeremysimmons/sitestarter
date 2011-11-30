@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<project name="Common.Jobs.UploadTestResults" default="Common.Jobs.ClearData" xmlns="http://nant.sf.net/schemas/nant.xsd">
+
+	
+	<target name="Common.Jobs.UploadTestResults">
+
+    		<xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.VersionMode']/@value"
+		    property="Solution.VersionMode">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+	    	</xmlpeek>
+
+		<xmlpeek
+		    file="${Solution.PropertiesPath}"
+		    xpath="/x:project/x:property[@name = 'Solution.Name']/@value"
+		    property="Solution.Name">
+		        <namespaces>
+        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    			</namespaces>
+    		</xmlpeek>
+
+		<property name="Project.Name" value="${Solution.Name}" />
+
+		<property name="versionFilePath" value="${path::combine(Solution.RootPath, 'Version.Number')}"/>
+
+		<loadfile
+	    		file="${versionFilePath}"
+	    		property="Project.Version" />
+
+		<echo message="New version: ${Project.Version}"/>
+
+
+		<exec program="${path::get-full-path('../lib/FtpUpload.exe')}">
+			<arg value="-connectionfile:${path::get-full-path('../smnet-ftp.security')}" />
+			<arg value="-remotebase:/httpdocs/reports/${Project.Name}-${Solution.VersionMode}/tests/${string::replace(Project.Version, '.', '-')}" />
+			<arg value="-localbase:${Project.RootPath}\TestResults\html\${string::replace(Project.Version, '.', '-')}" />
+			<arg value="-filepattern:*.html" />
+		</exec>
+  
+
+  	</target>
+
+</project>
+  	

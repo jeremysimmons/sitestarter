@@ -289,7 +289,8 @@ namespace SoftwareMonkeys.SiteStarter.State
 		{
 			for (int i = 0; i < Count; i ++)
 			{
-				this[i] = default(T);
+				this.RemoveAt(i);
+				i--;
 			}
 		}
 		
@@ -341,10 +342,9 @@ namespace SoftwareMonkeys.SiteStarter.State
 		public virtual T[] ToArray()
 		{
 			List<T> list = new List<T>();
-			foreach (T item in this)
-				list.Add(item);
+			for (int i = 0; i < Count; i++)
+				list.Add(this[i]);
 			return list.ToArray();
 		}
-		
 	}
 }
