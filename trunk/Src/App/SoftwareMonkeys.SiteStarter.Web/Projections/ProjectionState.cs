@@ -24,13 +24,20 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		static public ProjectionStateCollection Projections
 		{
 			get {
-				if (!IsInitialized)
+				projections = GetProjections(true);
+				return projections;  }
+			set { projections = value; }
+		}
+		
+		static public ProjectionStateCollection GetProjections(bool errorIfNotInitialized)
+		{
+				if (!IsInitialized && errorIfNotInitialized)
 					throw new InvalidOperationException("The projection state has not been initialized.");
 				
 				if (projections == null)
 					projections = new ProjectionStateCollection();
-				return projections;  }
-			set { projections = value; }
+				
+				return projections;
 		}
 	}
 }

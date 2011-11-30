@@ -17,7 +17,7 @@ private void Page_Load(object sender, EventArgs e)
 <p>View the application cache using the links below.</p>
 <h2>Entities</h2>
 <ul>
-<li><a href="Entities.aspx" id="EntitiesCacheLink">Entities</a></li>
+<li><a href="Entities.aspx" id="EntitiesCacheLink">Entities</a> - Entities are records of information held as objects that can be stored, retrieved, and used by the rest of the application.</li>
 </ul>
 <h2>Business</h2>
 <ul>

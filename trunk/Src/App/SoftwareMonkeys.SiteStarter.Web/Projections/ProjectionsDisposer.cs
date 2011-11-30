@@ -24,26 +24,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				return fileNamer; }
 			set { fileNamer = value; }
 		}
-				
-		// TODO: Remove if not needed
-		/*private BaseProjectionScanner[] scanners;
-		/// <summary>
-		/// Gets/sets the projection scanners used to find available projections in the existing assemblies.
-		/// </summary>
-		public BaseProjectionScanner[] Scanners
-		{
-			get {
-				if (scanners == null)
-				{
-					scanners = ProjectionsInitializer.DefaultScanners;
-					
-					// Make sure each of the default scanners uses the right page
-					foreach (BaseProjectionScanner scanner in scanners)
-						scanner.Page = Page;
-				}
-				return scanners; }
-			set { scanners = value; }
-		}*/
 		
 		public Page Page;
 		
@@ -54,19 +34,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		public ProjectionsDisposer(Page page)
 		{
 			Page = page;
-			// TODO: Remove if not needed
-			//Scanners = new BaseProjectionScanner[]
-			//{
-			//	new ProjectionScanner(Page)
-			//};
 		}
-		
-		// TODO: Remove if not needed
-		/*public ProjectionsDisposer(Page page, params BaseProjectionScanner[] scanners)
-		{
-			Page = page;
-			Scanners = scanners;
-		}*/
 		
 		/// <summary>
 		/// Disposes the projections found by the scanner.
@@ -75,33 +43,29 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			using (LogGroup logGroup = LogGroup.Start("Disposing the projections.", NLog.LogLevel.Debug))
 			{
-				ProjectionInfo[] projections = new ProjectionInfo[]{};
-				
-				Dispose(ProjectionState.Projections.ToArray());
-				
-				// TODO: Remove if not needed
-				/*foreach (ProjectionScanner scanner in Scanners)
-				{
-					Dispose(scanner.FindProjections());
-				}*/
-				
+				if (ProjectionState.IsInitialized)
+				{					
+					Dispose(ProjectionState.GetProjections(false));
+				}
 			}
 		}
 		
 		/// <summary>
 		/// Disposes the provided projections.
 		/// </summary>
-		public void Dispose(ProjectionInfo[] projections)
+		public void Dispose(ProjectionStateCollection projections)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Disposing the projections.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Disposing the projections."))
 			{
-				foreach (ProjectionInfo projection in projections)
+				if (ProjectionState.IsInitialized)
 				{
-					ProjectionState.Projections.Remove(
-						ProjectionState.Projections[projection.Name]
-					);
-					
-					DeleteInfo(projection);
+					foreach (ProjectionInfo projection in projections)
+					{
+						projections.Remove(projection);
+						
+						// Delete the info file
+						DeleteInfo(projection);
+					}
 				}
 			}
 		}
