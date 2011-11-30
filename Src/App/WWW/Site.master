@@ -4,6 +4,7 @@
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business.Security" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Configuration" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.Data" %>
 <%@ Register Src="Controls/AuthMenu.ascx" TagName="AuthMenu" TagPrefix="uc" %>
 <%@ Register Src="Controls/AdminFooter.ascx" TagName="AdminFooter" TagPrefix="uc" %>
 <script runat="server">
@@ -114,6 +115,9 @@ private string GetTitle()
     	<uc:AdminFooter id="AdminFooter" runat="server">
     	</uc:AdminFooter>
 <% } %>
+<p align="center">
+SiteStarter Version: <%= DataAccess.Data.Schema.ApplicationVersion %>
+</p>
 
     </div>
     </form>

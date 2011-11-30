@@ -23,7 +23,8 @@
 		<call target="Common.Jobs.GenerateScreenshots" failonerror="false" />	
 		<call target="Common.Jobs.UploadZips" failonerror="false" />	
 	
-		<call target="Common.Jobs.OutputFiles"/>	
+		<call target="Common.Jobs.UploadTestResults"/>	
+		<call target="Common.Jobs.UploadScreenshots"/>	
 		
 		<echo message="============================================="/>
 		<echo message="Continuous integration cycle has finished."/>

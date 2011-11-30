@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<project name="Common.Start.UploadTestResults" default="Common.Start.UploadTestResults" xmlns="http://nant.sf.net/schemas/nant.xsd">
+  		
+  		
+  		<property name="Argument.ProjectPath" value=""/>
+  		<property name="Argument.SolutionPath" value=""/>
+  		
+  		<nant buildfile="Common.Functions.Initialize.nant"/>
+  		
+
+		
+  		<property name="Solution.PropertiesPath" value="${Argument.SolutionPath}"/>
+  		<property name="Solution.RootPath" value="${path::get-directory-name(Solution.PropertiesPath)}"/>
+  		
+  		<echo message="Solution.PropertiesPath: ${Solution.PropertiesPath}"/>
+  		<echo message="Solution.RootPath: ${Solution.RootPath}"/>
+  		
+  		<property name="Project.PropertiesPath" value="${Argument.ProjectPath}"/>
+  		<property name="Project.RootPath" value="${path::get-directory-name(Project.PropertiesPath)}"/>
+  		
+  		
+	<include buildfile="Common.Jobs.UploadTestResults.nant"/>
+
+	<target name="Common.Start.UploadTestResults" description="Upload test results via FTP">		
+		<call target="Common.Jobs.UploadTestResults"/>
+	</target>
+</project>
+  	

@@ -20,6 +20,8 @@
   		
   	<include buildfile="Common.Jobs.Cycle.nant"/>
   		
+	<include buildfile="Common.Jobs.UploadTestResults.nant"/>
+	<include buildfile="Common.Jobs.UploadScreenshots.nant"/>
 	<include buildfile="Common.Jobs.VersionBuildReport.nant"/>
 	<include buildfile="Common.Jobs.ConvertSeleniumToCSharp.nant"/>
 	<include buildfile="Common.Jobs.InitializeCache.nant"/>
