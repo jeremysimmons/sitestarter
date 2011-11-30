@@ -115,9 +115,9 @@ private string GetTitle()
     	<uc:AdminFooter id="AdminFooter" runat="server">
     	</uc:AdminFooter>
 <% } %>
-<div align="center">
-SiteStarter Version <%= DataAccess.Data.Schema.ApplicationVersion %>
-</div>
+<p align="center">
+SiteStarter Version: <%= DataAccess.Data.Schema.ApplicationVersion %>
+</p>
 
     </div>
     </form>
