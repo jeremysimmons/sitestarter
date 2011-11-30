@@ -64,10 +64,13 @@
 				<cc:ReportIssueLink runat="server" IssueSubject='<%# GetIssueSubject() %>' IssueDescription='<%# GetIssueDescription() %>' />
 				</p>
 				<p>
-					<a href='<%= Request.ApplicationPath %>'><%= Resources.Language.BackToHome %> &raquo;</a>
+					&laquo; <a href='<%= Request.ApplicationPath %>'><%= Resources.Language.BackToHome %> &laquo;</a>
 				</p>
 				</asp:View>
 			</asp:MultiView>
+			<p>
+				SiteStarter Version: <%= DataAccess.Data.Schema.ApplicationVersion %>
+			</p>
 		</form>
 	</body>
 </form>
