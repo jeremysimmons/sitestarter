@@ -352,6 +352,9 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		
 		public bool IsValid(IEntity entity)
 		{
+			if (entity == null)
+				return false;
+			
 			if (entity is EntityReference)
 			{
 				return IsValidReference((EntityReference)entity);
@@ -362,6 +365,9 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		
 		public bool IsValidReference(EntityReference reference)
 		{
+			if (reference == null)
+				return false;
+			
 			if (reference.Entity1ID == Guid.Empty)
 				return false;
 			
@@ -383,6 +389,9 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		
 		public bool IsValidEntity(IEntity entity)
 		{
+			if (entity == null)
+				return false;
+			
 			return entity.ID != Guid.Empty
 				&& EntityState.IsType(entity.ShortTypeName);
 		}
