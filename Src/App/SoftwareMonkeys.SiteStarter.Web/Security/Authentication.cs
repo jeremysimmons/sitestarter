@@ -24,20 +24,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Security
 				{
 					LogWriter.Debug("Is authenticated.");
 					
-					Result.DisplayError(Language.NotAuthenticated);
-					
-					if (HttpContext.Current != null)
-					{
-						string returnUrl = HttpContext.Current.Server.UrlEncode(GetUrl());
-						
-						string url = HttpContext.Current.Request.ApplicationPath + "/User-SignIn.aspx?ReturnUrl=" + returnUrl;
-						
-						LogWriter.Debug("Redirecting to: " + url);
-						
-						HttpContext.Current.Response.Redirect(url);
-					}
-					else
-						throw new Exception("You are not authorised to do that.");
+					Authorisation.InvalidPermissionsRedirect();
 				}
 				else
 					LogWriter.Debug("Is NOT authenticated.");
