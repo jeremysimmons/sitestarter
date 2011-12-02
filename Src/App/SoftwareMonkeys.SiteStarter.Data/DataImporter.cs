@@ -94,33 +94,31 @@ namespace SoftwareMonkeys.SiteStarter.Data
 						{
 							IEntity entity = LoadEntityFromFile(file);
 							
-							if (entity != null)
+							LogWriter.Debug("Entity type: " +
+							                (entity != null ? entity.GetType().ToString() : "[null]"));
+							
+							if (entity != null && IsValid(entity))
 							{
-								LogWriter.Debug("Entity type: " + entity.GetType().ToString());
+								LogWriter.Debug("Is valid entity.");
 								
-								if (IsValid(entity))
+								if (!DataAccess.Data.IsStored((IEntity)entity))
 								{
-									LogWriter.Debug("Is valid entity.");
+									LogWriter.Debug("New entity. Importing.");
 									
-									if (!DataAccess.Data.IsStored((IEntity)entity))
-									{
-										LogWriter.Debug("New entity. Importing.");
-										
-										DataAccess.Data.Saver.Save(entity);
-									}
-									else
-									{
-										LogWriter.Debug("Entity already exists in store. Skipping.");
-									}
-									
-									MoveToImported(entity, file);
+									DataAccess.Data.Saver.Save(entity);
 								}
 								else
 								{
-									LogWriter.Error("Cannot import invalid entity...\nID: " + entity.ID.ToString() + "\nType: " + entity.ShortTypeName);
-									
-									MoveToFailed(entity, file);
+									LogWriter.Debug("Entity already exists in store. Skipping.");
 								}
+								
+								MoveToImported(entity, file);
+							}
+							else
+							{
+								LogWriter.Error("Cannot import invalid entity...\nID: " + (entity != null ? entity.ID.ToString() : "[null]") + "\nType: " + (entity != null ? entity.ShortTypeName : "[null]"));
+								
+								MoveToFailed(entity, file);
 							}
 						}
 					}
@@ -313,14 +311,11 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				if (entity == null)
 					throw new ArgumentNullException("entity", "The provided entity cannot be null.");
 
-				LogWriter.Debug("Entity type: " + entity.GetType());
-
+				LogWriter.Debug("Entity type: " + (entity != null ? entity.GetType().ToString() : "[null]"));
+				LogWriter.Debug("Path: " + filePath);
+				
 				string fileName = String.Empty;
 				string toFileName = String.Empty;
-
-
-				string typeName = entity.GetType().ToString();
-				
 
 				//fileName = CreateImportableEntityPath(entity);
 				fileName = filePath;
