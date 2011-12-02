@@ -94,30 +94,33 @@ namespace SoftwareMonkeys.SiteStarter.Data
 						{
 							IEntity entity = LoadEntityFromFile(file);
 							
-							LogWriter.Debug("Entity type: " + entity.GetType().ToString());
-							
-							if (IsValid(entity))
+							if (entity != null)
 							{
-								LogWriter.Debug("Is valid entity.");
+								LogWriter.Debug("Entity type: " + entity.GetType().ToString());
 								
-								if (!DataAccess.Data.IsStored((IEntity)entity))
+								if (IsValid(entity))
 								{
-									LogWriter.Debug("New entity. Importing.");
+									LogWriter.Debug("Is valid entity.");
 									
-									DataAccess.Data.Saver.Save(entity);
+									if (!DataAccess.Data.IsStored((IEntity)entity))
+									{
+										LogWriter.Debug("New entity. Importing.");
+										
+										DataAccess.Data.Saver.Save(entity);
+									}
+									else
+									{
+										LogWriter.Debug("Entity already exists in store. Skipping.");
+									}
+									
+									MoveToImported(entity, file);
 								}
 								else
 								{
-									LogWriter.Debug("Entity already exists in store. Skipping.");
+									LogWriter.Error("Cannot import invalid entity...\nID: " + entity.ID.ToString() + "\nType: " + entity.ShortTypeName);
+									
+									MoveToFailed(entity, file);
 								}
-								
-								MoveToImported(entity, file);
-							}
-							else
-							{
-								LogWriter.Error("Cannot import invalid entity...\nID: " + entity.ID.ToString() + "\nType: " + entity.ShortTypeName);
-								
-								MoveToFailed(entity, file);
 							}
 						}
 					}
