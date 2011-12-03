@@ -42,7 +42,14 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				{
 					using (LogGroup logGroup = LogGroup.StartDebug("Error handling failed. There was an error within the error handling itself."))
 					{
-						LogWriter.Error(ex);
+						string message = ex.ToString();
+						
+						message = message + Environment.NewLine
+							+ "Referrer:" 
+							+ HttpContext.Current.Request.UrlReferrer.ToString();
+							
+						LogWriter.Error(message);
+
 						throw ex;
 					}
 				}
@@ -65,6 +72,8 @@ namespace SoftwareMonkeys.SiteStarter.Web
 						string message = "An exception occurred...\n"
 							+ "URL:\n"
 							+ HttpContext.Current.Request.Url.ToString() + "\n\n"
+							+ "Referrer:\n"
+							+ HttpContext.Current.Request.UrlReferrer.ToString() + "\n\n"
 							+ "Site:\n"
 							+ WebUtilities.ConvertRelativeUrlToAbsoluteUrl(HttpContext.Current.Request.ApplicationPath) + "\n\n"
 							+ "Time:\n"
