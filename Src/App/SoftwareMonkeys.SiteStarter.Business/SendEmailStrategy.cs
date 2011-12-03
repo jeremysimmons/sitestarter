@@ -57,7 +57,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
   		
   		public void ExecuteSend(MailMessage message)
   		{
-            new SmtpClient(SmtpServer).Send(message);
+  			Emailer.New().CreateSmtpClient().Send(message);
   		}
   		
   		static public SendEmailStrategy New(bool requiresAuthorisation)

@@ -53,7 +53,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				                                      "Test Email",
 				                                      "Test Worked!");
 
-				new SmtpClient(smtpServer).Send(message);
+				Emailer.New().CreateSmtpClient().Send(message);
 				
 				return true;
 			}
