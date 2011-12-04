@@ -26,13 +26,20 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				{
 					string message = exception.ToString();
 					
-					if (HttpContext.Current != null && HttpContext.Current.Request != null && HttpContext.Current.Request.UrlReferrer != null)
+					if (HttpContext.Current != null && HttpContext.Current.Request != null)
 					{
+						if (HttpContext.Current.Request.UrlReferrer != null)
+						{
+							message = message + Environment.NewLine
+								+ "Referrer:"
+								+ HttpContext.Current.Request.UrlReferrer.ToString() + Environment.NewLine;
+						}
+
 						message = message + Environment.NewLine
-							+ "Referrer:"
-							+ HttpContext.Current.Request.UrlReferrer.ToString();
+							+ "User Agent:"
+							+ HttpContext.Current.Request.ServerVariables["HTTP_USER_AGENT"] + Environment.NewLine;
 					}
-					
+
 					LogWriter.Error(message);
 					
 					SendEmail(exception);
@@ -86,6 +93,13 @@ namespace SoftwareMonkeys.SiteStarter.Web
 						{
 							message = message + "Referrer:\n"
 								+ HttpContext.Current.Request.UrlReferrer.ToString() + "\n\n";
+						}
+						
+						if (HttpContext.Current.Request != null)
+						{
+							message = message + Environment.NewLine
+								+ "User Agent:"
+								+ HttpContext.Current.Request.ServerVariables["HTTP_USER_AGENT"] + Environment.NewLine;
 						}
 						
 						message = message + "Site:\n"
