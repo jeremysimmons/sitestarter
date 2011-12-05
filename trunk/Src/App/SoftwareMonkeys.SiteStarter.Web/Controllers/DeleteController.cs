@@ -99,14 +99,17 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			using (LogGroup logGroup = LogGroup.Start("Deleting the entity specified in the query string.", NLog.LogLevel.Debug))
 			{
-				IEntity entity = Load();
-				
-				Delete(entity);
-				
-				if (entity == null)
-					LogWriter.Debug("Entity: [null]");
-				else
-					LogWriter.Debug("Entity: " + entity.GetType().FullName);
+				if (EnsureAuthorised())
+				{
+					IEntity entity = Load();
+					
+					Delete(entity);
+					
+					if (entity == null)
+						LogWriter.Debug("Entity: [null]");
+					else
+						LogWriter.Debug("Entity: " + entity.GetType().FullName);
+				}
 			}
 			
 		}
