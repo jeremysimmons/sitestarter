@@ -126,6 +126,23 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 		}
 		
+		#region Control cycle
+		public virtual void Initialize()
+		{
+			
+		}
+		
+		public virtual void Load()
+		{
+			
+		}
+		
+		public virtual void DataBind()
+		{
+			
+		}
+		#endregion
+		
 		public object Eval(string propertyName)
 		{
 			if (DataSource == null)
