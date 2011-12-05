@@ -267,6 +267,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 			{
 				return Convert.ToInt32(value.ToString());
 			}
+			else if (type == typeof(Unit))
+			{
+				return Unit.Parse(value.ToString());
+			}
 			else
 				throw new NotSupportedException("The value of type '" + value.ToString() + "' cannot be converted to '" + type.ToString() + "'.");
 		}
