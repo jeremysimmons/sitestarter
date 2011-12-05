@@ -68,7 +68,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 						                                 PrepareNotificationText(subject, entity),
 						                                 PrepareNotificationText(message, entity));
 						
-						new Emailer().CreateSmtpClient().Send(mm);
+						Emailer.CreateSmtpClient().Send(mm);
 					}
 					catch(FormatException ex)
 					{

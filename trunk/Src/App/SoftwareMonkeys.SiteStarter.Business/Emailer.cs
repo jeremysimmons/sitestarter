@@ -15,12 +15,17 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	public class Emailer
 	{
 		/// <summary>
-		/// Gets/sets the SMTP server from the Web.config file.
+		/// Gets/sets the SMTP server from the application configuration settings.
 		/// </summary>
 		static public string SmtpServer
 		{
 			get
 			{
+				// If it's configured in the settings then use it
+				if (Configuration.Config.IsInitialized && Configuration.Config.Application.Settings.ContainsKey("SmtpServer") && Configuration.Config.Application.Settings["SmtpServer"] != null)
+					return Configuration.Config.Application.Settings.GetString("SmtpServer");
+				
+				// Otherwise fall back to the config file
 				return ConfigurationSettings.AppSettings["SmtpServer"];
 			}
 		}
@@ -94,7 +99,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			return original;
 		}
 		
-		public virtual SmtpClient CreateSmtpClient()
+		static public SmtpClient CreateSmtpClient()
 		{
 			SmtpClient smtp = new SmtpClient(SmtpServer);
 			
