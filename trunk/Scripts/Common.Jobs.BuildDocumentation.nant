@@ -73,9 +73,9 @@
 	    	<property name="Solution.ReleaseTimestamp" value="${datetime::get-year(datetime::now())}-${datetime::get-month(datetime::now())}-${datetime::get-day(datetime::now())}--${datetime::get-hour(datetime::now())}-${datetime::get-minute(datetime::now())}-${datetime::get-second(datetime::now())}"/>
 
 
-		<!--call target="Common.Jobs.BuildSolution"/-->
+		<call target="Common.Jobs.BuildSolution"/>
 
-		<!--call target="Common.Actions.BuildDocumentation"/-->
+		<call target="Common.Actions.BuildDocumentation"/>
 
 		<call target="Common.Actions.ZipDocumentation"/>
 	</target>
@@ -106,7 +106,7 @@
 
     	<property name="docsTimestamp" value="${datetime::get-year(datetime::now())}-${datetime::get-month(datetime::now())}-${datetime::get-day(datetime::now())}--${datetime::get-hour(datetime::now())}-${datetime::get-minute(datetime::now())}-${datetime::get-second(datetime::now())}"/>
     	
-	<property name="docsZipFileName" value="${Project.Name} Docs ${string::replace(string::trim(Project.Version), '.', '-')} ${docsTimestamp}.zip"/>
+	<property name="docsZipFileName" value="${Project.Name} Docs v${string::replace(string::trim(Project.Version), '.', '-')} ${docsTimestamp}.zip"/>
 
 	<property name="docsZipFilePath" value="${path::get-full-path(Project.RootPath + '/Releases/Docs/') + docsZipFileName}"/>
 
