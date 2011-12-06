@@ -120,8 +120,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			set { authorisation = value; }
 		}
 		
-		public string UniquePropertyName;
-		
 		public BaseController()
 		{
 		}
