@@ -387,18 +387,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				controller = ControllerState.Controllers.Creator.New<EditController>(container);
 				
 				controller.Container = container;
-				controller.UniquePropertyName = uniquePropertyName;
 				
 				LogWriter.Debug("Type name: " + container.Command.TypeName);
 				LogWriter.Debug("Unique property name: " + uniquePropertyName);
 			}
 			return controller;
-		}
-		
-		public void CheckUniquePropertyName()
-		{
-			if (UniquePropertyName == null || UniquePropertyName == String.Empty)
-				throw new InvalidOperationException("The UniquePropertyName property has not been set.");
 		}
 	}
 }
