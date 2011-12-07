@@ -108,7 +108,6 @@
     <Compile Include="Entities\IUserPermission.cs" />
     <Compile Include="Entities\IUserRole.cs" />
     <Compile Include="Entities\IValidatePropertyAttribute.cs" />
-    <Compile Include="IAppComponent.cs" />
     <Compile Include="IO\IFileMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="State\IStateProvider.cs" />
