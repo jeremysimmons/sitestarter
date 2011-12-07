@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://localhost/SiteStarter/" />
+<title>AutoUpdate</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">AutoUpdate</td></tr>
+</thead><tbody>
+<tr>
+	<td>setTimeout</td>
+	<td>1000000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>openAndWait</td>
+	<td>Admin/tests/testreset.aspx?Log=true&amp;Config=true</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextNotPresent</td>
+	<td>Exception</td>
+	<td></td>
+</tr>
+<tr>
+	<td>openAndWait</td>
+	<td>Admin/QuickSetup.aspx</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=SignOutLink</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<!--Prepare for the test-->
+<tr>
+	<td>openAndWait</td>
+	<td>Admin/Tests/PrepareTestAutoUpdate.aspx</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Done...</td>
+	<td></td>
+</tr>
+<!--Test the preparation of the automated update-->
+<tr>
+	<td>openAndWait</td>
+	<td>Admin/PrepareAutoUpdate.aspx</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Ready</td>
+	<td></td>
+</tr>
+<!--Check that anyone going to the main site sees a friendly message-->
+<tr>
+	<td>openAndWait</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Down for Maintenance</td>
+	<td></td>
+</tr>
+<!--Check that the auto update can trigger restore-->
+<tr>
+	<td>openAndWait</td>
+	<td>Admin/Restore.aspx</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Update Complete</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>
