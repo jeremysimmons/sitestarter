@@ -26,7 +26,7 @@ public string DataDirectoryPath
 
 protected override void OnLoad(EventArgs e)
 {
-	using (LogGroup logGroup = LogGroup.Start("Executing the test reset, to clear the test environment ready for a new test.", NLog.LogLevel.Debug))
+	using (LogGroup logGroup = LogGroup.Start("Preparing to test the import feature.", NLog.LogLevel.Debug))
 	{
 		using (TimeoutExtender extender = TimeoutExtender.NewMinutes(30)) // 30 minutes
 		{

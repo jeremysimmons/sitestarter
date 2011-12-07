@@ -62,6 +62,7 @@
     <None Include="Admin\EditProjection.aspx" />
     <None Include="Admin\Errors.aspx" />
     <None Include="Admin\LogJavascriptError.aspx" />
+    <None Include="Admin\PrepareAutoUpdate.aspx" />
     <None Include="Admin\SaveProjection.aspx" />
     <None Include="Admin\Strategies.aspx" />
     <None Include="Admin\Cache.aspx" />
@@ -88,6 +89,7 @@
     <None Include="Admin\Tests\Dispose.aspx" />
     <None Include="Admin\Tests\JavascriptError.aspx" />
     <None Include="Admin\Tests\LogContains.aspx" />
+    <None Include="Admin\Tests\PrepareTestAutoUpdate.aspx" />
     <None Include="Admin\Tests\PrepareTestImport.aspx" />
     <None Include="Admin\Tests\ResetDefaultData.aspx" />
     <None Include="Admin\Tests\TestBreakableLogging.aspx" />
@@ -100,6 +102,7 @@
     <None Include="Admin\Tests\TestReset.aspx" />
     <None Include="Admin\Update.aspx" />
     <None Include="Admin\UpdateReady.html" />
+    <None Include="AllowAutoUpdate.config" />
     <None Include="App_Data\Menu.default.sitemap" />
     <None Include="App_Themes\Default\Site.skin" />
     <None Include="App_Themes\Default\_svn\entries" />
