@@ -104,11 +104,6 @@
     <None Include="Admin\UpdateReady.html" />
     <None Include="AllowAutoUpdate.config" />
     <None Include="App_Data\Menu.default.sitemap" />
-    <None Include="App_Themes\Default\Site.skin" />
-    <None Include="App_Themes\Default\_svn\entries" />
-    <None Include="App_Themes\Default\_svn\format" />
-    <None Include="App_Themes\Default\_svn\text-base\Site.skin.svn-base" />
-    <None Include="App_Themes\Default\_svn\text-base\Styles.css.svn-base" />
     <None Include="Controls\AdminFooter.ascx" />
     <None Include="Controls\AuthMenu.ascx" />
     <None Include="Controls\Testing.ascx" />
@@ -149,8 +144,6 @@
     <Folder Include="Admin\Tests" />
     <Folder Include="App_Data" />
     <Folder Include="App_GlobalResources" />
-    <Folder Include="App_Themes" />
-    <Folder Include="App_Themes\Default" />
     <Folder Include="Controls" />
     <Folder Include="js" />
     <Folder Include="Projections" />
