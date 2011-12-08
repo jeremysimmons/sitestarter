@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" Title="Prepare Auto Update" %>
+﻿<%@ Page Language="C#" Title="Prepare Auto Update" autoeventwireup="true" %>
 <%@ Register Namespace="SoftwareMonkeys.SiteStarter.Web.WebControls" Assembly="SoftwareMonkeys.SiteStarter.Web" TagPrefix="cc" %>
 <%@ Register Namespace="SoftwareMonkeys.SiteStarter.Web.WebControls" Assembly="SoftwareMonkeys.SiteStarter.Web" TagPrefix="ss" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Entities" %>
@@ -24,7 +24,9 @@
     
     private void Start()
     {
-        Response.Redirect(Request.ApplicationPath + "/Admin/Backup.aspx?PrepareForUpdate=true");
+    	ApplicationBackup backup = new ApplicationBackup();
+    	backup.PrepareForUpdate = true;
+    	backup.Backup();    	
     }
     
     private bool EnsureAuthorised()
@@ -43,6 +45,7 @@
     		}
     		catch (Exception ex)
     		{
+    			// If there's an error just log it and presume the user is not authorised
     			LogWriter.Error(ex);
     		}
     	}
