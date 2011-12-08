@@ -96,16 +96,18 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 		{
 			using (LogGroup logGroup = LogGroup.StartDebug("Loading ElementControl '" + ClientID + "'."))
 			{
-				EnsureChildControls();
+				if (Visible)
+				{
+					EnsureChildControls();
 				
-				if (Target == null)
-					throw new Exception("No target element found or unable to load it.");
+					if (Target == null)
+						throw new Exception("No target element found or unable to load it.");
 				
-				if (PropertyValuesString != String.Empty)
-					PropertyValues = ExtractPropertyValues(PropertyValuesString);
+					if (PropertyValuesString != String.Empty)
+						PropertyValues = ExtractPropertyValues(PropertyValuesString);
 				
-				ApplyProperties(Target, PropertyValues);
-				
+					ApplyProperties(Target, PropertyValues);
+				}
 				base.OnLoad(e);
 			}
 		}
