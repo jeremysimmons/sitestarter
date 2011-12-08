@@ -127,6 +127,7 @@
 	        <exclude name="**.nant"/>
 	        <exclude name="**/nunit**"/>
 	        <exclude name="**/tests/**"/>
+	        <exclude name="**/WebDriver.dll"/>
 	        <include name="**/**" />
 	    </fileset>	   
 
