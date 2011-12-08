@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" Title="Prepare Test Import" %>
+﻿<%@ Page Language="C#" Title="Prepare Test Import" autoeventwireup="true" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Entities" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business.Security" %>
@@ -15,14 +15,7 @@
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.State" %>
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
 <script runat="server">
-public int TotalEntitiesDeleted = 0;
-public int TotalReferencesDeleted = 0;
-public int TotalStoresDeleted = 0;
 
-public string DataDirectoryPath
-{
-	get { return StateAccess.State.PhysicalApplicationPath + Path.DirectorySeparatorChar + "App_Data"; }
-}
 
 protected override void OnLoad(EventArgs e)
 {
@@ -30,6 +23,7 @@ protected override void OnLoad(EventArgs e)
 	{
 			SetAllowConfig();
 	}
+	base.OnLoad(e);
 }
 
 private void SetAllowConfig()
