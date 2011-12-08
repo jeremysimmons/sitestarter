@@ -96,6 +96,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 		{
 			using (LogGroup logGroup = LogGroup.StartDebug("Loading ElementControl '" + ClientID + "'."))
 			{
+				if (Visible)
+				{
 			EnsureChildControls();
 			
 			if (Target == null)
@@ -105,7 +107,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 				PropertyValues = ExtractPropertyValues(PropertyValuesString);
 			
 			ApplyProperties(Target, PropertyValues);
-			
+				}
 			base.OnLoad(e);
 		}
 		}
@@ -266,6 +268,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 			else if (type == typeof(Int32))
 			{
 				return Convert.ToInt32(value.ToString());
+			}
+			else if (type == typeof(Unit))
+			{
+				return Unit.Parse(value.ToString());
 			}
 			else
 				throw new NotSupportedException("The value of type '" + value.ToString() + "' cannot be converted to '" + type.ToString() + "'.");

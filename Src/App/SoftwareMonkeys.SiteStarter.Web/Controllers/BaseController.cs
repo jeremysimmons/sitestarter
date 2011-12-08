@@ -120,11 +120,26 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			set { authorisation = value; }
 		}
 		
-		public string UniquePropertyName;
-		
 		public BaseController()
 		{
 		}
+		
+		#region Control cycle
+		public virtual void Initialize()
+		{
+			
+		}
+		
+		public virtual void Load()
+		{
+			
+		}
+		
+		public virtual void DataBind()
+		{
+			
+		}
+		#endregion
 		
 		public object Eval(string propertyName)
 		{

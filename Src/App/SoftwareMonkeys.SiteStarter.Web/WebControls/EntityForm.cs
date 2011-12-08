@@ -119,11 +119,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		{
 			using (LogGroup logGroup = LogGroup.Start("Initializing the EntityForm control.", NLog.LogLevel.Debug))
 			{
+				HeadingRow.CssClass = HeadingCssClass;
+				Rows.AddAt(0, HeadingRow);
+				HeadingRow.Cells.Add(HeadingCell);
+				
 				HeadingCell.Text = HeadingText;
 				HeadingCell.ColumnSpan = 2;
-				HeadingCell.CssClass = HeadingCssClass;
-				HeadingRow.Cells.Add(HeadingCell);
-				Rows.AddAt(0, HeadingRow);
 				
 				foreach (TableRow row in Rows)
 				{

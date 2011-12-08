@@ -29,7 +29,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
         {
             get
             {
-                if (HttpContext.Current.Request.QueryString["Sort"] != null)
+                if (HttpContext.Current != null && HttpContext.Current.Request.QueryString["Sort"] != null)
                     return HttpContext.Current.Request.QueryString["Sort"];
                 else
                     return String.Empty;
@@ -43,7 +43,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
         {
             get
             {
-                if (HttpContext.Current.Request.QueryString["n"] != null)
+                if (HttpContext.Current != null && HttpContext.Current.Request.QueryString["n"] != null)
                     return HttpContext.Current.Request.QueryString["n"];
                 else
                     return String.Empty;
@@ -57,7 +57,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
         {
             get
             {
-                if (HttpContext.Current.Request.QueryString["t"] != null)
+                if (HttpContext.Current != null && HttpContext.Current.Request.QueryString["t"] != null)
                     return HttpContext.Current.Request.QueryString["t"];
                 else
                     return String.Empty;
@@ -71,7 +71,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
         {
             get
             {
-                if (HttpContext.Current.Request.QueryString["a"] != null)
+                if (HttpContext.Current != null && HttpContext.Current.Request.QueryString["a"] != null)
                     return HttpContext.Current.Request.QueryString["a"];
                 else
                     return String.Empty;
@@ -85,7 +85,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
         {
             get
             {
-                if (HttpContext.Current.Request.QueryString["f"] != null)
+                if (HttpContext.Current != null && HttpContext.Current.Request.QueryString["f"] != null)
                 	return (ProjectionFormat)Enum.Parse(typeof(ProjectionFormat), HttpContext.Current.Request.QueryString["f"]);
                 else
                     return ProjectionFormat.NotSet;
@@ -100,7 +100,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
         {
             get
             {
-                if (HttpContext.Current.Request.QueryString["Page"] != null)
+                if (HttpContext.Current != null && HttpContext.Current.Request.QueryString["Page"] != null)
                 	return Convert.ToInt32(HttpContext.Current.Request.QueryString["Page"])
                 		-1; // Decrement by one to convert page number into 0 based page index
                 else
@@ -115,7 +115,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		{
 			get
 			{
-				if (HttpContext.Current.Request.QueryString["HideTemplate"] != null)
+				if (HttpContext.Current != null && HttpContext.Current.Request.QueryString["HideTemplate"] != null)
 					return Convert.ToBoolean(HttpContext.Current.Request.QueryString["HideTemplate"]);
 				else
 					return false;
@@ -124,7 +124,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
         
 		static public string GetUniqueKey()
 		{
-			if (HttpContext.Current.Request.QueryString["UniqueKey"] != null)
+			if (HttpContext.Current != null && HttpContext.Current.Request.QueryString["UniqueKey"] != null)
 				return HttpContext.Current.Request.QueryString["UniqueKey"];
 			else
 				return String.Empty;
@@ -146,7 +146,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		{
 			string value = String.Empty;
 			
-			if (HttpContext.Current.Request.QueryString["ID"] != null)
+			if (HttpContext.Current != null && HttpContext.Current.Request.QueryString["ID"] != null)
 				value = HttpContext.Current.Request.QueryString["ID"];
 			else
 				value = String.Empty;
@@ -161,14 +161,15 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		{
 			string value = String.Empty;
 			
+			if (HttpContext.Current != null)
+			{
 			if (HttpContext.Current.Request.QueryString[typeName + "-ID"] != null)
 				value = HttpContext.Current.Request.QueryString[typeName + "-ID"];
 			else if (HttpContext.Current.Request.QueryString[typeName + "ID"] != null)
 				value = HttpContext.Current.Request.QueryString[typeName + "ID"];
 			else if (HttpContext.Current.Request.QueryString["ID"] != null)
 				value = HttpContext.Current.Request.QueryString["ID"];
-			else
-				value = String.Empty;
+			}
 			
 			if (value != String.Empty)
 				return new Guid(value);

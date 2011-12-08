@@ -44,10 +44,8 @@
 	color: #515151;
 }
 
-DIV.Heading2,
-TD.Heading2,
-H2,
-TR.Heading2 TH
+.Heading2,
+H2
 {
 	font-family: Verdana;
 	font-size: 13px;
@@ -62,9 +60,10 @@ TR.Heading2 TH
 	border-top: solid 1px #DEDEDE;
 }
 
-TD.Heading2
+.Heading2 TD,
+H2 td
 {
-	margin: 0px;
+	padding: 3px;
 }
 
 .Heading2Right
