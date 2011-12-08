@@ -16,7 +16,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			get
 			{
-				return SendEmailStrategy.SmtpServer;
+				return Emailer.SmtpServer;
 			}
 		}
 		
@@ -53,7 +53,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
                         "Test Email",
                         "Test Worked!");
 
-                    new SmtpClient(smtpServer).Send(message);
+				Emailer.CreateSmtpClient().Send(message);
 	
 					return true;
 				}

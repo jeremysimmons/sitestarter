@@ -254,6 +254,8 @@
 	        <exclude name="**/Castle.Core.dll"/>
 	        <exclude name="**/Ionic.Zip.Reduced.dll"/>
 	        <exclude name="**/Newtonsoft.Json.dll"/>
+	        <exclude name="**/edtFTPnet.dll"/>
+	        <exclude name="**/FTPUpload.exe"/>
 	        <exclude name="**.Tests.dll"/>
 	        <exclude name="RestartApp.bat"/>
 	        <exclude name="**.refresh"/>

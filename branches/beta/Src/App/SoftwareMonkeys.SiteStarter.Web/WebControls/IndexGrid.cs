@@ -408,6 +408,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		{
 			using (LogGroup logGroup = LogGroup.Start("Customizing a header item.", NLog.LogLevel.Debug))
 			{
+				e.Item.CssClass = "Heading2";
 				
 				// Reduce to a single cell in the header
 				e.Item.Cells[0].ColumnSpan = 1;
@@ -423,7 +424,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				Panel panel = CreateHeaderPanel();
 				
 				e.Item.Cells[0].Controls.Add(panel);
-				e.Item.Cells[0].Style.Add("padding", "0px");
 				
 				
 			}
@@ -432,7 +432,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		private Panel CreateHeaderPanel()
 		{
 			Panel panel = new Panel();
-			panel.CssClass = "Heading2";
 			panel.Style.Add("clear", "both");
 			panel.Controls.Add(CreateTitlePanel());
 			panel.Controls.Add(CreateRightPanel());
@@ -477,63 +476,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			
 			return panel;
 		}
-		
-		/*
-		private Table CreateHeaderTable()
-		{
-			// Add the table
-			Table table = new Table();
-			table.ID = "HeaderTable";
-			table.Width = Unit.Percentage(100);
-			table.Rows.Add(new TableRow());
-
-
-			// Create cell 1
-			TableCell cell1 = new TableCell();
-			cell1.Width = Unit.Percentage(80);
-			cell1.ID = "HeaderCell";
-			cell1.Text = HeaderText;
-			//cell1.CssClass = "";
-
-			// Create cell 2
-			TableCell cell2 = new TableCell();
-			cell2.ID = "CustomCell";
-			if (CustomHolder != null)
-				cell2.Controls.Add(CustomHolder);
-			cell2.CssClass = "CustomContainer";
-			cell2.Wrap = false;
-			cell2.HorizontalAlign = HorizontalAlign.Right;
-
-			// Create cell 3
-			TableCell cell3 = new TableCell();
-			cell3.Width = Unit.Percentage(50);
-			cell3.HorizontalAlign = HorizontalAlign.Right;
-			cell3.CssClass = "SortContainer";
-			cell3.ID = "SortCell";
-
-			if (ShowSort)
-			{
-				//cell3.Controls.Add(new LiteralControl(TextHelper.Get("SortLabel") + "&nbsp;"));
-				if (Sort != null)
-					cell3.Controls.Add(Sort);
-			}
-
-			// Create cell 4
-			TableCell cell4 = CreatePagingCell();
-			cell4.Width = Unit.Percentage(50);
-			cell4.HorizontalAlign = HorizontalAlign.Right;
-			cell4.CssClass = "PagingContainer";
-			cell4.ID = "PagingCell1";
-			cell4.Wrap = false;
-			cell4.Visible = AllowPaging && DataSource != null && DataSource.Length > 0;
-
-			table.Rows[0].Cells.Add(cell1);
-			table.Rows[0].Cells.Add(cell2);
-			table.Rows[0].Cells.Add(cell3);
-			table.Rows[0].Cells.Add(cell4);
-			
-			return table;
-		}*/
 
 		protected void CustomizeFooter(DataGridItemEventArgs e)
 		{

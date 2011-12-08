@@ -88,13 +88,28 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		}
 		}
 		
+		[Obsolete("uniquePropertyName parameter no longer in use.")]
 		public void Initialize(Type type, EntityForm form, string uniquePropertyName)
 		{
 			Initialize(QueryStrings.Action, type, form, uniquePropertyName);
 		}
 		
+		[Obsolete("uniquePropertyName parameter no longer in use.")]
 		public void Initialize(string action, Type type, EntityForm form, string uniquePropertyName)
 		{
+			
+			Initialize(action, type, form);
+		}
+		
+		[Obsolete("uniquePropertyName parameter no longer in use.")]
+		public void Initialize(CommandInfo command, EntityForm form, string uniquePropertyName)
+		{
+			Initialize(command, form);
+		}
+		
+		public void Initialize(string action, Type type, EntityForm form)
+		{
+			
 			CommandInfo command = null;
 			if (action == "Create")
 				command = new CreateComandInfo(type.Name);
@@ -104,33 +119,46 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			Initialize(command, form, uniquePropertyName);
 		}
 		
-		public void Initialize(CommandInfo command, EntityForm form, string uniquePropertyName)
+		public void Initialize(CommandInfo command, EntityForm form)
 		{
+			
 			using (LogGroup logGroup = LogGroup.Start("Initializing the base create/edit projection.", NLog.LogLevel.Debug))
 			{
-				UniquePropertyName = uniquePropertyName;
-				
-				LogWriter.Debug("Unique property name: " + uniquePropertyName);
-				
 				LogWriter.Debug("Type: " + command.TypeName);
 				
 				Command = command;
 				Form = form;
 				
-				if (Array.IndexOf(Command.AllActions, "Create") > -1)
-					createController = CreateController.New(this, UniquePropertyName);
-				else
-					editController = EditController.New(this, UniquePropertyName);
+				InitializeControllers();
 				
-				Form.EntityCommand += new EntityFormEventHandler(Form_EntityCommand);
+				InitializeEventHandlers();
 			}
 		}
 		
 		public void Initialize(Type type, EntityForm form)
 		{
-			Initialize(QueryStrings.Action, type, form, String.Empty);
+			Initialize(QueryStrings.Action, type, form);
 		}
 
+		public void InitializeControllers()
+		{
+				if (Array.IndexOf(Command.AllActions, "Create") > -1)
+			{
+					createController = CreateController.New(this, UniquePropertyName);
+				Controllers.Add(createController);
+			}
+				else
+			{
+					editController = EditController.New(this, UniquePropertyName);
+				Controllers.Add(editController);
+			}
+		}
+		
+		public void InitializeEventHandlers()
+		{
+				Form.EntityCommand += new EntityFormEventHandler(Form_EntityCommand);
+		}
+		
 		void Form_EntityCommand(object sender, EntityFormEventArgs e)
 		{
 			using (LogGroup logGroup = LogGroup.Start("Handling entity form command.", NLog.LogLevel.Debug))

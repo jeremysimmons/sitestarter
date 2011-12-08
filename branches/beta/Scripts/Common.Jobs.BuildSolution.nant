@@ -80,7 +80,7 @@
 	   		 	</in>
 	    		<do>
 	    				<echo message="Module path: ${currentModule}"/>
-	    			<property name="moduleName" value="${path::get-file-name(currentModule)}"/>
+	    				<property name="moduleName" value="${path::get-file-name(currentModule)}"/>
 					<property name="AssemblyProject.PropertiesPath" value="${path::combine(currentModule, Solution.Name + '.' + moduleName + '.Assembly.nant')}"/>
 					<if test="${file::exists(AssemblyProject.PropertiesPath) == false}">
 						<property name="AssemblyProject.PropertiesPath" value="${path::combine(currentModule, moduleName + '.Assembly.nant')}"/>

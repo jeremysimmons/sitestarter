@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<project name="Common.Start.BuildDocumentation" default="Common.Start.BuildDocumentation" xmlns="http://nant.sf.net/schemas/nant.xsd">
+  		
+  		
+		<property name="Argument.SolutionPath" value=""/>
+		<property name="Argument.ProjectPath" value=""/>
+		<property name="Argument.BuildMode" value="Release"/>
+  		
+  		<nant buildfile="Common.Functions.Initialize.nant"/>
+  		
+
+		
+  		<property name="Project.RelativePath" value=""/>
+  		
+		
+		<property name="SiteStarter.BinPath" value=""/>
+		
+  		<property name="Solution.PropertiesPath" value="${Argument.SolutionPath}"/>
+  		<property name="Solution.RootPath" value="${path::get-directory-name(Solution.PropertiesPath)}"/>
+  		<property name="Build.Mode" value="${Argument.BuildMode}"/>
+
+  		<property name="Project.PropertiesPath" value="${Argument.ProjectPath}"/>
+  		<property name="Project.RootPath" value="${path::get-directory-name(Project.PropertiesPath)}"/>
+  		
+  		<echo message="Solution.PropertiesPath: ${Solution.PropertiesPath}"/>
+  		<echo message="Solution.RootPath: ${Solution.RootPath}"/>
+  		
+  		
+	<include buildfile="Common.Jobs.BuildSolution.nant"/>	
+	<include buildfile="Common.Jobs.BuildDocumentation.nant"/>	
+  		
+	<include buildfile="Common.Jobs.BuildAssembly.nant"/>
+
+	<include buildfile="Common.Jobs.WWW.nant"/>
+	<include buildfile="Common.Jobs.Modules.nant"/>
+	<include buildfile="Common.Actions.CleanSolution.nant"/>
+		
+	
+<loadtasks>
+
+            <fileset>
+
+                        <include name="../Lib/nant/bin/tasks/NAnt.Contrib.Tasks.dll" />
+                        <include name="../Lib/nant/bin/tasks/NantGoogleCode.dll" />
+
+            </fileset>
+
+</loadtasks> 
+  		
+	<target name="Common.Start.BuildDocumentation" description="Builds project documentation in /docs/reference/.">		
+		<call target="Common.Jobs.BuildDocumentation"/>
+	</target>
+</project>
+  	

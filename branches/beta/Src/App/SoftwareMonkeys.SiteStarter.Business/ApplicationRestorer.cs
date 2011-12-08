@@ -147,6 +147,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				ImportConfigs();
 				
 				DeleteEmptyLegacyDirectory();
+				
+				ResetAutoUpdate();
 			}
 		}
 		
@@ -253,6 +255,21 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			}
 			
 			Directory.Delete(LegacyDirectoryPath); // Don't do recursive delete. Directory must be empty otherwise the import may not have succeeded.
+		}
+		
+		/// <summary>
+		/// Resets the AllowAutoUpdate.config file content back to 'false' after an update, to re-enable security (which was disabled temporarily only for update preparation
+		/// to support external auto updater).
+		/// </summary>
+		public void ResetAutoUpdate()
+		{
+			string filePath = Config.Application.PhysicalApplicationPath + @"\AllowAutoUpdate.config";
+			
+			using (StreamWriter writer = File.CreateText(filePath))
+			{
+				writer.Write(false.ToString());
+				writer.Close();
+			}
 		}
 		
 		/// <summary>

@@ -10,5 +10,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	{
 		ICommandInfo Command { get; }
 		IControllable Container { get;set; }
+		
+		void Initialize();
+		void Load();
+		void DataBind();
 	}
 }

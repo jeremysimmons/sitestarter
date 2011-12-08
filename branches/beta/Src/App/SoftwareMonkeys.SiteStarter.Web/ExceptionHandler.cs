@@ -12,6 +12,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 	/// </summary>
 	public class ExceptionHandler
 	{
+		
 		public ExceptionHandler()
 		{
 		}
@@ -23,7 +24,23 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			{
 				try
 				{
-					LogWriter.Error(exception);
+					string message = exception.ToString();
+					
+					if (HttpContext.Current != null && HttpContext.Current.Request != null)
+					{
+						if (HttpContext.Current.Request.UrlReferrer != null)
+						{
+							message = message + Environment.NewLine
+								+ "Referrer:"
+								+ HttpContext.Current.Request.UrlReferrer.ToString() + Environment.NewLine;
+						}
+
+						message = message + Environment.NewLine
+							+ "User Agent:"
+							+ HttpContext.Current.Request.ServerVariables["HTTP_USER_AGENT"] + Environment.NewLine;
+					}
+
+					LogWriter.Error(message);
 					
 					SendEmail(exception);
 					
@@ -42,8 +59,10 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				{
 					using (LogGroup logGroup = LogGroup.StartDebug("Error handling failed. There was an error within the error handling itself."))
 					{
-						LogWriter.Error(ex);
-						throw ex;
+						string message = ex.ToString();
+						LogWriter.Error(message);
+						
+						throw;
 					}
 				}
 			}
@@ -62,11 +81,29 @@ namespace SoftwareMonkeys.SiteStarter.Web
 					foreach (User user in role.Users)
 					{
 						string subject = "Exception";
-						string message = "An exception occurred...\n"
-							+ "URL:\n"
-							+ HttpContext.Current.Request.Url.ToString() + "\n\n"
-							+ "Site:\n"
-							+ WebUtilities.ConvertRelativeUrlToAbsoluteUrl(HttpContext.Current.Request.ApplicationPath) + "\n\n"
+						string message = "An exception occurred...\n";
+						
+						if (HttpContext.Current.Request != null && HttpContext.Current.Request.Url != null)
+						{
+							message = "URL:\n"
+								+ HttpContext.Current.Request.Url.ToString() + "\n\n";
+						}
+						
+						if (HttpContext.Current.Request.UrlReferrer != null)
+						{
+							message = message + "Referrer:\n"
+								+ HttpContext.Current.Request.UrlReferrer.ToString() + "\n\n";
+						}
+						
+						if (HttpContext.Current.Request != null)
+						{
+							message = message + Environment.NewLine
+								+ "User Agent:"
+								+ HttpContext.Current.Request.ServerVariables["HTTP_USER_AGENT"] + Environment.NewLine;
+						}
+						
+						message = message + "Site:\n"
+							+ new UrlConverter().ToAbsolute(HttpContext.Current.Request.ApplicationPath) + "\n\n"
 							+ "Time:\n"
 							+ DateTime.Now.ToLongDateString() + " - " + DateTime.Now.ToLongTimeString() + "\n\n"
 							+ "Exception:\n"

@@ -94,9 +94,10 @@ namespace SoftwareMonkeys.SiteStarter.Data
 						{
 						IEntity entity = LoadEntityFromFile(file);
 						
-						LogWriter.Debug("Entity type: " + entity.GetType().ToString());
+							LogWriter.Debug("Entity type: " +
+							                (entity != null ? entity.GetType().ToString() : "[null]"));
 						
-						if (IsValid(entity))
+							if (entity != null && IsValid(entity))
 						{
 								LogWriter.Debug("Is valid entity.");
 								
@@ -115,7 +116,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 						}
 						else
 						{
-							LogWriter.Error("Cannot import invalid entity...\nID: " + entity.ID.ToString() + "\nType: " + entity.ShortTypeName);
+								LogWriter.Error("Cannot import invalid entity...\nID: " + (entity != null ? entity.ID.ToString() : "[null]") + "\nType: " + (entity != null ? entity.ShortTypeName : "[null]"));
 							
 							MoveToFailed(entity, file);
 						}
@@ -310,14 +311,11 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				if (entity == null)
 					throw new ArgumentNullException("entity", "The provided entity cannot be null.");
 
-				LogWriter.Debug("Entity type: " + entity.GetType());
-
+				LogWriter.Debug("Entity type: " + (entity != null ? entity.GetType().ToString() : "[null]"));
+				LogWriter.Debug("Path: " + filePath);
+				
 				string fileName = String.Empty;
 				string toFileName = String.Empty;
-
-
-				string typeName = entity.GetType().ToString();
-				
 
 				//fileName = CreateImportableEntityPath(entity);
 				fileName = filePath;
@@ -352,6 +350,9 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		
 		public bool IsValid(IEntity entity)
 		{
+			if (entity == null)
+				return false;
+			
 			if (entity is EntityReference)
 			{
 				return IsValidReference((EntityReference)entity);
@@ -362,6 +363,9 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		
 		public bool IsValidReference(EntityReference reference)
 		{
+			if (reference == null)
+				return false;
+			
 			if (reference.Entity1ID == Guid.Empty)
 				return false;
 			
@@ -383,6 +387,9 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		
 		public bool IsValidEntity(IEntity entity)
 		{			
+			if (entity == null)
+				return false;
+			
 			return entity.ID != Guid.Empty
 				&& EntityState.IsType(entity.ShortTypeName);
 		}

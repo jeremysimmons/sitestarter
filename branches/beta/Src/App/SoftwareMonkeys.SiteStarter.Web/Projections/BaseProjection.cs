@@ -4,6 +4,7 @@ using System.Web.UI;
 using System.Web;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Business.Security;
+using SoftwareMonkeys.SiteStarter.Web.Controllers;
 using SoftwareMonkeys.SiteStarter.Web.WebControls;
 using SoftwareMonkeys.SiteStarter.Web.Properties;
 using SoftwareMonkeys.SiteStarter.Business;
@@ -16,6 +17,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 	/// </summary>
 	public class BaseProjection : UserControl, IProjection, IControllable
 	{
+		public List<IController> Controllers = new List<IController>();
 		
 		private ICommandInfo command;
 		public ICommandInfo Command
@@ -206,8 +208,24 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				LogWriter.Debug("Url: " + Request.Url.ToString());
 				
 				base.OnInit(e);
+				
+				InitializeControllers();
 			}
 		}
+		
+		public virtual void InitializeControllers()
+		{
+			using (LogGroup logGroup = LogGroup.StartDebug("Triggering Initialize on controllers."))
+			{
+				LogWriter.Debug("Number of controllers: " + Controllers.Count.ToString());
+				
+				foreach (IController controller in Controllers)
+				{
+					controller.Initialize();
+				}
+			}
+		}
+		
 		
 		protected override void OnLoad(EventArgs e)
 		{
@@ -216,6 +234,21 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				LogWriter.Debug("Url: " + Request.Url.ToString());
 				
 				base.OnLoad(e);
+				
+				LoadControllers();
+			}
+		}
+		
+		public virtual void LoadControllers()
+		{
+			using (LogGroup logGroup = LogGroup.StartDebug("Triggering Load on controllers."))
+			{
+				LogWriter.Debug("Number of controllers: " + Controllers.Count.ToString());
+				
+				foreach (IController controller in Controllers)
+				{
+					controller.Load();
+				}
 			}
 		}
 		
@@ -226,6 +259,21 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				LogWriter.Debug("Url: " + Request.Url.ToString());
 				
 				base.DataBind();
+				
+				DataBindControllers();
+			}
+		}
+		
+		public virtual void DataBindControllers()
+		{
+			using (LogGroup logGroup = LogGroup.StartDebug("Triggering DataBind on controllers."))
+			{
+				LogWriter.Debug("Number of controllers: " + Controllers.Count.ToString());
+				
+				foreach (IController controller in Controllers)
+				{
+					controller.DataBind();
+				}
 			}
 		}
 		

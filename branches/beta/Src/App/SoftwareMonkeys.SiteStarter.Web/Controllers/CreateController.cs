@@ -201,7 +201,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <returns></returns>
 		public static CreateController New(IControllable container)
 		{
-			return New(container, String.Empty);
+			CreateController controller = null;
+			
+			using (LogGroup logGroup = LogGroup.Start("Instantiating a new create controller.", NLog.LogLevel.Debug))
+			{
+				controller = ControllerState.Controllers.Creator.New<CreateController>(container);
+								
+				LogWriter.Debug("Type name: " + container.Command.TypeName);
+		}
+		
+			return controller;
 		}
 		
 		/// <summary>
@@ -210,21 +219,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <param name="container"></param>
 		/// <param name="uniquePropertyName"></param>
 		/// <returns></returns>
+		[ObsoleteAttribute("The uniquePropertyName parameter is no longer used.")]
 		public static CreateController New(IControllable container, string uniquePropertyName)
 		{
-			CreateController controller = null;
-			
-			using (LogGroup logGroup = LogGroup.Start("Instantiating a new create controller.", NLog.LogLevel.Debug))
-			{
-				controller = ControllerState.Controllers.Creator.New<CreateController>(container);
-			
-				controller.UniquePropertyName = uniquePropertyName;
-				
-				LogWriter.Debug("Type name: " + container.Command.TypeName);
-				LogWriter.Debug("Unique property name: " + uniquePropertyName);
+			return New(container);
 			}
-			
-			return controller;
-		}
 		}
 	}
