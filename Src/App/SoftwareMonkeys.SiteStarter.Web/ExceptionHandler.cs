@@ -31,12 +31,12 @@ namespace SoftwareMonkeys.SiteStarter.Web
 						if (HttpContext.Current.Request.UrlReferrer != null)
 						{
 							message = message + Environment.NewLine
-								+ "Referrer:"
+								+ "Referrer: "
 								+ HttpContext.Current.Request.UrlReferrer.ToString() + Environment.NewLine;
 						}
 
 						message = message + Environment.NewLine
-							+ "User Agent:"
+							+ "User Agent: "
 							+ HttpContext.Current.Request.ServerVariables["HTTP_USER_AGENT"] + Environment.NewLine;
 					}
 
@@ -48,9 +48,11 @@ namespace SoftwareMonkeys.SiteStarter.Web
 					{
 						LogWriter.Debug("Error handling is enabled. Redirecting to error page.");
 						
+						string errorPage = DecideErrorPage(exception);
+						
 						// Send the user to the error page if they aren't already there
-						if (HttpContext.Current.Request.Url.ToString().ToLower().IndexOf("error.aspx") == -1)
-							HttpContext.Current.Server.Transfer(HttpContext.Current.Request.ApplicationPath.TrimEnd('/') + "/Error.aspx");
+						if (!IsErrorPage(HttpContext.Current.Request.Url.ToString()))
+							HttpContext.Current.Server.Transfer(HttpContext.Current.Request.ApplicationPath.TrimEnd('/') + "/" + errorPage);
 					}
 					else
 						LogWriter.Debug("Error handling is disabled");
@@ -66,6 +68,26 @@ namespace SoftwareMonkeys.SiteStarter.Web
 					}
 				}
 			}
+		}
+		
+		public bool IsErrorPage(string url)
+		{
+			return url.ToLower().IndexOf("/error.aspx") > -1
+				|| url.ToLower().IndexOf("/error404.aspx") > -1;
+		}
+		
+		public string DecideErrorPage(Exception exception)
+		{
+			string errorPage = "Error.aspx";
+			
+			if (exception is HttpException)
+			{
+				if (exception.Message.IndexOf("The file") > -1
+				    && exception.Message.IndexOf("does not exist.") > -1)
+					errorPage = "Error404.aspx";
+			}
+			
+			return errorPage;
 		}
 		
 		public void SendEmail(Exception exception)
