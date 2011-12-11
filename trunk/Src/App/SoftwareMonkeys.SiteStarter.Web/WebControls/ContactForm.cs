@@ -270,11 +270,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			FormTable.Rows[2].Cells[0].CssClass = LabelCssClass;
 			
 			FormTable.Rows[1].Cells[1].Controls.Add(new LiteralControl(ToName));
-			MessageField.Text = Message;
 		}
 
 		void SendButton_Click(object sender, EventArgs e)
 		{
+			throw new Exception(MessageField.Text);
 			SendEmailStrategy.New().SendEmail(SubjectField.Text, MessageField.Text, FromName, FromEmail, ToName, ToEmail);
 			
 			if (SuccessMessage != String.Empty)
