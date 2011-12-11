@@ -89,6 +89,7 @@
 			user.Password = SoftwareMonkeys.SiteStarter.Business.Crypter.EncryptPassword("pass");
 			user.IsApproved = true;
 			user.IsLockedOut = false;
+			user.EnableNotifications = true;
 			user.Email = "default@softwaremonkeys.net";
 			
 			LogWriter.Debug("Administrator name: " + user.Name);
