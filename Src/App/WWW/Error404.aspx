@@ -28,9 +28,7 @@
 		}
 		catch (Exception ex)
 		{
-			LogWriter.Error("An error occurred on the error display page.");
-			
-			LogWriter.Error(ex);
+			LogWriter.Error(new ExceptionHandler().GetMessage(ex));
 			
 			throw ex;
 		}
@@ -45,7 +43,7 @@
     
     private string GetIssueDescription()
     {
-    	return String.Empty;
+    	return new ExceptionHandler().GetMessage(CurrentException);
     }
 
 </script>

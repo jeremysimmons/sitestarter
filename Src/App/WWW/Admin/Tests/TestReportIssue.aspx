@@ -83,7 +83,7 @@ body
     Subject: <%= Request.Form["Subject"] %>
     </p>
     <p>
-    Description: <%= Request.Form["Description"] %>
+    Description: <%= Request.Form["Description"].Replace(Environment.NewLine, "<br/>") %>
     </p>
     <p>
     Project ID: <%= Request.Form["ProjectID"] != null ? Request.Form["ProjectID"] : "[n/a]" %>
