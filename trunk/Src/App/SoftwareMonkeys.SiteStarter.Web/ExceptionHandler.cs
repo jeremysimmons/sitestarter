@@ -24,21 +24,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			{
 				try
 				{
-					string message = exception.ToString();
-					
-					if (HttpContext.Current != null && HttpContext.Current.Request != null)
-					{
-						if (HttpContext.Current.Request.UrlReferrer != null)
-						{
-							message = message + Environment.NewLine
-								+ "Referrer: "
-								+ HttpContext.Current.Request.UrlReferrer.ToString() + Environment.NewLine;
-						}
-
-						message = message + Environment.NewLine
-							+ "User Agent: "
-							+ HttpContext.Current.Request.ServerVariables["HTTP_USER_AGENT"] + Environment.NewLine;
-					}
+					string message = GetMessage(exception);
 
 					LogWriter.Error(message);
 					
@@ -52,7 +38,10 @@ namespace SoftwareMonkeys.SiteStarter.Web
 						
 						// Send the user to the error page if they aren't already there
 						if (!IsErrorPage(HttpContext.Current.Request.Url.ToString()))
+						{
+							HttpContext.Current.Response.Clear();
 							HttpContext.Current.Server.Transfer(HttpContext.Current.Request.ApplicationPath.TrimEnd('/') + "/" + errorPage);
+						}
 					}
 					else
 						LogWriter.Debug("Error handling is disabled");
@@ -61,13 +50,35 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				{
 					using (LogGroup logGroup = LogGroup.StartDebug("Error handling failed. There was an error within the error handling itself."))
 					{
-						string message = ex.ToString();
+						string message = GetMessage(ex);
+						
 						LogWriter.Error(message);
 						
 						throw;
 					}
 				}
 			}
+		}
+		
+		public string GetMessage(Exception exception)
+		{
+			string message = exception.ToString();
+			
+			if (HttpContext.Current != null && HttpContext.Current.Request != null)
+			{
+				if (HttpContext.Current.Request.UrlReferrer != null)
+				{
+					message = message + Environment.NewLine + Environment.NewLine
+						+ "Referrer: "
+						+ HttpContext.Current.Request.UrlReferrer.ToString();
+				}
+
+				message = message + Environment.NewLine + Environment.NewLine
+					+ "User Agent: "
+					+ HttpContext.Current.Request.ServerVariables["HTTP_USER_AGENT"];
+			}
+			
+			return message;
 		}
 		
 		public bool IsErrorPage(string url)

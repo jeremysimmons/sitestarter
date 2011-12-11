@@ -24,9 +24,7 @@
 		}
 		catch (Exception ex)
 		{
-			LogWriter.Error("An error occurred on the error display page.");
-			
-			LogWriter.Error(ex);
+			LogWriter.Error(new ExceptionHandler().GetMessage(ex));
 			
 			throw ex;
 		}
@@ -39,7 +37,7 @@
     
     private string GetIssueDescription()
     {
-    	return CurrentException.ToString();
+    	return new ExceptionHandler().GetMessage(CurrentException);
     }
 
 </script>
@@ -66,11 +64,11 @@
 				<p>
 					&laquo; <a href='<%= Request.ApplicationPath %>'><%= Resources.Language.BackToHome %></a>
 				</p>
+			<p>
+				SiteStarter Version: <%# DataAccess.Data.Schema.ApplicationVersion %>
+			</p>
 				</asp:View>
 			</asp:MultiView>
-			<p>
-				SiteStarter Version: <%= DataAccess.Data.Schema.ApplicationVersion %>
-			</p>
 		</form>
 	</body>
 </form>
