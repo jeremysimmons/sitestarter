@@ -109,6 +109,7 @@
     <None Include="Controls\Testing.ascx" />
     <None Include="Default.aspx" />
     <None Include="Error.aspx" />
+    <None Include="Error404.aspx" />
     <None Include="Global.asax" />
     <None Include="js\errors.js" />
     <None Include="js\httpRequests.js" />

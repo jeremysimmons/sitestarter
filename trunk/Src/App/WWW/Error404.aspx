@@ -12,7 +12,11 @@
     protected Exception CurrentException = null;
     
     private void Page_Load(object sender, EventArgs e)
-    {
+	{
+		Response.TrySkipIisCustomErrors = true;
+		Response.StatusCode = 404;
+		Response.Status = "404 Not Found";
+		
 		try
 		{
 			CurrentException = Server.GetLastError();
@@ -30,35 +34,34 @@
 			
 			throw ex;
 		}
+		
+		HttpContext.Current.ApplicationInstance.CompleteRequest();
     }    
     
     private string GetIssueSubject()
     {
-    	return CurrentException.GetType().Name + ": " + Utilities.Summarize(CurrentException.Message, 100);
+    	return Resources.Language.PageNotFound + ": " + Request.Url.ToString();
     }
     
     private string GetIssueDescription()
     {
-    	return CurrentException.ToString();
+    	return String.Empty;
     }
 
 </script>
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" >
 	<head runat="server">
-	    <title><%# Resources.Language.ErrorPageTitle %></title>
+	    <title><%= Resources.Language.Error404PageTitle %></title>
 	    <%= StyleUtilities.GetStyleSheet("Styles.css") %>
 	</head>
 	<body>
 	    <form id="form1" runat="server">
 			<asp:MultiView runat="server" id="PageViews">
 				<asp:View runat="server" id="ErrorView">
-				<h1><%# Resources.Language.ErrorPageTitle %></h1>
-				
+				<h1><%# Resources.Language.PageNotFound %></h1>
 				<p>
-				<textarea id="ErrorDetails" style="width: 100%; height: 300px; font-size: 11px;"><%# CurrentException != null ? CurrentException.ToString() : Resources.Language.NoErrorOccurred %>
-				</textarea>
+				<%# Resources.Language.SorryPageNotFound %>
 				</p>
 				<p>
 				<cc:ReportIssueLink runat="server" IssueSubject='<%# GetIssueSubject() %>' IssueDescription='<%# GetIssueDescription() %>' />
