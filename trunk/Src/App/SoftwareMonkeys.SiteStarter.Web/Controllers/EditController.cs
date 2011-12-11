@@ -63,7 +63,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				return updater; }
 			set { updater = value; }
 		}
-				
+		
 		private string entityUpdatedLanguageKey = "EntityUpdated";
 		public string EntityUpdatedLanguageKey
 		{
@@ -313,17 +313,27 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// Updates the provided entity back to the data store.
 		/// </summary>
 		/// <param name="entity"></param>
-		/// <returns>A bool value indicating the success of the update. If it fails it's due to the unique key being in use already.</returns>
+		/// <returns>A bool value indicating the success of the update. If it fails it's due to the entity being invalid.</returns>
 		public virtual bool Update(IEntity entity)
 		{
-			return ExecuteUpdate(entity);
+			ExecutePreUpdate(entity);
+			
+			bool success = ExecuteUpdate(entity);
+			
+			if (success)
+				ExecutePostUpdate(entity);
+			
+			if (AutoNavigate && success)
+				NavigateAfterUpdate();
+			
+			return success;
 		}
 		
 		/// <summary>
 		/// Updates the provided entity back to the data store.
 		/// </summary>
 		/// <param name="entity"></param>
-		/// <returns>A bool value indicating the success of the update. If it fails it's due to the unique key being in use already.</returns>
+		/// <returns>A bool value indicating the success of the update. If it fails it's due to the entity being invalid.</returns>
 		public virtual bool ExecuteUpdate(IEntity entity)
 		{
 			bool didSucceed = false;
@@ -344,14 +354,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 
 						didSucceed = true;
 						
-						if (AutoNavigate)
-							NavigateAfterUpdate();
 					}
 					else
 					{
 						// Add the validation error to the result control
 						Validation.DisplayError(entity);
-												
+						
 						didSucceed = false;
 					}
 				}
@@ -359,6 +367,19 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				LogWriter.Debug("Did succeed: " + didSucceed.ToString());
 			}
 			return didSucceed;
+		}
+		
+		public virtual void ExecutePreUpdate(IEntity entity)
+		{
+			// no implementation here
+			// can be overridden to implement pre-update functionality
+		}
+		
+		public virtual void ExecutePostUpdate(IEntity entity)
+		{
+			
+			// no implementation here
+			// can be overridden to implement post-update functionality
 		}
 		
 		/// <summary>
@@ -376,7 +397,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			return New(container);
 		}
-				
+		
 		public static EditController New(IControllable container, string uniquePropertyName)
 		{
 			EditController controller = null;
