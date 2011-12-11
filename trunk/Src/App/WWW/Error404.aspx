@@ -52,7 +52,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" >
 	<head runat="server">
-	    <title><%= Resources.Language.Error404PageTitle %></title>
+	    <title><%= Resources.Language.PageNotFound %></title>
 	    <%= StyleUtilities.GetStyleSheet("Styles.css") %>
 	</head>
 	<body>
