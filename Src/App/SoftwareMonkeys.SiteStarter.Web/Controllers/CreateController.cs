@@ -132,16 +132,37 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			
 			using (LogGroup logGroup = LogGroup.Start("Saving the provided entity.", NLog.LogLevel.Debug))
 			{
+				ExecutePreSave(entity);
+				
 				success = ExecuteSave(entity);
+				
+				if (success)
+					ExecutePostSave(entity);
+				
+				if (AutoNavigate && success)
+					NavigateAfterSave();
 			}
 			return success;
+		}
+		
+		public virtual void ExecutePreSave(IEntity entity)
+		{
+			// no implementation here
+			// can be overridden to implement pre-save functionality
+		}
+		
+		public virtual void ExecutePostSave(IEntity entity)
+		{
+			
+			// no implementation here
+			// can be overridden to implement post-save functionality
 		}
 		
 		/// <summary>
 		/// Saves the provided entity.
 		/// </summary>
 		/// <param name="entity">The entity to save.</param>
-		/// <returns>A value indicating whether the entity was saved (and therefore passed the validation test).</returns>
+		/// <returns>A value indicating whether the entity was saved. If it fails it's due to the entity being invalid.</returns>
 		public virtual bool ExecuteSave(IEntity entity)
 		{
 			bool saved = false;
@@ -159,13 +180,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 						Result.Display(DynamicLanguage.GetEntityText(EntitySavedLanguageKey, Command.TypeName));
 
 						saved = true;
-						
-						if (AutoNavigate)
-							NavigateAfterSave();
 					}
 					else
-					{				
-						// Add the validation error to the result control		
+					{
+						// Add the validation error to the result control
 						Validation.DisplayError(entity);
 						
 						saved = false;
@@ -206,7 +224,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			using (LogGroup logGroup = LogGroup.Start("Instantiating a new create controller.", NLog.LogLevel.Debug))
 			{
 				controller = ControllerState.Controllers.Creator.New<CreateController>(container);
-								
+				
 				LogWriter.Debug("Type name: " + container.Command.TypeName);
 			}
 			
