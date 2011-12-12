@@ -290,7 +290,7 @@
 	<%= Resources.Language.ParametersQueryString %>: <asp:textbox runat="server" id="QueryStrings" width="100%"/>
 </p>
 <p>
-	<input type="button" onClick="saveClose();" value='<%= "&laquo; " + Resources.Language.Save + " &amp; " + Resources.Language.Close %>' />&nbsp;<input type="button" id="SaveContinueButton" onClick="save();" value='<%= Resources.Language.Save + " &amp; " + Resources.Language.Continue %>' /> (<%= Resources.Language.HitCtrlSToSave %>)
+	<input type="button" onClick="saveClose();" value='<%= "&laquo; " + Resources.Language.Save + " &amp; " + Resources.Language.Close %>' id='SaveCloseButton' />&nbsp;<input type="button" id="SaveContinueButton" onClick="save();" value='<%= Resources.Language.Save + " &amp; " + Resources.Language.Continue %>' /> (<%= Resources.Language.HitCtrlSToSave %>)
 </p>
 <hr/>
 <p><%= Resources.Language.EnablePreview %>: <asp:CheckBox runat="Server" id="EnablePreviewBox" /></p>
