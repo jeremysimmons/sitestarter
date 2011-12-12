@@ -274,7 +274,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
 		void SendButton_Click(object sender, EventArgs e)
 		{
-			throw new Exception(MessageField.Text);
 			SendEmailStrategy.New().SendEmail(SubjectField.Text, MessageField.Text, FromName, FromEmail, ToName, ToEmail);
 			
 			if (SuccessMessage != String.Empty)
