@@ -73,8 +73,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 
 					string piString = "type=\"text/xsl\"";
 					
-					// TODO: Re-enable XSLT. Was commented out due to an error.
-					//piString += "href=\"" + XsltFile + "\"";
+					piString += "href=\"" + XsltFile + "\"";
 					
 					XmlProcessingInstruction pi =
 						doc.CreateProcessingInstruction("xml-stylesheet",
@@ -87,7 +86,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				}
 				else
 				{
-					LogWriter.Debug("DataSource == null. Skipped render.");
+					LogWriter.Debug("DataSource == null. Skipped custom render.");
 				}
 			}
 
