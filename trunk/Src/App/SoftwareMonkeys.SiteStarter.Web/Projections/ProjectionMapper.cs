@@ -281,8 +281,18 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 					LogWriter.Debug("x (after shortening): " + x);
 				}
 				
-				// Remove the extension if there is one
-				x = Path.GetFileNameWithoutExtension(x);
+				// Remove the extension if there is one (but DON'T use Page.GetFileNameWithoutExtension
+				// as it won't string the sub extension if there is one)
+				
+				// Get the position of the first dot (.)
+				int i = x.IndexOf('.');
+				
+				// If a dot (.) is found
+				if (i > -1)
+				{
+					// Get the file name up until and excluding the first dot (.)
+					x = x.Substring(0, i);
+				}
 				
 				commandName = x;
 				
@@ -410,12 +420,34 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		
 		public ProjectionFormat GetFormat(string fileName)
 		{
-			string ext = Path.GetExtension(fileName).Trim('.');
+			ProjectionFormat format = ProjectionFormat.Html;
 			
-			if (ext == "aspx")
-				return ProjectionFormat.Html;
+			using (LogGroup logGroup = LogGroup.StartDebug("Detecting the format of the specified file."))
+			{
+				int a = fileName.IndexOf('.');
+				int b = fileName.LastIndexOf('.'); 
+				
+				// If the file name contains two dots (.)
+				if (a > -1 // first dot is found
+				    && b > -1 // second dot is found
+				    && b - a > 0) // length is greater than zero
+				{
+					string formatString = fileName.Substring(a, // a is the position of the first dot so a+1 is the position of the first character in the sub extension
+					                                         b-a); // b (position) minus a (position) minus 1 (to exclude the dot) gives the length
+					formatString = formatString.Trim('.').ToLower();
+										
+					if (formatString == "xml")
+						format = ProjectionFormat.Xml;
+					
+					else if (formatString == "xslt")
+						format = ProjectionFormat.Xslt;
+					
+					else
+						throw new NotSupportedException("Sub type not yet supported: " + formatString);
+				}
+			}
 			
-			throw new NotSupportedException("Extension not yet supported: " + ext);
+			return format;
 		}
 		
 		/// <summary>
