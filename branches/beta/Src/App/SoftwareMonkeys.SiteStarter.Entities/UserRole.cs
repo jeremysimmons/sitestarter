@@ -76,5 +76,15 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 			return Name;
 		}
+		
+		string ISimple.Title{
+			get { return Name; }
+			set { Name = value; }
+    }
+		
+		string ISimple.Description{
+			get {  return String.Empty; }
+			set { }
+		}
     }
 }

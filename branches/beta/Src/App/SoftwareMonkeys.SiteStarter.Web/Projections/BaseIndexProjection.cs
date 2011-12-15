@@ -42,26 +42,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			set { base.DataSource = value; }
 		}
 		
-		// TODO: Remove if not needed
-		/*
-		/// <summary>
-		/// Gets/sets the current page index.
-		/// </summary>
-		public int CurrentPageIndex
-		{
-			get { return Controller.CurrentPageIndex; }
-			set { Controller.CurrentPageIndex = value; }
-		}
-		
-		/// <summary>
-		/// Gets/sets the size of each page in the index.
-		/// </summary>
-		public int PageSize
-		{
-			get { return Controller.PageSize; }
-			set { Controller.PageSize = value; }
-		}
-		 */
 		/// <summary>
 		/// Gets/sets the sort expression applied to the index.
 		/// </summary>
@@ -79,17 +59,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			get { return Controller.EnablePaging; }
 			set { Controller.EnablePaging = value; }
 		}
-		
-		/*/// <summary>
-		/// Gets/sets the size of each page in the index.
-		/// </summary>
-		public int AbsoluteTotal
-		{
-			get { return Controller.AbsoluteTotal; }
-			set { Controller.AbsoluteTotal = value; }
-		}*/
 			
-			public PagingLocation Location
+		public PagingLocation Location
 		{
 			get { return (PagingLocation)Controller.Indexer.Location; }
 			set { Controller.Indexer.Location = value; }

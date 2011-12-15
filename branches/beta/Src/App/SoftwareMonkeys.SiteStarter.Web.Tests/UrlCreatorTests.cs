@@ -185,7 +185,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests
 			
 			string url = creator.CreateXsltUrl(action, type);
 			
-			string expected = "/Test/" + type + "/" + action + ".xslt.aspx";
+			string expected = "/Test/" + action + "-" + type + ".xslt.aspx";
 			
 			Assert.AreEqual(expected, url, "The returned URL doesn't match what's expected.");
 		}

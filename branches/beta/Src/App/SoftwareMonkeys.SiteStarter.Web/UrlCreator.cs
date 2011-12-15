@@ -517,7 +517,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <returns>The URL to the specified XSLT file.</returns>
 		public string CreateXsltUrl(string action, string typeName)
 		{
-			string link = ApplicationPath + "/" + PrepareForUrl(typeName) + "/" + PrepareForUrl(action) + ".xslt.aspx";
+			string link = ApplicationPath + "/" + PrepareForUrl(action) + "-" + PrepareForUrl(typeName) + ".xslt.aspx";
 			link = AddResult(link);
 			return link;
 		}

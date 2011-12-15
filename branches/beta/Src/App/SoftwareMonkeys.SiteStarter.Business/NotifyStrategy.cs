@@ -48,43 +48,64 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="message">The message of the email to send to all notifiable users.</param>
 		public virtual void SendNotification(IEntity entity, string subject, string message)
 		{
-			foreach (User user in IndexStrategy.New<User>(false).Index<User>("EnableNotifications", true))
+			User[] recipients = IndexStrategy.New<User>(false).Index<User>("EnableNotifications", true);
+			
+			SendNotification(recipients, entity, subject, message);
+		}
+		
+		/// <summary>
+		/// Sends the provided notification message to the provided notifiable users.
+		/// </summary>
+		/// <param name="entity">The recipients of the notification.</param>
+		/// <param name="entity">The entity involved in the event that users are being notified about.</param>
+		/// <param name="subject">The subject of the email to send to the provided notifiable users.</param>
+		/// <param name="message">The message of the email to send to the provided notifiable users.</param>
+		public virtual void SendNotification(User[] recipients, IEntity entity, string subject, string message)
+		{
+			using (LogGroup logGroup = LogGroup.StartDebug("Sending a notification to the provided recipients."))
 			{
-				if (user != null)
+				LogWriter.Debug("Recipients: " + recipients.Length.ToString());
+				
+				foreach (User user in recipients)
 				{
-					string replyTo = "noreply@noreply.com";
-					if (Config.Application.Settings.ContainsKey("SystemEmail"))
+					if (user != null && user.EnableNotifications)
 					{
-						replyTo = Config.Application.Settings.GetString("SystemEmail");
-					}
-					else
-						LogWriter.Error("No primary administrator has been assigned. Notification emails have 'noreply@noreply.com' in the reply field instead of the admistrator's email address.");
-					
-					try
-					{
+						LogWriter.Debug("To: " + user.Email);
 						
-						MailMessage mm = new MailMessage(replyTo,
-						                                 user.Email,
-						                                 PrepareNotificationText(subject, entity),
-						                                 PrepareNotificationText(message, entity));
+						string replyTo = "noreply@noreply.com";
+						if (Config.Application.Settings.ContainsKey("SystemEmail"))
+						{
+							replyTo = Config.Application.Settings.GetString("SystemEmail");
+						}
+						else
+							LogWriter.Error("No system email has been set. Notification emails have 'noreply@noreply.com' in the reply field instead.");
+				
+						LogWriter.Debug("Reply to: " + replyTo);
 						
-						Emailer.CreateSmtpClient().Send(mm);
-					}
-					catch(FormatException ex)
-					{
-						LogWriter.Error(ex.ToString());
-					}
-					catch(SmtpFailedRecipientException ex)
-					{
-						LogWriter.Error(ex.ToString());
-					}
-					catch(SmtpException ex)
-					{
-						LogWriter.Error(ex.ToString());
+						try
+						{
+							
+							MailMessage mm = new MailMessage(replyTo,
+							                                 user.Email,
+							                                 PrepareNotificationText(subject, entity),
+							                                 PrepareNotificationText(message, entity));
+							
+							Emailer.CreateSmtpClient().Send(mm);
+						}
+						catch(FormatException ex)
+						{
+							LogWriter.Error(ex);
+						}
+						catch(SmtpFailedRecipientException ex)
+						{
+							LogWriter.Error(ex);
+						}
+						catch(SmtpException ex)
+						{
+							LogWriter.Error(ex);
+						}
 					}
 				}
-				else
-					throw new InvalidOperationException("No primary administrator configured on Config.Application.PrimaryAdministratorID.");
 			}
 		}
 		
