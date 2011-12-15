@@ -7,7 +7,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
     /// <summary>
     /// Defines the interface for a user role in the application.
     /// </summary>
-    public interface IUserRole : IEntity
+    public interface IUserRole : ISimple
     {
         string Name { get;set; }
 		//IUserPermission[] Permissions { get;set; }

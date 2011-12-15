@@ -252,5 +252,15 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 			return Name + " (" + Username + ")";
 		}
+
+		string ISimple.Title{
+			get { return Username; }
+			set { Username= value; }
+		}
+		
+		string ISimple.Description{
+			get { return Username; }
+			set { }
+		}
 	}
 }
