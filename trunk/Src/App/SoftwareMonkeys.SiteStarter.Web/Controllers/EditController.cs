@@ -2,6 +2,7 @@
 using SoftwareMonkeys.SiteStarter.Business;
 using SoftwareMonkeys.SiteStarter.Business.Security;
 using SoftwareMonkeys.SiteStarter.Entities;
+using SoftwareMonkeys.SiteStarter.Web.Navigation;
 using SoftwareMonkeys.SiteStarter.Web.Projections;
 using SoftwareMonkeys.SiteStarter.Web.Validation;
 using SoftwareMonkeys.SiteStarter.Web.WebControls;
@@ -274,9 +275,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			using (LogGroup logGroup = LogGroup.Start("Loading the provided entity onto DataSource and activating it.", NLog.LogLevel.Debug))
 			{
-				entity.Activate();
-				
-				DataSource = entity;
+				if (entity == null)
+					Navigator.Current.Go(ActionOnSuccess, Command.TypeName);
+				else
+				{
+					entity.Activate();
+					
+					DataSource = entity;
+				}
 			}
 			return entity;
 		}
