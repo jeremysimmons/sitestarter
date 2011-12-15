@@ -272,5 +272,67 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Projections
 
             Assert.AreEqual(expected, cmd, "Result doesn't match expected.");
         }
+        
+        [Test]
+        public void Test_GetCommandName_XmlProjection()
+        {
+        
+            string fullApplicationUrl = "http://localhost/MockApplication";
+            string applicationPath = "/MockApplication";
+
+            string action = "Index";
+            string typeName = "TestUser";
+            
+            string original = fullApplicationUrl + "/" + action + "-" + typeName + ".xml.aspx?TestKey=TestValue&TestKey2=TestValue2";
+
+            string expected = action + "-" + typeName;
+
+            ProjectionMapper mapper = new ProjectionMapper();
+            mapper.ApplicationPath = applicationPath;
+			mapper.Converter = new MockUrlConverter();
+			mapper.FileMapper = new MockFileMapper(this);
+			mapper.FileExistenceChecker = new MockFileExistenceChecker(this, false);
+            
+            string cmd = mapper.GetCommandName(original);
+
+            Assert.AreEqual(expected, cmd, "Result doesn't match expected.");
+        }
+        
+        [Test]
+        public void Test_GetFormat_Xml()
+        {
+        	ProjectionMapper mapper = new ProjectionMapper();
+        	
+        	string fileName = "TestPage.xml.aspx";
+        	
+        	ProjectionFormat format = mapper.GetFormat(fileName);
+        	
+        	Assert.AreEqual(ProjectionFormat.Xml, format, "Doesn't match what is expected.");
+        }
+        
+        
+        [Test]
+        public void Test_GetFormat_Html()
+        {
+        	ProjectionMapper mapper = new ProjectionMapper();
+        	
+        	string fileName = "TestPage.aspx";
+        	
+        	ProjectionFormat format = mapper.GetFormat(fileName);
+        	
+        	Assert.AreEqual(ProjectionFormat.Html, format, "Doesn't match what is expected.");
+        }
+        
+        [Test]
+        public void Test_GetFormat_Xslt()
+        {
+        	ProjectionMapper mapper = new ProjectionMapper();
+        	
+        	string fileName = "TestPage.xslt.aspx";
+        	
+        	ProjectionFormat format = mapper.GetFormat(fileName);
+        	
+        	Assert.AreEqual(ProjectionFormat.Xslt, format, "Doesn't match what is expected.");
+        }
 	}
 }

@@ -26,7 +26,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					return Configuration.Config.Application.Settings.GetString("SmtpServer");
 				
 				// Otherwise fall back to the config file
-				return ConfigurationSettings.AppSettings["SmtpServer"];
+				else
+					return ConfigurationSettings.AppSettings["SmtpServer"];
 			}
 		}
 		

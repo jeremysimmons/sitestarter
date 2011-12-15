@@ -29,8 +29,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// </summary>
 		public new IEntity[] DataSource
 		{
-			get { return ((BaseIndexProjection)Container).DataSource; }
-			set { ((BaseIndexProjection)Container).DataSource = value; }
+			get { return (IEntity[])Container.DataSource; }
+			set { Container.DataSource = value; }
 		}
 		
 		/// <summary>

@@ -43,9 +43,10 @@
 		user.Username = "Username" + number;
 		user.FirstName = "FirstName" + number;
 		user.LastName = "LastName" + number;
-		user.Email = "Email" + number;
+		user.Email = "test" + position.ToString() + "@softwaremonkeys.net";
 		user.Password = Crypter.EncryptPassword("pass");
 		user.IsApproved = true;
+		user.EnableNotifications = true;
 		
 		SaveStrategy.New(user, false).Save(user);
 	}

@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Web.Security;
 using SoftwareMonkeys.SiteStarter.Entities;
 
@@ -22,16 +23,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			set { xsltFilePath = value; }
 		}
 		
-		private object dataSource = null;
-		/// <summary>
-		/// Gets/sets the data source being output by the projection.
-		/// </summary>
-		public object DataSource
-		{
-			get { return dataSource; }
-			set { dataSource = value; }
-		}
-		
 		public BaseXmlProjection()
 		{
 		}
@@ -49,19 +40,32 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		}
 		
 		protected override void Render(System.Web.UI.HtmlTextWriter writer)
-		{			
-			if (DataSource != null)
+		{
+			using (LogGroup logGroup = LogGroup.StartDebug("Rendering base XML projection."))
 			{
-				if (DataSource is IEntity)
-					Authorisation.EnsureUserCan("View", (IEntity)DataSource);
-				else
-					Authorisation.EnsureUserCan("View", (IEntity[])DataSource);
-			}
+				// If the DataSource is not null then perform the custom XML output
+				if (DataSource != null)
+				{
+					if (DataSource is IEntity)
+						Authorisation.EnsureUserCan("View", (IEntity)DataSource);
+					else
+						Authorisation.EnsureUserCan("View", (IEntity[])DataSource);
+					
+					LogWriter.Debug("XSLT file path: " + XsltFilePath);
 
-			XmlProjectionRenderer renderer = new XmlProjectionRenderer(QueryStrings.Type);
-			renderer.DataSource = DataSource;
-			renderer.XsltFile = XsltFilePath;
-			renderer.Render(writer);
+					XmlProjectionRenderer renderer = new XmlProjectionRenderer(QueryStrings.Type);
+					renderer.DataSource = DataSource;
+					renderer.XsltFile = XsltFilePath;
+					renderer.Render(writer);
+				}
+				// Otherwise allow the standard render to occur
+				else
+				{
+					LogWriter.Debug("DataSource == null. Skipping dynamic render and using base render");
+					
+					base.Render(writer);
+				}
+			}
 		}
 		
 	}

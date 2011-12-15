@@ -10,6 +10,8 @@ namespace SoftwareMonkeys.SiteStarter.Web
 	/// </summary>
 	public interface IControllable
 	{
+		object DataSource { get; set; }
+		
 		string WindowTitle { get;set; }
 		
 		ICommandInfo Command { get;set; }
