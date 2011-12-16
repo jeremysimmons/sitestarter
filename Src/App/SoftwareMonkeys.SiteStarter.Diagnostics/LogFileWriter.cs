@@ -87,13 +87,13 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		
 		public void Write(string message, LogLevel level, string callingType, string callingMethod)
 		{
-			Write(message, level, callingType, callingMethod, Guid.NewGuid(), DiagnosticState.CurrentGroupID, DiagnosticState.GroupStack.Count+1);
+			Write(message, level, callingType, callingMethod, Guid.NewGuid(), DiagnosticState.CurrentGroupID);
 		}
 		
-		public void Write(string message, LogLevel level, string callingType, string callingMethod, Guid entryID, Guid parentID, int indent)
+		public void Write(string message, LogLevel level, string callingType, string callingMethod, Guid entryID, Guid parentID)
 		{
 			
-			string entry = CreateLogEntry(level, message, callingType, callingMethod, entryID, parentID, DiagnosticState.GroupIndent);
+			string entry = CreateLogEntry(level, message, callingType, callingMethod, entryID, parentID);
 
 			if (entry != null && entry != String.Empty)
 			{
@@ -121,7 +121,6 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		/// <param name="callingMethod">The method that started the group.</param>
 		/// <param name="groupID">The ID of the group that the entry represents.</param>
 		/// <param name="parentID">The ID of the parent group.</param>
-		/// <param name="indent">The indent level of the entry.</param>
 		/// <returns></returns>
 		public static string CreateLogEntry(
 			LogLevel logLevel,
@@ -129,8 +128,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			string callingTypeName,
 			string callingMethodName,
 			Guid id,
-			Guid parentID,
-			int indent)
+			Guid parentID)
 		{
 			StringBuilder logEntry = new StringBuilder();
 
@@ -144,7 +142,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 				
 				logEntry.AppendFormat("<ID>{0}</ID>\r\n", id.ToString());
 				logEntry.AppendFormat("<ParentID>{0}</ParentID>\r\n", parentID.ToString());
-				logEntry.AppendFormat("<Indent>{0}</Indent>\r\n", indent); // TODO: Remove indent as a parameter - it's obsolete; the parent ID is used to figure out location
+				logEntry.AppendFormat("<Indent>{0}</Indent>\r\n", 0); // TODO: Remove indent as a parameter - it's obsolete; the parent ID is used to figure out location
 				logEntry.AppendFormat("<LogLevel>{0}</LogLevel>\r\n", logLevel);
 				logEntry.AppendFormat("<Timestamp>{0}</Timestamp>\r\n", DateTime.Now);
 				logEntry.AppendFormat("<Component>{0}</Component>\r\n", EscapeLogData(callingTypeName));

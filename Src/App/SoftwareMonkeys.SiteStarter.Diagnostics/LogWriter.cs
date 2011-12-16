@@ -46,7 +46,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		/// <param name="parentID">The ID of the parent group.</param>
 		public static void WriteGroup(string message, MethodBase callingMethod, LogLevel level, Guid groupID, Guid parentID)
 		{
-				LogFileWriter.Current.Write(message, level, callingMethod.DeclaringType.Name, callingMethod.Name, groupID, parentID, DiagnosticState.GroupIndent-1);
+				LogFileWriter.Current.Write(message, level, callingMethod.DeclaringType.Name, callingMethod.Name, groupID, parentID);
 		}
 				
 		public static void Error(Exception ex)

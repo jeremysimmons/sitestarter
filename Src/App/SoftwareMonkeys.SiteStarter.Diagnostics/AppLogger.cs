@@ -71,16 +71,6 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			set { DiagnosticState.CurrentGroup = value; }
 		}
 
-		/// <summary>
-		/// The current stack of groups.
-		/// </summary>
-		[Obsolete("Use DiagnosticState.GroupStack instead.")]
-		static public StateStack<LogGroup> GroupStack
-		{
-			get { return DiagnosticState.GroupStack; }
-			set { DiagnosticState.GroupStack = value; }
-		}
-
 		[Obsolete("Use LogGroup.Start(...) instead.")]
 		static public LogGroup StartGroup(string summary)
 		{
