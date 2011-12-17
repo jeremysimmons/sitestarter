@@ -212,6 +212,11 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			
 			node.Title = element.Attributes["title"].Value;
 			
+			if (element.Attributes["selectable"] != null)
+			{
+				node.Selectable = Convert.ToBoolean(element.Attributes["selectable"].Value);
+			}
+			
 			if (element.Attributes["url"] != null)
 			{
 				node.Url = element.Attributes["url"].Value;
@@ -248,6 +253,10 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			XmlAttribute descriptionAttribute = document.CreateAttribute("description");
 			descriptionAttribute.InnerText = node.Description;
 			element.Attributes.Append(descriptionAttribute);
+
+			XmlAttribute selectableAttribute = document.CreateAttribute("selectable");
+			selectableAttribute.InnerText = node.Selectable.ToString();
+			element.Attributes.Append(selectableAttribute);
 
 			return element;
 		}
@@ -429,6 +438,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			}
 			
 			SiteMapNode node = new SiteMapNode(parentCategoryName, categoryName, String.Empty, String.Empty);
+			node.Selectable = false;
 			
 			AddCategoryNode(node);
 			
