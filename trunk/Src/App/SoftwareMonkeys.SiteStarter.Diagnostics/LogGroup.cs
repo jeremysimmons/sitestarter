@@ -150,13 +150,13 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			if (new LogSupervisor().LoggingEnabled(logLevel))
 			{
 				CallingMethod = Reflector.GetCallingMethod();
-			
+				
 				Write(message, logLevel, callingMethod);
 			}
 		}
 
 		private void Write(string message, LogLevel logLevel, MethodBase callingMethod)
-		{			
+		{
 			if (callingMethod != null && new LogSupervisor().LoggingEnabled(callingMethod.DeclaringType.Name, logLevel))
 			{
 				CallingMethod = callingMethod;
@@ -171,9 +171,13 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 
 		internal void Start()
 		{
-			DiagnosticState.PushGroup(this);
+			if (callingMethod != null && new LogSupervisor().IsEnabled(callingMethod.DeclaringType.Name, LogLevel))
+			{
+				DiagnosticState.PushGroup(this);
+				
+				Write(Summary, LogLevel, CallingMethod);
+			}
 			
-			Write(Summary, LogLevel, CallingMethod);
 		}
 
 		internal void End()
@@ -182,41 +186,23 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			// Ensure this doesnt run twice for the same group.
 			if (!HasEnded)
 			{
-				
-				// Logging is always enabled for groups.
-				// TODO: Remove obsolete code if not needed
-				//if (new LogSupervisor().LoggingEnabled(CallingMethod, LogLevel))
-				//{
-				End(CallingMethod);
-				//}
-				
-				
 				LogSupervisor supervisor = new LogSupervisor();
 				
-				// Keep popping groups from the stack until it reaches the correct level
-				// This loop ensures that if a parent group ends before a child group that the child group(s) will be popped
-				// as well and the stack won't become corrupted
-				// TODO: Check if this loop should be moved to DiagnosticState.PopGroup
-				while (supervisor.CanPop(this, DiagnosticState.CurrentGroup))
-					DiagnosticState.PopGroup();
-				
-				// Ensure that the log is still properly formatted
-				// If the current group ID is not the ID of this group's parent after this group has ended then the log is corrupt
-				// TODO: Check if needed
-				//if (DiagnosticState.CurrentGroupID != this.ParentID)
-				//	throw new CorruptLogException(this);
+				if (CallingMethod != null && supervisor.IsEnabled(CallingMethod.DeclaringType.Name, LogLevel))
+				{
+					// Keep popping groups from the stack until it reaches the correct level
+					// This loop ensures that if a parent group ends before a child group that the child group(s) will be popped
+					// as well and the stack won't become corrupted
+					// TODO: Check if this loop should be moved to DiagnosticState.PopGroup
+					while (supervisor.CanPop(this, DiagnosticState.CurrentGroup))
+						DiagnosticState.PopGroup();
+				}
 				
 				HasEnded = true;
 
 			}
 		}
 		
-
-		private void End(MethodBase callingMethod)
-		{
-			// Nothing is written to the log when the group ends
-		}
-
 		public void Append(LogGroup group)
 		{
 			List<LogGroup> list = new List<LogGroup>();
@@ -352,28 +338,22 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		/// <returns></returns>
 		static public LogGroup Start(string summary, LogLevel logLevel, MethodBase callingMethod)
 		{
-			LogGroup parent = DiagnosticState.CurrentGroup;
+			LogGroup newGroup = null;
 			
-			LogGroup newGroup = new LogGroup(summary, callingMethod, logLevel);
-			newGroup.Parent = parent;
+			// Create the log group even if not enabled
+			newGroup = new LogGroup(summary, callingMethod, logLevel);
 			
-			
-			newGroup.Start();
+			// Only start the group and set the parent if it's enabled
+			if (callingMethod != null && new LogSupervisor().IsEnabled(callingMethod.DeclaringType.Name, logLevel))
+			{
+				newGroup.Parent = DiagnosticState.CurrentGroup;
+				
+				newGroup.Start();
+			}
 
 			return newGroup;
 		}
-
-		/*/// <summary>
-		/// Ends the current log group.
-		/// </summary>
-		static public void End()
-		{
-			if (DiagnosticState.CurrentGroup != null)
-			{
-				DiagnosticState.CurrentGroup.End();
-			}
-		}*/
-			#endregion
+		#endregion
 	}
 
 }

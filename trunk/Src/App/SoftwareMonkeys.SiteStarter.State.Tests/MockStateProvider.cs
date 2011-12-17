@@ -40,44 +40,44 @@ namespace SoftwareMonkeys.SiteStarter.State.Tests
     		set { applicationPath = value; }
     	}
     	
-		private Dictionary<string, object> sessionData;
-		public Dictionary<string, object> SessionData
+		private Hashtable sessionData;
+		public Hashtable SessionData
 		{
 			get
 			{
 				if (sessionData == null)
-					sessionData = new Dictionary<string, object>();
+					sessionData = new Hashtable();
 				return sessionData; }
 			set { sessionData = value; }
 		}
 		
-		private Dictionary<string, object> applicationData;
-		public Dictionary<string, object> ApplicationData
+		private Hashtable applicationData;
+		public Hashtable ApplicationData
 		{
 			get {
 				if (applicationData == null)
-					applicationData = new Dictionary<string, object>();
+					applicationData = new Hashtable();
 				return applicationData; }
 			set { applicationData = value; }
 		}
 		
 		
-		private Dictionary<string, object> operationData;
-		public Dictionary<string, object> OperationData
+		private Hashtable operationData;
+		public Hashtable OperationData
 		{
 			get {
 				if (operationData == null)
-					operationData = new Dictionary<string, object>();
+					operationData = new Hashtable();
 				return operationData; }
 			set { operationData = value; }
 		}
 		
-		private Dictionary<string, object> userData;
-		public Dictionary<string, object> UserData
+		private Hashtable userData;
+		public Hashtable UserData
 		{
 			get {
 				if (userData == null)
-					userData = new Dictionary<string, object>();
+					userData = new Hashtable();
 				return userData; }
 			set { userData = value; }
 		}

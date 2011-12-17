@@ -246,7 +246,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		public override bool IsStored(IEntity entity)
 		{
 			bool isStored = false;
-			using (LogGroup logGroup = LogGroup.Start("Checking whether the provided entity has already been stored.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Checking whether the provided entity has already been stored."))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");

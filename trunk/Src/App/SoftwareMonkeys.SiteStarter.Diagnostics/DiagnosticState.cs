@@ -31,7 +31,8 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		/// </summary>
 		static public Guid CurrentGroupID
 		{
-			get {
+			get
+			{
 				if (CurrentGroup != null)
 					return CurrentGroup.ID;
 				else
