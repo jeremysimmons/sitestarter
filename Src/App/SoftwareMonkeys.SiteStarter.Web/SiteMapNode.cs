@@ -86,6 +86,14 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			get { return category; }
 			set { category = value; }
 		}
+
+		private bool selectable = true;
+		public bool Selectable
+		{
+			get { return selectable; }
+			set { selectable = value; }
+		}
+		
 		
 		public SiteMapNode()
 		{
