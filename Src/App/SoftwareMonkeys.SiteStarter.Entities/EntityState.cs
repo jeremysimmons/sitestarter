@@ -57,14 +57,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			    || typeName == "EntityReference")
 				return true;
 			
-			if (Entities.Contains(typeName))
-			{
-				EntityInfo info = GetInfo(typeName, false);
-			
-				return (info != null);
-			}
-			else
-				return false;
+			return Entities.Contains(typeName);
 		}
 		
 		/// <summary>

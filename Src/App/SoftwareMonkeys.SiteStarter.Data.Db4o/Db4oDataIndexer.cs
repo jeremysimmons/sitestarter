@@ -185,10 +185,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					query.Constrain(type);
 
 					IObjectSet os = query.Execute();
-					while (os.HasNext())
-					{
-						list.Add(os.Next());
-					}
+					for (int i = 0; i < os.Count; i++)
+						list.Add(os[i]);
 					
 					LogWriter.Debug("Total: " + list.Count.ToString());
 				}
