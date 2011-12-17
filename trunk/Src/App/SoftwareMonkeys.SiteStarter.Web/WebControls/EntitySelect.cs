@@ -98,7 +98,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			}
 		}
 		
-		private string entityType = typeof(SoftwareMonkeys.SiteStarter.Entities.IEntity).FullName;
+		private string entityType = typeof(IEntity).FullName;
 		/// <summary>
 		/// Gets/sets the type of entity being displayed in the list.
 		/// </summary>
@@ -697,9 +697,40 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			return posted;
 		}
 
+		public bool AutoFit = true;
+		
+		public int MaximumRows = 10;
+		
+		private void FixRows()
+		{
+			// If AutoFit is true
+			if (AutoFit)
+			{
+				int total = GetDataSourceLength();
+				
+				// If there are less than 3 items set the number of rows to 3 otherwise having 1 or 2 rows looks strange
+				if (total < 3)
+					Rows = 3;
+				// Otherwise if the specified number of rows is above the number of items in the list then
+				// reduce the number of rows to match the number of items
+				else if (Rows > total)
+					Rows = total;
+				// Otherwise the if there are more items than rows
+				else if (Rows < total)
+				{
+					// If there are more than ten items
+					if (total > MaximumRows)
+						// Then set the number of rows to maximum
+						Rows = MaximumRows;
+					else
+						// Otherwise set the number of rows to match the number of items
+						Rows = total;
+				}
+			}
+		}
+		
 		protected override void AddAttributesToRender(HtmlTextWriter writer)
 		{
-
 			// Name and ID
 			writer.AddAttribute(HtmlTextWriterAttribute.Name, UniqueID);
 			writer.AddAttribute(HtmlTextWriterAttribute.Id, ClientID);
@@ -707,6 +738,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			// Size and display mode
 			if (DisplayMode == ListSelectionMode.Multiple)
 			{
+				FixRows();
+				
 				writer.AddAttribute(HtmlTextWriterAttribute.Size, Rows.ToString());
 				writer.AddAttribute(HtmlTextWriterAttribute.Multiple, "multiple");
 			}
@@ -790,17 +823,21 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 							// Create a list of each entity ID that gets added.
 							ArrayList existingIDs = new ArrayList();
 							
-							// Check if the entity has already been added
-							if (!existingIDs.Contains(entity.ID))
+							// Skip the reference source so it doesn't end up referencing itself
+							if (ReferenceSource == null || ReferenceSource.ID != entity.ID)
 							{
-								LogWriter.Debug("Adding entity.");
-								
-								Items.Add(new ListItem(GetText(entity), GetValue(entity)));
-								
-								existingIDs.Add(entity.ID);
+								// Check if the entity has already been added
+								if (!existingIDs.Contains(entity.ID))
+								{
+									LogWriter.Debug("Adding entity.");
+									
+									Items.Add(new ListItem(GetText(entity), GetValue(entity)));
+									
+									existingIDs.Add(entity.ID);
+								}
+								else
+									LogWriter.Debug("Entity already added so it was skipped.");
 							}
-							else
-								LogWriter.Debug("Entity already added so it was skipped.");
 						}
 					}
 				}
