@@ -377,7 +377,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
 		protected int GetDataSourceLength()
 		{
-			if (DataSource is Array)
+			if (DataSource == null)
+				return 0;
+			else if (DataSource is Array)
 				return ((Array)DataSource).Length;
 			else
 				throw new NotSupportedException("Invalid type: " + DataSource.GetType().ToString());
