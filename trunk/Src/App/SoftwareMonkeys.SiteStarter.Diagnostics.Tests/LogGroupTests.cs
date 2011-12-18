@@ -40,14 +40,14 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics.Tests
 		{
 			LogSupervisor supervisor = new LogSupervisor();
 			
-			using (LogGroup logGroup = LogGroup.Start("Outer group ", LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Outer group "))
 			{
 				
 				Assert.AreEqual(logGroup.ID.ToString(), DiagnosticState.CurrentGroupID.ToString(), "Current group ID doesn't match that of outer group.");
 				
 				LogGroup logGroup3 = null;
 				
-				using (LogGroup logGroup2 = LogGroup.Start("Test group", LogLevel.Debug))
+				using (LogGroup logGroup2 = LogGroup.Start("Test group"))
 				{
 					Assert.AreEqual(logGroup2.ID.ToString(), DiagnosticState.CurrentGroupID.ToString(), "Current group ID doesn't match that of test group.");
 				
