@@ -34,6 +34,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				if (!IsInitialized && errorIfNotInitialized)
 					throw new InvalidOperationException("The projection state has not been initialized.");
 				
+				// If the projections aren't initialized then create an empty collection
 				if (projections == null)
 					projections = new ProjectionStateCollection();
 				

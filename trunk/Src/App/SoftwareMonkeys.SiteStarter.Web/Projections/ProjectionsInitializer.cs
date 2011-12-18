@@ -174,35 +174,42 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			using (LogGroup logGroup = LogGroup.Start("Initializing the web projections.", NLog.LogLevel.Debug))
 			{
-				if (StateAccess.IsInitialized && !ProjectionState.IsInitialized)
+				if (StateAccess.IsInitialized)
 				{
-					ProjectionInfo[] projections = new ProjectionInfo[]{};
-					
-					bool pageIsAccessible = Page != null;
-					
-					// Only scan for projections if the page component is accessible (otherwise they can't be loaded through LoadControl)
-					// and when the projections have NOT yet been mapped
-					if (pageIsAccessible && !IsMapped)
+					if (!ProjectionState.IsInitialized)
 					{
-						LogWriter.Debug("Is not mapped. Scanning for projections.");
+						ProjectionInfo[] projections = new ProjectionInfo[]{};
 						
-						projections = FindProjections();
+						bool pageIsAccessible = Page != null;
 						
-						SaveInfoToFile(projections);
-						
-						Initialize(projections);
-					}
-					else if(IsMapped)
-					{
-						LogWriter.Debug("Is mapped. Loading from XML.");
-						
-						projections = LoadProjections();
-						
-						Initialize(projections);
+						// Only scan for projections if the page component is accessible (otherwise they can't be loaded through LoadControl)
+						if (pageIsAccessible)
+						{
+							// If the projections have NOT yet been mapped
+							if (!IsMapped)
+							{
+								LogWriter.Debug("Is not mapped. Scanning for projections.");
+								
+								projections = FindProjections();
+								
+								SaveInfoToFile(projections);
+								
+								Initialize(projections);
+							}
+							else if(IsMapped)
+							{
+								LogWriter.Debug("Is mapped. Loading from XML.");
+								
+								projections = LoadProjections();
+								
+								Initialize(projections);
+							}
+						}
+						else
+							LogWriter.Debug("Can't initialize. No Page object is assigned to Page property. Skipping for now.");
 					}
 					else
-						LogWriter.Debug("Can't initialize. No Page object is assigned to Page property. Skipping for now.");
-					// Otherwise just skip it, as it's likely before setup has run and just needs to wait
+						LogWriter.Debug("Projection state already initialized. Skipping.");
 				}
 				else
 					LogWriter.Debug("State is not initialized. Skipping.");
