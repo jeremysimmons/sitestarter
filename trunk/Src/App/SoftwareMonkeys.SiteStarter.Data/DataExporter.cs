@@ -42,11 +42,21 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// </summary>
 		public virtual void ExportToXml()
 		{
-			foreach (string storeName in DataAccess.Data.GetDataStoreNames())
+			using (LogGroup logGroup = LogGroup.StartDebug("Exporting data to XML."))
 			{
-				foreach (IEntity entity in DataAccess.Data.Stores[storeName].Indexer.GetEntities())
+				foreach (string storeName in DataAccess.Data.GetDataStoreNames())
 				{
-					ExportEntity(entity);
+					using (LogGroup logGroup2 = LogGroup.StartDebug("Data store: " + storeName))
+					{
+						IEntity[] entities = DataAccess.Data.Stores[storeName].Indexer.GetEntities();
+						
+						LogWriter.Debug("Entities found: " + entities.Length.ToString());
+						
+						foreach (IEntity entity in entities)
+						{
+							ExportEntity(entity);
+						}
+					}
 				}
 			}
 		}
@@ -60,9 +70,14 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="entity">The entity to export to file.</param>
 		public void ExportEntity(IEntity entity)
 		{
-			string filePath = CreateEntityPath(entity);
+			using (LogGroup logGroup = LogGroup.StartDebug("Exporting '" + entity.ShortTypeName + "' entity."))
+			{
+				string filePath = CreateEntityPath(entity);
 			
-			SerializeToFile(entity, filePath);
+				LogWriter.Debug("File path: " + filePath);
+				
+				SerializeToFile(entity, filePath);	
+			}
 		}
 		
 		

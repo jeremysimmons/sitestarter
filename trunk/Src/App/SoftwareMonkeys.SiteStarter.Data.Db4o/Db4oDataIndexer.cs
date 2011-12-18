@@ -174,7 +174,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			ArrayList list = new ArrayList();
 			
-			using (LogGroup logGroup = LogGroup.Start("Retrieving entities of the specified type.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving entities of the specified type."))
 			{
 				IObjectContainer objectContainer = ((Db4oDataStore)GetDataStore(type)).ObjectContainer;
 				
@@ -224,48 +224,60 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <returns>All entities retrieved.</returns>
 		public override IEntity[] GetEntities()
 		{
-			List<IEntity> list = new List<IEntity>();
+			IEntity[] entities = new IEntity[]{};
 			
-			List<IDataStore> stores = new List<IDataStore>();
-			
-			// Get the list of stores
-			// If the DataStore property is null then get all stores.
-			if (DataStore == null)
+			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving all entities."))
 			{
-				foreach (string dataStoreName in DataAccess.Data.GetDataStoreNames())
+				List<IEntity> list = new List<IEntity>();
+				
+				List<IDataStore> stores = new List<IDataStore>();
+				
+				// Get the list of stores
+				// If the DataStore property is null then get all stores.
+				if (DataStore == null)
 				{
-					stores.Add(Provider.Stores[dataStoreName]);
-				}
-			}
-			// Otherwise use the single store attached to this adapter
-			else
-			{
-				stores.Add(DataStore);
-			}
-			
-			// Load data from the stores
-			foreach (IDataStore store in stores)
-			{
-				if (!store.IsClosed)
-				{
-					IObjectContainer container = ((Db4oDataStore)store).ObjectContainer;
+					LogWriter.Debug("DataStore property is null. Retrieving from all.");
 					
-					if (!container.Ext().IsClosed())
+					foreach (string dataStoreName in DataAccess.Data.GetDataStoreNames())
+					{						
+						stores.Add(Provider.Stores[dataStoreName]);
+					}
+				}
+				// Otherwise use the single store attached to this adapter
+				else
+				{
+					LogWriter.Debug("DataStore property is set. Using.");
+					
+					stores.Add(DataStore);
+				}
+				
+				// Load data from the stores
+				foreach (IDataStore store in stores)
+				{
+					if (!store.IsClosed)
 					{
-						IQuery query = container.Query();
+						IObjectContainer container = ((Db4oDataStore)store).ObjectContainer;
 						
-						query.Constrain(typeof(IEntity));
-
-						IObjectSet os = query.Execute();
-						while (os.HasNext())
+						if (!container.Ext().IsClosed())
 						{
-							list.Add((IEntity)os.Next());
+							IQuery query = container.Query();
+							
+							query.Constrain(typeof(IEntity));
+
+							IObjectSet os = query.Execute();
+							while (os.HasNext())
+							{
+								list.Add((IEntity)os.Next());
+							}
 						}
 					}
 				}
+				
+				LogWriter.Debug("Total: " + list.Count.ToString());
+				
+				entities = Release((IEntity[])list.ToArray());
 			}
-
-			return Release((IEntity[])list.ToArray());
+			return entities;
 		}
 		
 		/// <summary>
@@ -578,7 +590,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			if (!EntityState.IsType(type))
 				throw new ArgumentException("The provided '" + type.Name + "' type is not registered as a valid entity type.");
-						
+			
 			//	LogWriter.Debug("Type: " + type.ToString());
 			//	LogWriter.Debug("Property name: " + propertyName);
 			//	LogWriter.Debug("Property value: " + (propertyValue == null ? "[null]" : propertyValue.ToString()));
