@@ -117,8 +117,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			//using (LogGroup logGroup = LogGroup.Start("Checking if the specified property is an entity reference.", NLog.LogLevel.Debug))
 			//{
 			
-			isReference = type.FullName.IndexOf("EntityReference") > -1
-				|| type.FullName.IndexOf("EntityReference") > -1;
+			isReference = type.FullName == typeof(EntityReference).FullName;
 			//	LogWriter.Debug("Is reference? " + isReference.ToString());
 			//}
 			
