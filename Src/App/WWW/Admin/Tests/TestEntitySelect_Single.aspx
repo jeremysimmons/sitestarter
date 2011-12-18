@@ -115,9 +115,8 @@ private void Page_Load(object sender, EventArgs e)
 <script language="javascript">
 
 </script>
-<h1>Multiple</h1>
-<p><asp:button runat="server" text="Create Mock Users" id="CreateUsersButton" onclick="CreateUsersButton_Click"/></p>
 <h1>Single</h1>
+<p><asp:button runat="server" text="Create Mock Users" id="CreateUsersButton" onclick="CreateUsersButton_Click"/></p>
 <cc:EntitySelect runat="server" id="SingleSelect" NoDataText="No data found." width="400px" SelectionMode="Single" EntityType="SoftwareMonkeys.SiteStarter.Entities.User" OnDataLoading="TestSelect_DataLoading" IsReference="false" />
 <asp:button runat="server" text="Go" onclick="GoSingleButton_Click" />
 <ss:IndexGrid runat="server" id="SelectedIndex" HeaderText="Selected Entities">

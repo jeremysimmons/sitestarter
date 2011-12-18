@@ -115,7 +115,7 @@ private void Page_Load(object sender, EventArgs e)
 <script language="javascript">
 
 </script>
-<h2>Empty Multiple</h2>
+<h1>Empty Multiple</h1>
 <cc:EntitySelect runat="server" id="MultipleEmptySelect" NoDataText="No data found." width="400px" DisplayMode="Multiple" SelectionMode="Multiple" EntityType="SoftwareMonkeys.SiteStarter.Entities.User" IsReference="false"/>
 <asp:button runat="server" text="Go" onclick="GoMultipleEmptyButton_Click" />
 <ss:IndexGrid runat="server" id="SelectedIndex" HeaderText="Selected Entities">
