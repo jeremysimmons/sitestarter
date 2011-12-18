@@ -41,11 +41,17 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// </summary>
 		public void Dispose()
 		{
-			using (LogGroup logGroup = LogGroup.Start("Disposing the projections.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Disposing the projections."))
 			{
 				if (ProjectionState.IsInitialized)
 				{					
-					Dispose(ProjectionState.GetProjections(false));
+					ProjectionStateCollection projections = ProjectionState.GetProjections(false);
+					
+					LogWriter.Debug("Total projections: " + projections.Count.ToString());
+					
+					Dispose(projections);
+					
+					ProjectionState.Projections = null;
 				}
 			}
 		}
@@ -59,13 +65,21 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			{
 				if (ProjectionState.IsInitialized)
 				{
-					foreach (ProjectionInfo projection in projections)
+					while (projections.Count > 0)
 					{
-						projections.Remove(projection);
+						// Delete the info file
+						DeleteInfo(projections[0]);
+						
+						projections.RemoveAt(0);
+					}
+					/*for (int i = 0; i < projections.Count; i ++)
+					{
+						projections.Remove(projections[i]);
+						i--; // fix counter having removed projection
 						
 						// Delete the info file
-						DeleteInfo(projection);
-					}
+						DeleteInfo(projections[i]);
+					}*/
 				}
 			}
 		}
