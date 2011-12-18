@@ -23,9 +23,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		public override bool IsClosed
 		{
 			get {
-				if (!StateAccess.State.ContainsApplication(ObjectContainerKey)
-				    || StateAccess.State.GetApplication(ObjectContainerKey) == null
-				    || !StateAccess.State.ContainsApplication(ObjectServerKey)
+				if (!StateAccess.State.ContainsOperation(ObjectContainerKey)
+				    || StateAccess.State.GetOperation(ObjectContainerKey) == null
+				   	|| !StateAccess.State.ContainsApplication(ObjectServerKey)
 				    || StateAccess.State.GetApplication(ObjectServerKey) == null)
 					return true;
 				else
