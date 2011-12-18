@@ -82,7 +82,6 @@
     <Compile Include="EntityLoader.cs" />
     <Compile Include="EntityLocator.cs" />
     <Compile Include="EntityNotFoundException.cs" />
-    <Compile Include="EntityPointer.cs" />
     <Compile Include="EntityReference.cs" />
     <Compile Include="EntityReferenceCollection.cs" />
     <Compile Include="EntitySaver.cs" />
