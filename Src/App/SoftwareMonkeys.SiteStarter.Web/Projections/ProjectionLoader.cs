@@ -62,6 +62,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			set { projectionsInfoDirectoryPath = value; }
 		}
 		
+		protected ProjectionInfo[] Projections;
+		
 		public ProjectionLoader()
 		{
 		}
@@ -72,20 +74,24 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <returns>An array of the the projections found in the directory.</returns>
 		public ProjectionInfo[] LoadFromDirectory()
 		{
-			List<ProjectionInfo> projections = new List<ProjectionInfo>();
-			
-			// Logging disabled to boost performance
-			//using (LogGroup logGroup = LogGroup.Start("Loading the projections from the XML files.", NLog.LogLevel.Debug))
-			//{
-			foreach (string file in Directory.GetFiles(ProjectionsDirectoryPath))
+			if (Projections == null)
 			{
-				//		LogWriter.Debug("File: " + file);
+				List<ProjectionInfo> projections = new List<ProjectionInfo>();
 				
-				projections.Add(LoadInfoFromFile(file));
+				// Logging disabled to boost performance
+				//using (LogGroup logGroup = LogGroup.Start("Loading the projections from the XML files.", NLog.LogLevel.Debug))
+				//{
+				foreach (string file in Directory.GetFiles(ProjectionsDirectoryPath))
+				{
+					//		LogWriter.Debug("File: " + file);
+					
+					projections.Add(LoadInfoFromFile(file));
+				}
+				//}
+				
+				Projections = projections.ToArray();
 			}
-			//}
-			
-			return projections.ToArray();
+			return Projections;
 		}
 		
 		/// <summary>
@@ -103,26 +109,35 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <param name="includeDisabled">A value indicating whether or not to include disabled projections.</param>
 		/// <returns>An array of the the projections found in the directory.</returns>
 		public ProjectionInfo[] LoadInfoFromDirectory(bool includeDisabled)
-		{
-			List<ProjectionInfo> projections = new List<ProjectionInfo>();
-			
+		{			
 			using (LogGroup logGroup = LogGroup.Start("Loading the projections info from the XML files.", NLog.LogLevel.Debug))
 			{
-				foreach (string file in Directory.GetFiles(ProjectionsInfoDirectoryPath))
+				if (Projections == null)
 				{
-					ProjectionInfo projection = LoadInfoFromFile(file);
-					if (projection.Enabled || includeDisabled)
+					LogWriter.Debug("Projections property is null. Loading.");
+
+					List<ProjectionInfo> projections = new List<ProjectionInfo>();
+
+					foreach (string file in Directory.GetFiles(ProjectionsInfoDirectoryPath))
 					{
-						LogWriter.Debug("Importing file: " + file);
-						
-						projections.Add(projection);
+						ProjectionInfo projection = LoadInfoFromFile(file);
+						if (projection.Enabled || includeDisabled)
+						{
+							LogWriter.Debug("Importing file: " + file);
+							
+							projections.Add(projection);
+						}
+						else
+							LogWriter.Debug("Skipping file: " + file);
 					}
-					else
-						LogWriter.Debug("Skipping file: " + file);
+					
+					Projections = projections.ToArray();
 				}
+				else
+					LogWriter.Debug("Projetions property is set. Skipping load.");
 			}
 			
-			return projections.ToArray();
+			return Projections;
 		}
 		
 		/// <summary>
