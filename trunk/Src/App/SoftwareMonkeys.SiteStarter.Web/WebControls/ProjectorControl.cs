@@ -128,7 +128,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 						LogWriter.Debug("Projection not found with name '" + QueryStrings.Name + "' and format '" + QueryStrings.Format + "'.");
 				}
 				else if (QueryStrings.Action != String.Empty &&
-				        QueryStrings.Type != String.Empty)
+				         QueryStrings.Type != String.Empty)
 				{
 					if (ProjectionState.Projections.Contains(QueryStrings.Action, QueryStrings.Type, Format))
 						projection = ProjectionState.Projections[QueryStrings.Action, QueryStrings.Type, Format];
@@ -166,8 +166,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			
 			if (Configuration.Config.IsInitialized)
 			{
-				new ControllersInitializer().Initialize();
-				new ProjectionsInitializer(Page).Initialize();
+				using (TimeoutExtender extender = TimeoutExtender.NewMinutes(30))
+				{
+					new ControllersInitializer().Initialize();
+					new ProjectionsInitializer(Page).Initialize();
+				}
 			}
 			
 		}

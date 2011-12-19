@@ -61,6 +61,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 			set { partsInfoDirectoryPath = value; }
 		}
 		
+		protected PartInfo[] Parts = null;
+		
 		public PartLoader()
 		{
 		}
@@ -71,19 +73,26 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		/// <returns>An array of the the parts found in the directory.</returns>
 		public PartInfo[] LoadFromDirectory()
 		{
-			List<PartInfo> parts = new List<PartInfo>();
-			
-			//using (LogGroup logGroup = LogGroup.Start("Loading the parts from the XML files.", NLog.LogLevel.Debug))
-			//{
+			if (Parts == null)
+			{
+				//using (LogGroup logGroup = LogGroup.Start("Loading the parts from the XML files.", NLog.LogLevel.Debug))
+				//{
+
+				List<PartInfo> parts = new List<PartInfo>();
+				
 				foreach (string file in Directory.GetFiles(PartsDirectoryPath))
 				{
-			//		LogWriter.Debug("File: " + file);
+					//		LogWriter.Debug("File: " + file);
 					
 					parts.Add(LoadFromFile(file));
 				}
-			//}
+				
+				Parts = parts.ToArray();
+
+				//}
+			}
 			
-			return parts.ToArray();
+			return Parts;
 		}
 		
 		/// <summary>
@@ -101,11 +110,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		/// <param name="includeDisabled">A value indicating whether or not to include disabled projections.</param>
 		/// <returns>An array of the the parts found in the directory.</returns>
 		public PartInfo[] LoadInfoFromDirectory(bool includeDisabled)
-		{			
-			List<PartInfo> parts = new List<PartInfo>();
-			
-			//using (LogGroup logGroup = LogGroup.Start("Loading the parts info from the XML files.", NLog.LogLevel.Debug))
-			//{
+		{
+			if (Parts == null)
+			{
+				//using (LogGroup logGroup = LogGroup.Start("Loading the parts info from the XML files.", NLog.LogLevel.Debug))
+				//{
+
+				List<PartInfo> parts = new List<PartInfo>();
 				foreach (string file in Directory.GetFiles(PartsInfoDirectoryPath))
 				{
 					LogWriter.Debug("File: " + file);
@@ -114,9 +125,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 					if (includeDisabled || part.Enabled)
 						parts.Add(part);
 				}
-			//}
+				Parts = parts.ToArray();
+
+				//}
+			}
 			
-			return parts.ToArray();
+			return Parts;
 		}
 		
 		/// <summary>
@@ -130,20 +144,20 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 			
 			//using (LogGroup logGroup = LogGroup.Start("Loading the part from the specified path.", NLog.LogLevel.Debug))
 			//{
-				if (!File.Exists(partPath))
-					throw new ArgumentException("The specified file does not exist.");
-				
+			if (!File.Exists(partPath))
+				throw new ArgumentException("The specified file does not exist.");
+			
 			//	LogWriter.Debug("Path: " + partPath);
+			
+			
+			using (StreamReader reader = new StreamReader(File.OpenRead(partPath)))
+			{
+				XmlSerializer serializer = new XmlSerializer(typeof(PartInfo));
 				
+				info = (PartInfo)serializer.Deserialize(reader);
 				
-				using (StreamReader reader = new StreamReader(File.OpenRead(partPath)))
-				{
-					XmlSerializer serializer = new XmlSerializer(typeof(PartInfo));
-					
-					info = (PartInfo)serializer.Deserialize(reader);
-					
-					reader.Close();
-				}
+				reader.Close();
+			}
 			//}
 			
 			return info;
