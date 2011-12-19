@@ -51,9 +51,6 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			
 			group.Parent = DiagnosticState.CurrentGroup;
 			
-			if (CurrentGroup != null)
-				CurrentGroup.Append(group);
-			
 			CurrentGroup = group;
 		}
 
