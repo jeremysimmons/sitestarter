@@ -63,58 +63,57 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <summary>
 		/// Retrieves the type with the provided type name.
 		/// </summary>
-		/// <param name="typeName">The type name. Either a short name ex. "User" or full name ex. "SoftwareMonkeys.SiteStarter.Entities.User".</param>
+		/// <param name="typeName">The type name. Either a short name ex. "User" or full name ex. "SoftwareMonkeys.WorkHub.Entities.User".</param>
 		/// <returns></returns>
 		static public Type GetType(string typeName)
 		{
-				Type type = null;
-				
-			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving the type '" + typeName + "'."))
+			Type type = null;
+			
+			//using (LogGroup logGroup = LogGroup.StartDebug("Retrieving the type '" + typeName + "'."))
+			//{
+			if (typeName == String.Empty)
+				throw new ArgumentException("A type name must be provided.", "typeName");
+			
+			if (typeName.IndexOf(".") > -1)
+				return Type.GetType(typeName);
+			
+			if (typeName == "IEntity")
+				return typeof(IEntity);
+			
+			if (typeName == "IUniqueEntity")
+				return typeof(IUniqueEntity);
+			
+			if (typeName == "EntityReference")
+				return typeof(EntityReference);
+			
+			
+			// If it's a full name
+			if (typeName.IndexOf(".") > -1)
 			{
-				if (typeName == String.Empty)
-					throw new ArgumentException("A type name must be provided.", "typeName");
-				
-				if (typeName.IndexOf(".") > -1)
-					return Type.GetType(typeName);
-				
-				if (typeName == "IEntity")
-					return typeof(IEntity);
-				
-				if (typeName == "IUniqueEntity")
-					return typeof(IUniqueEntity);
-				
-				if (typeName == "EntityReference")
-					return typeof(EntityReference);
-				
-				
-				// If it's a full name
-				if (typeName.IndexOf(".") > -1)
+				try
 				{
-					try
-					{
-						type = Type.GetType(typeName);
-					}
-					catch (Exception ex)
-					{
-						throw new ArgumentException("Invalid type name: " + typeName, ex);
-					}
+					type = Type.GetType(typeName);
 				}
-				else
+				catch (Exception ex)
 				{
-					EntityInfo info = GetInfo(typeName, false);
-					
-					if (info == null)
-						throw new ArgumentException("No entity type info found with the name '" + typeName + "'.");
-					
-					
-					type = info.GetEntityType();
-					
-					if (type == null)
-						throw new ArgumentException("No entity type loaded with the name '" + typeName + "'.");
+					throw new ArgumentException("Invalid type name: " + typeName, ex);
 				}
-				
-				LogWriter.Debug("Type: " + type == null ? "[null]" : type.Name);
 			}
+			else
+			{
+				EntityInfo info = GetInfo(typeName, false);
+				
+				if (info == null)
+					throw new ArgumentException("No entity type info found with the name '" + typeName + "'.");
+				
+				type = info.GetEntityType();
+				
+				if (type == null)
+					throw new ArgumentException("No entity type loaded with the name '" + typeName + "'.");
+			}
+			
+			//LogWriter.Debug("Type: " + type == null ? "[null]" : type.Name);
+			//}
 			return type;
 		}
 		
@@ -135,8 +134,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 			EntityInfo info = null;
 			
-			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving the info for the entity type '" + typeName + "'."))
-			{
+			//using (LogGroup logGroup = LogGroup.StartDebug("Retrieving the info for the entity type '" + typeName + "'."))
+			//{
 				info = EntityState.Entities[typeName];
 				
 				if (info != null)
@@ -150,7 +149,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				}
 				else if (throwExceptionIfNotFound)
 					throw new ArgumentException("No entity type info found with the name '" + typeName + "'.");
-			}
+			//}
 			
 			return info;
 		}
