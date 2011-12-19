@@ -171,12 +171,11 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 
 		internal void Start()
 		{
-			// TODO: Check if this needs to be restricted to enabled log groups
-			// Should be possible to boost performance by avoiding push/pop of groups that aren't enabled
-			DiagnosticState.PushGroup(this);
-				
+			
 			if (callingMethod != null && new LogSupervisor().IsEnabled(callingMethod.DeclaringType.Name, LogLevel))
 			{
+				DiagnosticState.PushGroup(this);
+				
 				Write(Summary, LogLevel, CallingMethod);
 			}
 			
@@ -190,16 +189,15 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			{
 				LogSupervisor supervisor = new LogSupervisor();
 				
-				// TODO: Check if needed. It should be possible to boost performance by skipping push/pop of groups that aren't enabled
-				//if (CallingMethod != null && supervisor.IsEnabled(CallingMethod.DeclaringType.Name, LogLevel))
-				//{
+				if (CallingMethod != null && supervisor.IsEnabled(CallingMethod.DeclaringType.Name, LogLevel))
+				{
 					// Keep popping groups from the stack until it reaches the correct level
 					// This loop ensures that if a parent group ends before a child group that the child group(s) will be popped
 					// as well and the stack won't become corrupted
 					// TODO: Check if this loop should be moved to DiagnosticState.PopGroup
 					while (supervisor.CanPop(this, DiagnosticState.CurrentGroup))
 						DiagnosticState.PopGroup();
-				//}
+				}
 				
 				HasEnded = true;
 
@@ -346,12 +344,11 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			// Create the log group even if not enabled
 			newGroup = new LogGroup(summary, callingMethod, logLevel);
 			
-			// TODO: Check if needed. It should be possible to boost performance by not retrieving the current group from state
-			// Only set the parent if it's enabled
-			//if (callingMethod != null && new LogSupervisor().IsEnabled(callingMethod.DeclaringType.Name, logLevel))
-			//{
+			// Only set the parent if the new group is enabled
+			if (callingMethod != null && new LogSupervisor().IsEnabled(callingMethod.DeclaringType.Name, logLevel))
+			{
 				newGroup.Parent = DiagnosticState.CurrentGroup;
-			//}
+			}
 
 			newGroup.Start();
 
