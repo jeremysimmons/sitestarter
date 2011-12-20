@@ -3,7 +3,7 @@ using System.Reflection;
 using SoftwareMonkeys.SiteStarter.Entities;
 using System.IO;
 using System.Resources;
-using System.Collection.Generic;
+using System.Collections.Generic;
 
 namespace SoftwareMonkeys.SiteStarter.Business
 {
