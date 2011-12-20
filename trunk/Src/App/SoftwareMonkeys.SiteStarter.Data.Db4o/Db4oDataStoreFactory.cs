@@ -42,6 +42,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				// Create a new data store
 				store = new Db4oDataStore(db4oConfiguration);
 				store.Name = dataStoreName;
+
+				store.Open();
 			}
 			return store;
 			
