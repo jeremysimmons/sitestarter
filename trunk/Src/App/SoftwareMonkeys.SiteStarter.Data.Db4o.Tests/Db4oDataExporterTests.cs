@@ -1,8 +1,10 @@
 ﻿using System;
+using NUnit.Framework;
 using SoftwareMonkeys.SiteStarter.Data.Tests;
 
 namespace SoftwareMonkeys.SiteStarter.Data.Db4o.Tests
 {
+	[TestFixture]
 	public class Db4oDataExporterTests : DataExporterTests
 	{
 		public override void InitializeMockData()
