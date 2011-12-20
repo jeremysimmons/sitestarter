@@ -22,11 +22,11 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics.Tests
 		[Test]
 		public void Test_Start()
 		{
-			using (LogGroup logGroup = LogGroup.Start("Outer group ", LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartError("Outer group"))
 			{
 				for (int i = 0; i < 10; i++)
 				{
-					using (LogGroup logGroup2 = LogGroup.Start("Test group " + i, LogLevel.Debug))
+					using (LogGroup logGroup2 = LogGroup.StartError("Test group " + i))
 					{
 						if (i > 8)
 							break;
@@ -40,21 +40,21 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics.Tests
 		{
 			LogSupervisor supervisor = new LogSupervisor();
 			
-			using (LogGroup logGroup = LogGroup.Start("Outer group "))
+			using (LogGroup logGroup = LogGroup.StartError("Outer group"))
 			{
 				
 				Assert.AreEqual(logGroup.ID.ToString(), DiagnosticState.CurrentGroupID.ToString(), "Current group ID doesn't match that of outer group.");
 				
 				LogGroup logGroup3 = null;
 				
-				using (LogGroup logGroup2 = LogGroup.Start("Test group"))
+				using (LogGroup logGroup2 = LogGroup.StartError("Test group"))
 				{
 					Assert.AreEqual(logGroup2.ID.ToString(), DiagnosticState.CurrentGroupID.ToString(), "Current group ID doesn't match that of test group.");
 				
 					Assert.AreEqual(logGroup.ID.ToString(), logGroup2.ParentID.ToString(), "Sub group's parent ID doesn't match the ID of the outer group.");
 					
 					// Create the group that will potentially break the logging system because it's not wrapped in "using (...) {...}"
-					logGroup3 = LogGroup.Start("Break group", LogLevel.Debug);
+					logGroup3 = LogGroup.StartError("Break group");
 					
 					Assert.AreEqual(logGroup3.ID.ToString(), DiagnosticState.CurrentGroupID.ToString(), "Current group ID doesn't match that of breaking group.");
 				
