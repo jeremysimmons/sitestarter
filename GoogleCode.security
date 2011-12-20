@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<project xmlns="http://nant.sf.net/schemas/nant.xsd">
+	<property name="GoogleCode.ProjectName" value="SiteStarter" />
+	<property name="GoogleCode.Username" value="user@domain.com" />
+	<property name="GoogleCode.Password" value="password" />
+</project>
