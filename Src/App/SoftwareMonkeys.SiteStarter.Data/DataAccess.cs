@@ -15,10 +15,11 @@ namespace SoftwareMonkeys.SiteStarter.Data
         /// </summary>
         static public bool IsInitialized
         {
-            get { return State.StateAccess.State.GetApplication("DataAccess.Data") != null; }
+			get { return data != null
+					|| State.StateAccess.State.GetApplication("DataAccess.Data") != null; }
         }
 
-        //static private DataProvider data;
+        static private DataProvider data;
         /// <summary>
         /// Gets the data provider for the current context.
         /// </summary>
@@ -26,9 +27,15 @@ namespace SoftwareMonkeys.SiteStarter.Data
         {
             get
             {
-                if (State.StateAccess.State.GetApplication("DataAccess.Data") == null)
-                    throw new InvalidOperationException("The data access provider has not been intialized so the application cannot run.");
-                return (DataProvider)State.StateAccess.State.GetApplication("DataAccess.Data");
+				if (data == null)
+				{
+					if (State.StateAccess.State.GetApplication("DataAccess.Data") == null)
+						throw new InvalidOperationException("The data access provider has not been intialized so the application cannot run.");
+					
+					data = (DataProvider)State.StateAccess.State.GetApplication("DataAccess.Data");
+				}
+				
+				return data;
             }
             set { State.StateAccess.State.SetApplication("DataAccess.Data", value); }
         }
