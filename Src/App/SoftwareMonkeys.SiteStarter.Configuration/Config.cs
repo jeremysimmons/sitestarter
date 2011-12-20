@@ -13,50 +13,67 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
 	// [XmlRoot(Namespace = "urn:SoftwareMonkeys.SiteStarter.Config")]
 	public class Config
 	{
-		//static private ConfigCollection all = new ConfigCollection();
+		static private ConfigCollection all;
 		/// <summary>
 		/// Gets the config collection for the application.
 		/// </summary>
 		static public ConfigCollection All
 		{
-			get {
+			get
+			{
 				if (!State.StateAccess.IsInitialized)
 					throw new InvalidOperationException("The state provider has not been initialized.");
 				
-				if (!StateAccess.State.ContainsApplication("Config.All"))
-					State.StateAccess.State.SetApplication("Config.All", new ConfigCollection());
-				return (ConfigCollection)State.StateAccess.State.GetApplication("Config.All"); }
+				if (all == null)
+				{
+					if (!StateAccess.State.ContainsApplication("Config.All"))
+						State.StateAccess.State.SetApplication("Config.All", new ConfigCollection());
+					all = (ConfigCollection)State.StateAccess.State.GetApplication("Config.All");
+				}
+				return all;
+			}
 			set { State.StateAccess.State.SetApplication("Config.All", value); }
 		}
 
+		static private IAppConfig application;
 		/// <summary>
 		/// Gets/sets the application configuration object.
 		/// </summary>
 		static public IAppConfig Application
 		{
 			get {
-				if (All != null && All.Count > 0)
+				if (application == null)
 				{
-					for (int i = 0; i < All.Count; i++)
+					ConfigCollection allConfigs = All;
+					if (allConfigs != null & allConfigs.Count > 0)
 					{
-						if (All[i] is IAppConfig)
-							return (IAppConfig)All[i];
+						for (int i = 0; i < allConfigs.Count; i++)
+						{
+							if (allConfigs[i] is IAppConfig)
+								application = (IAppConfig)allConfigs[i];
+						}
 					}
 				}
-				return null;
+				return application;
 			}
 			set
 			{
-				if (All.Contains((IConfig)value))
+				application = value;
+				
+				ConfigCollection allConfigs = All;
+				if (allConfigs.Contains((IConfig)value))
 				{
 					for (int i = 0; i < All.Count; i++)
 					{
-						if (All[i] is IAppConfig)
-							All[i] = (IConfig)value;
+						if (allConfigs[i] is IAppConfig)
+							allConfigs[i] = (IConfig)value;
 					}
 				}
 				else
-					All.Add((IConfig)value);
+				{
+					allConfigs.Add((IConfig)value);
+					All = allConfigs;
+				}
 			}
 		}
 		
