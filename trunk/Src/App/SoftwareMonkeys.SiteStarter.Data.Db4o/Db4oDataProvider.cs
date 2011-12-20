@@ -304,7 +304,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// </summary>
 		public override void Dispose(bool fullDisposal, bool commit)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Disposing the data provider and data stores.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Disposing the data provider and data stores."))
 			{
 				if (commit)
 				{
