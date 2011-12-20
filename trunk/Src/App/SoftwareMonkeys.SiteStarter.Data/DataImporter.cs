@@ -466,11 +466,15 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				
 				if (type != null)
 				{
-					foreach (IEntity entity in Provider.Indexer.GetEntities(type))
+					// If the type is NOT a reference type
+					if (!EntitiesUtilities.IsReference(type))
 					{
-						Provider.Activator.Activate(entity);
-						
-						Provider.Updater.Update(entity);
+						foreach (IEntity entity in Provider.Indexer.GetEntities(type))
+						{
+							Provider.Activator.Activate(entity);
+							
+							Provider.Updater.Update(entity);
+						}
 					}
 				}
 			}
