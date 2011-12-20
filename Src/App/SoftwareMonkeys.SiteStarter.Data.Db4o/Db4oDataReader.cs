@@ -230,7 +230,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			{
 				IDataReferencer referencer = Provider.InitializeDataReferencer();
 				referencer.AutoRelease = AutoRelease;
-				indexer.DataStore = DataStore;
+				referencer.DataStore = DataStore;
 				
 				EntityReference reference = (EntityReference)entity;
 				
