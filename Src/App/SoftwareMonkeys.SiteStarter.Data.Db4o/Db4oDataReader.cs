@@ -41,6 +41,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			IDataIndexer indexer = Provider.InitializeDataIndexer();
 			indexer.AutoRelease = AutoRelease;
+			indexer.DataStore = DataStore;
 			
 			IEntity[] entities = indexer.GetEntities(filter);
 			
@@ -69,6 +70,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			IDataIndexer indexer = Provider.InitializeDataIndexer();
 			indexer.AutoRelease = AutoRelease;
+			indexer.DataStore = DataStore;
 			
 			IEntity[] entities = indexer.GetEntities(group);
 			
@@ -96,6 +98,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				
 				IDataIndexer indexer = Provider.InitializeDataIndexer();
 				indexer.AutoRelease = AutoRelease;
+				indexer.DataStore = DataStore;
 				
 				IEntity[] entities = indexer.GetEntities(type, parameters);
 				
@@ -125,6 +128,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			{
 				IDataIndexer indexer = Provider.InitializeDataIndexer();
 				indexer.AutoRelease = AutoRelease;
+				indexer.DataStore = DataStore;
 				
 				IEntity[] entities = indexer.GetEntities(type, propertyName, propertyValue);
 
@@ -154,6 +158,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				
 				IDataIndexer indexer = Provider.InitializeDataIndexer();
 				indexer.AutoRelease = AutoRelease;
+				indexer.DataStore = DataStore;
 				
 				T[] entities = indexer.GetEntities<T>(propertyName, propertyValue);
 
@@ -176,6 +181,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			IDataIndexer indexer = Provider.InitializeDataIndexer();
 			indexer.AutoRelease = AutoRelease;
+			indexer.DataStore = DataStore;
 			
 			T[] entities = indexer.GetEntitiesWithReference<T>(propertyName, referencedEntityType, referencedEntityID);
 
@@ -199,6 +205,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				
 				IDataIndexer indexer = Provider.InitializeDataIndexer();
 				indexer.AutoRelease = AutoRelease;
+				indexer.DataStore = DataStore;
 				
 				T[] entities = indexer.GetEntities<T>(parameters);
 				if (entities == null || entities.Length == 0)
@@ -223,6 +230,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			{
 				IDataReferencer referencer = Provider.InitializeDataReferencer();
 				referencer.AutoRelease = AutoRelease;
+				indexer.DataStore = DataStore;
 				
 				EntityReference reference = (EntityReference)entity;
 				

@@ -785,7 +785,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			// TODO: Comment out logging
 			// Logging commented out to boost performance
-			using (LogGroup logGroup = LogGroup.Start("Binding the provided references with those in the data storer.", LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.Start("Binding the provided references with those in the data store.", LogLevel.Debug))
 			{
 				if (references == null)
 					throw new ArgumentNullException("references");

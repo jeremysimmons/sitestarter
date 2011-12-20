@@ -14,5 +14,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o.Tests
 		{
 			new MockDb4oDataProviderInitializer(this).Initialize();
 		}
+		
+		[Test]
+		public override void Test_ImportFromXml()
+		{
+			base.Test_ImportFromXml();
+		}
 	}
 }

@@ -109,6 +109,9 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			if (type == null)
 				throw new ArgumentNullException("type");
+			
+			if (type.Name == "EntityReference")
+				throw new InvalidOperationException("An instance of the reference is required. Pass the entity to GetDataStore(IEntity) overload.");
 
 			return GetDataStoreName(type, true);
 		}
@@ -135,41 +138,10 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <returns>The data store that the provided entity is stored in.</returns>
 		static public string GetDataStoreName(Type type, bool throwErrorIfNotFound)
 		{
+			if (type.Name == "EntityReference")
+				throw new InvalidOperationException("An instance of the reference is required. Pass the entity to GetDataStore(IEntity) overload.");
+
 			return type.Name;
-			/*string dataStoreName = String.Empty;
-			//using (LogGroup logGroup = LogGroup.Start("Retrieving the name of the data store.", LogLevel.Debug))
-			// {
-			if (type == null)
-				throw new ArgumentNullException("type");
-
-			if (Config.Mappings == null)
-				throw new InvalidOperationException("No mappings have been initialized.");
-
-			Type actualType = EntitiesUtilities.GetType(type.Name);
-
-
-			if (actualType == null)
-				actualType = type;
-
-			// LogWriter.Debug("Actual type: " + actualType.ToString());
-
-			MappingItem item = Config.Mappings.GetItem(actualType, false);
-			if (item == null)
-			{
-				throw new InvalidOperationException("No mappings found for the type " + actualType.ToString() + ".");
-			}
-			//else
-			//LogWriter.Debug("Item found: " + item.TypeName);
-
-			if (!item.Settings.ContainsKey("DataStoreName"))
-				throw new InvalidOperationException("No data store name has been declared in the mappings for the '" + actualType.ToString() + "' type.");
-			//else
-			//LogWriter.Debug("Data store: " + item.Settings["DataStoreName"]);
-
-			dataStoreName = (string)item.Settings["DataStoreName"];
-
-			//}
-			return dataStoreName;*/
 		}
 
 		/// <summary>
@@ -188,16 +160,22 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			
 			using (LogGroup logGroup = LogGroup.Start("Retrieving data store name for entity of type '" + type.ToString() + "'.", LogLevel.Debug))
 			{
-				if (EntitiesUtilities.IsReference(entity.GetType()))
+				if (EntitiesUtilities.IsReference(entity))
 				{
+					LogWriter.Debug("Provided entity is an EntityReference");
+					
 					EntityReference reference = (EntityReference)entity;
 					
 					dataStoreName = GetDataStoreName(new string[] {reference.Type1Name, reference.Type2Name});//GetType(names[0]), GetType(names[1]));//dataStoreNames[0] + "-" + dataStoreNames[1];
 				}
 				else
 				{
+					LogWriter.Debug("Provided entity is NOT an EntityReference.");
+					
 					dataStoreName = GetDataStoreName(entity.GetType());
 				}
+				
+				LogWriter.Debug("Data store name: " + dataStoreName);
 			}
 			
 			return dataStoreName;
