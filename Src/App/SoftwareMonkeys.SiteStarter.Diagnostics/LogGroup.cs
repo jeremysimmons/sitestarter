@@ -288,6 +288,20 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		}
 		
 		/// <summary>
+		/// Starts a new error level log group.
+		/// </summary>
+		/// <param name="summary"></param>
+		/// <returns></returns>
+		static public LogGroup StartError(string summary)
+		{
+			MethodBase callingMethod = null;
+			
+			callingMethod = Reflector.GetCallingMethod();
+
+			return Start(summary, LogLevel.Error, callingMethod);
+		}
+		
+		/// <summary>
 		/// Starts a new log group.
 		/// </summary>
 		/// <param name="summary"></param>
