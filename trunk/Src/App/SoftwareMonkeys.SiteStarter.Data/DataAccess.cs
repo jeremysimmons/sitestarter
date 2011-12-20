@@ -37,7 +37,9 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				
 				return data;
             }
-            set { State.StateAccess.State.SetApplication("DataAccess.Data", value); }
+            set {
+				data = value;
+				State.StateAccess.State.SetApplication("DataAccess.Data", value); }
         }
 
         /// <summary>
