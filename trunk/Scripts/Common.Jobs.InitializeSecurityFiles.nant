@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<project name="Common.Jobs.InitializeSecurityFiles" default="Common.Jobs.InitializeSecurityFiles" xmlns="http://nant.sf.net/schemas/nant.xsd">
+	
+	
+	<target name="Common.Jobs.InitializeSecurityFiles">
+
+		<property name="liveGoogleCodePath" value="${Project.RootPath}\GoogleCode.live.security" />
+
+		<if test="${file::exists(liveGoogleCodePath)}">	
+
+			<property name="googleCodePath" value="${Project.RootPath}\GoogleCode.security" />
+
+			<copy file="${liveGoogleCodePath}" tofile="${googleCodePath}" overwrite="true" />
+		</if>
+
+		<property name="liveFtpPath" value="${Project.RootPath}\smnet-ftp.live.security" />
+
+		<if test="${file::exists(liveFtpPath)}">
+
+			<property name="ftpPath" value="${Project.RootPath}\smnet-ftp.security" />
+
+			<copy file="${liveFtpPath}" tofile="${ftpPath}" overwrite="true" />
+		</if>
+	
+	</target>
+	
+  	
+     
+</project>
