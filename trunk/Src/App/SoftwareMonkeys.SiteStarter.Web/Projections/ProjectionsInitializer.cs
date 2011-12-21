@@ -188,7 +188,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 							// Only scan for projections if the page component is accessible (otherwise they can't be loaded through LoadControl)
 							if (pageIsAccessible)
 							{
-								LogWriter.Debug("Is not mapped. Scanning for projections.");
+								LogWriter.Debug("Is not cached. Scanning for projections.");
 								
 								projections = FindProjections();
 								
@@ -202,7 +202,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 						// Otherwise load the mapped cache info
 						else
 						{
-							LogWriter.Debug("Is mapped. Loading from XML.");
+							LogWriter.Debug("Is cached. Loading from XML.");
 							
 							projections = LoadProjections();
 							
@@ -225,10 +225,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			using (LogGroup logGroup = LogGroup.Start("Saving the provided projections to XML.", NLog.LogLevel.Debug))
 			{
-				foreach (ProjectionInfo projection in projections)
-				{
-					Saver.SaveInfoToFile(projection);
-				}
+				Saver.SaveInfoToFile(projections);
 			}
 		}
 		
@@ -239,7 +236,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <returns>The loaded from the projections mappings directory.</returns>
 		public ProjectionInfo[] LoadProjections()
 		{
-			return Loader.LoadInfoFromDirectory();
+			return Loader.LoadInfoFromFile();
 		}
 		
 		/// <summary>
@@ -268,12 +265,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <summary>
 		/// Checks whether the projection cache has been created and saved to file.
 		/// </summary>
-		/// <returns>A value indicating whether the projection cache directory was found.</returns>
+		/// <returns>A value indicating whether the projection cache info file was found.</returns>
 		public bool ProjectionCacheExists()
 		{
-			string directory = FileNamer.ProjectionsInfoDirectoryPath;
-			
-			return (Directory.Exists(directory) && Directory.GetFiles(directory).Length > 0);
+			return File.Exists(FileNamer.ProjectionsInfoFilePath);
 		}
 	}
 	

@@ -5,14 +5,17 @@
 
 		<call target="Common.Jobs.KillDBServer"/>
 
-		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Entities" />
-		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Strategies" />
-		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Parts" />
-		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Projections" />
-		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Controllers" />
-		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Reactions" />
-		<delete dir="${path::get-full-path(Solution.RootPath)}/WWW/App_Data/Elements" />
-
+		<delete>
+		    <fileset basedir="${Solution.RootPath}">
+       			<include name="WWW/App_Data/Projections.xml" />
+       			<include name="WWW/App_Data/Controllers.xml" />
+       			<include name="WWW/App_Data/Entities.xml" />
+       			<include name="WWW/App_Data/Strategies.xml" />
+       			<include name="WWW/App_Data/Reactions.xml" />
+       			<include name="WWW/App_Data/Elements.xml" />
+       			<include name="WWW/App_Data/Parts.xml" />
+		    </fileset>
+		</delete>
 
   </target>
 

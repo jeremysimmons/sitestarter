@@ -53,6 +53,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			set { controllerType = value; }
 		}
 		
+		private bool enabled = true;
+		public bool Enabled
+		{
+			get { return enabled; }
+			set { enabled = value; }
+		}
+		
 		private ControllerCreator creator;
 		/// <summary>
 		/// Gets the controller creator.

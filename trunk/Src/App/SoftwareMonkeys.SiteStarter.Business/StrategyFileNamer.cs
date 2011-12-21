@@ -11,62 +11,27 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// </summary>
 	public class StrategyFileNamer
 	{
-		private string strategiesInfoDirectoryPath;
+		private string strategiesInfoFilePath;
 		/// <summary>
-		/// Gets the path to the directory containing serialized strategy component information.
+		/// Gets the path to the file containing the strategy info.
 		/// </summary>
-		public string StrategiesInfoDirectoryPath
+		public virtual string StrategiesInfoFilePath
 		{
 			get {
-				if (strategiesInfoDirectoryPath == null || strategiesInfoDirectoryPath == String.Empty)
+				if (strategiesInfoFilePath == null || strategiesInfoFilePath == String.Empty)
 				{
 					if (StateAccess.IsInitialized)
-					{
-						strategiesInfoDirectoryPath = StateAccess.State.PhysicalApplicationPath
+						strategiesInfoFilePath = StateAccess.State.PhysicalApplicationPath
 							+ Path.DirectorySeparatorChar + "App_Data"
-							+ Path.DirectorySeparatorChar + "Strategies";
-					}
+							+ Path.DirectorySeparatorChar + "Strategies.xml";
 				}
-				return strategiesInfoDirectoryPath;
+				return strategiesInfoFilePath;
 			}
-			set { strategiesInfoDirectoryPath = value; }
+			set { strategiesInfoFilePath = value; }
 		}
 		
 		public StrategyFileNamer()
 		{
 		}
-		
-		/// <summary>
-		/// Creates the file name for the provided strategy.
-		/// </summary>
-		/// <param name="strategy">The strategy to create the file name for.</param>
-		/// <returns>The full file name for the provided strategy.</returns>
-		public string CreateInfoFileName(StrategyInfo strategy)
-		{			
-			if (strategy == null)
-				throw new ArgumentNullException("strategy");
-			
-			if (strategy.Action == null)
-				throw new ArgumentNullException("strategy.Key", "No key has been set to the Key property.");
-			
-			string name = strategy.Key.Replace("*", "'");
-			
-			if (strategy is AuthoriseReferenceStrategyInfo)
-				name = name + ".ar";
-					
-			name = name + ".strategy";
-			
-			return name;
-		}
-		
-		/// <summary>
-		/// Creates the full file path for the provided strategy.
-		/// </summary>
-		/// <param name="strategy">The strategy to create the file path for.</param>
-		/// <returns>The full file path for the provided strategy.</returns>
-		public string CreateInfoFilePath(StrategyInfo strategy)
-		{
-			return StrategiesInfoDirectoryPath + Path.DirectorySeparatorChar + CreateInfoFileName(strategy);
-		}		
 	}
 }

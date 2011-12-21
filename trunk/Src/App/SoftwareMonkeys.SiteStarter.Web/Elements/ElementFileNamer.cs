@@ -11,41 +11,23 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 	/// </summary>
 	public class ElementFileNamer
 	{
-		private string elementsDirectoryPath;
+		private string elementsInfoFilePath;
 		/// <summary>
-		/// Gets the path to the directory containing the element files.
+		/// Gets the path to the file containing the element info.
 		/// </summary>
-		public virtual string ElementsDirectoryPath
+		public virtual string ElementsInfoFilePath
 		{
 			get {
-				if (elementsDirectoryPath == null || elementsDirectoryPath == String.Empty)
+				if (elementsInfoFilePath == null || elementsInfoFilePath == String.Empty)
 				{
 					if (StateAccess.IsInitialized)
-						elementsDirectoryPath = StateAccess.State.PhysicalApplicationPath
-							+ Path.DirectorySeparatorChar + "Elements";
-				}
-				return elementsDirectoryPath;
-			}
-			set { elementsDirectoryPath = value; }
-		}
-		
-		private string elementsInfoDirectoryPath;
-		/// <summary>
-		/// Gets the path to the directory containing serialized element information.
-		/// </summary>
-		public virtual string ElementsInfoDirectoryPath
-		{
-			get {
-				if (elementsInfoDirectoryPath == null || elementsInfoDirectoryPath == String.Empty)
-				{
-					if (StateAccess.IsInitialized)
-						elementsInfoDirectoryPath = StateAccess.State.PhysicalApplicationPath
+						elementsInfoFilePath = StateAccess.State.PhysicalApplicationPath
 							+ Path.DirectorySeparatorChar + "App_Data"
-							+ Path.DirectorySeparatorChar + "Elements";
+							+ Path.DirectorySeparatorChar + "Elements.xml";
 				}
-				return elementsInfoDirectoryPath;
+				return elementsInfoFilePath;
 			}
-			set { elementsInfoDirectoryPath = value; }
+			set { elementsInfoFilePath = value; }
 		}
 		
 		private IFileMapper fileMapper;
@@ -63,43 +45,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 		
 		public ElementFileNamer()
 		{
-		}
-		
-		/// <summary>
-		/// Creates the file name for the serialized info for the provided element.
-		/// </summary>
-		/// <param name="element">The element to create the file name for.</param>
-		/// <returns>The full file name for the serialized info for the provided element.</returns>
-		public virtual string CreateInfoFileName(ElementInfo element)
-		{			
-			if (element == null)
-				throw new ArgumentNullException("element");
-			
-			// Use the element name
-			string name = element.Name;
-			
-			// If the type and action are specified then use them as the name instead
-			if (element.TypeName != null
-				&& element.TypeName != String.Empty
-				&& element.Action != null
-				&& element.Action != String.Empty)
-			{
-				name = element.TypeName + "-" + element.Action;
-			}
-			
-			name = name + ".element";
-			
-			return name;
-		}
-		
-		/// <summary>
-		/// Creates the full file path for the serialized info for the provided element.
-		/// </summary>
-		/// <param name="element">The element to create the file path for.</param>
-		/// <returns>The full file path for the serialized info for the provided element.</returns>
-		public string CreateInfoFilePath(ElementInfo element)
-		{
-			return ElementsInfoDirectoryPath + Path.DirectorySeparatorChar + CreateInfoFileName(element);
 		}
 	}
 }

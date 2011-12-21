@@ -25,41 +25,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			set { fileNamer = value; }
 		}
 		
-		private string controllersDirectoryPath;
-		/// <summary>
-		/// Gets/sets the path to the directory containing the controller files.
-		/// </summary>
-		public string ControllersDirectoryPath
-		{
-			get {
-				if (controllersDirectoryPath == null || controllersDirectoryPath == String.Empty)
-				{
-					if (FileNamer == null)
-						throw new InvalidOperationException("FileNamer is not set.");
-					
-					controllersDirectoryPath = FileNamer.ControllersDirectoryPath;
-				}
-				return controllersDirectoryPath; }
-			set { controllersDirectoryPath = value; }
-		}
-		
-		private string controllersInfoDirectoryPath;
-		/// <summary>
-		/// Gets/sets the path to the directory containing the controller info files.
-		/// </summary>
-		public string ControllersInfoDirectoryPath
-		{
-			get {
-				if (controllersInfoDirectoryPath == null || controllersInfoDirectoryPath == String.Empty)
-				{
-					if (FileNamer == null)
-						throw new InvalidOperationException("FileNamer is not set.");
-					
-					controllersInfoDirectoryPath = FileNamer.ControllersInfoDirectoryPath;
-				}
-				return controllersInfoDirectoryPath; }
-			set { controllersInfoDirectoryPath = value; }
-		}
+		protected ControllerInfo[] Controllers;
 		
 		public ControllerLoader()
 		{
@@ -69,42 +35,41 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// Loads all the controllers found in the controllers directory.
 		/// </summary>
 		/// <returns>An array of the the controllers found in the directory.</returns>
-		public ControllerInfo[] LoadFromDirectory()
+		public ControllerInfo[] LoadInfoFromDirectory()
 		{
-			List<ControllerInfo> controllers = new List<ControllerInfo>();
-			
-			using (LogGroup logGroup = LogGroup.Start("Loading the controllers from the XML files.", NLog.LogLevel.Debug))
-			{
-				foreach (string file in Directory.GetFiles(ControllersDirectoryPath))
-				{
-					LogWriter.Debug("File: " + file);
-					
-					controllers.Add(LoadFromFile(file));
-				}
-			}
-			
-			return controllers.ToArray();
+			return LoadInfoFromDirectory(false);
 		}
 		
 		/// <summary>
 		/// Loads all the controllers found in the controllers directory.
 		/// </summary>
+		/// <param name="includeDisabled"></param>
 		/// <returns>An array of the the controllers found in the directory.</returns>
-		public ControllerInfo[] LoadInfoFromDirectory()
+		public ControllerInfo[] LoadInfoFromDirectory(bool includeDisabled)
 		{
-			List<ControllerInfo> controllers = new List<ControllerInfo>();
-			
-			using (LogGroup logGroup = LogGroup.Start("Loading the controllers info from the XML files.", NLog.LogLevel.Debug))
+			// Logging disabled to boost performance
+			//using (LogGroup logGroup = LogGroup.StartDebug("Loading the controllers from the XML file."))
+			//{
+			if (Controllers == null)
 			{
-				foreach (string file in Directory.GetFiles(ControllersInfoDirectoryPath))
+				List<ControllerInfo> validControllers = new List<ControllerInfo>();
+				
+				ControllerInfo[] controllers = new ControllerInfo[]{};
+				
+				using (StreamReader reader = new StreamReader(File.OpenRead(FileNamer.ControllersInfoFilePath)))
 				{
-					LogWriter.Debug("File: " + file);
-					
-					controllers.Add(LoadFromFile(file));
+					XmlSerializer serializer = new XmlSerializer(typeof(ControllerInfo[]));
+					controllers = (ControllerInfo[])serializer.Deserialize(reader);
 				}
+				
+				foreach (ControllerInfo controller in controllers)
+					if (controller.Enabled || includeDisabled)
+						validControllers.Add(controller);
+				
+				Controllers = validControllers.ToArray();
 			}
-			
-			return controllers.ToArray();
+			//}
+			return Controllers;
 		}
 		
 		/// <summary>

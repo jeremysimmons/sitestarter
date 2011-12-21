@@ -52,6 +52,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 			get { return elementType; }
 			set { elementType = value; }
 		}
+		
+		private bool enabled = true;
+		public bool Enabled
+		{
+			get { return enabled; }
+			set { enabled = value; }
+		}
 
 		private ElementCreator creator;
 		/// <summary>
