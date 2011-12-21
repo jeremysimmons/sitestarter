@@ -9,57 +9,27 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 	/// </summary>
 	public class EntityFileNamer
 	{
-		private string entitiesInfoDirectoryPath;
+		private string entitiesInfoFilePath;
 		/// <summary>
-		/// Gets the path to the directory containing serialized entity component information.
+		/// Gets the path to the file containing the entity info.
 		/// </summary>
-		public string EntitiesInfoDirectoryPath
+		public virtual string EntitiesInfoFilePath
 		{
 			get {
-				if (entitiesInfoDirectoryPath == null || entitiesInfoDirectoryPath == String.Empty)
+				if (entitiesInfoFilePath == null || entitiesInfoFilePath == String.Empty)
 				{
 					if (StateAccess.IsInitialized)
-					{
-						entitiesInfoDirectoryPath = StateAccess.State.PhysicalApplicationPath
+						entitiesInfoFilePath = StateAccess.State.PhysicalApplicationPath
 							+ Path.DirectorySeparatorChar + "App_Data"
-							+ Path.DirectorySeparatorChar + "Entities";
-					}
+							+ Path.DirectorySeparatorChar + "Entities.xml";
 				}
-				return entitiesInfoDirectoryPath;
+				return entitiesInfoFilePath;
 			}
-			set { entitiesInfoDirectoryPath = value; }
+			set { entitiesInfoFilePath = value; }
 		}
 		
 		public EntityFileNamer()
 		{
 		}
-		
-		/// <summary>
-		/// Creates the file name for the provided entity.
-		/// </summary>
-		/// <param name="entity">The entity to create the file name for.</param>
-		/// <returns>The full file name for the provided entity.</returns>
-		public string CreateInfoFileName(EntityInfo entity)
-		{			
-			if (entity == null)
-				throw new ArgumentNullException("entity");
-			
-			string name = entity.TypeName + ".entity";
-			
-			return name;
-		}
-		
-		/// <summary>
-		/// Creates the full file path for the provided entity.
-		/// </summary>
-		/// <param name="entity">The entity to create the file path for.</param>
-		/// <returns>The full file path for the provided entity.</returns>
-		public string CreateInfoFilePath(EntityInfo entity)
-		{
-			string path = EntitiesInfoDirectoryPath + Path.DirectorySeparatorChar + CreateInfoFileName(entity);
-			
-			return path;
-		}
-		
 	}
 }

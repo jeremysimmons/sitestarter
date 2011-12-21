@@ -52,6 +52,13 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			set { reactionType = value; }
 		}
 		
+		private bool enabled = true;
+		public bool Enabled
+		{
+			get { return enabled; }
+			set { enabled = value; }
+		}
+		
 		private ReactionCreator creator;
 		/// <summary>
 		/// Gets the reaction creator.

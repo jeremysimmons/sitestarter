@@ -33,8 +33,6 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				if (saver == null)
 				{
 					saver = new EntitySaver();
-					if (EntitiesDirectoryPath != null && EntitiesDirectoryPath != String.Empty)
-						saver.EntitiesDirectoryPath = EntitiesDirectoryPath;
 				}
 				return saver; }
 			set { saver = value; }
@@ -65,8 +63,6 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				if (loader == null)
 				{
 					loader = new EntityLoader();
-					if (EntitiesDirectoryPath != null && EntitiesDirectoryPath != String.Empty)
-						loader.EntitiesDirectoryPath = EntitiesDirectoryPath;
 				}
 				return loader; }
 			set { loader = value; }
@@ -78,16 +74,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		public bool IsMapped
 		{
 			get {
-				bool isMapped = EntityMappingsExist();
+				bool isMapped = EntityCacheExists();
 				return isMapped; }
-		}
-		
-		/// <summary>
-		/// Gets the full path to the directory containing entity mappings.
-		/// </summary>
-		public string EntitiesDirectoryPath
-		{
-			get { return FileNamer.EntitiesInfoDirectoryPath; }
 		}
 		
 		public EntityInitializer()
@@ -123,13 +111,13 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 					EntityInfo[] entities = new EntityInfo[]{};
 					if (IsMapped)
 					{
-						LogWriter.Debug("Is mapped. Loading from XML.");
+						LogWriter.Debug("Is cached. Loading from XML.");
 						
 						entities = LoadEntities();
 					}
 					else
 					{
-						LogWriter.Debug("Is not mapped. Scanning from type attributes.");
+						LogWriter.Debug("Is not cached. Scanning from type attributes.");
 						
 						entities = FindEntities(includeTestEntities);
 						SaveToFile(entities);
@@ -150,10 +138,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 			using (LogGroup logGroup = LogGroup.StartDebug("Saving the provided entities to XML."))
 			{
-				foreach (EntityInfo entity in entities)
-				{
-					Saver.SaveToFile(entity);
-				}
+				Saver.SaveToFile(entities);
 			}
 		}
 		
@@ -164,7 +149,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <returns>The loaded from the entities mappings directory.</returns>
 		public EntityInfo[] LoadEntities()
 		{
-			return Loader.LoadFromDirectory();
+			return Loader.LoadInfoFromFile();
 		}
 		
 		/// <summary>
@@ -178,14 +163,14 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		}
 		
 		/// <summary>
-		/// Checks whether the entity mappings have been created and saved to file.
+		/// Checks whether the entity cache has been created and saved to file.
 		/// </summary>
-		/// <returns>A value indicating whether the entity mappings directory was found.</returns>
-		public bool EntityMappingsExist()
+		/// <returns>A value indicating whether the entity cache file was found.</returns>
+		public bool EntityCacheExists()
 		{
-			string directory = EntitiesDirectoryPath;
+			string file = FileNamer.EntitiesInfoFilePath;
 			
-			return (Directory.Exists(directory) && Directory.GetFiles(directory).Length > 0);
+			return File.Exists(file);
 		}
 	}
 	

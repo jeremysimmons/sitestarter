@@ -24,21 +24,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				// Dispose the in-memory state
 				new ProjectionsDisposer().Dispose();
 				
-				string path = new ProjectionFileNamer().ProjectionsInfoDirectoryPath;
-				
-				LogWriter.Debug("Projections info path: " + path);
-				
-				int i = 0;
-				
 				// Delete projection info (not the actual projections)
-				foreach (string file in Directory.GetFiles(path))
-				{
-					File.Delete(file);
-					i++;
-				}
-				
-				LogWriter.Debug("Total info files cleared: " + i.ToString());
-				
+				File.Delete(new ProjectionFileNamer().ProjectionsInfoFilePath);				
 			}
 		}
 	}

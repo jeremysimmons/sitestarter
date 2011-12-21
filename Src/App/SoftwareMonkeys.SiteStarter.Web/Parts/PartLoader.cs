@@ -43,24 +43,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 			set { partsDirectoryPath = value; }
 		}
 		
-		private string partsInfoDirectoryPath;
-		/// <summary>
-		/// Gets/sets the path to the directory containing the part info files.
-		/// </summary>
-		public string PartsInfoDirectoryPath
-		{
-			get {
-				if (partsInfoDirectoryPath == null || partsInfoDirectoryPath == String.Empty)
-				{
-					if (FileNamer == null)
-						throw new InvalidOperationException("FileNamer is not set.");
-					
-					partsInfoDirectoryPath = FileNamer.PartsInfoDirectoryPath;
-				}
-				return partsInfoDirectoryPath; }
-			set { partsInfoDirectoryPath = value; }
-		}
-		
 		protected PartInfo[] Parts = null;
 		
 		public PartLoader()
@@ -68,68 +50,43 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		}
 		
 		/// <summary>
-		/// Loads all the parts found in the parts directory.
+		/// Loads all the enabled parts found in the parts file.
 		/// </summary>
-		/// <returns>An array of the the parts found in the directory.</returns>
-		public PartInfo[] LoadFromDirectory()
+		/// <returns>An array of the the parts found.</returns>
+		public PartInfo[] LoadInfoFromFile()
 		{
-			if (Parts == null)
-			{
-				//using (LogGroup logGroup = LogGroup.Start("Loading the parts from the XML files.", NLog.LogLevel.Debug))
-				//{
-
-				List<PartInfo> parts = new List<PartInfo>();
-				
-				foreach (string file in Directory.GetFiles(PartsDirectoryPath))
-				{
-					//		LogWriter.Debug("File: " + file);
-					
-					parts.Add(LoadFromFile(file));
-				}
-				
-				Parts = parts.ToArray();
-
-				//}
-			}
-			
-			return Parts;
+			return LoadInfoFromFile(false);
 		}
 		
 		/// <summary>
-		/// Loads all the enabled parts found in the parts directory.
+		/// Loads all the parts found in the parts file.
 		/// </summary>
-		/// <returns>An array of the the parts found in the directory.</returns>
-		public PartInfo[] LoadInfoFromDirectory()
+		/// <param name="includeDisabled">A value indicating whether or not to include disabled parts.</param>
+		/// <returns>An array of the the parts found.</returns>
+		public PartInfo[] LoadInfoFromFile(bool includeDisabled)
 		{
-			return LoadInfoFromDirectory(false);
-		}
-		
-		/// <summary>
-		/// Loads all the parts found in the parts directory.
-		/// </summary>
-		/// <param name="includeDisabled">A value indicating whether or not to include disabled projections.</param>
-		/// <returns>An array of the the parts found in the directory.</returns>
-		public PartInfo[] LoadInfoFromDirectory(bool includeDisabled)
-		{
+			// Logging disabled to boost performance
+			//using (LogGroup logGroup = LogGroup.StartDebug("Loading the parts from the XML file."))
+			//{
 			if (Parts == null)
 			{
-				//using (LogGroup logGroup = LogGroup.Start("Loading the parts info from the XML files.", NLog.LogLevel.Debug))
-				//{
-
-				List<PartInfo> parts = new List<PartInfo>();
-				foreach (string file in Directory.GetFiles(PartsInfoDirectoryPath))
+				List<PartInfo> validParts = new List<PartInfo>();
+				
+				PartInfo[] parts = new PartInfo[]{};
+				
+				using (StreamReader reader = new StreamReader(File.OpenRead(FileNamer.PartsInfoFilePath)))
 				{
-					LogWriter.Debug("File: " + file);
-					
-					PartInfo part = LoadFromFile(file);
-					if (includeDisabled || part.Enabled)
-						parts.Add(part);
+					XmlSerializer serializer = new XmlSerializer(typeof(PartInfo[]));
+					parts = (PartInfo[])serializer.Deserialize(reader);
 				}
-				Parts = parts.ToArray();
-
-				//}
+				
+				foreach (PartInfo part in parts)
+					if (part.Enabled || includeDisabled)
+						validParts.Add(part);
+				
+				Parts = validParts.ToArray();
 			}
-			
+			//}
 			return Parts;
 		}
 		

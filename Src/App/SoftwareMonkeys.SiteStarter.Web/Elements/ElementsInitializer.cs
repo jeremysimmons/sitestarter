@@ -35,8 +35,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 				if (saver == null)
 				{
 					saver = new ElementSaver();
-					if (ElementsDirectoryPath != null && ElementsDirectoryPath != String.Empty)
-						saver.ElementsDirectoryPath = ElementsDirectoryPath;
 				}
 				return saver; }
 			set { saver = value; }
@@ -70,29 +68,19 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 				if (loader == null)
 				{
 					loader = new ElementLoader();
-					if (ElementsDirectoryPath != null && ElementsDirectoryPath != String.Empty)
-						loader.ElementsDirectoryPath = ElementsDirectoryPath;
 				}
 				return loader; }
 			set { loader = value; }
 		}
 		
 		/// <summary>
-		/// Gets a value indicating whether the elements have been mapped yet.
+		/// Gets a value indicating whether the elements info has been cached.
 		/// </summary>
-		public bool IsMapped
+		public bool IsCached
 		{
 			get {
-				bool isMapped = ElementMappingsExist();
-				return isMapped; }
-		}
-		
-		/// <summary>
-		/// Gets the full path to the directory containing element mappings.
-		/// </summary>
-		public string ElementsDirectoryPath
-		{
-			get { return FileNamer.ElementsDirectoryPath; }
+				bool isCached = ElementsInfoExists();
+				return isCached; }
 		}
 		
 		public ElementsInitializer()
@@ -135,18 +123,18 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 					if (!ElementState.IsInitialized)
 					{
 						ElementInfo[] elements = new ElementInfo[]{};
-						if (IsMapped)
+						if (IsCached)
 						{
-							LogWriter.Debug("Is mapped. Loading from XML.");
+							LogWriter.Debug("Is cached. Loading from XML.");
 							
 							elements = LoadElements();
 						}
 						else
 						{
-							LogWriter.Debug("Is not mapped. Scanning from type attributes.");
+							LogWriter.Debug("Is not cached. Scanning from type attributes.");
 							
 							elements = FindElements(includeTestElements);
-							SaveInfoToFile(elements);
+							Saver.SaveInfoToFile(elements);
 						}
 						
 						Initialize(elements);
@@ -157,31 +145,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 				else
 					LogWriter.Debug("State is not initialized. Skipping.");
 			}
-		}
-		
-		/// <summary>
-		/// Saves the info for the provided elements to elements info directory.
-		/// </summary>
-		/// <param name="elements">The elements to save to file.</param>
-		public void SaveInfoToFile(ElementInfo[] elements)
-		{
-			using (LogGroup logGroup = LogGroup.Start("Saving the provided elements to XML.", NLog.LogLevel.Debug))
-			{
-				foreach (ElementInfo element in elements)
-				{
-					Saver.SaveInfoToFile(element);
-				}
-			}
-		}
-		
+		}		
 		
 		/// <summary>
 		/// Loads the available elements from file.
 		/// </summary>
-		/// <returns>The loaded from the elements mappings directory.</returns>
+		/// <returns>The loaded elements info.</returns>
 		public ElementInfo[] LoadElements()
 		{
-			return Loader.LoadInfoFromDirectory();
+			return Loader.LoadInfoFromFile();
 		}
 		
 		/// <summary>
@@ -209,14 +181,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 		}
 		
 		/// <summary>
-		/// Checks whether the element mappings have been created and saved to file.
+		/// Checks whether the elements info has been saved to file.
 		/// </summary>
-		/// <returns>A value indicating whether the element mappings directory was found.</returns>
-		public bool ElementMappingsExist()
+		/// <returns>A value indicating whether the elements info file was found.</returns>
+		public bool ElementsInfoExists()
 		{
-			string directory = FileNamer.ElementsInfoDirectoryPath;
-			
-			return (Directory.Exists(directory) && Directory.GetFiles(directory).Length > 0);
+			return File.Exists(FileNamer.ElementsInfoFilePath);
 		}
 	}
 	

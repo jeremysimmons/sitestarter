@@ -8,6 +8,19 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// </summary>
 	public class ReactionsResetter
 	{
+		private ReactionFileNamer fileNamer;
+		/// <summary>
+		/// Gets/sets the file namer used to create strategy file names/paths.
+		/// </summary>
+		public ReactionFileNamer FileNamer
+		{
+			get {
+				if (fileNamer == null)
+					fileNamer = new ReactionFileNamer();
+				return fileNamer; }
+			set { fileNamer = value; }
+		}
+		
 		public ReactionsResetter()
 		{
 		}
@@ -17,13 +30,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			// Dispose the in-memory state
 			new ReactionsDisposer().Dispose();
 			
-			string path = new ReactionFileNamer().ReactionsInfoDirectoryPath;
-			
 			// Delete reaction info (not the actual reactions)
-			foreach (string file in Directory.GetFiles(path))
-			{
-				File.Delete(file);
-			}
+			File.Delete(FileNamer.ReactionsInfoFilePath);
 			
 			// Now the reactions can be re-scanned and re-initialized
 		}

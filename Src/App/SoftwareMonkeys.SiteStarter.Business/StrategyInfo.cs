@@ -68,6 +68,13 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			set { strategyType = value; }
 		}
 		
+		private bool enabled = true;
+		public bool Enabled
+		{
+			get { return enabled; }
+			set { enabled = value; }
+		}
+		
 		private StrategyCreator creator;
 		/// <summary>
 		/// Gets the strategy creator.

@@ -55,22 +55,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 							StrategyState.Strategies[strategy.TypeName]
 						);
 						
-						DeleteInfo(strategy);
 					}
 				}
 			}
-		}
-		
-		/// <summary>
-		/// Deletes the strategy info file.
-		/// </summary>
-		/// <param name="info"></param>
-		public void DeleteInfo(StrategyInfo info)
-		{
-			string path = FileNamer.CreateInfoFilePath(info);
-			
-			if (File.Exists(path))
-				File.Delete(path);
 		}
 	}
 }

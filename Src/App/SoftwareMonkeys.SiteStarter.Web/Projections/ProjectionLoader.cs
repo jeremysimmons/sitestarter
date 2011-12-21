@@ -44,24 +44,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			set { projectionsDirectoryPath = value; }
 		}
 		
-		private string projectionsInfoDirectoryPath;
-		/// <summary>
-		/// Gets/sets the path to the directory containing the projection info files.
-		/// </summary>
-		public string ProjectionsInfoDirectoryPath
-		{
-			get {
-				if (projectionsInfoDirectoryPath == null || projectionsInfoDirectoryPath == String.Empty)
-				{
-					if (FileNamer == null)
-						throw new InvalidOperationException("FileNamer is not set.");
-					
-					projectionsInfoDirectoryPath = FileNamer.ProjectionsInfoDirectoryPath;
-				}
-				return projectionsInfoDirectoryPath; }
-			set { projectionsInfoDirectoryPath = value; }
-		}
-		
 		protected ProjectionInfo[] Projections;
 		
 		public ProjectionLoader()
@@ -69,113 +51,44 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		}
 		
 		/// <summary>
-		/// Loads all the projections found in the projections directory.
+		/// Loads all the enabled projections found in the projections file.
 		/// </summary>
-		/// <returns>An array of the the projections found in the directory.</returns>
-		public ProjectionInfo[] LoadFromDirectory()
+		/// <returns>An array of the the projections found.</returns>
+		public ProjectionInfo[] LoadInfoFromFile()
 		{
-			if (Projections == null)
-			{
-				List<ProjectionInfo> projections = new List<ProjectionInfo>();
-				
-				// Logging disabled to boost performance
-				//using (LogGroup logGroup = LogGroup.Start("Loading the projections from the XML files.", NLog.LogLevel.Debug))
-				//{
-				foreach (string file in Directory.GetFiles(ProjectionsDirectoryPath))
-				{
-					//		LogWriter.Debug("File: " + file);
-					
-					projections.Add(LoadInfoFromFile(file));
-				}
-				//}
-				
-				Projections = projections.ToArray();
-			}
-			return Projections;
+			return LoadInfoFromFile(false);
 		}
 		
 		/// <summary>
-		/// Loads all the enabled projections found in the projections directory.
-		/// </summary>
-		/// <returns>An array of the the projections found in the directory.</returns>
-		public ProjectionInfo[] LoadInfoFromDirectory()
-		{
-			return LoadInfoFromDirectory(false);
-		}
-		
-		/// <summary>
-		/// Loads all the projections found in the projections directory.
+		/// Loads all the projections found in the projections file.
 		/// </summary>
 		/// <param name="includeDisabled">A value indicating whether or not to include disabled projections.</param>
-		/// <returns>An array of the the projections found in the directory.</returns>
-		public ProjectionInfo[] LoadInfoFromDirectory(bool includeDisabled)
-		{			
-			using (LogGroup logGroup = LogGroup.Start("Loading the projections info from the XML files.", NLog.LogLevel.Debug))
-			{
-				if (Projections == null)
-				{
-					LogWriter.Debug("Projections property is null. Loading.");
-
-					List<ProjectionInfo> projections = new List<ProjectionInfo>();
-
-					foreach (string file in Directory.GetFiles(ProjectionsInfoDirectoryPath))
-					{
-						ProjectionInfo projection = LoadInfoFromFile(file);
-						if (projection.Enabled || includeDisabled)
-						{
-							LogWriter.Debug("Importing file: " + file);
-							
-							projections.Add(projection);
-						}
-						else
-							LogWriter.Debug("Skipping file: " + file);
-					}
-					
-					Projections = projections.ToArray();
-				}
-				else
-					LogWriter.Debug("Projections property is set. Skipping load.");
-			}
-			
-			return Projections;
-		}
-		
-		/// <summary>
-		/// Loads the projection info from the specified path.
-		/// </summary>
-		/// <param name="projectionPath">The full path to the projection to load.</param>
-		/// <returns>The projection deserialized from the specified file path.</returns>
-		public ProjectionInfo LoadInfoFromFile(string projectionPath)
+		/// <returns>An array of the the projections found.</returns>
+		public ProjectionInfo[] LoadInfoFromFile(bool includeDisabled)
 		{
-			ProjectionInfo info = null;
-			
-			// Disabled logging to boost performance
-			//using (LogGroup logGroup = LogGroup.Start("Loading the projection from the specified path.", NLog.LogLevel.Debug))
+			// Logging disabled to boost performance
+			//using (LogGroup logGroup = LogGroup.StartDebug("Loading the projections from the XML file."))
 			//{
-			if (!File.Exists(projectionPath))
-				throw new ArgumentException("The specified file does not exist.");
-			
-			//	LogWriter.Debug("Path: " + projectionPath);
-			
-			
-			using (StreamReader reader = new StreamReader(File.OpenRead(projectionPath)))
+			if (Projections == null)
 			{
-				XmlSerializer serializer = new XmlSerializer(typeof(ProjectionInfo));
+				List<ProjectionInfo> validProjections = new List<ProjectionInfo>();
 				
-				try
+				ProjectionInfo[] projections = new ProjectionInfo[]{};
+				
+				using (StreamReader reader = new StreamReader(File.OpenRead(FileNamer.ProjectionsInfoFilePath)))
 				{
-					info = (ProjectionInfo)serializer.Deserialize(reader);
-				}
-				catch (XmlException ex)
-				{
-					throw new Exception("Can't load projection at '" + projectionPath + "'.", ex);
+					XmlSerializer serializer = new XmlSerializer(typeof(ProjectionInfo[]));
+					projections = (ProjectionInfo[])serializer.Deserialize(reader);
 				}
 				
-				reader.Close();
+				foreach (ProjectionInfo projection in projections)
+					if (projection.Enabled || includeDisabled)
+						validProjections.Add(projection);
+				
+				Projections = validProjections.ToArray();
 			}
 			//}
-			
-			return info;
+			return Projections;
 		}
 		
 		/// <summary>

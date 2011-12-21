@@ -47,42 +47,28 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		}
 		
 		/// <summary>
-		/// Saves the provided part info to the parts info directory.
-		/// </summary>
-		/// <param name="part">The part info to save to file.</param>
-		public void SaveInfoToFile(PartInfo part)
-		{
-			using (LogGroup logGroup = LogGroup.Start("Saving the provided part to file.", NLog.LogLevel.Debug))
-			{
-				string path = FileNamer.CreateInfoFilePath(part);
-				
-				LogWriter.Debug("Path : " + path);
-				
-				if (!Directory.Exists(Path.GetDirectoryName(path)))
-					Directory.CreateDirectory(Path.GetDirectoryName(path));
-				
-				using (StreamWriter writer = File.CreateText(path))
-				{
-					XmlSerializer serializer = new XmlSerializer(part.GetType());
-					serializer.Serialize(writer, part);
-					writer.Close();
-				}
-			}
-		}
-		
-		/// <summary>
 		/// Saves the provided parts info to file.
 		/// </summary>
 		/// <param name="parts">An array of the parts to save to file.</param>
 		public void SaveInfoToFile(PartInfo[] parts)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Saving the provided parts to XML files.", NLog.LogLevel.Debug))
+			// Logging disabled to boost performance
+			//using (LogGroup logGroup = LogGroup.StartDebug("Saving the provided parts to XML file."))
+			//{
+			string path = FileNamer.PartsInfoFilePath;
+			
+			//LogWriter.Debug("Path : " + path);
+			
+			if (!Directory.Exists(Path.GetDirectoryName(path)))
+				Directory.CreateDirectory(Path.GetDirectoryName(path));
+			
+			using (StreamWriter writer = File.CreateText(path))
 			{
-				foreach (PartInfo part in parts)
-				{
-					SaveInfoToFile(part);
-				}
+				XmlSerializer serializer = new XmlSerializer(parts.GetType());
+				serializer.Serialize(writer, parts);
+				writer.Close();
 			}
+			//}
 		}
 	}
 }

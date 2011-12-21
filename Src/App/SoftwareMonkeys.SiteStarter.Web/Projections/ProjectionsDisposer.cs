@@ -66,33 +66,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				if (ProjectionState.IsInitialized)
 				{
 					while (projections.Count > 0)
-					{
-						// Delete the info file
-						DeleteInfo(projections[0]);
-						
+					{						
 						projections.RemoveAt(0);
 					}
-					/*for (int i = 0; i < projections.Count; i ++)
-					{
-						projections.Remove(projections[i]);
-						i--; // fix counter having removed projection
-						
-						// Delete the info file
-						DeleteInfo(projections[i]);
-					}*/
 				}
 			}
-		}
-		
-		/// <summary>
-		/// Deletes the projection info file.
-		/// </summary>
-		/// <param name="info"></param>
-		public void DeleteInfo(ProjectionInfo info)
-		{
-			string path = FileNamer.CreateInfoFilePath(info);
-			
-			File.Delete(path);
 		}
 	}
 }

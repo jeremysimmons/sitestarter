@@ -33,8 +33,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				if (saver == null)
 				{
 					saver = new StrategySaver();
-					if (StrategiesDirectoryPath != null && StrategiesDirectoryPath != String.Empty)
-						saver.StrategiesDirectoryPath = StrategiesDirectoryPath;
 				}
 				return saver; }
 			set { saver = value; }
@@ -65,35 +63,24 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				if (loader == null)
 				{
 					loader = new StrategyLoader();
-					if (StrategiesDirectoryPath != null && StrategiesDirectoryPath != String.Empty)
-						loader.StrategiesDirectoryPath = StrategiesDirectoryPath;
 				}
 				return loader; }
 			set { loader = value; }
 		}
 		
 		/// <summary>
-		/// Gets a value indicating whether the strategies have been mapped yet.
+		/// Gets a value indicating whether the strategies info has been cached.
 		/// </summary>
-		public bool IsMapped
+		public bool IsCached
 		{
 			get {
-				bool isMapped = StrategyMappingsExist();
-				return isMapped; }
-		}
-		
-		/// <summary>
-		/// Gets the full path to the directory containing strategy mappings.
-		/// </summary>
-		public string StrategiesDirectoryPath
-		{
-			get { return FileNamer.StrategiesInfoDirectoryPath; }
+				bool isCached = StrategiesInfoExists();
+				return isCached; }
 		}
 		
 		public StrategyInitializer()
 		{
 		}
-		
 		
 		/// <summary>
 		/// Initializes the strategies and loads all strategies to state.
@@ -122,18 +109,18 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				if (!StrategyState.IsInitialized)
 				{
 					StrategyInfo[] strategies = new StrategyInfo[]{};
-					if (IsMapped)
+					if (IsCached)
 					{
-						LogWriter.Debug("Is mapped. Loading from XML.");
+						LogWriter.Debug("Is cached. Loading from XML.");
 						
 						strategies = LoadStrategies();
 					}
 					else
 					{
-						LogWriter.Debug("Is not mapped. Scanning from type attributes.");
+						LogWriter.Debug("Is not cached. Scanning from type attributes.");
 						
 						strategies = FindStrategies(includeTestStrategies);
-						SaveToFile(strategies);
+						Saver.SaveToFile(strategies);
 					}
 					
 					Initialize(strategies);
@@ -141,23 +128,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				else
 					LogWriter.Debug("Already initialized.");
 			}
-		}
-		
-		/// <summary>
-		/// Saves the mappings for the provided strategies to strategies mappings directory.
-		/// </summary>
-		/// <param name="strategies">The strategies to save to file.</param>
-		public void SaveToFile(StrategyInfo[] strategies)
-		{
-			using (LogGroup logGroup = LogGroup.Start("Saving the provided strategies to XML.", NLog.LogLevel.Debug))
-			{
-				foreach (StrategyInfo strategy in strategies)
-				{
-					Saver.SaveToFile(strategy);
-				}
-			}
-		}
-		
+		}		
 		
 		/// <summary>
 		/// Loads the available strategies from file.
@@ -165,7 +136,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns>The loaded from the strategies mappings directory.</returns>
 		public StrategyInfo[] LoadStrategies()
 		{
-			return Loader.LoadFromDirectory();
+			return Loader.LoadInfoFromDirectory();
 		}
 		
 		/// <summary>
@@ -188,14 +159,14 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		}
 		
 		/// <summary>
-		/// Checks whether the strategy mappings have been created and saved to file.
+		/// Checks whether the strategies info file has been created.
 		/// </summary>
-		/// <returns>A value indicating whether the strategy mappings directory was found.</returns>
-		public bool StrategyMappingsExist()
+		/// <returns>A value indicating whether the strategies info file was found</returns>
+		public bool StrategiesInfoExists()
 		{
-			string directory = StrategiesDirectoryPath;
+			string path = FileNamer.StrategiesInfoFilePath;
 			
-			return (Directory.Exists(directory) && Directory.GetFiles(directory).Length > 0);
+			return File.Exists(path);
 		}
 	}
 	

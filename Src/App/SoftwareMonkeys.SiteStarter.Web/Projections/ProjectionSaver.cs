@@ -121,17 +121,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			return alreadyExists;
 		}
 		
-		
 		/// <summary>
-		/// Saves the provided projection info to the projections info directory.
+		/// Saves the provided projections info to file.
 		/// </summary>
-		/// <param name="projection">The projection info to save to file.</param>
-		public void SaveInfoToFile(ProjectionInfo projection)
+		/// <param name="projections">An array of the projections to save to file.</param>
+		public void SaveInfoToFile(ProjectionInfo[] projections)
 		{
 			// Logging disabled to boost performance
-			//using (LogGroup logGroup = LogGroup.Start("Saving the provided projection to file.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = LogGroup.StartDebug("Saving the provided projections to XML file."))
 			//{
-			string path = FileNamer.CreateInfoFilePath(projection);
+			string path = FileNamer.ProjectionsInfoFilePath;
 			
 			//LogWriter.Debug("Path : " + path);
 			
@@ -140,25 +139,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			
 			using (StreamWriter writer = File.CreateText(path))
 			{
-				XmlSerializer serializer = new XmlSerializer(projection.GetType());
-				serializer.Serialize(writer, projection);
+				XmlSerializer serializer = new XmlSerializer(projections.GetType());
+				serializer.Serialize(writer, projections);
 				writer.Close();
-			}
-			//}
-		}
-		
-		/// <summary>
-		/// Saves the provided projections info to file.
-		/// </summary>
-		/// <param name="projections">An array of the projections to save to file.</param>
-		public void SaveInfoToFile(ProjectionInfo[] projections)
-		{
-			// Logging disabled to boost performance
-			//using (LogGroup logGroup = LogGroup.Start("Saving the provided projections to XML files.", NLog.LogLevel.Debug))
-			//{
-			foreach (ProjectionInfo projection in projections)
-			{
-				SaveInfoToFile(projection);
 			}
 			//}
 		}
@@ -190,15 +173,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 					// Remove old state
 					foreach (ProjectionInfo oldInfo in oldInfos)
 					{
-						using (LogGroup logGroup2 = LogGroup.StartDebug("Removing cache info for: " + oldInfo.Name + " - " + oldInfo.ProjectionFilePath))
-						{
-							if (ProjectionState.Projections.Contains(oldInfo.Name, oldInfo.Format))
-								ProjectionState.Projections.Remove(ProjectionState.Projections[oldInfo.Name, oldInfo.Format]);
-							
-							string oldInfoPath = new ProjectionFileNamer().CreateInfoFilePath(oldInfo);
-
-							File.Delete(oldInfoPath);
-						}
+						ProjectionState.Projections.Remove(oldInfo);
 					}
 				}
 				
@@ -210,11 +185,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 					using (LogGroup logGroup3 = LogGroup.StartDebug("Adding cache info for: " + info.Name + " - " + info.ProjectionFilePath))
 					{
 						ProjectionState.Projections.Add(info);
-						
-						// Save the info to file
-						SaveInfoToFile(info);
 					}
 				}
+				
+				SaveInfoToFile(ProjectionState.Projections.ToArray());
 			}
 		}
 	}

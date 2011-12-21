@@ -56,19 +56,18 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 					ControllerState.Controllers.Remove(
 						ControllerState.Controllers[controller.Key]
 					);
-					
-					DeleteInfo(controller);
 				}
+				
+				DeleteInfo();
 			}
 		}
 		
 		/// <summary>
 		/// Deletes the controller info file.
 		/// </summary>
-		/// <param name="info"></param>
-		public void DeleteInfo(ControllerInfo info)
+		public void DeleteInfo()
 		{
-			string path = FileNamer.CreateInfoFilePath(info);
+			string path = FileNamer.ControllersInfoFilePath;
 			
 			File.Delete(path);
 		}

@@ -29,23 +29,23 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 			set { partsDirectoryPath = value; }
 		}
 		
-		private string partsInfoDirectoryPath;
+		private string partsInfoFilePath;
 		/// <summary>
-		/// Gets the path to the directory containing serialized part information.
+		/// Gets the path to the file containing the part info.
 		/// </summary>
-		public virtual string PartsInfoDirectoryPath
+		public virtual string PartsInfoFilePath
 		{
 			get {
-				if (partsInfoDirectoryPath == null || partsInfoDirectoryPath == String.Empty)
+				if (partsInfoFilePath == null || partsInfoFilePath == String.Empty)
 				{
 					if (StateAccess.IsInitialized)
-						partsInfoDirectoryPath = StateAccess.State.PhysicalApplicationPath
+						partsInfoFilePath = StateAccess.State.PhysicalApplicationPath
 							+ Path.DirectorySeparatorChar + "App_Data"
-							+ Path.DirectorySeparatorChar + "Parts";
+							+ Path.DirectorySeparatorChar + "Parts.xml";
 				}
-				return partsInfoDirectoryPath;
+				return partsInfoFilePath;
 			}
-			set { partsInfoDirectoryPath = value; }
+			set { partsInfoFilePath = value; }
 		}
 		
 		private IFileMapper fileMapper;
@@ -86,47 +86,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 			name += part.Action + ".part";
 			
 			return name;
-		}
-		
-		/*/// <summary>
-		/// Creates the file name for the provided part.
-		/// </summary>
-		/// <param name="part">The part to create the file name for.</param>
-		/// <returns>The full file name for the provided part.</returns>
-		public virtual string CreatePartFileName(PartInfo part)
-		{			
-			if (part == null)
-				throw new ArgumentNullException("part");
-			
-			if (part.Action == null)
-				throw new ArgumentNullException("part.Action", "No action has been set to the Action property.");
-			
-			string name = part.TypeName + "-" + part.Action + ".ascx";
-			
-			return name;
-		}*/
-		
-		// TODO: Remove if not needed
-		/*/// <summary>
-		/// Creates the file name for the provided part.
-		/// </summary>
-		/// <param name="part">The part to create the file name for.</param>
-		/// <returns>The full file name for the provided entity.</returns>
-		public string CreateFileName(IPart part)
-		{
-			return CreateFileName(new PartInfo(part));
-		}*/
-		
-		
-		/// <summary>
-		/// Creates the full file path for the serialized info for the provided part.
-		/// </summary>
-		/// <param name="part">The part to create the file path for.</param>
-		/// <returns>The full file path for the serialized info for the provided part.</returns>
-		public string CreateInfoFilePath(PartInfo part)
-		{
-			return PartsInfoDirectoryPath + Path.DirectorySeparatorChar + CreateInfoFileName(part);
-		}
+		}		
 		
 		
 		/// <summary>
@@ -141,18 +101,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 			
 			return FileMapper.MapApplicationRelativePath(part.PartFilePath);
 		}
-		
-		// TODO: Remove if not needed
-		/*
-		/// <summary>
-		/// Creates the full file path for the provided part.
-		/// </summary>
-		/// <param name="part">The part to create the file path for.</param>
-		/// <returns>The full file path for the provided part.</returns>
-		public string CreateFilePath(IPart part)
-		{
-			return CreateFilePath(new PartInfo(part));
-		}*/
 		
 	}
 }
