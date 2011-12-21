@@ -134,7 +134,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 					Projections = projections.ToArray();
 				}
 				else
-					LogWriter.Debug("Projetions property is set. Skipping load.");
+					LogWriter.Debug("Projections property is set. Skipping load.");
 			}
 			
 			return Projections;
