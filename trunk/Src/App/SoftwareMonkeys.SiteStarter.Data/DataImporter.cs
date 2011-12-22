@@ -88,7 +88,11 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			{
 				using (Batch batch = BatchState.StartBatch())
 				{
-					foreach (string file in LoadEntitiesFileList())
+					string[] files = LoadEntitiesFileList();
+					
+					LogWriter.Debug("Number of files: " + files);
+					
+					foreach (string file in files)
 					{
 						using (LogGroup logGroup2 = LogGroup.StartDebug("Attempting import of: " + file))
 						{
@@ -105,7 +109,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 								{
 									LogWriter.Debug("New entity. Importing.");
 									
-									DataAccess.Data.Saver.Save(entity);
+									Save(entity);
 								}
 								else
 								{
@@ -122,12 +126,14 @@ namespace SoftwareMonkeys.SiteStarter.Data
 							}
 						}
 					}
-					
-					// Refresh the entities to ensure that all count properties are up to date.
-					// This must be done AFTER ALL entities and references are imported.
-					RefreshEntities();
 				}
 			}
+		}
+		
+		protected void Save(IEntity entity)
+		{
+			// Save the entity but bypass the entity handling (otherwise it will strip references when corresponding entities haven't yet been imported)
+			DataAccess.Data.Saver.Save(entity, false);
 		}
 		
 		
@@ -149,12 +155,13 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				{
 					LogWriter.Debug("Directory exists");
 					
-					// Get a list of entities
-					list.AddRange(LoadStandardEntitiesFileList(directory));
 					
 					// Get list of references
-					// (IMPORTANT: Must be imported AFTER the standard entities or the references will break)
+					// (IMPORTANT: Must be imported before the standard entities)
 					list.AddRange(LoadReferencesFileList(directory));
+					
+					// Get a list of entities
+					list.AddRange(LoadStandardEntitiesFileList(directory));
 					
 				}
 			}
@@ -166,17 +173,22 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			List<string> list = new List<string>();
 			
-			foreach (string subDirectory in Directory.GetDirectories(dir))
+			using (LogGroup logGroup = LogGroup.StartDebug("Loading standard entities file list."))
 			{
-				string folderName = Path.GetFileName(subDirectory);
+				LogWriter.Debug("Directory: " + dir);
 				
-				// If the folder name contains a dot then it contains standard entities
-				if (folderName.IndexOf(".") > -1)
+				foreach (string subDirectory in Directory.GetDirectories(dir))
 				{
-					foreach (string file in Directory.GetFiles(subDirectory, "*.xml"))
+					string folderName = Path.GetFileName(subDirectory);
+					
+					// If the folder name contains a dot then it contains standard entities
+					if (folderName.IndexOf(".") > -1)
 					{
-						if (!list.Contains(file))
-							list.Add(file);
+						foreach (string file in Directory.GetFiles(subDirectory, "*.xml"))
+						{
+							if (!list.Contains(file))
+								list.Add(file);
+						}
 					}
 				}
 			}
@@ -452,32 +464,6 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				version = importVersion;
 			
 			return version;
-		}
-		
-		/// <summary>
-		/// Refreshes all entities to ensure reference count properties are up to date. Simply loads each entity from the
-		/// data store, activates it, then updates it back to the data store. The update sets count properties.
-		/// </summary>
-		public void RefreshEntities()
-		{
-			foreach (EntityInfo info in EntityState.Entities)
-			{
-				Type type = info.GetEntityType();
-				
-				if (type != null)
-				{
-					// If the type is NOT a reference type
-					if (!EntitiesUtilities.IsReference(type))
-					{
-						foreach (IEntity entity in Provider.Indexer.GetEntities(type))
-						{
-							Provider.Activator.Activate(entity);
-							
-							Provider.Updater.Update(entity);
-						}
-					}
-				}
-			}
 		}
 	}
 }
