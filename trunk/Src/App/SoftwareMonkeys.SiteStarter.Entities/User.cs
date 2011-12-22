@@ -185,7 +185,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <summary>
 		/// Gets/sets the roles to this issue.
 		/// </summary>
-		[Reference(MirrorPropertyName="Users")]
+		[Reference(MirrorPropertyName="Users",
+		          CountPropertyName="TotalRoles")]
 		public UserRole[] Roles
 		{
 			get {
@@ -196,6 +197,13 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			{
 				roles = value;
 			}
+		}
+		
+		private int totalRoles;
+		public int TotalRoles
+		{
+			get { return totalRoles; }
+			set { totalRoles = value; }
 		}
 
 		IUserRole[] IUser.Roles
