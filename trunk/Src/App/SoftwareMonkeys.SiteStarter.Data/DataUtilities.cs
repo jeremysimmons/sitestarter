@@ -12,7 +12,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 	/// </summary>
 	public static class DataUtilities
 	{
-		static public string DataStoreName = "Data";
+		//static public string DataStoreName = "Data";
 		
 		/// <summary>
 		/// Gets the name of the data store that the provided entity is stored in.
@@ -55,8 +55,8 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			if (type.Name == "EntityReference")
 				throw new InvalidOperationException("An instance of the reference is required. Pass the entity to GetDataStore(IEntity) overload.");
 
-			return DataStoreName;
-			//return type.Name;
+			//return DataStoreName;
+			return type.Name;
 		}
 
 		/// <summary>
@@ -71,9 +71,9 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				throw new ArgumentNullException("entity");
 			
 			// Use the same store for each type to boost performance
-			return DataStoreName;
+			//return DataStoreName;
 			
-			/*string dataStoreName = String.Empty;
+			string dataStoreName = String.Empty;
 			Type type = entity.GetType();
 			
 			using (LogGroup logGroup = LogGroup.Start("Retrieving data store name for entity of type '" + type.ToString() + "'.", LogLevel.Debug))
@@ -96,14 +96,14 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				LogWriter.Debug("Data store name: " + dataStoreName);
 			}
 			
-			return dataStoreName;*/
+			return dataStoreName;
 			
 		}
 		
 		static public string GetDataStoreName(params string[] typeNames)
 		{
-			return DataStoreName;
-			/*string returnName;
+			//return DataStoreName;
+			string returnName;
 			
 			//using (LogGroup logGroup = LogGroup.Start("Retrieving the data store name for provided types.", LogLevel.Debug))
 			//{
@@ -146,7 +146,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			//LogWriter.Debug("Data store name: " + returnName);
 			//}
 			
-			return returnName;*/
+			return returnName;
 		}
 		
 		static public Type GetEntityType(IEntity entity, PropertyInfo property)
