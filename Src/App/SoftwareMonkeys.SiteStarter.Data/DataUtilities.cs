@@ -12,7 +12,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 	/// </summary>
 	public static class DataUtilities
 	{
-		static public string DataStoreName = "Data.db4o";
+		static public string DataStoreName = "Data";
 		
 		/// <summary>
 		/// Gets the name of the data store that the provided entity is stored in.
@@ -55,7 +55,6 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			if (type.Name == "EntityReference")
 				throw new InvalidOperationException("An instance of the reference is required. Pass the entity to GetDataStore(IEntity) overload.");
 
-			
 			return DataStoreName;
 			//return type.Name;
 		}
@@ -72,9 +71,8 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				throw new ArgumentNullException("entity");
 			
 			// Use the same store for each type to boost performance
-			return "Data.db4o";
+			return DataStoreName;
 			
-			// TODO: Clean up
 			/*string dataStoreName = String.Empty;
 			Type type = entity.GetType();
 			
