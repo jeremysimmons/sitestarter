@@ -172,7 +172,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <returns>An array of the specified type of entities.</returns>
 		public override IEntity[] GetEntities(Type type)
 		{
-			ArrayList list = new ArrayList();
+			List<IEntity> list = new List<IEntity>();
 			
 			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving entities of the specified type."))
 			{
@@ -185,14 +185,15 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					query.Constrain(type);
 
 					IObjectSet os = query.Execute();
+					
 					for (int i = 0; i < os.Count; i++)
-						list.Add(os[i]);
+						list.Add((IEntity)os[i]);
 					
 					LogWriter.Debug("Total: " + list.Count.ToString());
 				}
 			}
 
-			return Release((IEntity[])list.ToArray(type));
+			return Release((IEntity[])list.ToArray());
 		}
 		
 		/// <summary>
