@@ -29,9 +29,7 @@ private void Page_Load(object sender, EventArgs e)
 		new ReactionInitializer().Initialize();
 		new PartsInitializer(this).Initialize();
 		new ControllersInitializer().Initialize();
-
-		// Skip projection initialization to work around issue. Initialization instead occurs during setup.
-		//new ProjectionsInitializer(this).Initialize();
+		new ProjectionsInitializer(this).Initialize();
 	}
 }
    
