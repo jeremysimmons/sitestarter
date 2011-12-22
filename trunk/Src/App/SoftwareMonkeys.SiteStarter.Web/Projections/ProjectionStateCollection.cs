@@ -70,9 +70,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		
 		public ProjectionStateCollection(ProjectionInfo[] projections) : base(StateScope.Application, "Web.Projections")
 		{
-			foreach (ProjectionInfo projection in projections)
+			using (LogGroup logGroup = LogGroup.StartDebug("Adding projections to collection."))
 			{
-				Add(projection);
+				foreach (ProjectionInfo projection in projections)
+				{
+					Add(projection);
+				}
 			}
 		}
 		
@@ -82,12 +85,21 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <param name="projection">The projection info to add to the collection.</param>
 		public void Add(ProjectionInfo projection)
 		{
-			if (projection == null)
-				throw new ArgumentNullException("projection");
-			
 			string key = GetProjectionKey(projection);
-			
-			base[key] = projection;
+				
+			using (LogGroup logGroup = LogGroup.StartDebug("Adding projection to collection: " + key))
+			{
+				if (projection == null)
+					throw new ArgumentNullException("projection");
+				
+				
+				LogWriter.Debug("Name: " + projection.Name);
+				LogWriter.Debug("Action: " + projection.Action);
+				LogWriter.Debug("Type name: " + projection.TypeName);
+				LogWriter.Debug("Key: " + key);
+				
+				base[key] = projection;
+			}
 		}
 		
 		/// <summary>
