@@ -21,5 +21,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o.Tests
 		{
 			base.Test_GetEntitiesPageMatchReference();
 		}
+		
+		[Test]
+		public override void Test_GetEntitiesByType()
+		{
+			base.Test_GetEntitiesByType();
+		}
+		
 	}
 }
