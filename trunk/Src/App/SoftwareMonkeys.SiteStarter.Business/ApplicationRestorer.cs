@@ -201,7 +201,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				
 				AppConfig legacyConfig = ConfigFactory<AppConfig>.LoadConfig(LegacyDirectoryPath, "Application", Config.Application.PathVariation);
 				
-				// TODO: Transfer important settings from legacy config to current config.
+				// TODO: Transfer any other important settings from legacy config to current config.
 				
 				if (legacyConfig != null)
 				{
