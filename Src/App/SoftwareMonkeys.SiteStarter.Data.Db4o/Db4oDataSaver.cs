@@ -25,7 +25,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// Prepares the provided entity for saving.
 		/// </summary>
 		/// <param name="entity">The entity to prepare for saving.</param>
-		public override void PreSave(IEntity entity)
+		/// <param name="handleReferences">A value indicating whether to delete old references and save new references.</param>
+		public override void PreSave(IEntity entity, bool handleReferences)
 		{
 			using (LogGroup logGroup = LogGroup.Start("Preparing entity for saving: " + entity.GetType().ToString(), NLog.LogLevel.Debug))
 			{
@@ -43,8 +44,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					
 					LogWriter.Debug("Entity type: " + entityType.ToString());
 					
-					// Maintain the entity references
-					Provider.Referencer.MaintainReferences(entity);
+					if (handleReferences)
+					{
+						// Maintain the entity references
+						Provider.Referencer.MaintainReferences(entity);
+					}
 					
 					LogWriter.Debug("Presave complete.");
 				}
@@ -63,7 +67,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// Saves the provided entity into the provided data store.
 		/// </summary>
 		/// <param name="entity">The entity to save to the data store.</param>
-		public override void Save(IEntity entity)
+		/// <param name="handleReferences">A value indicating whether to delete old references and save new references.</param>
+		public override void Save(IEntity entity, bool handleReferences)
 		{
 			using (LogGroup logGroup = LogGroup.Start("Saving entity of type '" + entity.ShortTypeName + "'.", NLog.LogLevel.Debug))
 			{
@@ -96,7 +101,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 						LogWriter.Debug("Entity type: " + clonedEntity.GetType().ToString());
 						LogWriter.Debug("Entity ID: " + clonedEntity.ID.ToString());
 						
-						PreSave(clonedEntity);
+						PreSave(clonedEntity, handleReferences);
 						
 						if (clonedEntity != null)
 						{

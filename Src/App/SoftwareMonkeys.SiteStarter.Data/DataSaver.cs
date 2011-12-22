@@ -4,13 +4,18 @@ using SoftwareMonkeys.SiteStarter.Entities;
 namespace SoftwareMonkeys.SiteStarter.Data
 {
 	/// <summary>
-	/// Description of DataSaver.
+	/// 
 	/// </summary>
 	public abstract class DataSaver : DataAdapter, IDataSaver
 	{		
-		public abstract void Save(IEntity entity);
+		public virtual void Save(IEntity entity)
+		{
+			Save(entity, true);
+		}
 		
-		public abstract void PreSave(IEntity entity);
+		public abstract void Save(IEntity entity, bool handleReferences);
+		
+		public abstract void PreSave(IEntity entity, bool handleReferences);
 		
 		
 	}
