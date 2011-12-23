@@ -49,8 +49,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			// Create the reaction info variable to hold the return value
 			ReactionInfoCollection reactionInfos = new ReactionInfoCollection();
 			
-			using (LogGroup logGroup = LogGroup.Start("Locating the reaction that is appropriate for carrying out the action '" + action + "' involving the type '" + typeName + "'.", NLog.LogLevel.Debug))
-			{
+			// Logging commented out to boost performance
+			//using (LogGroup logGroup = LogGroup.StartDebug("Locating the reaction that is appropriate for carrying out the action '" + action + "' involving the type '" + typeName + "'."))
+			//{
 				if (action == null)
 					throw new ArgumentNullException("action");
 				
@@ -72,8 +73,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				// Create a direct reaction key for the specified type
 				string key = Reactions.GetReactionsKey(action, typeName);
 				
-				LogWriter.Debug("Direct key: " + key);
-				LogWriter.Debug("Type name: " + typeName);
+			//	LogWriter.Debug("Direct key: " + key);
+			//	LogWriter.Debug("Type name: " + typeName);
 				
 				// Check the direct key to see if a reaction exists
 				if (Reactions.ReactionExists(key))
@@ -87,17 +88,13 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				// This is done even if reactions have already been found
 				if (type != null) // If no type was found then skip the hierarchy check as it's just a name without a corresponding type
 				{
-					LogWriter.Debug("Not found with direct key. Looking through the hierarchy.");
+			//		LogWriter.Debug("Not found with direct key. Looking through the hierarchy.");
 					
 					reactionInfos.AddRange(LocateFromHeirarchy(action, type));
 				}
 				
+			//}
 				
-				// TODO: Clean up
-				//LogWriter.Debug("Reaction found: " + (reactionInfo != null ? reactionInfo.ReactionType : "[null]"));
-				//LogWriter.Debug("Reaction key: " + (reactionInfo != null ? reactionInfo.Key : "[null]"));
-			}
-			
 			return reactionInfos;
 		}
 		
@@ -111,18 +108,13 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			ReactionInfoCollection reactionInfos = new ReactionInfoCollection();
 			
-			using (LogGroup logGroup = LogGroup.Start("Locating a reaction by navigating the hierarchy of the provided type.", NLog.LogLevel.Debug))
-			{
+			// Logging commented out to boost performance
+			//using (LogGroup logGroup = LogGroup.StartDebug("Locating a reaction by navigating the hierarchy of the provided type."))
+			//{
 				reactionInfos.AddRange(LocateFromInterfaces(action, type));
 				
-				// Clean up - Reactions aren't exclusive, so even if one is found more can still be located
-				//if (reactionInfos == null)
 				reactionInfos.AddRange(LocateFromBaseTypes(action, type));
-				
-				// TODO: Clean up
-				//LogWriter.Debug("Reaction found: " + (reactionInfo != null ? reactionInfo.ReactionType : "[null]"));
-				//LogWriter.Debug("Reaction key: " + (reactionInfo != null ? reactionInfo.Key : "[null]"));
-			}
+			//}
 			return reactionInfos.ToArray();
 		}
 		
@@ -137,8 +129,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			ReactionInfoCollection reactionInfos = new ReactionInfoCollection();
 			
-			using (LogGroup logGroup = LogGroup.Start("Locating a reaction by checking the interfaces of the provided type.", NLog.LogLevel.Debug))
-			{
+			// Logging commented out to boost performance
+			//using (LogGroup logGroup = LogGroup.StartDebug("Locating a reaction by checking the interfaces of the provided type."))
+			//{
 				Type[] interfaceTypes = type.GetInterfaces();
 				
 				// Loop backwards through the interface types
@@ -146,23 +139,23 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				{
 						Type interfaceType = interfaceTypes[i];
 						
-						using (LogGroup logGroup2 = LogGroup.Start("Checking interface: " + interfaceType.FullName, NLog.LogLevel.Debug))
-						{
+					//using (LogGroup logGroup2 = LogGroup.StartDebug("Checking interface: " + interfaceType.FullName))
+					//{
 							string key = Reactions.GetReactionsKey(action, interfaceType.Name);
 							
-							LogWriter.Debug("Key: " + key);
+						//LogWriter.Debug("Key: " + key);
 							
 							if (Reactions.ReactionExists(key))
 							{
 								reactionInfos.AddRange(Reactions[key]);
 								
-								LogWriter.Debug("Reactions found: " + reactionInfos.Count.ToString());
+							//LogWriter.Debug("Reactions found: " + reactionInfos.Count.ToString());
 							}
-							else
-								LogWriter.Debug("No reaction found for that key.");
+						//else
+							//LogWriter.Debug("No reaction found for that key.");
+					//}
 						}
-				}
-			}
+			//}
 			return reactionInfos.ToArray();
 		}
 
@@ -176,8 +169,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			ReactionInfoCollection reactionInfos = new ReactionInfoCollection();
 			
-			using (LogGroup logGroup = LogGroup.StartDebug("Locating reaction via the base types of the '" + (type != null ? type.FullName : "[null]") + "' type."))
-			{
+			// Logging commented out to boost performance
+			//using (LogGroup logGroup = LogGroup.StartDebug("Locating reaction via the base types of the '" + (type != null ? type.FullName : "[null]") + "' type."))
+			//{
 				if (action == null)
 					throw new ArgumentNullException("action");
 				
@@ -195,11 +189,11 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					
 					if (nextType != null)
 					{
-						using (LogGroup logGroup2 = LogGroup.Start("Checking base type: " + nextType.FullName, NLog.LogLevel.Debug))
-						{
+						//using (LogGroup logGroup2 = LogGroup.StartDebug("Checking base type: " + nextType.FullName))
+						//{
 							string key = Reactions.GetReactionsKey(action, nextType.Name);
 							
-							LogWriter.Debug("Key: " + key);
+							//LogWriter.Debug("Key: " + key);
 							
 							// If a reaction exists for the base type then use it
 							if (Reactions.ReactionExists(key))
@@ -207,14 +201,14 @@ namespace SoftwareMonkeys.SiteStarter.Business
 								if (Reactions.ContainsKey(key))
 								reactionInfos.AddRange(Reactions[key]);
 								
-								LogWriter.Debug("Reactions found: " + reactionInfos.Count.ToString());
+								//LogWriter.Debug("Reactions found: " + reactionInfos.Count.ToString());
 								
 							}
+						//}
 						}
 				}
-				}
 				
-			}
+			//}
 			return reactionInfos.ToArray();
 		}
 	}

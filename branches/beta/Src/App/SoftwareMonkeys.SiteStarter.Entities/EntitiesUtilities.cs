@@ -109,6 +109,12 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			return isReference && validType;
 		}
 		
+		static public bool IsReference(IEntity entity)
+		{
+			return entity is EntityReference
+				|| entity.GetType().Name == typeof(EntityReference).Name;
+		}
+		
 		static public bool IsReference(Type type)
 		{
 			bool isReference = false;
@@ -116,9 +122,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			// Logging disabled simply to reduce the size of the logs
 			//using (LogGroup logGroup = LogGroup.Start("Checking if the specified property is an entity reference.", NLog.LogLevel.Debug))
 			//{
-			
-			isReference = type.FullName.IndexOf("EntityReference") > -1
-				|| type.FullName.IndexOf("EntityReference") > -1;
+			isReference = type.Name == typeof(EntityReference).Name;
 			//	LogWriter.Debug("Is reference? " + isReference.ToString());
 			//}
 			

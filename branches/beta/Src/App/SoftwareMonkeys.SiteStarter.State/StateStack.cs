@@ -31,7 +31,11 @@ namespace SoftwareMonkeys.SiteStarter.State
 		public void Pop()
 		{
 			if (Count >= 1)
-				Remove(this[Count-1]);
+			{
+				T t = this[Count-1];
+				if (t != null)
+					Remove(t);
+			}
 		}
 		
 	}

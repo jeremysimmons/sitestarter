@@ -32,10 +32,16 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			get { return provider; }
 		}
 		
+		private IDataStore dataStore;
 		/// <summary>
 		/// The data store that the adapter is tied to. Access it through the GetDataStore function.
 		/// </summary>
-		protected IDataStore DataStore;
+		public IDataStore DataStore
+		{
+			get  { return dataStore; }
+			set  { dataStore = value; }
+		}
+		
 		
 		public DataAdapter()
 		{

@@ -18,7 +18,7 @@ private void Page_Load(object sender, EventArgs e)
 
 private void ResetButton_Click(object sender, EventArgs e)
 {
-	new ProjectionsResetter().Reset();
+	new ProjectionsResetter(this).Reset();
 	
 	new ProjectionsInitializer(this).Initialize();
 	

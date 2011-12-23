@@ -54,20 +54,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 						ReactionState.Reactions[reaction.TypeName]
 					);
 					
-					DeleteInfo(reaction);
 				}
 			}
 		}
 		
-		/// <summary>
-		/// Deletes the reaction info file.
-		/// </summary>
-		/// <param name="info"></param>
-		public void DeleteInfo(ReactionInfo info)
-		{
-			string path = FileNamer.CreateInfoFilePath(info);
-			
-			File.Delete(path);
-		}
 	}
 }

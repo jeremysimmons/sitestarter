@@ -48,12 +48,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		
 		public virtual IEntity Clone()
 		{
-			//return EntityCloner.Clone(this);
-			IEntity newEntity = (IEntity)System.Activator.CreateInstance(GetType());
-			
-			CopyTo(newEntity);
-			
-			return newEntity;
+			return (IEntity)MemberwiseClone();
 		}
 		
 		IEntity IEntity.Clone()

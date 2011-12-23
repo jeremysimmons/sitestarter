@@ -26,7 +26,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
 		/// </summary>
 		public static void Initialize()
 		{
-			if (!isInitialized)
+			if (!isInitialized && !StateAccess.IsInitialized)
 			{
 				InitializeApplicationState();
 

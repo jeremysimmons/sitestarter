@@ -286,7 +286,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			{
 				DataAccess.Data.Suspend();
 				
-				string[] suspendableTypes = new String[] {"config", "number"};
+				string[] suspendableTypes = new String[] {"config", "number", "xml"};
 				
 				string toDirectory = DataAccess.Data.SuspendedDirectoryPath + Path.DirectorySeparatorChar
 					+ DataAccess.Data.Schema.ApplicationVersion.ToString().Replace(".", "-");
@@ -318,7 +318,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					}
 				}
 				
-				string[] suspendableDirectories = new String[]
+				/*string[] suspendableDirectories = new String[]
 				{
 					"Entities",
 					"Strategies",
@@ -342,7 +342,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					
 					if (Directory.Exists(dir))
 						Directory.Move(dir, toDir);
-				}
+				}*/
 			}
 		}
 	}

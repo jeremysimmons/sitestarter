@@ -172,9 +172,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <returns>An array of the specified type of entities.</returns>
 		public override IEntity[] GetEntities(Type type)
 		{
-			ArrayList list = new ArrayList();
+			List<IEntity> list = new List<IEntity>();
 			
-			using (LogGroup logGroup = LogGroup.Start("Retrieving entities of the specified type.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving entities of the specified type."))
 			{
 				IObjectContainer objectContainer = ((Db4oDataStore)GetDataStore(type)).ObjectContainer;
 				
@@ -185,16 +185,15 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					query.Constrain(type);
 
 					IObjectSet os = query.Execute();
-					while (os.HasNext())
-					{
-						list.Add(os.Next());
-					}
+					
+					for (int i = 0; i < os.Count; i++)
+						list.Add((IEntity)os[i]);
 					
 					LogWriter.Debug("Total: " + list.Count.ToString());
 				}
 			}
 
-			return Release((IEntity[])list.ToArray(type));
+			return Release((IEntity[])list.ToArray());
 		}
 		
 		/// <summary>
@@ -226,6 +225,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <returns>All entities retrieved.</returns>
 		public override IEntity[] GetEntities()
 		{
+			IEntity[] entities = new IEntity[]{};
+			
+			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving all entities."))
+			{
 			List<IEntity> list = new List<IEntity>();
 			
 			List<IDataStore> stores = new List<IDataStore>();
@@ -234,14 +237,18 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			// If the DataStore property is null then get all stores.
 			if (DataStore == null)
 			{
+					LogWriter.Debug("DataStore property is null. Retrieving from all.");
+					
 				foreach (string dataStoreName in DataAccess.Data.GetDataStoreNames())
-				{
+					{						
 					stores.Add(Provider.Stores[dataStoreName]);
 				}
 			}
 			// Otherwise use the single store attached to this adapter
 			else
 			{
+					LogWriter.Debug("DataStore property is set. Using.");
+					
 				stores.Add(DataStore);
 			}
 			
@@ -266,8 +273,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					}
 				}
 			}
-
-			return Release((IEntity[])list.ToArray());
+				
+				LogWriter.Debug("Total: " + list.Count.ToString());
+				
+				entities = Release((IEntity[])list.ToArray());
+		}
+			return entities;
 		}
 		
 		/// <summary>

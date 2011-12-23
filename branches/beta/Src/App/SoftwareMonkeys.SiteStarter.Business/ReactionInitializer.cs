@@ -33,8 +33,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				if (saver == null)
 				{
 					saver = new ReactionSaver();
-					if (ReactionsDirectoryPath != null && ReactionsDirectoryPath != String.Empty)
-						saver.ReactionsDirectoryPath = ReactionsDirectoryPath;
 				}
 				return saver; }
 			set { saver = value; }
@@ -65,29 +63,19 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				if (loader == null)
 				{
 					loader = new ReactionLoader();
-					if (ReactionsDirectoryPath != null && ReactionsDirectoryPath != String.Empty)
-						loader.ReactionsDirectoryPath = ReactionsDirectoryPath;
 				}
 				return loader; }
 			set { loader = value; }
 		}
 		
 		/// <summary>
-		/// Gets a value indicating whether the reactions have been mapped yet.
+		/// Gets a value indicating whether the reactions info has been cached.
 		/// </summary>
-		public bool IsMapped
+		public bool IsCached
 		{
 			get {
-				bool isMapped = ReactionMappingsExist();
-				return isMapped; }
-		}
-		
-		/// <summary>
-		/// Gets the full path to the directory containing reaction mappings.
-		/// </summary>
-		public string ReactionsDirectoryPath
-		{
-			get { return FileNamer.ReactionsInfoDirectoryPath; }
+				bool isCached = ReactionsInfoExists();
+				return isCached; }
 		}
 		
 		public ReactionInitializer()
@@ -123,18 +111,18 @@ namespace SoftwareMonkeys.SiteStarter.Business
 				ReactionInfo[] reactions = new ReactionInfo[]{};
 				if (!ReactionState.IsInitialized)
 				{
-					if (IsMapped)
+					if (IsCached)
 					{
-						LogWriter.Debug("Is mapped. Loading from XML.");
+						LogWriter.Debug("Is cached. Loading from XML.");
 						
 						reactions = LoadReactions();
 					}
 					else
 					{
-						LogWriter.Debug("Is not mapped. Scanning from type attributes.");
+						LogWriter.Debug("Is not cached. Scanning from type attributes.");
 						
 						reactions = FindReactions(includeTestReactions);
-						SaveToFile(reactions);
+						Saver.SaveToFile(reactions);
 					}
 					
 					Initialize(reactions);
@@ -145,28 +133,12 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		}
 		
 		/// <summary>
-		/// Saves the mappings for the provided reactions to reactions mappings directory.
-		/// </summary>
-		/// <param name="reactions">The reactions to save to file.</param>
-		public void SaveToFile(ReactionInfo[] reactions)
-		{
-			using (LogGroup logGroup = LogGroup.Start("Saving the provided reactions to XML.", NLog.LogLevel.Debug))
-			{
-				foreach (ReactionInfo reaction in reactions)
-				{
-					Saver.SaveToFile(reaction);
-				}
-			}
-		}
-		
-		
-		/// <summary>
 		/// Loads the available reactions from file.
 		/// </summary>
 		/// <returns>The loaded from the reactions mappings directory.</returns>
 		public ReactionInfo[] LoadReactions()
 		{
-			return Loader.LoadFromDirectory();
+			return Loader.LoadInfoFromFile();
 		}
 		
 		/// <summary>
@@ -180,15 +152,14 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		}
 		
 		/// <summary>
-		/// Checks whether the reaction mappings have been created and saved to file.
+		/// Checks whether the reactions info file has been created.
 		/// </summary>
-		/// <returns>A value indicating whether the reaction mappings directory was found.</returns>
-		public bool ReactionMappingsExist()
+		/// <returns>A value indicating whether the reactions info file was found.</returns>
+		public bool ReactionsInfoExists()
 		{
-			string directory = ReactionsDirectoryPath;
+			string path = FileNamer.ReactionsInfoFilePath;
 			
-			return (Directory.Exists(directory) && Directory.GetFiles(directory).Length > 0);
+			return File.Exists(path);
 		}
 	}
-	
 }

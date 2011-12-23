@@ -13,5 +13,6 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		string TypeName { get;set; }
 		string Url { get;set; }
 		string ProjectionName { get;set; }
+		bool Selectable { get;set; }
 	}
 }

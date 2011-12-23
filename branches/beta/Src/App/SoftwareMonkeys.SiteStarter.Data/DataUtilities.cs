@@ -12,93 +12,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 	/// </summary>
 	public static class DataUtilities
 	{
-		
-		/// <summary>
-		/// Gets the name of the data store that the provided entity is stored in.
-		/// </summary>
-		/// <param name="type">The type of entity to get the data store name of.</param>
-		/// <param name="throwErrorIfNotFound">A flag indicating whether an error should be thrown when no data store attribute is found.</param>
-		/// <returns>The data store that the provided entity is stored in.</returns>
-		/*static public string GetDataStoreNameForReference(IEntity entity, PropertyInfo property)
-		{
-			using (LogGroup logGroup = LogGroup.Start("Retrieving the data store name for a particulary entity property reference.", LogLevel.Debug))
-			{
-				if (entity == null)
-					throw new ArgumentNullException("entity");
-				
-				if (property == null)
-					throw new ArgumentNullException("property");
-				
-				LogWriter.Debug("Entity type: " + entity.GetType());
-				LogWriter.Debug("Entity ID: " + entity.ID.ToString());
-				LogWriter.Debug("Property name: " + property.Name);
-				LogWriter.Debug("Property type: " + property.GetType().ToString());
-				
-				object value = property.GetValue(entity, null);
-				
-				
-				Type referenceType = DataUtilities.GetReferenceType(entity, property);
-				BaseEntityReferenceAttribute attribute = DataUtilities.GetReferenceAttribute(property);
-				
-				
-				LogWriter.Debug("Property value: " + (value == null ? "[null]" :value.ToString()));
-				LogWriter.Debug("Reference type: " + referenceType != null ? referenceType.ToString() : "[null]");
-				
-				if (attribute == null)
-					throw new InvalidOperationException("No reference attribute found for this property on this entity.");
-				
-				if (attribute.EntitiesPropertyName == String.Empty || attribute.EntitiesPropertyName.Length == 0)
-					throw new InvalidOperationException("The specified property '" + property.Name + "' doesn't have an entities property specified in the reference attribute. Cannot retrieve the type.");
-				
-				if (property.Name != attribute.EntitiesPropertyName)
-				{
-					string name = String.Empty;
-					
-					using (LogGroup logGroup2 = LogGroup.Start("The specified property is not an entities reference. Retrieving the corresponding entities property now.", LogLevel.Debug))
-					{
-						PropertyInfo entitiesProperty = GetEntitiesProperty(property);
-						
-						if (entitiesProperty == null)
-							LogWriter.Debug("The entities property is null.");
-						else
-							LogWriter.Debug("Entities property type: " + entitiesProperty.GetType().ToString());
-						
-						name = GetDataStoreNameForReference(entity, entitiesProperty);
-					}
-					
-					return name;
-				}
-				else
-				{
-					LogWriter.Debug("The property is an entities reference.");
-					
-					if (value == null || (value is Array && ((Array)value).Length == 0))
-					{
-						LogWriter.Debug("The property value is an array. Using reference type to determine data store name.");
-						
-						return GetDataStoreName(referenceType);
-					}
-					else
-					{
-						LogWriter.Debug("The value is not null.");
-						LogWriter.Debug("The value is not a 0 length array");
-						
-						Type type = value.GetType();
-						if (type.IsSubclassOf(typeof(Array)))
-						{
-							LogWriter.Debug("The value type is an array.");
-							return GetDataStoreName(type.GetElementType(), true);
-						}
-						else
-						{
-							LogWriter.Debug("The value type is not an array.");
-							return GetDataStoreName(value.GetType(), true);
-						}
-					}
-				}
-			}
-		}*/
-		
+		//static public string DataStoreName = "Data";
 		
 		/// <summary>
 		/// Gets the name of the data store that the provided entity is stored in.
@@ -109,6 +23,9 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			if (type == null)
 				throw new ArgumentNullException("type");
+			
+			if (type.Name == "EntityReference")
+				throw new InvalidOperationException("An instance of the reference is required. Pass the entity to GetDataStore(IEntity) overload.");
 
 			return GetDataStoreName(type, true);
 		}
@@ -135,41 +52,11 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <returns>The data store that the provided entity is stored in.</returns>
 		static public string GetDataStoreName(Type type, bool throwErrorIfNotFound)
 		{
+			if (type.Name == "EntityReference")
+				throw new InvalidOperationException("An instance of the reference is required. Pass the entity to GetDataStore(IEntity) overload.");
+
+			//return DataStoreName;
 			return type.Name;
-			/*string dataStoreName = String.Empty;
-			//using (LogGroup logGroup = LogGroup.Start("Retrieving the name of the data store.", LogLevel.Debug))
-			// {
-			if (type == null)
-				throw new ArgumentNullException("type");
-
-			if (Config.Mappings == null)
-				throw new InvalidOperationException("No mappings have been initialized.");
-
-			Type actualType = EntitiesUtilities.GetType(type.Name);
-
-
-			if (actualType == null)
-				actualType = type;
-
-			// LogWriter.Debug("Actual type: " + actualType.ToString());
-
-			MappingItem item = Config.Mappings.GetItem(actualType, false);
-			if (item == null)
-			{
-				throw new InvalidOperationException("No mappings found for the type " + actualType.ToString() + ".");
-			}
-			//else
-			//LogWriter.Debug("Item found: " + item.TypeName);
-
-			if (!item.Settings.ContainsKey("DataStoreName"))
-				throw new InvalidOperationException("No data store name has been declared in the mappings for the '" + actualType.ToString() + "' type.");
-			//else
-			//LogWriter.Debug("Data store: " + item.Settings["DataStoreName"]);
-
-			dataStoreName = (string)item.Settings["DataStoreName"];
-
-			//}
-			return dataStoreName;*/
 		}
 
 		/// <summary>
@@ -183,21 +70,30 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			if (entity == null)
 				throw new ArgumentNullException("entity");
 			
+			// Use the same store for each type to boost performance
+			//return DataStoreName;
+			
 			string dataStoreName = String.Empty;
 			Type type = entity.GetType();
 			
 			using (LogGroup logGroup = LogGroup.Start("Retrieving data store name for entity of type '" + type.ToString() + "'.", LogLevel.Debug))
 			{
-				if (EntitiesUtilities.IsReference(entity.GetType()))
+				if (EntitiesUtilities.IsReference(entity))
 				{
+					LogWriter.Debug("Provided entity is an EntityReference");
+					
 					EntityReference reference = (EntityReference)entity;
 					
 					dataStoreName = GetDataStoreName(new string[] {reference.Type1Name, reference.Type2Name});//GetType(names[0]), GetType(names[1]));//dataStoreNames[0] + "-" + dataStoreNames[1];
 				}
 				else
 				{
+					LogWriter.Debug("Provided entity is NOT an EntityReference.");
+					
 					dataStoreName = GetDataStoreName(entity.GetType());
 				}
+				
+				LogWriter.Debug("Data store name: " + dataStoreName);
 			}
 			
 			return dataStoreName;
@@ -206,6 +102,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		
 		static public string GetDataStoreName(params string[] typeNames)
 		{
+			//return DataStoreName;
 			string returnName;
 			
 			//using (LogGroup logGroup = LogGroup.Start("Retrieving the data store name for provided types.", LogLevel.Debug))

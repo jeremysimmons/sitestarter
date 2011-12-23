@@ -246,7 +246,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		public override bool IsStored(IEntity entity)
 		{
 			bool isStored = false;
-			using (LogGroup logGroup = LogGroup.Start("Checking whether the provided entity has already been stored.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Checking whether the provided entity has already been stored."))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");
@@ -304,7 +304,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// </summary>
 		public override void Dispose(bool fullDisposal, bool commit)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Disposing the data provider and data stores.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Disposing the data provider and data stores."))
 			{
 				if (commit)
 				{

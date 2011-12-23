@@ -147,5 +147,22 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			}
 		}
 		
+		[Test]
+		public void Test_GetDataStoreName_Reference()
+		{
+			using (LogGroup logGroup = LogGroup.Start("Testing the GetDataStoreName function with a provided entity reference.", NLog.LogLevel.Debug))
+			{
+				EntityReference reference = new EntityReference();
+				reference.Type1Name = "TestArticle";
+				reference.Type2Name = "TestCategory";
+				
+				string name = DataUtilities.GetDataStoreName(reference);
+
+				string expected = "TestArticle-TestCategory";
+				
+				Assert.AreEqual(expected, name, "The wrong data store name was returned.");
+			}
+		}
+		
 	}
 }

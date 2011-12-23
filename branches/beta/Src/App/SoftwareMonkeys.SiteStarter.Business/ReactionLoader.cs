@@ -25,23 +25,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			set { fileNamer = value; }
 		}
 		
-		private string reactionsDirectoryPath;
-		/// <summary>
-		/// Gets/sets the path to the directory containing the reaction files.
-		/// </summary>
-		public string ReactionsDirectoryPath
-		{
-			get {
-				if (reactionsDirectoryPath == null || reactionsDirectoryPath == String.Empty)
-				{
-					if (FileNamer == null)
-						throw new InvalidOperationException("FileNamer is not set.");
-					
-					reactionsDirectoryPath = FileNamer.ReactionsInfoDirectoryPath;
-				}
-				return reactionsDirectoryPath; }
-			set { reactionsDirectoryPath = value; }
-		}
+		public ReactionInfo[] Reactions;
 		
 		public ReactionLoader()
 		{
@@ -50,52 +34,42 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <summary>
 		/// Loads all the reactions found in the reactions directory.
 		/// </summary>
-		/// <returns>An array of the the reactions found in the directory.</returns>
-		public ReactionInfo[] LoadFromDirectory()
+		/// <returns>An array of the the reactions found.</returns>
+		public ReactionInfo[] LoadInfoFromFile()
 		{
-			ReactionInfoCollection reactions = new ReactionInfoCollection();
-			
-			using (LogGroup logGroup = LogGroup.Start("Loading the reactions from the XML files.", NLog.LogLevel.Debug))
-			{
-				foreach (string file in Directory.GetFiles(ReactionsDirectoryPath))
-				{
-					LogWriter.Debug("File: " + file);
-					
-					reactions.Add(LoadFromFile(file));
-				}
-			}
-			
-			return reactions.ToArray();
+			return LoadInfoFromFile(false);
 		}
 		
 		/// <summary>
-		/// Loads the reaction from the specified path.
+		/// Loads all the reactions found in the reactions file.
 		/// </summary>
-		/// <param name="reactionPath">The full path to the reaction to load.</param>
-		/// <returns>The reaction deserialized from the specified file path.</returns>
-		public ReactionInfo LoadFromFile(string reactionPath)
+		/// <param name="includeDisabled"></param>
+		/// <returns>An array of the the reactions found.</returns>
+		public ReactionInfo[] LoadInfoFromFile(bool includeDisabled)
 		{
-			ReactionInfo info = null;
-			
-			using (LogGroup logGroup = LogGroup.Start("Loading the reaction from the specified path.", NLog.LogLevel.Debug))
+			// Logging disabled to boost performance
+			//using (LogGroup logGroup = LogGroup.StartDebug("Loading the reactions from the XML file."))
+			//{
+			if (Reactions == null)
 			{
-				if (!File.Exists(reactionPath))
-					throw new ArgumentException("The specified file does not exist.");
+				List<ReactionInfo> validReactions = new List<ReactionInfo>();
 				
-				LogWriter.Debug("Path: " + reactionPath);
+				ReactionInfo[] reactions = new ReactionInfo[]{};
 				
-				
-				using (StreamReader reader = new StreamReader(File.OpenRead(reactionPath)))
+				using (StreamReader reader = new StreamReader(File.OpenRead(FileNamer.ReactionsInfoFilePath)))
 				{
-					XmlSerializer serializer = new XmlSerializer(typeof(ReactionInfo));
-					
-					info = (ReactionInfo)serializer.Deserialize(reader);
-					
-					reader.Close();
+					XmlSerializer serializer = new XmlSerializer(typeof(ReactionInfo[]));
+					reactions = (ReactionInfo[])serializer.Deserialize(reader);
 				}
+				
+				foreach (ReactionInfo reaction in reactions)
+					if (reaction.Enabled || includeDisabled)
+						validReactions.Add(reaction);
+				
+				Reactions = validReactions.ToArray();
 			}
-			
-			return info;
+			//}
+			return Reactions;
 		}
 	}
 }

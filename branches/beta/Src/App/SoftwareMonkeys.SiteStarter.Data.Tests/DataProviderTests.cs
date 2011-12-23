@@ -133,7 +133,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		}
 		
 		[Test]
-		public void Test_GetDataStoreNames()
+		public virtual void Test_GetDataStoreNames()
 		{
 			TestUser user = new TestUser();
 			user.ID = Guid.NewGuid();
@@ -146,11 +146,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			
 			string[] names = DataAccess.Data.GetDataStoreNames();
 			
-			string expected = DataUtilities.GetDataStoreName(user.GetType());
+			string expected0 = "TestRole-TestUser";
+			string expected1 = "TestUser";
 			
-			Assert.AreEqual(1, names.Length, "Invalid number of data store names returned.");
+			Assert.AreEqual(2, names.Length, "Invalid number of data store names returned.");
 			
-			Assert.AreEqual(expected, names[0], "The data store name doesn't match what's expected.");
+			Assert.AreEqual(expected0, names[0], "The first data store name doesn't match what's expected.");
+			Assert.AreEqual(expected1, names[1], "The second data store name doesn't match what's expected.");
 		}
 		#endregion
 	}

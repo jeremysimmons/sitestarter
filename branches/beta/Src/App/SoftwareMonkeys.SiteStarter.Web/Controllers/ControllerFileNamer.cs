@@ -11,41 +11,23 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 	/// </summary>
 	public class ControllerFileNamer
 	{
-		private string controllersDirectoryPath;
+		private string controllersInfoFilePath;
 		/// <summary>
-		/// Gets the path to the directory containing the controller files.
+		/// Gets the path to the file containing the controller info.
 		/// </summary>
-		public virtual string ControllersDirectoryPath
+		public virtual string ControllersInfoFilePath
 		{
 			get {
-				if (controllersDirectoryPath == null || controllersDirectoryPath == String.Empty)
+				if (controllersInfoFilePath == null || controllersInfoFilePath == String.Empty)
 				{
 					if (StateAccess.IsInitialized)
-						controllersDirectoryPath = StateAccess.State.PhysicalApplicationPath
-							+ Path.DirectorySeparatorChar + "Controllers";
-				}
-				return controllersDirectoryPath;
-			}
-			set { controllersDirectoryPath = value; }
-		}
-		
-		private string controllersInfoDirectoryPath;
-		/// <summary>
-		/// Gets the path to the directory containing serialized controller information.
-		/// </summary>
-		public virtual string ControllersInfoDirectoryPath
-		{
-			get {
-				if (controllersInfoDirectoryPath == null || controllersInfoDirectoryPath == String.Empty)
-				{
-					if (StateAccess.IsInitialized)
-						controllersInfoDirectoryPath = StateAccess.State.PhysicalApplicationPath
+						controllersInfoFilePath = StateAccess.State.PhysicalApplicationPath
 							+ Path.DirectorySeparatorChar + "App_Data"
-							+ Path.DirectorySeparatorChar + "Controllers";
+							+ Path.DirectorySeparatorChar + "Controllers.xml";
 				}
-				return controllersInfoDirectoryPath;
+				return controllersInfoFilePath;
 			}
-			set { controllersInfoDirectoryPath = value; }
+			set { controllersInfoFilePath = value; }
 		}
 		
 		private IFileMapper fileMapper;
@@ -81,16 +63,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			string name = controller.TypeName + "-" + controller.Action + ".controller";
 			
 			return name;
-		}
-		
-		/// <summary>
-		/// Creates the full file path for the serialized info for the provided controller.
-		/// </summary>
-		/// <param name="controller">The controller to create the file path for.</param>
-		/// <returns>The full file path for the serialized info for the provided controller.</returns>
-		public string CreateInfoFilePath(ControllerInfo controller)
-		{
-			return ControllersInfoDirectoryPath + Path.DirectorySeparatorChar + CreateInfoFileName(controller);
 		}
 	}
 }

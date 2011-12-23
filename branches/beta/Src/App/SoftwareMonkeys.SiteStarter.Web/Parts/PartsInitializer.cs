@@ -85,13 +85,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		}
 		
 		/// <summary>
-		/// Gets a value indicating whether the parts have been mapped yet.
+		/// Gets a value indicating whether the parts info has been cached yet.
 		/// </summary>
-		public bool IsMapped
+		public bool IsCached
 		{
 			get {
-				bool isMapped = PartMappingsExist();
-				return isMapped; }
+				bool isCached = PartsCacheExists();
+				return isCached; }
 		}
 		
 		public Page Page;
@@ -165,7 +165,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		{
 			using (LogGroup logGroup = LogGroup.Start("Initializing the web parts.", NLog.LogLevel.Debug))
 			{
-				if (StateAccess.IsInitialized)
+				if (StateAccess.IsInitialized && !PartState.IsInitialized)
 				{
 					PartInfo[] parts = new PartInfo[]{};
 					
@@ -173,21 +173,19 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 					
 					// Only scan for parts if the page component is accessible (otherwise they can't be loaded through LoadControl)
 					// and when the parts have NOT yet been mapped
-					if (pageIsAccessible && !IsMapped)
+					if (pageIsAccessible && !IsCached)
 					{
-						LogWriter.Debug("Is not mapped. Scanning from type attributes.");
-						
-						CreateInfoDirectory(); // Existence of this directory indicates that the parts have been mapped even if empty
+						LogWriter.Debug("Is not cached. Scanning from type attributes.");
 						
 						parts = FindParts();
 						
-						SaveInfoToFile(parts);
+						Saver.SaveInfoToFile(parts);
 						
 						Initialize(parts);
 					}
-					else if(IsMapped)
+					else if(IsCached)
 					{
-						LogWriter.Debug("Is mapped. Loading from XML.");
+						LogWriter.Debug("Is cached. Loading from XML.");
 						
 						parts = LoadParts();
 						
@@ -201,38 +199,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		}
 		
 		/// <summary>
-		/// Creates the directory used to hold part info files.
-		/// </summary>
-		public void CreateInfoDirectory()
-		{
-			// Create the parts info directory
-			if (!Directory.Exists(FileNamer.PartsInfoDirectoryPath))
-				Directory.CreateDirectory(FileNamer.PartsInfoDirectoryPath);
-		}
-		
-		/// <summary>
-		/// Saves the info for the provided parts to parts info directory.
-		/// </summary>
-		/// <param name="parts">The parts to save to file.</param>
-		public void SaveInfoToFile(PartInfo[] parts)
-		{
-			using (LogGroup logGroup = LogGroup.Start("Saving the provided parts to XML.", NLog.LogLevel.Debug))
-			{
-				foreach (PartInfo part in parts)
-				{
-					Saver.SaveInfoToFile(part);
-				}
-			}
-		}
-		
-		
-		/// <summary>
 		/// Loads the available parts from file.
 		/// </summary>
-		/// <returns>The loaded from the parts mappings directory.</returns>
+		/// <returns>The loaded from the parts cache file.</returns>
 		public PartInfo[] LoadParts()
 		{
-			return Loader.LoadInfoFromDirectory();
+			return Loader.LoadInfoFromFile();
 		}
 		
 		/// <summary>
@@ -259,14 +231,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		}
 		
 		/// <summary>
-		/// Checks whether the part mappings have been created and saved to file.
+		/// Checks whether the parts info file exists.
 		/// </summary>
-		/// <returns>A value indicating whether the part mappings directory was found.</returns>
-		public bool PartMappingsExist()
+		/// <returns>A value indicating whether the parts info files was found.</returns>
+		public bool PartsCacheExists()
 		{
-			string directory = FileNamer.PartsInfoDirectoryPath;
+			string file = FileNamer.PartsInfoFilePath;
 			
-			return (Directory.Exists(directory));
+			return File.Exists(file);
 		}
 	}
 	

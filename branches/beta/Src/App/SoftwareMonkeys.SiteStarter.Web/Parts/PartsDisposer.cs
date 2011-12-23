@@ -53,21 +53,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 					PartState.Parts.Remove(
 						PartState.Parts[part.Key]
 					);
-					
-					DeleteInfo(part);
 				}
 			}
-		}
-		
-		/// <summary>
-		/// Deletes the part info file.
-		/// </summary>
-		/// <param name="info"></param>
-		public void DeleteInfo(PartInfo info)
-		{
-			string path = FileNamer.CreateInfoFilePath(info);
-			
-			File.Delete(path);
 		}
 	}
 }

@@ -122,7 +122,6 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 				throw new ArgumentNullException("endingGroup");
 			
 			return currentGroup != null
-				&& DiagnosticState.GroupStack.Count > 0
 				&& currentGroup.ID != Guid.Empty
 				&& endingGroup.ParentID != currentGroup.ID
 				&& HasParent(currentGroup, endingGroup.ID); // If the ending group is a parent of the current group then it matches

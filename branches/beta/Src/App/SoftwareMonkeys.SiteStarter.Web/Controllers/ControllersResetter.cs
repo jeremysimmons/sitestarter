@@ -17,13 +17,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 			// Dispose the in-memory state
 			new ControllersDisposer().Dispose();
 			
-			string path = new ControllerFileNamer().ControllersInfoDirectoryPath;
+			string path = new ControllerFileNamer().ControllersInfoFilePath;
 			
-			// Delete controller info (not the actual controllers)
-			foreach (string file in Directory.GetFiles(path))
-			{
-				File.Delete(file);
-			}
+			File.Delete(path);
 			
 			// Now the controllers can be re-scanned and re-initialized
 		}

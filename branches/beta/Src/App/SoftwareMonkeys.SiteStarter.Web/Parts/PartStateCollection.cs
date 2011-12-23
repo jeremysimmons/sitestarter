@@ -27,16 +27,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 			set { SetPart(action, type.Name, value); }
 		}
 		
-		// TODO: Remove if not needed
-		/*/// <summary>
-		/// Gets/sets the part for the specifid action and type.
-		/// </summary>
-		public PartInfo this[string action]
-		{
-			get { return GetPart(action); }
-			set { SetPart(action, value); }
-		}*/
-		
 		public PartStateCollection() : base(StateScope.Application, "Web.Parts")
 		{
 		}
@@ -63,26 +53,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 			base[key] = part;
 		}
 		
-		// TODO: Remove if not needed
-		/*/// <summary>
-		/// Adds the info of the provided part to the collection.
+		/// <summary>
+		/// Checks whether a part exists with the provided key.
 		/// </summary>
-		/// <param name="part">The part info to add to the collection.</param>
-		public void Add(IPart part)
-		{
-			if (part == null)
-				throw new ArgumentNullException("part");
-			
-			Add(new PartInfo(part));
-		}*/
-			
-			
-			/// <summary>
-			/// Checks whether a part exists with the provided key.
-			/// </summary>
-			/// <param name="key">The key of the part to check for.</param>
-			/// <returns>A value indicating whether the part exists.</returns>
-			public bool PartExists(string key)
+		/// <param name="key">The key of the part to check for.</param>
+		/// <returns>A value indicating whether the part exists.</returns>
+		public bool PartExists(string key)
 		{
 			return StateValueExists(key);
 		}
@@ -167,7 +143,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 				
 				fullKey += type;
 				
-				return fullKey;	
+				return fullKey;
 			}
 		}
 		
@@ -181,6 +157,24 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 			string fullKey = action;
 			
 			return fullKey;
+		}
+		
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="info"></param>
+		/// <returns></returns>
+		public string GetPartKey(PartInfo info)
+		{
+			if (info.Action != String.Empty
+			    && info.TypeName != String.Empty)
+			{
+				return GetPartKey(info.Action, info.TypeName);
+			}
+			else
+			{
+				return GetPartKey(info.Action);
+			}
 		}
 	}
 }

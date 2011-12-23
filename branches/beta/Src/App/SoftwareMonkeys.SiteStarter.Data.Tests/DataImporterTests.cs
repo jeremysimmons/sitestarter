@@ -14,7 +14,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 	public class DataImporterTests : BaseDataTestFixture
 	{
 		[Test]
-		public void Test_ImportFromXml()
+		public virtual void Test_ImportFromXml()
 		{
 			
 			Version currentVersion = new Version(1, 0, 0, 0);

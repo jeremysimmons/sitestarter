@@ -897,6 +897,23 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			}
 		}
 		
+		[Test]
+		public virtual void Test_GetEntitiesByType()
+		{
+			using (LogGroup logGroup = LogGroup.Start("Testing a query of all entities of a specific type.", NLog.LogLevel.Debug))
+			{
+				TestUser user = new TestUser();
+				user.ID = Guid.NewGuid();
+				user.FirstName = "Test";
+				user.LastName = "User";
+				user.Username = "Username";
 		
+				DataAccess.Data.Saver.Save(user);
+				
+				IEntity[] entities = DataAccess.Data.Indexer.GetEntities(user.GetType());
+				
+				Assert.AreEqual(1, entities.Length, "Invalid number found.");
+	}
+		}
 	}
 }

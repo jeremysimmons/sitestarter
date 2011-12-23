@@ -42,6 +42,13 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			set { alias = value; }
 		}
 		
+		private bool enabled = true;
+		public bool Enabled
+		{
+			get { return enabled; }
+			set { enabled = value; }
+		}
+		
 		private EntityTypeLoader typeLoader;
 		/// <summary>
 		/// Gets the entity type loader.

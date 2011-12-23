@@ -22,10 +22,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 			
 			ControllerScanner scanner = new ControllerScanner();
 			scanner.FileNamer.FileMapper = new MockFileMapper(this, TestUtilities.GetTestingPath(this), appName);
-			scanner.FileNamer.ControllersDirectoryPath = TestUtilities.GetTestApplicationPath(this, appName) + Path.DirectorySeparatorChar + "Controllers";
 			scanner.AssemblyPaths = assemblyPaths;
 			
-			CreateMockControllers(scanner.FileNamer);
+			//CreateMockControllers(scanner.FileNamer);
 			
 			ControllerInfo[] infos = scanner.FindControllers(true);
 			
@@ -81,13 +80,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 		/// </summary>
 		public void CreateMockControllers(ControllerFileNamer namer)
 		{			
+			throw new NotImplementedException();
 			
 			ControllerInfo info1 = new ControllerInfo();
 			info1.Action = "Create";
 			info1.TypeName = "User";
 			info1.ControllerType = "Test";
 			
-			string controller1Path = namer.CreateInfoFilePath(info1);
+			/*string controller1Path = namer.CreateInfoFilePath(info1);
 			
 			if (!Directory.Exists(Path.GetDirectoryName(controller1Path)))
 				Directory.CreateDirectory(Path.GetDirectoryName(controller1Path));
@@ -96,7 +96,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Tests.Controllers
 			{
 				writer.Write("[mock content]");
 				writer.Close();
-			}
+			}*/
 		}
 	}
 }

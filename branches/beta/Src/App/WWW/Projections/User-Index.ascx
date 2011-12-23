@@ -68,8 +68,21 @@
                                     <asp:BoundColumn DataField="Username" HeaderText="Username" SortExpression="Username" />
                                     <asp:BoundColumn DataField="FirstName" HeaderText="FirstName" SortExpression="FirstName" />
                                     <asp:BoundColumn DataField="LastName" HeaderText="LastName" SortExpression="LastName" />
-                                    <asp:BoundColumn DataField="IsLockedOut" HeaderText="IsLockedOut" SortExpression="IsLockedOut" />
-                                    <asp:BoundColumn DataField="IsApproved" HeaderText="IsApproved" SortExpression="IsApproved" />
+                                    <asp:TemplateColumn>
+                                        <itemtemplate>	
+                                        <%= Resources.Language.IsApproved %>: <%# Eval("IsApproved") %>
+										</itemtemplate>
+                                    </asp:TemplateColumn>
+                                    <asp:TemplateColumn>
+                                        <itemtemplate>	
+                                        <%= Resources.Language.IsLockedOut %>: <%# Eval("IsLockedOut") %>
+										</itemtemplate>
+                                    </asp:TemplateColumn>
+                                    <asp:TemplateColumn>
+                                        <itemtemplate>	
+                                        <%= Resources.Language.Roles %>: <%# Eval("TotalRoles") %>
+										</itemtemplate>
+                                    </asp:TemplateColumn>
                                     <asp:BoundColumn DataField="CreationDate" HeaderText="CreationDate" SortExpression="CreationDate" />
                                     <asp:TemplateColumn>
                                         <itemtemplate>	
