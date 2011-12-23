@@ -106,6 +106,8 @@ namespace SoftwareMonkeys.SiteStarter.Data
 						
 					}
 				}
+				else 
+					throw new InvalidOperationException("Can't commit batch. Data access is not initialized.");
 			}
 		}
 		

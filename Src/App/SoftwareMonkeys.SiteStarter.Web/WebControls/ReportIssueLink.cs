@@ -114,7 +114,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 			
 			// If running on localhost use the test page
 			if (WebUtilities.GetLocationVariation(Page.Request.Url) == "local")
-				path = new UrlConverter().ToAbsolute(Page.Request.ApplicationPath) + "/Admin/Tests/TestReportIssue.aspx?ProjectID=${Project.ID}&ProjectVersion=${Project.Version}";
+				path = new UrlConverter().ToAbsolute(Page.Request.ApplicationPath) + "/Admin/Tests/TestReportIssue.aspx?ProjectID=${Project.ID}&amp;ProjectVersion=${Project.Version}";
 			else
 				path = ConfigurationSettings.AppSettings["ReportIssueUrl"];
 			

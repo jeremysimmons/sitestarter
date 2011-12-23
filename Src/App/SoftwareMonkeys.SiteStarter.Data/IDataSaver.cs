@@ -4,13 +4,15 @@ using SoftwareMonkeys.SiteStarter.Entities;
 namespace SoftwareMonkeys.SiteStarter.Data
 {
 	/// <summary>
-	/// Description of IDataSaver.
+	/// 
 	/// </summary>
 	public interface IDataSaver : IDataAdapter
 	{		
 		void Save(IEntity entity);
 		
-		void PreSave(IEntity entity);
+		void Save(IEntity entity, bool handleReferences);
+		
+		void PreSave(IEntity entity, bool handleReferences);
 		
 	}
 }

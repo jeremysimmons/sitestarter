@@ -3,6 +3,7 @@ using System.Reflection;
 using SoftwareMonkeys.SiteStarter.Entities;
 using System.IO;
 using System.Resources;
+using System.Collections.Generic;
 
 namespace SoftwareMonkeys.SiteStarter.Business
 {
@@ -11,6 +12,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// </summary>
 	public static class DynamicLanguage
 	{
+		static public List<ResourceSet> ResourceSets = new List<ResourceSet>();
+		
 		/// <summary>
 		/// Retrieves the text entry with the specified key from the assembly containing the provided relative type.
 		/// </summary>
@@ -97,35 +100,49 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="key">The key of the target entry in the target resource set.</param>
 		/// <returns>The resource set containing the target entry from the assembly containing the provided relative type.</returns>
 		public static ResourceSet GetResourceSet(Type relativeType, string key)
-		{	
-			ResourceSet resources = null;
+		{
+			ResourceSet resources = GetResourceSetFromProperty(relativeType, key);
 			
-			// Try getting the relative set
-			if (relativeType != null)
-				resources = GetRelativeResourceSet(relativeType, key);
-			
-			// Try getting the App_GlobalResources set
-			if (!ResourceSetMatches(resources, key))
+			if (resources == null)
 			{
-				Assembly a = Assembly.Load("App_GlobalResources");
+				// Try getting the relative set
+				if (relativeType != null)
+					resources = GetRelativeResourceSet(relativeType, key);
 				
-				resources = GetResourceSetFromAssembly(a, key);
-			}
-			
-			// Try getting any other set that can be found
-			if (!ResourceSetMatches(resources, key))
-			{
-				string binDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-				
-				foreach (string assemblyFile in Directory.GetFiles(binDirectory, "*.dll"))
+				// Try getting the App_GlobalResources set
+				if (!ResourceSetMatches(resources, key))
 				{
-					Assembly a = Assembly.LoadFile(assemblyFile);
+					Assembly a = Assembly.Load("App_GlobalResources");
 					
 					resources = GetResourceSetFromAssembly(a, key);
 				}
+				
+				// Try getting any other set that can be found
+				if (!ResourceSetMatches(resources, key))
+				{
+					string binDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+					
+					foreach (string assemblyFile in Directory.GetFiles(binDirectory, "*.dll"))
+					{
+						Assembly a = Assembly.LoadFile(assemblyFile);
+						
+						resources = GetResourceSetFromAssembly(a, key);
+					}
+				}
+				
+				ResourceSets.Add(resources);
 			}
 			
 			return resources;
+		}
+		
+		static public ResourceSet GetResourceSetFromProperty(Type relativeType, string key)
+		{
+			foreach (ResourceSet rs in ResourceSets)
+				if (ResourceSetMatches(rs, key))
+					return rs;
+			
+			return null;
 		}
 		
 		/// <summary>
@@ -197,5 +214,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			
 			return resources;
 		}
+
 	}
 }

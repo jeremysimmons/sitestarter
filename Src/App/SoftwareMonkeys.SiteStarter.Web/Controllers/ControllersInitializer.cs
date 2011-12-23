@@ -35,8 +35,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				if (saver == null)
 				{
 					saver = new ControllerSaver();
-					if (ControllersDirectoryPath != null && ControllersDirectoryPath != String.Empty)
-						saver.ControllersDirectoryPath = ControllersDirectoryPath;
 				}
 				return saver; }
 			set { saver = value; }
@@ -70,29 +68,19 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				if (loader == null)
 				{
 					loader = new ControllerLoader();
-					if (ControllersDirectoryPath != null && ControllersDirectoryPath != String.Empty)
-						loader.ControllersDirectoryPath = ControllersDirectoryPath;
 				}
 				return loader; }
 			set { loader = value; }
 		}
 		
 		/// <summary>
-		/// Gets a value indicating whether the controllers have been mapped yet.
+		/// Gets a value indicating whether the controllers info has been cached yet.
 		/// </summary>
-		public bool IsMapped
+		public bool IsCached
 		{
 			get {
-				bool isMapped = ControllerMappingsExist();
-				return isMapped; }
-		}
-		
-		/// <summary>
-		/// Gets the full path to the directory containing controller mappings.
-		/// </summary>
-		public string ControllersDirectoryPath
-		{
-			get { return FileNamer.ControllersDirectoryPath; }
+				bool isCached = ControllerInfoExists();
+				return isCached; }
 		}
 		
 		public ControllersInitializer()
@@ -135,18 +123,18 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 					if (!ControllerState.IsInitialized)
 					{
 						ControllerInfo[] controllers = new ControllerInfo[]{};
-						if (IsMapped)
+						if (IsCached)
 						{
-							LogWriter.Debug("Is mapped. Loading from XML.");
+							LogWriter.Debug("Is cached. Loading from XML.");
 							
 							controllers = LoadControllers();
 						}
 						else
 						{
-							LogWriter.Debug("Is not mapped. Scanning from type attributes.");
+							LogWriter.Debug("Is not cached. Scanning from type attributes.");
 							
 							controllers = FindControllers(includeTestControllers);
-							SaveInfoToFile(controllers);
+							Saver.SaveInfoToFile(controllers);
 						}
 						
 						Initialize(controllers);
@@ -157,23 +145,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 				else
 					LogWriter.Debug("State is not initialized. Skipping.");
 			}
-		}
-		
-		/// <summary>
-		/// Saves the info for the provided controllers to controllers info directory.
-		/// </summary>
-		/// <param name="controllers">The controllers to save to file.</param>
-		public void SaveInfoToFile(ControllerInfo[] controllers)
-		{
-			using (LogGroup logGroup = LogGroup.Start("Saving the provided controllers to XML.", NLog.LogLevel.Debug))
-			{
-				foreach (ControllerInfo controller in controllers)
-				{
-					Saver.SaveInfoToFile(controller);
-				}
-			}
-		}
-		
+		}	
 		
 		/// <summary>
 		/// Loads the available controllers from file.
@@ -209,14 +181,14 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		}
 		
 		/// <summary>
-		/// Checks whether the controller mappings have been created and saved to file.
+		/// Checks whether the controller info has been created and saved to file.
 		/// </summary>
-		/// <returns>A value indicating whether the controller mappings directory was found.</returns>
-		public bool ControllerMappingsExist()
+		/// <returns>A value indicating whether the controllers info file was found.</returns>
+		public bool ControllerInfoExists()
 		{
-			string directory = FileNamer.ControllersInfoDirectoryPath;
+			string file = FileNamer.ControllersInfoFilePath;
 			
-			return (Directory.Exists(directory) && Directory.GetFiles(directory).Length > 0);
+			return File.Exists(file);
 		}
 	}
 	

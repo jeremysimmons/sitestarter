@@ -33,7 +33,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		/// </summary>
 		public bool HasNext
 		{
-			get { return CurrentType != null && CurrentType.FullName != typeof(object).FullName; }
+			get { return CurrentType != null && CurrentType != typeof(object); }
 		}
 		
 		/// <summary>

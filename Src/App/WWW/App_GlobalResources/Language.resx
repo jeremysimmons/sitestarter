@@ -963,4 +963,7 @@ ${ResetUrl}</value>
   <data name="PageNotFound" xml:space="preserve">
     <value>Page not found</value>
   </data>
+  <data name="TotalRoles" xml:space="preserve">
+    <value>Total Roles</value>
+  </data>
 </root>

@@ -23,7 +23,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		public override bool IsClosed
 		{
 			get {
-				if (ObjectContainer == null || ObjectServer == null)
+				if (!IsContainerInitialized)
 					return true;
 				else
 					return ObjectContainer.Ext().IsClosed();
@@ -122,7 +122,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			get
 			{
-				return StateAccess.State.ContainsOperation(ObjectContainerKey) // Container is found in state
+				return IsServerInitialized
+					&& StateAccess.State.ContainsOperation(ObjectContainerKey) // Container is found in state
 				    && StateAccess.State.GetOperation(ObjectContainerKey) != null // Container entry in state is not null
 				    && !((IObjectContainer)StateAccess.State.GetOperation(ObjectContainerKey)).Ext().IsClosed(); // Container is not closed
 			}
@@ -205,12 +206,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		}
 		
 		/// <summary>
-		/// Opens the data store object. This does not open the actual store as it's done when it's needed.
+		/// Opens the data store object.
 		/// </summary>
 		public override void Open()
 		{
-			// Store is not opened here as it's not necessary.
-			// It's opened JIT
+			OpenContainer();
 		}
 		
 		/// <summary>

@@ -9,25 +9,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 	/// Used to save entity components to file.
 	/// </summary>
 	public class EntitySaver
-	{
-		private string entitiesDirectoryPath;
-		/// <summary>
-		/// Gets the full path to the directory containing entity mappings.
-		/// </summary>
-		public string EntitiesDirectoryPath
-		{
-			get {
-				if (entitiesDirectoryPath == null || entitiesDirectoryPath == String.Empty)
-				{
-					if (FileNamer != null)
-						entitiesDirectoryPath = FileNamer.EntitiesInfoDirectoryPath;
-					
-				}
-				return entitiesDirectoryPath;
-			}
-			set { entitiesDirectoryPath = value; }
-		}
-		
+	{		
 		private EntityFileNamer fileNamer;
 		/// <summary>
 		/// Gets/sets the file namer used to create file names/paths.
@@ -45,32 +27,6 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		{
 		}
 		
-		/// <summary>
-		/// Saves the provided entity to the entities mappings directory.
-		/// </summary>
-		/// <param name="entity">The entity to save to file.</param>
-		public void SaveToFile(EntityInfo entity)
-		{
-			using (LogGroup logGroup = LogGroup.StartDebug("Saving the provided entity to file."))
-			{
-				if (entity == null)
-					throw new ArgumentNullException("entity");
-				
-				string path = FileNamer.CreateInfoFilePath(entity);
-				
-				LogWriter.Debug("Path : " + path);
-				
-				if (!Directory.Exists(Path.GetDirectoryName(path)))
-					Directory.CreateDirectory(Path.GetDirectoryName(path));
-				
-				using (StreamWriter writer = File.CreateText(path))
-				{
-					XmlSerializer serializer = new XmlSerializer(entity.GetType());
-					serializer.Serialize(writer, entity);
-					writer.Close();
-				}
-			}
-		}
 		
 		/// <summary>
 		/// Saves the provided entities to file.
@@ -78,14 +34,23 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <param name="entities">An array of the entities to save to file.</param>
 		public void SaveToFile(EntityInfo[] entities)
 		{
-			using (LogGroup logGroup = LogGroup.StartDebug("Saving the provided entities to XML files."))
+			// Logging disabled to boost performance
+			//using (LogGroup logGroup = LogGroup.StartDebug("Saving the provided entities to XML file."))
+			//{
+			string path = FileNamer.EntitiesInfoFilePath;
+			
+			//LogWriter.Debug("Path : " + path);
+			
+			if (!Directory.Exists(Path.GetDirectoryName(path)))
+				Directory.CreateDirectory(Path.GetDirectoryName(path));
+			
+			using (StreamWriter writer = File.CreateText(path))
 			{
-				foreach (EntityInfo entity in entities)
-				{
-					if (entity != null)
-						SaveToFile(entity);
-				}
+				XmlSerializer serializer = new XmlSerializer(entities.GetType());
+				serializer.Serialize(writer, entities);
+				writer.Close();
 			}
+			//}
 		}
 	}
 }

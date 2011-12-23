@@ -11,24 +11,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// </summary>
 	public class StrategySaver
 	{
-		private string strategiesDirectoryPath;
-		/// <summary>
-		/// Gets the full path to the directory containing strategy mappings.
-		/// </summary>
-		public string StrategiesDirectoryPath
-		{
-			get {
-				if (strategiesDirectoryPath == null || strategiesDirectoryPath == String.Empty)
-				{
-					if (FileNamer != null)
-						strategiesDirectoryPath = FileNamer.StrategiesInfoDirectoryPath;
-					
-				}
-				return strategiesDirectoryPath;
-			}
-			set { strategiesDirectoryPath = value; }
-		}
-		
 		private StrategyFileNamer fileNamer;
 		/// <summary>
 		/// Gets/sets the file namer used to create file names/paths.
@@ -47,51 +29,28 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		}
 		
 		/// <summary>
-		/// Saves the provided strategy to the strategies mappings directory.
-		/// </summary>
-		/// <param name="strategy">The strategy to save to file.</param>
-		public void SaveToFile(StrategyInfo strategy)
-		{
-			using (LogGroup logGroup = LogGroup.Start("Saving the provided strategy to file.", NLog.LogLevel.Debug))
-			{
-				string path = FileNamer.CreateInfoFilePath(strategy);
-				
-				LogWriter.Debug("Path : " + path);
-				
-				if (!Directory.Exists(Path.GetDirectoryName(path)))
-					Directory.CreateDirectory(Path.GetDirectoryName(path));
-				
-				try
-				{
-				using (StreamWriter writer = File.CreateText(path))
-				{
-					XmlSerializer serializer = new XmlSerializer(strategy.GetType());
-					
-					serializer.Serialize(writer, strategy);
-					
-					writer.Close();
-				}
-			}
-				catch (Exception ex)
-				{
-					throw new Exception("Failed to save strategy info to file '" + path + "'.", ex);
-		}
-			}
-		}
-		
-		/// <summary>
 		/// Saves the provided strategies to file.
 		/// </summary>
 		/// <param name="strategies">An array of the strategies to save to file.</param>
 		public void SaveToFile(StrategyInfo[] strategies)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Saving the provided strategies to XML files.", NLog.LogLevel.Debug))
-			{
-				foreach (StrategyInfo strategy in strategies)
+			// Logging disabled to boost performance
+			//using (LogGroup logGroup = LogGroup.StartDebug("Saving the provided strategies to XML file."))
+			//{
+			string path = FileNamer.StrategiesInfoFilePath;
+				
+			//LogWriter.Debug("Path : " + path);
+				
+				if (!Directory.Exists(Path.GetDirectoryName(path)))
+					Directory.CreateDirectory(Path.GetDirectoryName(path));
+				
+				using (StreamWriter writer = File.CreateText(path))
 				{
-					SaveToFile(strategy);
+				XmlSerializer serializer = new XmlSerializer(strategies.GetType());
+				serializer.Serialize(writer, strategies);
+					writer.Close();
 				}
+			//}
 			}
 		}
-	}
 }

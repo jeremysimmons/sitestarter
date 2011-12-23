@@ -53,21 +53,10 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 					EntityState.Entities.Remove(
 						EntityState.Entities[entity.TypeName]
 					);
-					
-					DeleteInfo(entity);
 				}
+				
+				File.Delete(FileNamer.EntitiesInfoFilePath);
 			}
-		}
-		
-		/// <summary>
-		/// Deletes the entity info file.
-		/// </summary>
-		/// <param name="info"></param>
-		public void DeleteInfo(EntityInfo info)
-		{
-			string path = FileNamer.CreateInfoFilePath(info);
-			
-			File.Delete(path);
 		}
 	}
 }

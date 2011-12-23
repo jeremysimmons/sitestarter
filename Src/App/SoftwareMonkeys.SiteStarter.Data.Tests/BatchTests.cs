@@ -24,10 +24,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[SetUp]
 		public new void Start()
 		{
-		//	InitializeMockState();
-		//	InitializeMockDiagnostics();
-		//	InitializeMockConfiguration();
-		//	InitializeMockData();
 			BatchCommitted = false;
 			StoreCommitted = false;
 		}
@@ -37,15 +33,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			BatchCommitted = false;
 			StoreCommitted = false;
-			
-			//DisposeMockData();
-			//DisposeMockConfiguration();
-		//	DisposeMockDiagnostics();
-		//	DisposeMockState();
 		}
 		
 		[Test]
-		public void Test_OneBatch_NoOperations()
+		public virtual void Test_OneBatch_NoOperations()
 		{
 			Assert.IsFalse(BatchCommitted, "The BatchCommitted flag should start off false.");
 			
@@ -58,7 +49,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		}
 		
 		[Test]
-		public void Test_TwoBatches_Nested()
+		public virtual void Test_TwoBatches_Nested()
 		{
 			Assert.IsFalse(BatchCommitted, "The BatchCommitted flag should start off false.");
 			
@@ -80,7 +71,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		}
 		
 		[Test]
-		public void Test_OneBatch_TwoOperations()
+		public virtual void Test_OneBatch_TwoOperations()
 		{
 			// Check the flags to ensure they've been reset
 			Assert.IsFalse(BatchCommitted, "The BatchCommitted flag should start off false.");

@@ -171,7 +171,6 @@
     <Compile Include="Projections\MockProjection.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Projections\MockProjectionLoader.cs" />
     <Compile Include="Projections\MockProjectionScanner.cs" />
     <Compile Include="Projections\ProjectionMapperTests.cs" />
     <Compile Include="Projections\ProjectionScannerTests.cs" />

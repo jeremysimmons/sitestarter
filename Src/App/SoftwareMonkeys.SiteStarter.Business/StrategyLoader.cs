@@ -26,48 +26,51 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			set { fileNamer = value; }
 		}
 		
-		private string strategiesDirectoryPath;
-		/// <summary>
-		/// Gets/sets the path to the directory containing the strategy files.
-		/// </summary>
-		public string StrategiesDirectoryPath
-		{
-			get {
-				if (strategiesDirectoryPath == null || strategiesDirectoryPath == String.Empty)
-				{
-					if (FileNamer == null)
-						throw new InvalidOperationException("FileNamer is not set.");
-					
-					strategiesDirectoryPath = FileNamer.StrategiesInfoDirectoryPath;
-				}
-				return strategiesDirectoryPath; }
-			set { strategiesDirectoryPath = value; }
-		}
+		public StrategyInfo[] Strategies;
 		
 		public StrategyLoader()
 		{
-		}
+				}
 		
 		/// <summary>
 		/// Loads all the strategies found in the strategies directory.
 		/// </summary>
 		/// <returns>An array of the the strategies found in the directory.</returns>
-		public StrategyInfo[] LoadFromDirectory()
+		public StrategyInfo[] LoadInfoFromDirectory()
 		{
-			List<StrategyInfo> strategies = new List<StrategyInfo>();
-			
+			return LoadInfoFromDirectory(false);
+		}
+		
+		/// <summary>
+		/// Loads all the strategies found in the strategies directory.
+		/// </summary>
+		/// <param name="includeDisabled"></param>
+		/// <returns>An array of the the strategies found in the directory.</returns>
+		public StrategyInfo[] LoadInfoFromDirectory(bool includeDisabled)
+		{
 			// Logging disabled to boost performance
-			//using (LogGroup logGroup = LogGroup.StartDebug("Loading the strategies from the XML files."))
+			//using (LogGroup logGroup = LogGroup.StartDebug("Loading the strategies from the XML file."))
 			//{
-				foreach (string file in Directory.GetFiles(StrategiesDirectoryPath))
+			if (Strategies == null)
 				{
-			//		LogWriter.Debug("File: " + file);
+				List<StrategyInfo> validStrategies = new List<StrategyInfo>();
 					
-					strategies.Add(LoadFromFile(file));
+				StrategyInfo[] strategies = new StrategyInfo[]{};
+				
+				using (StreamReader reader = new StreamReader(File.OpenRead(FileNamer.StrategiesInfoFilePath)))
+				{
+					XmlSerializer serializer = new XmlSerializer(typeof(StrategyInfo[]));
+					strategies = (StrategyInfo[])serializer.Deserialize(reader);
 				}
-			//}
 			
-			return strategies.ToArray();
+				foreach (StrategyInfo strategy in strategies)
+					if (strategy.Enabled || includeDisabled)
+						validStrategies.Add(strategy);
+				
+				Strategies = validStrategies.ToArray();
+		}
+			//}
+			return Strategies;
 		}
 		
 		/// <summary>

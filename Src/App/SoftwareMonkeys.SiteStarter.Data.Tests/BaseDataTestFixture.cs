@@ -58,7 +58,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		/// <param name="commit"></param>
 		public virtual void DisposeMockData(bool commit)
 		{
-			if (DataAccess.IsInitialized && DataAccess.Data != null)
+			if (StateAccess.IsInitialized && DataAccess.IsInitialized && DataAccess.Data != null)
 			{	
 				DataAccess.Dispose(true, commit);
 			}

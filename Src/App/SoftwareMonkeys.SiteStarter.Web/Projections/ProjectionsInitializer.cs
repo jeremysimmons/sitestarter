@@ -87,11 +87,11 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <summary>
 		/// Gets a value indicating whether the projections have been mapped yet.
 		/// </summary>
-		public bool IsMapped
+		public bool IsCached
 		{
 			get {
-				bool isMapped = ProjectionMappingsExist();
-				return isMapped; }
+				bool isCached = ProjectionCacheExists();
+				return isCached; }
 		}
 		
 		public Page Page;
@@ -176,33 +176,41 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			{
 				if (StateAccess.IsInitialized)
 				{
-					ProjectionInfo[] projections = new ProjectionInfo[]{};
-					
-					bool pageIsAccessible = Page != null;
-					
-					// Only scan for projections if the page component is accessible (otherwise they can't be loaded through LoadControl)
-					// and when the projections have NOT yet been mapped
-					if (pageIsAccessible && !IsMapped)
+					if (!ProjectionState.IsInitialized)
 					{
-						LogWriter.Debug("Is not mapped. Scanning for projections.");
+						ProjectionInfo[] projections = new ProjectionInfo[]{};
 						
-						projections = FindProjections();
+						bool pageIsAccessible = Page != null;
 						
-						SaveInfoToFile(projections);
-						
-						Initialize(projections);
-					}
-					else if(IsMapped)
-					{
-						LogWriter.Debug("Is mapped. Loading from XML.");
-						
-						projections = LoadProjections();
-						
-						Initialize(projections);
+						// If the projections have NOT yet been mapped
+						if (!IsCached)
+						{
+							// Only scan for projections if the page component is accessible (otherwise they can't be loaded through LoadControl)
+							if (pageIsAccessible)
+							{
+								LogWriter.Debug("Is not cached. Scanning for projections.");
+								
+								projections = FindProjections();
+								
+								SaveInfoToFile(projections);
+								
+								Initialize(projections);
+							}
+							else
+								LogWriter.Debug("Can't initialize. No Page object is assigned to Page property. Skipping for now.");
+						}
+						// Otherwise load the mapped cache info
+						else
+						{
+							LogWriter.Debug("Is cached. Loading from XML.");
+							
+							projections = LoadProjections();
+							
+							Initialize(projections);
+						}
 					}
 					else
-						LogWriter.Debug("Can't initialize. No Page object is assigned to Page property. Skipping for now.");
-					// Otherwise just skip it, as it's likely before setup has run and just needs to wait
+						LogWriter.Debug("Projection state already initialized. Skipping.");
 				}
 				else
 					LogWriter.Debug("State is not initialized. Skipping.");
@@ -217,10 +225,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			using (LogGroup logGroup = LogGroup.Start("Saving the provided projections to XML.", NLog.LogLevel.Debug))
 			{
-				foreach (ProjectionInfo projection in projections)
-				{
-					Saver.SaveInfoToFile(projection);
-				}
+				Saver.SaveInfoToFile(projections);
 			}
 		}
 		
@@ -231,7 +236,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <returns>The loaded from the projections mappings directory.</returns>
 		public ProjectionInfo[] LoadProjections()
 		{
-			return Loader.LoadInfoFromDirectory();
+			return Loader.LoadInfoFromFile();
 		}
 		
 		/// <summary>
@@ -258,14 +263,12 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		}
 		
 		/// <summary>
-		/// Checks whether the projection mappings have been created and saved to file.
+		/// Checks whether the projection cache has been created and saved to file.
 		/// </summary>
-		/// <returns>A value indicating whether the projection mappings directory was found.</returns>
-		public bool ProjectionMappingsExist()
+		/// <returns>A value indicating whether the projection cache info file was found.</returns>
+		public bool ProjectionCacheExists()
 		{
-			string directory = FileNamer.ProjectionsInfoDirectoryPath;
-			
-			return (Directory.Exists(directory) && Directory.GetFiles(directory).Length > 0);
+			return File.Exists(FileNamer.ProjectionsInfoFilePath);
 		}
 	}
 	

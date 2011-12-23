@@ -11,24 +11,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 	/// </summary>
 	public class ReactionSaver
 	{
-		private string reactionsDirectoryPath;
-		/// <summary>
-		/// Gets the full path to the directory containing reaction mappings.
-		/// </summary>
-		public string ReactionsDirectoryPath
-		{
-			get {
-				if (reactionsDirectoryPath == null || reactionsDirectoryPath == String.Empty)
-				{
-					if (FileNamer != null)
-						reactionsDirectoryPath = FileNamer.ReactionsInfoDirectoryPath;
-					
-				}
-				return reactionsDirectoryPath;
-			}
-			set { reactionsDirectoryPath = value; }
-		}
-		
 		private ReactionFileNamer fileNamer;
 		/// <summary>
 		/// Gets/sets the file namer used to create file names/paths.
@@ -47,42 +29,28 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		}
 		
 		/// <summary>
-		/// Saves the provided reaction to the reactions mappings directory.
-		/// </summary>
-		/// <param name="reaction">The reaction to save to file.</param>
-		public void SaveToFile(ReactionInfo reaction)
-		{
-			using (LogGroup logGroup = LogGroup.Start("Saving the provided reaction to file.", NLog.LogLevel.Debug))
-			{
-				string path = FileNamer.CreateInfoFilePath(reaction);
-				
-				LogWriter.Debug("Path : " + path);
-				
-				if (!Directory.Exists(Path.GetDirectoryName(path)))
-					Directory.CreateDirectory(Path.GetDirectoryName(path));
-				
-				using (StreamWriter writer = File.CreateText(path))
-				{
-					XmlSerializer serializer = new XmlSerializer(reaction.GetType());
-					serializer.Serialize(writer, reaction);
-					writer.Close();
-				}
-			}
-		}
-		
-		/// <summary>
 		/// Saves the provided reactions to file.
 		/// </summary>
 		/// <param name="reactions">An array of the reactions to save to file.</param>
 		public void SaveToFile(ReactionInfo[] reactions)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Saving the provided reactions to XML files.", NLog.LogLevel.Debug))
+			// Logging disabled to boost performance
+			//using (LogGroup logGroup = LogGroup.StartDebug("Saving the provided reactions to XML file."))
+			//{
+			string path = FileNamer.ReactionsInfoFilePath;
+			
+			//LogWriter.Debug("Path : " + path);
+			
+			if (!Directory.Exists(Path.GetDirectoryName(path)))
+				Directory.CreateDirectory(Path.GetDirectoryName(path));
+			
+			using (StreamWriter writer = File.CreateText(path))
 			{
-				foreach (ReactionInfo reaction in reactions)
-				{
-					SaveToFile(reaction);
-				}
+				XmlSerializer serializer = new XmlSerializer(reactions.GetType());
+				serializer.Serialize(writer, reactions);
+				writer.Close();
 			}
+			//}
 		}
 	}
 }

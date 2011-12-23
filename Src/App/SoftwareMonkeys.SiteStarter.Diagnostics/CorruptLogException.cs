@@ -12,7 +12,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		                                                  + "Parent ID: " + group.ParentID.ToString() + "\n"
 		                                                  + "Summary: " + group.Summary + "\n"
 		                                                  + "Current group ID: " + DiagnosticState.CurrentGroupID.ToString() + "\n"
-		                                                  + "Current group depth: " + DiagnosticState.GroupStack.Count.ToString())
+		                                                )
 		{
 			
 		}

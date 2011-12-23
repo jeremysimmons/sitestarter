@@ -183,12 +183,9 @@
     <Compile Include="Security\MockAuthoriseSaveMockEntityStrategy.cs" />
     <Compile Include="Security\MockAuthoriseUpdateMockEntityStrategy.cs" />
     <Compile Include="StrategyCreatorTests.cs" />
-    <Compile Include="StrategyFileNamerTests.cs" />
     <Compile Include="StrategyInfoTests.cs" />
     <Compile Include="StrategyInitializerTests.cs" />
-    <Compile Include="StrategyLoaderTests.cs" />
     <Compile Include="StrategyLocatorTests.cs" />
-    <Compile Include="StrategySaverTests.cs" />
     <Compile Include="StrategyScannerTests.cs" />
     <Compile Include="StrategyStateNameValueCollectionTests.cs" />
     <Compile Include="MockRetrieveTestUserStrategy.cs" />

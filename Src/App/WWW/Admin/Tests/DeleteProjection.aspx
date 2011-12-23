@@ -24,12 +24,12 @@ private void Page_Load(object sender, EventArgs e)
 		}
 
 		string filePath = new ProjectionFileNamer().CreateProjectionFilePath(info);
-		string infoPath = new ProjectionFileNamer().CreateInfoFilePath(info);
 		
 		File.Delete(filePath);
-		File.Delete(infoPath);
 		
 		ProjectionState.Projections.Remove(info);
+		
+		new ProjectionSaver().SaveInfoToFile(ProjectionState.Projections.ToArray());
 		
 	}
 	else

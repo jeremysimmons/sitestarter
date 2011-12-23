@@ -83,15 +83,17 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 					projectionInfo = LocateFromHeirarchy(action, type, format);
 				}
 				
-				// If the projection wasn't found in memory then try loading it
+				/*// If the projection wasn't found in memory then try loading it
 				if (EnableLoading && projectionInfo == null)
 				{
+					LogWriter.Debug("Projection not found in memory. Loading from file.");
+					
 					projectionInfo = new ProjectionLoader().LoadInfoFromFile(
 						new ProjectionFileNamer().CreateInfoFilePath(action, typeName, format)
 					);
 
 					Projections.Add(projectionInfo);
-				}
+				}*/
 				
 				if (projectionInfo == null)
 					LogWriter.Debug("No projection found.");

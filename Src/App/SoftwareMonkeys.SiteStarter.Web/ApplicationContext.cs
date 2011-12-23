@@ -161,11 +161,15 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		{
 			if (Config.IsInitialized)
 			{
+				// Increase the timeout on the rare chance the cache needs to be initialized from scratch
+				using (TimeoutExtender extender = TimeoutExtender.NewMinutes(30))
+				{
 				new ControllersInitializer().Initialize();
 				new ElementsInitializer().Initialize();
 				new ProjectionsInitializer().Initialize();
 				new PartsInitializer().Initialize();
 			}
+		}
 		}
 		
 		private void InitializeState()

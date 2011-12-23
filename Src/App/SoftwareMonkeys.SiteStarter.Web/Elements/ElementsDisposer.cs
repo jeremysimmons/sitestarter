@@ -51,25 +51,9 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 		public void Dispose(ElementStateCollection elements)
 		{
 			using (LogGroup logGroup = LogGroup.Start("Disposing the provided elements.", NLog.LogLevel.Debug))
-			{
-				foreach (ElementInfo element in elements)
-				{					
-					DeleteInfo(element);
-				}
-				
+			{				
 				elements.Clear();
 			}
-		}
-		
-		/// <summary>
-		/// Deletes the element info file.
-		/// </summary>
-		/// <param name="info"></param>
-		public void DeleteInfo(ElementInfo info)
-		{
-			string path = FileNamer.CreateInfoFilePath(info);
-			
-			File.Delete(path);
 		}
 	}
 }

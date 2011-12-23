@@ -12,10 +12,30 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 	/// </summary>
 	public class ProjectionFileNamer
 	{
+		private string projectionsInfoFilePath;
+		/// <summary>
+		/// Gets the path to the file containing the projection info.
+		/// </summary>
+		public virtual string ProjectionsInfoFilePath
+		{
+			get {
+				if (projectionsInfoFilePath == null || projectionsInfoFilePath == String.Empty)
+				{
+					if (StateAccess.IsInitialized)
+						projectionsInfoFilePath = StateAccess.State.PhysicalApplicationPath
+							+ Path.DirectorySeparatorChar + "App_Data"
+							+ Path.DirectorySeparatorChar + "Projections.xml";
+				}
+				return projectionsInfoFilePath;
+			}
+			set { projectionsInfoFilePath = value; }
+		}
+		
 		private string projectionsDirectoryPath;
 		/// <summary>
 		/// Gets the path to the directory containing the projection files.
 		/// </summary>
+		[Obsolete("Projections directory is no longer used. Info is stored in file specified by ProjectionFilePath property.")]
 		public virtual string ProjectionsDirectoryPath
 		{
 			get {
@@ -48,27 +68,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			set { projectionTemplatesDirectoryPath = value; }
 		}
 		
-		private string projectionsInfoDirectoryPath;
-		/// <summary>
-		/// Gets the path to the directory containing serialized projection information.
-		/// </summary>
-		public virtual string ProjectionsInfoDirectoryPath
-		{
-			get {
-				if (projectionsInfoDirectoryPath == null || projectionsInfoDirectoryPath == String.Empty)
-				{
-					if (StateAccess.IsInitialized)
-					{
-						projectionsInfoDirectoryPath = StateAccess.State.PhysicalApplicationPath
-							+ Path.DirectorySeparatorChar + "App_Data"
-							+ Path.DirectorySeparatorChar + "Projections";
-					}
-				}
-				return projectionsInfoDirectoryPath;
-			}
-			set { projectionsInfoDirectoryPath = value; }
-		}
-		
 		private IFileMapper fileMapper;
 		/// <summary>
 		/// Gets/sets the file mapper used for mapping the full path of relative files.
@@ -84,71 +83,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		
 		public ProjectionFileNamer()
 		{
-		}
-		
-		/// <summary>
-		/// Creates the file name for the serialized info for the provided projection.
-		/// </summary>
-		/// <param name="projection">The projection to create the file name for.</param>
-		/// <returns>The full file name for the serialized info for the provided projection.</returns>
-		public virtual string CreateInfoFileName(ProjectionInfo projection)
-		{			
-			if (projection == null)
-				throw new ArgumentNullException("projection");
-			
-			string name = projection.Name;
-			
-			if (projection.TypeName != String.Empty && projection.Action != String.Empty)
-			{
-				name = projection.TypeName + "-" + projection.Action;
-			}
-			
-			name = name + "." + projection.Format.ToString().ToLower() + ".projection";
-			
-			return name;
-		}
-		
-		/// <summary>
-		/// Creates the file name for the serialized info for the specified projection.
-		/// </summary>
-		/// <param name="action"></param>
-		/// <param name="typeName"></param>
-		/// <param name="format"></param>
-		/// <returns>The full file name for the serialized info for the provided projection.</returns>
-		public virtual string CreateInfoFileName(string action, string typeName, ProjectionFormat format)
-		{			
-			string name = String.Empty;
-			
-			if (typeName != String.Empty && action != String.Empty)
-			{
-				name = typeName + "-" + action;
-			}
-			
-			name = name + "." + format.ToString().ToLower() + ".projection";
-			
-			return name;
-		}
-		
-		/// <summary>
-		/// Creates the full file path for the serialized info for the provided projection.
-		/// </summary>
-		/// <param name="projection">The projection to create the file path for.</param>
-		/// <returns>The full file path for the serialized info for the provided projection.</returns>
-		public string CreateInfoFilePath(ProjectionInfo projection)
-		{
-			return ProjectionsInfoDirectoryPath + Path.DirectorySeparatorChar + CreateInfoFileName(projection);
-		}
-		
-		/// <summary>
-		/// Creates the full file path for the serialized info for the specified projection.
-		/// </summary>
-		/// <param name="action"></param>
-		/// <param name="typeName"></param>
-		/// <param name="format"></param>
-		/// <returns>The full file path for the serialized info for the provided projection.</returns>
-		public string CreateInfoFilePath(string action, string typeName, ProjectionFormat format)
-		{
-			return ProjectionsInfoDirectoryPath + Path.DirectorySeparatorChar + CreateInfoFileName(action, typeName, format);
 		}
 		
 		/// <summary>

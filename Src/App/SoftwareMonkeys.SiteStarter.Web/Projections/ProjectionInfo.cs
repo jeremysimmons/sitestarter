@@ -146,7 +146,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 			string path = HttpContext.Current.Request.ApplicationPath.TrimEnd('/')
 				+ ProjectionFilePath;
 			
-			return page.LoadControl(path);
+			Control control = null;
+			
+			// Extend the timeout
+			using (TimeoutExtender extender = TimeoutExtender.NewMinutes(30))
+			{
+				control = page.LoadControl(path);
+			}
+			
+			return control;
 		}
 	}
 }
