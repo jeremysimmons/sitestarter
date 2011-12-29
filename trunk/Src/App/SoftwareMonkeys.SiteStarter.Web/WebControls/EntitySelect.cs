@@ -271,7 +271,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				if (ViewState["NoSelectionText"] == null || (String)ViewState["NoSelectionText"] == String.Empty)
 				{
 					string shortTypeName = EntityState.GetType(EntityType).Name;
-					ViewState["NoSelectionText"] = "-- Select " + DynamicLanguage.GetText(shortTypeName) + " --";
+					ViewState["NoSelectionText"] = "-- Select " + DynamicLanguage.GetText(EntityState.GetType(EntityType),
+					                                                                      shortTypeName) + " --";
 				}
 				return (string)ViewState["NoSelectionText"]; }
 			set { ViewState["NoSelectionText"] = value; }
