@@ -8,5 +8,6 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 	public interface IAuthored : IEntity
 	{
 		IUser Author { get;set; }
+		bool IsPublic { get;set; }
 	}
 }
