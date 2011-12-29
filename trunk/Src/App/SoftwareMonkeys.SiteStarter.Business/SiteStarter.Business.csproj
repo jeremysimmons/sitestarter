@@ -150,6 +150,7 @@
     <Compile Include="Security\AuthoriseReferenceStrategy.cs" />
     <Compile Include="Security\AuthoriseReferenceStrategyAttribute.cs" />
     <Compile Include="Security\AuthoriseReferenceStrategyLocator.cs" />
+    <Compile Include="Security\AuthoriseRetrieveAuthoredEntityStrategy.cs" />
     <Compile Include="Security\AuthoriseUpdateProjectionStrategy.cs" />
     <Compile Include="Security\AuthoriseIndexStrategy.cs" />
     <Compile Include="Security\AuthoriseRegisterUserStrategy.cs" />
