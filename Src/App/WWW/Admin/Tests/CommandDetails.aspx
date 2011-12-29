@@ -72,6 +72,9 @@ private string[] LoadProjections(string action)
 			
 			if (actions[i] == "Edit")
 				actions.Add("Update");
+				
+			if (actions[i] == "View")
+				actions.Add("Retrieve");
 		}
 		
 		return actions.ToArray();
