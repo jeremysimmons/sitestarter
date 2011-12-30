@@ -90,7 +90,8 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		/// <returns></returns>
 		public bool IsEnabled(string typeName, LogLevel level)
 		{
-			bool isTypeEnabled = SettingsManager.IsEnabled(typeName, level);
+			bool isTypeEnabled = SettingsManager != null
+                		&& SettingsManager.IsEnabled(typeName, level);
 			
 			bool isModeEnabled = IsModeEnabled(level);
 			
