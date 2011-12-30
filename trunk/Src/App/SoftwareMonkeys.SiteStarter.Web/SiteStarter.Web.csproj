@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -14,7 +14,7 @@
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <OldToolsVersion>2.0</OldToolsVersion>
+    <OldToolsVersion>3.5</OldToolsVersion>
     <SourceAnalysisOverrideSettingsFile>F:\Documents and Settings\Jose\Application Data\ICSharpCode/SharpDevelop3.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
@@ -23,6 +23,7 @@
     <SignAssembly>False</SignAssembly>
     <DelaySign>False</DelaySign>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>Full</DebugType>
@@ -183,8 +184,12 @@
     <Compile Include="Projections\BaseXmlIndexProjection.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Projections\BaseXmlProjection.cs" />
-    <Compile Include="Projections\BaseXmlViewProjection.cs" />
+    <Compile Include="Projections\BaseXmlProjection.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Projections\BaseXmlViewProjection.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="Projections\IProjection.cs" />
     <Compile Include="Projections\ProjectionFileNamer.cs" />
     <Compile Include="Projections\ProjectionFormat.cs" />
@@ -227,7 +232,9 @@
     </Compile>
     <Compile Include="StyleUtilities.cs" />
     <Compile Include="TextParser.cs" />
-    <Compile Include="TimeoutExtender.cs" />
+    <Compile Include="TimeoutExtender.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UrlConverter.cs" />
     <Compile Include="UrlCreator.cs" />
     <Compile Include="UrlRewriter.cs" />
@@ -302,10 +309,7 @@
       <Name>SiteStarter.Entities</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Elements" />
-    <Folder Include="Validation" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
