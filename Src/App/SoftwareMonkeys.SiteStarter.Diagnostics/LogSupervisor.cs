@@ -105,10 +105,14 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		/// <returns></returns>
 		public bool IsModeEnabled(LogLevel level)
 		{
-			if (level == LogLevel.Debug)
-				return IsDebug();
-			else
-				return SettingsManager.IsEnabled(level);
+
+            		if (level == LogLevel.Debug)
+            	    		return IsDebug();
+            		else
+            		{
+            			return SettingsManager != null
+           		        	&& SettingsManager.IsEnabled(level);
+            		}
 		}
 		
 		/// <summary>

@@ -11,17 +11,16 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 	/// </summary>
 	public class LogSettingsManager
 	{
-		static public string CurrentKey = "Diagnostics.LogSettingsManager.Current";
-		
+        static public LogSettingsManager current;
 		/// <summary>
 		/// Gets the current instance of the log settings manager.
 		/// </summary>
 		static public LogSettingsManager Current
 		{
 			get {
-				if (!StateAccess.State.ContainsApplication(CurrentKey))
-					StateAccess.State.SetApplication(CurrentKey, new LogSettingsManager());
-				return (LogSettingsManager)StateAccess.State.GetApplication(CurrentKey); }
+				if (current == null)
+					current = new LogSettingsManager();
+				return current; }
 		}
 		
 		private Dictionary<string, bool> defaults;
