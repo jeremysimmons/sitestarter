@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-# SharpDevelop 4.0.0.7070
+# SharpDevelop 4.1.0.7915
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiteStarter.Web", "SoftwareMonkeys.SiteStarter.Web\SiteStarter.Web.csproj", "{A5D49D94-D936-4123-BA9A-572AA7C7F426}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiteStarter.Data.Db4o", "SoftwareMonkeys.SiteStarter.Data.Db4o\SiteStarter.Data.Db4o.csproj", "{61DF6782-15A0-4056-AA02-7C18F0A19B0F}"
