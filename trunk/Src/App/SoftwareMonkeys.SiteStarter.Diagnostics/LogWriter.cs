@@ -114,16 +114,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		/// </summary>
 		static public void Dispose()
 		{
-				
 				Debug("Disposing log data.");
-				
-				// TODO: Check if needed. Should be obsolete
-				//LogFileWriter fileWriter = (LogFileWriter)StateAccess.State.GetApplication(LogFileWriter.LogFileWriterKey);
-
-				//fileWriter.Dispose();
-				
-
-				//StateAccess.State.RemoveApplication(LogFileWriter.LogFileWriterKey);
 		}
 	}
 }
