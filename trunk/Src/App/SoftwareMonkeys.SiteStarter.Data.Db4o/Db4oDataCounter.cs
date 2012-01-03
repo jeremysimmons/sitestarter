@@ -280,7 +280,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				
 				IObjectContainer container = store.ObjectContainer;
 				
-				Predicate matches = new MatchReferencePredicate(Provider, referencedEntityType, mirrorPropertyName, entityType, propertyName, entityID);
+				Predicate matches = new MatchReferencePredicate(Provider, referencedEntityType, mirrorPropertyName, entityType, entityID);
 				
 				IObjectSet os = store.ObjectContainer.Query(matches);
 				

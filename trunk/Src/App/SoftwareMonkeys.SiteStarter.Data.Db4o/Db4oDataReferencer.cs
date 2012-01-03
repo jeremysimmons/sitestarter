@@ -288,6 +288,129 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			return collection;
 		}
+		/// <summary>
+		/// Retrieves all the references to the specified entity. The specified entity can be either the source or reference entity as references work both ways.
+		/// </summary>
+		/// <param name="entityType">The type of the entity to retrieve the corresponding references for.</param>
+		/// <param name="entityID">The ID of the entity to retrieve the corresponding references for.</param>
+		/// <param name="referenceType">The type of entity at the other side of the reference to the one specified.</param>
+		/// <param name="activateAll">A value indicating whether to activate the references by loading the corresponding entities and setting them to the SourceEntity and ReferenceEntity properties.</param>
+		/// <returns>A collection of references that match the provided parameters.</returns>
+		public override EntityReferenceCollection GetReferences(Type entityType, Guid entityID, Type referenceType, bool activateAll)
+		{
+			EntityReferenceCollection collection = new EntityReferenceCollection();
+			
+			using (LogGroup logGroup = LogGroup.Start("Retrieving references.", NLog.LogLevel.Debug))
+			{
+				
+				if (entityType == null)
+					throw new ArgumentNullException("entityType");
+				
+				if (referenceType == null)
+					throw new ArgumentNullException("referenceType");
+				
+				LogWriter.Debug("Entity type: " + entityType.ToString());
+				LogWriter.Debug("Reference type: " + referenceType.ToString());
+				
+				Db4oDataStore dataStore = (Db4oDataStore)GetDataStore(entityType.Name, referenceType.Name);
+				
+				if(dataStore.DoesExist)
+				{
+					EntityReferenceCollection list = new EntityReferenceCollection();
+					
+					IQuery query1 = dataStore.ObjectContainer.Query();
+					query1.Constrain(typeof(EntityReference));
+					
+					IConstraint constraint1 = query1.Descend("type1Name").Constrain(EntitiesUtilities.GetShortType(entityType.Name)).Equal().And(
+							query1.Descend("type2Name").Constrain(EntitiesUtilities.GetShortType(referenceType.Name)).Equal());
+					
+					if (entityID != Guid.Empty)
+						constraint1.And(query1.Descend("entity1ID").Constrain(entityID).Equal());
+					
+					IQuery query2 = dataStore.ObjectContainer.Query();
+					query2.Constrain(typeof(EntityReference));
+					
+					IConstraint constraint2 = query2.Descend("type2Name").Constrain(EntitiesUtilities.GetShortType(entityType.Name)).Equal().And(
+							query2.Descend("type1Name").Constrain(EntitiesUtilities.GetShortType(referenceType.Name)).Equal());
+					
+					if (entityID != Guid.Empty)
+						constraint2.And(query2.Descend("entity2ID").Constrain(entityID).Equal());
+					
+					IObjectSet os1 = query1.Execute();
+					
+					while (os1.HasNext())
+					{
+						EntityReference reference = (EntityReference)os1.Next();
+						
+						list.Add(reference);
+					}
+					
+					IObjectSet os2 = query2.Execute();
+					
+					while (os2.HasNext())
+					{
+						EntityReference reference = (EntityReference)os2.Next();
+						
+						list.Add(reference);
+					}
+					
+					if (list.Count == 0)
+					{
+						LogWriter.Debug("No references loaded from the data store.");
+					}
+					else
+					{
+						LogWriter.Debug("Count: " + list.Count);
+						
+						foreach (EntityReference r in list)
+						{
+							using (LogGroup logGroup2 = LogGroup.Start("Processing ID reference.", NLog.LogLevel.Debug))
+							{
+								
+								EntityReference reference = (EntityReference)r.SwitchFor(entityType, entityID);
+								
+								LogWriter.Debug("Loaded reference - Entity ID 1: " + reference.Entity1ID);
+								LogWriter.Debug("Loaded reference - Entity ID 2: " + reference.Entity2ID);
+								
+								LogWriter.Debug("Loaded reference - Property 1 name: " + reference.Property1Name);
+								LogWriter.Debug("Loaded reference - Property 2 name: " + reference.Property2Name);
+								
+								LogWriter.Debug("Loaded reference - Type name 1: " + reference.Type1Name);
+								LogWriter.Debug("Loaded reference - Type name 2: " + reference.Type2Name);
+								
+								if (reference.Entity1ID != Guid.Empty
+								    && reference.Entity2ID != Guid.Empty)
+								{
+									//	LogWriter.Debug("Adding to the collection.");
+									collection.Add(reference);
+								}
+								else
+								{
+									LogWriter.Error("Reference not added to the collection. IDs are empty. This shouldn't happen but the system can ignore it and continue. Invalid references like these should probably be deleted.");
+								}
+							}
+						}
+					}
+				}
+				
+				LogWriter.Debug("References #: " + collection.Count.ToString());
+				
+				
+				if (activateAll)
+				{
+					LogWriter.Debug("Activating references.");
+					
+					foreach (EntityReference reference in collection)
+					{
+						Provider.Activator.ActivateReference(reference);
+					}
+				}
+				
+				LogWriter.Debug("References #: " + collection.Count.ToString());
+			}
+			
+			return collection;
+		}
 		
 	}
 }

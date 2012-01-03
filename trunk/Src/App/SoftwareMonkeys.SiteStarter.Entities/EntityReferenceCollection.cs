@@ -124,5 +124,49 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			
 			return list.ToArray();
 		}
+		
+		public bool Includes(Guid entityID, string propertyName, Guid referencedEntityID, string mirrorPropertyName)
+		{
+			bool doesInclude = false;
+			
+			using (LogGroup logGroup = LogGroup.StartDebug("Checking whether the collection includes a reference to the entity with the provided details."))
+			{
+				foreach (EntityReference reference in this)
+				{
+					LogWriter.Debug("Entity ID: " + entityID.ToString());
+					LogWriter.Debug("Property name: " + propertyName);
+					LogWriter.Debug("Referenced entity ID: " + referencedEntityID.ToString());
+					LogWriter.Debug("Mirror property name: " + mirrorPropertyName);
+					
+					if (reference.Includes(entityID, propertyName)
+					    && reference.Includes(referencedEntityID, mirrorPropertyName))
+						return true;
+					
+					LogWriter.Debug("Does include: " + doesInclude.ToString());
+				}
+			}
+			return doesInclude;
+		}
+		
+		public bool Includes(Guid entityID, string propertyName)
+		{
+			bool doesInclude = false;
+			
+			using (LogGroup logGroup = LogGroup.StartDebug("Checking whether the collection includes a reference to the entity with the provided details."))
+			{
+				LogWriter.Debug("Entity ID: " + entityID.ToString());
+				LogWriter.Debug("Property name: " + propertyName);
+				
+				foreach (EntityReference reference in this)
+				{
+					if (reference.Includes(entityID, propertyName))
+						doesInclude = true;
+				}
+				
+				LogWriter.Debug("Does include: " + doesInclude.ToString());
+			}
+			
+			return doesInclude;
+		}
 	}
 }

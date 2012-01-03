@@ -259,8 +259,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					
 					EntityReference reference = (EntityReference)entity;
 					
-					//if (reference.Type1Name == String.Empty)
-
 					Type type = EntityState.GetType(reference.Type1Name);
 					Type type2 = EntityState.GetType(reference.Type2Name);
 
@@ -270,20 +268,28 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					if (Stores[entity].IsStored(entity))
 					{
 						LogWriter.Debug("Reference object found in store.");
-						                
+						
 						isStored = true;
 					}
 					else
 					{
 						LogWriter.Debug("Reference object NOT found. Checking for one with matching properties.");
 						
-						isStored = Referencer.MatchReference(
-							type,
-							reference.Entity1ID,
-							reference.Property1Name,
-							type2,
-							reference.Entity2ID,
-							reference.Property2Name);
+						IEntity sourceEntity = Reader.GetEntity(type, "ID", reference.Entity1ID);
+						
+						// If the source entity can't be found then the reference itself can't exist in the store
+						if (sourceEntity == null)
+							isStored = false;
+						else
+						{
+							isStored = Referencer.MatchReference(
+								sourceEntity,
+								reference.Entity1ID,
+								reference.Property1Name,
+								type2,
+								reference.Entity2ID,
+								reference.Property2Name);
+						}
 					}
 				}
 				else

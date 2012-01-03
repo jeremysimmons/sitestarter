@@ -194,44 +194,44 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		
 		
 		
-		static public Type GetReferenceType(Type entityType, string propertyName)
+		static public Type GetReferenceType(IEntity sourceEntity, string propertyName)
 		{
-			return GetReferenceType(entityType, propertyName, null);
+			return GetReferenceType(sourceEntity, propertyName, null);
 		}
 		
-		static public Type GetReferenceType(Type entityType, string propertyName, Type returnType)
+		static public Type GetReferenceType(IEntity sourceEntity, string propertyName, Type returnType)
 		{
-			if (entityType == null)
-				throw new ArgumentNullException("entityType");
+			if (sourceEntity == null)
+				throw new ArgumentNullException("sourceEntity");
 			
 			if (propertyName == null || propertyName == String.Empty)
 				throw new ArgumentException("propertyName", "Property name cannot be null or String.Empty.");
 			
 			
-			PropertyInfo property = GetProperty(entityType, propertyName, returnType);
+			PropertyInfo property = GetProperty(sourceEntity.GetType(), propertyName, returnType);
 			
-			return GetReferenceType(entityType, property);
+			return GetReferenceType(sourceEntity, property);
 		}
 		
-		static public Type GetReferenceType(Type sourceType, PropertyInfo property)
+		static public Type GetReferenceType(IEntity entity, PropertyInfo property)
 		{
 			Type type = null;
 			
 			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving the referenced entity type."))
 			{
-				if (sourceType == null)
-					throw new ArgumentNullException("sourceType");
+				if (entity == null)
+					throw new ArgumentNullException("entity");
 				
 				if (property == null)
 					throw new ArgumentNullException("property");
 				
-				LogWriter.Debug("Entity type: " + sourceType.ToString());
+				LogWriter.Debug("Entity type: " + entity.GetType().ToString());
 				LogWriter.Debug("Property name: " + property.Name);
 				LogWriter.Debug("Property type: " + property.PropertyType.ToString());
 				
 				ReferenceAttribute attribute = GetReferenceAttribute(property);
 				
-				type = GetReferenceType(attribute, sourceType, property);
+				type = GetReferenceType(attribute, entity, property);
 				
 				if (type != null)
 					LogWriter.Debug("Type: " + type.ToString());
@@ -240,9 +240,11 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			return type;
 		}
 		
-		static public Type GetReferenceType(ReferenceAttribute attribute, Type sourceType, PropertyInfo property)
+		static public Type GetReferenceType(ReferenceAttribute attribute, IEntity sourceEntity, PropertyInfo property)
 		{
 			Type type = null;
+			
+			Type sourceType = sourceEntity.GetType();
 			
 			if (attribute == null)
 				throw new Exception("The reference attribute was not found on the '" + property.Name + "' property of the type '" + sourceType.ToString() + "'.");
@@ -255,6 +257,22 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 					LogWriter.Debug("attribute.TypeName == " + attribute.TypeName);
 					
 					type = EntityState.GetType(attribute.TypeName);
+				}
+				else if (attribute.TypePropertyName != String.Empty)
+				{
+					PropertyInfo typeProperty = sourceType.GetProperty(attribute.TypePropertyName);
+						
+					// TODO: Use a custom exception instead of a general one
+					if (typeProperty == null)
+						throw new Exception("'" + attribute.TypePropertyName + "' property not found on '" + sourceType.Name + "' type as specified by reference attribute on '" + property.Name + "' property.");
+					
+					string typeName = (string)typeProperty.GetValue(sourceEntity, null);
+					
+					// TODO: Use a custom exception instead of a general one
+					if (typeName == null || typeName == String.Empty)
+						throw new Exception("The '" + attribute.TypePropertyName + "' property on the '" + sourceEntity.ShortTypeName + "' type with the ID '" + sourceEntity.ID.ToString() + "' has not been set. It must be set if the ReferenceAttribute.TypePropertyName property is set.");
+					
+					type = EntityState.GetType(typeName);
 				}
 				else
 				{
@@ -426,7 +444,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			return list.ToArray();
 		}
 		
-		static public string GetMirrorPropertyNameReverse(Type entityType, string propertyName, Type referencedEntityType)
+		static public string GetMirrorPropertyNameReverse(IEntity sourceEntity, string propertyName, Type referencedEntityType)
 		{
 			string mirrorPropertyName = String.Empty;
 			
@@ -437,11 +455,11 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 					using (LogGroup logGroup2 = LogGroup.StartDebug("Checking property: " + property.Name))
 					{
 						
-						if (IsReference(entityType, property))
+						if (IsReference(sourceEntity.GetType(), property))
 						{
 							LogWriter.Debug("Is reference == true");
 							
-							Type reverseReferenceType = GetReferenceType(referencedEntityType, property);
+							Type reverseReferenceType = GetReferenceType(sourceEntity, property);
 							
 							LogWriter.Debug("reverseReferenceType: " + reverseReferenceType.ToString());
 							
@@ -455,7 +473,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 							
 							bool canAutoDiscover = attribute.AutoDiscoverMirror;
 							
-							bool typeMatches = entityType.FullName.ToString() == reverseReferenceType.FullName.ToString();
+							bool typeMatches = sourceEntity.GetType().FullName.ToString() == reverseReferenceType.FullName.ToString();
 							
 							LogWriter.Debug("Attribute mirror property matches: " + attributeMirrorPropertyMatches.ToString());
 							LogWriter.Debug("Can auto discover: " + canAutoDiscover);
@@ -480,41 +498,47 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			return mirrorPropertyName;
 		}
 		
-		static public string GetMirrorPropertyName(Type sourceType, string propertyName)
-		{
-			string mirror = String.Empty;
-			
-			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving the name of the mirror property that corresponds with the specified property."))
-			{
-				if (sourceType == null)
-					throw new ArgumentNullException("sourceType");
-				
-				PropertyInfo property = sourceType.GetProperty(propertyName);
-				
-				if (property == null)
-					throw new Exception("Cannot find property '" + propertyName + "' on type '" + sourceType.ToString() + "'.");
-				
-				mirror = GetMirrorPropertyName(sourceType, property);
-			}
-			return mirror;
-		}
-		
-		static public string GetMirrorPropertyName(Type sourceType, PropertyInfo property)
+		static public string GetMirrorPropertyName(IEntity sourceEntity, string propertyName)
 		{
 			string mirrorPropertyName = String.Empty;
 			
 			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving the name of the mirror property that corresponds with the specified property."))
 			{
-				if (sourceType == null)
-					throw new ArgumentNullException("sourceType");
+				if (sourceEntity == null)
+					throw new ArgumentNullException("sourceEntity");
+				
+				PropertyInfo property = sourceEntity.GetType().GetProperty(propertyName);
+				
+				if (property == null)
+					throw new Exception("Cannot find property '" + propertyName + "' on type '" + sourceEntity.GetType().ToString() + "'.");
+				
+				mirrorPropertyName = GetMirrorPropertyName(sourceEntity, property);
+				
+				LogWriter.Debug("Mirror property name: " + mirrorPropertyName);
+			}
+			return mirrorPropertyName;
+		}
+		
+		static public string GetMirrorPropertyName(IEntity sourceEntity, PropertyInfo property)
+		{
+			string mirrorPropertyName = String.Empty;
+			
+			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving the name of the mirror property that corresponds with the specified property."))
+			{
+				if (sourceEntity == null)
+					throw new ArgumentNullException("sourceEntity");
 				
 				if (property == null)
 					throw new ArgumentNullException("property");
+				
+				Type sourceType = sourceEntity.GetType();
 				
 				ReferenceAttribute attribute = GetReferenceAttribute(property);
 				
 				if (attribute == null)
 					throw new Exception("No ReferenceAttribute found on the '" + property.Name + "' property of the type '" + sourceType.ToString() + "'.");
+				
+				Type referencedEntityType = GetReferenceType(sourceEntity, property);
 				
 				// Is the mirror property name specified on the attribute?
 				if (attribute.MirrorPropertyName != String.Empty
@@ -524,17 +548,17 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				{
 					// Should the mirror property name be automatically discovered based on the property type matching the source entity?
 					if (attribute.AutoDiscoverMirror)
-					{
-						Type referencedEntityType = GetReferenceType(sourceType, property);
-						
+					{						
 						// Loop through each property and check the types
 						foreach (PropertyInfo p in referencedEntityType.GetProperties())
 						{
 							// Is the property a reference?
 							if (IsReference(referencedEntityType, p))
 							{
+								IEntity[] referencedEntities = GetReferencedEntities(sourceEntity, property);
+								
 								// Retrieve the entity type being stored on the property
-								Type reciprocalType = GetReferenceType(referencedEntityType, p);
+								Type reciprocalType = GetReferenceType(referencedEntities[0], p);
 								
 								// If the entity types match then return the property name
 								if (reciprocalType.FullName == sourceType.FullName)

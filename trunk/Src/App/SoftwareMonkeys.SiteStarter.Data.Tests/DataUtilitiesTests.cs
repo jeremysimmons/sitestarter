@@ -34,7 +34,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			Assert.IsNotNull((object)provider);
 		}
 		#endregion
-				
+		
 		[Test]
 		public void Test_GetEntityType()
 		{

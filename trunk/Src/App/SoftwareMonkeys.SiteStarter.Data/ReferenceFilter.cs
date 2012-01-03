@@ -125,8 +125,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					}
 				}				
 				
-				referenceMatches = DataAccess.Data.Referencer.MatchReference(entity.GetType(), entity.ID, propertyName, referenceType, referencedEntityID);
-				//bool referenceMatches = DataAccess.Data.Referencer.MatchReference(entity.GetType(), entity.ID, propertyName, property.Type, referencedEntityType, referencedEntityID);
+				referenceMatches = DataAccess.Data.Referencer.MatchReference(entity, entity.ID, propertyName, referenceType, referencedEntityID);
 				
 				LogWriter.Debug("Type matches: " + typeMatches.ToString());
 				LogWriter.Debug("Reference matches: " + referenceMatches.ToString());

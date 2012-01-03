@@ -57,28 +57,28 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <summary>
 		/// Checks whether there is a reference between the specified entities.
 		/// </summary>
-		/// <param name="entityType"></param>
+		/// <param name="entity"></param>
 		/// <param name="entityID"></param>
 		/// <param name="propertyName"></param>
 		/// <param name="referencedEntityType"></param>
 		/// <param name="referencedEntityID"></param>
 		/// <param name="mirrorPropertyName"></param>
 		/// <returns>A value indicating whether a reference exists between the specified entities.</returns>
-		public virtual bool MatchReference(Type entityType, Guid entityID, string propertyName, Type referencedEntityType, Guid referencedEntityID, string mirrorPropertyName)
+		public virtual bool MatchReference(IEntity entity, Guid entityID, string propertyName, Type referencedEntityType, Guid referencedEntityID, string mirrorPropertyName)
 		{
-			return MatchReference(entityType, entityID, propertyName, referencedEntityType, referencedEntityID);
+			return MatchReference(entity, entityID, propertyName, referencedEntityType, referencedEntityID);
 		}
 		
 		/// <summary>
 		/// Checks whether there is a reference between the specified entities.
 		/// </summary>
-		/// <param name="entityType"></param>
+		/// <param name="entity"></param>
 		/// <param name="entityID"></param>
 		/// <param name="propertyName"></param>
 		/// <param name="referencedEntityType"></param>
 		/// <param name="referencedEntityID"></param>
 		/// <returns>A value indicating whether a reference exists between the specified entities.</returns>
-		public virtual bool MatchReference(Type entityType, Guid entityID, string propertyName, Type referencedEntityType, Guid referencedEntityID)
+		public virtual bool MatchReference(IEntity entity, Guid entityID, string propertyName, Type referencedEntityType, Guid referencedEntityID)
 		{
 			bool matches = false;
 			
@@ -87,38 +87,38 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			// TODO: Comment out logging to improve performance
 			//using (LogGroup logGroup = LogGroup.StartDebug("Checking whether a reference is found matching the details provided between '" + entityType.Name + "' and '" + referencedEntityType.Name + "'."))
 			//{
-				if (entityType == null)
-					throw new ArgumentNullException("entityType");
-				
-				if (entityID == Guid.Empty)
-					throw new ArgumentException("An entity ID must be provided.", "entityID");
-				
-				if (referencedEntityType == null)
-					throw new ArgumentNullException("referencedEntityType");
-				
-				LogWriter.Debug("Entity type: " + entityType);
+			if (entity == null)
+				throw new ArgumentNullException("entity");
+			
+			if (entityID == Guid.Empty)
+				throw new ArgumentException("An entity ID must be provided.", "entityID");
+			
+			if (referencedEntityType == null)
+				throw new ArgumentNullException("referencedEntityType");
+			
+			LogWriter.Debug("Entity type: " + entity.GetType().FullName);
 			//	LogWriter.Debug("Entity ID: " + entityID);
 			//	LogWriter.Debug("Property name: " + propertyName);
 			//	LogWriter.Debug("Referenced entity type: " + referencedEntityType.ToString());
 			//	LogWriter.Debug("Referenced entity ID: " + referencedEntityID.ToString());
-				
-				string mirrorPropertyName = String.Empty;
-				if (propertyName == String.Empty)
-					mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyNameReverse(entityType, propertyName, referencedEntityType);
-				else
-					mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(entityType, propertyName);
-				
+			
+			string mirrorPropertyName = String.Empty;
+			if (propertyName == String.Empty)
+				mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyNameReverse(entity, propertyName, referencedEntityType);
+			else
+				mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(entity, propertyName);
+			
 			//	LogWriter.Debug("Mirror property name: " + mirrorPropertyName);
-				
-				EntityReference reference = Provider.Referencer.GetReference(entityType, entityID, propertyName, referencedEntityType, referencedEntityID, mirrorPropertyName, false);
-				
+			
+			EntityReference reference = Provider.Referencer.GetReference(entity.GetType(), entityID, propertyName, referencedEntityType, referencedEntityID, mirrorPropertyName, false);
+			
 			//	if (reference == null)
 			//		LogWriter.Debug("reference == null");
 			//	else
 			//		LogWriter.Debug("reference != null");
-				
-				matches = (reference != null);
-				
+			
+			matches = (reference != null);
+			
 			//	LogWriter.Debug("Matches: " + matches.ToString());
 			//}
 			return matches;
@@ -134,6 +134,17 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="activateAll">A value indicating whether to activate the references by loading the corresponding entities and setting them to the SourceEntity and ReferenceEntity properties.</param>
 		/// <returns>A collection of references that match the provided parameters.</returns>
 		public abstract EntityReferenceCollection GetReferences(Type entityType, Guid entityID, string propertyName, Type referenceType, bool activateAll);
+		
+		
+		/// <summary>
+		/// Retrieves all the references to the specified entity. The specified entity can be either the source or reference entity as references work both ways.
+		/// </summary>
+		/// <param name="entityType">The type of the entity to retrieve the corresponding references for.</param>
+		/// <param name="entityID">The ID of the entity to retrieve the corresponding references for.</param>
+		/// <param name="referenceType">The type of entity at the other side of the reference to the one specified.</param>
+		/// <param name="activateAll">A value indicating whether to activate the references by loading the corresponding entities and setting them to the SourceEntity and ReferenceEntity properties.</param>
+		/// <returns>A collection of references that match the provided parameters.</returns>
+		public abstract EntityReferenceCollection GetReferences(Type entityType, Guid entityID, Type referenceType, bool activateAll);
 		
 		/// <summary>
 		/// Retrieves the reference between the specified entities.
@@ -378,10 +389,9 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <returns>A collection of all the references in the store that involve the provided entity.</returns>
 		public virtual EntityReferenceCollection GetReferences(IEntity entity, bool activateAll)
 		{
-			
 			EntityReferenceCollection references = new EntityReferenceCollection();
 			
-			using (LogGroup logGroup = LogGroup.Start("Retrieving the references associated with the provided entity."))
+			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving the references associated with the provided entity."))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");
@@ -392,8 +402,11 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					{
 						if (StoresReferencesToType(store, entity.ShortTypeName))
 						{
-							references.AddRange(store.Indexer.GetEntities<EntityReference>("Entity1ID", entity.ID));
-							references.AddRange(store.Indexer.GetEntities<EntityReference>("Entity2ID", entity.ID));
+							using (LogGroup logGroup2 = LogGroup.StartDebug("Retrieving the references from '" + store.Name + "'."))
+							{
+								references.AddRange(store.Indexer.GetEntities<EntityReference>("Entity1ID", entity.ID));
+								references.AddRange(store.Indexer.GetEntities<EntityReference>("Entity2ID", entity.ID));
+							}
 						}
 					}
 				}
@@ -434,7 +447,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				
 				ReferenceAttribute attribute = EntitiesUtilities.GetReferenceAttribute(entity, referencePropertyName);
 				
-				Type referencedType = EntitiesUtilities.GetReferenceType(entity.GetType(), referencePropertyName);
+				Type referencedType = EntitiesUtilities.GetReferenceType(entity, referencePropertyName);
 				
 				LogWriter.Debug("Referenced type: " + referencedType.FullName);
 				
@@ -442,7 +455,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				{
 					LogWriter.Debug("Count property name: " + attribute.CountPropertyName);
 					
-					string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(entity.GetType(), referencePropertyName);
+					string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(entity, referencePropertyName);
 					
 					PropertyInfo property = entity.GetType().GetProperty(attribute.CountPropertyName);
 					
@@ -640,9 +653,9 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				{
 					if (EntitiesUtilities.IsReference(entityType, propertyName, returnType))
 					{
-						Type referencedEntityType = EntitiesUtilities.GetReferenceType(entityType, propertyName, returnType);
+						Type referencedEntityType = EntitiesUtilities.GetReferenceType(entity, propertyName, returnType);
 						
-						string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(entity.GetType(), property);
+						string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(entity, property);
 						
 						if (EntitiesUtilities.IsMultipleReference(entity.GetType(), property))
 						{
@@ -752,7 +765,6 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				
 				EntityReferenceCollection references = new EntityReferenceCollection(entity, property.Name, referencedEntities.ToArray(), mirrorPropertyName);
 
-				
 				LogWriter.Debug("Reference objects created.");
 				
 				foreach (EntityReference reference in references)
