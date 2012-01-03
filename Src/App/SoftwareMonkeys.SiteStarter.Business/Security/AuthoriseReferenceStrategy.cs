@@ -39,11 +39,11 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 				if (property == null)
 					throw new ArgumentNullException("property");
 				
-				Type referenceType = EntitiesUtilities.GetReferenceType(entity.GetType(), property);
+				Type referenceType = EntitiesUtilities.GetReferenceType(entity, property);
 				
 				LogWriter.Debug("Referenced type: " + referenceType.FullName);
 				
-				string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(entity.GetType(), property);
+				string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(entity, property);
 				
 				LogWriter.Debug("Mirror property name: " + mirrorPropertyName);
 				

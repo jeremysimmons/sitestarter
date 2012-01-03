@@ -51,6 +51,16 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			set { countPropertyName = value; }
 		}
 		
+		private string typePropertyName = String.Empty;
+		/// <summary>
+		/// Gets/sets the name of the property holding the referenced entity type name.
+		/// </summary>
+		public string TypePropertyName
+		{
+			get { return typePropertyName; }
+			set { typePropertyName = value; }
+		}
+		
 		public ReferenceAttribute()
 		{
 		}

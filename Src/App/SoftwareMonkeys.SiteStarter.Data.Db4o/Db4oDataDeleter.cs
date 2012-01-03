@@ -55,7 +55,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 						{
 							using (LogGroup logGroup2 = LogGroup.StartDebug("Checking reference property '" + property.Name + "' for obsolete references."))
 							{
-								Type referenceType = EntitiesUtilities.GetReferenceType(entity.GetType(), property.Name);
+								Type referenceType = EntitiesUtilities.GetReferenceType(entity, property.Name);
 								
 								EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences(entity.GetType(),
 								                                                                                entity.ID,

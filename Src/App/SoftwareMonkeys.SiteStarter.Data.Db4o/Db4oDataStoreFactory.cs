@@ -31,7 +31,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		static public Db4oDataStore InitializeDataStore(string dataStoreName, IConfiguration db4oConfiguration)
 		{
 			Db4oDataStore store = null;
-			
+
 			using (LogGroup logGroup = LogGroup.Start("Initializing data store: " + dataStoreName, NLog.LogLevel.Debug))
 			{
 				if (!Config.IsInitialized)

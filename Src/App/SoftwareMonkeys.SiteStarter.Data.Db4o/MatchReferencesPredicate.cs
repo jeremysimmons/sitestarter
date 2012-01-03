@@ -1,12 +1,4 @@
-﻿/*
- * Created by SharpDevelop.
- * User: J
- * Date: 21/10/2011
- * Time: 10:10 AM
- * 
- * To change this template use Tools | Options | Coding | Edit Standard Headers.
- */
-using System;
+﻿using System;
 using Db4objects.Db4o.Query;
 using SoftwareMonkeys.SiteStarter.Entities;
 
@@ -17,19 +9,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 	/// </summary>
 	public class MatchReferencesPredicate : Predicate
 	{
-		public Guid[] ReferencedEntityIDs = new Guid[]{};
-		Guid ReferencedEntityID = Guid.Empty;
+		EntityReferenceCollection References;
+		string PropertyName = String.Empty;
 		
-		public MatchReferencesPredicate(DataProvider provider, Type entityType, string propertyName, Type referencedEntityType, string mirrorPropertyName, Guid[] referencedEntityIDs)
+		public MatchReferencesPredicate(DataProvider provider, Type entityType, string propertyName, Type referencedEntityType, EntityReferenceCollection references)
 		{
-			//ReferencedEntityID = referencedEntityID;
-			
-			ReferencedEntityIDs = referencedEntityIDs;
-			
-			// Load the references all in one go, to avoid individual loads
-			//EntityReferenceCollection references = provider.Referencer.GetReferences(referencedEntityType, referencedEntityID, mirrorPropertyName, entityType, false);
-			
-			//EntityIDs = references.GetEntityIDs(referencedEntityID);
+			References = references;
+			PropertyName = propertyName;
 		}
 		
 		public bool Match(IEntity entity)
@@ -42,10 +28,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			//LogWriter.Debug("Checking type " + e.GetType().ToString());
 			//LogWriter.Debug("Entity ID: " + e.ID);
 			
-			bool foundReference = Array.IndexOf(ReferencedEntityIDs, entity.ID) > -1;
+			bool foundReference = References.Includes(entity.ID, PropertyName);
 			
-			// If referenced IDs are provided then it matches if found
-			if (ReferencedEntityIDs.Length > 0)
+			// If references are provided then it matches if found
+			if (References.Count > 0)
 				doesMatch = foundReference;
 			// Otherwise the calling code is trying to get entities where NO reference exists, therefore it matches when no reference is found
 			else

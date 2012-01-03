@@ -8,8 +8,8 @@ namespace SoftwareMonkeys.SiteStarter.Data
 	/// </summary>
 	public interface IDataReferencer : IDataAdapter
 	{
-		bool MatchReference(Type entityType, Guid entityID, string propertyName, Type referencedEntityType, Guid referencedEntityID, string mirrorPropertyName);
-		bool MatchReference(Type entityType, Guid entityID, string propertyName, Type referencedEntityType, Guid referencedEntityID);
+		bool MatchReference(IEntity entity, Guid entityID, string propertyName, Type referencedEntityType, Guid referencedEntityID, string mirrorPropertyName);
+		bool MatchReference(IEntity entity, Guid entityID, string propertyName, Type referencedEntityType, Guid referencedEntityID);
 	
 		/// <summary>
 		/// Retrieves all the data references between all types.
@@ -22,6 +22,12 @@ namespace SoftwareMonkeys.SiteStarter.Data
         /// </summary>
         /// <returns>The references to the entities provided.</returns>
         EntityReferenceCollection GetReferences(Type entityType, Guid entityID, string propertyName, Type referenceType, bool fullActivation);
+        
+        /// <summary>
+        /// Retrieves all the references to the entities provided.
+        /// </summary>
+        /// <returns>The references to the entities provided.</returns>
+        EntityReferenceCollection GetReferences(Type entityType, Guid entityID, Type referenceType, bool fullActivation);
         
         /// <summary>
         /// Retrieves the reference from the specified entity to the entity matching the specified type and the specified ID.

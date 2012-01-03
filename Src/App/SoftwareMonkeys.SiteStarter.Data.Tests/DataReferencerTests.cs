@@ -14,33 +14,69 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		[Test]
 		public void Test_GetReferences()
 		{
-				
-				EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences();
-				
-				Assert.IsNotNull(references);
-				                 
-				Assert.AreEqual(0, references.Count, "Invalid number of references found before creating one.");
 			
-				TestUser user = new TestUser();
-				Guid userID = user.ID = Guid.NewGuid();
-				user.FirstName = "Test";
-				user.LastName = "User";
+			EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences();
+			
+			Assert.IsNotNull(references);
+			
+			Assert.AreEqual(0, references.Count, "Invalid number of references found before creating one.");
+			
+			TestUser user = new TestUser();
+			Guid userID = user.ID = Guid.NewGuid();
+			user.FirstName = "Test";
+			user.LastName = "User";
+			
+			TestRole role = new TestRole();
+			Guid roleID = role.ID = Guid.NewGuid();
+			role.Name = "Test Role";
+			
+			
+			user.Roles = Collection<TestRole>.Add(user.Roles, role);
+			
+			DataAccess.Data.Saver.Save(role);
+			DataAccess.Data.Saver.Save(user);
+			
+			references = DataAccess.Data.Referencer.GetReferences();
+			
+			Assert.IsNotNull(references);
+			
+			Assert.AreEqual(1, references.Count, "Invalid number of references found after creating one.");
+		}
+		
+		[Test]
+		public virtual void Test_GetReferences_InterfaceReferenceProperty()
+		{
+			using (LogGroup logGroup = LogGroup.StartDebug("Testing the GetReferences function."))
+			{
+				MockEntity referencedEntity = new MockEntity();
+				referencedEntity.ID = Guid.NewGuid();
 				
-				TestRole role = new TestRole();
-				Guid roleID = role.ID = Guid.NewGuid();
-				role.Name = "Test Role";
+				MockInterfaceReferencePropertyEntity entity = new MockInterfaceReferencePropertyEntity();
+				entity.ID = Guid.NewGuid();
+				entity.ReferencedEntity = referencedEntity;
+
+				DataAccess.Data.Saver.Save(referencedEntity);
+				DataAccess.Data.Saver.Save(entity);
 				
+				EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences(entity);
 				
-				user.Roles = Collection<TestRole>.Add(user.Roles, role);
+				Assert.AreEqual(1, references.Count, "Wrong number of references found.");
 				
-				DataAccess.Data.Saver.Save(role);
-				DataAccess.Data.Saver.Save(user);
+				string[] names = DataAccess.Data.GetDataStoreNames();
 				
-				references = DataAccess.Data.Referencer.GetReferences();
+				bool interfaceStoreFound = Array.IndexOf(names, "IEntity-MockInterfaceReferencePropertyEntity") > -1;
+				bool concreteStoreFound = Array.IndexOf(names, "MockEntity") > -1;
+				bool referenceStoreFound = Array.IndexOf(names, "MockEntity-MockInterfaceReferencePropertyEntity") > -1;
 				
-				Assert.IsNotNull(references);
-				                 
-				Assert.AreEqual(1, references.Count, "Invalid number of references found after creating one.");
+				// Ensure that the interface name wasn't used as a store name
+				Assert.IsFalse(interfaceStoreFound);
+				
+				// Ensure that the concrete class name was used as a store name
+				Assert.IsTrue(concreteStoreFound);
+				
+				// Ensure that the reference store was named properly
+				Assert.IsTrue(referenceStoreFound);
+			}
 		}
 		
 		[Test]
@@ -48,7 +84,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = LogGroup.Start("Testing the retrieval of references for an entity.", NLog.LogLevel.Debug))
 			{
-								
+				
 				TestUser user = new TestUser();
 				Guid userID = user.ID = Guid.NewGuid();
 				user.FirstName = "Test";
@@ -83,7 +119,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		{
 			using (LogGroup logGroup = LogGroup.Start("Testing the retrieval of references for an entity when specifying a Guid.Empty referenced entity ID.", NLog.LogLevel.Debug))
 			{
-								
+				
 				TestUser user = new TestUser();
 				Guid userID = user.ID = Guid.NewGuid();
 				user.FirstName = "Test";
@@ -419,7 +455,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				Assert.IsTrue(secondReferenceMatches,
 				              "Second reference doesn't match original references.");
-			
+				
 				EntityReference reference = DataAccess.Data.Referencer.GetReference(user.GetType(),
 				                                                                    user.ID,
 				                                                                    "Roles",
@@ -427,14 +463,14 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				                                                                    role2.ID,
 				                                                                    "Users",
 				                                                                    false);
-			
+				
 				Assert.IsNull(reference, "The return value should be null.");
 			}
 		}
 		
 		
 		[Test]
-		public void Test_MatchReference()
+		public virtual void Test_MatchReference()
 		{
 			using (LogGroup logGroup = LogGroup.Start("Testing the MatchReference function to ensure matches properly.", NLog.LogLevel.Debug))
 			{
@@ -454,7 +490,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				TestCategory category2 = new TestCategory();
 				category2.ID = Guid.NewGuid();
 				category2.Name = "Test Category 2";
-			
+				
 				article.Categories = new TestCategory[] {category};
 				
 				EntityReference originalReference = DataAccess.Data.Referencer.GetActiveReferences(article)[0];
@@ -469,10 +505,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				foreach (EntityReference r in DataAccess.Data.Referencer.GetActiveReferences(article))
 					DataAccess.Data.Saver.Save(r);
 
-				string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(article.GetType(),
+				string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(article,
 				                                                                    EntitiesUtilities.GetProperty(article.GetType(), "Categories", typeof(TestCategory[])));
-					
-				bool match = DataAccess.Data.Referencer.MatchReference(article.GetType(), article.ID, "Categories", category.GetType(), category.ID);
+				
+				bool match = DataAccess.Data.Referencer.MatchReference(article, article.ID, "Categories", category.GetType(), category.ID);
 				
 				Assert.IsTrue(match, "Didn't match when it should have.");
 				
@@ -500,8 +536,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				DataAccess.Data.Saver.Save(category);
 				DataAccess.Data.Saver.Save(article);
 
-				bool match = DataAccess.Data.Referencer.MatchReference(article.GetType(), article.ID, "Categories", category.GetType(), category.ID);
-				bool match2 = DataAccess.Data.Referencer.MatchReference(category.GetType(), category.ID, "Articles", article.GetType(), article.ID);
+				bool match = DataAccess.Data.Referencer.MatchReference(article, article.ID, "Categories", category.GetType(), category.ID);
+				bool match2 = DataAccess.Data.Referencer.MatchReference(category, category.ID, "Articles", article.GetType(), article.ID);
 
 				Assert.IsTrue(match, "Didn't match on standard check.");
 				Assert.IsTrue(match2, "Didn't match on reverse check.");
@@ -542,7 +578,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				DataAccess.Data.Saver.Save(article);
 				DataAccess.Data.Saver.Save(article2);
 				
-				bool match = DataAccess.Data.Referencer.MatchReference(article.GetType(), article.ID, "Categories", category2.GetType(), category2.ID);
+				bool match = DataAccess.Data.Referencer.MatchReference(article, article.ID, "Categories", category2.GetType(), category2.ID);
 				
 				Assert.IsFalse(match, "Matched when it shouldn't have.");
 				
@@ -551,6 +587,31 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			}
 		}
 
+		[Test]
+		public virtual void Test_GetActiveReferences_ReferenceWithInterfaceType()
+		{
+			using (LogGroup logGroup = LogGroup.Start("Testing the GetDataStoreName function with a provided entity reference.", NLog.LogLevel.Debug))
+			{
+				
+				MockEntity referencedEntity = new MockEntity();
+				referencedEntity.ID = Guid.NewGuid();
+				
+				MockInterfaceReferencePropertyEntity entity = new MockInterfaceReferencePropertyEntity();
+				entity.ID = Guid.NewGuid();
+				entity.ReferencedEntity = referencedEntity;
+
+				EntityReferenceCollection references = DataAccess.Data.Referencer.GetActiveReferences(entity);
+				
+				EntityReference reference = references[0];
+				
+				string type1Name = reference.Type1Name;
+				string type2Name = reference.Type2Name;
+				
+				Assert.AreEqual("MockInterfaceReferencePropertyEntity", type1Name, "Type 1 name is invalid.");
+				Assert.AreEqual("MockEntity", type2Name, "Type 2 name is invalid.");
+				
+			}
+		}
 		
 		[Test]
 		public void Test_GetActiveReferences_Multiple_Async()
@@ -670,7 +731,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 			DataAccess.Data.Saver.Save(entity);
 			
 			DataAccess.Data.Referencer.SetCountProperty(entity, "PublicEntities", referencedEntity.ID);
-									
+			
 			Assert.AreEqual(1, entity.TotalPublicEntities, "The PublicEntities property didn't have the expected length.");
 		}
 	}
