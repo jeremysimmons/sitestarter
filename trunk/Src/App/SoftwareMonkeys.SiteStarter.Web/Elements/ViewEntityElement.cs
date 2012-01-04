@@ -37,7 +37,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 					if (DataSource == null)
 						return false;
 					else
-						return ProjectionState.Projections.Contains("View", DataSource);
+						return ProjectionState.Projections.Contains("View", DataSource.ShortTypeName);
 				}
 				else
 					return (bool)ViewState["EnableViewLink"];
