@@ -35,7 +35,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			// TODO: Boost performance by looping through an object set without actually loading the entities
 			Collection<IEntity> entities = new Collection<IEntity>();
 
-			using (LogGroup logGroup = LogGroup.Start("Counting entities by type and filter.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Counting entities by type and filter."))
 			{
 				LogWriter.Debug("Filter type: " + filter.GetType().ToString());
 				
@@ -54,7 +54,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 
 				foreach (IEntity entity in entities)
 				{
-					using (LogGroup logGroup2 = LogGroup.Start("Entity found.", NLog.LogLevel.Debug))
+					using (LogGroup logGroup2 = LogGroup.StartDebug("Entity found."))
 					{
 						LogWriter.Debug("Entity ID: " + entity.ID);
 						LogWriter.Debug("Entity .ToString(): " + entity.ToString());
@@ -80,7 +80,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			Collection<IEntity> entities = new Collection<IEntity>();
 
-			using (LogGroup logGroup = LogGroup.Start("Counting entities by type and filter.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Counting entities by type and filter."))
 			{
 
 				if (group != null && group.Filters != null && group.Filters.Length > 0)
@@ -118,7 +118,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 
 					foreach (IEntity entity in entities)
 					{
-						using (LogGroup logGroup2 = LogGroup.Start("Entity found.", NLog.LogLevel.Debug))
+						using (LogGroup logGroup2 = LogGroup.StartDebug("Entity found."))
 						{
 							//IEntity entity = (IEntity)os.Next();
 							LogWriter.Debug("Entity ID: " + entity.ID);
@@ -179,7 +179,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			int total = 0;
 			
-			using (LogGroup logGroup = LogGroup.Start("Counting entities of the specified type.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Counting entities of the specified type."))
 			{
 				IObjectContainer objectContainer = ((Db4oDataStore)GetDataStore(type)).ObjectContainer;
 				
@@ -268,7 +268,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			int count = 0;
 						
-			using (LogGroup logGroup = LogGroup.Start("Querying the data store based on the provided parameters.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Querying the data store based on the provided parameters."))
 			{
 				LogWriter.Debug("Entity type: " + entityType.FullName);
 				LogWriter.Debug("Property name: " + propertyName);
@@ -280,7 +280,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				
 				IObjectContainer container = store.ObjectContainer;
 				
-				Predicate matches = new MatchReferencePredicate(Provider, referencedEntityType, mirrorPropertyName, entityType, entityID);
+				Predicate matches = new MatchReferencePredicate(Provider, referencedEntityType, mirrorPropertyName, entityType, entityID, propertyName);
 				
 				IObjectSet os = store.ObjectContainer.Query(matches);
 				
@@ -360,7 +360,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			List<IEntity> entities = new List<IEntity>();
 			
-			using (LogGroup logGroup = LogGroup.Start("Querying the data store based on the provided type and parameters.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Querying the data store based on the provided type and parameters."))
 			{
 				if (type == null)
 					throw new ArgumentNullException("type");
@@ -430,7 +430,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			int total = 0;
 			
 			Collection<T> list = new Collection<T>();
-			using (LogGroup logGroup = LogGroup.Start("Counting entities of the specified type matching the provided parameters.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Counting entities of the specified type matching the provided parameters."))
 			{
 				total = CountEntities(typeof(T), parameters);
 				
@@ -451,7 +451,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			Type type = typeof(T);
 			
-			//using (LogGroup logGroup = LogGroup.Start("Counting the entities of the specified type with a property matching the provided name and value.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = LogGroup.StartDebug("Counting the entities of the specified type with a property matching the provided name and value."))
 			//{
 			//	LogWriter.Debug("Type: " + type.ToString());
 			//	LogWriter.Debug("Property name: " + propertyName);

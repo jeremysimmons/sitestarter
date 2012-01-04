@@ -8,8 +8,8 @@ namespace SoftwareMonkeys.SiteStarter.Data
 	/// </summary>
 	public interface IDataReferencer : IDataAdapter
 	{
-		bool MatchReference(IEntity entity, Guid entityID, string propertyName, Type referencedEntityType, Guid referencedEntityID, string mirrorPropertyName);
-		bool MatchReference(IEntity entity, Guid entityID, string propertyName, Type referencedEntityType, Guid referencedEntityID);
+		bool MatchReference(Type entityType, Guid entityID, string propertyName, Type referencedEntityType, Guid referencedEntityID, string mirrorPropertyName);
+		bool MatchReference(Type entityType, Guid entityID, string propertyName, Type referencedEntityType, Guid referencedEntityID);
 	
 		/// <summary>
 		/// Retrieves all the data references between all types.

@@ -133,7 +133,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					{
 						i++;
 						
-						using (LogGroup logGroup2 = LogGroup.Start("Processing ID reference.", NLog.LogLevel.Debug))
+						using (LogGroup logGroup2 = LogGroup.StartDebug("Processing ID reference."))
 						{
 							LogWriter.Debug("Data store name: " + storeName);
 							
@@ -161,6 +161,100 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				return null;
 		}
 		
+		/// <summary>
+		/// Checks whether there is a reference between the specified entities (in either order).
+		/// </summary>
+		/// <param name="entityType"></param>
+		/// <param name="entityID"></param>
+		/// <param name="propertyName"></param>
+		/// <param name="referenceType"></param>
+		/// <param name="referenceEntityID"></param>
+		/// <returns>A value indicating whether a matching entity was found.</returns>
+		public override bool MatchReference(Type entityType, Guid entityID, string propertyName, Type referenceType, Guid referenceEntityID)
+		{
+			return MatchReference(entityType, entityID, propertyName, referenceType, referenceEntityID, String.Empty);
+		}
+		
+		/// <summary>
+		/// Checks whether there is a reference between the specified entities (in either order).
+		/// </summary>
+		/// <param name="entityType"></param>
+		/// <param name="entityID"></param>
+		/// <param name="propertyName"></param>
+		/// <param name="referenceType"></param>
+		/// <param name="referenceEntityID"></param>
+		/// <param name="mirrorPropertyName"></param>
+		/// <returns>A value indicating whether a matching entity was found.</returns>
+		public override bool MatchReference(Type entityType, Guid entityID, string propertyName, Type referenceType, Guid referenceEntityID, string mirrorPropertyName)
+		{
+			// TODO: Clean up this function
+			
+			bool referenceFound = false;
+			
+			// TODO: Check if logging should be commented out to boost performance
+			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving reference."))
+			{
+				
+				if (entityType == null)
+					throw new ArgumentNullException("entityType");
+								
+				if (referenceType == null)
+					throw new ArgumentNullException("referenceType");
+				
+				if (referenceEntityID == Guid.Empty)
+					throw new ArgumentException("A reference entity ID must be provided.", "referenceEntityID");
+				
+				LogWriter.Debug("Entity ID: " + entityID.ToString());
+				LogWriter.Debug("Entity type: " + entityType.ToString());
+				LogWriter.Debug("Reference entity ID: " + referenceEntityID.ToString());
+				LogWriter.Debug("Reference type: " + referenceType.ToString());
+				LogWriter.Debug("Property name: " + propertyName);
+				LogWriter.Debug("Mirror property name: " + mirrorPropertyName);
+				
+				string storeName = DataUtilities.GetDataStoreName(
+					entityType.Name,
+					referenceType.Name);
+				
+				LogWriter.Debug("Data store name: " + storeName);
+				
+				Db4oDataStore dataStore = (Db4oDataStore)GetDataStore(entityType.Name, referenceType.Name);
+				
+				IQuery query1 = dataStore.ObjectContainer.Query();
+				query1.Constrain(typeof(EntityReference));
+				
+				query1.Descend("entity1ID").Constrain(entityID).Equal().And(
+					query1.Descend("property1Name").Constrain(propertyName).Equal().And(
+						query1.Descend("type1Name").Constrain(EntitiesUtilities.GetShortType(entityType.Name)).Equal().And(
+							query1.Descend("entity2ID").Constrain(referenceEntityID).Equal().And(
+								query1.Descend("property2Name").Constrain(mirrorPropertyName).Equal().And(
+									query1.Descend("type2Name").Constrain(EntitiesUtilities.GetShortType(referenceType.Name)).Equal())))));
+				
+				IQuery query2 = dataStore.ObjectContainer.Query();
+				query2.Constrain(typeof(EntityReference));
+				
+				query2.Descend("entity2ID").Constrain(entityID).Equal().And(
+					query2.Descend("property2Name").Constrain(propertyName).Equal().And(
+						query2.Descend("type2Name").Constrain(EntitiesUtilities.GetShortType(entityType.Name)).Equal().And(
+							query2.Descend("entity1ID").Constrain(referenceEntityID).Equal().And(
+								query2.Descend("property1Name").Constrain(mirrorPropertyName).Equal().And(
+									query2.Descend("type1Name").Constrain(EntitiesUtilities.GetShortType(referenceType.Name)).Equal())))));
+				
+				
+				
+				IObjectSet os1 = query1.Execute();
+				
+				if (os1.Count > 0)
+					referenceFound = true;
+				
+				IObjectSet os2 = query2.Execute();
+				
+				if (os2.Count > 0)
+					referenceFound = true;
+			}
+			
+			return referenceFound;
+		}
+		
 		
 		/// <summary>
 		/// Retrieves all the references to the specified entity. The specified entity can be either the source or reference entity as references work both ways.
@@ -175,7 +269,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			EntityReferenceCollection collection = new EntityReferenceCollection();
 			
-			using (LogGroup logGroup = LogGroup.Start("Retrieving references.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving references."))
 			{
 				
 				if (entityType == null)
@@ -241,7 +335,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 						
 						foreach (EntityReference r in list)
 						{
-							using (LogGroup logGroup2 = LogGroup.Start("Processing ID reference.", NLog.LogLevel.Debug))
+							using (LogGroup logGroup2 = LogGroup.StartDebug("Processing ID reference."))
 							{
 								
 								EntityReference reference = (EntityReference)r.SwitchFor(entityType, entityID);
@@ -300,7 +394,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			EntityReferenceCollection collection = new EntityReferenceCollection();
 			
-			using (LogGroup logGroup = LogGroup.Start("Retrieving references.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving references."))
 			{
 				
 				if (entityType == null)
@@ -364,7 +458,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 						
 						foreach (EntityReference r in list)
 						{
-							using (LogGroup logGroup2 = LogGroup.Start("Processing ID reference.", NLog.LogLevel.Debug))
+							using (LogGroup logGroup2 = LogGroup.StartDebug("Processing ID reference."))
 							{
 								
 								EntityReference reference = (EntityReference)r.SwitchFor(entityType, entityID);

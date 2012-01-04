@@ -176,7 +176,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// </summary>
 		public virtual void Index()
 		{
-			using (LogGroup logGroup = LogGroup.Start("Displaying an index of entities.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Displaying an index of entities."))
 			{
 				CheckInitialized();
 				
@@ -194,7 +194,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <param name="entities"></param>
 		public virtual void Index(IEntity[] entities)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Display an index of the provided entities.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Display an index of the provided entities."))
 			{
 				LogWriter.Debug("Type name: " + Command.TypeName);
 				
@@ -247,7 +247,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <returns></returns>
 		public virtual IEntity[] PrepareIndex()
 		{
-			using (LogGroup logGroup = LogGroup.Start("Preparing to display an index of entities.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Preparing to display an index of entities."))
 			{
 				if (EnsureAuthorised())
 				{
@@ -268,7 +268,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			IEntity[] entities = new IEntity[]{};
 			
-			using (LogGroup logGroup = LogGroup.Start("Preparing to display an index of entities with the specified property matching the provided value.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Preparing to display an index of entities with the specified property matching the provided value."))
 			{
 				Dictionary<string, object> filterValues = new Dictionary<string, object>();
 				filterValues.Add(propertyName, propertyValue);
@@ -286,7 +286,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <returns></returns>
 		public virtual IEntity[] PrepareIndex(Dictionary<string, object> filterValues)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Preparing to display an index of entities matching the provided filters.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Preparing to display an index of entities matching the provided filters."))
 			{
 				if (EnsureAuthorised())
 				{
@@ -299,7 +299,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		
 		protected virtual IEntity[] Load()
 		{
-			using (LogGroup logGroup = LogGroup.Start("Loading entities to be displayed as an index.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Loading entities to be displayed as an index."))
 			{
 				IEntity[] entities = Indexer.Index();
 				
@@ -313,7 +313,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		
 		protected virtual IEntity[] Load(Dictionary<string, object> filterValues)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Loading entities (matching the provided filter values) to be displayed as an index.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Loading entities (matching the provided filter values) to be displayed as an index."))
 			{
 				IEntity[] entities = IndexStrategy.New(Command.TypeName).Index(filterValues);
 				
@@ -331,7 +331,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <param name="entities"></param>
 		protected virtual void ExecuteIndex(IEntity[] entities)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Preparing to display an index of entities.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Preparing to display an index of entities."))
 			{
 				if (entities == null)
 					throw new ArgumentNullException("entities");
@@ -385,7 +385,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			IndexController controller = null;
 			
-			using (LogGroup logGroup = LogGroup.Start("Creating a new IndexController.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Creating a new IndexController."))
 			{
 				LogWriter.Debug("Type name: " + typeName);
 				

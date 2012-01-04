@@ -51,7 +51,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public IReaction CreateReaction(ReactionInfo reactionInfo)
 		{
 			IReaction reaction = null;
-			using (LogGroup logGroup = LogGroup.Start("Creating a new reaction based on the provided info.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Creating a new reaction based on the provided info."))
 			{
 				Type reactionType = Type.GetType(reactionInfo.ReactionType);
 				

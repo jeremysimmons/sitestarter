@@ -116,7 +116,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <param name="includeTestControllers"></param>
 		public void Initialize(bool includeTestControllers)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Initializing the web controllers.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Initializing the web controllers."))
 			{
 				if (StateAccess.IsInitialized)
 				{
@@ -165,7 +165,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			List<ControllerInfo> controllers = new List<ControllerInfo>();
 			
-			using (LogGroup logGroup = LogGroup.Start("Finding controllers.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Finding controllers."))
 			{
 				LogWriter.Debug("# of scanners: " + Scanners.Length);
 				

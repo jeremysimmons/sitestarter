@@ -21,7 +21,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			get {
 				bool does = false;
-				using (LogGroup logGroup = LogGroup.Start("Checking whether the application requires restoration.", NLog.LogLevel.Debug))
+				using (LogGroup logGroup = LogGroup.StartDebug("Checking whether the application requires restoration."))
 				{
 					CheckLegacyDirectoryPath();
 					
@@ -194,7 +194,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		public void ImportConfigs()
 		{
-			using (LogGroup logGroup = LogGroup.Start("Importing the legacy configuration settings.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Importing the legacy configuration settings."))
 			{
 				if (Config.Application == null)
 					throw new InvalidOperationException("Config.Application has not been initialized.");

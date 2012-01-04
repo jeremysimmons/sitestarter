@@ -23,7 +23,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			get
 			{
 				bool isInstalled = false;
-				using (LogGroup logGroup = LogGroup.Start("Checking whether the application has been installed.", NLog.LogLevel.Debug))
+				using (LogGroup logGroup = LogGroup.StartDebug("Checking whether the application has been installed."))
 				{
 					CheckFileMapper();
 					
@@ -164,7 +164,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="settings">General and custom application settings.</param>
 		public void Setup(Dictionary<string, object> settings)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Performing install/setup.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Performing install/setup."))
 			{
 				CheckApplicationPath();
 				
@@ -201,7 +201,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		public void InitializeDefaultData()
 		{
-			using (LogGroup logGroup = LogGroup.Start("Initializing the default data/entities.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Initializing the default data/entities."))
 			{
 				if (!UseLegacyData)
 				{
@@ -237,7 +237,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			UserRole administratorRole = null;
 			
-			using (LogGroup logGroup = LogGroup.Start("Creating the administrator role.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Creating the administrator role."))
 			{
 				administratorRole = CreateStrategy.New<UserRole>(false).Create<UserRole>();
 				administratorRole.ID = Guid.NewGuid();
@@ -258,7 +258,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="administratorRole">The administrator role.</param>
 		private void Save(User administrator, UserRole administratorRole)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Saving the provided user and role.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Saving the provided user and role."))
 			{
 				if (administrator == null)
 					throw new ArgumentNullException("administrator");
@@ -289,7 +289,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			AppConfig config = null;
 			
-			using (LogGroup logGroup = LogGroup.Start("Creating the default application config.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Creating the default application config."))
 			{
 				CheckFileMapper();
 				
@@ -322,7 +322,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		public void Initialize()
 		{
-			using (LogGroup logGroup = LogGroup.Start("Initializing the configuration and data access.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Initializing the configuration and data access."))
 			{
 				InitializeConfig();
 				
@@ -370,7 +370,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		private void InitializeSiteMap()
 		{
-			using (LogGroup logGroup = LogGroup.Start("Initializing the site map.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Initializing the site map."))
 			{
 				string pathVariation = Config.Application.PathVariation;
 				

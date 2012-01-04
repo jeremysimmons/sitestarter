@@ -89,7 +89,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		public override IEntity GetEntity(Type type, Dictionary<string, object> parameters)
 		{
 			IEntity entity = null;
-			using (LogGroup logGroup = LogGroup.Start("Retrieving the entity of the specified type matching the provided parameters.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving the entity of the specified type matching the provided parameters."))
 			{
 				foreach (string key in parameters.Keys)
 				{
@@ -124,7 +124,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		public override IEntity GetEntity(Type type, string propertyName, object propertyValue)
 		{
 			IEntity entity = null;
-			using (LogGroup logGroup = LogGroup.Start("Retrieving the entity of the specified type with a property matching the provided property name and value.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving the entity of the specified type with a property matching the provided property name and value."))
 			{
 				IDataIndexer indexer = Provider.InitializeDataIndexer();
 				indexer.AutoRelease = AutoRelease;
@@ -153,7 +153,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		public override T GetEntity<T>(string propertyName, object propertyValue)
 		{
 			T entity = default(T);
-			using (LogGroup logGroup = LogGroup.Start("Retrieving the entity of the specified type matching the provided property value.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving the entity of the specified type matching the provided property value."))
 			{
 				
 				IDataIndexer indexer = Provider.InitializeDataIndexer();
@@ -200,7 +200,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		public override T GetEntity<T>(Dictionary<string, object> parameters)
 		{
 			T entity = default(T);
-			using (LogGroup logGroup = LogGroup.Start("Retrieving the entity of the specified type matching the provided entities.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving the entity of the specified type matching the provided entities."))
 			{
 				
 				IDataIndexer indexer = Provider.InitializeDataIndexer();
