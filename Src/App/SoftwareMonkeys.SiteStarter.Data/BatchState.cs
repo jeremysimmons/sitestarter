@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Entities;
+using SoftwareMonkeys.SiteStarter.State;
 
 namespace SoftwareMonkeys.SiteStarter.Data
 {
@@ -57,7 +58,10 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			get
 			{
-				return Batches.Count > 0;
+				if (StateAccess.IsInitialized && Batches != null)
+					return Batches.Count > 0;
+				else
+					return false;
 			}
 		}
 				

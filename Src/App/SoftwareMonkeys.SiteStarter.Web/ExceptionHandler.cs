@@ -36,11 +36,14 @@ namespace SoftwareMonkeys.SiteStarter.Web
 						
 						string errorPage = DecideErrorPage(exception);
 						
-						// Send the user to the error page if they aren't already there
-						if (!IsErrorPage(HttpContext.Current.Request.Url.ToString()))
+						if (HttpContext.Current != null)
 						{
-							HttpContext.Current.Response.Clear();
-							HttpContext.Current.Server.Transfer(HttpContext.Current.Request.ApplicationPath.TrimEnd('/') + "/" + errorPage);
+							// Send the user to the error page if they aren't already there
+							if (!IsErrorPage(HttpContext.Current.Request.Url.ToString()))
+							{
+								HttpContext.Current.Response.Clear();
+								HttpContext.Current.Server.Transfer(HttpContext.Current.Request.ApplicationPath.TrimEnd('/') + "/" + errorPage);
+							}
 						}
 					}
 					else
@@ -107,43 +110,46 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			{
 				if (new ModeDetector().IsRelease)
 				{
-					UserRole role = RetrieveStrategy.New<UserRole>(false).Retrieve<UserRole>("Name", "Administrator");
-					
-					ActivateStrategy.New(role, false).Activate(role, "Users");
-					
-					foreach (User user in role.Users)
+					if (StrategyState.IsInitialized)
 					{
-						string subject = "Exception";
-						string message = "An exception occurred...\n";
+						UserRole role = RetrieveStrategy.New<UserRole>(false).Retrieve<UserRole>("Name", "Administrator");
 						
-						if (HttpContext.Current.Request != null && HttpContext.Current.Request.Url != null)
+						ActivateStrategy.New(role, false).Activate(role, "Users");
+						
+						foreach (User user in role.Users)
 						{
-							message = "URL:\n"
-								+ HttpContext.Current.Request.Url.ToString() + "\n\n";
+							string subject = "Exception";
+							string message = "An exception occurred...\n";
+							
+							if (HttpContext.Current.Request != null && HttpContext.Current.Request.Url != null)
+							{
+								message = "URL:\n"
+									+ HttpContext.Current.Request.Url.ToString() + "\n\n";
+							}
+							
+							if (HttpContext.Current.Request.UrlReferrer != null)
+							{
+								message = message + "Referrer:\n"
+									+ HttpContext.Current.Request.UrlReferrer.ToString() + "\n\n";
+							}
+							
+							if (HttpContext.Current.Request != null)
+							{
+								message = message + Environment.NewLine
+									+ "User Agent:"
+									+ HttpContext.Current.Request.ServerVariables["HTTP_USER_AGENT"] + Environment.NewLine;
+							}
+							
+							message = message + "Site:\n"
+								+ new UrlConverter().ToAbsolute(HttpContext.Current.Request.ApplicationPath) + "\n\n"
+								+ "Time:\n"
+								+ DateTime.Now.ToLongDateString() + " - " + DateTime.Now.ToLongTimeString() + "\n\n"
+								+ "Exception:\n"
+								+ exception.ToString() + "\n\n"
+								+ "(please do not reply to this email)\n";
+							
+							Emailer.New().SendEmail(user, subject, message);
 						}
-						
-						if (HttpContext.Current.Request.UrlReferrer != null)
-						{
-							message = message + "Referrer:\n"
-								+ HttpContext.Current.Request.UrlReferrer.ToString() + "\n\n";
-						}
-						
-						if (HttpContext.Current.Request != null)
-						{
-							message = message + Environment.NewLine
-								+ "User Agent:"
-								+ HttpContext.Current.Request.ServerVariables["HTTP_USER_AGENT"] + Environment.NewLine;
-						}
-						
-						message = message + "Site:\n"
-							+ new UrlConverter().ToAbsolute(HttpContext.Current.Request.ApplicationPath) + "\n\n"
-							+ "Time:\n"
-							+ DateTime.Now.ToLongDateString() + " - " + DateTime.Now.ToLongTimeString() + "\n\n"
-							+ "Exception:\n"
-							+ exception.ToString() + "\n\n"
-							+ "(please do not reply to this email)\n";
-						
-						Emailer.New().SendEmail(user, subject, message);
 					}
 				}
 			}
