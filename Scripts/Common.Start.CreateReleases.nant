@@ -35,6 +35,7 @@
 	<include buildfile="Common.Jobs.Modules.nant"/>
 	<include buildfile="Common.Jobs.KillDBServer.nant"/>
 	<include buildfile="Common.Jobs.Reset.nant"/>
+	<include buildfile="Common.Jobs.ConfigureIIS.nant"/>
 	<include buildfile="Common.Jobs.WWW.nant"/>
 	<include buildfile="Common.Actions.CleanSolution.nant"/>
 	
