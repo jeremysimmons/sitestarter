@@ -48,11 +48,15 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 		/// </summary>
 		public string TypeName
 		{
-			get {
-					return typeName; }
+			get { return typeName; }
 			set { typeName = value; }
 		}
 		
+		Unit IElement.Width
+		{
+			get { return base.Width; }
+			set { base.Width = value; }
+		}
 		
 		public BaseElement()
 		{

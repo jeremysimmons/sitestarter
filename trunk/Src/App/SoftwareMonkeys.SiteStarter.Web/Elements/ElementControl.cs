@@ -42,14 +42,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 			set { action = value; }
 		}
 		
-		private string typeName = String.Empty;
 		/// <summary>
 		/// Gets/sets the name of the type involved in the action being carried out by the target element. (Note: Both the Action and TypeName property need to be set OR the ElementName property.)
 		/// </summary>
 		public string TypeName
 		{
-			get { return typeName; }
-			set { typeName = value; }
+			get {
+				if (ViewState["TypeName"] == null)
+					ViewState["TypeName"] = String.Empty;
+				return (string)ViewState["TypeName"]; }
+			set { ViewState["TypeName"] = value; }
 		}
 		
 		private NameValueCollection propertyValues = new NameValueCollection();
@@ -143,6 +145,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 				{
 					// Create a new instance of the dynamic element
 					Target = (IElement)info.New();
+					
+					Target.Width = Width;
 				}
 				else
 					LogWriter.Debug("No cached info found about element. Skipping.");
