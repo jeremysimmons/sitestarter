@@ -125,7 +125,10 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					}
 				}				
 				
-				referenceMatches = DataAccess.Data.Referencer.MatchReference(entity, entity.ID, propertyName, referenceType, referencedEntityID);
+				string mirrorPropertyName = String.Empty;
+				mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(entity, PropertyName);
+
+				referenceMatches = DataAccess.Data.Referencer.MatchReference(entity.GetType(), entity.ID, propertyName, referenceType, referencedEntityID, mirrorPropertyName);
 				
 				LogWriter.Debug("Type matches: " + typeMatches.ToString());
 				LogWriter.Debug("Reference matches: " + referenceMatches.ToString());

@@ -322,6 +322,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		/// <param name="summary"></param>
 		/// <param name="logLevel"></param>
 		/// <returns></returns>
+		[Obsolete("NLog.LogLevel should no longer be used.")]
 		static public LogGroup Start(string summary, NLog.LogLevel logLevel)
 		{
 			return Start(summary, LogWriter.ConvertLevel(logLevel));

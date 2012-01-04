@@ -508,7 +508,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(article,
 				                                                                    EntitiesUtilities.GetProperty(article.GetType(), "Categories", typeof(TestCategory[])));
 				
-				bool match = DataAccess.Data.Referencer.MatchReference(article, article.ID, "Categories", category.GetType(), category.ID);
+				bool match = DataAccess.Data.Referencer.MatchReference(article.GetType(), article.ID, "Categories", category.GetType(), category.ID, mirrorPropertyName);
 				
 				Assert.IsTrue(match, "Didn't match when it should have.");
 				
@@ -535,9 +535,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				
 				DataAccess.Data.Saver.Save(category);
 				DataAccess.Data.Saver.Save(article);
-
-				bool match = DataAccess.Data.Referencer.MatchReference(article, article.ID, "Categories", category.GetType(), category.ID);
-				bool match2 = DataAccess.Data.Referencer.MatchReference(category, category.ID, "Articles", article.GetType(), article.ID);
+				
+				bool match = DataAccess.Data.Referencer.MatchReference(article.GetType(), article.ID, "Categories", category.GetType(), category.ID, "Articles");
+				bool match2 = DataAccess.Data.Referencer.MatchReference(category.GetType(), category.ID, "Articles", article.GetType(), article.ID, "Categories");
 
 				Assert.IsTrue(match, "Didn't match on standard check.");
 				Assert.IsTrue(match2, "Didn't match on reverse check.");
@@ -578,7 +578,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				DataAccess.Data.Saver.Save(article);
 				DataAccess.Data.Saver.Save(article2);
 				
-				bool match = DataAccess.Data.Referencer.MatchReference(article, article.ID, "Categories", category2.GetType(), category2.ID);
+				bool match = DataAccess.Data.Referencer.MatchReference(article.GetType(), article.ID, "Categories", category2.GetType(), category2.ID);
 				
 				Assert.IsFalse(match, "Matched when it shouldn't have.");
 				

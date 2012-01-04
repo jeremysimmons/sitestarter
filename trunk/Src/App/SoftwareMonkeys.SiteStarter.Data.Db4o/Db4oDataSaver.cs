@@ -28,7 +28,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <param name="handleReferences">A value indicating whether to delete old references and save new references.</param>
 		public override void PreSave(IEntity entity, bool handleReferences)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Preparing entity for saving: " + entity.GetType().ToString(), NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Preparing entity for saving: " + entity.GetType().ToString()))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");
@@ -70,7 +70,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <param name="handleReferences">A value indicating whether to delete old references and save new references.</param>
 		public override void Save(IEntity entity, bool handleReferences)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Saving entity of type '" + entity.ShortTypeName + "'.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Saving entity of type '" + entity.ShortTypeName + "'."))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");

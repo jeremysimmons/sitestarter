@@ -104,7 +104,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		public void Initialize(bool includeTestStrategies)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Initializing the business strategies.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Initializing the business strategies."))
 			{
 				if (!StrategyState.IsInitialized)
 				{

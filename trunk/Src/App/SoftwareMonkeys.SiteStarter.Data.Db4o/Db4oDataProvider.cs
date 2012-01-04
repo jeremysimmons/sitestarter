@@ -275,21 +275,21 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					{
 						LogWriter.Debug("Reference object NOT found. Checking for one with matching properties.");
 						
-						IEntity sourceEntity = Reader.GetEntity(type, "ID", reference.Entity1ID);
+						//IEntity sourceEntity = Reader.GetEntity(type, "ID", reference.Entity1ID);
 						
 						// If the source entity can't be found then the reference itself can't exist in the store
-						if (sourceEntity == null)
-							isStored = false;
-						else
-						{
+						//if (sourceEntity == null)
+						//	isStored = false;
+						//else
+						//{
 							isStored = Referencer.MatchReference(
-								sourceEntity,
+								type,
 								reference.Entity1ID,
 								reference.Property1Name,
 								type2,
 								reference.Entity2ID,
 								reference.Property2Name);
-						}
+						//}
 					}
 				}
 				else

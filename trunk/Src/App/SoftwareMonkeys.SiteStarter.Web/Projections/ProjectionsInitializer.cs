@@ -172,7 +172,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// </summary>
 		public void Initialize()
 		{
-			using (LogGroup logGroup = LogGroup.Start("Initializing the web projections.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Initializing the web projections."))
 			{
 				if (StateAccess.IsInitialized)
 				{
@@ -223,7 +223,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// <param name="projections">The projections to save to file.</param>
 		public void SaveInfoToFile(ProjectionInfo[] projections)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Saving the provided projections to XML.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Saving the provided projections to XML."))
 			{
 				Saver.SaveInfoToFile(projections);
 			}
@@ -247,7 +247,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			List<ProjectionInfo> projections = new List<ProjectionInfo>();
 			
-			using (LogGroup logGroup = LogGroup.Start("Finding projections.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Finding projections."))
 			{
 				LogWriter.Debug("# of scanners: " + Scanners.Length);
 				

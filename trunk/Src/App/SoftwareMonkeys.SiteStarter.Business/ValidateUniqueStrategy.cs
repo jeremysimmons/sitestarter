@@ -27,7 +27,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			bool isTaken = false;
 			
-			using (LogGroup logGroup = LogGroup.Start("Validating the provided entity by ensuring the specified property value is unique.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Validating the provided entity by ensuring the specified property value is unique."))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");
@@ -60,38 +60,5 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			return !isTaken;
 		}
 		
-		/*new static public ValidateUniqueStrategy New(IEntity entity)
-		{
-			return New(entity.ShortTypeName);
-		}
-		
-		new static public ValidateUniqueStrategy New(string typeName)
-		{
-			UniqueValidateStrategy strategy = null;
-			
-			using (LogGroup logGroup = LogGroup.Start("Creating a new validator strategy.", NLog.LogLevel.Debug))
-			{
-				strategy = (UniqueValidateStrategy)StrategyState.Strategies.Creator.NewValidator(typeName);
-			}
-			return strategy;
-		}
-		
-		/*new static public ValidateUniqueStrategy New(IEntity entity, bool requireAuthorisation)
-		{
-			return New(entity.ShortTypeName, requireAuthorisation);
-		}
-		
-		new static public ValidateUniqueStrategy New(string typeName, bool requireAuthorisation)
-		{
-			UniqueValidateStrategy strategy = null;
-			
-			using (LogGroup logGroup = LogGroup.Start("Creating a new validator strategy.", NLog.LogLevel.Debug))
-			{
-				strategy = (UniqueValidateStrategy)StrategyState.Strategies.Creator.NewValidator(typeName);
-				
-				strategy.RequireAuthorisation = requireAuthorisation;
-			}
-			return strategy;
-		}*/
 	}
 }

@@ -37,7 +37,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public IStrategy CreateStrategy(string typeName, StrategyInfo strategyInfo)
 		{
 			IStrategy strategy = null;
-			using (LogGroup logGroup = LogGroup.Start("Creating a new strategy based on the provided info.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Creating a new strategy based on the provided info."))
 			{
 				Type strategyType = Type.GetType(strategyInfo.StrategyType);
 				
@@ -269,7 +269,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			IValidateStrategy strategy = null;
 			
-			using (LogGroup logGroup = LogGroup.Start("Creating a new validator strategy.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Creating a new validator strategy."))
 			{
 				CheckType(typeName);
 				
@@ -354,7 +354,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			IAuthoriseReferenceStrategy strategy = null;
 			
-			using (LogGroup logGroup = LogGroup.Start("Creating a new authorise reference strategy.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Creating a new authorise reference strategy."))
 			{				
 				LogWriter.Debug("Type name 1: " + typeName1);
 				LogWriter.Debug("Property name 1: " + propertyName1);

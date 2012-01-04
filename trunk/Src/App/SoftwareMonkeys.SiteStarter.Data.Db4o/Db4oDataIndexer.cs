@@ -316,7 +316,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			if (container == null)
 				throw new Exception("No object container for store '" + store.Name + "'.");
-			
+						
 			Predicate matches = new MatchReferencePredicate(Provider, typeof(T), propertyName, referencedEntityType, referencedEntityID);
 			
 			IObjectSet os = store.ObjectContainer.Query(matches,
@@ -371,26 +371,20 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			PropertyInfo property = typeof(T).GetType().GetProperty(propertyName);
 			
-			EntityReferenceCollection references = new EntityReferenceCollection();
 			
-			// Load the references of all the referenced entities
-			foreach (IEntity referencedEntity in referencedEntities)
+			if (referencedEntities.Length > 0)
 			{
-				references.AddRange(Provider.Referencer.GetReferences(referencedEntity.GetType(), referencedEntity.ID, typeof(T), false));
+				Type referencedEntityType = referencedEntities.GetType().GetElementType();
 				
+				Predicate matches = new MatchReferencesPredicate(Provider, typeof(T), propertyName, referencedEntityType, Collection<IEntity>.GetIDs(referencedEntities));
+				
+				IObjectSet os = store.ObjectContainer.Query(matches,
+				                                            new DynamicComparer(
+				                                            	type,
+				                                            	sortExpression));
+				
+				page.AddRange(GetPage(os, location));
 			}
-			
-			Type referencedEntityType = referencedEntities[0].GetType();
-						
-			Predicate matches = new MatchReferencesPredicate(Provider, typeof(T), propertyName, referencedEntityType, references);
-			
-			IObjectSet os = store.ObjectContainer.Query(matches,
-			                                            new DynamicComparer(
-			                                            	type,
-			                                            	sortExpression));
-			
-			page.AddRange(GetPage(os, location));
-			
 
 			//LogWriter.Debug("Absolute total objects: " + location.AbsoluteTotal);
 			//}

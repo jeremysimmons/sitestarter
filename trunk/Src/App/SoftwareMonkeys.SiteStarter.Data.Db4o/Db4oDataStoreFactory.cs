@@ -32,7 +32,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			Db4oDataStore store = null;
 
-			using (LogGroup logGroup = LogGroup.Start("Initializing data store: " + dataStoreName, NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Initializing data store: " + dataStoreName))
 			{
 				if (!Config.IsInitialized)
 					throw new InvalidOperationException("The application config file is not present. Run the setup process and try again.");

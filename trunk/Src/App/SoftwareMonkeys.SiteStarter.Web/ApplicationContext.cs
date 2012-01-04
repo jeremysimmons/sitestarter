@@ -111,13 +111,15 @@ namespace SoftwareMonkeys.SiteStarter.Web
 
 		private void InitializeTimeout()
 		{
-			// If the application is running in debug mode then set the timeout to 60 minutes
+			// If the application is running in debug mode then set the timeout to 120 minutes
 			// to prevent timeout due to debug logging slowing the application down (which isn't an issue
 			// in release mode)
 			if (new ModeDetector().IsDebug)
-				Context.Server.ScriptTimeout = 60 // minutes
+			{
+				Context.Server.ScriptTimeout = 120 // minutes
 					* 60 // seconds
 					* 1000; // milliseconds
+			}
 		}
 		
 		private void InitializeCore()

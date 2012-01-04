@@ -23,7 +23,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		
 		public override void ActivateReference(EntityReference reference)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Activating reference.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Activating reference."))
 			{
 				if (reference.Type1Name == string.Empty)
 					throw new ArgumentNullException("reference.Type1Name");
@@ -107,7 +107,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			if (entity == null)
 				throw new ArgumentNullException("entity");
 			
-			using (LogGroup logGroup = LogGroup.Start("Activating the references on type: " + entity.GetType().ToString(), NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Activating the references on type: " + entity.GetType().ToString()))
 			{
 				Type entityType = entity.GetType();
 				
@@ -131,7 +131,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		
 		public override void Activate(IEntity entity, string propertyName, Type propertyType, int depth)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Activating property: " + propertyName, NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Activating property: " + propertyName))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");
@@ -158,7 +158,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					{
 						LogWriter.Debug("Multiple reference property");
 						
-						using (LogGroup logGroup2 = LogGroup.Start("Retrieving the references.", NLog.LogLevel.Debug))
+						using (LogGroup logGroup2 = LogGroup.StartDebug("Retrieving the references."))
 						{
 							EntityReferenceCollection references = Provider.Referencer.GetReferences(entity.GetType(),
 							                                                                         entity.ID,
@@ -230,7 +230,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 
 		public override void Activate(IEntity entity, string propertyName, int depth)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Activating property: " + propertyName, NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Activating property: " + propertyName))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");

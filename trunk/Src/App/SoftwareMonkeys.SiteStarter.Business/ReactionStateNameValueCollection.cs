@@ -124,7 +124,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			ReactionInfoCollection foundReactions = new ReactionInfoCollection();
 			
-			using (LogGroup logGroup = LogGroup.Start("Retrieving the reactions to the action '" + action + "' with the type '" + typeName + "'.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving the reactions to the action '" + action + "' with the type '" + typeName + "'."))
 			{
 				if (action == null)
 					throw new ArgumentNullException("action");
