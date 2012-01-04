@@ -8,8 +8,5 @@ private void Page_Load(object sender, EventArgs e)
 </script>
 <html>
 <body>
-<script type="text/javascript">
-window.location.href='Default.aspx';
-</script>
 </body>
 </html>

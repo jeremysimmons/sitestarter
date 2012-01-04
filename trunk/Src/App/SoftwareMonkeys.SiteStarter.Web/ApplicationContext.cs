@@ -80,7 +80,8 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		{
 			LogWriter.Debug("${Session.End}");
 			
-			HttpContext.Current.Session["Session_Start.LogGroup"] = null;
+			// This is not needed because the Session collection is disposed anyway and this line will cause a null reference exception
+			//HttpContext.Current.Session["Session_Start.LogGroup"] = null;
 		}
 		
 		void Application_BeginRequest(object sender, EventArgs e)

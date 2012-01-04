@@ -275,21 +275,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					{
 						LogWriter.Debug("Reference object NOT found. Checking for one with matching properties.");
 						
-						//IEntity sourceEntity = Reader.GetEntity(type, "ID", reference.Entity1ID);
-						
-						// If the source entity can't be found then the reference itself can't exist in the store
-						//if (sourceEntity == null)
-						//	isStored = false;
-						//else
-						//{
-							isStored = Referencer.MatchReference(
-								type,
-								reference.Entity1ID,
-								reference.Property1Name,
-								type2,
-								reference.Entity2ID,
-								reference.Property2Name);
-						//}
+						isStored = Referencer.MatchReference(
+							type,
+							reference.Entity1ID,
+							reference.Property1Name,
+							type2,
+							reference.Entity2ID,
+							reference.Property2Name);
 					}
 				}
 				else
@@ -321,9 +313,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				
 				foreach (Db4oDataStore store in Stores)
 				{
-					LogWriter.Debug("Suspending store: " + store.Name);
-					
-					store.Dispose(fullDisposal);
+					if (store != null)
+					{
+						LogWriter.Debug("Suspending store: " + store.Name);
+						
+						store.Dispose(fullDisposal);
+					}
 				}
 			}
 		}
