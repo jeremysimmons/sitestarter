@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Configuration;
+using System.Net;
+using System.Web;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Business;
 using SoftwareMonkeys.SiteStarter.Configuration;
@@ -25,7 +27,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				{
 					try
 					{
-						ExecuteBackup();
+						LaunchBackup();
 					}
 					catch (Exception ex)
 					{
@@ -35,13 +37,22 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			}
 		}
 		
-		void ExecuteBackup()
+		void LaunchBackup()
 		{
-			using (LogGroup logGroup = LogGroup.Start("Executing backup.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Launching backup."))
 			{
 				if (Config.IsInitialized)
 				{
-					LogWriter.Debug("Config.IsInitialized - Continuing backup.");
+					string url = new UrlConverter().ToAbsolute(HttpContext.Current.Request.ApplicationPath + "/AutoBackup.aspx");
+					
+					HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+					
+					request.Method = "GET";
+					
+					IAsyncResult result = request.BeginGetResponse(null, null);
+					
+					
+					/*LogWriter.Debug("Config.IsInitialized - Continuing backup.");
 					
 					ApplicationBackup appBackup = new ApplicationBackup();
 					
@@ -49,7 +60,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 
 					Config.Application.Settings["LastAutoBackup"] = DateTime.Now;
 
-					Config.Application.Save();
+					Config.Application.Save();*/
 				}
 				else
 				{
@@ -110,7 +121,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 
 			if (lastAutoBackup == DateTime.MinValue)
 				return DynamicLanguage.GetText("Never");
-				
+			
 			TimeSpan span = DateTime.Now.Subtract(lastAutoBackup);
 
 			string time = String.Empty;

@@ -104,6 +104,7 @@
     <None Include="Admin\UpdateReady.html" />
     <None Include="AllowAutoUpdate.config" />
     <None Include="App_Data\Menu.default.sitemap" />
+    <None Include="AutoBackup.aspx" />
     <None Include="Controls\AdminFooter.ascx" />
     <None Include="Controls\AuthMenu.ascx" />
     <None Include="Controls\Testing.ascx" />
