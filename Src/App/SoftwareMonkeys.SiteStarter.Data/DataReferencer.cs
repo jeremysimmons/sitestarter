@@ -172,13 +172,21 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					{
 						LogWriter.Debug("Checking reference property: " + property.Name);
 						
-						collection.AddRange(
-							GetObsoleteReferences(entity,
-							                      property.Name,
-							                      DataUtilities.GetEntityType(entity, property),
-							                      idsOfEntitiesToKeep
-							                     )
-						);
+						Type referencedEntityType  = EntitiesUtilities.GetReferenceType(entity, property);
+						
+						// If the referenced entity type is not null then get the obsolete references
+						if (referencedEntityType != null)
+						{
+							collection.AddRange(
+								GetObsoleteReferences(entity,
+								                      property.Name,
+								                      referencedEntityType,
+								                      idsOfEntitiesToKeep
+								                     )
+							);
+						}
+						// else
+						// Otherwise skip it because a null referenced entity type means its a dynamically typed reference property which hasn't been set
 					}
 				}
 			}
@@ -449,49 +457,56 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				
 				Type referencedType = EntitiesUtilities.GetReferenceType(entity, referencePropertyName);
 				
-				LogWriter.Debug("Referenced type: " + referencedType.FullName);
-				
-				if (attribute.CountPropertyName != String.Empty)
+				// If the referenced entity type is not null then set the corresponding count property
+				// otherwise skip it be cause a null referenced entity type means its a dynamically type reference property which hasn't been set
+				if (referencedType != null)
 				{
-					LogWriter.Debug("Count property name: " + attribute.CountPropertyName);
+					LogWriter.Debug("Referenced type: " + referencedType.FullName);
 					
-					string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(entity, referencePropertyName);
-					
-					PropertyInfo property = entity.GetType().GetProperty(attribute.CountPropertyName);
-					
-					// Get the original reference count
-					int originalCount = (int)property.GetValue(entity, null);
-					
-					LogWriter.Debug("Original count: " + originalCount);
-					
-					if (property == null)
-						throw new Exception("'" + attribute.CountPropertyName + "' count property not found on type '" + entity.ShortTypeName + "'.");
-					
-					// Get the latest reference count
-					int count = Provider.Counter.CountEntitiesWithReference(
-						entity.GetType(),
-						entity.ID,
-						referencePropertyName,
-						referencedType,
-						mirrorPropertyName
-					);
-					
-					LogWriter.Debug("Count: " + count.ToString());
-					
-					// If the new count is not the same as the old one then update the property
-					// otherwise skip
-					if (count != originalCount)
+					if (attribute.CountPropertyName != String.Empty)
 					{
-						wasChanged = true;
+						LogWriter.Debug("Count property name: " + attribute.CountPropertyName);
 						
-						property.SetValue(entity, count, null);
+						string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(entity, referencePropertyName);
+						
+						PropertyInfo property = entity.GetType().GetProperty(attribute.CountPropertyName);
+						
+						// Get the original reference count
+						int originalCount = (int)property.GetValue(entity, null);
+						
+						LogWriter.Debug("Original count: " + originalCount);
+						
+						if (property == null)
+							throw new Exception("'" + attribute.CountPropertyName + "' count property not found on type '" + entity.ShortTypeName + "'.");
+						
+						// Get the latest reference count
+						int count = Provider.Counter.CountEntitiesWithReference(
+							entity.GetType(),
+							entity.ID,
+							referencePropertyName,
+							referencedType,
+							mirrorPropertyName
+						);
+						
+						LogWriter.Debug("Count: " + count.ToString());
+						
+						// If the new count is not the same as the old one then update the property
+						// otherwise skip
+						if (count != originalCount)
+						{
+							wasChanged = true;
+							
+							property.SetValue(entity, count, null);
+						}
 					}
+					else
+						LogWriter.Debug("No count property specified on the reference attribute.");
 				}
-				else
-					LogWriter.Debug("No count property specified on the reference attribute.");
+				
 			}
 			return wasChanged;
 		}
+		
 		/// <summary>
 		/// Sets the mirror count property on entities referenced by the one provided.
 		/// </summary>

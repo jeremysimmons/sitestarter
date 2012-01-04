@@ -261,18 +261,18 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 				else if (attribute.TypePropertyName != String.Empty)
 				{
 					PropertyInfo typeProperty = sourceType.GetProperty(attribute.TypePropertyName);
-						
+					
 					// TODO: Use a custom exception instead of a general one
 					if (typeProperty == null)
 						throw new Exception("'" + attribute.TypePropertyName + "' property not found on '" + sourceType.Name + "' type as specified by reference attribute on '" + property.Name + "' property.");
 					
 					string typeName = (string)typeProperty.GetValue(sourceEntity, null);
 					
-					// TODO: Use a custom exception instead of a general one
-					if (typeName == null || typeName == String.Empty)
-						throw new Exception("The '" + attribute.TypePropertyName + "' property on the '" + sourceEntity.ShortTypeName + "' type with the ID '" + sourceEntity.ID.ToString() + "' has not been set. It must be set if the ReferenceAttribute.TypePropertyName property is set.");
-					
-					type = EntityState.GetType(typeName);
+					// If a type name is specified then get the type otherwise leave it null
+					if (typeName != null && typeName != String.Empty)
+					{	
+						type = EntityState.GetType(typeName);
+					}
 				}
 				else
 				{
