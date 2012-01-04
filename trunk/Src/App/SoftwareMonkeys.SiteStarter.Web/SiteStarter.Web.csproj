@@ -82,6 +82,8 @@
   <ItemGroup>
     <Compile Include="ApplicationContext.cs" />
     <Compile Include="AssemblyScanInfo.cs" />
+    <Compile Include="AutoBackupChecker.cs" />
+    <Compile Include="AutoBackupExecutor.cs" />
     <Compile Include="AutoBackupInitializer.cs" />
     <Compile Include="BasePage.cs">
       <SubType>ASPXCodeBehind</SubType>
