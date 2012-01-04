@@ -823,45 +823,30 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		
 		
 		[Test]
-		public void Test_GetPageOfEntitiesWithReference_EmptyReferencedEntityID_Found()
+		public virtual void Test_GetPageOfEntitiesWithReference_EmptyReferencedEntityID_Found()
 		{
 			using (LogGroup logGroup = LogGroup.Start("Testing the index retrieval of entities that don't have any references on a particular property.", NLog.LogLevel.Debug))
 			{
-				
-				TestUser user = new TestUser();
-				Guid userID = user.ID = Guid.NewGuid();
-				user.FirstName = "Test";
-				user.LastName = "User";
-				
 				TestRole role = new TestRole();
 				Guid roleID = role.ID = Guid.NewGuid();
 				role.Name = "Test Role";
 				
-				
-				user.Roles = Collection<TestRole>.Add(user.Roles, role);
-				
 				DataAccess.Data.Saver.Save(role);
-				
 				
 				PagingLocation location = new PagingLocation(0, 10);
 				string sortExpression = "UsernameAscending";
 				
 				TestRole[] foundRoles = DataAccess.Data.Indexer.GetPageOfEntitiesWithReference<TestRole>("Users", typeof(TestUser), Guid.Empty, location, sortExpression);
 				
-				
-				
-				
 				Assert.IsNotNull(foundRoles, "The found roles object returned was null.");
 				
 				Assert.AreEqual(1, foundRoles.Length, "Invalid number of roles found.");
-				
-				
 			}
 		}
 		
 		
 		[Test]
-		public void Test_GetPageOfEntitiesWithReference_EmptyReferencedEntityID_NotFound()
+		public virtual void Test_GetPageOfEntitiesWithReference_EmptyReferencedEntityID_NotFound()
 		{
 			using (LogGroup logGroup = LogGroup.Start("Testing the index retrieval of entities that don't have any references on a particular property.", NLog.LogLevel.Debug))
 			{
@@ -875,25 +860,20 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 				Guid roleID = role.ID = Guid.NewGuid();
 				role.Name = "Test Role";
 				
-				user.Roles = Collection<TestRole>.Add(user.Roles, role);
+				// Assign a user to the role
+				role.Users = new TestUser[] {user};
 				
-				DataAccess.Data.Saver.Save(role);
 				DataAccess.Data.Saver.Save(user);
-				
+				DataAccess.Data.Saver.Save(role);
 				
 				PagingLocation location = new PagingLocation(0, 10);
 				string sortExpression = "UsernameAscending";
 				
 				TestRole[] foundRoles = DataAccess.Data.Indexer.GetPageOfEntitiesWithReference<TestRole>("Users", typeof(TestUser), Guid.Empty, location, sortExpression);
 				
-				
-				
-				
 				Assert.IsNotNull(foundRoles, "The found roles object returned was null.");
 				
 				Assert.AreEqual(0, foundRoles.Length, "Invalid number of roles found.");
-				
-				
 			}
 		}
 		
