@@ -65,6 +65,10 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		
 		public abstract IEntity[] GetPageOfEntities(Type type, string fieldName, object fieldValue, PagingLocation location, string sortExpression);
 
+		public abstract IEntity[] GetEntitiesWithReference(IEntity entity, string propertyName, EntityReferenceCollection references);
+			
+		public abstract IEntity[] GetEntitiesWithReference(Type entityType, string propertyName, Type referencedEntityType, Guid referencedEntityID);
+		
 		public abstract T[] GetEntitiesWithReference<T>(string propertyName, Type referencedEntityType, Guid referencedEntityID)
 			where T : IEntity;
 		

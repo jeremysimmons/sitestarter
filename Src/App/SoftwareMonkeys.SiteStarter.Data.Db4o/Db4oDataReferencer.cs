@@ -390,16 +390,16 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					
 					while (os1.HasNext())
 					{
-						EntityReference reference = (EntityReference)os1.Next();
+						EntityReference reference = (EntityReference)os1[i];
 						
 						list.Add(reference);
 					}
 					
 					IObjectSet os2 = query2.Execute();
 					
-					while (os2.HasNext())
+					for (int i = 0; i < os2.Count; i++)
 					{
-						EntityReference reference = (EntityReference)os2.Next();
+						EntityReference reference = (EntityReference)os2[i];
 						
 						list.Add(reference);
 					}
@@ -538,7 +538,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 						
 						foreach (EntityReference r in list)
 						{
-							using (LogGroup logGroup2 = LogGroup.StartDebug("Processing ID reference."))
+							using (LogGroup logGroup2 = LogGroup.StartDebug("Processing reference."))
 							{
 								
 								EntityReference reference = (EntityReference)r.SwitchFor(entityType, entityID);

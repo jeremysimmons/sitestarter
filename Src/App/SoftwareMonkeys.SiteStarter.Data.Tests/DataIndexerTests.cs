@@ -435,7 +435,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		
 		
 		[Test]
-		public void Test_GetEntitiesByPropertyValue()
+		public virtual void Test_GetEntitiesByPropertyValue()
 		{
 			using (LogGroup logGroup = LogGroup.Start("Testing data retrieval with the GetEntities by property value function.", NLog.LogLevel.Debug))
 			{
