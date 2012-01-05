@@ -80,7 +80,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 						if (entity2 != null)
 							reference.ReferenceEntity = entity2;
 					}
-				}				
+				}
 			}
 		}
 		
@@ -111,6 +111,8 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			{
 				Type entityType = entity.GetType();
 				
+				EntityReferenceCollection references = Provider.Referencer.GetReferences(entity);
+				
 				foreach (PropertyInfo property in entity.GetType().GetProperties())
 				{
 					if (EntitiesUtilities.IsReference(entityType, property.Name, property.PropertyType))
@@ -118,7 +120,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 						LogWriter.Debug("Found reference property: " + property.Name);
 						LogWriter.Debug("Property type: " + property.PropertyType.ToString());
 						
-						Activate(entity, property.Name, property.PropertyType, depth);
+						Activate(entity, property.Name, property.PropertyType, depth, references);
 					}
 				}
 			}
@@ -130,6 +132,15 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		}
 		
 		public override void Activate(IEntity entity, string propertyName, Type propertyType, int depth)
+		{
+			Type referenceType = EntitiesUtilities.GetReferenceType(entity, propertyName);
+			
+			EntityReferenceCollection references = Provider.Referencer.GetReferences(entity.GetType(), entity.ID, propertyName, referenceType, false);
+			
+			Activate(entity, propertyName, propertyType, depth, references);
+		}
+		
+		public void Activate(IEntity entity, string propertyName, Type propertyType, int depth, EntityReferenceCollection references)
 		{
 			using (LogGroup logGroup = LogGroup.StartDebug("Activating property: " + propertyName))
 			{
@@ -153,45 +164,19 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				{
 					LogWriter.Debug("Reference entity type: " + referenceType.ToString());
 					
+					IEntity[] referencedEntities = Provider.Indexer.GetEntitiesWithReference(entity, property.Name, references);
+					
+					if (referencedEntities == null)
+						LogWriter.Debug("# of entities found: [null]");
+					else
+						LogWriter.Debug("# of entities found:" + referencedEntities.Length);
+					
 					// Multiple references.
 					if (EntitiesUtilities.IsMultipleReference(entity.GetType(), property))
 					{
 						LogWriter.Debug("Multiple reference property");
 						
-						using (LogGroup logGroup2 = LogGroup.StartDebug("Retrieving the references."))
-						{
-							EntityReferenceCollection references = Provider.Referencer.GetReferences(entity.GetType(),
-							                                                                         entity.ID,
-							                                                                         property.Name,
-							                                                                         referenceType,
-							                                                                         true);
-							
-							if (references == null)
-								throw new Exception("references == null");
-							
-							LogWriter.Debug("References #: " + references.Count);
-							
-							//	references.SwitchFor(entity);
-							
-							IEntity[] referencedEntities = Provider.Referencer.GetReferencedEntities(references, entity);
-							
-							LogWriter.Debug("Referenced entities #: " + referencedEntities.Length);
-							
-							// If the activation depth is greater than 1
-							if (depth > 1)
-							{
-								Activate(referencedEntities, depth-1);
-							}
-							
-							if (referencedEntities == null)
-								LogWriter.Debug("# of entities found: [null]");
-							else
-								LogWriter.Debug("# of entities found:" + referencedEntities.Length);
-							
-							object value = Collection<IEntity>.ConvertAll(referencedEntities, referenceType);
-							
-							property.SetValue(entity, value, null);
-						}
+						ActivateMultipleReferenceProperty(entity, property, referencedEntities);
 						
 					}
 					// Single reference.
@@ -199,28 +184,28 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					{
 						LogWriter.Debug("Single reference property");
 						
-						
-						LogWriter.Debug("Reference entity type: " + referenceType.ToString());
-						
-						EntityReferenceCollection references = Provider.Referencer.GetReferences(entity.GetType(),
-						                                                                         entity.ID,
-						                                                                         propertyName,
-						                                                                         referenceType,
-						                                                                         true);
-						
-						
-						IEntity[] referencedEntities = Provider.Referencer.GetReferencedEntities(references, entity);
-						
-						if (referencedEntities == null)
-							LogWriter.Debug("# of entities found: [null]");
-						else
-							LogWriter.Debug("# of entities found:" + referencedEntities.Length);
-						
-						if (referencedEntities != null && referencedEntities.Length > 0)
-							property.SetValue(entity, referencedEntities[0], null);
+						ActivateSingleReferenceProperty(entity, property, referencedEntities);
 					}
 				}
 			}
+		}
+		
+		protected virtual void ActivateMultipleReferenceProperty(IEntity entity, PropertyInfo property, IEntity[] referencedEntities)
+		{
+			using (LogGroup logGroup2 = LogGroup.StartDebug("Retrieving the references."))
+			{
+				Type referenceType = EntitiesUtilities.GetReferenceType(entity, property);
+
+				object value = Collection<IEntity>.ConvertAll(referencedEntities, referenceType);
+				
+				property.SetValue(entity, value, null);
+			}
+		}
+		
+		protected virtual void ActivateSingleReferenceProperty(IEntity entity, PropertyInfo property, IEntity[] referencedEntities)
+		{			
+			if (referencedEntities != null && referencedEntities.Length > 0)
+				property.SetValue(entity, referencedEntities[0], null);
 		}
 		
 		public override void Activate(IEntity entity, string propertyName)

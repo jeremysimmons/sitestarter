@@ -21,5 +21,17 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o.Tests
 		{
 			base.Test_Activate();
 		}
+		
+		[Test]
+		public override void Test_Activate_SingleProperty_2References()
+		{
+			base.Test_Activate_SingleProperty_2References();
+		}
+		
+		[Test]
+		public override void Test_Activate_ReverseReference()
+		{
+			base.Test_Activate_ReverseReference();
+		}
 	}
 }

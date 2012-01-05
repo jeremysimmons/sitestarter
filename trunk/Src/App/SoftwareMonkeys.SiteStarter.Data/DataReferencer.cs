@@ -307,8 +307,12 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="references">The collection of references specifying the entities to retrieve.</param>
 		/// <param name="entity">The entity that the retrieved references are associated with.</param>
 		/// <returns>The referenced entities found.</returns>
+		[Obsolete]
 		public virtual IEntity[] GetReferencedEntities(EntityReferenceCollection references, IEntity entity)
 		{
+			throw new NotSupportedException();
+		}
+		/*
 			Collection<IEntity> collection = new Collection<IEntity>();
 			
 			using (LogGroup logGroup = LogGroup.Start("Retrieving the referenced entities indicated by the provided reference collection, and from the perspective of the provided entity.",LogLevel.Debug))
@@ -319,39 +323,17 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				
 				LogWriter.Debug("# of references provided: " + references.Count.ToString());
 				
-				foreach (EntityReference reference in references)
+				Type[] types in references.GetEntityTypes();
+				
+				foreach (Type type in types)
 				{
-					LogWriter.Debug("Reference type #1: " + reference.Type1Name);
-					LogWriter.Debug("Reference ID #1: " + reference.Entity1ID.ToString());
-					LogWriter.Debug("Reference type #2: " + reference.Type2Name);
-					LogWriter.Debug("Reference ID #2: " + reference.Entity2ID.ToString());
 					
-					DataAccess.Data.Activator.ActivateReference(reference);
-					
-					// Check that the entities are set. If they're not set they were likely deleted.
-					if (reference.SourceEntity != null && reference.ReferenceEntity != null)
-					{
-						IEntity otherEntity = reference.GetOtherEntity(entity);
-						
-						if (otherEntity != null)
-						{
-							LogWriter.Debug("Other entity type: " + otherEntity.GetType().ToString());
-							LogWriter.Debug("Other entity ID: " + otherEntity.ID.ToString());
-							
-							collection.Add(otherEntity);
-						}
-						else
-						{
-							throw new Exception("otherEntity == null");
-							//LogWriter.Debug("Other entity == null");
-						}
-					}
 				}
 				
 			}
 			
 			return collection.ToArray();
-		}
+		}*/
 		
 		/// <summary>
 		/// Retrieves the references from the data store that involve the provided entity.

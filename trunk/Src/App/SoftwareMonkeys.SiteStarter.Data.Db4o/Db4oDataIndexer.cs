@@ -316,7 +316,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			if (container == null)
 				throw new Exception("No object container for store '" + store.Name + "'.");
-						
+			
 			Predicate matches = new MatchReferencePredicate(Provider, typeof(T), propertyName, referencedEntityType, referencedEntityID);
 			
 			IObjectSet os = store.ObjectContainer.Query(matches,
@@ -391,6 +391,13 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 
 			return Release((T[])page.ToArray());
 		}
+		public override T[] GetEntitiesWithReference<T>(string propertyName, Type referencedEntityType, Guid referencedEntityID)
+		{
+			return Collection<T>.ConvertAll(GetEntitiesWithReference(typeof(T),
+			                                                         propertyName,
+			                                                         referencedEntityType,
+			                                                         referencedEntityID));
+		}
 		
 		/// <summary>
 		/// Retrieves all the entities of the specified type with the specified reference.
@@ -398,12 +405,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// <param name="propertyName">The name of the property containing the reference.</param>
 		/// <param name="referencedEntityType">The type of the referenced entity to match.</param>
 		/// <param name="referencedEntityID">The ID of the referenced entity to match.</param>
-		/// <returns>An array of the references retrieved.</returns>
-		public override T[] GetEntitiesWithReference<T>(string propertyName, Type referencedEntityType, Guid referencedEntityID)
+		/// <returns>An array of the entities retrieved.</returns>
+		public override IEntity[] GetEntitiesWithReference(Type entityType, string propertyName, Type referencedEntityType, Guid referencedEntityID)
 		{
-			List<T> entities = null;
+			List<IEntity> entities = new List<IEntity>();
 			
-			using (LogGroup logGroup = LogGroup.Start("Querying the data store based on the provided parameters.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Querying the data store based on the provided parameters."))
 			{
 				LogWriter.Debug("Property name: " + propertyName);
 				LogWriter.Debug("Referenced entity ID: " + referencedEntityID);
@@ -413,55 +420,17 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				else
 					LogWriter.Debug("Referenced entity type: [null]");
 				
-				Type type = typeof(T);
-				
-				// Load the references all in one go, to avoid individual loads
-				EntityReferenceCollection references = Provider.Referencer.GetReferences(referencedEntityType, referencedEntityID, typeof(T), false);
+				Db4oDataStore store = (Db4oDataStore)GetDataStore(entityType);
+				// TODO: Check if performance can be improved by using SODA to load all references then
+				// load all referenced entities
 
-				Guid[] entityIDs = references.GetEntityIDs(referencedEntityID);
+				Predicate matches = new MatchReferencePredicate(Provider, entityType, propertyName, referencedEntityType, referencedEntityID);
 				
-				Db4oDataStore store = (Db4oDataStore)GetDataStore(type);
+				IObjectSet os = store.ObjectContainer.Query(matches);
 				
-				IObjectContainer container = store.ObjectContainer;
-				
-				entities = new List<T>(
-					container
-					.Query<T>(
-						delegate(T e)
-						{
-							bool matches = true;
-							
-							using (LogGroup logGroup2 = LogGroup.Start("Querying entity.", NLog.LogLevel.Debug))
-							{
-
-								LogWriter.Debug("Checking type " + e.GetType().ToString());
-								LogWriter.Debug("Entity ID: " + e.ID);
-								
-								string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(e, propertyName);
-								
-								bool foundReference = references.Includes(e.ID, propertyName, referencedEntityID, mirrorPropertyName);
-								
-								// If a referenced entity ID is specified then entities match if a reference exists
-								if (referencedEntityID != Guid.Empty)
-									matches = foundReference;
-								// Otherwise the calling code is trying to get entities where NO reference exists, therefore it matches when no reference is found
-								else
-									matches = !foundReference;
-								
-								LogWriter.Debug("Matches: " + matches);
-							}
-							return matches;
-						}));
-
-
-				
-				if (entities != null)
+				while (os.HasNext())
 				{
-					LogWriter.Debug("entities != null");
-				}
-				else
-				{
-					LogWriter.Debug("entities == null");
+					entities.Add((IEntity)os.Next());
 				}
 				
 				LogWriter.Debug("Total objects: " + entities.Count);
@@ -537,6 +506,87 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 								return matches;
 							}));
 
+
+					
+					if (entities != null)
+					{
+						LogWriter.Debug("entities != null");
+					}
+					else
+					{
+						LogWriter.Debug("entities == null");
+					}
+					
+					LogWriter.Debug("Total objects: " + entities.Count);
+				}
+			}
+			return Release(entities.ToArray());
+		}
+		
+		public override IEntity[] GetEntitiesWithReference(IEntity entity, string propertyName, EntityReferenceCollection references)
+		{
+			List<IEntity> entities = new List<IEntity>();
+			
+			using (LogGroup logGroup = LogGroup.StartDebug("Querying the data store based on the provided parameters."))
+			{
+				LogWriter.Debug("Property name: " + propertyName);
+				LogWriter.Debug("References #: " + references.Count);
+				
+				if (references.Count > 0)
+				{
+					Type referencedEntityType = EntitiesUtilities.GetReferenceType(entity, propertyName);
+					
+					if (referencedEntityType != null)
+						LogWriter.Debug("Referenced entity type: " + referencedEntityType.ToString());
+					else
+						LogWriter.Debug("Referenced entity type: [null]");
+					
+					Db4oDataStore store = (Db4oDataStore)GetDataStore(referencedEntityType);
+					
+					IObjectContainer container = store.ObjectContainer;
+					
+					string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(entity, propertyName);
+					
+					foreach (EntityReference reference in references)
+					{
+						if (reference.Includes(entity.ID, propertyName))
+						{
+							Guid otherID = reference.GetOtherID(entity.ID);
+							string otherTypeName = reference.GetOtherType(entity.ShortTypeName);
+							
+							Type otherType = EntityState.GetType(otherTypeName);
+							
+							entities.Add(Provider.Reader.GetEntity(otherType, "ID", otherID));
+						}
+					}
+					
+					/*entities = new List<IEntity>(
+						container
+						.Query<IEntity>(
+							delegate(IEntity e)
+							{
+								bool matches = true;
+								
+								using (LogGroup logGroup2 = LogGroup.StartDebug("Querying entity."))
+								{
+
+									LogWriter.Debug("Checking type " + e.GetType().ToString());
+									LogWriter.Debug("Entity ID: " + e.ID);
+									
+									bool foundReference = references.Includes(e.ID, mirrorPropertyName);
+									
+									// If references were provided then entities match if a reference exists
+									if (references != null && references.Count > 0)
+										matches = foundReference;
+									// Otherwise the calling code is trying to get entities where NO reference exists, therefore it matches when no reference is found
+									else
+										matches = !foundReference;
+									
+									LogWriter.Debug("Matches: " + matches);
+								}
+								return matches;
+							}));
+					 */
 
 					
 					if (entities != null)

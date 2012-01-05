@@ -39,5 +39,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o.Tests
 		{
 			base.Test_GetPageOfEntitiesWithReference_EmptyReferencedEntityID_NotFound();
 		}
+		
+		[Test]
+		public override void Test_GetEntitiesByPropertyValue()
+		{
+			base.Test_GetEntitiesByPropertyValue();
+		}
 	}
 }
