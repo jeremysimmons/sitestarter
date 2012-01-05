@@ -57,24 +57,29 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 							{
 								Type referenceType = EntitiesUtilities.GetReferenceType(entity, property.Name);
 								
-								EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences(entity.GetType(),
-								                                                                                entity.ID,
-								                                                                                property.Name,
-								                                                                                referenceType,
-								                                                                                false);
-								if (references.Count > 0)
+								// If the reference type is not null then continue
+								if (referenceType != null)
 								{
-									LogWriter.Debug("Found references: " + references.Count.ToString());
-									
-									foreach (EntityReference reference in references)
+									EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences(entity.GetType(),
+									                                                                                entity.ID,
+									                                                                                property.Name,
+									                                                                                referenceType,
+									                                                                                false);
+									if (references.Count > 0)
 									{
-										LogWriter.Debug("Found reference between '" + reference.Type1Name + "' and '" + reference.Type2Name + "'.");
+										LogWriter.Debug("Found references: " + references.Count.ToString());
 										
-										toDelete.Add(reference);
+										foreach (EntityReference reference in references)
+										{
+											LogWriter.Debug("Found reference between '" + reference.Type1Name + "' and '" + reference.Type2Name + "'.");
+											
+											toDelete.Add(reference);
+										}
 									}
+									else
+										LogWriter.Debug("No references found associated with this property.");
 								}
-								else
-									LogWriter.Debug("No references found associated with this property.");
+								// Otherwise skip it because the reference property hasn't been set
 							}
 						}
 					}
@@ -102,7 +107,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			using (LogGroup logGroup = LogGroup.StartDebug("Deleting provided '" + entity.ShortTypeName + "' entity."))
 			{
 				Db4oDataStore store = (Db4oDataStore)GetDataStore(entity);
-			
+				
 				if (DataAccess.Data.IsStored(entity))
 				{
 					using (Batch batch = BatchState.StartBatch())

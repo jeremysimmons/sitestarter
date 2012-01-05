@@ -391,6 +391,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 
 			return Release((T[])page.ToArray());
 		}
+		
 		public override T[] GetEntitiesWithReference<T>(string propertyName, Type referencedEntityType, Guid referencedEntityID)
 		{
 			return Collection<T>.ConvertAll(GetEntitiesWithReference(typeof(T),
@@ -421,6 +422,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					LogWriter.Debug("Referenced entity type: [null]");
 				
 				Db4oDataStore store = (Db4oDataStore)GetDataStore(entityType);
+				
 				// TODO: Check if performance can be improved by using SODA to load all references then
 				// load all referenced entities
 
@@ -523,6 +525,44 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			return Release(entities.ToArray());
 		}
 		
+		public override IEntity[] GetEntitiesWithReference(IEntity entity)
+		{
+			List<IEntity> entities = new List<IEntity>();
+			
+			using (LogGroup logGroup = LogGroup.StartDebug("Querying the data store based on the provided parameters."))
+			{
+				
+				EntityReferenceCollection references = Provider.Referencer.GetReferences(entity, false);
+			
+				LogWriter.Debug("References #: " + references.Count);	
+				
+				if (references.Count > 0)
+				{										
+					foreach (EntityReference reference in references)
+					{
+						Guid otherID = reference.GetOtherID(entity.ID);
+						string otherTypeName = reference.GetOtherType(entity.ShortTypeName);
+						
+						Type otherType = EntityState.GetType(otherTypeName);
+						
+						entities.Add(Provider.Reader.GetEntity(otherType, "ID", otherID));
+					}
+					
+					if (entities != null)
+					{
+						LogWriter.Debug("entities != null");
+					}
+					else
+					{
+						LogWriter.Debug("entities == null");
+					}
+					
+					LogWriter.Debug("Total objects: " + entities.Count);
+				}
+			}
+			return Release(entities.ToArray());
+		}
+		
 		public override IEntity[] GetEntitiesWithReference(IEntity entity, string propertyName, EntityReferenceCollection references)
 		{
 			List<IEntity> entities = new List<IEntity>();
@@ -540,13 +580,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 						LogWriter.Debug("Referenced entity type: " + referencedEntityType.ToString());
 					else
 						LogWriter.Debug("Referenced entity type: [null]");
-					
-					Db4oDataStore store = (Db4oDataStore)GetDataStore(referencedEntityType);
-					
-					IObjectContainer container = store.ObjectContainer;
-					
-					string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(entity, propertyName);
-					
+										
 					foreach (EntityReference reference in references)
 					{
 						if (reference.Includes(entity.ID, propertyName))
@@ -556,38 +590,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 							
 							Type otherType = EntityState.GetType(otherTypeName);
 							
-							entities.Add(Provider.Reader.GetEntity(otherType, "ID", otherID));
+							IEntity referencedEntity = Provider.Reader.GetEntity(otherType, "ID", otherID);
+							
+							if (referencedEntity != null)
+								entities.Add(referencedEntity);
 						}
 					}
-					
-					/*entities = new List<IEntity>(
-						container
-						.Query<IEntity>(
-							delegate(IEntity e)
-							{
-								bool matches = true;
-								
-								using (LogGroup logGroup2 = LogGroup.StartDebug("Querying entity."))
-								{
-
-									LogWriter.Debug("Checking type " + e.GetType().ToString());
-									LogWriter.Debug("Entity ID: " + e.ID);
-									
-									bool foundReference = references.Includes(e.ID, mirrorPropertyName);
-									
-									// If references were provided then entities match if a reference exists
-									if (references != null && references.Count > 0)
-										matches = foundReference;
-									// Otherwise the calling code is trying to get entities where NO reference exists, therefore it matches when no reference is found
-									else
-										matches = !foundReference;
-									
-									LogWriter.Debug("Matches: " + matches);
-								}
-								return matches;
-							}));
-					 */
-
 					
 					if (entities != null)
 					{

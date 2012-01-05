@@ -69,9 +69,11 @@
 				</p>
 				</asp:View>
 			</asp:MultiView>
+				<% if (DataAccess.IsInitialized) { %>
 			<p>
 				SiteStarter Version: <%= DataAccess.Data.Schema.ApplicationVersion %>
 			</p>
+				 <% } %>
 		</form>
 	</body>
 </form>

@@ -128,21 +128,32 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		
 		public override void Activate(IEntity entity, string propertyName, Type propertyType)
 		{
-			Activate(entity, propertyName, propertyType, 1);
+			using (LogGroup logGroup = LogGroup.StartDebug("Activating the '" + propertyName + "' property on the '" + entity.ShortTypeName + "' type."))
+			{
+				Activate(entity, propertyName, propertyType, 1);
+			}
 		}
 		
 		public override void Activate(IEntity entity, string propertyName, Type propertyType, int depth)
 		{
-			Type referenceType = EntitiesUtilities.GetReferenceType(entity, propertyName);
-			
-			EntityReferenceCollection references = Provider.Referencer.GetReferences(entity.GetType(), entity.ID, propertyName, referenceType, false);
-			
-			Activate(entity, propertyName, propertyType, depth, references);
+			using (LogGroup logGroup = LogGroup.StartDebug("Activating the '" + propertyName + "' property on the '" + entity.ShortTypeName + "' type."))
+			{
+				Type referenceType = EntitiesUtilities.GetReferenceType(entity, propertyName);
+				
+				// If the reference type is not null then activate the property
+				if (referenceType != null)
+				{
+					EntityReferenceCollection references = Provider.Referencer.GetReferences(entity.GetType(), entity.ID, propertyName, referenceType, false);
+					
+					Activate(entity, propertyName, propertyType, depth, references);
+				}
+				// Otherwise skip it because a null reference type means its a dynamically typed property which has not been set
+			}
 		}
 		
 		public void Activate(IEntity entity, string propertyName, Type propertyType, int depth, EntityReferenceCollection references)
 		{
-			using (LogGroup logGroup = LogGroup.StartDebug("Activating property: " + propertyName))
+			using (LogGroup logGroup = LogGroup.StartDebug("Activating the '" + propertyName + "' property on the '" + entity.ShortTypeName + "' type."))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");
@@ -196,26 +207,34 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			{
 				Type referenceType = EntitiesUtilities.GetReferenceType(entity, property);
 
-				object value = Collection<IEntity>.ConvertAll(referencedEntities, referenceType);
-				
-				property.SetValue(entity, value, null);
+				// If the reference type is not null then activate the property
+				if (referenceType != null)
+				{
+					object value = Collection<IEntity>.ConvertAll(referencedEntities, referenceType);
+					
+					property.SetValue(entity, value, null);
+				}
+				// Otherwise skip it because a null reference type means its a dynamically typed property which has not been set
 			}
 		}
 		
 		protected virtual void ActivateSingleReferenceProperty(IEntity entity, PropertyInfo property, IEntity[] referencedEntities)
-		{			
+		{
 			if (referencedEntities != null && referencedEntities.Length > 0)
 				property.SetValue(entity, referencedEntities[0], null);
 		}
 		
 		public override void Activate(IEntity entity, string propertyName)
 		{
-			Activate(entity, propertyName, 1);
+			using (LogGroup logGroup = LogGroup.StartDebug("Activating the '" + propertyName + "' property on the '" + entity.ShortTypeName + "' type."))
+			{
+				Activate(entity, propertyName, 1);
+			}
 		}
 
 		public override void Activate(IEntity entity, string propertyName, int depth)
 		{
-			using (LogGroup logGroup = LogGroup.StartDebug("Activating property: " + propertyName))
+			using (LogGroup logGroup = LogGroup.StartDebug("Activating the '" + propertyName + "' property on the '" + entity.ShortTypeName + "' type."))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");
