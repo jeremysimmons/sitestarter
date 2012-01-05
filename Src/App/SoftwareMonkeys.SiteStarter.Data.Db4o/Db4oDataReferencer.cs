@@ -390,16 +390,17 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					
 					while (os1.HasNext())
 					{
-						EntityReference reference = (EntityReference)os1[i];
+						EntityReference reference = (EntityReference)os1.Next();
 						
 						list.Add(reference);
 					}
 					
 					IObjectSet os2 = query2.Execute();
 					
-					for (int i = 0; i < os2.Count; i++)
+					
+					while (os2.HasNext())
 					{
-						EntityReference reference = (EntityReference)os2[i];
+						EntityReference reference = (EntityReference)os2.Next();
 						
 						list.Add(reference);
 					}
