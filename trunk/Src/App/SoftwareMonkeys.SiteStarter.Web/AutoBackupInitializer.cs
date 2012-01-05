@@ -91,6 +91,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		private DateTime GetLastAutoBackup()
 		{
 			if (Config.IsInitialized
+			    && Config.Application != null
 			    && Config.Application.Settings.ContainsKey("LastAutoBackup"))
 			{
 				return (DateTime)Config.Application.Settings["LastAutoBackup"];

@@ -307,33 +307,11 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		/// <param name="references">The collection of references specifying the entities to retrieve.</param>
 		/// <param name="entity">The entity that the retrieved references are associated with.</param>
 		/// <returns>The referenced entities found.</returns>
-		[Obsolete]
+		[Obsolete("Use DataAccess.Data.Indexer.GetEntitiesWithReference(entity)")]
 		public virtual IEntity[] GetReferencedEntities(EntityReferenceCollection references, IEntity entity)
 		{
-			throw new NotSupportedException();
+			return Provider.Indexer.GetEntitiesWithReference(entity);
 		}
-		/*
-			Collection<IEntity> collection = new Collection<IEntity>();
-			
-			using (LogGroup logGroup = LogGroup.Start("Retrieving the referenced entities indicated by the provided reference collection, and from the perspective of the provided entity.",LogLevel.Debug))
-			{
-				
-				if (entity == null)
-					throw new ArgumentNullException("entity");
-				
-				LogWriter.Debug("# of references provided: " + references.Count.ToString());
-				
-				Type[] types in references.GetEntityTypes();
-				
-				foreach (Type type in types)
-				{
-					
-				}
-				
-			}
-			
-			return collection.ToArray();
-		}*/
 		
 		/// <summary>
 		/// Retrieves the references from the data store that involve the provided entity.

@@ -16,6 +16,8 @@
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
 <script runat="server">
 public int TotalStoresDeleted = 0;
+public int TotalEntitiesDeleted = 0;
+public int TotalReferencesDeleted = 0;
 
 public string DataDirectoryPath
 {
@@ -30,9 +32,9 @@ protected override void OnLoad(EventArgs e)
 		{		
 			// TODO: Clean up
 	
-			DeleteDb4oFiles();
+			//DeleteDb4oFiles();
 	
-			//DeleteEntities();
+			DeleteEntities();
 		
 			//DeleteMenuFile();
 		
@@ -48,6 +50,9 @@ protected override void OnLoad(EventArgs e)
 			if (Request.QueryString["Config"] != null && Request.QueryString["Config"].ToLower() == "true")
 				DeleteConfigurationFile();
 		
+			if (Request.QueryString["AutoBackup"] != null && Request.QueryString["AutoBackup"].ToLower() == "true")
+				ResetAutoBackup();
+				
 			if (StateAccess.IsInitialized && AuthenticationState.IsAuthenticated)
 				Authentication.SignOut();
 		
@@ -93,7 +98,7 @@ private void DeleteEntities()
 					//if (!CanSkipDelete(entity))
 						DataAccess.Data.Deleter.Delete(entity);
 						
-				//	TotalEntitiesDeleted++;
+					TotalEntitiesDeleted++;
 				}		
 				
 				EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences();
@@ -102,7 +107,7 @@ private void DeleteEntities()
 				{
 					DataAccess.Data.Deleter.Delete(reference);
 						
-				//	TotalReferencesDeleted++;
+					TotalReferencesDeleted++;
 				}		
 			}
 		}
@@ -175,6 +180,12 @@ private void DeleteLogs()
 		Directory.Delete(path, true);
 }
 
+private void ResetAutoBackup()
+{
+	Config.Application.Settings["LastAutoBackup"] = DateTime.Now.Subtract(new TimeSpan(100, 0, 0));
+	Config.Application.Save();
+}
+
 </script>
 <html>
 <head runat="server">
@@ -182,7 +193,9 @@ private void DeleteLogs()
 <body>
 <form runat="server">
 Done...<br/>
-Data stores cleared: <%= TotalStoresDeleted %>
+Data stores cleared: <%= TotalStoresDeleted %><br/>
+Entities cleared: <%= TotalEntitiesDeleted %><br/>
+References cleared: <%= TotalReferencesDeleted %>
 </form>
 </body>
 </html>
