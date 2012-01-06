@@ -182,8 +182,11 @@ private void DeleteLogs()
 
 private void ResetAutoBackup()
 {
-	Config.Application.Settings["LastAutoBackup"] = DateTime.Now.Subtract(new TimeSpan(100, 0, 0));
-	Config.Application.Save();
+	if (Config.IsInitialized && Config.Application != null)
+	{
+		Config.Application.Settings["LastAutoBackup"] = DateTime.Now.Subtract(new TimeSpan(100, 0, 0));
+		Config.Application.Save();
+	}
 }
 
 </script>
@@ -193,9 +196,7 @@ private void ResetAutoBackup()
 <body>
 <form runat="server">
 Done...<br/>
-Data stores cleared: <%= TotalStoresDeleted %><br/>
 Entities cleared: <%= TotalEntitiesDeleted %><br/>
-References cleared: <%= TotalReferencesDeleted %>
 </form>
 </body>
 </html>
