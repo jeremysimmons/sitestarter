@@ -58,6 +58,10 @@
 	{
 		Dictionary<string, object> settings = new Dictionary<string, object>();
 		settings.Add("EnableUserRegistration", true);
+
+	    	// Set the LastAutoBackup setting so that the auto backup doesn't start for 10 minutes
+    		settings.Add("LastAutoBackup", DateTime.Now.Subtract(new TimeSpan(0, 50, 0)));
+
 		return settings;
 	}
 
