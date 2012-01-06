@@ -18,7 +18,7 @@
 </tr>
 <tr>
 	<td>open</td>
-	<td>Admin/tests/testreset.aspx?Log=true&amp;Config=true&amp;AutoBackup=true</td>
+	<td>Admin/tests/testreset.aspx?Log=true&amp;Config=true</td>
 	<td></td>
 </tr>
 <tr>
@@ -34,6 +34,17 @@
 <tr>
 	<td>open</td>
 	<td>Admin/QuickSetup.aspx</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextNotPresent</td>
+	<td>Exception</td>
+	<td></td>
+</tr>
+<!--Reset the auto backup so it'll start immediately-->
+<tr>
+	<td>open</td>
+	<td>Admin/Tests/ResetAutoBackup.aspx</td>
 	<td></td>
 </tr>
 <tr>
