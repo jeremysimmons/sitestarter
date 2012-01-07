@@ -60,6 +60,8 @@ protected override void OnLoad(EventArgs e)
 		
 			// Restart the asp.net application
 			//System.Web.HttpRuntime.UnloadAppDomain();
+
+			Session.Abandon();
 		}
 	}
 }
