@@ -35,6 +35,8 @@ protected override void OnLoad(EventArgs e)
 			//DeleteDb4oFiles();
 	
 			DeleteEntities();
+
+			DeletePersonalization();
 		
 			//DeleteMenuFile();
 		
@@ -87,7 +89,7 @@ private void DeleteDb4oFiles()
 
 private void DeleteEntities()
 {
-	using (LogGroup logGroup = LogGroup.Start("Deleting all entities in the system.", NLog.LogLevel.Debug))
+	using (LogGroup logGroup = LogGroup.StartDebug("Deleting all entities in the system."))
 	{
 		if (DataAccess.IsInitialized)
 		{
@@ -143,6 +145,14 @@ private void DeleteMenuFile()
 	
 	if (File.Exists(path))
 		File.Delete(path);
+}
+
+private void DeletePersonalization()
+{
+	string path = Server.MapPath(Request.ApplicationPath + "/App_Data/Personalization_Data");
+	
+	if (Directory.Exists(path))
+		Directory.Delete(path, true);
 }
 
 private void DeleteVersionFile()
