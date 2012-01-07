@@ -57,11 +57,11 @@ protected override void OnLoad(EventArgs e)
 				Authentication.SignOut();
 		
 			//Response.Redirect(Request.ApplicationPath + "/Admin/QuickSetup.aspx");
-		
-			// Restart the asp.net application
-			//System.Web.HttpRuntime.UnloadAppDomain();
 
 			Session.Abandon();
+			
+			// Restart the asp.net application
+			System.Web.HttpRuntime.UnloadAppDomain();
 		}
 	}
 }
