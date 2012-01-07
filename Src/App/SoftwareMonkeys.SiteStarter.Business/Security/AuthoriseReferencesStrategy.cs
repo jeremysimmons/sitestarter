@@ -36,7 +36,12 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 				foreach (PropertyInfo property in entity.GetType().GetProperties())
 				{
 					if (EntitiesUtilities.IsReference(entity.GetType(), property))
-						AuthoriseReferenceStrategy.New(entity, property).Authorise();
+					{
+						IAuthoriseReferenceStrategy strategy = AuthoriseReferenceStrategy.New(entity, property);
+						// If the strategy is null then skip it because it means the reference property isn't set
+						if (strategy != null)
+							strategy.Authorise();
+					}
 				}
 				
 				isAuthorised = IsAuthorised(entity);
