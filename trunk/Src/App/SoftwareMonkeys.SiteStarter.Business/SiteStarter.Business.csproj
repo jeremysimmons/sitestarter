@@ -101,6 +101,7 @@
     <Compile Include="CommandInfo.cs" />
     <Compile Include="CreateAuthoredEntityReaction.cs" />
     <Compile Include="CreateComandInfo.cs" />
+    <Compile Include="CreateEntityReaction.cs" />
     <Compile Include="CreateReaction.cs" />
     <Compile Include="CreateStrategy.cs" />
     <Compile Include="CreateSubEntityStrategy.cs" />

@@ -30,6 +30,16 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			get { return GetType().Name; }
 		}
 		
+		private DateTime dateCreated;
+		/// <summary>
+		/// Gets/sets the date the entity was created.
+		/// </summary>
+		public DateTime DateCreated
+		{
+			get { return dateCreated; }
+			set { dateCreated = value; }
+		}
+		
 		/// <summary>
 		/// Empty constructor.
 		/// </summary>
