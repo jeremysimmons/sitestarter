@@ -12,6 +12,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 	[Element("View", "IEntity")]
 	public class ViewEntityElement : BaseElement
 	{
+		HyperLink ViewLink = new HyperLink();
+		Table Table = new Table();
+		PlaceHolder TitleHolder = new PlaceHolder();
+		
 		private IEntity dataSource;
 		public IEntity DataSource
 		{
@@ -29,15 +33,13 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 			set { headingText = value; }
 		}
 		
+		
 		public bool EnableViewLink
 		{
 			get {
 				if (ViewState["EnableViewLink"] == null)
 				{
-					if (DataSource == null)
-						return false;
-					else
-						return ProjectionState.Projections.Contains("View", DataSource.ShortTypeName);
+					return false;
 				}
 				else
 					return (bool)ViewState["EnableViewLink"];
@@ -51,43 +53,65 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 		
 		protected override void CreateChildControls()
 		{
-			Table table = new Table();
-			table.Width = Width;
-			table.CssClass = "Panel";
-			table.Rows.Add(new TableRow());
-			table.Rows[0].Cells.Add(new TableCell());
-			table.Rows[0].Cells[0].CssClass = "Heading2";
-			table.Rows[0].Cells[0].Width = Unit.Percentage(100);
-			table.Rows[0].Cells[0].ColumnSpan = 2;
-			table.Rows[0].Cells[0].Controls.Add(new LiteralControl(HeadingText));
+			Controls.Add(
+				new LiteralControl(
+					String.Format(
+						"<div class='{0}'>",
+						"Heading2"
+					)
+				)
+			);
 			
-			table.Rows.Add(new TableRow());
-			table.Rows[1].Cells.Add(new TableCell());
-			if (DataSource != null)
-			{
-				Control control = GetTitleControl(DataSource.ToString());
-				table.Rows[1].Cells[0].Controls.Add(control);
-			}
+			Controls.Add(new LiteralControl(HeadingText));
 			
-			Controls.Add(table);
+			Controls.Add(new LiteralControl("</div>"));
+			
+			Controls.Add(new LiteralControl("<p>"));
+			
+			Controls.Add(TitleHolder);
+			
+			Controls.Add(new LiteralControl("</p>"));
+				
+					
 			
 			base.CreateChildControls();
 		}
 		
-		protected virtual Control GetTitleControl(string titleText)
+		
+		public override void DataBind()
 		{
+			base.DataBind();
+			
+			if (ViewState["EnableViewLink"] == null)
+				ViewState["EnableViewLink"] = ProjectionState.Projections.Contains("View", DataSource.ShortTypeName);
+			
 			if (EnableViewLink)
 			{
-				HyperLink link = new HyperLink();
-				link.Text = titleText;
-				
-				link.NavigateUrl = new UrlCreator().CreateUrl("View", DataSource.ShortTypeName);
-				
-				return link;
+				TitleHolder.Controls.Add(ViewLink);
+				ViewLink.NavigateUrl = new UrlCreator().CreateUrl("View", DataSource);
+				ViewLink.Text = DataSource.ToString();
 			}
 			else
-				return new LiteralControl(titleText);
+			{
+				TitleHolder.Controls.Add(new LiteralControl(DataSource.ToString()));
+			}
+		
+			IsDataBound = true;
+		}
+		
+		public bool IsDataBound = false;
+		
+		public virtual void EnsureDataBound()
+		{
+			if (!IsDataBound)
+				DataBind();
+		}
+		
+		protected override void OnPreRender(EventArgs e)
+		{
+			EnsureDataBound();
 			
+			base.OnPreRender(e);
 		}
 	}
 }
