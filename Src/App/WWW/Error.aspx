@@ -13,6 +13,9 @@
     
     private void Page_Load(object sender, EventArgs e)
     {
+		Response.StatusCode = 500;
+		Response.Status = "Internal Server Error";
+
 		try
 		{
 			CurrentException = Server.GetLastError();
