@@ -91,6 +91,7 @@
     <None Include="Admin\Tests\LogContains.aspx" />
     <None Include="Admin\Tests\PrepareTestAutoUpdate.aspx" />
     <None Include="Admin\Tests\PrepareTestImport.aspx" />
+    <None Include="Admin\Tests\ResetAutoBackup.aspx" />
     <None Include="Admin\Tests\ResetDefaultData.aspx" />
     <None Include="Admin\Tests\TestBreakableLogging.aspx" />
     <None Include="Admin\Tests\TestContactForm.aspx" />
@@ -99,6 +100,8 @@
     <None Include="Admin\Tests\TestEntitySelect_SingleEmpty.aspx" />
     <None Include="Admin\Tests\TestLogging.aspx" />
     <None Include="Admin\Tests\TestElementControl.aspx" />
+    <None Include="Admin\Tests\TestPerformance.aspx" />
+    <None Include="Admin\Tests\TestReportIssue.aspx" />
     <None Include="Admin\Tests\TestReset.aspx" />
     <None Include="Admin\Update.aspx" />
     <None Include="Admin\UpdateReady.html" />
