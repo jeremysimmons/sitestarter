@@ -3,6 +3,7 @@ using System.Configuration;
 using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Business;
 using SoftwareMonkeys.SiteStarter.Configuration;
+using SoftwareMonkeys.SiteStarter.State;
 
 namespace SoftwareMonkeys.SiteStarter.Web
 {
@@ -36,7 +37,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		
 		void ExecuteBackup()
 		{
-			using (LogGroup logGroup = LogGroup.Start("Executing backup.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Executing backup."))
 			{
 				if (Config.IsInitialized)
 				{
@@ -46,9 +47,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 					
 					appBackup.Backup();
 
-					Config.Application.Settings["LastAutoBackup"] = DateTime.Now;
-
-					Config.Application.Save();
+					StateAccess.State.SetApplication("LastAutoBackup", DateTime.Now);
 				}
 				else
 				{

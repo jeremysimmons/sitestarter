@@ -1,4 +1,5 @@
 ﻿<%@ Page Language="C#" Title="Test Reset" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.State" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Entities" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business.Security" %>
@@ -196,8 +197,7 @@ private void ResetAutoBackup()
 {
 	if (Config.IsInitialized && Config.Application != null)
 	{
-		Config.Application.Settings["LastAutoBackup"] = DateTime.Now.Subtract(new TimeSpan(100, 0, 0));
-		Config.Application.Save();
+		StateAccess.State.SetApplication("LastAutoBackup", DateTime.Now.Subtract(new TimeSpan(100, 0, 0)));
 	}
 }
 

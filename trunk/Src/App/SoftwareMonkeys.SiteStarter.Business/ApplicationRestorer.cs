@@ -211,10 +211,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 					if (legacyConfig.SessionTimeout != 0)
 						Config.Application.SessionTimeout = legacyConfig.SessionTimeout;
 					
-					// Set the last auto backup time so that the next one occurs in 10 minutes to prevent it executing
-					// during the restore which slows the application down
-					Config.Application.Settings["LastAutoBackup"] = DateTime.Now.Subtract(new TimeSpan(0, 50, 0));
-					
 					Config.Application.Save();
 				}
 				

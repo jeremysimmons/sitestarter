@@ -1,5 +1,6 @@
 ﻿<%@ Page Language="C#" autoeventwireup="true" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Configuration" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.State" %>
 <script runat="server">
 
 
@@ -13,8 +14,7 @@ private void ResetAutoBackup()
 {
 	if (Config.IsInitialized && Config.Application != null)
 	{
-		Config.Application.Settings["LastAutoBackup"] = DateTime.Now.Subtract(new TimeSpan(100, 0, 0));
-		Config.Application.Save();
+		StateAccess.State.SetApplication("LastAutoBackup", DateTime.Now.Subtract(new TimeSpan(100, 0, 0)));
 	}
 }
 

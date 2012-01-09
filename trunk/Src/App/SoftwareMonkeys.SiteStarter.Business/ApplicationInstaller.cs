@@ -7,6 +7,7 @@ using SoftwareMonkeys.SiteStarter.Data;
 using SoftwareMonkeys.SiteStarter.IO;
 using System.Collections.Generic;
 using SoftwareMonkeys.SiteStarter.Business.Security;
+using SoftwareMonkeys.SiteStarter.State;
 
 namespace SoftwareMonkeys.SiteStarter.Business
 {
@@ -166,6 +167,9 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			using (LogGroup logGroup = LogGroup.StartDebug("Performing install/setup."))
 			{
+    			// Set the LastAutoBackup time stamp so that the auto backup doesn't start for 10 minutes
+    			StateAccess.State.SetApplication("LastAutoBackup", DateTime.Now.Subtract(new TimeSpan(0, 50, 0)));
+				
 				CheckApplicationPath();
 				
 				CheckPathVariation();
