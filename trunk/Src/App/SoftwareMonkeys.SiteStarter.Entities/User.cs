@@ -11,7 +11,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 	/// Represents a user in the application.
 	/// </summary>
 	[Serializable]
-	public class User : BaseUniqueEntity, IUser
+	public class User : BaseEntity, IUser
 	{		
 		private string firstName;
 		/// <summary>
@@ -267,7 +267,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		}
 		
 		string ISimple.Description{
-			get { return Username; }
+			get { return Name; }
 			set { }
 		}
 	}
