@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using SoftwareMonkeys.SiteStarter.Configuration;
+using SoftwareMonkeys.SiteStarter.State;
 
 namespace SoftwareMonkeys.SiteStarter.Web
 {
@@ -39,10 +40,10 @@ namespace SoftwareMonkeys.SiteStarter.Web
 
 		public DateTime GetLastAutoBackup()
 		{
-			if (Config.IsInitialized
-			    && Config.Application.Settings.ContainsKey("LastAutoBackup"))
+			if (StateAccess.IsInitialized
+			    && StateAccess.State.ContainsApplication("LastAutoBackup"))
 			{
-				return (DateTime)Config.Application.Settings["LastAutoBackup"];
+				return (DateTime)StateAccess.State.GetApplication("LastAutoBackup");
 			}
 			else
 			{
