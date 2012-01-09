@@ -106,6 +106,9 @@
 	        <exclude name="**/*.dll.r*"/>
 	        <exclude name="**/*.exe.r*"/>
 	        <exclude name="**/App_Data/VS/**"/>
+	        <exclude name="**/App_Data/Export/"/>
+	        <exclude name="**/App_Data/Export/**"/>
+	        <exclude name="**/App_Data/Import/"/>
 	        <exclude name="**/App_Data/Import/**"/>
 	        <exclude name="**/App_Data/ImportDefault/**"/>
 	        <exclude name="**/App_Data/LegacyDefault/**"/>
@@ -223,6 +226,10 @@
 	        <exclude name="**/App_Data/*.db4o"/>
 	        <exclude name="**/App_Data/Personalization_Data"/>
 	        <exclude name="**/App_Data/Logs"/>
+	        <exclude name="**/App_Data/Export/"/>
+	        <exclude name="**/App_Data/Export/**"/>
+	        <exclude name="**/App_Data/Import/"/>
+	        <exclude name="**/App_Data/Import/**"/>
 	        <exclude name="**/App_Data/LogsArchive"/>
 	        <exclude name="**/App_Data/LogReports/**"/>
 	        <exclude name="**/App_Data/LegacyDefault/**"/>
