@@ -310,7 +310,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		{
 			MethodBase callingMethod = null;
 
-			if (new LogSupervisor().LoggingEnabled(LogLevel.Debug))
+			if (new LogSupervisor().LoggingEnabled(LogLevel.Info))
 				callingMethod = Reflector.GetCallingMethod();
 
 			return Start(summary, LogLevel.Info, callingMethod);
