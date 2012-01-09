@@ -7,7 +7,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
     /// <summary>
     /// Defines the interface for a user in the application.
     /// </summary>
-    public interface IUser : IUniqueEntity, ISimple
+    public interface IUser : IEntity, ISimple
     {
         string Name { get; }
         string Username { get;set; }
