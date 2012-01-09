@@ -53,8 +53,7 @@ protected override void OnLoad(EventArgs e)
 			if (Request.QueryString["Config"] != null && Request.QueryString["Config"].ToLower() == "true")
 				DeleteConfigurationFile();
 		
-			if (Request.QueryString["AutoBackup"] != null && Request.QueryString["AutoBackup"].ToLower() == "true")
-				ResetAutoBackup();
+			SuspendAutoBackup();
 				
 			if (StateAccess.IsInitialized && AuthenticationState.IsAuthenticated)
 				Authentication.SignOut();
@@ -193,14 +192,13 @@ private void DeleteLogs()
 		Directory.Delete(path, true);
 }
 
-private void ResetAutoBackup()
+private void SuspendAutoBackup()
 {
-	if (Config.IsInitialized && Config.Application != null)
+	if (StateAccess.IsInitialized)
 	{
-		StateAccess.State.SetApplication("LastAutoBackup", DateTime.Now.Subtract(new TimeSpan(100, 0, 0)));
+		StateAccess.State.SetApplication("LastAutoBackup", DateTime.Now);
 	}
 }
-
 </script>
 <html>
 <head runat="server">
