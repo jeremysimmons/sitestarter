@@ -141,7 +141,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			IReaction reaction = null;
 
-			using (LogGroup logGroup = LogGroup.Start("Creating a new reaction."))
+			using (LogGroup logGroup = LogGroup.StartDebug("Creating a new reaction."))
 			{
 				LogWriter.Debug("Type name: " + TypeName);
 				
