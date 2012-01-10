@@ -99,7 +99,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		{
 			bool isInRole = false;
 			
-			using (LogGroup logGroup = LogGroup.Start("Checking to see whether the current user is in the '" + roleName + "' role."))
+			using (LogGroup logGroup = LogGroup.StartDebug("Checking to see whether the current user is in the '" + roleName + "' role."))
 			{
 				
 				LogWriter.Debug("User is authenticated: " + IsAuthenticated.ToString());
@@ -143,7 +143,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// <param name="expirationDate">The expiration date of the authentication data.</param>
 		public static void SetAuthenticatedUsername(string username, DateTime expirationDate)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Setting the current user's authenticated username.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Setting the current user's authenticated username."))
 			{	
 				if (StateAccess.State == null)
 					throw new InvalidOperationException("The StateAccess.State provider has not been initialized. Use the WebStateInitializer.Initialize() function.");
