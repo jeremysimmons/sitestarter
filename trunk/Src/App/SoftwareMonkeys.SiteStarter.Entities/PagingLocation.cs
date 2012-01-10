@@ -13,7 +13,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// Gets/sets the current page index.
 		/// Note: This is 0 based so PageIndex=(PageNumber-1)
 		/// </summary>
-		public int PageIndex	
+		public int PageIndex
 		{
 			get { return pageIndex; }
 			set { pageIndex = value; }
@@ -39,12 +39,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			set { absoluteTotal = value; }
 		}
 		
-		/// <summary>
-		/// Empty constructor.
-		/// </summary>
-		public PagingLocation()
-		{
-		}
+		public int FirstPageIndex = 0;
+		public int LastPageIndex = 0;
 		
 		/// <summary>
 		/// Sets the page index and page size of the current location.
@@ -53,8 +49,24 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 		/// <param name="pageSize">The size of each page.</param>
 		public PagingLocation(int pageIndex, int pageSize)
 		{
-			PageIndex = pageIndex;
-			PageSize = pageSize;
+			//using (LogGroup logGroup = LogGroup.StartDebug("Constructing PagingLocation"))
+			//{
+				PageIndex = pageIndex;
+				PageSize = pageSize;
+				
+			//	LogWriter.Debug("Position (i): " + i.ToString());
+			//	LogWriter.Debug("Page index: " + pageIndex);
+			//	LogWriter.Debug("Page size: " + pageSize);
+				
+				// Calculate the position of the first item on the page
+				FirstPageIndex = (pageIndex * pageSize); // 0 based
+				
+				// Calculate the position of the last item on the page
+				LastPageIndex = (FirstPageIndex + pageSize) -1; // -1 to make it the last of the page, instead of first item on next page
+				
+			//	LogWriter.Debug("First position: " + first.ToString());
+			//	LogWriter.Debug("Last position: " + last.ToString());
+			//}
 		}
 		
 		
@@ -68,28 +80,15 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			// Create the return flag
 			bool isInPage = false;
 			
-			using (LogGroup logGroup = LogGroup.StartDebug("Checking whether the specified position is within the specified page."))
-			{
-				LogWriter.Debug("Position (i): " + i.ToString());
-				LogWriter.Debug("Page index: " + pageIndex);
-				LogWriter.Debug("Page size: " + pageSize);
-				
-				// Calculate the position of the first item on the page
-				int first = (pageIndex * pageSize); // 0 based
-				
-				// Calculate the position of the last item on the page
-				int last = ((pageIndex * pageSize) + pageSize) -1; // -1 to make it the last of the page, instead of first item on next page
-				
-				LogWriter.Debug("First position: " + first.ToString());
-				LogWriter.Debug("Last position: " + last.ToString());
-				
+			//using (LogGroup logGroup = LogGroup.StartDebug("Checking whether the specified position is within the specified page."))
+			//{
 				// The position is in the current page if it is between or equal
 				// to the first and last items on the page
-				isInPage = i >= first
-					&& i <= last;
+				isInPage = i >= FirstPageIndex
+					&& i <= LastPageIndex;
 				
-				LogWriter.Debug("Is in page? " + isInPage.ToString());
-			}
+			//	LogWriter.Debug("Is in page? " + isInPage.ToString());
+			//}
 			
 			return isInPage;
 		}
