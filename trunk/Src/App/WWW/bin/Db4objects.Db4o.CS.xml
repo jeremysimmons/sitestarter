@@ -89,6 +89,7 @@
             <see cref="!:#timeoutServerSocket(int)">#timeoutServerSocket(int)</see>
             .
             <br/>
+            This setting can be used on both client and server.<br/><br/>
             </remarks>
             <value>time in milliseconds</value>
         </member>
@@ -137,14 +138,8 @@
             <exception cref="T:Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
         </member>
         <member name="T:Db4objects.Db4o.CS.Config.INetworkingConfiguration">
-            <summary>
-            Configuration interface for networking configuration settings.<br /><br />
-            The network settings should be configured in exactly the same on the server and client.
-            </summary>
-            <remarks>
-            Configuration interface for networking configuration settings.<br /><br />
-            The network settings should be configured in exactly the same on the server and client.
-            </remarks>
+            <summary>Configuration interface for networking configuration settings.</summary>
+            <remarks>Configuration interface for networking configuration settings.</remarks>
             <since>7.5</since>
         </member>
         <member name="P:Db4objects.Db4o.CS.Config.INetworkingConfiguration.SingleThreadedClient">
@@ -739,7 +734,7 @@
         <member name="T:Db4objects.Db4o.CS.Internal.Messages.MPong">
             <exclude></exclude>
         </member>
-        <member name="T:Db4objects.Db4o.CS.Internal.Messages.MRaiseCommitTimestamp">
+        <member name="T:Db4objects.Db4o.CS.Internal.Messages.MRaiseVersion">
             <exclude></exclude>
         </member>
         <member name="M:Db4objects.Db4o.CS.Internal.Messages.MReadBlob.ProcessClient(Db4objects.Db4o.CS.Internal.Socket4Adapter)">
