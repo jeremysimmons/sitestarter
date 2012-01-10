@@ -100,29 +100,16 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			IComparable c1 = (IComparable)GetPropertyValue(a, property);
 			IComparable c2 = (IComparable)GetPropertyValue(b, property);
 
-			if (SortDirection == SortDirection.Ascending)
-			{
-				if (c1 is Enum && c2 is Enum)
-					return ((int)c1).CompareTo((int)c2);
-
-				return c1.CompareTo(c2);
-			}
-			else
-			{
-				if (c1 is Enum && c2 is Enum)
-					return ((int)c2).CompareTo((int)c1);
-
-				return c2.CompareTo(c1);
-			}
+			int c = c1.CompareTo(c2);
+			
+			return SortDirection == SortDirection.Ascending
+				? c
+				: -c;
 		}
 		
 		public object GetPropertyValue(E obj, PropertyInfo property)
 		{
 			object value = property.GetValue(obj, null);
-			
-			// If they are string values then convert to lowercase otherwise comparisons put lowercase "a" below uppercase "Z" in an ascending list
-			if (property.PropertyType == typeof(String))
-				value = ((string)value).ToLower();
 			
 			return value;
 			
