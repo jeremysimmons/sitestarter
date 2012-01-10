@@ -1,4 +1,4 @@
-﻿using System;
+ using System;
 using SoftwareMonkeys.SiteStarter.Entities;
 using SoftwareMonkeys.SiteStarter.Data;
 using System.Collections.Generic;
@@ -142,10 +142,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 						query1.Descend("property2Name").Constrain(mirrorPropertyName).Equal().And(
 							query1.Descend("type2Name").Constrain(EntitiesUtilities.GetShortType(referenceType.Name)).Equal()))));
 			
-			IObjectSet os1 = query1.Execute();
-			
-			if (os1.Count > 0)
-				referenceFound = true;
+			referenceFound = query1.Execute().HasNext();
 			
 			if (!referenceFound)
 			{
@@ -158,10 +155,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 							query2.Descend("property1Name").Constrain(mirrorPropertyName).Equal().And(
 								query2.Descend("type1Name").Constrain(EntitiesUtilities.GetShortType(referenceType.Name)).Equal()))));
 				
-				IObjectSet os2 = query2.Execute();
-				
-				if (os2.Count > 0)
-					referenceFound = true;
+				referenceFound = query2.Execute().HasNext();
 			}
 			
 			isMatch = referenceFound;
@@ -231,10 +225,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 							query1.Descend("property2Name").Constrain(mirrorPropertyName).Equal().And(
 								query1.Descend("type2Name").Constrain(EntitiesUtilities.GetShortType(referenceType.Name)).Equal())))));
 			
-			IObjectSet os1 = query1.Execute();
-			
-			if (os1.Count > 0)
-				referenceFound = true;
+			referenceFound = query1.Execute().HasNext();
 			
 			// If no reference was found from the first query try the opposite positions
 			if (!referenceFound)
@@ -249,13 +240,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 								query2.Descend("property1Name").Constrain(mirrorPropertyName).Equal().And(
 									query2.Descend("type1Name").Constrain(EntitiesUtilities.GetShortType(referenceType.Name)).Equal())))));
 				
-				
-				
-				
-				IObjectSet os2 = query2.Execute();
-				
-				if (os2.Count > 0)
-					referenceFound = true;
+           referenceFound = query2.Execute().HasNext();
 			}
 			
 			isMatch = referenceFound;
