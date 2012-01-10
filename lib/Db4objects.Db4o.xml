@@ -803,8 +803,8 @@
             when the database file is opened.
             <br/><br/>Aliases should be configured before opening a database file
             or connecting to a server.<br/><br/>
-            In client/server environment it is good practice to configure the
-            client and the server in exactly the same way.
+            In client/server environment this setting should be used on the client
+            and on the server side.
             </remarks>
         </member>
         <member name="M:Db4objects.Db4o.Config.ICommonConfiguration.RemoveAlias(Db4objects.Db4o.Config.IAlias)">
@@ -834,8 +834,8 @@
             wish to use to mark fields as transient. Multiple transient attributes
             are possible by calling this method multiple times with different
             attribute names.<br /><br />
-            In a client/server environment it is good practice to configure the
-            client and the server in exactly the same way. <br /><br />
+            In client/server environment the setting should be used on both
+            client and server.<br /><br />
             </remarks>
             <param name="attributeName">
             - the fully qualified name of the attribute, including
@@ -936,8 +936,8 @@
             <see cref="M:Db4objects.Db4o.IObjectContainer.Deactivate(System.Object,System.Int32)">IObjectContainer.Deactivate(object, depth)
             </see>
             can be used to manually free memory by deactivating objects.<br/><br/>
-            In client/server environment it is good practice to configure the
-            client and the server in exactly the same way. <br/><br/>.
+            In client/server environment the same setting should be used on both
+            client and server<br/><br/>.
             </remarks>
             <seealso cref="M:Db4objects.Db4o.Config.IObjectClass.MaximumActivationDepth(System.Int32)">configuring classes individually
             </seealso>
@@ -976,8 +976,8 @@
             <see cref="M:Db4objects.Db4o.IObjectContainer.Deactivate(System.Object,System.Int32)">IObjectContainer.Deactivate(object, depth)
             </see>
             can be used to manually free memory by deactivating objects.<br/><br/>
-            In client/server environment it is good practice to configure the
-            client and the server in exactly the same way. <br/><br/>.
+            In client/server environment the same setting should be used on both
+            client and server<br/><br/>.
             </remarks>
             <seealso cref="M:Db4objects.Db4o.Config.IObjectClass.MaximumActivationDepth(System.Int32)">configuring classes individually
             </seealso>
@@ -1000,8 +1000,8 @@
             version updating on.
             <br /><br />If automatic updating is turned off, db4o will refuse
             to open database files that use an older database file format.<br /><br />
-            In client/server environment it is good practice to configure the
-            client and the server in exactly the same way.
+            In client-server environment this setting should be used on both client
+            and server.
             </remarks>
         </member>
         <member name="P:Db4objects.Db4o.Config.ICommonConfiguration.AutomaticShutDown">
@@ -1009,6 +1009,8 @@
             <remarks>
             turns automatic shutdown of the engine on and off.
             The default and recommended setting is <code>true</code>.<br/><br/>
+            In client-server environment this setting should be used on both client
+            and server.
             </remarks>
         </member>
         <member name="P:Db4objects.Db4o.Config.ICommonConfiguration.BTreeNodeSize">
@@ -1021,8 +1023,8 @@
             <br />Higher values will reduce the overall number of
             read and write operations and allow better performance
             at the cost of more RAM use.<br /><br />
-            In client/server environment it is good practice to configure the
-            client and the server in exactly the same way.
+            This setting should be used on both client and server in
+            client-server environment.
             </remarks>
             <value>the number of elements held in one BTree node.</value>
         </member>
@@ -1034,8 +1036,8 @@
             A tuning hint: If callbacks are not used, you can turn this feature off, to
             prevent db4o from looking for callback methods in persistent classes. This will
             increase the performance on system startup.<br/><br/>
-            In a client/server environment it is good practice to configure the
-            client and the server in exactly the same way.
+            In client/server environment this setting should be used on both
+            client and server.
             </remarks>
             <value>false to turn callback methods off</value>
             <seealso cref="T:Db4objects.Db4o.Ext.IObjectCallbacks">Using callbacks</seealso>
@@ -1056,8 +1058,8 @@
             </see>
             .
             <br/><br/>The default setting depends on the features supported by your current environment.<br/><br/>
-            In a client/server environment it is good practice to configure the
-            client and the server in exactly the same way.
+            In client/server environment this setting should be used on both
+            client and server.
             <br/><br/>
             </remarks>
             <seealso cref="M:Db4objects.Db4o.Config.IObjectClass.CallConstructor(System.Boolean)">Db4objects.Db4o.Config.IObjectClass.CallConstructor
@@ -1076,8 +1078,8 @@
             <br /><br />This setting can be set to false in a production environment after
             all persistent classes have been stored at least once and classes will not
             be modified any further in the future.<br /><br />
-            In a client/server environment it is good practice to configure the
-            client and the server in exactly the same way.
+            In a client/server environment this setting should be configured both on the
+            client and and on the server.
             <br /><br />Default value:<br />
             <code>true</code>
             </remarks>
@@ -1107,8 +1109,8 @@
             if an object can not be stored.
             <br/><br/>
             The default for this setting is <b>true</b>.<br/><br/>
-            In a client/server environment it is good practice to configure the
-            client and the server in exactly the same way.<br/><br/>
+            In client/server environment this setting should be used on both
+            client and server.<br/><br/>
             </remarks>
             <value>true to throw Exceptions if objects can not be stored.</value>
         </member>
@@ -1154,8 +1156,7 @@
             The following assemblies should be available for native query switch to take effect:
             Db4objects.Db4o.NativeQueries.dll, Db4objects.Db4o.Instrumentation.dll.
             <br/><br/>The default setting is <code>true</code>.<br/><br/>
-            In a client/server environment it is good practice to configure the
-            client and the server in exactly the same way. <br/><br/>
+            In client-server environment this setting should be used on both client and server.<br/><br/>
             </remarks>
             <seealso cref="P:Db4objects.Db4o.Config.ICommonConfiguration.OptimizeNativeQueries">Db4objects.Db4o.Config.ICommonConfiguration.OptimizeNativeQueries</seealso>
             <summary>
@@ -1170,8 +1171,7 @@
             The following assemblies should be available for native query switch to take effect:
             Db4objects.Db4o.NativeQueries.dll, Db4objects.Db4o.Instrumentation.dll.
             <br/><br/>The default setting is <code>true</code>.<br/><br/>
-            In a client/server environment it is good practice to configure the
-            client and the server in exactly the same way. <br/><br/>
+            In client-server environment this setting should be used on both client and server.<br/><br/>
             </remarks>
             <seealso cref="P:Db4objects.Db4o.Config.ICommonConfiguration.OptimizeNativeQueries">Db4objects.Db4o.Config.ICommonConfiguration.OptimizeNativeQueries</seealso>
         </member>
@@ -1217,9 +1217,7 @@
             not supplied from within the db4o library), the correct encoding
             needs to be configured correctly again for all subsequent calls
             that open database files.
-            <br/><br/>
-            In client-server mode, the server and all clients need to have the same string encoding.<br/><br/>
-            Example:<br/>
+            <br/><br/>Example:<br/>
             <code>config.StringEncoding = StringEncodings.Utf8();</code>
             </remarks>
             <seealso cref="T:Db4objects.Db4o.Config.Encoding.StringEncodings">Db4objects.Db4o.Config.Encoding.StringEncodings
@@ -1236,8 +1234,8 @@
             <br /><br />In a production environment this setting can be set to <code>false</code>,
             if all persistent classes have public default constructors.
             <br /><br />
-            In a client/server environment it is good practice to configure the
-            client and the server in exactly the same way. <br /><br />
+            In client-server environment this setting should be used on both client and server
+            side. <br /><br />
             Default value:<br />
             <code>true</code>
             </remarks>
@@ -1255,8 +1253,8 @@
             <see cref="M:Db4objects.Db4o.IObjectContainer.Store(System.Object)">Db4objects.Db4o.IObjectContainer.Store(object)
             	</see>
             will be updated.<br/><br/>
-            In a client/server environment it is good practice to configure the
-            client and the server in exactly the same way. <br/><br/>
+            In client-server environment this setting should be used on both client and
+            server sides.<br/><br/>
             </remarks>
             <value>the depth of the desired update.</value>
             <seealso cref="M:Db4objects.Db4o.Config.IObjectClass.UpdateDepth(System.Int32)">IObjectClass.UpdateDepth(int)</seealso>
@@ -1542,7 +1540,7 @@
             <br /><br />Default setting: 0
             <br />Possible settings: 1, 2 or 3
             <br /><br /> The potential number of cached BTree nodes can be
-            calculated with the following formula:<br />
+            calculated with the following forumula:<br />
             maxCachedNodes = bTreeNodeSize ^ bTreeCacheHeight<br /><br />
             This setting should be used on both client and server in
             client-server environment.
@@ -1679,6 +1677,28 @@
             db4o support.
             </remarks>
         </member>
+        <member name="M:Db4objects.Db4o.Config.IConfiguration.DiscardFreeSpace(System.Int32)">
+            <summary>
+            tuning feature: configures the minimum size of free space slots in the database file
+            that are to be reused.
+            </summary>
+            <remarks>
+            tuning feature: configures the minimum size of free space slots in the database file
+            that are to be reused.
+            <br /><br />When objects are updated or deleted, the space previously occupied in the
+            database file is marked as "free", so it can be reused. db4o maintains two lists
+            in RAM, sorted by address and by size. Adjacent entries are merged. After a large
+            number of updates or deletes have been executed, the lists can become large, causing
+            RAM consumption and performance loss for maintenance. With this method you can
+            specify an upper bound for the byte slot size to discard.
+            <br /><br />Pass <code>Integer.MAX_VALUE</code> to this method to discard all free slots for
+            the best possible startup time.<br /><br />
+            The downside of setting this value: Database files will necessarily grow faster.
+            <br /><br />Default value:<br />
+            <code>0</code> all space is reused
+            </remarks>
+            <param name="byteCount">Slots with this size or smaller will be lost.</param>
+        </member>
         <member name="M:Db4objects.Db4o.Config.IConfiguration.Encrypt(System.Boolean)">
             <summary>configures the use of encryption.</summary>
             <remarks>
@@ -1724,9 +1744,34 @@
             <param name="flag">false to not throw Exceptions if objects can not be stored (fail silently).
             	</param>
         </member>
+        <member name="M:Db4objects.Db4o.Config.IConfiguration.FlushFileBuffers(System.Boolean)">
+            <summary>configuration setting to turn file buffer flushing off.</summary>
+            <remarks>
+            configuration setting to turn file buffer flushing off.
+            <br/><br/>
+            This configuration setting is no longer in use.
+            To tune db4o performance at the cost of a higher risc of database
+            file corruption in case of abnormal session terminations, please
+            use a
+            <see cref="T:Db4objects.Db4o.IO.NonFlushingStorage">Db4objects.Db4o.IO.NonFlushingStorage
+            	</see>
+            .
+            </remarks>
+        </member>
         <member name="M:Db4objects.Db4o.Config.IConfiguration.Freespace">
             <summary>returns the freespace configuration interface.</summary>
             <remarks>returns the freespace configuration interface.</remarks>
+        </member>
+        <member name="M:Db4objects.Db4o.Config.IConfiguration.GenerateUUIDs(System.Int32)">
+            <summary>configures db4o to generate UUIDs for stored objects.</summary>
+            <remarks>configures db4o to generate UUIDs for stored objects.</remarks>
+            <param name="setting">
+            one of the following values:<br />
+            -1 - off<br />
+            1 - configure classes individually<br />
+            Integer.MAX_Value - on for all classes<br /><br />
+            This setting should be used when the database is first created.
+            </param>
         </member>
         <member name="M:Db4objects.Db4o.Config.IConfiguration.GenerateUUIDs(Db4objects.Db4o.Config.ConfigScope)">
             <summary>configures db4o to generate UUIDs for stored objects.</summary>
@@ -1737,6 +1782,17 @@
             <param name="setting">the scope for UUID generation: disabled, generate for all classes, or configure individually
             	</param>
         </member>
+        <member name="M:Db4objects.Db4o.Config.IConfiguration.GenerateVersionNumbers(System.Int32)">
+            <summary>configures db4o to generate version numbers for stored objects.</summary>
+            <remarks>configures db4o to generate version numbers for stored objects.</remarks>
+            <param name="setting">
+            one of the following values:<br />
+            -1 - off<br />
+            1 - configure classes individually<br />
+            Integer.MAX_Value - on for all classes<br /><br />
+            This setting should be used when the database is first created.
+            </param>
+        </member>
         <member name="M:Db4objects.Db4o.Config.IConfiguration.GenerateVersionNumbers(Db4objects.Db4o.Config.ConfigScope)">
             <summary>configures db4o to generate version numbers for stored objects.</summary>
             <remarks>
@@ -1745,37 +1801,6 @@
             </remarks>
             <param name="setting">the scope for version number generation: disabled, generate for all classes, or configure individually
             	</param>
-        </member>
-        <member name="M:Db4objects.Db4o.Config.IConfiguration.GenerateCommitTimestamps(System.Boolean)">
-            <summary>
-            Configures db4o to generate commit timestamps for all stored objects.<br />
-            <br />
-            All the objects commited within a transaction will share the same commit timestamp.
-            </summary>
-            <remarks>
-            Configures db4o to generate commit timestamps for all stored objects.<br />
-            <br />
-            All the objects commited within a transaction will share the same commit timestamp.
-            <br />
-            This setting should be used when the database is first created.<br />
-            <br />
-            Afterwards you can access the object's commit timestamp like this:<br />
-            <br />
-            <pre>
-            ObjectContainer container = ...;
-            ObjectInfo objectInfo = container.ext().getObjectInfo(obj);
-            long commitTimestamp = objectInfo.getVersion();
-            </pre>
-            </remarks>
-            <param name="flag">
-            if true, commit timetamps will be generated for all stored
-            objects. If you already have commit timestamps for stored
-            objects and later set this flag to false, although you wont be
-            able to access them, the commit timestamps will still be taking
-            space in your file container. The only way to free that space
-            is defragmenting the container.
-            </param>
-            <since>8.0</since>
         </member>
         <member name="M:Db4objects.Db4o.Config.IConfiguration.InternStrings(System.Boolean)">
             <summary>configures db4o to call #intern() on strings upon retrieval.</summary>
@@ -1979,6 +2004,10 @@
             
             </remarks>
         </member>
+        <member name="M:Db4objects.Db4o.Config.IConfiguration.RefreshClasses">
+            <summary>This method is no longer supported and will be removed.</summary>
+            <remarks>This method is no longer supported and will be removed.</remarks>
+        </member>
         <member name="M:Db4objects.Db4o.Config.IConfiguration.ReserveStorageSpace(System.Int64)">
             <summary>tuning feature only: reserves a number of bytes in database files.</summary>
             <remarks>
@@ -2022,6 +2051,14 @@
             </remarks>
             <param name="path">the path to be used</param>
             <exception cref="T:System.IO.IOException"></exception>
+        </member>
+        <member name="M:Db4objects.Db4o.Config.IConfiguration.SetClassLoader(System.Object)">
+            <summary>configures db4o to use a custom ClassLoader.</summary>
+            <remarks>
+            configures db4o to use a custom ClassLoader.
+            <br /><br />
+            </remarks>
+            <param name="classLoader">the ClassLoader to be used</param>
         </member>
         <member name="M:Db4objects.Db4o.Config.IConfiguration.SetOut(System.IO.TextWriter)">
             <summary>
@@ -2085,16 +2122,39 @@
             </remarks>
             <param name="flag">the desired setting</param>
         </member>
+        <member name="M:Db4objects.Db4o.Config.IConfiguration.Unicode(System.Boolean)">
+            <summary>configures the storage format of Strings.</summary>
+            <remarks>
+            configures the storage format of Strings.
+            <br/><br/>This method needs to be called <b>before</b> a database file
+            is created with the first
+            <see cref="M:Db4objects.Db4o.Db4oFactory.OpenFile(System.String)">Db4objects.Db4o.Db4oFactory.OpenFile(string)
+            	</see>
+            or
+            <see cref="M:Db4objects.Db4o.Db4oFactory.OpenServer(System.String,System.Int32)">Db4objects.Db4o.Db4oFactory.OpenServer(string, int)
+            	</see>
+            .
+            db4o database files keep their string format after creation.<br/><br/>
+            Turning Unicode support off reduces the file storage space for strings
+            by factor 2 and improves performance.<br/><br/>
+            Default setting: <b>true</b><br/><br/>
+            </remarks>
+            <param name="flag">
+            <code>true</code> for turning Unicode support on, <code>false</code> for turning
+            Unicode support off.
+            </param>
+        </member>
         <member name="M:Db4objects.Db4o.Config.IConfiguration.UpdateDepth(System.Int32)">
             <summary>specifies the global updateDepth.</summary>
             <remarks>
             specifies the global updateDepth.
             <br/><br/>see the documentation of
-            <see cref="!:com.db4o.ObjectContainer#set"></see>
+            <see cref="M:Db4objects.Db4o.IObjectContainer.Set(System.Object)"></see>
             for further details.<br/><br/>
             The value be may be overridden for individual classes.<br/><br/>
             The default setting is 1: Only the object passed to
-            <see cref="!:com.db4o.ObjectContainer#set">com.db4o.ObjectContainer#set</see>
+            <see cref="M:Db4objects.Db4o.IObjectContainer.Set(System.Object)">Db4objects.Db4o.IObjectContainer.Set(object)
+            	</see>
             will be updated.<br/><br/>
             In client-server environment this setting should be used on both client and
             server sides.<br/><br/>
@@ -2224,20 +2284,6 @@
             <summary>Access to the file-related configuration methods.</summary>
             <remarks>Access to the file-related configuration methods.</remarks>
         </member>
-        <member name="T:Db4objects.Db4o.Config.IIdSystemConfigurationProvider">
-            <summary>
-            A configuration provider that provides access
-            to the IdSystem-related configuration methods.
-            </summary>
-            <remarks>
-            A configuration provider that provides access
-            to the IdSystem-related configuration methods.
-            </remarks>
-        </member>
-        <member name="P:Db4objects.Db4o.Config.IIdSystemConfigurationProvider.IdSystem">
-            <summary>Access to the IdSystem-related configuration methods.</summary>
-            <remarks>Access to the IdSystem-related configuration methods.</remarks>
-        </member>
         <member name="M:Db4objects.Db4o.Config.IEmbeddedConfiguration.AddConfigurationItem(Db4objects.Db4o.Config.IEmbeddedConfigurationItem)">
             <summary>
             adds ConfigurationItems to be applied when
@@ -2331,7 +2377,9 @@
             will not be an exact multiple of the block size. A
             recommended setting for large database files is 8, since
             internal pointers have this length.<br /><br />
-            This setting is only effective when the database is first created.
+            This setting is only effective when the database is first created, in
+            client-server environment in most cases it means that the setting
+            should be used on the server side.
             </remarks>
             <value>the size in bytes from 1 to 127</value>
         </member>
@@ -2380,37 +2428,6 @@
             <value>the scope for version number generation: disabled, generate for all classes, or configure individually
             	</value>
         </member>
-        <member name="P:Db4objects.Db4o.Config.IFileConfiguration.GenerateCommitTimestamps">
-            <summary>
-            Configures db4o to generate commit timestamps for all stored objects.<br />
-            <br />
-            All the objects commited within a transaction will share the same commit timestamp.
-            </summary>
-            <remarks>
-            Configures db4o to generate commit timestamps for all stored objects.<br />
-            <br />
-            All the objects commited within a transaction will share the same commit timestamp.
-            <br />
-            This setting should be used when the database is first created.<br />
-            <br />
-            Afterwards you can access the object's commit timestamp like this:<br />
-            <br />
-            <pre>
-            ObjectContainer container = ...;
-            ObjectInfo objectInfo = container.ext().getObjectInfo(obj);
-            long commitTimestamp = objectInfo.getVersion();
-            </pre>
-            </remarks>
-            <value>
-            if true, commit timetamps will be generated for all stored
-            objects. If you already have commit timestamps for stored
-            objects and later set this flag to false, although you wont be
-            able to access them, the commit timestamps will still be taking
-            space in your file container. The only way to free that space
-            is defragmenting the container.
-            </value>
-            <since>8.0</since>
-        </member>
         <member name="P:Db4objects.Db4o.Config.IFileConfiguration.Storage">
             <summary>allows to configure db4o to use a customized byte IO storage mechanism.</summary>
             <remarks>
@@ -2447,7 +2464,7 @@
             has no effect on open ObjectContainers. It will only affect how
             ObjectContainers are opened.<br/><br/>
             The default setting is <code>true</code>.<br/><br/>
-            
+            In client-server environment this setting should be used on both client and server.<br/><br/>
             </remarks>
         </member>
         <member name="P:Db4objects.Db4o.Config.IFileConfiguration.ReserveStorageSpace">
@@ -2468,6 +2485,7 @@
             allocation of storage space to be slightly greater than the anticipated
             database file size.
             <br/><br/>
+            In client-server environment this setting should be used on the server side. <br/><br/>
             Default configuration: 0<br/><br/>
             </remarks>
             <value>the number of bytes to reserve</value>
@@ -2483,6 +2501,8 @@
             configures the path to be used to store and read
             Blob data.
             <br/><br/>
+            In client-server environment this setting should be used on the
+            server side. <br/><br/>
             </remarks>
             <value>the path to be used</value>
             <exception cref="T:System.IO.IOException"></exception>
@@ -2498,6 +2518,8 @@
             <br/><br/>Readonly mode allows to open an unlimited number of reading
             processes on one database file. It is also convenient
             for deploying db4o database files on CD-ROM.<br/><br/>
+            In client-server environment this setting should be used
+            ONLY on client side.<br/><br/>
             </remarks>
             <value>
             <code>true</code> for configuring readOnly mode for subsequent
@@ -2523,36 +2545,6 @@
             corrupted database.
             </remarks>
             <value><code>true</code> to turn recover mode on.</value>
-        </member>
-        <member name="P:Db4objects.Db4o.Config.IFileConfiguration.AsynchronousSync">
-            <summary>
-            turns asynchronous sync on and off.<br /><br />
-            One of the most costly operations during commit is the call to
-            flush the buffers of the database file.
-            </summary>
-            <remarks>
-            turns asynchronous sync on and off.<br /><br />
-            One of the most costly operations during commit is the call to
-            flush the buffers of the database file. In regular mode the
-            commit call has to wait until this operation has completed.
-            When asynchronous sync is turned on, the sync operation will
-            run in a dedicated thread, blocking all other file access
-            until it has completed. This way the commit call can return
-            immediately. This will allow db4o and other processes to
-            continue running side-by-side while the flush call executes.
-            Use this setting with care: It means that you can not be sure
-            when a commit call has actually made the changes of a
-            transaction durable (flushed through OS and file system
-            buffers). The latency time until flushing happens is extremely
-            short. The dedicated sync thread does nothing else
-            except for calling sync and writing the header of the database
-            file when needed. A setup with this option still guarantees
-            ACID transaction processing: A database file always will be
-            either in the state before commit or in the state after
-            commit. Corruption can not occur. You can just not rely
-            on the transaction already having been applied when the
-            commit() call returns.
-            </remarks>
         </member>
         <member name="T:Db4objects.Db4o.Config.IFreespaceConfiguration">
             <summary>interface to configure the freespace system to be used.</summary>
@@ -2640,68 +2632,6 @@
             <remarks>Called to overwrite freed space in the database file.</remarks>
             <param name="io">Handle for the freed slot</param>
             <exception cref="T:System.IO.IOException"></exception>
-        </member>
-        <member name="T:Db4objects.Db4o.Config.IIdSystemConfiguration">
-            <summary>Interface to configure the IdSystem.</summary>
-            <remarks>Interface to configure the IdSystem.</remarks>
-        </member>
-        <member name="M:Db4objects.Db4o.Config.IIdSystemConfiguration.UsePointerBasedSystem">
-            <summary>configures db4o to store IDs as pointers.</summary>
-            <remarks>configures db4o to store IDs as pointers.</remarks>
-        </member>
-        <member name="M:Db4objects.Db4o.Config.IIdSystemConfiguration.UseStackedBTreeSystem">
-            <summary>
-            configures db4o to use a stack of two BTreeIdSystems on
-            top of an InMemoryIdSystem.
-            </summary>
-            <remarks>
-            configures db4o to use a stack of two BTreeIdSystems on
-            top of an InMemoryIdSystem. This setup is scalable for
-            large numbers of IDs. It is the default configuration
-            when new databases are created.
-            </remarks>
-        </member>
-        <member name="M:Db4objects.Db4o.Config.IIdSystemConfiguration.UseSingleBTreeSystem">
-            <summary>
-            configures db4o to use a single BTreeIdSystem on
-            top of an InMemoryIdSystem.
-            </summary>
-            <remarks>
-            configures db4o to use a single BTreeIdSystem on
-            top of an InMemoryIdSystem. This setup is suitable for
-            smaller databases with a small number of IDs.
-            For larger numbers of IDs call
-            <see cref="M:Db4objects.Db4o.Config.IIdSystemConfiguration.UseStackedBTreeSystem">UseStackedBTreeSystem()</see>
-            .
-            </remarks>
-        </member>
-        <member name="M:Db4objects.Db4o.Config.IIdSystemConfiguration.UseInMemorySystem">
-            <summary>configures db4o to use an in-memory ID system.</summary>
-            <remarks>
-            configures db4o to use an in-memory ID system.
-            All IDs get written to the database file on every commit.
-            </remarks>
-        </member>
-        <member name="M:Db4objects.Db4o.Config.IIdSystemConfiguration.UseCustomSystem(Db4objects.Db4o.Config.IIdSystemFactory)">
-            <summary>configures db4o to use a custom ID system.</summary>
-            <remarks>
-            configures db4o to use a custom ID system.
-            Pass an
-            <see cref="T:Db4objects.Db4o.Config.IIdSystemFactory">IIdSystemFactory</see>
-            that creates the IdSystem.
-            Note that this factory has to be configured every time you
-            open a database that you configured to use a custom IdSystem.
-            </remarks>
-        </member>
-        <member name="T:Db4objects.Db4o.Config.IIdSystemFactory">
-            <summary>Factory interface to create a custom IdSystem.</summary>
-            <remarks>Factory interface to create a custom IdSystem.</remarks>
-            <seealso cref="M:Db4objects.Db4o.Config.IIdSystemConfiguration.UseCustomSystem(Db4objects.Db4o.Config.IIdSystemFactory)"></seealso>
-        </member>
-        <member name="M:Db4objects.Db4o.Config.IIdSystemFactory.NewInstance(Db4objects.Db4o.Internal.LocalObjectContainer)">
-            <summary>creates</summary>
-            <param name="container"></param>
-            <returns></returns>
         </member>
         <member name="T:Db4objects.Db4o.Config.ILegacyClientServerFactory">
             <exclude></exclude>
@@ -2869,7 +2799,8 @@
             <param name="flag">whether updates are to be cascaded to member objects.</param>
             <seealso cref="M:Db4objects.Db4o.Config.IObjectField.CascadeOnUpdate(System.Boolean)">IObjectField.CascadeOnUpdate(bool)
             	</seealso>
-            <seealso cref="!:com.db4o.ObjectContainer#set">com.db4o.ObjectContainer#set</seealso>
+            <seealso cref="M:Db4objects.Db4o.IObjectContainer.Set(System.Object)">Db4objects.Db4o.IObjectContainer.Set(object)
+            	</seealso>
             <seealso cref="T:Db4objects.Db4o.Ext.IObjectCallbacks">Using callbacks</seealso>
         </member>
         <member name="M:Db4objects.Db4o.Config.IObjectClass.Compare(Db4objects.Db4o.Config.IObjectAttribute)">
@@ -3013,6 +2944,23 @@
             client and server. <br/><br/>
             This setting can NOT be applied to an open object container. <br/><br/>
             </remarks>
+        </member>
+        <member name="M:Db4objects.Db4o.Config.IObjectClass.ReadAs(System.Object)">
+            <summary>creates a temporary mapping of a persistent class to a different class.</summary>
+            <remarks>
+            creates a temporary mapping of a persistent class to a different class.
+            <br /><br />If meta information for this ObjectClass has been stored to
+            the database file, it will be read from the database file as if it
+            was representing the class specified by the clazz parameter passed to
+            this method.
+            The clazz parameter can be any of the following:<br />
+            - a fully qualified class name as a String.<br />
+            - a Class object.<br />
+            - any other object to be used as a template.<br /><br />
+            This method will be ignored if the database file already contains meta
+            information for clazz.
+            </remarks>
+            <param name="clazz">class name, Class object, or example object.<br /><br /></param>
         </member>
         <member name="M:Db4objects.Db4o.Config.IObjectClass.Rename(System.String)">
             <summary>renames a stored class.</summary>
@@ -3244,7 +3192,8 @@
             This setting can be applied to an open object container. <br/><br/>
             </remarks>
             <param name="flag">whether updates are to be cascaded to the member object.</param>
-            <seealso cref="!:com.db4o.ObjectContainer#set">com.db4o.ObjectContainer#set</seealso>
+            <seealso cref="M:Db4objects.Db4o.IObjectContainer.Set(System.Object)">Db4objects.Db4o.IObjectContainer.Set(object)
+            	</seealso>
             <seealso cref="M:Db4objects.Db4o.Config.IObjectClass.CascadeOnUpdate(System.Boolean)">IObjectClass.CascadeOnUpdate(bool)
             	</seealso>
             <seealso cref="M:Db4objects.Db4o.Config.IObjectClass.UpdateDepth(System.Int32)">IObjectClass.UpdateDepth(int)</seealso>
@@ -3739,7 +3688,8 @@
             <see cref="!:Main(java.lang.String[])">Main(java.lang.String[])</see>
             
             </remarks>
-            <seealso cref="!:ExtDb4o">ExtDb4o for extended functionality.</seealso>
+            <seealso cref="T:Db4objects.Db4o.Ext.ExtDb4oFactory">ExtDb4o for extended functionality.
+            	</seealso>
         </member>
         <member name="M:Db4objects.Db4o.Db4oFactory.Main(System.String[])">
             <summary>prints the version name of this db4o version to <code>System.out</code>.
@@ -3757,7 +3707,7 @@
             The
             <see cref="T:Db4objects.Db4o.Config.IConfiguration">IConfiguration</see>
             can be overriden in each
-            <see cref="!:IExtObjectContainer.Configure">ObjectContainer</see>
+            <see cref="M:Db4objects.Db4o.Ext.IExtObjectContainer.Configure">ObjectContainer</see>
             .<br/><br/>
             </summary>
             <returns>
@@ -3930,7 +3880,7 @@
             <see cref="T:Db4objects.Db4o.IObjectContainer">IObjectContainer</see>
             against the same file will result in
             a
-            <see cref="!:DatabaseFileLockedException">DatabaseFileLockedException</see>
+            <see cref="T:Db4objects.Db4o.Ext.DatabaseFileLockedException">DatabaseFileLockedException</see>
             .<br/><br/>
             Database files can only be accessed for readwrite access from one process
             at one time. All versions except for db4o mobile edition use an
@@ -3947,23 +3897,23 @@
             <seealso cref="M:Db4objects.Db4o.Config.IConfiguration.ReadOnly(System.Boolean)">IConfiguration.ReadOnly</seealso>
             <seealso cref="M:Db4objects.Db4o.Config.IConfiguration.Encrypt(System.Boolean)">IConfiguration.Encrypt</seealso>
             <seealso cref="M:Db4objects.Db4o.Config.IConfiguration.Password(System.String)">IConfiguration.Password</seealso>
-            <exception cref="!:Db4oIOException">
+            <exception cref="T:Db4objects.Db4o.Ext.Db4oIOException">
             I/O operation failed or was unexpectedly interrupted.
             
             </exception>
-            <exception cref="!:DatabaseFileLockedException">
+            <exception cref="T:Db4objects.Db4o.Ext.DatabaseFileLockedException">
             the required database file is locked by
             another process.
             
             </exception>
-            <exception cref="!:IncompatibleFileFormatException">
+            <exception cref="T:Db4objects.Db4o.Ext.IncompatibleFileFormatException">
             runtime
             <see cref="T:Db4objects.Db4o.Config.IConfiguration">configuration</see>
             is not compatible
             with the configuration of the database file.
             
             </exception>
-            <exception cref="!:OldFormatException">
+            <exception cref="T:Db4objects.Db4o.Ext.OldFormatException">
             open operation failed because the database file
             is in old format and
             <see cref="M:Db4objects.Db4o.Config.IConfiguration.AllowVersionUpdates(System.Boolean)">
@@ -3971,7 +3921,7 @@
             </see>
             is set to false.
             </exception>
-            <exception cref="!:DatabaseReadOnlyException">
+            <exception cref="T:Db4objects.Db4o.Ext.DatabaseReadOnlyException">
             database was configured as read-only.
             </exception>
         </member>
@@ -3985,7 +3935,7 @@
             <see cref="T:Db4objects.Db4o.IObjectContainer">IObjectContainer</see>
             against the same file will result in
             a
-            <see cref="!:DatabaseFileLockedException">DatabaseFileLockedException</see>
+            <see cref="T:Db4objects.Db4o.Ext.DatabaseFileLockedException">DatabaseFileLockedException</see>
             .<br/><br/>
             Database files can only be accessed for readwrite access from one process
             at one time. All versions except for db4o mobile edition use an
@@ -4009,23 +3959,23 @@
             <seealso cref="M:Db4objects.Db4o.Config.IConfiguration.ReadOnly(System.Boolean)">IConfiguration.ReadOnly</seealso>
             <seealso cref="M:Db4objects.Db4o.Config.IConfiguration.Encrypt(System.Boolean)">IConfiguration.Encrypt</seealso>
             <seealso cref="M:Db4objects.Db4o.Config.IConfiguration.Password(System.String)">IConfiguration.Password</seealso>
-            <exception cref="!:Db4oIOException">
+            <exception cref="T:Db4objects.Db4o.Ext.Db4oIOException">
             I/O operation failed or was unexpectedly interrupted.
             
             </exception>
-            <exception cref="!:DatabaseFileLockedException">
+            <exception cref="T:Db4objects.Db4o.Ext.DatabaseFileLockedException">
             the required database file is locked by
             another process.
             
             </exception>
-            <exception cref="!:IncompatibleFileFormatException">
+            <exception cref="T:Db4objects.Db4o.Ext.IncompatibleFileFormatException">
             runtime
             <see cref="T:Db4objects.Db4o.Config.IConfiguration">configuration</see>
             is not compatible
             with the configuration of the database file.
             
             </exception>
-            <exception cref="!:OldFormatException">
+            <exception cref="T:Db4objects.Db4o.Ext.OldFormatException">
             open operation failed because the database file
             is in old format and
             <see cref="M:Db4objects.Db4o.Config.IConfiguration.AllowVersionUpdates(System.Boolean)">
@@ -4036,10 +3986,15 @@
             is set to false.
             
             </exception>
-            <exception cref="!:DatabaseReadOnlyException">
+            <exception cref="T:Db4objects.Db4o.Ext.DatabaseReadOnlyException">
             database was configured as read-only.
             
             </exception>
+        </member>
+        <member name="M:Db4objects.Db4o.Db4oFactory.OpenMemoryFile1(Db4objects.Db4o.Config.IConfiguration,Db4objects.Db4o.Ext.MemoryFile)">
+            <exception cref="T:Db4objects.Db4o.Ext.Db4oIOException"></exception>
+            <exception cref="T:Db4objects.Db4o.Ext.DatabaseFileLockedException"></exception>
+            <exception cref="T:Db4objects.Db4o.Ext.OldFormatException"></exception>
         </member>
         <member name="M:Db4objects.Db4o.Db4oFactory.OpenServer(System.String,System.Int32)">
             <summary>
@@ -4272,26 +4227,41 @@
         <member name="F:Db4objects.Db4o.Debug4.lockFile">
             <summary>allows overriding the file locking mechanism to turn it off</summary>
         </member>
-        <member name="T:Db4objects.Db4o.Defragment.AbstractIdMapping">
+        <member name="F:Db4objects.Db4o.Debug4.readBootRecord">
+            <summary>
+            turn to false, to prevent reading old PBootRecord object
+            for debugging updating database files.
+            </summary>
+            <remarks>
+            turn to false, to prevent reading old PBootRecord object
+            for debugging updating database files.
+            </remarks>
+        </member>
+        <member name="T:Db4objects.Db4o.Defragment.AbstractContextIDMapping">
             <summary>Base class for defragment ID mappings.</summary>
             <remarks>Base class for defragment ID mappings.</remarks>
             <seealso cref="T:Db4objects.Db4o.Defragment.Defragment">Defragment</seealso>
         </member>
-        <member name="T:Db4objects.Db4o.Defragment.IIdMapping">
+        <member name="T:Db4objects.Db4o.Defragment.IContextIDMapping">
             <summary>The ID mapping used internally during a defragmentation run.</summary>
             <remarks>The ID mapping used internally during a defragmentation run.</remarks>
             <seealso cref="T:Db4objects.Db4o.Defragment.Defragment">Defragment</seealso>
         </member>
-        <member name="M:Db4objects.Db4o.Defragment.IIdMapping.MappedId(System.Int32)">
+        <member name="M:Db4objects.Db4o.Defragment.IContextIDMapping.MappedID(System.Int32,System.Boolean)">
             <summary>Returns a previously registered mapping ID for the given ID if it exists.
             	</summary>
-            <remarks>Returns a previously registered mapping ID for the given ID if it exists.
-            	</remarks>
+            <remarks>
+            Returns a previously registered mapping ID for the given ID if it exists.
+            If lenient mode is set to true, will provide the mapping ID for the next
+            smaller original ID a mapping exists for. Otherwise returns 0.
+            </remarks>
             <param name="origID">The original ID</param>
+            <param name="lenient">If true, lenient mode will be used for lookup, strict mode otherwise.
+            	</param>
             <returns>The mapping ID for the given original ID or 0, if none has been registered.
             	</returns>
         </member>
-        <member name="M:Db4objects.Db4o.Defragment.IIdMapping.MapId(System.Int32,System.Int32,System.Boolean)">
+        <member name="M:Db4objects.Db4o.Defragment.IContextIDMapping.MapIDs(System.Int32,System.Int32,System.Boolean)">
             <summary>Registers a mapping for the given IDs.</summary>
             <remarks>Registers a mapping for the given IDs.</remarks>
             <param name="origID">The original ID</param>
@@ -4299,39 +4269,21 @@
             <param name="isClassID">true if the given original ID specifies a class slot, false otherwise.
             	</param>
         </member>
-        <member name="M:Db4objects.Db4o.Defragment.IIdMapping.MapId(System.Int32,Db4objects.Db4o.Internal.Slots.Slot)">
-            <summary>Maps an ID to a slot</summary>
-            <param name="id"></param>
-            <param name="slot"></param>
-        </member>
-        <member name="M:Db4objects.Db4o.Defragment.IIdMapping.SlotChanges">
-            <summary>provides a Visitable of all mappings of IDs to slots.</summary>
-            <remarks>provides a Visitable of all mappings of IDs to slots.</remarks>
-        </member>
-        <member name="M:Db4objects.Db4o.Defragment.IIdMapping.Open">
+        <member name="M:Db4objects.Db4o.Defragment.IContextIDMapping.Open">
             <summary>Prepares the mapping for use.</summary>
             <remarks>Prepares the mapping for use.</remarks>
             <exception cref="T:System.IO.IOException"></exception>
         </member>
-        <member name="M:Db4objects.Db4o.Defragment.IIdMapping.Close">
+        <member name="M:Db4objects.Db4o.Defragment.IContextIDMapping.Close">
             <summary>Shuts down the mapping after use.</summary>
             <remarks>Shuts down the mapping after use.</remarks>
         </member>
-        <member name="M:Db4objects.Db4o.Defragment.IIdMapping.AddressForId(System.Int32)">
-            <summary>returns the slot address for an ID</summary>
-        </member>
-        <member name="T:Db4objects.Db4o.Defragment.DatabaseIdMapping">
-            <summary>Database based mapping for IDs during a defragmentation run.</summary>
-            <remarks>
-            Database based mapping for IDs during a defragmentation run.
-            Use this mapping to keep memory consumption lower than when
-            using the
-            <see cref="T:Db4objects.Db4o.Defragment.InMemoryIdMapping">InMemoryIdMapping</see>
-            .
-            </remarks>
+        <member name="T:Db4objects.Db4o.Defragment.BTreeIDMapping">
+            <summary>BTree mapping for IDs during a defragmentation run.</summary>
+            <remarks>BTree mapping for IDs during a defragmentation run.</remarks>
             <seealso cref="T:Db4objects.Db4o.Defragment.Defragment">Defragment</seealso>
         </member>
-        <member name="M:Db4objects.Db4o.Defragment.DatabaseIdMapping.#ctor(System.String)">
+        <member name="M:Db4objects.Db4o.Defragment.BTreeIDMapping.#ctor(System.String)">
             <summary>Will maintain the ID mapping as a BTree in the file with the given path.
             	</summary>
             <remarks>
@@ -4342,7 +4294,7 @@
             </remarks>
             <param name="fileName">The location where the BTree file should be created.</param>
         </member>
-        <member name="M:Db4objects.Db4o.Defragment.DatabaseIdMapping.#ctor(System.String,System.Int32,System.Int32)">
+        <member name="M:Db4objects.Db4o.Defragment.BTreeIDMapping.#ctor(System.String,System.Int32,System.Int32)">
             <summary>Will maintain the ID mapping as a BTree in the file with the given path.
             	</summary>
             <remarks>
@@ -4354,14 +4306,8 @@
             <param name="commitFrequency">The number of inserts after which a commit should be issued (&lt;=0: never commit)
             	</param>
         </member>
-        <member name="M:Db4objects.Db4o.Defragment.DatabaseIdMapping.Open">
+        <member name="M:Db4objects.Db4o.Defragment.BTreeIDMapping.Open">
             <exception cref="T:System.IO.IOException"></exception>
-        </member>
-        <member name="T:Db4objects.Db4o.Foundation.IVisitable">
-            <exclude></exclude>
-        </member>
-        <member name="T:Db4objects.Db4o.Foundation.IVisitor4">
-            <exclude></exclude>
         </member>
         <member name="T:Db4objects.Db4o.Defragment.Defragment">
             <summary>defragments database files.</summary>
@@ -4523,6 +4469,9 @@
         <member name="T:Db4objects.Db4o.Internal.ISlotCopyHandler">
             <exclude></exclude>
         </member>
+        <member name="T:Db4objects.Db4o.Foundation.IVisitor4">
+            <exclude></exclude>
+        </member>
         <member name="T:Db4objects.Db4o.Defragment.IDefragmentListener">
             <summary>Listener for defragmentation process messages.</summary>
             <remarks>Listener for defragmentation process messages.</remarks>
@@ -4574,7 +4523,7 @@
             is set to true!
             </param>
         </member>
-        <member name="M:Db4objects.Db4o.Defragment.DefragmentConfig.#ctor(System.String,System.String,Db4objects.Db4o.Defragment.IIdMapping)">
+        <member name="M:Db4objects.Db4o.Defragment.DefragmentConfig.#ctor(System.String,System.String,Db4objects.Db4o.Defragment.IContextIDMapping)">
             <summary>Creates a configuration for a defragmentation run.</summary>
             <remarks>
             Creates a configuration for a defragmentation run. All properties other
@@ -4589,13 +4538,7 @@
             exist at this position, otherwise it will be OVERWRITTEN if forceBackupDelete()
             is set to true!
             </param>
-            <param name="mapping">
-            The Id mapping to be used internally. Pass either a
-            <see cref="T:Db4objects.Db4o.Defragment.InMemoryIdMapping">InMemoryIdMapping</see>
-            for fastest defragment or a
-            <see cref="T:Db4objects.Db4o.Defragment.DatabaseIdMapping">DatabaseIdMapping</see>
-            for low memory consumption.
-            </param>
+            <param name="mapping">The intermediate mapping used internally.</param>
         </member>
         <member name="M:Db4objects.Db4o.Defragment.DefragmentConfig.OrigPath">
             <returns>The path to the file to be defragmented.</returns>
@@ -4604,7 +4547,7 @@
             <returns>The path to the backup of the original file.</returns>
         </member>
         <member name="M:Db4objects.Db4o.Defragment.DefragmentConfig.Mapping">
-            <returns>The temporary ID mapping used internally. For internal use only.</returns>
+            <returns>The intermediate mapping used internally. For internal use only.</returns>
         </member>
         <member name="M:Db4objects.Db4o.Defragment.DefragmentConfig.StoredClassFilter">
             <returns>
@@ -4728,7 +4671,7 @@
             	</remarks>
             <exclude></exclude>
         </member>
-        <member name="M:Db4objects.Db4o.Internal.Mapping.IIDMapping.StrictMappedID(System.Int32)">
+        <member name="M:Db4objects.Db4o.Internal.Mapping.IIDMapping.MappedID(System.Int32)">
             <returns>a mapping for the given id. if it does refer to a system handler or the empty reference (0), returns the given id.
             	</returns>
             <exception cref="T:Db4objects.Db4o.Internal.Mapping.MappingNotFoundException">if the given id does not refer to a system handler or the empty reference (0) and if no mapping is found
@@ -4750,10 +4693,13 @@
         <member name="M:Db4objects.Db4o.Defragment.DefragmentServicesImpl.FreshTargetFile(Db4objects.Db4o.Defragment.DefragmentConfig)">
             <exception cref="T:System.IO.IOException"></exception>
         </member>
-        <member name="M:Db4objects.Db4o.Defragment.DefragmentServicesImpl.StrictMappedID(System.Int32)">
+        <member name="M:Db4objects.Db4o.Defragment.DefragmentServicesImpl.MappedID(System.Int32)">
             <exception cref="T:Db4objects.Db4o.Internal.Mapping.MappingNotFoundException"></exception>
         </member>
-        <member name="M:Db4objects.Db4o.Defragment.DefragmentServicesImpl.InternalMappedID(System.Int32)">
+        <member name="M:Db4objects.Db4o.Defragment.DefragmentServicesImpl.MappedID(System.Int32,System.Boolean)">
+            <exception cref="T:Db4objects.Db4o.Internal.Mapping.MappingNotFoundException"></exception>
+        </member>
+        <member name="M:Db4objects.Db4o.Defragment.DefragmentServicesImpl.InternalMappedID(System.Int32,System.Boolean)">
             <exception cref="T:Db4objects.Db4o.Internal.Mapping.MappingNotFoundException"></exception>
         </member>
         <member name="M:Db4objects.Db4o.Defragment.DefragmentServicesImpl.SourceBufferByAddress(System.Int32,System.Int32)">
@@ -4764,6 +4710,9 @@
         </member>
         <member name="M:Db4objects.Db4o.Defragment.DefragmentServicesImpl.TargetStatefulBufferByAddress(System.Int32,System.Int32)">
             <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="T:Db4objects.Db4o.Foundation.IProcedure4">
+            <exclude></exclude>
         </member>
         <member name="T:Db4objects.Db4o.Defragment.FirstPassCommand">
             <summary>
@@ -4808,20 +4757,6 @@
         <member name="T:Db4objects.Db4o.Internal.Metadata.ITraverseAspectCommand">
             <exclude></exclude>
         </member>
-        <member name="T:Db4objects.Db4o.Defragment.InMemoryIdMapping">
-            <summary>In-memory mapping for IDs during a defragmentation run.</summary>
-            <remarks>
-            In-memory mapping for IDs during a defragmentation run.
-            This is faster than the
-            <see cref="T:Db4objects.Db4o.Defragment.DatabaseIdMapping">DatabaseIdMapping</see>
-            but
-            it uses more memory. If you have OutOfMemory conditions
-            with this id mapping, use the
-            <see cref="T:Db4objects.Db4o.Defragment.DatabaseIdMapping">DatabaseIdMapping</see>
-            instead.
-            </remarks>
-            <seealso cref="T:Db4objects.Db4o.Defragment.Defragment">Defragment</seealso>
-        </member>
         <member name="T:Db4objects.Db4o.Defragment.SecondPassCommand">
             <summary>
             Second step in the defragmenting process: Fills in target file pointer slots, copies
@@ -4851,6 +4786,11 @@
         <member name="M:Db4objects.Db4o.Defragment.SecondPassCommand.ProcessBTree(Db4objects.Db4o.Defragment.DefragmentServicesImpl,Db4objects.Db4o.Internal.Btree.BTree)">
             <exception cref="T:Db4objects.Db4o.CorruptionException"></exception>
             <exception cref="T:System.IO.IOException"></exception>
+        </member>
+        <member name="T:Db4objects.Db4o.Defragment.TreeIDMapping">
+            <summary>In-memory mapping for IDs during a defragmentation run.</summary>
+            <remarks>In-memory mapping for IDs during a defragmentation run.</remarks>
+            <seealso cref="T:Db4objects.Db4o.Defragment.Defragment">Defragment</seealso>
         </member>
         <member name="T:Db4objects.Db4o.Deploy">
             <exclude></exclude>
@@ -4975,9 +4915,6 @@
             <remarks>Diagnostic, if query was required to load candidate set from class index.
             	</remarks>
         </member>
-        <member name="T:Db4objects.Db4o.Diagnostic.MissingClass">
-            <summary>Diagnostic if class not found</summary>
-        </member>
         <member name="T:Db4objects.Db4o.Diagnostic.NativeQueryNotOptimized">
             <summary>Diagnostic, if Native Query can not be run optimized.</summary>
             <remarks>Diagnostic, if Native Query can not be run optimized.</remarks>
@@ -4994,6 +4931,22 @@
         <member name="T:Db4objects.Db4o.Diagnostic.UpdateDepthGreaterOne">
             <summary>Diagnostic, if update depth greater than 1.</summary>
             <remarks>Diagnostic, if update depth greater than 1.</remarks>
+        </member>
+        <member name="T:Db4objects.Db4o.Events.EventException">
+            <summary>
+            db4o-specific exception.<br/><br/>
+            Exception thrown during event dispatching if a client
+            provided event handler throws.<br/><br/>
+            The exception thrown by the client can be retrieved by
+            calling EventException.InnerException.
+            </summary>
+            <remarks>
+            db4o-specific exception.<br/><br/>
+            Exception thrown during event dispatching if a client
+            provided event handler throws.<br/><br/>
+            The exception thrown by the client can be retrieved by
+            calling EventException.InnerException.
+            </remarks>
         </member>
         <member name="T:Db4objects.Db4o.Events.CancellableObjectEventArgs">
             <summary>Argument for object related events which can be cancelled.</summary>
@@ -5049,22 +5002,6 @@
         </member>
         <member name="P:Db4objects.Db4o.Events.CommitEventArgs.Added">
             <summary>Returns a iteration</summary>
-        </member>
-        <member name="T:Db4objects.Db4o.Events.EventException">
-            <summary>
-            db4o-specific exception.<br/><br/>
-            Exception thrown during event dispatching if a client
-            provided event handler throws.<br/><br/>
-            The exception thrown by the client can be retrieved by
-            calling EventException.InnerException.
-            </summary>
-            <remarks>
-            db4o-specific exception.<br/><br/>
-            Exception thrown during event dispatching if a client
-            provided event handler throws.<br/><br/>
-            The exception thrown by the client can be retrieved by
-            calling EventException.InnerException.
-            </remarks>
         </member>
         <member name="T:Db4objects.Db4o.Events.EventRegistryFactory">
             <summary>
@@ -5611,6 +5548,77 @@
             to read-only mode for controlled shutdown.
             </remarks>
         </member>
+        <member name="T:Db4objects.Db4o.Ext.ExtDb4oFactory">
+            <summary>extended factory class with static methods to open special db4o sessions.
+            	</summary>
+            <remarks>extended factory class with static methods to open special db4o sessions.
+            	</remarks>
+        </member>
+        <member name="M:Db4objects.Db4o.Ext.ExtDb4oFactory.OpenMemoryFile(Db4objects.Db4o.Ext.MemoryFile)">
+            <summary>
+            Operates just like
+            <see cref="M:Db4objects.Db4o.Ext.ExtDb4oFactory.OpenMemoryFile(Db4objects.Db4o.Ext.MemoryFile)">ExtDb4oFactory.OpenMemoryFile</see>
+            , but uses
+            the global db4o
+            <see cref="T:Db4objects.Db4o.Config.IConfiguration">IConfiguration</see>
+            context.
+            opens an
+            <see cref="T:Db4objects.Db4o.IObjectContainer">IObjectContainer</see>
+            for in-memory use .
+            <br/><br/>In-memory ObjectContainers are useful for maximum performance
+            on small databases, for swapping objects or for storing db4o format data
+            to other media or other databases.<br/><br/>Be aware of the danger of running
+            into OutOfMemory problems or complete loss of all data, in case of hardware
+            or software failures.<br/><br/>
+            
+            </summary>
+            <param name="memoryFile">
+            a
+            <see cref="T:Db4objects.Db4o.Ext.MemoryFile">MemoryFile</see>
+            
+            to store the raw byte data.
+            
+            </param>
+            <returns>
+            an open
+            <see cref="T:Db4objects.Db4o.IObjectContainer">IObjectContainer</see>
+            
+            </returns>
+            <seealso cref="T:Db4objects.Db4o.Ext.MemoryFile">MemoryFile</seealso>
+        </member>
+        <member name="M:Db4objects.Db4o.Ext.ExtDb4oFactory.OpenMemoryFile(Db4objects.Db4o.Config.IConfiguration,Db4objects.Db4o.Ext.MemoryFile)">
+            <summary>
+            opens an
+            <see cref="T:Db4objects.Db4o.IObjectContainer">IObjectContainer</see>
+            for in-memory use .
+            <br/><br/>In-memory ObjectContainers are useful for maximum performance
+            on small databases, for swapping objects or for storing db4o format data
+            to other media or other databases.<br/><br/>Be aware of the danger of running
+            into OutOfMemory problems or complete loss of all data, in case of hardware
+            or software failures.<br/><br/>
+            
+            </summary>
+            <param name="config">
+            a custom
+            <see cref="T:Db4objects.Db4o.Config.IConfiguration">IConfiguration</see>
+            instance to be obtained via
+            <see cref="M:Db4objects.Db4o.Db4oFactory.NewConfiguration">Db4oFactory.NewConfiguration</see>
+            
+            </param>
+            <param name="memoryFile">
+            a
+            <see cref="T:Db4objects.Db4o.Ext.MemoryFile">MemoryFile</see>
+            
+            to store the raw byte data.
+            
+            </param>
+            <returns>
+            an open
+            <see cref="T:Db4objects.Db4o.IObjectContainer">IObjectContainer</see>
+            
+            </returns>
+            <seealso cref="T:Db4objects.Db4o.Ext.MemoryFile">MemoryFile</seealso>
+        </member>
         <member name="T:Db4objects.Db4o.Ext.IDb4oCallback">
             <summary>generic callback interface.</summary>
             <remarks>generic callback interface.</remarks>
@@ -5821,6 +5829,55 @@
             </remarks>
             <returns>this, casted to IExtObjectContainer</returns>
         </member>
+        <member name="M:Db4objects.Db4o.IObjectContainer.Get(System.Object)">
+            <summary>Query-By-Example interface to retrieve objects.</summary>
+            <remarks>
+            Query-By-Example interface to retrieve objects.
+            <br/><br/><code>Get()</code> creates an
+            <see cref="T:Db4objects.Db4o.IObjectSet">IObjectSet</see>
+            containing
+            all objects in the <code>IObjectContainer</code> that match the passed
+            template object.<br/><br/>
+            Calling <code>Get(NULL)</code> returns all objects stored in the
+            <code>IObjectContainer</code>.<br/><br/><br/>
+            <b>Query Evaluation</b>
+            <br/>All non-null members of the template object are compared against
+            all stored objects of the same class.
+            Primitive type members are ignored if they are 0 or false respectively.
+            <br/><br/>Arrays and all supported <code>Collection</code> classes are
+            evaluated for containment. Differences in <code>Length/Count/Size()</code> are
+            ignored.
+            <br/><br/>Consult the documentation of the IConfiguration package to
+            configure class-specific behaviour.<br/><br/><br/>
+            <b>Returned Objects</b><br/>
+            The objects returned in the
+            <see cref="T:Db4objects.Db4o.IObjectSet">IObjectSet</see>
+            are instantiated
+            and activated to the preconfigured depth of 5. The
+            <see cref="M:Db4objects.Db4o.Config.IConfiguration.ActivationDepth(System.Int32)">activation depth</see>
+            may be configured
+            <see cref="M:Db4objects.Db4o.Config.IConfiguration.ActivationDepth(System.Int32)">globally</see>
+            or
+            <see cref="T:Db4objects.Db4o.Config.IObjectClass">individually for classes</see>
+            .
+            <br/><br/>
+            db4o keeps track of all instantiatied objects. Queries will return
+            references to these objects instead of instantiating them a second time.
+            <br/><br/>
+            Objects newly activated by <code>Get()</code> can respond to the Activating callback
+            method.
+            <br/><br/>
+            </remarks>
+            <param name="template">object to be used as an example to find all matching objects.<br/><br/>
+            	</param>
+            <returns>
+            
+            <see cref="T:Db4objects.Db4o.IObjectSet">IObjectSet</see>
+            containing all found objects.<br/><br/>
+            </returns>
+            <seealso cref="M:Db4objects.Db4o.Config.IConfiguration.ActivationDepth(System.Int32)">Why activation?</seealso>
+            <seealso cref="T:Db4objects.Db4o.Ext.IObjectCallbacks">Using callbacks</seealso>
+        </member>
         <member name="M:Db4objects.Db4o.IObjectContainer.QueryByExample(System.Object)">
             <summary>Query-By-Example interface to retrieve objects.</summary>
             <remarks>
@@ -5963,6 +6020,47 @@
             	</see>
             .
             </remarks>
+        </member>
+        <member name="M:Db4objects.Db4o.IObjectContainer.Set(System.Object)">
+            <summary>newly stores objects or updates stored objects.</summary>
+            <remarks>
+            newly stores objects or updates stored objects.
+            <br/><br/>An object not yet stored in the <code>IObjectContainer</code> will be
+            stored when it is passed to <code>Set()</code>. An object already stored
+            in the <code>IObjectContainer</code> will be updated.
+            <br/><br/><b>Updates</b><br/>
+            - will affect all simple type object members.<br/>
+            - links to object members that are already stored will be updated.<br/>
+            - new object members will be newly stored. The algorithm traverses down
+            new members, as long as further new members are found.<br/>
+            - object members that are already stored will <b>not</b> be updated
+            themselves.<br/>Every object member needs to be updated individually with a
+            call to <code>Set()</code> unless a deep
+            <see cref="M:Db4objects.Db4o.Config.IConfiguration.UpdateDepth(System.Int32)">global</see>
+            or
+            <see cref="!:Db4objects.Db4o.Config.ObjectClass.UpdateDepth">class-specific</see>
+            update depth was configured or cascaded updates were
+            <see cref="!:Db4objects.Db4o.Config.ObjectClass.CascadeOnUpdate">defined in the class</see>
+            or in
+            <see cref="!:Db4objects.Db4o.Config.ObjectField.CascadeOnUpdate">one of the member fields</see>
+            .
+            Depending if the passed object is newly stored or updated, Creating/Created or
+            Updaing/Updated callback method is triggered.
+            Callbacks
+            might also be used for cascaded updates.<br/><br/>
+            </remarks>
+            <param name="obj">the object to be stored or updated.</param>
+            <seealso cref="M:Db4objects.Db4o.Ext.IExtObjectContainer.Set(System.Object,System.Int32)">IExtObjectContainer#Set(object, depth)
+            	</seealso>
+            <seealso cref="M:Db4objects.Db4o.Config.IConfiguration.UpdateDepth(System.Int32)">Db4objects.Db4o.Config.IConfiguration.UpdateDepth
+            	</seealso>
+            <seealso cref="M:Db4objects.Db4o.Config.IObjectClass.UpdateDepth(System.Int32)">Db4objects.Db4o.Config.IObjectClass.UpdateDepth
+            	</seealso>
+            <seealso cref="M:Db4objects.Db4o.Config.IObjectClass.CascadeOnUpdate(System.Boolean)">Db4objects.Db4o.Config.IObjectClass.CascadeOnUpdate
+            	</seealso>
+            <seealso cref="M:Db4objects.Db4o.Config.IObjectField.CascadeOnUpdate(System.Boolean)">Db4objects.Db4o.Config.IObjectField.CascadeOnUpdate
+            	</seealso>
+            <seealso cref="T:Db4objects.Db4o.Ext.IObjectCallbacks">Using callbacks</seealso>
         </member>
         <member name="M:Db4objects.Db4o.IObjectContainer.Store(System.Object)">
             <summary>newly stores objects or updates stored objects.</summary>
@@ -6184,7 +6282,7 @@
             reference with the object parameter. The method may be used to replace
             objects or to reassociate an object with it's stored instance
             after closing and opening a database file. A subsequent call to
-            <see cref="!:com.db4o.ObjectContainer#set">set(Object)</see>
+            <see cref="M:Db4objects.Db4o.IObjectContainer.Set(System.Object)">set(Object)</see>
             is
             necessary to update the stored object.<br/><br/>
             <b>Requirements:</b><br/>- The ID needs to be a valid internal object ID,
@@ -6411,16 +6509,6 @@
             </remarks>
             <returns>Object the ObjectContainer lock object</returns>
         </member>
-        <member name="M:Db4objects.Db4o.Ext.IExtObjectContainer.OpenSession">
-            <summary>opens a new ObjectContainer on top of this ObjectContainer.</summary>
-            <remarks>
-            opens a new ObjectContainer on top of this ObjectContainer.
-            The ObjectContainer will have it's own transaction and
-            it's own reference system.
-            </remarks>
-            <returns>the new ObjectContainer session.</returns>
-            <since>8.0</since>
-        </member>
         <member name="M:Db4objects.Db4o.Ext.IExtObjectContainer.PeekPersisted(System.Object,System.Int32,System.Boolean)">
             <summary>
             returns a transient copy of a persistent object with all members set
@@ -6499,18 +6587,61 @@
             <remarks>releases a semaphore, if the calling transaction is the owner.</remarks>
             <param name="name">the name of the semaphore to be released.</param>
         </member>
-        <member name="M:Db4objects.Db4o.Ext.IExtObjectContainer.Store(System.Object,System.Int32)">
+        <member name="M:Db4objects.Db4o.Ext.IExtObjectContainer.ReplicationBegin(Db4objects.Db4o.IObjectContainer,Db4objects.Db4o.Replication.IReplicationConflictHandler)">
+            <param name="peerB">
+            the
+            <see cref="T:Db4objects.Db4o.IObjectContainer">Db4objects.Db4o.IObjectContainer</see>
+            to replicate with.
+            </param>
+            <param name="conflictHandler">
+            the conflict handler for this ReplicationProcess.
+            Conflicts occur
+            whenever
+            <see cref="M:Db4objects.Db4o.Replication.IReplicationProcess.Replicate(System.Object)">Db4objects.Db4o.Replication.IReplicationProcess.Replicate(object)
+            	</see>
+            is called with an
+            object that was modified in both ObjectContainers since the last
+            replication run between the two. Upon a conflict the
+            <see cref="M:Db4objects.Db4o.Replication.IReplicationConflictHandler.ResolveConflict(Db4objects.Db4o.Replication.IReplicationProcess,System.Object,System.Object)">Db4objects.Db4o.Replication.IReplicationConflictHandler.ResolveConflict(Db4objects.Db4o.Replication.IReplicationProcess, object, object)
+            	</see>
+            method will be called in the conflict handler.
+            </param>
+            <returns>
+            the
+            <see cref="T:Db4objects.Db4o.Replication.IReplicationProcess">Db4objects.Db4o.Replication.IReplicationProcess
+            	</see>
+            interface for this replication process.
+            </returns>
+        </member>
+        <member name="M:Db4objects.Db4o.Ext.IExtObjectContainer.Set(System.Object,System.Int32)">
             <summary>deep update interface to store or update objects.</summary>
             <remarks>
             deep update interface to store or update objects.
             <br/><br/>In addition to the normal storage interface,
-            <see cref="!:com.db4o.ObjectContainer#set">ObjectContainer#set(Object)</see>
+            <see cref="M:Db4objects.Db4o.IObjectContainer.Set(System.Object)">ObjectContainer#set(Object)
+            	</see>
             ,
             this method allows a manual specification of the depth, the passed object is to be updated.<br/><br/>
             </remarks>
             <param name="obj">the object to be stored or updated.</param>
             <param name="depth">the depth to which the object is to be updated</param>
-            <seealso cref="!:com.db4o.ObjectContainer#set">com.db4o.ObjectContainer#set</seealso>
+            <seealso cref="M:Db4objects.Db4o.IObjectContainer.Set(System.Object)">Db4objects.Db4o.IObjectContainer.Set(object)
+            	</seealso>
+        </member>
+        <member name="M:Db4objects.Db4o.Ext.IExtObjectContainer.Store(System.Object,System.Int32)">
+            <summary>deep update interface to store or update objects.</summary>
+            <remarks>
+            deep update interface to store or update objects.
+            <br/><br/>In addition to the normal storage interface,
+            <see cref="M:Db4objects.Db4o.IObjectContainer.Set(System.Object)">ObjectContainer#set(Object)
+            	</see>
+            ,
+            this method allows a manual specification of the depth, the passed object is to be updated.<br/><br/>
+            </remarks>
+            <param name="obj">the object to be stored or updated.</param>
+            <param name="depth">the depth to which the object is to be updated</param>
+            <seealso cref="M:Db4objects.Db4o.IObjectContainer.Set(System.Object)">Db4objects.Db4o.IObjectContainer.Set(object)
+            	</seealso>
         </member>
         <member name="M:Db4objects.Db4o.Ext.IExtObjectContainer.SetSemaphore(System.String,System.Int32)">
             <summary>attempts to set a semaphore.</summary>
@@ -6624,6 +6755,49 @@
             and for replication purposes.
             </remarks>
             <returns>the current transaction serial number.</returns>
+        </member>
+        <member name="M:Db4objects.Db4o.Ext.IExtClient.SwitchToFile(System.String)">
+            <summary>requests opening a different server database file for this client session.
+            	</summary>
+            <remarks>
+            requests opening a different server database file for this client session.
+            <br /><br />
+            This method can be used to switch between database files from the client
+            side while not having to open a new socket connection or closing the
+            current one.
+            <br /><br />
+            If the database file does not exist on the server, it will be created.
+            <br /><br />
+            A typical usecase:<br />
+            The main database file is used for login, user and rights management only.
+            Only one single db4o server session needs to be run. Multiple satellite
+            database files are used for different applications or multiple user circles.
+            Storing the data to multiple database files has the following advantages:<br />
+            - easier rights management<br />
+            - easier backup<br />
+            - possible later load balancing to multiple servers<br />
+            - better performance of smaller individual database files<br />
+            - special debugging database files can be used
+            <br /><br />
+            User authorization to the alternative database file will not be checked.
+            <br /><br />
+            All persistent references to objects that are currently in memory
+            are discarded during the switching process.<br /><br />
+            </remarks>
+            <param name="fileName">the fully qualified path of the requested database file.</param>
+        </member>
+        <member name="M:Db4objects.Db4o.Ext.IExtClient.SwitchToMainFile">
+            <summary>
+            requests switching back to the main database file after a previous call
+            to <code>switchToFile(String fileName)</code>.
+            </summary>
+            <remarks>
+            requests switching back to the main database file after a previous call
+            to <code>switchToFile(String fileName)</code>.
+            <br /><br />
+            All persistent references to objects that are currently in memory
+            are discarded during the switching process.<br /><br />
+            </remarks>
         </member>
         <member name="M:Db4objects.Db4o.Ext.IExtClient.IsAlive">
             <summary>checks if the client is currently connected to a server.</summary>
@@ -6793,12 +6967,10 @@
             </summary>
         </member>
         <member name="T:Db4objects.Db4o.IObjectSet">
-            <summary>
-            An ObjectSet is a representation for a set of objects returned
-            by a query.
-            </summary>
+            <summary>query resultset.</summary>
             <remarks>
-            An ObjectSet is a representation for a set of objects returned
+            query resultset.
+            <br/><br/>An ObjectSet is a representation for a set of objects returned
             by a query.
             <br/><br/>ObjectSet extends the system collection interfaces
             java.util.List/System.Collections.IList where they are available. It is
@@ -7004,47 +7176,25 @@
             returns a UUID representation of the referenced object.
             UUID generation has to be turned on, in order to be able
             to use this feature:
-            <see cref="M:Db4objects.Db4o.Config.IConfiguration.GenerateUUIDs(Db4objects.Db4o.Config.ConfigScope)">Db4objects.Db4o.Config.IConfiguration.GenerateUUIDs(Db4objects.Db4o.Config.ConfigScope)
+            <see cref="M:Db4objects.Db4o.Config.IConfiguration.GenerateUUIDs(System.Int32)">Db4objects.Db4o.Config.IConfiguration.GenerateUUIDs(int)
             	</see>
             </remarks>
             <returns>the UUID of the referenced object.</returns>
         </member>
         <member name="M:Db4objects.Db4o.Ext.IObjectInfo.GetVersion">
             <summary>
-            returns the transaction serial number ("version") the referenced object
-            was stored with last.
+            returns the transaction serial number ("version") the
+            referenced object was stored with last.
             </summary>
             <remarks>
-            returns the transaction serial number ("version") the referenced object
-            was stored with last. Version number generation has to be turned on, in
-            order to be able to use this feature:
-            <see cref="M:Db4objects.Db4o.Config.IConfiguration.GenerateVersionNumbers(Db4objects.Db4o.Config.ConfigScope)">Db4objects.Db4o.Config.IConfiguration.GenerateVersionNumbers(Db4objects.Db4o.Config.ConfigScope)
+            returns the transaction serial number ("version") the
+            referenced object was stored with last.
+            Version number generation has to be turned on, in order to
+            be able to use this feature:
+            <see cref="M:Db4objects.Db4o.Config.IConfiguration.GenerateVersionNumbers(System.Int32)">Db4objects.Db4o.Config.IConfiguration.GenerateVersionNumbers(int)
             	</see>
-            <br/>
-            This feature was replaced by
-            <see cref="M:Db4objects.Db4o.Ext.IObjectInfo.GetCommitTimestamp">GetCommitTimestamp()</see>
-            . The main
-            difference is that the old version mechamism used to assign a serial
-            timestamp to the object upon storing time, and the new commiTimestamp
-            approach, assigns it upon commit time.<br/>
             </remarks>
             <returns>the version number.</returns>
-        </member>
-        <member name="M:Db4objects.Db4o.Ext.IObjectInfo.GetCommitTimestamp">
-            <summary>
-            The serial timestamp the object is assigned to when it is commited.<br/>
-            <br/>
-            You need to enable this feature before using it in
-            <see cref="!:Db4objects.Db4o.Config.IFileConfiguration.GenerateCommitTimestamps(bool)&#xA;            	">Db4objects.Db4o.Config.IFileConfiguration.GenerateCommitTimestamps(bool)</see>
-            .<br/>
-            <br/>
-            All the objects commited within the same transaction will receive the same commitTimestamp.<br/>
-            <br/>
-            db4o replication system (dRS) relies on this feature.<br/>
-            </summary>
-            <returns>the serial timestamp that was given to the object upon commit.</returns>
-            <seealso cref="!:Db4objects.Db4o.Config.IFileConfiguration.GenerateCommitTimestamps(bool)&#xA;            	">Db4objects.Db4o.Config.IFileConfiguration.GenerateCommitTimestamps(bool)</seealso>
-            <since>8.0</since>
         </member>
         <member name="T:Db4objects.Db4o.Ext.IObjectInfoCollection">
             <summary>
@@ -7298,6 +7448,111 @@
             <param name="length">offending length</param>
             <param name="id">id where the address and length were read.</param>
         </member>
+        <member name="T:Db4objects.Db4o.Ext.MemoryFile">
+            <summary>carries in-memory data for db4o in-memory operation.</summary>
+            <remarks>
+            carries in-memory data for db4o in-memory operation.
+            <br/><br/>In-memory ObjectContainers are useful for maximum performance
+            on small databases, for swapping objects or for storing db4o format data
+            to other media or other databases.<br/><br/>Be aware of the danger of running
+            into OutOfMemory problems or complete loss of all data, in case of hardware
+            or runtime failures.
+            <br/><br/>
+            
+            </remarks>
+            <seealso cref="M:Db4objects.Db4o.Ext.ExtDb4oFactory.OpenMemoryFile(Db4objects.Db4o.Ext.MemoryFile)">ExtDb4oFactory.OpenMemoryFile</seealso>
+        </member>
+        <member name="M:Db4objects.Db4o.Ext.MemoryFile.#ctor">
+            <summary>constructs a new MemoryFile without any data.</summary>
+            <remarks>constructs a new MemoryFile without any data.</remarks>
+            <seealso cref="M:Db4objects.Db4o.Ext.ExtDb4oFactory.OpenMemoryFile(Db4objects.Db4o.Ext.MemoryFile)">ExtDb4oFactory.OpenMemoryFile(MemoryFile)
+            	</seealso>
+        </member>
+        <member name="M:Db4objects.Db4o.Ext.MemoryFile.#ctor(System.Byte[])">
+            <summary>
+            constructs a MemoryFile to use the byte data from a previous
+            MemoryFile.
+            </summary>
+            <remarks>
+            constructs a MemoryFile to use the byte data from a previous
+            MemoryFile.
+            </remarks>
+            <param name="bytes">the raw byte data.</param>
+            <seealso cref="M:Db4objects.Db4o.Ext.ExtDb4oFactory.OpenMemoryFile(Db4objects.Db4o.Ext.MemoryFile)">ExtDb4oFactory.OpenMemoryFile(MemoryFile)
+            	</seealso>
+        </member>
+        <member name="M:Db4objects.Db4o.Ext.MemoryFile.GetBytes">
+            <summary>returns the raw byte data.</summary>
+            <remarks>
+            returns the raw byte data.
+            <br /><br />Use this method to get the byte data from the MemoryFile
+            to store it to other media or databases, for backup purposes or
+            to create other MemoryFile sessions.
+            <br /><br />The byte data from a MemoryFile should only be used
+            after it is closed.<br /><br />
+            </remarks>
+            <returns>bytes the raw byte data.</returns>
+        </member>
+        <member name="M:Db4objects.Db4o.Ext.MemoryFile.GetIncrementSizeBy">
+            <summary>
+            returns the size the MemoryFile is to be enlarged, if it grows beyond
+            the current size.
+            </summary>
+            <remarks>
+            returns the size the MemoryFile is to be enlarged, if it grows beyond
+            the current size.
+            </remarks>
+            <returns>size in bytes</returns>
+        </member>
+        <member name="M:Db4objects.Db4o.Ext.MemoryFile.GetInitialSize">
+            <summary>returns the initial size of the MemoryFile.</summary>
+            <remarks>returns the initial size of the MemoryFile.</remarks>
+            <returns>size in bytes</returns>
+        </member>
+        <member name="M:Db4objects.Db4o.Ext.MemoryFile.SetBytes(System.Byte[])">
+            <summary>sets the raw byte data.</summary>
+            <remarks>
+            sets the raw byte data.
+            <br /><br /><b>Caution!</b><br />Calling this method during a running
+            Memory File session may produce unpreditable results.
+            </remarks>
+            <param name="bytes">the raw byte data.</param>
+        </member>
+        <member name="M:Db4objects.Db4o.Ext.MemoryFile.SetIncrementSizeBy(System.Int32)">
+            <summary>
+            configures the size the MemoryFile is to be enlarged by, if it grows
+            beyond the current size.
+            </summary>
+            <remarks>
+            configures the size the MemoryFile is to be enlarged by, if it grows
+            beyond the current size.
+            <br/><br/>Call this method before passing the MemoryFile to
+            <see cref="M:Db4objects.Db4o.Ext.ExtDb4oFactory.OpenMemoryFile(Db4objects.Db4o.Ext.MemoryFile)">ExtDb4oFactory.OpenMemoryFile(MemoryFile)
+            	</see>
+            .
+            <br/><br/>
+            This parameter can be modified to tune the maximum performance of
+            a MemoryFile for a specific usecase. To produce the best results,
+            test the speed of your application with real data.<br/><br/>
+            </remarks>
+            <param name="byteCount">the desired size in bytes</param>
+        </member>
+        <member name="M:Db4objects.Db4o.Ext.MemoryFile.SetInitialSize(System.Int32)">
+            <summary>configures the initial size of the MemoryFile.</summary>
+            <remarks>
+            configures the initial size of the MemoryFile.
+            <br/><br/>Call this method before passing the MemoryFile to
+            <see cref="M:Db4objects.Db4o.Ext.ExtDb4oFactory.OpenMemoryFile(Db4objects.Db4o.Ext.MemoryFile)">ExtDb4oFactory.OpenMemoryFile(MemoryFile)
+            	</see>
+            .
+            <br/><br/>
+            This parameter can be modified to tune the maximum performance of
+            a MemoryFile for a specific usecase. To produce the best results,
+            test speed and memory consumption of your application with
+            real data.<br/><br/>
+            </remarks>
+            <param name="byteCount">the desired size in bytes</param>
+        </member>
         <member name="T:Db4objects.Db4o.Ext.ObjectNotStorableException">
             <summary>
             this Exception is thrown, if objects can not be stored and if
@@ -7395,24 +7650,7 @@
             <param name="condition">the object must satisfy to be returned</param>
             <returns>the object satisfying the condition or null if none does</returns>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:Db4objects.Db4o.Foundation.IBlockingQueue4.Next(System.Int64)" -->
-        <!-- Badly formed XML comment ignored for member "M:Db4objects.Db4o.Foundation.IBlockingQueue4.DrainTo(Db4objects.Db4o.Foundation.Collection4)" -->
-        <member name="M:Db4objects.Db4o.Foundation.BlockingQueue.Next(System.Int64)">
-            <exception cref="T:Db4objects.Db4o.Foundation.BlockingQueueStoppedException"></exception>
-        </member>
-        <member name="M:Db4objects.Db4o.Foundation.BlockingQueue.WaitForNext(System.Int64)">
-            <exception cref="T:Db4objects.Db4o.Foundation.BlockingQueueStoppedException"></exception>
-        </member>
         <member name="M:Db4objects.Db4o.Foundation.BlockingQueue.Next">
-            <exception cref="T:Db4objects.Db4o.Foundation.BlockingQueueStoppedException"></exception>
-        </member>
-        <member name="M:Db4objects.Db4o.Foundation.BlockingQueue.WaitForNext">
-            <exception cref="T:Db4objects.Db4o.Foundation.BlockingQueueStoppedException"></exception>
-        </member>
-        <member name="M:Db4objects.Db4o.Foundation.BlockingQueue.UnsafeWaitForNext">
-            <exception cref="T:Db4objects.Db4o.Foundation.BlockingQueueStoppedException"></exception>
-        </member>
-        <member name="M:Db4objects.Db4o.Foundation.BlockingQueue.UnsafeWaitForNext(System.Int64)">
             <exception cref="T:Db4objects.Db4o.Foundation.BlockingQueueStoppedException"></exception>
         </member>
         <member name="T:Db4objects.Db4o.Foundation.BlockingQueueStoppedException">
@@ -7554,8 +7792,24 @@
         <member name="T:Db4objects.Db4o.Foundation.Iterator4Impl">
             <exclude></exclude>
         </member>
-        <member name="M:Db4objects.Db4o.Foundation.DelegatingBlockingQueue.Next(System.Int64)">
-            <exception cref="T:Db4objects.Db4o.Foundation.BlockingQueueStoppedException"></exception>
+        <member name="T:Db4objects.Db4o.Foundation.Cool">
+            <summary>A collection of cool static methods that should be part of the runtime environment but are not.
+            	</summary>
+            <remarks>A collection of cool static methods that should be part of the runtime environment but are not.
+            	</remarks>
+            <exclude></exclude>
+        </member>
+        <member name="M:Db4objects.Db4o.Foundation.Cool.LoopWithTimeout(System.Int64,Db4objects.Db4o.Foundation.IConditionalBlock)">
+            <summary>
+            Keeps executing a block of code until it either returns false or millisecondsTimeout
+            elapses.
+            </summary>
+            <remarks>
+            Keeps executing a block of code until it either returns false or millisecondsTimeout
+            elapses.
+            </remarks>
+            <param name="millisecondsTimeout"></param>
+            <param name="block"></param>
         </member>
         <member name="T:Db4objects.Db4o.Foundation.DynamicVariable">
             <summary>A dynamic variable is a value associated to a specific thread and scope.
@@ -7637,12 +7891,6 @@
         <member name="T:Db4objects.Db4o.Foundation.HashtableIterator">
             <exclude></exclude>
         </member>
-        <member name="T:Db4objects.Db4o.Foundation.HashtableLongEntry">
-            <exclude></exclude>
-        </member>
-        <member name="M:Db4objects.Db4o.Foundation.ICancellableVisitor4.Visit(System.Object)">
-            <returns>true to continue traversal, false otherwise</returns>
-        </member>
         <member name="T:Db4objects.Db4o.Foundation.IComparison4">
             <exclude></exclude>
         </member>
@@ -7671,9 +7919,6 @@
         <member name="T:Db4objects.Db4o.Foundation.IListener4">
             <exclude></exclude>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:Db4objects.Db4o.Foundation.IPausableBlockingQueue4.Pause" -->
-        <!-- Badly formed XML comment ignored for member "M:Db4objects.Db4o.Foundation.IPausableBlockingQueue4.Resume" -->
-        <!-- Badly formed XML comment ignored for member "M:Db4objects.Db4o.Foundation.IPausableBlockingQueue4.TryNext" -->
         <member name="T:Db4objects.Db4o.Foundation.IPredicate4">
             <exclude></exclude>
         </member>
@@ -7694,9 +7939,6 @@
             or greater than the passed object.<br /><br />
             Typical implementation: return this.object - obj;
             </summary>
-        </member>
-        <member name="T:Db4objects.Db4o.Foundation.IProcedure4">
-            <exclude></exclude>
         </member>
         <member name="T:Db4objects.Db4o.Foundation.IShallowClone">
             <exclude></exclude>
@@ -7792,7 +8034,7 @@
             <exclude></exclude>
         </member>
         <member name="T:Db4objects.Db4o.Foundation.List4">
-            <summary>simplest possible linked list</summary>
+            <summary>elements in linked list Collection4</summary>
             <exclude></exclude>
         </member>
         <member name="F:Db4objects.Db4o.Foundation.List4._next">
@@ -7807,48 +8049,12 @@
         <member name="T:Db4objects.Db4o.Foundation.ListenerRegistry">
             <exclude></exclude>
         </member>
-        <member name="T:Db4objects.Db4o.Foundation.LongByRef">
-            <summary>Useful as "out" or "by ref" function parameter.</summary>
-            <remarks>Useful as "out" or "by ref" function parameter.</remarks>
-        </member>
         <member name="T:Db4objects.Db4o.Foundation.NonblockingQueue">
-            <summary>Unbounded queue.</summary>
-            <remarks>Unbounded queue.</remarks>
             <exclude></exclude>
         </member>
         <member name="T:Db4objects.Db4o.Foundation.ObjectByRef">
             <summary>Useful as "out" or "by ref" function parameter.</summary>
             <remarks>Useful as "out" or "by ref" function parameter.</remarks>
-        </member>
-        <member name="M:Db4objects.Db4o.Foundation.PausableBlockingQueue.UnsafeWaitForNext(System.Int64)">
-            <exception cref="T:Db4objects.Db4o.Foundation.BlockingQueueStoppedException"></exception>
-        </member>
-        <member name="T:Db4objects.Db4o.Foundation.Runnable4">
-            <exclude></exclude>
-        </member>
-        <member name="T:Db4objects.Db4o.Foundation.Runtime4">
-            <summary>A collection of static methods that should be part of the runtime environment but are not.
-            	</summary>
-            <remarks>A collection of static methods that should be part of the runtime environment but are not.
-            	</remarks>
-            <exclude></exclude>
-        </member>
-        <member name="M:Db4objects.Db4o.Foundation.Runtime4.Sleep(System.Int64)">
-            <summary>sleeps without checked exceptions</summary>
-        </member>
-        <member name="M:Db4objects.Db4o.Foundation.Runtime4.SleepThrowsOnInterrupt(System.Int64)">
-            <summary>sleeps with implicit exception</summary>
-            <exception cref="T:Db4objects.Db4o.Foundation.RuntimeInterruptedException"></exception>
-        </member>
-        <member name="M:Db4objects.Db4o.Foundation.Runtime4.Retry(System.Int64,Db4objects.Db4o.Foundation.IClosure4)">
-            <summary>
-            Keeps executing a block of code until it either returns true or millisecondsTimeout
-            elapses.
-            </summary>
-            <remarks>
-            Keeps executing a block of code until it either returns true or millisecondsTimeout
-            elapses.
-            </remarks>
         </member>
         <member name="T:Db4objects.Db4o.Foundation.SimpleTimer">
             <exclude></exclude>
@@ -7936,13 +8142,6 @@
         <member name="M:Db4objects.Db4o.Foundation.Tree.Size">
             <returns>the number of objects represented.</returns>
         </member>
-        <member name="M:Db4objects.Db4o.Foundation.Tree.Traverse(Db4objects.Db4o.Foundation.Tree,Db4objects.Db4o.Foundation.Tree,Db4objects.Db4o.Foundation.ICancellableVisitor4)">
-            <summary>Traverses a tree with a starting point node.</summary>
-            <remarks>
-            Traverses a tree with a starting point node.
-            If there is no exact match for the starting node, the next higher will be taken.
-            </remarks>
-        </member>
         <member name="T:Db4objects.Db4o.Foundation.TreeKeyIterator">
             <exclude></exclude>
         </member>
@@ -7974,6 +8173,16 @@
             Represents a local ObjectContainer attached to a
             database file.
             </remarks>
+            <since>7.10</since>
+        </member>
+        <member name="M:Db4objects.Db4o.IEmbeddedObjectContainer.OpenSession">
+            <summary>opens a new ObjectContainer against the database file.</summary>
+            <remarks>
+            opens a new ObjectContainer against the database file.
+            The ObjectContainer will have it's own transaction and
+            it's own reference system.
+            </remarks>
+            <returns>the new ObjectContainer session.</returns>
             <since>7.10</since>
         </member>
         <member name="M:Db4objects.Db4o.IEmbeddedObjectContainer.Backup(System.String)">
@@ -8060,9 +8269,6 @@
             flushes the buffer content to the physical storage
             media.
             </remarks>
-        </member>
-        <member name="M:Db4objects.Db4o.IO.IBin.Sync(Sharpen.Lang.IRunnable)">
-            <summary>runs the Runnable between two calls to sync();</summary>
         </member>
         <member name="M:Db4objects.Db4o.IO.IBin.SyncRead(System.Int64,System.Byte[],System.Int32)">
             <summary>
@@ -9204,12 +9410,6 @@
         <member name="M:Db4objects.Db4o.Internal.BlobImpl.DeleteFile">
             <exception cref="T:System.IO.IOException"></exception>
         </member>
-        <member name="T:Db4objects.Db4o.Internal.BlockSizeBlockConverter">
-            <exclude></exclude>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.IBlockConverter">
-            <exclude></exclude>
-        </member>
         <member name="T:Db4objects.Db4o.Internal.Btree.Algebra.BTreeAlgebra">
             <exclude></exclude>
         </member>
@@ -9240,13 +9440,7 @@
         <member name="T:Db4objects.Db4o.Internal.Btree.BTree">
             <exclude></exclude>
         </member>
-        <member name="T:Db4objects.Db4o.Internal.LocalPersistentBase">
-            <exclude></exclude>
-        </member>
         <member name="T:Db4objects.Db4o.Internal.PersistentBase">
-            <exclude></exclude>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.Identifiable">
             <exclude></exclude>
         </member>
         <member name="T:Db4objects.Db4o.Internal.IPersistent">
@@ -9268,9 +9462,6 @@
         <member name="T:Db4objects.Db4o.Internal.Btree.BTreeCancelledRemoval">
             <exclude></exclude>
         </member>
-        <member name="T:Db4objects.Db4o.Internal.Btree.BTreeConfiguration">
-            <exclude></exclude>
-        </member>
         <member name="T:Db4objects.Db4o.Internal.Btree.BTreeIterator">
             <exclude></exclude>
         </member>
@@ -9290,6 +9481,9 @@
             </remarks>
             <exclude></exclude>
         </member>
+        <member name="T:Db4objects.Db4o.Internal.CacheablePersistentBase">
+            <exclude></exclude>
+        </member>
         <member name="F:Db4objects.Db4o.Internal.Btree.BTreeNode._children">
             <summary>Can contain BTreeNode or Integer for ID of BTreeNode</summary>
         </member>
@@ -9301,9 +9495,6 @@
         </member>
         <member name="M:Db4objects.Db4o.Internal.Btree.BTreeNode.TraverseAllNodes(Db4objects.Db4o.Internal.Transaction,Db4objects.Db4o.Foundation.IVisitor4)">
             <summary>This traversal goes over all nodes, not just leafs</summary>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.Btree.BTreeNodeCacheEntry">
-            <exclude></exclude>
         </member>
         <member name="T:Db4objects.Db4o.Internal.Btree.BTreeNodeSearchResult">
             <exclude></exclude>
@@ -9326,6 +9517,19 @@
             <returns>an Iterator4 over BTreePointer value</returns>
         </member>
         <member name="T:Db4objects.Db4o.Internal.Btree.BTreeRemove">
+            <exclude></exclude>
+        </member>
+        <member name="T:Db4objects.Db4o.Internal.Btree.FieldIndexKey">
+            <summary>
+            Composite key for field indexes, first compares on the actual
+            indexed field _value and then on the _parentID (which is a
+            reference to the containing object).
+            </summary>
+            <remarks>
+            Composite key for field indexes, first compares on the actual
+            indexed field _value and then on the _parentID (which is a
+            reference to the containing object).
+            </remarks>
             <exclude></exclude>
         </member>
         <member name="T:Db4objects.Db4o.Internal.Btree.FieldIndexKeyHandler">
@@ -9353,19 +9557,6 @@
             against multiple other objects
             </param>
             <returns>the prepared comparison</returns>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.Btree.FieldIndexKeyImpl">
-            <summary>
-            Composite key for field indexes, first compares on the actual
-            indexed field _value and then on the _parentID (which is a
-            reference to the containing object).
-            </summary>
-            <remarks>
-            Composite key for field indexes, first compares on the actual
-            indexed field _value and then on the _parentID (which is a
-            reference to the containing object).
-            </remarks>
-            <exclude></exclude>
         </member>
         <member name="T:Db4objects.Db4o.Internal.Btree.SearchTarget">
             <exclude></exclude>
@@ -9468,9 +9659,6 @@
             <exclude></exclude>
         </member>
         <member name="T:Db4objects.Db4o.Internal.Caching.LRUIntCache">
-            <exclude></exclude>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.Caching.LRULongCache">
             <exclude></exclude>
         </member>
         <member name="T:Db4objects.Db4o.Internal.Caching.NullCache4">
@@ -9612,54 +9800,6 @@
         <member name="M:Db4objects.Db4o.Internal.Collections.BigSetTypeHandler.Delete(Db4objects.Db4o.Internal.Delete.IDeleteContext)">
             <exception cref="T:Db4objects.Db4o.Ext.Db4oIOException"></exception>
         </member>
-        <member name="T:Db4objects.Db4o.Internal.CommitTimestampFieldMetadata">
-            <exclude></exclude>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.VirtualFieldMetadata">
-            <summary>
-            TODO: refactor for symmetric inheritance - don't inherit from YapField and override,
-            instead extract an abstract superclass from YapField and let both YapField and this class implement
-            </summary>
-            <exclude></exclude>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.FieldMetadata">
-            <exclude></exclude>
-        </member>
-        <member name="M:Db4objects.Db4o.Internal.FieldMetadata.AddFieldIndex(Db4objects.Db4o.Internal.Marshall.ObjectIdContextImpl)">
-            <exception cref="T:Db4objects.Db4o.Internal.FieldIndexException"></exception>
-        </member>
-        <member name="M:Db4objects.Db4o.Internal.FieldMetadata.ReadIndexEntry(Db4objects.Db4o.Internal.Marshall.IObjectIdContext)">
-            <exception cref="T:Db4objects.Db4o.CorruptionException"></exception>
-            <exception cref="T:Db4objects.Db4o.Ext.Db4oIOException"></exception>
-        </member>
-        <member name="M:Db4objects.Db4o.Internal.FieldMetadata.CollectIDs(Db4objects.Db4o.Internal.Marshall.CollectIdContext)">
-            <exception cref="T:Db4objects.Db4o.Internal.FieldIndexException"></exception>
-        </member>
-        <member name="M:Db4objects.Db4o.Internal.FieldMetadata.Delete(Db4objects.Db4o.Internal.Delete.DeleteContextImpl,System.Boolean)">
-            <exception cref="T:Db4objects.Db4o.Internal.FieldIndexException"></exception>
-        </member>
-        <member name="M:Db4objects.Db4o.Internal.FieldMetadata.RemoveIndexEntry(Db4objects.Db4o.Internal.Delete.DeleteContextImpl)">
-            <exception cref="T:Db4objects.Db4o.CorruptionException"></exception>
-            <exception cref="T:Db4objects.Db4o.Ext.Db4oIOException"></exception>
-        </member>
-        <member name="M:Db4objects.Db4o.Internal.FieldMetadata.GetOrCreate(Db4objects.Db4o.Internal.Transaction,System.Object)">
-            <summary>
-            dirty hack for com.db4o.types some of them (BlobImpl) need to be set automatically
-            TODO: Derive from FieldMetadata for Db4oTypes
-            </summary>
-        </member>
-        <member name="M:Db4objects.Db4o.Internal.FieldMetadata.GetIndex(Db4objects.Db4o.Internal.Transaction)">
-            <param name="trans"></param>
-        </member>
-        <member name="M:Db4objects.Db4o.Internal.FieldMetadata.RebuildIndexForObject(Db4objects.Db4o.Internal.LocalObjectContainer,Db4objects.Db4o.Internal.ClassMetadata,System.Int32)">
-            <exception cref="T:Db4objects.Db4o.Internal.FieldIndexException"></exception>
-        </member>
-        <member name="M:Db4objects.Db4o.Internal.VirtualFieldMetadata.AddFieldIndex(Db4objects.Db4o.Internal.Marshall.ObjectIdContextImpl)">
-            <exception cref="T:Db4objects.Db4o.Internal.FieldIndexException"></exception>
-        </member>
-        <member name="M:Db4objects.Db4o.Internal.CommitTimestampFieldMetadata.AddFieldIndex(Db4objects.Db4o.Internal.Marshall.ObjectIdContextImpl)">
-            <exception cref="T:Db4objects.Db4o.Internal.FieldIndexException"></exception>
-        </member>
         <member name="T:Db4objects.Db4o.Internal.Config4Abstract">
             <exclude></exclude>
         </member>
@@ -9738,6 +9878,37 @@
         <member name="T:Db4objects.Db4o.Internal.References.IReferenceSystemFactory">
             <exclude></exclude>
         </member>
+        <member name="T:Db4objects.Db4o.Internal.ConfigBlock">
+            <summary>
+            configuration and agent to write the configuration block
+            The configuration block also contains the timer lock and
+            a pointer to the running transaction.
+            </summary>
+            <remarks>
+            configuration and agent to write the configuration block
+            The configuration block also contains the timer lock and
+            a pointer to the running transaction.
+            </remarks>
+            <exclude></exclude>
+        </member>
+        <member name="M:Db4objects.Db4o.Internal.ConfigBlock.ForNewFile(Db4objects.Db4o.Internal.LocalObjectContainer)">
+            <exception cref="T:Db4objects.Db4o.Ext.Db4oIOException"></exception>
+        </member>
+        <member name="M:Db4objects.Db4o.Internal.ConfigBlock.ForExistingFile(Db4objects.Db4o.Internal.LocalObjectContainer,System.Int32)">
+            <exception cref="T:Db4objects.Db4o.Ext.Db4oIOException"></exception>
+            <exception cref="T:Db4objects.Db4o.Ext.OldFormatException"></exception>
+        </member>
+        <member name="M:Db4objects.Db4o.Internal.ConfigBlock.#ctor(Db4objects.Db4o.Internal.LocalObjectContainer,System.Boolean,System.Int32)">
+            <exception cref="T:Db4objects.Db4o.Ext.Db4oIOException"></exception>
+            <exception cref="T:Db4objects.Db4o.Ext.OldFormatException"></exception>
+        </member>
+        <member name="M:Db4objects.Db4o.Internal.ConfigBlock.Read(System.Int32)">
+            <exception cref="T:Db4objects.Db4o.Ext.Db4oIOException"></exception>
+            <exception cref="T:Db4objects.Db4o.Ext.OldFormatException"></exception>
+        </member>
+        <member name="M:Db4objects.Db4o.Internal.ConfigBlock.Close">
+            <exception cref="T:Db4objects.Db4o.Ext.Db4oIOException"></exception>
+        </member>
         <member name="T:Db4objects.Db4o.Internal.Config.CacheConfigurationImpl">
             <exclude></exclude>
         </member>
@@ -9750,9 +9921,6 @@
         </member>
         <member name="P:Db4objects.Db4o.Internal.Config.FileConfigurationImpl.BlobPath">
             <exception cref="T:System.IO.IOException"></exception>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.Config.IdSystemConfigurationImpl">
-            <exclude></exclude>
         </member>
         <member name="T:Db4objects.Db4o.Internal.Const4">
             <exclude>TODO: Split into separate enums with defined range and values.</exclude>
@@ -9796,12 +9964,6 @@
         <member name="T:Db4objects.Db4o.Internal.Convert.Conversions.ReindexNetDateTime_7_8">
             <exclude></exclude>
         </member>
-        <member name="T:Db4objects.Db4o.Internal.Convert.Conversions.VersionNumberToCommitTimestamp_8_0">
-            <exclude></exclude>
-        </member>
-        <member name="M:Db4objects.Db4o.Internal.Convert.Conversions.VersionNumberToCommitTimestamp_8_0.RebuildIndexForObject(Db4objects.Db4o.Internal.LocalObjectContainer,System.Int32)">
-            <exception cref="T:Db4objects.Db4o.Internal.FieldIndexException"></exception>
-        </member>
         <member name="T:Db4objects.Db4o.Internal.Convert.Converter">
             <exclude></exclude>
         </member>
@@ -9822,22 +9984,6 @@
         </member>
         <member name="M:Db4objects.Db4o.Internal.IDefragmentContext.SourceBufferById(System.Int32)">
             <exception cref="T:System.IO.IOException"></exception>
-        </member>
-        <member name="M:Db4objects.Db4o.Internal.DefragmentContextImpl.AllocateTargetSlot(System.Int32)">
-            <summary>only used by old handlers: OpenTypeHandler0, StringHandler0, ArrayHandler0.
-            	</summary>
-            <remarks>
-            only used by old handlers: OpenTypeHandler0, StringHandler0, ArrayHandler0.
-            Doesn't need to work with modern IdSystems.
-            </remarks>
-        </member>
-        <member name="M:Db4objects.Db4o.Internal.DefragmentContextImpl.AllocateMappedTargetSlot(System.Int32,System.Int32)">
-            <summary>only used by old handlers: OpenTypeHandler0, StringHandler0, ArrayHandler0.
-            	</summary>
-            <remarks>
-            only used by old handlers: OpenTypeHandler0, StringHandler0, ArrayHandler0.
-            Doesn't need to work with modern IdSystems.
-            </remarks>
         </member>
         <member name="M:Db4objects.Db4o.Internal.DefragmentContextImpl.CopySlotToNewMapped(System.Int32,System.Int32)">
             <exception cref="T:System.IO.IOException"></exception>
@@ -9909,9 +10055,6 @@
         </member>
         <member name="T:Db4objects.Db4o.Internal.Diagnostic.DiagnosticProcessor">
             <exclude>FIXME: remove me from the core and make me a facade over Events</exclude>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.DisabledBlockConverter">
-            <exclude></exclude>
         </member>
         <member name="T:Db4objects.Db4o.Internal.Encoding.BuiltInStringEncoding">
             <exclude></exclude>
@@ -10050,6 +10193,12 @@
             is not done on purpose
             </remarks>
         </member>
+        <member name="M:Db4objects.Db4o.Internal.ObjectContainerBase.Initialize2">
+            <summary>before file is open</summary>
+        </member>
+        <member name="M:Db4objects.Db4o.Internal.ObjectContainerBase.Initialize2NObjectCarrier">
+            <summary>overridden in YapObjectCarrier</summary>
+        </member>
         <member name="M:Db4objects.Db4o.Internal.ObjectContainerBase.PeekPersisted(Db4objects.Db4o.Internal.Transaction,System.Object,Db4objects.Db4o.Internal.Activation.IActivationDepth,System.Boolean)">
             <exception cref="T:Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
         </member>
@@ -10075,7 +10224,7 @@
             <exception cref="T:Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
             <exception cref="T:Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
         </member>
-        <member name="M:Db4objects.Db4o.Internal.ObjectContainerBase.Store(Db4objects.Db4o.Internal.Transaction,System.Object,Db4objects.Db4o.Internal.Activation.IUpdateDepth)">
+        <member name="M:Db4objects.Db4o.Internal.ObjectContainerBase.Store(Db4objects.Db4o.Internal.Transaction,System.Object,System.Int32)">
             <exception cref="T:Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
             <exception cref="T:Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
         </member>
@@ -10083,7 +10232,7 @@
             <exception cref="T:Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
             <exception cref="T:Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
         </member>
-        <member name="M:Db4objects.Db4o.Internal.ObjectContainerBase.StoreInternal(Db4objects.Db4o.Internal.Transaction,System.Object,Db4objects.Db4o.Internal.Activation.IUpdateDepth,System.Boolean)">
+        <member name="M:Db4objects.Db4o.Internal.ObjectContainerBase.StoreInternal(Db4objects.Db4o.Internal.Transaction,System.Object,System.Int32,System.Boolean)">
             <exception cref="T:Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
             <exception cref="T:Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
         </member>
@@ -10138,6 +10287,9 @@
         <member name="M:Db4objects.Db4o.Internal.ExternalObjectContainer.Deactivate(System.Object,System.Int32)">
             <exception cref="T:Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
         </member>
+        <member name="M:Db4objects.Db4o.Internal.ExternalObjectContainer.Get(System.Object)">
+            <exception cref="T:Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
+        </member>
         <member name="M:Db4objects.Db4o.Internal.ExternalObjectContainer.QueryByExample(System.Object)">
             <exception cref="T:Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
         </member>
@@ -10148,7 +10300,15 @@
         <member name="M:Db4objects.Db4o.Internal.ExternalObjectContainer.PeekPersisted(System.Object,System.Int32,System.Boolean)">
             <exception cref="T:Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
         </member>
+        <member name="M:Db4objects.Db4o.Internal.ExternalObjectContainer.Set(System.Object)">
+            <exception cref="T:Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
+            <exception cref="T:Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
+        </member>
         <member name="M:Db4objects.Db4o.Internal.ExternalObjectContainer.Store(System.Object)">
+            <exception cref="T:Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
+            <exception cref="T:Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
+        </member>
+        <member name="M:Db4objects.Db4o.Internal.ExternalObjectContainer.Set(System.Object,System.Int32)">
             <exception cref="T:Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
             <exception cref="T:Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
         </member>
@@ -10161,6 +10321,42 @@
             <exception cref="T:Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
             <exception cref="T:System.NotSupportedException"></exception>
         </member>
+        <member name="M:Db4objects.Db4o.Internal.ExternalObjectContainer.ReplicationBegin(Db4objects.Db4o.IObjectContainer,Db4objects.Db4o.Replication.IReplicationConflictHandler)">
+            <param name="peerB"></param>
+            <param name="conflictHandler"></param>
+        </member>
+        <member name="T:Db4objects.Db4o.Internal.FieldMetadata">
+            <exclude></exclude>
+        </member>
+        <member name="M:Db4objects.Db4o.Internal.FieldMetadata.AddFieldIndex(Db4objects.Db4o.Internal.Marshall.ObjectIdContextImpl,Db4objects.Db4o.Internal.Slots.Slot)">
+            <exception cref="T:Db4objects.Db4o.Internal.FieldIndexException"></exception>
+        </member>
+        <member name="M:Db4objects.Db4o.Internal.FieldMetadata.ReadIndexEntry(Db4objects.Db4o.Internal.Marshall.IObjectIdContext)">
+            <exception cref="T:Db4objects.Db4o.CorruptionException"></exception>
+            <exception cref="T:Db4objects.Db4o.Ext.Db4oIOException"></exception>
+        </member>
+        <member name="M:Db4objects.Db4o.Internal.FieldMetadata.CollectIDs(Db4objects.Db4o.Internal.Marshall.CollectIdContext)">
+            <exception cref="T:Db4objects.Db4o.Internal.FieldIndexException"></exception>
+        </member>
+        <member name="M:Db4objects.Db4o.Internal.FieldMetadata.Delete(Db4objects.Db4o.Internal.Delete.DeleteContextImpl,System.Boolean)">
+            <exception cref="T:Db4objects.Db4o.Internal.FieldIndexException"></exception>
+        </member>
+        <member name="M:Db4objects.Db4o.Internal.FieldMetadata.RemoveIndexEntry(Db4objects.Db4o.Internal.Delete.DeleteContextImpl)">
+            <exception cref="T:Db4objects.Db4o.CorruptionException"></exception>
+            <exception cref="T:Db4objects.Db4o.Ext.Db4oIOException"></exception>
+        </member>
+        <member name="M:Db4objects.Db4o.Internal.FieldMetadata.GetOrCreate(Db4objects.Db4o.Internal.Transaction,System.Object)">
+            <summary>
+            dirty hack for com.db4o.types some of them need to be set automatically
+            TODO: Derive from YapField for Db4oTypes
+            </summary>
+        </member>
+        <member name="M:Db4objects.Db4o.Internal.FieldMetadata.GetIndex(Db4objects.Db4o.Internal.Transaction)">
+            <param name="trans"></param>
+        </member>
+        <member name="M:Db4objects.Db4o.Internal.FieldMetadata.RebuildIndexForObject(Db4objects.Db4o.Internal.LocalObjectContainer,Db4objects.Db4o.Internal.ClassMetadata,System.Int32)">
+            <exception cref="T:Db4objects.Db4o.Internal.FieldIndexException"></exception>
+        </member>
         <member name="T:Db4objects.Db4o.Internal.FieldMetadataState">
             <exclude></exclude>
         </member>
@@ -10170,7 +10366,7 @@
         <member name="T:Db4objects.Db4o.Internal.Fileheader.FileHeader">
             <exclude></exclude>
         </member>
-        <member name="M:Db4objects.Db4o.Internal.Fileheader.FileHeader.Read(Db4objects.Db4o.Internal.LocalObjectContainer)">
+        <member name="M:Db4objects.Db4o.Internal.Fileheader.FileHeader.ReadFixedPart(Db4objects.Db4o.Internal.LocalObjectContainer)">
             <exception cref="T:Db4objects.Db4o.Ext.OldFormatException"></exception>
         </member>
         <member name="M:Db4objects.Db4o.Internal.Fileheader.FileHeader.Close">
@@ -10179,34 +10375,28 @@
         <member name="M:Db4objects.Db4o.Internal.Fileheader.FileHeader.InitNew(Db4objects.Db4o.Internal.LocalObjectContainer)">
             <exception cref="T:Db4objects.Db4o.Ext.Db4oIOException"></exception>
         </member>
+        <member name="T:Db4objects.Db4o.Internal.Fileheader.FileHeader0">
+            <exclude></exclude>
+        </member>
+        <member name="M:Db4objects.Db4o.Internal.Fileheader.FileHeader0.Close">
+            <exception cref="T:Db4objects.Db4o.Ext.Db4oIOException"></exception>
+        </member>
+        <member name="M:Db4objects.Db4o.Internal.Fileheader.FileHeader0.ReadFixedPart(Db4objects.Db4o.Internal.LocalObjectContainer,Db4objects.Db4o.Internal.ByteArrayBuffer)">
+            <exception cref="T:Db4objects.Db4o.Ext.OldFormatException"></exception>
+        </member>
+        <member name="M:Db4objects.Db4o.Internal.Fileheader.FileHeader0.InitNew(Db4objects.Db4o.Internal.LocalObjectContainer)">
+            <exception cref="T:Db4objects.Db4o.Ext.Db4oIOException"></exception>
+        </member>
         <member name="T:Db4objects.Db4o.Internal.Fileheader.FileHeader1">
             <exclude></exclude>
         </member>
-        <member name="T:Db4objects.Db4o.Internal.Fileheader.NewFileHeaderBase">
-            <exclude></exclude>
-        </member>
-        <member name="M:Db4objects.Db4o.Internal.Fileheader.NewFileHeaderBase.Close">
+        <member name="M:Db4objects.Db4o.Internal.Fileheader.FileHeader1.Close">
             <exception cref="T:Db4objects.Db4o.Ext.Db4oIOException"></exception>
         </member>
-        <member name="M:Db4objects.Db4o.Internal.Fileheader.NewFileHeaderBase.InitNew(Db4objects.Db4o.Internal.LocalObjectContainer)">
+        <member name="M:Db4objects.Db4o.Internal.Fileheader.FileHeader1.InitNew(Db4objects.Db4o.Internal.LocalObjectContainer)">
             <exception cref="T:Db4objects.Db4o.Ext.Db4oIOException"></exception>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.Fileheader.FileHeader2">
-            <exclude></exclude>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.Fileheader.FileHeader3">
-            <exclude></exclude>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.Fileheader.FileHeaderVariablePart">
-            <exclude></exclude>
         </member>
         <member name="T:Db4objects.Db4o.Internal.Fileheader.FileHeaderVariablePart1">
-            <exclude></exclude>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.Fileheader.FileHeaderVariablePart2">
-            <exclude></exclude>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.Fileheader.FileHeaderVariablePart3">
             <exclude></exclude>
         </member>
         <member name="T:Db4objects.Db4o.Internal.Fileheader.TimerFileLock">
@@ -10239,10 +10429,10 @@
         <member name="T:Db4objects.Db4o.Internal.Freespace.BTreeFreespaceManager">
             <exclude></exclude>
         </member>
-        <member name="T:Db4objects.Db4o.Internal.Freespace.BlockAwareFreespaceManager">
+        <member name="T:Db4objects.Db4o.Internal.Freespace.FreeSlotNode">
             <exclude></exclude>
         </member>
-        <member name="T:Db4objects.Db4o.Internal.Freespace.FreeSlotNode">
+        <member name="T:Db4objects.Db4o.Internal.Freespace.FreespaceBTree">
             <exclude></exclude>
         </member>
         <member name="T:Db4objects.Db4o.Internal.Freespace.FreespaceManagerIx">
@@ -10261,9 +10451,6 @@
             <exclude></exclude>
         </member>
         <member name="T:Db4objects.Db4o.Internal.Freespace.NullFreespaceListener">
-            <exclude></exclude>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.Freespace.NullFreespaceManager">
             <exclude></exclude>
         </member>
         <member name="T:Db4objects.Db4o.Internal.HandlerRegistry">
@@ -10561,7 +10748,7 @@
             </remarks>
             <exclude></exclude>
         </member>
-        <member name="M:Db4objects.Db4o.Internal.ObjectReference.ContinueSet(Db4objects.Db4o.Internal.Transaction,Db4objects.Db4o.Internal.Activation.IUpdateDepth)">
+        <member name="M:Db4objects.Db4o.Internal.ObjectReference.ContinueSet(Db4objects.Db4o.Internal.Transaction,System.Int32)">
             <summary>return false if class not completely initialized, otherwise true</summary>
         </member>
         <member name="M:Db4objects.Db4o.Internal.ObjectReference.Hc_add(Db4objects.Db4o.Internal.ObjectReference)">
@@ -10579,47 +10766,13 @@
         <member name="T:Db4objects.Db4o.Internal.IDHandler">
             <exclude></exclude>
         </member>
-        <member name="T:Db4objects.Db4o.Internal.Ids.BTreeIdSystem">
+        <member name="T:Db4objects.Db4o.Internal.Ids.EmbeddedTransactionLogHandler">
             <exclude></exclude>
         </member>
-        <member name="T:Db4objects.Db4o.Internal.Ids.IStackableIdSystem">
+        <member name="T:Db4objects.Db4o.Internal.Ids.TransactionLogHandler">
             <exclude></exclude>
         </member>
-        <member name="T:Db4objects.Db4o.Internal.Ids.IIdSystem">
-            <exclude></exclude>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.Ids.FreespaceCommitter">
-            <exclude></exclude>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.Ids.ITransactionalIdSystem">
-            <exclude></exclude>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.Ids.IdSlotMapping">
-            <exclude></exclude>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.Ids.IdSlotTree">
-            <exclude></exclude>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.Ids.InMemoryIdSystem">
-            <exclude></exclude>
-        </member>
-        <member name="M:Db4objects.Db4o.Internal.Ids.InMemoryIdSystem.#ctor(Db4objects.Db4o.Internal.LocalObjectContainer,System.Int32)">
-            <summary>for testing purposes only.</summary>
-            <remarks>for testing purposes only.</remarks>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.Ids.PointerBasedIdSystem">
-            <exclude></exclude>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.Ids.SequentialIdGenerator">
-            <exclude></exclude>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.Ids.StandardIdSystemFactory">
-            <exclude></exclude>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.Ids.TransactionalIdSystemImpl">
-            <exclude></exclude>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.Ids.TransportIdSystem">
+        <member name="T:Db4objects.Db4o.Internal.Ids.FileBasedTransactionLogHandler">
             <exclude></exclude>
         </member>
         <member name="T:Db4objects.Db4o.Internal.IllegalComparisonException">
@@ -10628,10 +10781,7 @@
         <member name="T:Db4objects.Db4o.Internal.InCallback">
             <exclude></exclude>
         </member>
-        <member name="T:Db4objects.Db4o.Internal.IntMatcher">
-            <exclude></exclude>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.IoAdaptedObjectContainer">
+        <member name="T:Db4objects.Db4o.Internal.InMemoryObjectContainer">
             <exclude></exclude>
         </member>
         <member name="T:Db4objects.Db4o.Internal.LocalObjectContainer">
@@ -10639,6 +10789,21 @@
         </member>
         <member name="M:Db4objects.Db4o.Internal.LocalObjectContainer.ReadThis">
             <exception cref="T:Db4objects.Db4o.Ext.OldFormatException"></exception>
+        </member>
+        <member name="M:Db4objects.Db4o.Internal.InMemoryObjectContainer.#ctor(Db4objects.Db4o.Config.IConfiguration,Db4objects.Db4o.Ext.MemoryFile)">
+            <exception cref="T:Db4objects.Db4o.Ext.OldFormatException"></exception>
+        </member>
+        <member name="M:Db4objects.Db4o.Internal.InMemoryObjectContainer.OpenImpl">
+            <exception cref="T:Db4objects.Db4o.Ext.OldFormatException"></exception>
+        </member>
+        <member name="M:Db4objects.Db4o.Internal.InMemoryObjectContainer.Backup(Db4objects.Db4o.IO.IStorage,System.String)">
+            <exception cref="T:System.NotSupportedException"></exception>
+        </member>
+        <member name="T:Db4objects.Db4o.Internal.IntMatcher">
+            <exclude></exclude>
+        </member>
+        <member name="T:Db4objects.Db4o.Internal.IoAdaptedObjectContainer">
+            <exclude></exclude>
         </member>
         <member name="M:Db4objects.Db4o.Internal.IoAdaptedObjectContainer.#ctor(Db4objects.Db4o.Config.IConfiguration,System.String)">
             <exception cref="T:Db4objects.Db4o.Ext.OldFormatException"></exception>
@@ -10702,6 +10867,41 @@
             	</see>
             will provide the initial value.
             </remarks>
+        </member>
+        <member name="M:Db4objects.Db4o.Internal.Transaction.SetPointer(System.Int32,Db4objects.Db4o.Internal.Slots.Slot)">
+            <param name="id"></param>
+            <param name="slot"></param>
+        </member>
+        <member name="M:Db4objects.Db4o.Internal.Transaction.SlotDelete(System.Int32,Db4objects.Db4o.Internal.Slots.Slot)">
+            <param name="id"></param>
+            <param name="slot"></param>
+        </member>
+        <member name="M:Db4objects.Db4o.Internal.Transaction.SlotFreeOnCommit(System.Int32,Db4objects.Db4o.Internal.Slots.Slot)">
+            <param name="id"></param>
+            <param name="slot"></param>
+        </member>
+        <member name="M:Db4objects.Db4o.Internal.Transaction.SlotFreeOnRollback(System.Int32,Db4objects.Db4o.Internal.Slots.Slot)">
+            <param name="id"></param>
+            <param name="slot"></param>
+        </member>
+        <member name="M:Db4objects.Db4o.Internal.Transaction.SlotFreeOnRollbackCommitSetPointer(System.Int32,Db4objects.Db4o.Internal.Slots.Slot,System.Boolean)">
+            <param name="id"></param>
+            <param name="slot"></param>
+            <param name="forFreespace"></param>
+        </member>
+        <member name="M:Db4objects.Db4o.Internal.Transaction.ProduceUpdateSlotChange(System.Int32,Db4objects.Db4o.Internal.Slots.Slot)">
+            <param name="id"></param>
+            <param name="slot"></param>
+        </member>
+        <member name="M:Db4objects.Db4o.Internal.Transaction.SlotFreePointerOnCommit(System.Int32)">
+            <param name="id"></param>
+        </member>
+        <member name="M:Db4objects.Db4o.Internal.Transaction.SlotFreePointerOnCommit(System.Int32,Db4objects.Db4o.Internal.Slots.Slot)">
+            <param name="id"></param>
+            <param name="slot"></param>
+        </member>
+        <member name="M:Db4objects.Db4o.Internal.Transaction.SlotFreePointerOnRollback(System.Int32)">
+            <param name="id"></param>
         </member>
         <member name="T:Db4objects.Db4o.Internal.LockedTree">
             <exclude></exclude>
@@ -10933,6 +11133,10 @@
         <member name="M:Db4objects.Db4o.Internal.ObjectContainerSession.IsStored(System.Object)">
             <exception cref="T:Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
         </member>
+        <member name="M:Db4objects.Db4o.Internal.ObjectContainerSession.ReplicationBegin(Db4objects.Db4o.IObjectContainer,Db4objects.Db4o.Replication.IReplicationConflictHandler)">
+            <param name="peerB"></param>
+            <param name="conflictHandler"></param>
+        </member>
         <member name="M:Db4objects.Db4o.Internal.ObjectContainerSession.Activate(System.Object)">
             <exception cref="T:Db4objects.Db4o.Ext.Db4oIOException"></exception>
             <exception cref="T:Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
@@ -10961,6 +11165,10 @@
             <exception cref="T:Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
             <exception cref="T:Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
         </member>
+        <member name="M:Db4objects.Db4o.Internal.ObjectContainerSession.Get(System.Object)">
+            <exception cref="T:Db4objects.Db4o.Ext.Db4oIOException"></exception>
+            <exception cref="T:Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
+        </member>
         <member name="M:Db4objects.Db4o.Internal.ObjectContainerSession.QueryByExample(System.Object)">
             <exception cref="T:Db4objects.Db4o.Ext.Db4oIOException"></exception>
             <exception cref="T:Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
@@ -10985,6 +11193,10 @@
             <exception cref="T:Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
             <exception cref="T:Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
         </member>
+        <member name="M:Db4objects.Db4o.Internal.ObjectContainerSession.Set(System.Object)">
+            <exception cref="T:Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
+            <exception cref="T:Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
+        </member>
         <member name="M:Db4objects.Db4o.Internal.ObjectContainerSession.Store(System.Object)">
             <exception cref="T:Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
             <exception cref="T:Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
@@ -11005,64 +11217,6 @@
             <exclude></exclude>
         </member>
         <member name="T:Db4objects.Db4o.Internal.PreparedArrayContainsComparison">
-            <exclude></exclude>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.Qlin.QLinConstraint">
-            <exclude></exclude>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.Qlin.QLinSubNode">
-            <exclude></exclude>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.Qlin.QLinSodaNode">
-            <exclude></exclude>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.Qlin.QLinNode">
-            <exclude></exclude>
-        </member>
-        <member name="T:Db4objects.Db4o.Qlin.IQLin">
-            <summary>a node in a QLin ("Coolin") query.</summary>
-            <remarks>
-            a node in a QLin ("Coolin") query.
-            QLin is a new experimental query interface.
-            We would really like to have LINQ for Java instead.
-            </remarks>
-            <since>8.0</since>
-        </member>
-        <member name="M:Db4objects.Db4o.Qlin.IQLin.Where(System.Object)">
-            <summary>adds a where node to this QLin query.</summary>
-            <remarks>adds a where node to this QLin query.</remarks>
-            <param name="expression">can be any of the following:</param>
-        </member>
-        <member name="M:Db4objects.Db4o.Qlin.IQLin.Select">
-            <summary>
-            executes the QLin query and returns the result
-            as an
-            <see cref="T:Db4objects.Db4o.IObjectSet">Db4objects.Db4o.IObjectSet</see>
-            .
-            Note that ObjectSet extends List and Iterable
-            on the platforms that support these interfaces.
-            You may want to use these interfaces instead of
-            working directly against an ObjectSet.
-            </summary>
-        </member>
-        <member name="M:Db4objects.Db4o.Qlin.IQLin.OrderBy(System.Object,Db4objects.Db4o.Qlin.QLinOrderByDirection)">
-            <summary>orders the query by the expression.</summary>
-            <remarks>
-            orders the query by the expression.
-            Use the
-            <see cref="M:Db4objects.Db4o.Qlin.QLinSupport.Ascending">QLinSupport.Ascending()</see>
-            and
-            <see cref="M:Db4objects.Db4o.Qlin.QLinSupport.Descending">QLinSupport.Descending()</see>
-            helper methods to set the direction.
-            </remarks>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.Qlin.QLinField">
-            <exclude></exclude>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.Qlin.QLinOrderBy">
-            <exclude></exclude>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.Qlin.QLinRoot">
             <exclude></exclude>
         </member>
         <member name="T:Db4objects.Db4o.Internal.Query.IDb4oEnhancedFilter">
@@ -11387,17 +11541,24 @@
             </returns>
         </member>
         <member name="M:Db4objects.Db4o.Query.IConstraint.Contains">
-            <summary>Sets the evaluation mode to string contains comparison.</summary>
+            <summary>sets the evaluation mode to containment comparison.</summary>
             <remarks>
-            Sets the evaluation mode to string contains comparison. The contains comparison is case sensitive.<br/>
+            sets the evaluation mode to containment comparison.
             For example:<br/>
-            <code>Pilot pilot = new Pilot("Test Pilot1", 100);</code><br/>
-            <code>container.Store(pilot);</code><br/>
-            <code> ...</code><br/>
-            <code>query.Constrain(typeof(Pilot));</code><br/>
-            <code>// All pilots with the name containing "est" will be retrieved</code><br/>
-            <code>query.Descend("name").Constrain("est").Contains();</code><br/>
-            <see cref="M:Db4objects.Db4o.Query.IConstraint.Like">Like() for case insensitive string comparison</see>
+            <code>Pilot pilot1 = new Pilot("Test 1", 1);</code><br/>
+            <code>list.Add(pilot1);</code><br/>
+            <code>Pilot pilot2 = new Pilot("Test 2", 2);</code><br/>
+            <code>list.Add(pilot2);</code><br/>
+            <code>Team team = new Team("Ferrari", list);</code><br/>
+            <code>container.Store(team);</code><br/>
+            <code>IQuery query = container.Query();</code><br/>
+            <code>query.Constrain(typeof(Team));</code><br/>
+            <code>query.Descend("pilots").Constrain(pilot2).Contains();</code><br/>
+            will return the Team object as it contains pilot2.<br/>
+            If applied to a String object, this constrain will behave as
+            <see cref="M:Db4objects.Db4o.Query.IConstraint.Like">Db4objects.Db4o.Query.IConstraint.Like
+            </see>
+            .
             </remarks>
             <returns>
             this
@@ -11967,25 +12128,6 @@
         <member name="T:Db4objects.Db4o.Internal.SharedIndexedFields">
             <exclude></exclude>
         </member>
-        <member name="T:Db4objects.Db4o.Internal.Slots.FreespaceSlotChange">
-            <exclude></exclude>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.Slots.IdSystemSlotChange">
-            <exclude></exclude>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.Slots.SystemSlotChange">
-            <exclude></exclude>
-        </member>
-        <member name="T:Db4objects.Db4o.Internal.Slots.SlotChange">
-            <exclude></exclude>
-        </member>
-        <member name="M:Db4objects.Db4o.Internal.Slots.SlotChange.NewSlot">
-            <summary>FIXME:	Check where pointers should be freed on commit.</summary>
-            <remarks>
-            FIXME:	Check where pointers should be freed on commit.
-            This should be triggered in this class.
-            </remarks>
-        </member>
         <member name="T:Db4objects.Db4o.Internal.Slots.Pointer4">
             <exclude></exclude>
         </member>
@@ -11995,8 +12137,15 @@
         <member name="T:Db4objects.Db4o.Internal.Slots.Slot">
             <exclude></exclude>
         </member>
-        <member name="T:Db4objects.Db4o.Internal.Slots.SlotChangeFactory">
+        <member name="T:Db4objects.Db4o.Internal.Slots.SlotChange">
             <exclude></exclude>
+        </member>
+        <member name="M:Db4objects.Db4o.Internal.Slots.SlotChange.IsFreePointerOnRollback">
+            <summary>FIXME:	Check where pointers should be freed on commit.</summary>
+            <remarks>
+            FIXME:	Check where pointers should be freed on commit.
+            This should be triggered in this class.
+            </remarks>
         </member>
         <member name="T:Db4objects.Db4o.Internal.StatefulBuffer">
             <summary>
@@ -12057,7 +12206,7 @@
             </summary>
             <exclude></exclude>
         </member>
-        <member name="M:Db4objects.Db4o.Internal.TransportObjectContainer.StoreInternal(Db4objects.Db4o.Internal.Transaction,System.Object,Db4objects.Db4o.Internal.Activation.IUpdateDepth,System.Boolean)">
+        <member name="M:Db4objects.Db4o.Internal.TransportObjectContainer.StoreInternal(Db4objects.Db4o.Internal.Transaction,System.Object,System.Int32,System.Boolean)">
             <exception cref="T:Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
             <exception cref="T:Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
         </member>
@@ -12085,7 +12234,17 @@
         <member name="T:Db4objects.Db4o.Internal.UUIDFieldMetadata">
             <exclude></exclude>
         </member>
-        <member name="M:Db4objects.Db4o.Internal.UUIDFieldMetadata.AddFieldIndex(Db4objects.Db4o.Internal.Marshall.ObjectIdContextImpl)">
+        <member name="T:Db4objects.Db4o.Internal.VirtualFieldMetadata">
+            <summary>
+            TODO: refactor for symmetric inheritance - don't inherit from YapField and override,
+            instead extract an abstract superclass from YapField and let both YapField and this class implement
+            </summary>
+            <exclude></exclude>
+        </member>
+        <member name="M:Db4objects.Db4o.Internal.VirtualFieldMetadata.AddFieldIndex(Db4objects.Db4o.Internal.Marshall.ObjectIdContextImpl,Db4objects.Db4o.Internal.Slots.Slot)">
+            <exception cref="T:Db4objects.Db4o.Internal.FieldIndexException"></exception>
+        </member>
+        <member name="M:Db4objects.Db4o.Internal.UUIDFieldMetadata.AddFieldIndex(Db4objects.Db4o.Internal.Marshall.ObjectIdContextImpl,Db4objects.Db4o.Internal.Slots.Slot)">
             <exception cref="T:Db4objects.Db4o.Internal.FieldIndexException"></exception>
         </member>
         <member name="M:Db4objects.Db4o.Internal.UUIDFieldMetadata.ReadDatabaseIdentityIDAndUUID(Db4objects.Db4o.Internal.ObjectContainerBase,Db4objects.Db4o.Internal.ClassMetadata,Db4objects.Db4o.Internal.Slots.Slot,System.Boolean)">
@@ -12097,7 +12256,7 @@
         <member name="T:Db4objects.Db4o.Internal.VersionFieldMetadata">
             <exclude></exclude>
         </member>
-        <member name="M:Db4objects.Db4o.Internal.VersionFieldMetadata.AddFieldIndex(Db4objects.Db4o.Internal.Marshall.ObjectIdContextImpl)">
+        <member name="M:Db4objects.Db4o.Internal.VersionFieldMetadata.AddFieldIndex(Db4objects.Db4o.Internal.Marshall.ObjectIdContextImpl,Db4objects.Db4o.Internal.Slots.Slot)">
             <exception cref="T:Db4objects.Db4o.Internal.FieldIndexException"></exception>
         </member>
         <member name="T:Db4objects.Db4o.Internal.VirtualAttributes">
@@ -12153,176 +12312,61 @@
             <param name="context">contextual information for the message.</param>
             <param name="message">the message received.</param>
         </member>
-        <member name="T:Db4objects.Db4o.Qlin.IQLinable">
-            <summary>support for the new experimental QLin ("Coolin") query interface.</summary>
-            <remarks>
-            support for the new experimental QLin ("Coolin") query interface.
-            We would really like to have LINQ for Java instead.
-            </remarks>
-            <since>8.0</since>
-        </member>
-        <member name="M:Db4objects.Db4o.Qlin.IQLinable.From(System.Type)">
+        <member name="T:Db4objects.Db4o.MetaClass">
             <summary>
-            starts a
-            <see cref="T:Db4objects.Db4o.Qlin.IQLin">IQLin</see>
-            query against a class.
-            </summary>
-        </member>
-        <member name="T:Db4objects.Db4o.Qlin.Prototypes">
-            <summary>creates prototype objects for classes.</summary>
-            <remarks>
-            creates prototype objects for classes. Each field on prototype objects is set
-            to a newly created object or primitive that can be identified either by it's
-            identity or by an int ID that is generated by the system. Creation of fields
-            is recursed to the depth specified in the constructor.<br />
-            <br />
-            Allows analyzing expressions called on prototype objects to find the
-            underlying field that delivers the return value of the expression. Passed
-            expressions should not have side effects on objects, otherwise the
-            "prototype world" will no longer work.<br />
-            <br />
-            We plan to supply an ImmutableFieldClassLoader to instrument the code to
-            throw on every modification. This ClassLoader could also supply information
-            about all the method calls involved.<br />
-            <br />
-            For now our approach only works if expressions are directly backed by a
-            single field.<br />
-            <br />
-            We were inspired for this approach when we saw that Thomas Mueller managed to
-            map expressions to fields for his JaQu query interface, Kudos!
-            http://www.h2database.com/html/jaqu.html<br />
-            <br />
-            We took the idea a bit further and made it work for all primitives except for
-            boolean and we plan to also get deeper expressions, collections and
-            interfaces working nicely.
-            </remarks>
-        </member>
-        <member name="M:Db4objects.Db4o.Qlin.Prototypes.PrototypeForClass(System.Type)">
-            <summary>returns a prototype object for a specific class.</summary>
-            <remarks>returns a prototype object for a specific class.</remarks>
-        </member>
-        <member name="M:Db4objects.Db4o.Qlin.Prototypes.BackingFieldPath(System.Type,System.Object)">
-            <summary>
-            analyzes the passed expression and tries to find the path to the
-            backing field that is accessed.
+            Class metadata to be stored to the database file
+            Don't obfuscate.
             </summary>
             <remarks>
-            analyzes the passed expression and tries to find the path to the
-            backing field that is accessed.
-            </remarks>
-        </member>
-        <member name="M:Db4objects.Db4o.Qlin.Prototypes.BackingFieldPath(Db4objects.Db4o.Reflect.IReflectClass,System.Object)">
-            <summary>
-            analyzes the passed expression and tries to find the path to the
-            backing field that is accessed.
-            </summary>
-            <remarks>
-            analyzes the passed expression and tries to find the path to the
-            backing field that is accessed.
-            </remarks>
-        </member>
-        <member name="M:Db4objects.Db4o.Qlin.Prototypes.BackingFieldPath(System.String,System.Object)">
-            <summary>
-            analyzes the passed expression and tries to find the path to the
-            backing field that is accessed.
-            </summary>
-            <remarks>
-            analyzes the passed expression and tries to find the path to the
-            backing field that is accessed.
-            </remarks>
-        </member>
-        <member name="T:Db4objects.Db4o.Qlin.PrototypesException">
-            <summary>exception for the the Prototypes world.</summary>
-            <remarks>exception for the the Prototypes world.</remarks>
-        </member>
-        <member name="T:Db4objects.Db4o.Qlin.QLinException">
-            <summary>
-            exceptions to signal improper use of the
-            <see cref="T:Db4objects.Db4o.Qlin.IQLin">IQLin</see>
-            query interface.
-            </summary>
-        </member>
-        <member name="T:Db4objects.Db4o.Qlin.QLinOrderByDirection">
-            <summary>
-            Internal implementation class, access should not be necessary,
-            except for implementors.
-            </summary>
-            <remarks>
-            Internal implementation class, access should not be necessary,
-            except for implementors.
-            Use the static methods in
-            <see cref="T:Db4objects.Db4o.Qlin.QLinSupport">QLinSupport</see>
-            
-            <see cref="M:Db4objects.Db4o.Qlin.QLinSupport.Ascending">QLinSupport.Ascending()</see>
-            and
-            <see cref="M:Db4objects.Db4o.Qlin.QLinSupport.Descending">QLinSupport.Descending()</see>
+            Class metadata to be stored to the database file
+            Don't obfuscate.
             </remarks>
             <exclude></exclude>
+            <persistent></persistent>
         </member>
-        <member name="T:Db4objects.Db4o.Qlin.QLinSupport">
-            <summary>
-            static import support class for
-            <see cref="T:Db4objects.Db4o.Qlin.IQLin">IQLin</see>
-            queries.
-            </summary>
-            <since>8.0</since>
+        <member name="F:Db4objects.Db4o.MetaClass.name">
+            <summary>persistent field, don't touch</summary>
         </member>
-        <member name="M:Db4objects.Db4o.Qlin.QLinSupport.Prototype(System.Type)">
-            <summary>
-            returns a prototype object for a specific class
-            to be passed to the where expression of a QLin
-            query.
-            </summary>
+        <member name="F:Db4objects.Db4o.MetaClass.fields">
+            <summary>persistent field, don't touch</summary>
+        </member>
+        <member name="T:Db4objects.Db4o.MetaField">
+            <summary>Field MetaData to be stored to the database file.</summary>
             <remarks>
-            returns a prototype object for a specific class
-            to be passed to the where expression of a QLin
-            query.
+            Field MetaData to be stored to the database file.
+            Don't obfuscate.
             </remarks>
-            <seealso cref="M:Db4objects.Db4o.Qlin.IQLin.Where(System.Object)">IQLin.Where(object)</seealso>
+            <exclude></exclude>
+            <persistent></persistent>
         </member>
-        <member name="M:Db4objects.Db4o.Qlin.QLinSupport.Context(Db4objects.Db4o.Reflect.IReflectClass)">
-            <summary>sets the context for the next query on this thread.</summary>
+        <member name="T:Db4objects.Db4o.MetaIndex">
+            <summary>The index record that is written to the database file.</summary>
             <remarks>
-            sets the context for the next query on this thread.
-            This method should never have to be called manually.
-            The framework should set the context up.
+            The index record that is written to the database file.
+            Don't obfuscate.
             </remarks>
+            <exclude></exclude>
+            <persistent></persistent>
         </member>
-        <member name="M:Db4objects.Db4o.Qlin.QLinSupport.Context(System.Type)">
-            <summary>sets the context for the next query on this thread.</summary>
+        <member name="T:Db4objects.Db4o.P1Object">
+            <summary>Kept for 5.7 migration support (PBootRecord depends on it).</summary>
+            <remarks>Kept for 5.7 migration support (PBootRecord depends on it).</remarks>
+            <exclude></exclude>
+            <persistent></persistent>
+        </member>
+        <member name="T:Db4objects.Db4o.PBootRecord">
+            <summary>Old database boot record class.</summary>
             <remarks>
-            sets the context for the next query on this thread.
-            This method should never have to be called manually.
-            The framework should set the context up.
+            Old database boot record class.
+            This class was responsible for storing the last timestamp id,
+            for holding a reference to the Db4oDatabase object of the
+            ObjectContainer and for holding on to the UUID index.
+            This class is no longer needed with the change to the new
+            fileheader. It still has to stay here to be able to read
+            old databases.
             </remarks>
-        </member>
-        <member name="M:Db4objects.Db4o.Qlin.QLinSupport.P(System.Type)">
-            <summary>
-            shortcut for the
-            <see cref="!:Prototype(System.Type&lt;T&gt;)">Prototype(System.Type&lt;T&gt;)</see>
-            method.
-            </summary>
-        </member>
-        <member name="M:Db4objects.Db4o.Qlin.QLinSupport.Ascending">
-            <summary>
-            parameter for
-            <see cref="M:Db4objects.Db4o.Qlin.IQLin.OrderBy(System.Object,Db4objects.Db4o.Qlin.QLinOrderByDirection)">IQLin.OrderBy(object, QLinOrderByDirection)
-            	</see>
-            </summary>
-        </member>
-        <member name="M:Db4objects.Db4o.Qlin.QLinSupport.Descending">
-            <summary>
-            parameter for
-            <see cref="M:Db4objects.Db4o.Qlin.IQLin.OrderBy(System.Object,Db4objects.Db4o.Qlin.QLinOrderByDirection)">IQLin.OrderBy(object, QLinOrderByDirection)
-            	</see>
-            </summary>
-        </member>
-        <member name="M:Db4objects.Db4o.Qlin.QLinSupport.BackingFieldPath(System.Object)">
-            <summary>public for implementors, do not use directly</summary>
-        </member>
-        <member name="M:Db4objects.Db4o.Qlin.QLinSupport.Field(System.Object)">
-            <summary>converts an expression to a single field.</summary>
-            <remarks>converts an expression to a single field.</remarks>
+            <exclude></exclude>
+            <persistent></persistent>
         </member>
         <member name="T:Db4objects.Db4o.Query.Predicate">
             <summary>Base class for native queries.</summary>
@@ -12451,22 +12495,6 @@
             constructor has been found on earlier invocations.
             </remarks>
             <returns>true, if instances of this class can be created, false otherwise</returns>
-        </member>
-        <member name="M:Db4objects.Db4o.Reflect.IReflectClass.IsImmutable">
-            <summary>
-            We need this for replication, to find out if a class needs to be traversed
-            or if it simply can be copied across.
-            </summary>
-            <remarks>
-            We need this for replication, to find out if a class needs to be traversed
-            or if it simply can be copied across. For now we will simply return
-            the classes that are
-            <see cref="M:Db4objects.Db4o.Reflect.IReflectClass.IsPrimitive">IsPrimitive()</see>
-            and
-            <see cref="!:Db4objects.Db4o.Internal.Platform4.IsSimple(System.Type&lt;T&gt;)">Db4objects.Db4o.Internal.Platform4.IsSimple(System.Type&lt;T&gt;)
-            	</see>
-            We can think about letting users add an Immutable annotation.
-            </remarks>
         </member>
         <member name="T:Db4objects.Db4o.Reflect.Core.IReflectConstructor">
             <summary>Reflection Constructor representation.</summary>
@@ -12766,6 +12794,132 @@
             <exclude></exclude>
             <persistent></persistent>
         </member>
+        <member name="T:Db4objects.Db4o.Replication.IReplicationConflictHandler">
+            <summary>
+            will be called by a
+            <see cref="T:Db4objects.Db4o.Replication.IReplicationProcess">IReplicationProcess</see>
+            upon
+            replication conflicts. Conflicts occur whenever
+            <see cref="M:Db4objects.Db4o.Replication.IReplicationProcess.Replicate(System.Object)">IReplicationProcess.Replicate(object)
+            	</see>
+            is called with an object that
+            was modified in both ObjectContainers since the last replication run between
+            the two.
+            </summary>
+        </member>
+        <member name="M:Db4objects.Db4o.Replication.IReplicationConflictHandler.ResolveConflict(Db4objects.Db4o.Replication.IReplicationProcess,System.Object,System.Object)">
+            <summary>the callback method to be implemented to resolve a conflict.</summary>
+            <remarks>
+            the callback method to be implemented to resolve a conflict. <br/>
+            <br/>
+            </remarks>
+            <param name="replicationProcess">
+            the
+            <see cref="T:Db4objects.Db4o.Replication.IReplicationProcess">IReplicationProcess</see>
+            for which this
+            ReplicationConflictHandler is registered
+            </param>
+            <param name="a">the object modified in the peerA ObjectContainer</param>
+            <param name="b">the object modified in the peerB ObjectContainer</param>
+            <returns>
+            the object (a or b) that should prevail in the conflict or null,
+            if no action is to be taken. If this would violate the direction
+            set with
+            <see cref="M:Db4objects.Db4o.Replication.IReplicationProcess.SetDirection(Db4objects.Db4o.IObjectContainer,Db4objects.Db4o.IObjectContainer)">IReplicationProcess.SetDirection(Db4objects.Db4o.IObjectContainer, Db4objects.Db4o.IObjectContainer)
+            	</see>
+            no action will be taken.
+            </returns>
+            <seealso cref="M:Db4objects.Db4o.Replication.IReplicationProcess.PeerA">IReplicationProcess.PeerA()</seealso>
+            <seealso cref="M:Db4objects.Db4o.Replication.IReplicationProcess.PeerB">IReplicationProcess.PeerB()</seealso>
+        </member>
+        <member name="T:Db4objects.Db4o.Replication.IReplicationProcess">
+            <summary>db4o replication interface.</summary>
+            <remarks>db4o replication interface.</remarks>
+            <seealso cref="M:Db4objects.Db4o.Ext.IExtObjectContainer.ReplicationBegin(Db4objects.Db4o.IObjectContainer,Db4objects.Db4o.Replication.IReplicationConflictHandler)">Db4objects.Db4o.Ext.IExtObjectContainer.ReplicationBegin(Db4objects.Db4o.IObjectContainer, IReplicationConflictHandler)
+            	</seealso>
+        </member>
+        <member name="M:Db4objects.Db4o.Replication.IReplicationProcess.CheckConflict(System.Object)">
+            <summary>
+            checks if an object has been modified in both ObjectContainers involved
+            in the replication process since the last time the two ObjectContainers
+            were replicated.
+            </summary>
+            <remarks>
+            checks if an object has been modified in both ObjectContainers involved
+            in the replication process since the last time the two ObjectContainers
+            were replicated.
+            </remarks>
+            <param name="obj">- the object to check for a conflict.</param>
+        </member>
+        <member name="M:Db4objects.Db4o.Replication.IReplicationProcess.Commit">
+            <summary>commits the replication task to both involved ObjectContainers.</summary>
+            <remarks>
+            commits the replication task to both involved ObjectContainers.
+            <br/><br/>Call this method after replication is completed to
+            write all changes back to the database files. This method
+            synchronizes both ObjectContainers by setting the transaction
+            serial number
+            <see cref="M:Db4objects.Db4o.Ext.IExtObjectContainer.Version">Db4objects.Db4o.Ext.IExtObjectContainer.Version()
+            	</see>
+            on both
+            ObjectContainers to be equal
+            to the higher version number among the two. A record with
+            information about this replication task, including the
+            synchronized version number is stored to both ObjectContainers
+            to allow future incremental replication.
+            </remarks>
+        </member>
+        <member name="M:Db4objects.Db4o.Replication.IReplicationProcess.PeerA">
+            <summary>returns the "peerA" ObjectContainer involved in this ReplicationProcess.
+            	</summary>
+            <remarks>returns the "peerA" ObjectContainer involved in this ReplicationProcess.
+            	</remarks>
+        </member>
+        <member name="M:Db4objects.Db4o.Replication.IReplicationProcess.PeerB">
+            <summary>returns the "peerB" ObjectContainer involved in this ReplicationProcess.
+            	</summary>
+            <remarks>returns the "peerB" ObjectContainer involved in this ReplicationProcess.
+            	</remarks>
+        </member>
+        <member name="M:Db4objects.Db4o.Replication.IReplicationProcess.Replicate(System.Object)">
+            <summary>replicates an object.</summary>
+            <remarks>
+            replicates an object.
+            <br /><br />By default the version number of the object is checked in
+            both ObjectContainers involved in the replication process. If the
+            version number has not changed since the last time the two
+            ObjectContainers were replicated
+            </remarks>
+            <param name="obj"></param>
+        </member>
+        <member name="M:Db4objects.Db4o.Replication.IReplicationProcess.Rollback">
+            <summary>ends a replication task without committing any changes.</summary>
+            <remarks>ends a replication task without committing any changes.</remarks>
+        </member>
+        <member name="M:Db4objects.Db4o.Replication.IReplicationProcess.SetDirection(Db4objects.Db4o.IObjectContainer,Db4objects.Db4o.IObjectContainer)">
+            <summary>
+            modifies the replication policy, what to do on a call to
+            <see cref="M:Db4objects.Db4o.Replication.IReplicationProcess.Replicate(System.Object)">Replicate(object)</see>
+            .
+            <br/><br/>If no direction is set, the replication process will be bidirectional by
+            default.
+            </summary>
+            <param name="relicateFrom">the ObjectContainer to replicate from</param>
+            <param name="replicateTo">the ObjectContainer to replicate to</param>
+        </member>
+        <member name="M:Db4objects.Db4o.Replication.IReplicationProcess.WhereModified(Db4objects.Db4o.Query.IQuery)">
+            <summary>
+            adds a constraint to the passed Query to query only for objects that
+            were modified since the last replication process between the two
+            ObjectContainers involved in this replication process.
+            </summary>
+            <remarks>
+            adds a constraint to the passed Query to query only for objects that
+            were modified since the last replication process between the two
+            ObjectContainers involved in this replication process.
+            </remarks>
+            <param name="query">the Query to be constrained</param>
+        </member>
         <member name="T:Db4objects.Db4o.StaticClass">
             <exclude></exclude>
             <persistent></persistent>
@@ -12773,30 +12927,6 @@
         <member name="T:Db4objects.Db4o.StaticField">
             <exclude></exclude>
             <persistent></persistent>
-        </member>
-        <member name="T:Db4objects.Db4o.TA.DeactivatingRollbackStrategy">
-            <summary>RollbackStrategy to deactivate all activated objects on rollback.</summary>
-            <remarks>RollbackStrategy to deactivate all activated objects on rollback.</remarks>
-            <seealso cref="T:Db4objects.Db4o.TA.TransparentPersistenceSupport">TransparentPersistenceSupport</seealso>
-        </member>
-        <member name="T:Db4objects.Db4o.TA.IRollbackStrategy">
-            <summary>Interface defining rollback behavior when Transparent Persistence mode is on.
-            	</summary>
-            <remarks>Interface defining rollback behavior when Transparent Persistence mode is on.
-            	</remarks>
-            <seealso cref="T:Db4objects.Db4o.TA.TransparentPersistenceSupport">TransparentPersistenceSupport</seealso>
-        </member>
-        <member name="M:Db4objects.Db4o.TA.IRollbackStrategy.Rollback(Db4objects.Db4o.IObjectContainer,System.Object)">
-            <summary>Method to be called per TP-enabled object when the transaction is rolled back.
-            	</summary>
-            <remarks>Method to be called per TP-enabled object when the transaction is rolled back.
-            	</remarks>
-            <param name="container">current ObjectContainer</param>
-            <param name="obj">TP-enabled object</param>
-        </member>
-        <member name="M:Db4objects.Db4o.TA.DeactivatingRollbackStrategy.Rollback(Db4objects.Db4o.IObjectContainer,System.Object)">
-            <summary>deactivates each object.</summary>
-            <remarks>deactivates each object.</remarks>
         </member>
         <member name="T:Db4objects.Db4o.TA.IActivatableInstrumented">
             <summary>
@@ -12807,6 +12937,20 @@
             Marker interface to declare a class already implements the required TA/TP hooks
             and does not want to be instrumented further.
             </remarks>
+        </member>
+        <member name="T:Db4objects.Db4o.TA.IRollbackStrategy">
+            <summary>Interface defining rollback behavior when Transparent Persistence mode is on.
+            	</summary>
+            <remarks>Interface defining rollback behavior when Transparent Persistence mode is on.
+            	</remarks>
+        </member>
+        <member name="M:Db4objects.Db4o.TA.IRollbackStrategy.Rollback(Db4objects.Db4o.IObjectContainer,System.Object)">
+            <summary>Method to be called per TP-enabled object when the transaction is rolled back.
+            	</summary>
+            <remarks>Method to be called per TP-enabled object when the transaction is rolled back.
+            	</remarks>
+            <param name="container">current ObjectContainer</param>
+            <param name="obj">TP-enabled object</param>
         </member>
         <member name="T:Db4objects.Db4o.TA.TransactionalActivator">
             <summary>
@@ -12952,6 +13096,127 @@
             <summary>allows installing a Typehandler for a single class.</summary>
             <remarks>allows installing a Typehandler for a single class.</remarks>
         </member>
+        <member name="T:Db4objects.Db4o.Typehandlers.SingleNamedClassTypeHandlerPredicate">
+            <summary>allows installing a Typehandler for a single classname.</summary>
+            <remarks>allows installing a Typehandler for a single classname.</remarks>
+        </member>
+        <member name="T:Db4objects.Db4o.Types.IDb4oCollection">
+            <summary>base interface for db4o collections</summary>
+        </member>
+        <member name="M:Db4objects.Db4o.Types.IDb4oCollection.ActivationDepth(System.Int32)">
+            <summary>configures the activation depth for objects returned from this collection.
+            	</summary>
+            <remarks>
+            configures the activation depth for objects returned from this collection.
+            <br /><br />Specify a value less than zero to use the default activation depth
+            configured for the ObjectContainer or for individual objects.
+            </remarks>
+            <param name="depth">the desired depth</param>
+        </member>
+        <member name="M:Db4objects.Db4o.Types.IDb4oCollection.DeleteRemoved(System.Boolean)">
+            <summary>
+            configures objects are to be deleted from the database file if they are
+            removed from this collection.
+            </summary>
+            <remarks>
+            configures objects are to be deleted from the database file if they are
+            removed from this collection.
+            <br /><br />Default value: <code>false</code>
+            </remarks>
+            <param name="flag">the desired setting</param>
+        </member>
+        <member name="T:Db4objects.Db4o.Types.IDb4oCollections">
+            <summary>factory and other methods for database-aware collections.</summary>
+            <remarks>factory and other methods for database-aware collections.</remarks>
+        </member>
+        <member name="M:Db4objects.Db4o.Types.IDb4oCollections.NewLinkedList">
+            <summary>creates a new database-aware linked list.</summary>
+            <remarks>
+            creates a new database-aware linked list.
+            <br/><br/>Usage:<br/>
+            - declare an IList variable in your persistent class.<br/>
+            - fill this variable with this method.<br/><br/>
+            <b>Example:</b><br/><br/>
+            <code>
+            <pre>
+            class MyClass{
+            IList myList;
+            }
+            MyClass myObject = new MyClass();
+            myObject.myList = objectContainer.Ext().Collections().NewLinkedList();
+            </pre>
+            </code><br/><br/>
+            
+            </remarks>
+            <returns>
+            
+            <see cref="T:Db4objects.Db4o.Types.IDb4oList">IDb4oList</see>
+            
+            </returns>
+            <seealso cref="T:Db4objects.Db4o.Types.IDb4oList">IDb4oList</seealso>
+        </member>
+        <member name="M:Db4objects.Db4o.Types.IDb4oCollections.NewHashMap(System.Int32)">
+            <summary>creates a new database-aware HashMap.</summary>
+            <remarks>
+            creates a new database-aware HashMap.
+            <br/><br/>
+            This map will call the HashCode() method on the key objects to calculate the
+            hash value. Since the hash value is stored to the ObjectContainer, key objects
+            will have to return the same HashCode() value in every CLR session.
+            <br/><br/>
+            Usage:<br/>
+            - declare an IDictionary variable in your persistent class.<br/>
+            - fill the variable with this method.<br/><br/>
+            <b>Example:</b><br/><br/>
+            <code>
+            <pre>
+            class MyClass{
+            IDictionary dict;
+            }
+            MyClass myObject = new MyClass();
+            myObject.dict = objectContainer.Ext().Collections().NewHashMap(0);
+            </pre>
+            </code><br/><br/>
+            </remarks>
+            <param name="initialSize">the initial size of the HashMap</param>
+            <returns>
+            <see cref="T:Db4objects.Db4o.Types.IDb4oMap">IDb4oMap</see>
+            </returns>
+            <seealso cref="T:Db4objects.Db4o.Types.IDb4oMap">IDb4oMap</seealso>
+        </member>
+        <member name="M:Db4objects.Db4o.Types.IDb4oCollections.NewIdentityHashMap(System.Int32)">
+            <summary>creates a new database-aware IdentityHashMap.</summary>
+            <remarks>
+            creates a new database-aware IdentityHashMap.
+            <br/><br/>
+            Only first class objects already stored to the ObjectContainer (objects with a db4o ID)
+            can be used as keys for this type of Map. The internal db4o ID will be used as
+            the hash value.
+            <br/><br/>
+            Usage:<br/>
+            - declare an IDictionary variable in your persistent class.<br/>
+            - fill the variable with this method.<br/><br/>
+            <b>Example:</b><br/><br/>
+            <code>
+            <pre>
+            public class MyClass{
+            public IDictionary  dict;
+            }
+            MyClass myObject = new MyClass();
+            myObject.dict = objectContainer.Ext().Collections().NewIdentityHashMap(0);
+            </pre>
+            </code><br/><br/>
+            
+            </remarks>
+            <param name="initialSize">the initial size of the IdentityHashMap</param>
+            <returns>
+            
+            <see cref="T:Db4objects.Db4o.Types.IDb4oMap">IDb4oMap</see>
+            </returns>
+            <seealso cref="T:Db4objects.Db4o.Types.IDb4oMap">IDb4oMap</seealso>
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:Db4objects.Db4o.Types.IDb4oList" -->
+        <!-- Badly formed XML comment ignored for member "T:Db4objects.Db4o.Types.IDb4oMap" -->
         <member name="T:Db4objects.Db4o.User">
             <exclude></exclude>
             <persistent></persistent>
