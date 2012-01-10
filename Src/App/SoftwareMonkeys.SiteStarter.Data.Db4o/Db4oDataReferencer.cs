@@ -31,8 +31,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		public override EntityReference GetReference(Type entityType, Guid entityID, string propertyName, Type referenceType, Guid referenceEntityID, string mirrorPropertyName, bool activateAll)
 		{
 			// TODO: Clean up this function
-			
-			EntityReferenceCollection output = new EntityReferenceCollection();
+			EntityReference reference = null;
 			
 			// TODO: Check if logging should be commented out to boost performance
 			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving reference."))
@@ -53,13 +52,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				LogWriter.Debug("Reference type: " + referenceType.ToString());
 				LogWriter.Debug("Property name: " + propertyName);
 				LogWriter.Debug("Mirror property name: " + mirrorPropertyName);
-				
-				string storeName = DataUtilities.GetDataStoreName(
-					entityType.Name,
-					referenceType.Name);
-				
-				LogWriter.Debug("Data store name: " + storeName);
-				
+								
 				Db4oDataStore dataStore = (Db4oDataStore)GetDataStore(entityType.Name, referenceType.Name);
 				
 				IQuery query1 = dataStore.ObjectContainer.Query();
@@ -72,94 +65,40 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 								query1.Descend("property2Name").Constrain(mirrorPropertyName).Equal().And(
 									query1.Descend("type2Name").Constrain(EntitiesUtilities.GetShortType(referenceType.Name)).Equal())))));
 				
-				IQuery query2 = dataStore.ObjectContainer.Query();
-				query2.Constrain(typeof(EntityReference));
-				
-				query2.Descend("entity2ID").Constrain(entityID).Equal().And(
-					query2.Descend("property2Name").Constrain(propertyName).Equal().And(
-						query2.Descend("type2Name").Constrain(EntitiesUtilities.GetShortType(entityType.Name)).Equal().And(
-							query2.Descend("entity1ID").Constrain(referenceEntityID).Equal().And(
-								query2.Descend("property1Name").Constrain(mirrorPropertyName).Equal().And(
-									query2.Descend("type1Name").Constrain(EntitiesUtilities.GetShortType(referenceType.Name)).Equal())))));
-				
-				
-				
 				IObjectSet os1 = query1.Execute();
 				
-				while (os1.HasNext())
+				if (os1.HasNext())
+					reference = (EntityReference)os1.Next();
+				
+				// If no reference was found from the first query try the opposite positions
+				if (reference == null)
 				{
-					EntityReference reference = (EntityReference)os1.Next();
-					if (reference != null && reference.Entity1ID != Guid.Empty && reference.Entity2ID != Guid.Empty)
-					{
-						if (reference.Includes(entityID, propertyName) &&
-						    reference.Includes(referenceEntityID, mirrorPropertyName))
-						{
-							output.Add(reference);
-						}
-					}
+					IQuery query2 = dataStore.ObjectContainer.Query();
+					query2.Constrain(typeof(EntityReference));
+					
+					query2.Descend("entity2ID").Constrain(entityID).Equal().And(
+						query2.Descend("property2Name").Constrain(propertyName).Equal().And(
+							query2.Descend("type2Name").Constrain(EntitiesUtilities.GetShortType(entityType.Name)).Equal().And(
+								query2.Descend("entity1ID").Constrain(referenceEntityID).Equal().And(
+									query2.Descend("property1Name").Constrain(mirrorPropertyName).Equal().And(
+										query2.Descend("type1Name").Constrain(EntitiesUtilities.GetShortType(referenceType.Name)).Equal())))));
+					
+					IObjectSet os2 = query2.Execute();
+					
+					if (os2.HasNext())
+						reference = (EntityReference)os2.Next();
 				}
 				
-				IObjectSet os2 = query2.Execute();
-				
-				while (os2.HasNext())
+				if (activateAll)
 				{
-					EntityReference reference = (EntityReference)os2.Next();
-					if (reference != null && reference.Entity1ID != Guid.Empty && reference.Entity2ID != Guid.Empty)
-					{
-						if (reference.Includes(entityID, propertyName) &&
-						    reference.Includes(referenceEntityID, mirrorPropertyName))
-						{
-							output.Add(reference);
-						}
-					}
-				}
-				
-				if (output.Count == 0)
-				{
-					LogWriter.Debug("No references loaded from the data store.");
-				}
-				else
-				{
-					
-					
-					LogWriter.Debug("# references loaded: " + output.Count.ToString());
-					
-					if (output.Count > 1)
-						LogWriter.Error("Multiple (" + output.Count.ToString() + ") references found when there should only be one.");
-					
-					int i = 0;
-					
-					foreach (EntityReference r in output)
-					{
-						i++;
-						
-						using (LogGroup logGroup2 = LogGroup.StartDebug("Processing ID reference."))
-						{
-							LogWriter.Debug("Data store name: " + storeName);
-							
-							
-							EntityReference reference = (EntityReference)r.SwitchFor(entityType, entityID);
-							
-							
-							LogWriter.Debug("Loaded reference " + i + "/" + output.Count.ToString() + " - Property name 1: " + reference.Property1Name);
-							LogWriter.Debug("Loaded reference " + i + "/" + output.Count.ToString() + " - Property name 2: " + reference.Property2Name);
-							
-							
-							
-							if (activateAll)
-							{
-								LogWriter.Debug("Activating reference.");
-								Provider.Activator.ActivateReference(reference);
-							}
-						}
-					}
+					LogWriter.Debug("Activating reference.");
+					Provider.Activator.ActivateReference(reference);
 				}
 			}
-			if (output != null && output.Count > 0)
-				return output[0];
-			else
-				return null;
+			
+			return reference;
 		}
+		
 		
 		/// <summary>
 		/// Checks whether there is a reference between the specified entity and the specified type.
@@ -177,63 +116,58 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			//using (LogGroup logGroup = LogGroup.StartDebug("Retrieving reference."))
 			//{
-				
-				if (entityType == null)
-					throw new ArgumentNullException("entityType");
-				
-				if (referenceType == null)
-					throw new ArgumentNullException("referenceType");
-				
-				bool referenceFound = false;
-				
-				LogWriter.Debug("Entity ID: " + entityID.ToString());
-				LogWriter.Debug("Entity type: " + entityType.ToString());
-				LogWriter.Debug("Reference type: " + referenceType.ToString());
-				LogWriter.Debug("Property name: " + propertyName);
-				LogWriter.Debug("Mirror property name: " + mirrorPropertyName);
-				
-				string storeName = DataUtilities.GetDataStoreName(
-					entityType.Name,
-					referenceType.Name);
-				
-			//	LogWriter.Debug("Data store name: " + storeName);
-				
-				Db4oDataStore dataStore = (Db4oDataStore)GetDataStore(entityType.Name, referenceType.Name);
-				
-				IQuery query1 = dataStore.ObjectContainer.Query();
-				query1.Constrain(typeof(EntityReference));
-				
-				query1.Descend("entity1ID").Constrain(entityID).Equal().And(
-					query1.Descend("property1Name").Constrain(propertyName).Equal().And(
-						query1.Descend("type1Name").Constrain(EntitiesUtilities.GetShortType(entityType.Name)).Equal().And(
-								query1.Descend("property2Name").Constrain(mirrorPropertyName).Equal().And(
-									query1.Descend("type2Name").Constrain(EntitiesUtilities.GetShortType(referenceType.Name)).Equal()))));
-				
+			
+			if (entityType == null)
+				throw new ArgumentNullException("entityType");
+			
+			if (referenceType == null)
+				throw new ArgumentNullException("referenceType");
+			
+			bool referenceFound = false;
+			
+			//LogWriter.Debug("Entity ID: " + entityID.ToString());
+			//LogWriter.Debug("Entity type: " + entityType.ToString());
+			//LogWriter.Debug("Reference type: " + referenceType.ToString());
+			//LogWriter.Debug("Property name: " + propertyName);
+			//LogWriter.Debug("Mirror property name: " + mirrorPropertyName);
+						
+			Db4oDataStore dataStore = (Db4oDataStore)GetDataStore(entityType.Name, referenceType.Name);
+			
+			IQuery query1 = dataStore.ObjectContainer.Query();
+			query1.Constrain(typeof(EntityReference));
+			
+			query1.Descend("entity1ID").Constrain(entityID).Equal().And(
+				query1.Descend("property1Name").Constrain(propertyName).Equal().And(
+					query1.Descend("type1Name").Constrain(EntitiesUtilities.GetShortType(entityType.Name)).Equal().And(
+						query1.Descend("property2Name").Constrain(mirrorPropertyName).Equal().And(
+							query1.Descend("type2Name").Constrain(EntitiesUtilities.GetShortType(referenceType.Name)).Equal()))));
+			
+			IObjectSet os1 = query1.Execute();
+			
+			if (os1.Count > 0)
+				referenceFound = true;
+			
+			if (!referenceFound)
+			{
 				IQuery query2 = dataStore.ObjectContainer.Query();
 				query2.Constrain(typeof(EntityReference));
 				
 				query2.Descend("entity2ID").Constrain(entityID).Equal().And(
 					query2.Descend("property2Name").Constrain(propertyName).Equal().And(
 						query2.Descend("type2Name").Constrain(EntitiesUtilities.GetShortType(entityType.Name)).Equal().And(
-								query2.Descend("property1Name").Constrain(mirrorPropertyName).Equal().And(
-									query2.Descend("type1Name").Constrain(EntitiesUtilities.GetShortType(referenceType.Name)).Equal()))));
-				
-				
-				
-				IObjectSet os1 = query1.Execute();
-				
-				if (os1.Count > 0)
-					referenceFound = true;
+							query2.Descend("property1Name").Constrain(mirrorPropertyName).Equal().And(
+								query2.Descend("type1Name").Constrain(EntitiesUtilities.GetShortType(referenceType.Name)).Equal()))));
 				
 				IObjectSet os2 = query2.Execute();
 				
 				if (os2.Count > 0)
 					referenceFound = true;
-				
-				isMatch = referenceFound;
-				
+			}
+			
+			isMatch = referenceFound;
+			
 			//	LogWriter.Debug("Is match: " + isMatch.ToString());
-				
+			
 			//}
 			
 			return isMatch;
@@ -269,40 +203,42 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 			
 			//using (LogGroup logGroup = LogGroup.StartDebug("Retrieving reference."))
 			//{
-				
-				if (entityType == null)
-					throw new ArgumentNullException("entityType");
-				
-				if (referenceType == null)
-					throw new ArgumentNullException("referenceType");
-				
-				bool referenceFound = false;
-				
+			
+			if (entityType == null)
+				throw new ArgumentNullException("entityType");
+			
+			if (referenceType == null)
+				throw new ArgumentNullException("referenceType");
+			
+			bool referenceFound = false;
+			
 			//	LogWriter.Debug("Entity ID: " + entityID.ToString());
 			//	LogWriter.Debug("Entity type: " + entityType.ToString());
 			//	LogWriter.Debug("Reference entity ID: " + referencedEntityID.ToString());
 			//	LogWriter.Debug("Reference type: " + referenceType.ToString());
 			//	LogWriter.Debug("Property name: " + propertyName);
 			//	LogWriter.Debug("Mirror property name: " + mirrorPropertyName);
-				
-				string storeName = DataUtilities.GetDataStoreName(
-					entityType.Name,
-					referenceType.Name);
-				
-			//	LogWriter.Debug("Data store name: " + storeName);
-				
-				Db4oDataStore dataStore = (Db4oDataStore)GetDataStore(entityType.Name, referenceType.Name);
-				
-				IQuery query1 = dataStore.ObjectContainer.Query();
-				query1.Constrain(typeof(EntityReference));
-				
-				query1.Descend("entity1ID").Constrain(entityID).Equal().And(
-					query1.Descend("property1Name").Constrain(propertyName).Equal().And(
-						query1.Descend("type1Name").Constrain(EntitiesUtilities.GetShortType(entityType.Name)).Equal().And(
-							query1.Descend("entity2ID").Constrain(referencedEntityID).Equal().And(
-								query1.Descend("property2Name").Constrain(mirrorPropertyName).Equal().And(
-									query1.Descend("type2Name").Constrain(EntitiesUtilities.GetShortType(referenceType.Name)).Equal())))));
-				
+						
+			Db4oDataStore dataStore = (Db4oDataStore)GetDataStore(entityType.Name, referenceType.Name);
+			
+			IQuery query1 = dataStore.ObjectContainer.Query();
+			query1.Constrain(typeof(EntityReference));
+			
+			query1.Descend("entity1ID").Constrain(entityID).Equal().And(
+				query1.Descend("property1Name").Constrain(propertyName).Equal().And(
+					query1.Descend("type1Name").Constrain(EntitiesUtilities.GetShortType(entityType.Name)).Equal().And(
+						query1.Descend("entity2ID").Constrain(referencedEntityID).Equal().And(
+							query1.Descend("property2Name").Constrain(mirrorPropertyName).Equal().And(
+								query1.Descend("type2Name").Constrain(EntitiesUtilities.GetShortType(referenceType.Name)).Equal())))));
+			
+			IObjectSet os1 = query1.Execute();
+			
+			if (os1.Count > 0)
+				referenceFound = true;
+			
+			// If no reference was found from the first query try the opposite positions
+			if (!referenceFound)
+			{
 				IQuery query2 = dataStore.ObjectContainer.Query();
 				query2.Constrain(typeof(EntityReference));
 				
@@ -315,20 +251,17 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				
 				
 				
-				IObjectSet os1 = query1.Execute();
-				
-				if (os1.Count > 0)
-					referenceFound = true;
 				
 				IObjectSet os2 = query2.Execute();
 				
 				if (os2.Count > 0)
 					referenceFound = true;
-				
-				isMatch = referenceFound;
-				
+			}
+			
+			isMatch = referenceFound;
+			
 			//	LogWriter.Debug("Is match: " + isMatch.ToString());
-				
+			
 			//}
 			
 			return isMatch;
