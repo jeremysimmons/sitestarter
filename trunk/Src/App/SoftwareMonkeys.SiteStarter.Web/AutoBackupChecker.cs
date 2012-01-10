@@ -47,7 +47,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			}
 			else
 			{
-				return DateTime.MinValue;
+				return DateTime.Now;
 			}
 		}
 
