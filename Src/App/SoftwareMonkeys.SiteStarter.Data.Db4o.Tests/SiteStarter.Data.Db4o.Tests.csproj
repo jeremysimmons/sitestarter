@@ -69,9 +69,36 @@
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Cecil.FlowAnalysis">
+      <HintPath>..\..\..\lib\Cecil.FlowAnalysis.dll</HintPath>
+    </Reference>
+    <Reference Include="Db4objects.Db4o">
+      <HintPath>..\..\..\lib\Db4objects.Db4o.dll</HintPath>
+    </Reference>
     <Reference Include="Db4objects.Db4o, Version=7.2.44.10827, Culture=neutral, PublicKeyToken=6199cd4f203aa8eb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Lib\Db4objects.Db4o.dll</HintPath>
+    </Reference>
+    <Reference Include="Db4objects.Db4o.CS">
+      <HintPath>..\..\..\lib\Db4objects.Db4o.CS.dll</HintPath>
+    </Reference>
+    <Reference Include="DB4objects.Db4o.CS.Optional">
+      <HintPath>..\..\..\lib\DB4objects.Db4o.CS.Optional.dll</HintPath>
+    </Reference>
+    <Reference Include="Db4objects.Db4o.Instrumentation">
+      <HintPath>..\..\..\lib\Db4objects.Db4o.Instrumentation.dll</HintPath>
+    </Reference>
+    <Reference Include="Db4objects.Db4o.Linq">
+      <HintPath>..\..\..\lib\Db4objects.Db4o.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="Db4objects.Db4o.NativeQueries">
+      <HintPath>..\..\..\lib\Db4objects.Db4o.NativeQueries.dll</HintPath>
+    </Reference>
+    <Reference Include="Db4objects.Db4o.Optional">
+      <HintPath>..\..\..\lib\Db4objects.Db4o.Optional.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil">
+      <HintPath>..\..\..\lib\Mono.Cecil.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=1.0.0.505, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -191,7 +218,6 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
