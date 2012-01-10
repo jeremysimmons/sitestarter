@@ -29,9 +29,9 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			// Initialze the core state management and diagnostics
 			InitializeCore();
 			
-			using (LogGroup logGroup = LogGroup.StartDebug("Starting application."))
+			using (LogGroup logGroup = LogGroup.Start("Starting application."))
 			{
-				LogWriter.Debug("${Application.Start}");
+				LogWriter.Info("${Application.Start}");
 				
 				// Initialze the entire application
 				Initialize();
@@ -41,9 +41,9 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		
 		void Application_End(object sender, EventArgs e)
 		{
-			using (LogGroup logGroup = LogGroup.StartDebug("Ending application."))
+			using (LogGroup logGroup = LogGroup.Start("Ending application."))
 			{
-				LogWriter.Debug("${Application.End}");
+				LogWriter.Info("${Application.End}");
 			}
 
 			//  Dispose outside the log group because all logging needs to be finished
