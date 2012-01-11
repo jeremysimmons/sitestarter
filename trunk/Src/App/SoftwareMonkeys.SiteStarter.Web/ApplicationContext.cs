@@ -36,6 +36,8 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				// Initialze the entire application
 				Initialize();
 				
+				// Suspend the auto backup so it doesn't start immediately
+				SuspendAutoBackup();
 			}
 		}
 		
@@ -188,6 +190,12 @@ namespace SoftwareMonkeys.SiteStarter.Web
 
 			base.Dispose();
 		}
+		
+		private void SuspendAutoBackup()
+		{
+			StateAccess.State.SetApplication("LastAutoBackup", DateTime.Now);
+		}
+		
 		
 	}
 }
