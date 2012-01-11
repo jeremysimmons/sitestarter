@@ -75,7 +75,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				StateAccess.State.SetApplication(ObjectServerKey, value);}
 		}
 		
-		public int MaxOpenRetries = 10;
+		public int MaxOpenRetries = 1000;
 		
 		/// <summary>
 		/// Gets the key that represents the object server when held in the state store.
