@@ -234,6 +234,9 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 
 		public override void Activate(IEntity entity, string propertyName, int depth)
 		{
+			if (entity == null)
+				throw new ArgumentNullException("entity");
+			
 			using (LogGroup logGroup = LogGroup.StartDebug("Activating the '" + propertyName + "' property on the '" + entity.ShortTypeName + "' type."))
 			{
 				if (entity == null)
