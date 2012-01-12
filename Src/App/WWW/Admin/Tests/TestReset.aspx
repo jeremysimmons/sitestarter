@@ -188,8 +188,15 @@ private void DeleteLogs()
 {
 	string path = Server.MapPath(Request.ApplicationPath + "/App_Data/Logs");
 	
-	if (Directory.Exists(path))
-		Directory.Delete(path, true);
+	try
+	{
+		if (Directory.Exists(path))
+			Directory.Delete(path, true);
+	}
+	catch (IOException ex)
+	{
+		LogWriter.Error(ex);
+	}
 }
 
 private void SuspendAutoBackup()
