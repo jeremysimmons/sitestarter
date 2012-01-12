@@ -89,7 +89,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 			{
 				TitleHolder.Controls.Add(ViewLink);
 				ViewLink.NavigateUrl = new UrlCreator().CreateUrl("View", DataSource);
-				ViewLink.Text = DataSource.ToString();
+				ViewLink.Text = DataSource.ToString().Replace(Environment.NewLine, "<br/>");
 			}
 			else
 			{

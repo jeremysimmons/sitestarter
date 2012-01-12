@@ -93,10 +93,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 			{
 				TitleHolder.Controls.Add(ViewLink);
 				ViewLink.NavigateUrl = new UrlCreator().CreateUrl("View", DataSource);
-				ViewLink.Text = DataSource.ToString();
+				ViewLink.Text = DataSource.Title;
 				
 				
-				DescriptionContent.Text = DataSource.Description;
+				DescriptionContent.Text = DataSource.Description.Replace(Environment.NewLine, "<br/>");
 			}
 			else
 			{
