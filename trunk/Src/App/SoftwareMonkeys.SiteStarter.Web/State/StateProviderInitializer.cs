@@ -56,7 +56,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.State
 				providerCollection.SetReadOnly();
 				defaultProvider = providerCollection[qc.DefaultProvider];
 				
-				if (HttpContext.Current != null)
+				if (HttpContext.Current != null && HttpContext.Current.Request != null)
 				{
 					defaultProvider.ApplicationPath = HttpContext.Current.Request.ApplicationPath;
 					defaultProvider.PhysicalApplicationPath = HttpContext.Current.Server.MapPath(HttpContext.Current.Request.ApplicationPath);
