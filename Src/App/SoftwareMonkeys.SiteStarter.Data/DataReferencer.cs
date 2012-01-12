@@ -449,10 +449,11 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		{
 			using (LogGroup logGroup = LogGroup.StartDebug("Setting the mirror count property on entities referenced by the '" + entity.ShortTypeName + "' provided."))
 			{
-				EntityReferenceCollection references = Provider.Referencer.GetActiveReferences(entity);
+				EntityReferenceCollection references = Provider.Referencer.GetActiveReferences(entity, false);
 				
 				foreach (EntityReference reference in references)
 				{
+					// TODO: Only load the entity that's needed, not both
 					// Activate the reference if the ReferenceProperty and SourceProperty are null
 					if (reference.ReferenceEntity == null || reference.SourceEntity == null)
 						Provider.Activator.ActivateReference(reference);
@@ -621,6 +622,15 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				else
 				{
 					throw new Exception("Cannot find property '" + propertyName + "' on type '" + entity.GetType().ToString() + "'.");
+				}
+				
+				// Assign the provided entity to each reference so it doesn't need to be loaded again
+				foreach (EntityReference reference in collection)
+				{
+					if (reference.Entity1ID == entity.ID)
+						reference.SourceEntity = entity;
+					else if (reference.Entity2ID == entity.ID)
+						reference.ReferenceEntity = entity;
 				}
 				
 				if (autoBind)
