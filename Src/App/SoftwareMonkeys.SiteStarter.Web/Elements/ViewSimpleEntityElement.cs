@@ -100,7 +100,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 			}
 			else
 			{
-				TitleHolder.Controls.Add(new LiteralControl(DataSource.ToString()));
+				TitleHolder.Controls.Add(new LiteralControl(DataSource.Title));
 			}
 		
 			
