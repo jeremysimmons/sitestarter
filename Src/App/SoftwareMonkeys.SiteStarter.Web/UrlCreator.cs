@@ -712,8 +712,19 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <returns>The prepared version of the provided text.</returns>
 		public string PrepareForUrl(string text)
 		{
+			// Swap double spaces for single ones to avoid confusing the ProjectionMapper
+			while (text.Replace("  ", " ").Length < text.Length) 
+				text = text.Replace("  ", " ");
+
 			text = EntitiesUtilities.FormatUniqueKey(text);
-			return HttpUtility.UrlEncode(text);
+			
+			text = HttpUtility.UrlEncode(text);
+
+			// Swap double dashes for single ones to avoid confusing the ProjectionMapper
+			while (text.Replace("--", "-").Length < text.Length) 
+				text = text.Replace("--", "-");
+
+			return text;
 		}
 		
 		/// <summary>

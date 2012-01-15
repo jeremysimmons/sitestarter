@@ -707,13 +707,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				
 				foreach (string part in queryParts)
 				{
-					int pos = part.IndexOf('=');
-					
-					string key = part.Substring(0, pos);
-					string value = part.Substring(pos+1, part.Length-pos-1);
-					
-					if (!parameters.ContainsKey(key))
-						parameters.Add(key, value);
+					if (part.Length > 0 && part.IndexOf("=") > -1)
+					{
+						int pos = part.IndexOf('=');
+						
+						string key = part.Substring(0, pos);
+						string value = part.Substring(pos+1, part.Length-pos-1);
+						
+						if (!parameters.ContainsKey(key))
+							parameters.Add(key, value);
+					}
 				}
 			}
 		}
