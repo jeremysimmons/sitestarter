@@ -57,13 +57,6 @@ protected override void OnLoad(EventArgs e)
 				
 			if (StateAccess.IsInitialized && AuthenticationState.IsAuthenticated)
 				Authentication.SignOut();
-		
-			//Response.Redirect(Request.ApplicationPath + "/Admin/QuickSetup.aspx");
-
-			Session.Abandon();
-			
-			// Restart the asp.net application
-			//System.Web.HttpRuntime.UnloadAppDomain();
 		}
 	}
 }
