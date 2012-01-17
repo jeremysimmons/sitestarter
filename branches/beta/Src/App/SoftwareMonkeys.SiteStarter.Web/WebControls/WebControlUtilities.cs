@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Reflection;
@@ -80,7 +81,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				// Sanitize input
 				if (returnValue != null && returnValue is String)
 				{
-					returnValue = Sanitize((string)returnValue);
+					returnValue = HtmlEncode((string)returnValue);
 				}
 			}
 			
@@ -88,17 +89,18 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		}
 		
 		/// <summary>
-		/// Uses HtmlAgilityPack to sanitise the provided data.
+		/// 
 		/// </summary>
 		/// <param name="input"></param>
 		/// <returns></returns>
-		static public string Sanitize(string input)
+		static public string HtmlEncode(string input)
 		{
 			if(String.IsNullOrEmpty(input))
 				return "";
-            HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
-            doc.LoadHtml(input);
-            return doc.DocumentNode.InnerText;
+			
+			string output = HttpContext.Current.Server.HtmlEncode(input);
+			
+			return output;
 		}
 		
 		/// <summary>

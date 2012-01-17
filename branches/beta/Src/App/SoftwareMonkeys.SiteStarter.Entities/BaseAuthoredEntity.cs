@@ -28,6 +28,16 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			}
 		}
 		
+		private bool isPublic;
+		/// <summary>
+		/// Gets/sets a value indicating whether the entity is publicly accessible.
+		/// </summary>
+		public bool IsPublic
+		{
+			get { return isPublic; }
+			set { isPublic = value; }
+		}
+		
 		public BaseAuthoredEntity()
 		{
 		}

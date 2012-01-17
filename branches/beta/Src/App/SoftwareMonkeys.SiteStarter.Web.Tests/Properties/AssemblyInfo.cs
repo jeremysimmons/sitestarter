@@ -16,10 +16,10 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfigurationAttribute("")]
 [assembly: AssemblyCompanyAttribute("SoftwareMonkeys")]
 [assembly: AssemblyProductAttribute("SiteStarter.Web.Tests")]
-[assembly: AssemblyCopyrightAttribute("Copyright SoftwareMonkeys (c) 2011")]
+[assembly: AssemblyCopyrightAttribute("Copyright SoftwareMonkeys (c) 2012")]
 [assembly: AssemblyTrademarkAttribute("")]
 [assembly: AssemblyCultureAttribute("")]
 [assembly: ComVisibleAttribute(false)]
-[assembly: AssemblyVersionAttribute("2.6.8.1101")]
-[assembly: AssemblyFileVersionAttribute("2.6.8.1101")]
+[assembly: AssemblyVersionAttribute("2.6.10.2")]
+[assembly: AssemblyFileVersionAttribute("2.6.10.2")]
 

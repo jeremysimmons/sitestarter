@@ -13,6 +13,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities
     {
         Guid ID { get;set; }
         string ShortTypeName { get; }
+        DateTime DateCreated { get;set; }
         
 		#region Activation   
 		/// <summary>

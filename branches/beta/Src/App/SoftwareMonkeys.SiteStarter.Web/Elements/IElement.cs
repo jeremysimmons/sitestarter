@@ -1,4 +1,5 @@
 using System;
+using System.Web.UI.WebControls;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Elements
 {
@@ -10,5 +11,6 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 		string TypeName {get;set;}
 		string Action {get;}
 		string ElementName { get; }
+		Unit Width { get;set; }
 	}
 }

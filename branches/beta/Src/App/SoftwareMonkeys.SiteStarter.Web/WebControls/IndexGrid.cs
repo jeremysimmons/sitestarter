@@ -37,7 +37,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		/// </summary>
 		private void SelectSortItem()
 		{
-			using (LogGroup logGroup = LogGroup.Start("Selecting the current sort item.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Selecting the current sort item."))
 			{
 				if (Sort != null)
 				{
@@ -315,7 +315,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
 		protected override void OnInit(EventArgs e)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Initializing IndexGrid control: " + ID, NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Initializing IndexGrid control: " + ID))
 			{
 				if (Page.Request.QueryString["Page"] != String.Empty)
 					CurrentPageIndex = QueryStrings.PageIndex;
@@ -363,7 +363,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
 		protected override void OnLoad(EventArgs e)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Initializing IndexGrid control: " + ID, NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Initializing IndexGrid control: " + ID))
 			{
 
 				
@@ -381,7 +381,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 
 		protected override void OnItemCreated(DataGridItemEventArgs e)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Customizing a grid item upon creation (ItemCreated event).", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Customizing a grid item upon creation (ItemCreated event)."))
 			{
 				if (e.Item.ItemType == ListItemType.Pager)
 				{
@@ -406,7 +406,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		
 		protected void CustomizeHeader(DataGridItemEventArgs e)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Customizing a header item.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Customizing a header item."))
 			{
 				e.Item.CssClass = "Heading2";
 				
@@ -480,7 +480,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		protected void CustomizeFooter(DataGridItemEventArgs e)
 		{
 			
-			using (LogGroup logGroup = LogGroup.Start("Customizing a footer item.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Customizing a footer item."))
 			{
 				e.Item.Visible = ShowFooter;
 				
@@ -509,7 +509,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		protected void CustomizePager(DataGridItemEventArgs e)
 		{
 			
-			using (LogGroup logGroup = LogGroup.Start("Customizing a pager item.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Customizing a pager item."))
 			{
 				e.Item.Cells[0].Controls.Clear();			
 				
@@ -521,7 +521,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		protected void CustomizeItem(DataGridItemEventArgs e)
 		{
 			
-			using (LogGroup logGroup = LogGroup.Start("Customizing a general or alternating item.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Customizing a general or alternating item."))
 			{
 				e.Item.Attributes.Add("onmouseover", "this.className='" + ItemMouseOverCssClass + "';");
 				e.Item.Attributes.Add("onmouseout", "this.className='" + ItemMouseOutCssClass + "';");
@@ -695,7 +695,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		public override void DataBind()
 		{
 
-			using (LogGroup logGroup = LogGroup.Start("Binding IndexGrid control: " + ID, NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Binding IndexGrid control: " + ID))
 			{
 				ValidatePageIndex();
 				

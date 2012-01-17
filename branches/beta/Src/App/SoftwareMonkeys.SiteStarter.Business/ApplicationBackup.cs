@@ -171,7 +171,8 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		public void DeleteExportFiles()
 		{
-			Directory.Delete(ExportDirectoryPath, true);
+			if (Directory.Exists(ExportDirectoryPath))
+				Directory.Delete(ExportDirectoryPath, true);
 		}
 		
 		/// <summary>

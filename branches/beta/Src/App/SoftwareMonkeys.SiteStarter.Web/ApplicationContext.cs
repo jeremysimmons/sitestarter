@@ -29,21 +29,23 @@ namespace SoftwareMonkeys.SiteStarter.Web
 			// Initialze the core state management and diagnostics
 			InitializeCore();
 			
-			using (LogGroup logGroup = LogGroup.StartDebug("Starting application."))
+			using (LogGroup logGroup = LogGroup.Start("Starting application."))
 			{
-				LogWriter.Debug("${Application.Start}");
+				LogWriter.Info("${Application.Start}");
 				
 				// Initialze the entire application
 				Initialize();
 				
+				// Suspend the auto backup so it doesn't start immediately
+				SuspendAutoBackup();
 			}
 		}
 		
 		void Application_End(object sender, EventArgs e)
 		{
-			using (LogGroup logGroup = LogGroup.StartDebug("Ending application."))
+			using (LogGroup logGroup = LogGroup.Start("Ending application."))
 			{
-				LogWriter.Debug("${Application.End}");
+				LogWriter.Info("${Application.End}");
 			}
 
 			//  Dispose outside the log group because all logging needs to be finished
@@ -80,7 +82,8 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		{
 			LogWriter.Debug("${Session.End}");
 			
-			HttpContext.Current.Session["Session_Start.LogGroup"] = null;
+			// This is not needed because the Session collection is disposed anyway and this line will cause a null reference exception
+			//HttpContext.Current.Session["Session_Start.LogGroup"] = null;
 		}
 		
 		void Application_BeginRequest(object sender, EventArgs e)
@@ -111,13 +114,15 @@ namespace SoftwareMonkeys.SiteStarter.Web
 
 		private void InitializeTimeout()
 		{
-			// If the application is running in debug mode then set the timeout to 60 minutes
+			// If the application is running in debug mode then set the timeout to 120 minutes
 			// to prevent timeout due to debug logging slowing the application down (which isn't an issue
 			// in release mode)
 			if (new ModeDetector().IsDebug)
-				Context.Server.ScriptTimeout = 60 // minutes
+			{
+				Context.Server.ScriptTimeout = 120 // minutes
 					* 60 // seconds
 					* 1000; // milliseconds
+		}
 		}
 		
 		private void InitializeCore()
@@ -185,6 +190,12 @@ namespace SoftwareMonkeys.SiteStarter.Web
 
 			base.Dispose();
 		}
+		
+		private void SuspendAutoBackup()
+		{
+			StateAccess.State.SetApplication("LastAutoBackup", DateTime.Now);
+	}
+		
 		
 	}
 }

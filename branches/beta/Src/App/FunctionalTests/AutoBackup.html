@@ -22,6 +22,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>assertTextNotPresent</td>
+	<td>Exception</td>
+	<td></td>
+</tr>
+<tr>
 	<td>waitForPageToLoad</td>
 	<td></td>
 	<td></td>
@@ -36,6 +41,17 @@
 	<td>Exception</td>
 	<td></td>
 </tr>
+<!--Reset the auto backup so it'll start immediately-->
+<tr>
+	<td>open</td>
+	<td>Admin/Tests/ResetAutoBackup.aspx</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextNotPresent</td>
+	<td>Exception</td>
+	<td></td>
+</tr>
 <tr>
 	<td>open</td>
 	<td></td>
@@ -46,9 +62,10 @@
 	<td>Exception</td>
 	<td></td>
 </tr>
+<!--Pause so the auto backup can complete-->
 <tr>
 	<td>pause</td>
-	<td>10000</td>
+	<td>15000</td>
 	<td></td>
 </tr>
 <tr>

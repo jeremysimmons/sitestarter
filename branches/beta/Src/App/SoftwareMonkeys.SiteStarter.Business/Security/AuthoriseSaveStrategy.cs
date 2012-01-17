@@ -17,16 +17,14 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		/// <param name="shortTypeName">The type of entity being saved.</param>
 		/// <returns>A value indicating whether the current user is authorised to save an entity of the specified type.</returns>
 		public override bool IsAuthorised(string shortTypeName)
-		{
+		{	
 			bool isAuthorised = false;
 			
 			using (LogGroup logGroup = LogGroup.StartDebug("Authorising the save of the '" + shortTypeName + "' type."))
 			{
-			if (!AuthenticationState.IsAuthenticated)
-					isAuthorised = false;
-			
-			if (!AuthenticationState.UserIsInRole("Administrator"))
-					isAuthorised = false;
+				if (AuthenticationState.IsAuthenticated
+				    && AuthenticationState.UserIsInRole("Administrator"))
+					isAuthorised = true;
 			
 				LogWriter.Debug("Is authorised: " + isAuthorised.ToString());
 		}

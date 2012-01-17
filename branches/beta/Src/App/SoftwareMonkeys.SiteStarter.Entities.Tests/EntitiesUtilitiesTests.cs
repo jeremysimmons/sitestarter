@@ -98,7 +98,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 			TestGoal goal = new TestGoal();
 			goal.ID = Guid.NewGuid();
 			
-			string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(goal.GetType(), goal.GetType().GetProperty("Prerequisites"));
+			string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(goal, goal.GetType().GetProperty("Prerequisites"));
 			
 			Assert.AreEqual(String.Empty, mirrorPropertyName, "The mirror property name wasn't determined correctly.");
 		}
@@ -108,7 +108,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 		{
 			TestUser user = new TestUser();
 			
-			string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyNameReverse(user.GetType(), "Roles", typeof(TestRole));
+			string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyNameReverse(user, "Roles", typeof(TestRole));
 			
 			Assert.AreEqual("Users", mirrorPropertyName, "The mirror property name wasn't determined correctly.");
 		}
@@ -117,8 +117,9 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 		public void Test_GetMirrorPropertyNameReverse_Multiple_Implicit_Async()
 		{
 			MockEntity entity = new MockEntity();
+			MockPublicEntity publicEntity = new MockPublicEntity();
 			
-			string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyNameReverse(typeof(MockPublicEntity), "", typeof(MockEntity));
+			string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyNameReverse(publicEntity, "", typeof(MockEntity));
 			
 			Assert.AreEqual("PublicEntities", mirrorPropertyName, "The mirror property name wasn't determined correctly.");
 		}
@@ -128,7 +129,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 		{
 			TestUser user = new TestUser();
 			
-			string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(user.GetType(), user.GetType().GetProperty("Roles"));
+			string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(user, user.GetType().GetProperty("Roles"));
 			
 			Assert.AreEqual("Users", mirrorPropertyName, "The mirror property name wasn't determined correctly.");
 		}
@@ -138,7 +139,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 		{
 			EntityOne e1 = new EntityOne();
 			
-			string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(e1.GetType(), e1.GetType().GetProperty("SingleReferenceProperty"));
+			string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(e1, e1.GetType().GetProperty("SingleReferenceProperty"));
 			
 			Assert.AreEqual(String.Empty, mirrorPropertyName, "The mirror property name wasn't determined correctly.");
 		}
@@ -148,7 +149,7 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 		{
 			TestSample sample = new TestSample();
 			
-			string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(sample.GetType(), sample.GetType().GetProperty("Articles"));
+			string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(sample, sample.GetType().GetProperty("Articles"));
 			
 			Assert.AreEqual("Samples", mirrorPropertyName, "The mirror property name wasn't determined correctly.");
 		}
@@ -164,11 +165,8 @@ namespace SoftwareMonkeys.SiteStarter.Entities.Tests
 			Assert.AreEqual("title", fieldName, "Incorrect field name returned.");
 		}
 		
+		
 		#endregion
 		
-		#region Utilities functions
-	
-			
-			#endregion
 	}
 }

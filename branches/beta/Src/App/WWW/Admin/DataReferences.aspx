@@ -33,7 +33,7 @@
 	{
 		IEntity source = RetrieveStrategy.New(sourceType, false).Retrieve("ID", sourceID);
 		
-		Type referenceType = EntitiesUtilities.GetReferenceType(source.GetType(), referenceProperty);
+		Type referenceType = EntitiesUtilities.GetReferenceType(source, referenceProperty);
 		
 		EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences(EntityState.GetType(sourceType), sourceID, referenceProperty, referenceType, true);
 		

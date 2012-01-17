@@ -28,6 +28,22 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o.Tests
 			base.Test_GetEntitiesByType();
 		}
 		
+		[Test]
+		public override void Test_GetPageOfEntitiesWithReference_EmptyReferencedEntityID_Found()
+		{
+			base.Test_GetPageOfEntitiesWithReference_EmptyReferencedEntityID_Found();
+		}
+		
+		[Test]
+		public override void Test_GetPageOfEntitiesWithReference_EmptyReferencedEntityID_NotFound()
+		{
+			base.Test_GetPageOfEntitiesWithReference_EmptyReferencedEntityID_NotFound();
+		}
+		
+		[Test]
+		public override void Test_GetEntitiesByPropertyValue()
+		{
+			base.Test_GetEntitiesByPropertyValue();
+		}
 	}
-}
 }

@@ -87,7 +87,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		public string ToRelative(string absoluteUrl, string relatedPath)
 		{
 			string newPath = String.Empty;
-			using (LogGroup logGroup = LogGroup.Start("Converting the provided absolute URL to be relative to the one provided.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Converting the provided absolute URL to be relative to the one provided."))
 			{
 				if (absoluteUrl == null)
 					throw new ArgumentNullException("absoluteUrl");

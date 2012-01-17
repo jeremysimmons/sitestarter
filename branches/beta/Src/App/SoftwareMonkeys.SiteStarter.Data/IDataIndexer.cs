@@ -63,7 +63,13 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		
 		T[] GetPageOfEntities<T>(IDataFilterGroup filterGroup, PagingLocation location, string sortExpression)
 			where T : IEntity;
+		
+		IEntity[] GetEntitiesWithReference(IEntity entity);
 
+		IEntity[] GetEntitiesWithReference(IEntity entity, string propertyName, EntityReferenceCollection references);
+		
+		IEntity[] GetEntitiesWithReference(Type entityType, string propertyName, Type referencedEntityType, Guid referencedEntityID);
+		
 		T[] GetEntitiesWithReference<T>(string propertyName, Type referencedEntityType, Guid referencedEntityID)
 			where T : IEntity;
 		

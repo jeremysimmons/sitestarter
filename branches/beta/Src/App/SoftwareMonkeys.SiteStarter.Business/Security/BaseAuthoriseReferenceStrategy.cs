@@ -82,7 +82,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		{
 			using (LogGroup logGroup = LogGroup.StartDebug("Checking whether the user is authorised to create a reference on the '" + property.Name + "' property of the '" + fromEntity.GetType().FullName + "' entity type."))
 			{
-				Type type = EntitiesUtilities.GetReferenceType(fromEntity.GetType(), property.Name);
+				Type type = EntitiesUtilities.GetReferenceType(fromEntity, property.Name);
 				
 				ApplyAuthorisation(fromEntity, property);
 			}
@@ -95,7 +95,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 		
 		public virtual bool IsAuthorised(IEntity entity, string propertyName)
 		{
-			Type type = EntitiesUtilities.GetReferenceType(entity.GetType(), propertyName);
+			Type type = EntitiesUtilities.GetReferenceType(entity, propertyName);
 			
 			return IsAuthorised(type.Name);
 		}
@@ -109,7 +109,7 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 				
 				Type type = fromEntity.GetType();
 				
-				Type referenceType = EntitiesUtilities.GetReferenceType(type, property);
+				Type referenceType = EntitiesUtilities.GetReferenceType(fromEntity, property);
 				
 				if (EntitiesUtilities.IsSingleReference(type, property))
 				{

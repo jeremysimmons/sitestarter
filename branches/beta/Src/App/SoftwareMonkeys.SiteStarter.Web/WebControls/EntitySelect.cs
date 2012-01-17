@@ -271,7 +271,8 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 				if (ViewState["NoSelectionText"] == null || (String)ViewState["NoSelectionText"] == String.Empty)
 				{
 					string shortTypeName = EntityState.GetType(EntityType).Name;
-					ViewState["NoSelectionText"] = "-- Select " + DynamicLanguage.GetText(shortTypeName) + " --";
+					ViewState["NoSelectionText"] = "-- Select " + DynamicLanguage.GetText(EntityState.GetType(EntityType),
+					                                                                      shortTypeName) + " --";
 				}
 				return (string)ViewState["NoSelectionText"]; }
 			set { ViewState["NoSelectionText"] = value; }
@@ -923,16 +924,21 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		public override void Init(TemplateParser parser, ControlBuilder parentBuilder, Type type, string tagName, string id,
 		                          IDictionary attribs) {
 
+			
 			string entityTypeName = (string)attribs["EntityType"];
 
 			if (entityTypeName != null || entityTypeName != String.Empty)
 			{
+                Type controlType = type;
+                if (SoftwareMonkeys.SiteStarter.State.StateAccess.IsInitialized)
+                {
 				Type entityType = EntityState.GetType(entityTypeName);
 				if (entityType == null)
 				{
 					throw new Exception(string.Format("The '{0}' type cannot be found or is invalid/incomplete.", entityTypeName));
 				}
-				Type controlType = typeof(EntitySelect<>).MakeGenericType(entityType);
+                    controlType = typeof(EntitySelect<>).MakeGenericType(entityType);
+                }
 				base.Init(parser, parentBuilder, controlType, tagName, id, attribs);
 			}
 			else

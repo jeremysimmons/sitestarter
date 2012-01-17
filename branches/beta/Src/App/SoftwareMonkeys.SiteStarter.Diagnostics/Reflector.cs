@@ -101,17 +101,20 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 					
 					property = parent.GetType().GetProperty(part);
 					
-					if (property == null)
-						throw new ArgumentException("The property '" + part + "' wasn't found on the type '" + value.GetType().ToString() + "'.");
+					if (property.CanWrite)
+					{
+						if (property == null)
+							throw new ArgumentException("The property '" + part + "' wasn't found on the type '" + value.GetType().ToString() + "'.");
 					
-					LogWriter.Debug("Property type: " + property.PropertyType.FullName);
+						LogWriter.Debug("Property type: " + property.PropertyType.FullName);
 					
-					// If it's the last part then set the value
-					if (Array.IndexOf(parts, part) == parts.Length -1)
-						property.SetValue(parent, value, null);
-					// Otherwise step down a level
-					else
-						parent = property.GetValue(parent, null);
+						// If it's the last part then set the value
+						if (Array.IndexOf(parts, part) == parts.Length -1)
+							property.SetValue(parent, value, null);
+						// Otherwise step down a level
+						else
+							parent = property.GetValue(parent, null);
+					}
 				}
 			}
 		}
@@ -160,7 +163,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			foreach (string expression in skipExpressions)
 			{
 				if (method.ReflectedType.ToString().IndexOf(expression) > -1
-				   || method.ToString().IndexOf(expression) > -1)
+				    || method.ToString().IndexOf(expression) > -1)
 					return false;
 			}
 
@@ -264,50 +267,50 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			// Disabled logging to boost performance
 			//using (LogGroup logGroup = LogGroup.Start("Checking whether the provided arguments match those on the provided method.", LogLevel.Debug))
 			//{
-				
-				if (method == null)
-					throw new ArgumentNullException("method");
-				
-				if (expectedArgumentTypes == null)
-					throw new ArgumentNullException("expectedArgumentTypes");
-				
+			
+			if (method == null)
+				throw new ArgumentNullException("method");
+			
+			if (expectedArgumentTypes == null)
+				throw new ArgumentNullException("expectedArgumentTypes");
+			
 			//	LogWriter.Debug("Method name: " + method.Name);
 			//	LogWriter.Debug("Method parent object: " + method.DeclaringType.FullName);
-				
-				
-				Type[] argumentTypes = method.GetGenericArguments();
-				
+			
+			
+			Type[] argumentTypes = method.GetGenericArguments();
+			
 			//	LogWriter.Debug("Arguments on method: " + argumentTypes.Length);
 			//	LogWriter.Debug("Arguments expected: " + expectedArgumentTypes);
-				
-				if (argumentTypes.Length == expectedArgumentTypes.Length)
+			
+			if (argumentTypes.Length == expectedArgumentTypes.Length)
+			{
+				for (int i = 0; i < expectedArgumentTypes.Length; i++)
 				{
-					for (int i = 0; i < expectedArgumentTypes.Length; i++)
-					{
-						// Get the actual type of the argument
-						Type actualType = argumentTypes[i];
-						
-						if (actualType == null)
-							throw new Exception("actualType == null");
-						
-						if (actualType.FullName == string.Empty)
-							throw new Exception("actualType.FullName == String.Empty");
-						
-			//			LogWriter.Debug("Comparing expected argument type '" + expectedArgumentTypes[i].FullName + "' with actual type '" + actualType.FullName + "'.");
-						
-						bool match = actualType.FullName == expectedArgumentTypes[i].FullName;
-						bool isAssignable = actualType.IsAssignableFrom(expectedArgumentTypes[i]);
-						
-			//			LogWriter.Debug("Match: " + match);
-			//			LogWriter.Debug("Is assignable: " + isAssignable);
-						
-						if (!(match || isAssignable))
-							argumentsMatch = false;
-					}
+					// Get the actual type of the argument
+					Type actualType = argumentTypes[i];
+					
+					if (actualType == null)
+						throw new Exception("actualType == null");
+					
+					if (actualType.FullName == string.Empty)
+						throw new Exception("actualType.FullName == String.Empty");
+					
+					//			LogWriter.Debug("Comparing expected argument type '" + expectedArgumentTypes[i].FullName + "' with actual type '" + actualType.FullName + "'.");
+					
+					bool match = actualType.FullName == expectedArgumentTypes[i].FullName;
+					bool isAssignable = actualType.IsAssignableFrom(expectedArgumentTypes[i]);
+					
+					//			LogWriter.Debug("Match: " + match);
+					//			LogWriter.Debug("Is assignable: " + isAssignable);
+					
+					if (!(match || isAssignable))
+						argumentsMatch = false;
 				}
-				else
-					argumentsMatch = false;
-				
+			}
+			else
+				argumentsMatch = false;
+			
 			//	LogWriter.Debug("Parameters match: " + argumentsMatch.ToString());
 			//}
 			return argumentsMatch;
@@ -324,54 +327,54 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			bool parametersMatch = true;
 			//using (LogGroup logGroup = LogGroup.Start("Checking whether the provide parameter types match those on the provided method.", LogLevel.Debug))
 			//{
-				if (method == null)
-					throw new ArgumentNullException("method");
-				
-				if (expectedParameters == null)
-					throw new ArgumentNullException("expectedParameters");
-				
-				if (!method.IsGenericMethod)
-					throw new ArgumentException("The provided method is not a constructed generic method.");
-				
+			if (method == null)
+				throw new ArgumentNullException("method");
+			
+			if (expectedParameters == null)
+				throw new ArgumentNullException("expectedParameters");
+			
+			if (!method.IsGenericMethod)
+				throw new ArgumentException("The provided method is not a constructed generic method.");
+			
 			//	LogWriter.Debug("Method name: " + method.Name);
 			//	LogWriter.Debug("Method parent object: " + method.DeclaringType.FullName);
-				
-				ParameterInfo[] parameters = method.GetParameters();
-				
+			
+			ParameterInfo[] parameters = method.GetParameters();
+			
 			//	LogWriter.Debug("Parameters on method: " + parameters.Length);
 			//	LogWriter.Debug("Parameters expected: " + expectedParameters);
-				
-				if (parameters.Length == expectedParameters.Length)
+			
+			if (parameters.Length == expectedParameters.Length)
+			{
+				for (int i = 0; i < expectedParameters.Length; i++)
 				{
-					for (int i = 0; i < expectedParameters.Length; i++)
-					{
-			//			LogWriter.Debug("Parameter: " + parameters[i].ToString());
-						
-						Type parameter = parameters[i].ParameterType;
-						
-						if (parameter == null)
-							throw new Exception("parameter == null");
-						
-						if (parameter.FullName == null)
-							throw new ArgumentException("The provided method is not a constructed generic method. Call MakeGenericMethod and pass the return value to this function.");
-						
-						Type expectedParameter = expectedParameters[i];
-						
-			//			LogWriter.Debug("Comparing expected parameter type '" + expectedParameter.FullName + "' with actual type '" + parameter.FullName + "'.");
-						
-						bool match = expectedParameter.FullName == parameter.FullName;
-						bool isAssignable = parameter.IsAssignableFrom(expectedParameter);
-						
-			//			LogWriter.Debug("Match: " + match);
-			//			LogWriter.Debug("Is assignable: " + isAssignable);
-						
-						if (!(match || isAssignable))
-							parametersMatch = false;
-					}
+					//			LogWriter.Debug("Parameter: " + parameters[i].ToString());
+					
+					Type parameter = parameters[i].ParameterType;
+					
+					if (parameter == null)
+						throw new Exception("parameter == null");
+					
+					if (parameter.FullName == null)
+						throw new ArgumentException("The provided method is not a constructed generic method. Call MakeGenericMethod and pass the return value to this function.");
+					
+					Type expectedParameter = expectedParameters[i];
+					
+					//			LogWriter.Debug("Comparing expected parameter type '" + expectedParameter.FullName + "' with actual type '" + parameter.FullName + "'.");
+					
+					bool match = expectedParameter.FullName == parameter.FullName;
+					bool isAssignable = parameter.IsAssignableFrom(expectedParameter);
+					
+					//			LogWriter.Debug("Match: " + match);
+					//			LogWriter.Debug("Is assignable: " + isAssignable);
+					
+					if (!(match || isAssignable))
+						parametersMatch = false;
 				}
-				else
-					parametersMatch = false;
-				
+			}
+			else
+				parametersMatch = false;
+			
 			//	LogWriter.Debug("Parameters match: " + parametersMatch.ToString());
 			//}
 			return parametersMatch;
@@ -399,9 +402,12 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 			
 			foreach (object obj in array)
 			{
-				Type type = obj.GetType();
-				if (!skipDuplicates || !types.Contains(type))
-					types.Add(type);
+				if (obj != null)
+				{
+					Type type = obj.GetType();
+					if (!skipDuplicates || !types.Contains(type))
+						types.Add(type);
+				}
 			}
 			
 			return (Type[])types.ToArray();

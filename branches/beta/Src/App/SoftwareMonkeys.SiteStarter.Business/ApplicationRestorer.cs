@@ -21,7 +21,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			get {
 				bool does = false;
-				using (LogGroup logGroup = LogGroup.Start("Checking whether the application requires restoration.", NLog.LogLevel.Debug))
+				using (LogGroup logGroup = LogGroup.StartDebug("Checking whether the application requires restoration."))
 				{
 					CheckLegacyDirectoryPath();
 					
@@ -194,7 +194,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// </summary>
 		public void ImportConfigs()
 		{
-			using (LogGroup logGroup = LogGroup.Start("Importing the legacy configuration settings.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Importing the legacy configuration settings."))
 			{
 				if (Config.Application == null)
 					throw new InvalidOperationException("Config.Application has not been initialized.");
@@ -210,10 +210,6 @@ namespace SoftwareMonkeys.SiteStarter.Business
 
 					if (legacyConfig.SessionTimeout != 0)
 						Config.Application.SessionTimeout = legacyConfig.SessionTimeout;
-					
-					// Set the last auto backup time so that the next one occurs in 10 minutes to prevent it executing
-					// during the restore which slows the application down
-					Config.Application.Settings["LastAutoBackup"] = DateTime.Now.Subtract(new TimeSpan(0, 50, 0));
 					
 					Config.Application.Save();
 				}

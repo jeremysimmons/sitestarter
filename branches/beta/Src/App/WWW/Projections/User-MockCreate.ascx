@@ -23,7 +23,10 @@
 		if (Request.QueryString["Total"] != null)
 			TotalUsers = Int32.Parse(Request.QueryString["Total"]);
 
+		using (Batch batch = BatchState.StartBatch())
+		{
 		CreateMockUsers(TotalUsers);
+	}
 	}
 
 	private void CreateMockUsers(int total)

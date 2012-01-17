@@ -99,5 +99,10 @@ namespace SoftwareMonkeys.SiteStarter.Configuration
         }
         #endregion
         
+        public AppConfig()
+        {
+        	
+        }
+        
     }
 }

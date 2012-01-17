@@ -336,5 +336,20 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			reference.Type2Name = Type2Name;
 		}
 		
+		public Guid GetOtherID(Guid entityID)
+		{
+			if (Entity1ID == entityID)
+				return Entity2ID;
+			else
+				return Entity1ID;
+	}
+		
+		public string GetOtherType(string entityTypeName)
+		{
+			if (Type1Name == entityTypeName)
+				return Type2Name;
+			else
+				return Type1Name;
+		}
 	}
 }

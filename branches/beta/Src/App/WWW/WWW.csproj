@@ -43,8 +43,35 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
   <ItemGroup>
+    <Reference Include="Cecil.FlowAnalysis">
+      <HintPath>..\..\..\lib\Cecil.FlowAnalysis.dll</HintPath>
+    </Reference>
     <Reference Include="Db4objects.Db4o">
       <HintPath>..\..\..\lib\Db4objects.Db4o.dll</HintPath>
+    </Reference>
+    <Reference Include="Db4objects.Db4o.CS">
+      <HintPath>..\..\..\lib\Db4objects.Db4o.CS.dll</HintPath>
+    </Reference>
+    <Reference Include="DB4objects.Db4o.CS.Optional">
+      <HintPath>..\..\..\lib\DB4objects.Db4o.CS.Optional.dll</HintPath>
+    </Reference>
+    <Reference Include="Db4objects.Db4o.Data.Services">
+      <HintPath>..\..\..\lib\Db4objects.Db4o.Data.Services.dll</HintPath>
+    </Reference>
+    <Reference Include="Db4objects.Db4o.Instrumentation">
+      <HintPath>..\..\..\lib\Db4objects.Db4o.Instrumentation.dll</HintPath>
+    </Reference>
+    <Reference Include="Db4objects.Db4o.Linq">
+      <HintPath>..\..\..\lib\Db4objects.Db4o.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="Db4objects.Db4o.NativeQueries">
+      <HintPath>..\..\..\lib\Db4objects.Db4o.NativeQueries.dll</HintPath>
+    </Reference>
+    <Reference Include="Db4objects.Db4o.Optional">
+      <HintPath>..\..\..\lib\Db4objects.Db4o.Optional.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil">
+      <HintPath>..\..\..\lib\Mono.Cecil.dll</HintPath>
     </Reference>
     <Reference Include="Selenium.WebDriverBackedSelenium">
       <HintPath>..\..\..\lib\Selenium.WebDriverBackedSelenium.dll</HintPath>
@@ -91,6 +118,7 @@
     <None Include="Admin\Tests\LogContains.aspx" />
     <None Include="Admin\Tests\PrepareTestAutoUpdate.aspx" />
     <None Include="Admin\Tests\PrepareTestImport.aspx" />
+    <None Include="Admin\Tests\ResetAutoBackup.aspx" />
     <None Include="Admin\Tests\ResetDefaultData.aspx" />
     <None Include="Admin\Tests\TestBreakableLogging.aspx" />
     <None Include="Admin\Tests\TestContactForm.aspx" />
@@ -99,11 +127,14 @@
     <None Include="Admin\Tests\TestEntitySelect_SingleEmpty.aspx" />
     <None Include="Admin\Tests\TestLogging.aspx" />
     <None Include="Admin\Tests\TestElementControl.aspx" />
+    <None Include="Admin\Tests\TestPerformance.aspx" />
+    <None Include="Admin\Tests\TestReportIssue.aspx" />
     <None Include="Admin\Tests\TestReset.aspx" />
     <None Include="Admin\Update.aspx" />
     <None Include="Admin\UpdateReady.html" />
     <None Include="AllowAutoUpdate.config" />
     <None Include="App_Data\Menu.default.sitemap" />
+    <None Include="AutoBackup.aspx" />
     <None Include="Controls\AdminFooter.ascx" />
     <None Include="Controls\AuthMenu.ascx" />
     <None Include="Controls\Testing.ascx" />

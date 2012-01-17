@@ -29,5 +29,23 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o.Tests
 		{
 			base.Test_MatchReference_Exclusion();
 		}
+		
+		[Test]
+		public override void Test_GetReferences_InterfaceReferenceProperty()
+		{
+			base.Test_GetReferences_InterfaceReferenceProperty();
+	}
+		
+		[Test]
+		public override void Test_GetActiveReferences_ReferenceWithInterfaceType()
+		{
+			base.Test_GetActiveReferences_ReferenceWithInterfaceType();
+		}
+		
+		[Test]
+		public override void Test_MatchReference()
+		{
+			base.Test_MatchReference();
+		}
 	}
 }

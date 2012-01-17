@@ -101,7 +101,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="type">The reaction type with the Reaction attribute to get the reaction information from.</param>
 		public ReactionInfo(Type type)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Analyzing the provided type to extract the info.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Analyzing the provided type to extract the info."))
 			{
 				ReactionAttribute attribute = null;
 				foreach (Attribute a in type.GetCustomAttributes(true))
@@ -141,7 +141,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			IReaction reaction = null;
 
-			using (LogGroup logGroup = LogGroup.Start("Creating a new reaction."))
+			using (LogGroup logGroup = LogGroup.StartDebug("Creating a new reaction."))
 			{
 				LogWriter.Debug("Type name: " + TypeName);
 				
@@ -174,7 +174,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		{
 			T reaction = default(T);
 			
-			using (LogGroup logGroup = LogGroup.Start("Creating a new reaction for the type '" + entityTypeName + "' and action '" + Action + "'.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Creating a new reaction for the type '" + entityTypeName + "' and action '" + Action + "'."))
 			{
 				LogWriter.Debug("Entity type name: " + entityTypeName);
 				

@@ -100,7 +100,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		
 		
 		[Test]
-		public void Test_Activate_2References()
+		public virtual void Test_Activate_SingleProperty_2References()
 		{
 			using (LogGroup logGroup = LogGroup.Start("Testing the Activate function with 2 references.", NLog.LogLevel.Debug))
 			{				
@@ -262,7 +262,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Tests
 		
 		
 		[Test]
-		public void Test_Activate_ReverseReference()
+		public virtual void Test_Activate_ReverseReference()
 		{
 			using (LogGroup logGroup = LogGroup.Start("Testing the activate function with a reverse reference.", NLog.LogLevel.Debug))
 			{

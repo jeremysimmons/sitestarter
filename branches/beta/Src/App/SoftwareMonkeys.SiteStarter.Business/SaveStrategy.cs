@@ -38,7 +38,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		public virtual bool Save(IEntity entity)
 		{
 			bool saved = false;
-			using (LogGroup logGroup = LogGroup.Start("Saving the provided entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Saving the provided entity."))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");

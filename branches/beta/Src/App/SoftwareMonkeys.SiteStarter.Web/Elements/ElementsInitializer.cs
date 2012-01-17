@@ -116,7 +116,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 		/// <param name="includeTestElements"></param>
 		public void Initialize(bool includeTestElements)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Initializing the web elements.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Initializing the web elements."))
 			{
 				if (StateAccess.IsInitialized)
 				{
@@ -165,7 +165,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 		{
 			List<ElementInfo> elements = new List<ElementInfo>();
 			
-			using (LogGroup logGroup = LogGroup.Start("Finding elements.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Finding elements."))
 			{
 				LogWriter.Debug("# of scanners: " + Scanners.Length);
 				

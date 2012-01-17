@@ -47,6 +47,7 @@
                 <cc:IndexGrid ID="IndexGrid" runat="server" HeaderText='<%# Resources.Language.Roles %>' AllowPaging="True" HeaderStyle-CssClass="Heading2" AllowSorting="True"
                                 AutoGenerateColumns="False" EmptyDataText='<%# Resources.Language.NoUserRolesFound %>'
                                 Width="100%"
+				DefaultSort="NameAscending"
                                 PageSize="20" DataKeyField="ID">
                                 <Columns>
                                     <asp:BoundColumn DataField="Name" HeaderText="Name" SortExpression="Name" />
