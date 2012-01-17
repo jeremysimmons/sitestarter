@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Collections;
+using SoftwareMonkeys.SiteStarter.Diagnostics;
 using SoftwareMonkeys.SiteStarter.Entities;
 using System.Reflection;
 
@@ -62,37 +63,45 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		
 		public override bool IsMatch(IEntity entity)
 		{
-			if (entity == null)
-				throw new ArgumentNullException("entity");
-			
-			if (Types == null || Types.Length == 0)
-				throw new InvalidOperationException("No types have been added to the filter.");
-			
-			if (Types.Length == 0)
-					throw new Exception("No types have been added. Use the AddType function.");
-			
+			bool valueMatches = false;
 			bool typeMatches = false;
-			Type entityType = entity.GetType();
-			
-			foreach (Type type in Types)
+			try
 			{
-				if (type.Equals(entityType)
-				    || entityType.IsSubclassOf(type)
-				    || type.ToString() == entityType.ToString())
+				if (entity == null)
+					throw new ArgumentNullException("entity");
+				
+				if (Types == null || Types.Length == 0)
+					throw new InvalidOperationException("No types have been added to the filter.");
+				
+				if (Types.Length == 0)
+					throw new Exception("No types have been added. Use the AddType function.");
+				
+				Type entityType = entity.GetType();
+				
+				foreach (Type type in Types)
 				{
-					typeMatches = true;
+					if (type.Equals(entityType)
+					    || entityType.IsSubclassOf(type)
+					    || type.ToString() == entityType.ToString())
+					{
+						typeMatches = true;
+					}
 				}
+				
+				PropertyInfo property = entityType.GetProperty(PropertyName);
+				
+				if (property == null)
+					throw new InvalidOperationException("Can't find property '" + PropertyName + "' on type '" + entityType.ToString() + "'.");
+				
+				object value = property.GetValue(entity, null);
+				
+				valueMatches = value == PropertyValue
+					|| (value != null && value.Equals(PropertyValue));
 			}
-			
-			PropertyInfo property = entityType.GetProperty(PropertyName);
-			
-			if (property == null)
-				throw new InvalidOperationException("Can't find property '" + PropertyName + "' on type '" + entityType.ToString() + "'.");
-			
-			object value = property.GetValue(entity, null);
-			
-			bool valueMatches = value == PropertyValue
-				|| (value != null && value.Equals(PropertyValue));
+			catch (Exception ex)
+			{
+				LogWriter.Error(ex);
+			}
 			
 			return typeMatches && valueMatches;
 		}

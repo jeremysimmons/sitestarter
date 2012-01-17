@@ -27,7 +27,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			set { _operator = value; }
 		}
 
-		private IDataFilter[] filters;
+		private IDataFilter[] filters = new IDataFilter[]{};
 		/// <summary>
 		/// Gets/sets the filters in the group.
 		/// </summary>
@@ -37,7 +37,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			set { filters = value; }
 		}
 		
-		private FilterGroup[] childGroups;
+		private FilterGroup[] childGroups = new FilterGroup[]{};
 		/// <summary>
 		/// Gets/sets the child groups.
 		/// </summary>
@@ -47,6 +47,16 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			set { childGroups = value; }
 		}
 		
+		public Type[] AllTypes
+		{
+			get { return GetAllTypes(); }
+		}
+		
+		IDataFilterGroup[] IDataFilterGroup.ChildGroups
+		{
+			get { return ChildGroups; }
+			set { ChildGroups = (FilterGroup[])value; }
+		}
 		
 		public FilterGroup()
 		{
@@ -102,88 +112,88 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			
 			bool isMatch = false;
 			
-			//using (LogGroup logGroup = LogGroup.Start("Checking whether the filter group matches the provided entity.", NLog.LogLevel.Debug))
-			//{
-			if (entity == null)
-				throw new ArgumentNullException("entity");
-			
-			bool allMatch = true;
-			bool anyMatch = false;
-			
-			//	LogWriter.Debug("Entity ID: " + entity.ID);
-			//	LogWriter.Debug("Entity type: " + entity.GetType().ToString());
-			//	LogWriter.Debug("Filter operator: " + Operator.ToString());
+			using (LogGroup logGroup = LogGroup.Start("Checking whether the filter group matches the provided entity.", NLog.LogLevel.Debug))
+			{
+				if (entity == null)
+					throw new ArgumentNullException("entity");
+				
+				bool allMatch = true;
+				bool anyMatch = false;
+				
+				LogWriter.Debug("Entity ID: " + entity.ID);
+				LogWriter.Debug("Entity type: " + entity.GetType().ToString());
+				LogWriter.Debug("Filter operator: " + Operator.ToString());
 
-			
-			//	LogWriter.Debug("# of filters: " + Filters.Length);
-			// If there are no filters then match all
-			if ((Filters == null || Filters.Length == 0)
-			    && (ChildGroups == null || ChildGroups.Length == 0))
-			{
-				isMatch = true;
-			}
-			else
-			{
-				if (Filters != null)
-				{
-					foreach (IDataFilter filter in this.Filters)
-					{
-						//		using (LogGroup logGroup2 = LogGroup.Start("Checking individual filter.", NLog.LogLevel.Debug))
-						//		{
-						if (filter.IsMatch(entity))
-						{
-							//				LogWriter.Debug("Filter matches. At least one of the filters match. anyMatch = true");
-							// At least one entity matches to anyMatch gets set to true
-							anyMatch = true;
-						}
-						else
-						{
-							//				LogWriter.Debug("Filter failed. At least one of the filters fail. allMatch = false");
-							// At least one entity FAILED to match to allMatch gets set to false
-							allMatch = false;
-						}
-						//}
-						
-					}
-				}
 				
-				if (ChildGroups != null)
+				LogWriter.Debug("# of filters: " + Filters.Length);
+				// If there are no filters then match all
+				if ((Filters == null || Filters.Length == 0)
+				    && (ChildGroups == null || ChildGroups.Length == 0))
 				{
-					foreach (FilterGroup group in this.ChildGroups)
-					{
-						//		using (LogGroup logGroup2 = LogGroup.Start("Checking individual filter.", NLog.LogLevel.Debug))
-						//		{
-						if (group.IsMatch(entity))
-						{
-							//				LogWriter.Debug("Filter matches. At least one of the filters match. anyMatch = true");
-							// At least one entity matches to anyMatch gets set to true
-							anyMatch = true;
-						}
-						else
-						{
-							//				LogWriter.Debug("Filter failed. At least one of the filters fail. allMatch = false");
-							// At least one entity FAILED to match to allMatch gets set to false
-							allMatch = false;
-						}
-						//}
-						
-					}
-				}
-				
-				if (Operator == FilterGroupOperator.Or)
-				{
-					//		LogWriter.Debug("Filter operator is OR. Using value of anyMatch variable.");
-					
-					isMatch = anyMatch;
+					isMatch = true;
 				}
 				else
 				{
-					//		LogWriter.Debug("Filter operator is AND. Using value of allMatch variable.");
-					isMatch = allMatch;
+					if (Filters != null)
+					{
+						foreach (IDataFilter filter in this.Filters)
+						{
+							using (LogGroup logGroup2 = LogGroup.Start("Checking individual filter.", NLog.LogLevel.Debug))
+							{
+								if (filter.IsMatch(entity))
+								{
+									LogWriter.Debug("Filter matches. At least one of the filters match. anyMatch = true");
+									// At least one entity matches to anyMatch gets set to true
+									anyMatch = true;
+								}
+								else
+								{
+									LogWriter.Debug("Filter failed. At least one of the filters fail. allMatch = false");
+									// At least one entity FAILED to match to allMatch gets set to false
+									allMatch = false;
+								}
+							}
+							
+						}
+					}
+					
+					if (ChildGroups != null)
+					{
+						foreach (FilterGroup group in this.ChildGroups)
+						{
+							using (LogGroup logGroup2 = LogGroup.Start("Checking individual filter.", NLog.LogLevel.Debug))
+							{
+								if (group.IsMatch(entity))
+								{
+									LogWriter.Debug("Filter matches. At least one of the filters match. anyMatch = true");
+									// At least one entity matches to anyMatch gets set to true
+									anyMatch = true;
+								}
+								else
+								{
+									LogWriter.Debug("Filter failed. At least one of the filters fail. allMatch = false");
+									// At least one entity FAILED to match to allMatch gets set to false
+									allMatch = false;
+								}
+							}
+							
+						}
+					}
+					
+					if (Operator == FilterGroupOperator.Or)
+					{
+						LogWriter.Debug("Filter operator is OR. Using value of anyMatch variable.");
+						
+						isMatch = anyMatch;
+					}
+					else
+					{
+						LogWriter.Debug("Filter operator is AND. Using value of allMatch variable.");
+						isMatch = allMatch;
+					}
+					
+					LogWriter.Debug("Is match: " + isMatch.ToString());
 				}
-				
-				//	LogWriter.Debug("Is match: " + isMatch.ToString());
-				//}
 			}
 			
 			return isMatch;
@@ -224,6 +234,49 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			group.Add(referenceFilter);
 			
 			return group;
+		}
+		
+		public Type[] GetAllTypes()
+		{
+			return GetAllTypes(this);
+		}
+		
+		public Type[] GetAllTypes(IDataFilterGroup group)
+		{
+			List<Type> types = new List<Type>();
+
+			if (group.Filters != null)
+			{
+				foreach (IDataFilter filter in group.Filters)
+				{
+					if (filter.Types != null)
+					{
+						foreach (Type type in filter.Types)
+						{
+							if (!types.Contains(type))
+							{
+								types.Add(type);
+							}
+						}
+					}
+				}
+			}
+			
+			if (group.ChildGroups != null)
+			{
+				foreach (IDataFilterGroup childGroup in group.ChildGroups)
+				{
+					foreach (Type type in GetAllTypes(childGroup))
+					{
+						if (!types.Contains(type))
+						{
+							types.Add(type);
+						}
+					}
+				}
+			}
+
+			return types.ToArray();
 		}
 	}
 
