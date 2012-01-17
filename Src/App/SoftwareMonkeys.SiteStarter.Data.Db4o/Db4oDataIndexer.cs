@@ -76,25 +76,15 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			Collection<IEntity> entities = new Collection<IEntity>();
 
-			using (LogGroup logGroup = LogGroup.Start("Retrieving entities by type and filter.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving entities by type and filter."))
 			{
 
 				if (group != null && group.Filters != null && group.Filters.Length > 0)
 				{
 
 					LogWriter.Debug("Group operator: " + group.Operator.ToString());
-
-					List<Type> allTypes = new List<Type>();
-
-					foreach (IDataFilter filter in group.Filters)
-					{
-						if (filter.Types != null)
-						{
-							foreach (Type type in filter.Types)
-								if (!allTypes.Contains(type))
-									allTypes.Add(type);
-						}
-					}
+					
+					Type[] allTypes = group.AllTypes;
 
 					// Loop through the types and load them
 					foreach (Type type in allTypes)
@@ -114,7 +104,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 
 					foreach (IEntity entity in entities)
 					{
-						using (LogGroup logGroup2 = LogGroup.Start("Entity found.", NLog.LogLevel.Debug))
+						using (LogGroup logGroup2 = LogGroup.StartDebug("Entity found."))
 						{
 							LogWriter.Debug("Entity ID: " + entity.ID);
 							LogWriter.Debug("Entity .ToString(): " + entity.ToString());

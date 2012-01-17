@@ -15,11 +15,14 @@ namespace SoftwareMonkeys.SiteStarter.Data
         FilterGroupOperator Operator {get;set;}
 
         IDataFilter[] Filters { get;set;}
+        
+        IDataFilterGroup[] ChildGroups { get;set; }
 
         void Add(IDataFilter filter);
         
         bool IsMatch(IEntity entity);
-
+        
+        Type[] AllTypes { get; }
     }
 
 }
