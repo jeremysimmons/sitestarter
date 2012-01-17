@@ -157,7 +157,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 
 		public BaseProjection(string action, Type type)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Constructing projection object.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Constructing projection object."))
 			{
 				LogWriter.Debug("Action: " + action);
 				LogWriter.Debug("Type: " + type.Name);
@@ -169,7 +169,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		
 		public BaseProjection(string action, Type type, bool requireAuthorisation)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Constructing projection object.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Constructing projection object."))
 			{
 				LogWriter.Debug("Action: " + action);
 				LogWriter.Debug("Type: " + type.Name);
@@ -203,7 +203,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		
 		protected override void OnInit(EventArgs e)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Initializing the projection.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Initializing the projection."))
 			{
 				LogWriter.Debug("Url: " + Request.Url.ToString());
 				
@@ -229,7 +229,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		
 		protected override void OnLoad(EventArgs e)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Loading the projection.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Loading the projection."))
 			{
 				LogWriter.Debug("Url: " + Request.Url.ToString());
 				
@@ -254,7 +254,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		
 		public override void DataBind()
 		{
-			using (LogGroup logGroup = LogGroup.Start("Data binding the projection.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Data binding the projection."))
 			{
 				LogWriter.Debug("Url: " + Request.Url.ToString());
 				

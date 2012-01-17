@@ -94,7 +94,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		{
 			string output = String.Empty;
 		
-			using (LogGroup logGroup = LogGroup.Start("Mapping the path: " + physicalApplicationPath, NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Mapping the path: " + physicalApplicationPath))
 			{
 				
 				LogWriter.Debug("Server relative path: " + relativeUrl);

@@ -58,7 +58,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <returns></returns>
 		public virtual bool Validate(IEntity entity)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Validating the provided entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Validating the provided entity."))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");

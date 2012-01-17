@@ -88,50 +88,56 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			bool typeMatches = false;
 			bool referenceMatches = false;
 			
-			using (LogGroup logGroup = LogGroup.Start("Checking whether provided entity matches this filter.", LogLevel.Debug))
-			{
-				if (referenceType == null)
-					throw new InvalidOperationException("ReferenceType property has not been set.");
-				
-				if (entity == null)
-					throw new ArgumentNullException("entity");
-			
-				if (Types == null || Types.Length == 0)
-					throw new InvalidOperationException("No types have been added to the filter.");
-				
-				if (this.ReferencedEntityID == Guid.Empty)
-					throw new InvalidOperationException("ReferencedEntityID is not set.");
-				
-				if (Types.Length == 0)
-					throw new Exception("No types have been added. Use the AddType function.");
-				
-				LogWriter.Debug("Property name: " + propertyName);
-				LogWriter.Debug("Referenced entity ID: " + referencedEntityID.ToString());
-				
-				LogWriter.Debug("Referenced type: " + referenceType.ToString());
-				
-				Type entityType = entity.GetType();
-				
-				LogWriter.Debug("Checking entity type: " + entityType.ToString());
-				LogWriter.Debug("Checking entity with ID: " + entity.ID);
-				
-				foreach (Type type in Types)
+			//using (LogGroup logGroup = LogGroup.Start("Checking whether provided entity matches this filter.", LogLevel.Debug))
+			//{
+				try
 				{
-					if (type.Equals(entityType)
-					    || entityType.IsSubclassOf(type)
-					    || type.ToString() == entityType.ToString())
+					if (referenceType == null)
+						throw new InvalidOperationException("ReferenceType property has not been set.");
+					
+					if (entity == null)
+						throw new ArgumentNullException("entity");
+										
+					if (this.ReferencedEntityID == Guid.Empty)
+						throw new InvalidOperationException("ReferencedEntityID is not set.");
+					
+					if (Types == null || Types.Length == 0)
+						throw new Exception("No types have been added. Use the AddType function.");
+					
+					//LogWriter.Debug("Property name: " + propertyName);
+					//LogWriter.Debug("Referenced entity ID: " + referencedEntityID.ToString());
+					
+					//LogWriter.Debug("Referenced type: " + referenceType.ToString());
+					
+					Type entityType = entity.GetType();
+					
+					//LogWriter.Debug("Checking entity type: " + entityType.ToString());
+					//LogWriter.Debug("Checking entity with ID: " + entity.ID);
+					
+					foreach (Type type in Types)
 					{
-						typeMatches = true;
+						if (type.Equals(entityType)
+						    || entityType.IsSubclassOf(type)
+						    || type.ToString() == entityType.ToString())
+						{
+							typeMatches = true;
+						}
 					}
-				}				
+					
+					string mirrorPropertyName = String.Empty;
+					mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(entity, PropertyName);
+
+					referenceMatches = DataAccess.Data.Referencer.MatchReference(entity.GetType(), entity.ID, propertyName, referenceType, referencedEntityID, mirrorPropertyName);
+					
+					//LogWriter.Debug("Type matches: " + typeMatches.ToString());
+					//LogWriter.Debug("Reference matches: " + referenceMatches.ToString());
+				}
+				catch (Exception ex)
+				{
+					LogWriter.Error(ex);
+				}
 				
-				referenceMatches = DataAccess.Data.Referencer.MatchReference(entity.GetType(), entity.ID, propertyName, referenceType, referencedEntityID);
-				//bool referenceMatches = DataAccess.Data.Referencer.MatchReference(entity.GetType(), entity.ID, propertyName, property.Type, referencedEntityType, referencedEntityID);
-				
-				LogWriter.Debug("Type matches: " + typeMatches.ToString());
-				LogWriter.Debug("Reference matches: " + referenceMatches.ToString());
-				
-			}
+			//}
 			return typeMatches && referenceMatches;
 		}
 		

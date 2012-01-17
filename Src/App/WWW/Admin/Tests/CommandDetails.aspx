@@ -72,6 +72,9 @@ private string[] LoadProjections(string action)
 			
 			if (actions[i] == "Edit")
 				actions.Add("Update");
+				
+			if (actions[i] == "View")
+				actions.Add("Retrieve");
 		}
 		
 		return actions.ToArray();
@@ -132,13 +135,13 @@ private void LoadAuthoriseReferenceStrategies(string[] actions)
 	{
 		if (EntitiesUtilities.IsReference(entityType, property))
 		{
-			Type referenceType = EntitiesUtilities.GetReferenceType(entityType, property);
+			//Type referenceType = EntitiesUtilities.GetReferenceType(entityType, property);
 		
-			string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(entityType, property);
+			//string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(entityType, property);
 		
-			StrategyInfo authoriseStrategy = locator.Locate(entityType.Name, property.Name, referenceType.Name, mirrorPropertyName);
+			//StrategyInfo authoriseStrategy = locator.Locate(entityType.Name, property.Name, referenceType.Name, mirrorPropertyName);
 			
-			output = output + property.Name + " (property): " + authoriseStrategy.StrategyType + "<br/>";
+			//output = output + property.Name + " (property): " + authoriseStrategy.StrategyType + "<br/>";
 		}
 	}
 	

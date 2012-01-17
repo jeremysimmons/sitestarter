@@ -13,6 +13,8 @@
     
     private void Page_Load(object sender, EventArgs e)
     {
+		Response.StatusCode = 500;
+
 		try
 		{
 			CurrentException = Server.GetLastError();

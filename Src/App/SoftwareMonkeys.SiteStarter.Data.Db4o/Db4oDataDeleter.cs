@@ -55,8 +55,11 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 						{
 							using (LogGroup logGroup2 = LogGroup.StartDebug("Checking reference property '" + property.Name + "' for obsolete references."))
 							{
-							Type referenceType = EntitiesUtilities.GetReferenceType(entity.GetType(), property.Name);
+								Type referenceType = EntitiesUtilities.GetReferenceType(entity, property.Name);
 							
+								// If the reference type is not null then continue
+								if (referenceType != null)
+								{
 								EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences(entity.GetType(),
 							                                                                                 entity.ID,
 							                                                                                 property.Name,
@@ -76,8 +79,10 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 								else
 									LogWriter.Debug("No references found associated with this property.");
 					}
+								// Otherwise skip it because the reference property hasn't been set
 				}
 					}
+				}
 				}
 				
 				LogWriter.Debug("References to delete: " + toDelete.Count);

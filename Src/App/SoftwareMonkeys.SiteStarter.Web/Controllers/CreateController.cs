@@ -84,7 +84,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			IEntity entity = null;
 			
-			using (LogGroup logGroup = LogGroup.Start("Creating a new entity."))
+			using (LogGroup logGroup = LogGroup.StartDebug("Creating a new entity."))
 			{
 				if (EnsureAuthorised())
 				{
@@ -103,7 +103,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <param name="entity"></param>
 		public virtual void Create(IEntity entity)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Creating a new entity."))
+			using (LogGroup logGroup = LogGroup.StartDebug("Creating a new entity."))
 			{
 				ExecuteCreate(entity);
 			}
@@ -115,7 +115,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		/// <param name="entity"></param>
 		public virtual void ExecuteCreate(IEntity entity)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Starting the create entity process.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Starting the create entity process."))
 			{
 				Validation.CheckMessages(entity);
 				
@@ -130,7 +130,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			bool success = false;
 			
-			using (LogGroup logGroup = LogGroup.Start("Saving the provided entity.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Saving the provided entity."))
 			{
 				ExecutePreSave(entity);
 				
@@ -166,7 +166,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		public virtual bool ExecuteSave(IEntity entity)
 		{
 			bool saved = false;
-			using (LogGroup logGroup = LogGroup.Start("Saving data from form.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Saving data from form."))
 			{
 				
 				if (EnsureAuthorised(entity))

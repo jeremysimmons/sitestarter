@@ -58,6 +58,7 @@
 	{
 		Dictionary<string, object> settings = new Dictionary<string, object>();
 		settings.Add("EnableUserRegistration", true);
+
 		return settings;
 	}
 

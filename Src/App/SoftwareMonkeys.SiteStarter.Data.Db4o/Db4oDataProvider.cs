@@ -259,8 +259,6 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					
 					EntityReference reference = (EntityReference)entity;
 					
-					//if (reference.Type1Name == String.Empty)
-
 					Type type = EntityState.GetType(reference.Type1Name);
 					Type type2 = EntityState.GetType(reference.Type2Name);
 
@@ -270,7 +268,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 					if (Stores[entity].IsStored(entity))
 					{
 						LogWriter.Debug("Reference object found in store.");
-						                
+						
 						isStored = true;
 					}
 					else
@@ -315,9 +313,12 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				
 				foreach (Db4oDataStore store in Stores)
 				{
-					LogWriter.Debug("Suspending store: " + store.Name);
-					
-					store.Dispose(fullDisposal);
+					if (store != null)
+					{
+						LogWriter.Debug("Suspending store: " + store.Name);
+						
+						store.Dispose(fullDisposal);
+					}
 				}
 			}
 		}

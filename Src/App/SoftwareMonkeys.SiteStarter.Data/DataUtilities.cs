@@ -70,9 +70,6 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			if (entity == null)
 				throw new ArgumentNullException("entity");
 			
-			// Use the same store for each type to boost performance
-			//return DataStoreName;
-			
 			string dataStoreName = String.Empty;
 			Type type = entity.GetType();
 			
@@ -84,7 +81,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					
 					EntityReference reference = (EntityReference)entity;
 					
-					dataStoreName = GetDataStoreName(new string[] {reference.Type1Name, reference.Type2Name});//GetType(names[0]), GetType(names[1]));//dataStoreNames[0] + "-" + dataStoreNames[1];
+					dataStoreName = GetDataStoreName(new string[] {reference.Type1Name, reference.Type2Name});
 				}
 				else
 				{
@@ -165,7 +162,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				LogWriter.Debug("Property name: " + property.Name);
 				LogWriter.Debug("Property type: " + property.PropertyType.Name);
 					
-				type = EntitiesUtilities.GetReferenceType(entity.GetType(), property);
+				type = EntitiesUtilities.GetReferenceType(entity, property);
 			}
 
 			if (type == null)

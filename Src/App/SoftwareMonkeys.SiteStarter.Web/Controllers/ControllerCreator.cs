@@ -52,7 +52,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		public IController CreateController(ControllerInfo controllerInfo)
 		{
 			IController controller = null;
-			using (LogGroup logGroup = LogGroup.Start("Creating a new controller based on the provided info.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Creating a new controller based on the provided info."))
 			{
 				if (controllerInfo == null)
 					throw new ArgumentNullException("controllerInfo");
@@ -120,7 +120,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Controllers
 		{
 			IndexController controller = null;
 			
-			using (LogGroup logGroup = LogGroup.Start("Creating a new IndexController.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Creating a new IndexController."))
 			{
 				LogWriter.Debug("Type name: " + typeName);
 				

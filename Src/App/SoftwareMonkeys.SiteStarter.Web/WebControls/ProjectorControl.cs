@@ -108,7 +108,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.WebControls
 		/// <param name="e"></param>
 		protected override void OnInit(EventArgs e)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Initializing the projector control.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Initializing the projector control."))
 			{
 				LogWriter.Debug("Url: " + Page.Request.Url.ToString());
 				LogWriter.Debug("Action: " + Action);

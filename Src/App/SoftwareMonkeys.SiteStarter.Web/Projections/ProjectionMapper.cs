@@ -353,6 +353,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 					    || ext == "script" // script file
 					    || ext == "css" // stylesheet
 					    || ext == "axd" // WebResource.axd file
+					    || ext == "ashx" // .ashx file
 					    || fileName.ToLower() == "quicksetup.aspx" // quick setup page
 					    || fileName.ToLower() == "setup.aspx" // setup page
 					    || fileName.ToLower() == "projector.aspx"
@@ -374,7 +375,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		{
 			bool isReal = false;
 			
-			using (LogGroup logGroup = LogGroup.Start("Checking whether the specified URL points to a real file.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Checking whether the specified URL points to a real file."))
 			{
 				LogWriter.Debug("Provided URL: " + url);
 				
@@ -706,13 +707,16 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 				
 				foreach (string part in queryParts)
 				{
-					int pos = part.IndexOf('=');
-					
-					string key = part.Substring(0, pos);
-					string value = part.Substring(pos+1, part.Length-pos-1);
-					
-					if (!parameters.ContainsKey(key))
-						parameters.Add(key, value);
+					if (part.Length > 0 && part.IndexOf("=") > -1)
+					{
+						int pos = part.IndexOf('=');
+						
+						string key = part.Substring(0, pos);
+						string value = part.Substring(pos+1, part.Length-pos-1);
+						
+						if (!parameters.ContainsKey(key))
+							parameters.Add(key, value);
+					}
 				}
 			}
 		}

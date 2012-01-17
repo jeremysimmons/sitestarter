@@ -39,21 +39,28 @@ namespace SoftwareMonkeys.SiteStarter.Business.Security
 				if (property == null)
 					throw new ArgumentNullException("property");
 				
-				Type referenceType = EntitiesUtilities.GetReferenceType(entity.GetType(), property);
-				
-				LogWriter.Debug("Referenced type: " + referenceType.FullName);
-				
-				string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(entity.GetType(), property);
-				
-				LogWriter.Debug("Mirror property name: " + mirrorPropertyName);
-				
-				strategy = New(entity.ShortTypeName, property.Name, referenceType.Name, mirrorPropertyName);
-				
-				if (strategy != null)
+				Type referenceType = EntitiesUtilities.GetReferenceType(entity, property);
+			
+				// If the reference type is not null then continue	
+				if (referenceType != null)
 				{
-					strategy.SourceEntity = entity;
-					strategy.SourceProperty = property.Name;
+					LogWriter.Debug("Referenced type: " + referenceType.FullName);
+				
+					string mirrorPropertyName = EntitiesUtilities.GetMirrorPropertyName(entity, property);
+			
+					LogWriter.Debug("Mirror property name: " + mirrorPropertyName);
+				
+					strategy = New(entity.ShortTypeName, property.Name, referenceType.Name, mirrorPropertyName);
+				
+					if (strategy != null)
+					{
+						strategy.SourceEntity = entity;
+						strategy.SourceProperty = property.Name;
+					}
 				}
+				// Otherwise skip it because it means the property is not set
+				else
+					LogWriter.Debug("Reference type is null. Skipping.");
 			}
 			return strategy;
 		}

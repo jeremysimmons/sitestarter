@@ -141,7 +141,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		public string CreateFriendlyUrl(string action, string typeName)
 		{
 			string link = String.Empty;
-			using (LogGroup logGroup = LogGroup.Start("Creating a friendly URL for the specified action and type.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Creating a friendly URL for the specified action and type."))
 			{
 				LogWriter.Debug("Action: " + action);
 				LogWriter.Debug("Type name: " + typeName);
@@ -165,7 +165,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		public string CreateFriendlyUrl(string action, string typeName, string propertyName, string value)
 		{
 			string link = String.Empty;
-			using (LogGroup logGroup = LogGroup.Start("Creating a friendly URL for the specified action and type, including the specified property name and value.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Creating a friendly URL for the specified action and type, including the specified property name and value."))
 			{
 				LogWriter.Debug("Action: " + action);
 				LogWriter.Debug("Type name: " + typeName);
@@ -202,7 +202,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		public string CreateFriendlyUrl(string action, IEntity entity)
 		{
 			string link = String.Empty;
-			using (LogGroup logGroup = LogGroup.Start("Creating a friendly URL for the specified action and provided entity type.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Creating a friendly URL for the specified action and provided entity type."))
 			{
 				if (entity == null)
 					throw new ArgumentNullException("entity");
@@ -241,7 +241,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		public string CreateStandardUrl(string action, string typeName, ProjectionFormat format)
 		{
 			string link = String.Empty;
-			using (LogGroup logGroup = LogGroup.Start("Creating a standard URL for the specified action and type, with the specified format.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Creating a standard URL for the specified action and type, with the specified format."))
 			{
 				LogWriter.Debug("Action: " + action);
 				LogWriter.Debug("Type name: " + typeName);
@@ -259,7 +259,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		public string CreateStandardUrl(string action, string typeName)
 		{
 			string link = String.Empty;
-			using (LogGroup logGroup = LogGroup.Start("Creating a standard URL for the specified action and type.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Creating a standard URL for the specified action and type."))
 			{
 				LogWriter.Debug("Action: " + action);
 				LogWriter.Debug("Type name: " + typeName);
@@ -280,7 +280,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		public string CreateStandardUrl(string action, IEntity entity)
 		{
 			string link = String.Empty;
-			using (LogGroup logGroup = LogGroup.Start("Creating a standard URL for the specified action and provided entity type.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Creating a standard URL for the specified action and provided entity type."))
 			{
 				LogWriter.Debug("Action: " + action);
 				LogWriter.Debug("Entity type: " + entity.ShortTypeName);
@@ -302,7 +302,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		public string CreateStandardUrl(string action, IEntity entity, ProjectionFormat format)
 		{
 			string link = String.Empty;
-			using (LogGroup logGroup = LogGroup.Start("Creating a standard URL for the specified action and provided entity type, with the specified format.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Creating a standard URL for the specified action and provided entity type, with the specified format."))
 			{
 				LogWriter.Debug("Action: " + action);
 				LogWriter.Debug("Entity type: " + entity.ShortTypeName);
@@ -329,7 +329,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		public string CreateStandardUrl(string action, string typeName, string propertyName, string value, ProjectionFormat format)
 		{
 			string link = String.Empty;
-			using (LogGroup logGroup = LogGroup.Start("Creating a standard URL for the specified action and provided entity type, with the specified property name and value, as well as the specified format.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Creating a standard URL for the specified action and provided entity type, with the specified property name and value, as well as the specified format."))
 			{
 				LogWriter.Debug("Action: " + action);
 				LogWriter.Debug("Type name: " + typeName);
@@ -350,7 +350,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		public string CreateStandardUrl(string action, string typeName, string propertyName, string value)
 		{
 			string link = String.Empty;
-			using (LogGroup logGroup = LogGroup.Start("Creating a standard URL for the specified action and provided entity type, with the specified property name and value.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Creating a standard URL for the specified action and provided entity type, with the specified property name and value."))
 			{
 				LogWriter.Debug("Action: " + action);
 				LogWriter.Debug("Type name: " + typeName);
@@ -492,7 +492,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		public virtual string CreateUrl(string action, string typeName, string propertyName, string dataKey)
 		{
 			string link = String.Empty;
-			using (LogGroup logGroup = LogGroup.Start("Creating a link.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Creating a link."))
 			{
 				if (EnableFriendlyUrls)
 					link = CreateFriendlyUrl(action, typeName, propertyName, dataKey);
@@ -563,7 +563,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		{
 			string url = string.Empty;
 			
-			using (LogGroup logGroup = LogGroup.Start("Creating a URL.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Creating a URL."))
 			{
 				string action = QueryStrings.Action;
 				string typeName = QueryStrings.Type;
@@ -633,7 +633,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		{
 			string newUrl = originalUrl;
 			
-			using (LogGroup logGroup = LogGroup.Start("Adding the result text to the link.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Adding the result text to the link."))
 			{
 				LogWriter.Debug("Link before: " + originalUrl);
 				
@@ -675,7 +675,7 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		public bool ResultAlreadyExists(string resultText)
 		{
 			bool exists = false;
-			using (LogGroup logGroup = LogGroup.Start("Checking whether the result already exists in the URL.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Checking whether the result already exists in the URL."))
 			{
 				Uri uri = new Uri(CurrentUrl);
 				
@@ -712,8 +712,19 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		/// <returns>The prepared version of the provided text.</returns>
 		public string PrepareForUrl(string text)
 		{
+			// Swap double spaces for single ones to avoid confusing the ProjectionMapper
+			while (text.Replace("  ", " ").Length < text.Length) 
+				text = text.Replace("  ", " ");
+
 			text = EntitiesUtilities.FormatUniqueKey(text);
-			return HttpUtility.UrlEncode(text);
+			
+			text = HttpUtility.UrlEncode(text);
+
+			// Swap double dashes for single ones to avoid confusing the ProjectionMapper
+			while (text.Replace("--", "-").Length < text.Length) 
+				text = text.Replace("--", "-");
+
+			return text;
 		}
 		
 		/// <summary>

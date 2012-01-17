@@ -14,6 +14,7 @@
 		<call target="Common.Jobs.ClearData" failonerror="false"/>
 		<call target="Common.Jobs.ClearData"/>
 		<call target="Common.Jobs.ClearCache"/>
+		<call target="Common.Jobs.ConfigureIIS"/>
 		<call target="Common.Jobs.InitializeCache"/>
 
 
@@ -105,6 +106,9 @@
 	        <exclude name="**/*.dll.r*"/>
 	        <exclude name="**/*.exe.r*"/>
 	        <exclude name="**/App_Data/VS/**"/>
+	        <exclude name="**/App_Data/Export/"/>
+	        <exclude name="**/App_Data/Export/**"/>
+	        <exclude name="**/App_Data/Import/"/>
 	        <exclude name="**/App_Data/Import/**"/>
 	        <exclude name="**/App_Data/ImportDefault/**"/>
 	        <exclude name="**/App_Data/LegacyDefault/**"/>
@@ -218,11 +222,14 @@
 	        <exclude name="**/App_Data/VS/**"/>
 	        <exclude name="**/fckeditor/**"/>
 	        <exclude name="**/Backups/*.zip"/>
-	        <exclude name="**/App_Data/**.xml"/>
 	        <exclude name="**/App_Data/Testing/*"/>
 	        <exclude name="**/App_Data/*.db4o"/>
 	        <exclude name="**/App_Data/Personalization_Data"/>
 	        <exclude name="**/App_Data/Logs"/>
+	        <exclude name="**/App_Data/Export/"/>
+	        <exclude name="**/App_Data/Export/**"/>
+	        <exclude name="**/App_Data/Import/"/>
+	        <exclude name="**/App_Data/Import/**"/>
 	        <exclude name="**/App_Data/LogsArchive"/>
 	        <exclude name="**/App_Data/LogReports/**"/>
 	        <exclude name="**/App_Data/LegacyDefault/**"/>
@@ -261,6 +268,7 @@
 	        <exclude name="**/WebDriver.dll"/>
 	        <exclude name="*MockCreate*"/><!-- Exclude the mock/test create projections -->
 	        <exclude name="**/FunctionalTests/Results/**"/>
+	        <include name="**/App_Data/*.xml"/>
 	        <include name="${IncludeKey}" />
 	    </fileset>	   
 	</zip>

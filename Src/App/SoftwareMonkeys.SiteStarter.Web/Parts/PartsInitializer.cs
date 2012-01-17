@@ -163,7 +163,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		/// </summary>
 		public void Initialize()
 		{
-			using (LogGroup logGroup = LogGroup.Start("Initializing the web parts.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Initializing the web parts."))
 			{
 				if (StateAccess.IsInitialized && !PartState.IsInitialized)
 				{
@@ -215,7 +215,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Parts
 		{
 			List<PartInfo> parts = new List<PartInfo>();
 			
-			using (LogGroup logGroup = LogGroup.Start("Finding parts.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Finding parts."))
 			{
 				LogWriter.Debug("# of scanners: " + Scanners.Length);
 				

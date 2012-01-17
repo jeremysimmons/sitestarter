@@ -81,12 +81,12 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		protected void Initialize(DataProvider provider, IDataStore store)
 		{
 			// Logging disabled to improve performance
-			//using (LogGroup logGroup = LogGroup.Start("Initializing the data adapter.", LogLevel.Debug))
+			//using (LogGroup logGroup = LogGroup.StartDebug("Initializing the data adapter."))
 			//{
 			//	LogWriter.Debug("Set the provider for the adapter to use.");
-				this.provider = provider;
+			this.provider = provider;
 			//	LogWriter.Debug("Set the store for the adapter to use.");
-				this.DataStore = store;
+			this.DataStore = store;
 			//}
 		}
 		
@@ -207,7 +207,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 				output = entity;
 			else
 				output = entity.Clone();
-						
+			
 			return output;
 		}
 		
@@ -231,10 +231,13 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			Collection<IEntity> collection = new Collection<IEntity>();
 			foreach (IEntity e in entities)
 			{
-				if (AutoRelease)
-					collection.Add(e.Clone());
-				else
-					collection.Add(e);
+				if (e != null)
+				{
+					if (AutoRelease)
+						collection.Add(e.Clone());
+					else
+						collection.Add(e);
+				}
 			}
 			return collection.ToArray();
 		}

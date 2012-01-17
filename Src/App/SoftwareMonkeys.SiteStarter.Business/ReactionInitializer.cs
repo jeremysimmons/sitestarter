@@ -106,7 +106,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 		/// <param name="includeTestReactions"></param>
 		public void Initialize(bool includeTestReactions)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Initializing the business reactions.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Initializing the business reactions."))
 			{
 				ReactionInfo[] reactions = new ReactionInfo[]{};
 				if (!ReactionState.IsInitialized)

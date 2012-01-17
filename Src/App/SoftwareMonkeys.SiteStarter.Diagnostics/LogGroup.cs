@@ -310,7 +310,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		{
 			MethodBase callingMethod = null;
 
-			if (new LogSupervisor().LoggingEnabled(LogLevel.Debug))
+			if (new LogSupervisor().LoggingEnabled(LogLevel.Info))
 				callingMethod = Reflector.GetCallingMethod();
 
 			return Start(summary, LogLevel.Info, callingMethod);
@@ -322,6 +322,7 @@ namespace SoftwareMonkeys.SiteStarter.Diagnostics
 		/// <param name="summary"></param>
 		/// <param name="logLevel"></param>
 		/// <returns></returns>
+		[Obsolete("NLog.LogLevel should no longer be used.")]
 		static public LogGroup Start(string summary, NLog.LogLevel logLevel)
 		{
 			return Start(summary, LogWriter.ConvertLevel(logLevel));

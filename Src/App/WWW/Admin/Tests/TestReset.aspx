@@ -1,4 +1,5 @@
 ﻿<%@ Page Language="C#" Title="Test Reset" %>
+<%@ Import Namespace="SoftwareMonkeys.SiteStarter.State" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Entities" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business" %>
 <%@ Import Namespace="SoftwareMonkeys.SiteStarter.Business.Security" %>
@@ -16,6 +17,8 @@
 <%@ Import namespace="SoftwareMonkeys.SiteStarter.Diagnostics" %>
 <script runat="server">
 public int TotalStoresDeleted = 0;
+public int TotalEntitiesDeleted = 0;
+public int TotalReferencesDeleted = 0;
 
 public string DataDirectoryPath
 {
@@ -30,9 +33,11 @@ protected override void OnLoad(EventArgs e)
 		{		
 			// TODO: Clean up
 	
-			DeleteDb4oFiles();
+			//DeleteDb4oFiles();
 	
-			//DeleteEntities();
+			DeleteEntities();
+
+			DeletePersonalization();
 		
 			//DeleteMenuFile();
 		
@@ -48,13 +53,10 @@ protected override void OnLoad(EventArgs e)
 			if (Request.QueryString["Config"] != null && Request.QueryString["Config"].ToLower() == "true")
 				DeleteConfigurationFile();
 		
+			SuspendAutoBackup();
+				
 			if (StateAccess.IsInitialized && AuthenticationState.IsAuthenticated)
 				Authentication.SignOut();
-		
-			//Response.Redirect(Request.ApplicationPath + "/Admin/QuickSetup.aspx");
-		
-			// Restart the asp.net application
-			//System.Web.HttpRuntime.UnloadAppDomain();
 		}
 	}
 }
@@ -80,7 +82,7 @@ private void DeleteDb4oFiles()
 
 private void DeleteEntities()
 {
-	using (LogGroup logGroup = LogGroup.Start("Deleting all entities in the system.", NLog.LogLevel.Debug))
+	using (LogGroup logGroup = LogGroup.StartDebug("Deleting all entities in the system."))
 	{
 		if (DataAccess.IsInitialized)
 		{
@@ -93,7 +95,7 @@ private void DeleteEntities()
 					//if (!CanSkipDelete(entity))
 						DataAccess.Data.Deleter.Delete(entity);
 						
-				//	TotalEntitiesDeleted++;
+					TotalEntitiesDeleted++;
 				}		
 				
 				EntityReferenceCollection references = DataAccess.Data.Referencer.GetReferences();
@@ -102,7 +104,7 @@ private void DeleteEntities()
 				{
 					DataAccess.Data.Deleter.Delete(reference);
 						
-				//	TotalReferencesDeleted++;
+					TotalReferencesDeleted++;
 				}		
 			}
 		}
@@ -138,6 +140,14 @@ private void DeleteMenuFile()
 		File.Delete(path);
 }
 
+private void DeletePersonalization()
+{
+	string path = Server.MapPath(Request.ApplicationPath + "/App_Data/Personalization_Data");
+	
+	if (Directory.Exists(path))
+		Directory.Delete(path, true);
+}
+
 private void DeleteVersionFile()
 {
 	string path = Server.MapPath(Request.ApplicationPath + "/App_Data/" + VersionUtilities.GetVersionFileName(WebUtilities.GetLocationVariation(Request.Url)));
@@ -171,10 +181,24 @@ private void DeleteLogs()
 {
 	string path = Server.MapPath(Request.ApplicationPath + "/App_Data/Logs");
 	
-	if (Directory.Exists(path))
-		Directory.Delete(path, true);
+	try
+	{
+		if (Directory.Exists(path))
+			Directory.Delete(path, true);
+	}
+	catch (IOException ex)
+	{
+		LogWriter.Error(ex);
+	}
 }
 
+private void SuspendAutoBackup()
+{
+	if (StateAccess.IsInitialized)
+	{
+		StateAccess.State.SetApplication("LastAutoBackup", DateTime.Now);
+	}
+}
 </script>
 <html>
 <head runat="server">
@@ -182,7 +206,7 @@ private void DeleteLogs()
 <body>
 <form runat="server">
 Done...<br/>
-Data stores cleared: <%= TotalStoresDeleted %>
+Entities cleared: <%= TotalEntitiesDeleted %><br/>
 </form>
 </body>
 </html>

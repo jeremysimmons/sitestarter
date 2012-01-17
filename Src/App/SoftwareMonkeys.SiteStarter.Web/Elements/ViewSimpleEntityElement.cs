@@ -2,6 +2,7 @@
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using SoftwareMonkeys.SiteStarter.Entities;
+using SoftwareMonkeys.SiteStarter.Web.Projections;
 
 namespace SoftwareMonkeys.SiteStarter.Web.Elements
 {
@@ -11,6 +12,10 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 	[Element("View", "ISimple")]
 	public class ViewSimpleEntityElement : BaseElement
 	{
+		HyperLink ViewLink = new HyperLink();
+		LiteralControl DescriptionContent = new LiteralControl();
+		PlaceHolder TitleHolder = new PlaceHolder();
+		
 		private ISimple dataSource;
 		public ISimple DataSource
 		{
@@ -28,35 +33,93 @@ namespace SoftwareMonkeys.SiteStarter.Web.Elements
 			set { headingText = value; }
 		}
 		
+		
+		public bool EnableViewLink
+		{
+			get {
+				if (ViewState["EnableViewLink"] == null)
+				{
+					return false;
+				}
+				else
+					return (bool)ViewState["EnableViewLink"];
+			}
+			set { ViewState["EnableViewLink"] = value; }
+		}
+		
 		public ViewSimpleEntityElement()
 		{
 		}
 		
 		protected override void CreateChildControls()
 		{
-			Table table = new Table();
-			table.Width = Width;
-			table.Rows.Add(new TableRow());
-			table.Rows[0].Cells.Add(new TableCell());
-			table.Rows[0].Cells[0].CssClass = "Heading2";
-			table.Rows[0].Cells[0].Width = Unit.Percentage(100);
-			table.Rows[0].Cells[0].ColumnSpan = 2;
-			table.Rows[0].Cells[0].Controls.Add(new LiteralControl(HeadingText));
+			Controls.Add(
+				new LiteralControl(
+					String.Format(
+						"<div class='{0}'>",
+						"Heading2"
+					)
+				)
+			);
 			
-			if (DataSource != null)
-			{
-				table.Rows.Add(new TableRow());
-				table.Rows[1].Cells.Add(new TableCell());
-				table.Rows[1].Cells[0].Controls.Add(new LiteralControl(DataSource.Title));
-				
-				table.Rows.Add(new TableRow());
-				table.Rows[2].Cells.Add(new TableCell());
-				table.Rows[2].Cells[0].Controls.Add(new LiteralControl(DataSource.Description));
-			}
+			Controls.Add(new LiteralControl(HeadingText));
 			
-			Controls.Add(table);
+			Controls.Add(new LiteralControl("</div>"));
 			
+			Controls.Add(new LiteralControl("<p>"));
+			
+			Controls.Add(TitleHolder);
+			
+			Controls.Add(new LiteralControl("</p>"));
+			
+			Controls.Add(new LiteralControl("<p>"));
+			
+			Controls.Add(DescriptionContent);
+			
+			Controls.Add(new LiteralControl("</p>"));
+						
 			base.CreateChildControls();
+		}
+		
+		
+		public override void DataBind()
+		{
+			base.DataBind();
+			
+			if (ViewState["EnableViewLink"] == null)
+				ViewState["EnableViewLink"] = ProjectionState.Projections.Contains("View", DataSource.ShortTypeName);
+			
+			if (EnableViewLink)
+			{
+				TitleHolder.Controls.Add(ViewLink);
+				ViewLink.NavigateUrl = new UrlCreator().CreateUrl("View", DataSource);
+				ViewLink.Text = DataSource.Title;
+				
+				
+				DescriptionContent.Text = DataSource.Description.Replace(Environment.NewLine, "<br/>");
+			}
+			else
+			{
+				TitleHolder.Controls.Add(new LiteralControl(DataSource.Title));
+			}
+		
+			
+			IsDataBound = true;
+		}
+		
+		public bool IsDataBound = false;
+		
+		public virtual void EnsureDataBound()
+		{
+			if (!IsDataBound)
+				DataBind();
+		}
+		
+		protected override void OnPreRender(EventArgs e)
+		{
+			EnsureDataBound();
+			
+			base.OnPreRender(e);
 		}
 	}
 }

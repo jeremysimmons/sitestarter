@@ -80,25 +80,10 @@ private void Page_Load(object sender, EventArgs e)
     {
 	        ((EntitySelect)sender).DataSource = IndexStrategy.New<User>().Index<User>();
     }
-    
-    private void GoMultipleButton_Click(object sender, EventArgs e)
-    {
-		ShowSelected(MultipleSelect.SelectedEntities);
-    }
-    
-    private void GoMultipleEmptyButton_Click(object sender, EventArgs e)
-    {
-		ShowSelected(MultipleEmptySelect.SelectedEntities);
-    }
-    
-    private void GoSingleButton_Click(object sender, EventArgs e)
-    {
-		ShowSelected(SingleSelect.SelectedEntities);
-    }
 
     private void GoSingleEmptyButton_Click(object sender, EventArgs e)
     {
-		ShowSelected(SingleSelect.SelectedEntities);
+		ShowSelected(SingleEmptySelect.SelectedEntities);
     }
 
 	private void ShowSelected(IEntity[] entities)

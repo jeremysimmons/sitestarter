@@ -96,38 +96,38 @@ namespace SoftwareMonkeys.SiteStarter.Data
 					{
 						using (LogGroup logGroup2 = LogGroup.StartDebug("Attempting import of: " + file))
 						{
-						IEntity entity = LoadEntityFromFile(file);
-						
+							IEntity entity = LoadEntityFromFile(file);
+							
 							LogWriter.Debug("Entity type: " +
 							                (entity != null ? entity.GetType().ToString() : "[null]"));
-						
+							
 							if (entity != null && IsValid(entity))
-						{
+							{
 								LogWriter.Debug("Is valid entity.");
 								
-							if (!DataAccess.Data.IsStored((IEntity)entity))
-							{
-								LogWriter.Debug("New entity. Importing.");
-								
+								if (!DataAccess.Data.IsStored((IEntity)entity))
+								{
+									LogWriter.Debug("New entity. Importing.");
+									
 									Save(entity);
+								}
+								else
+								{
+									LogWriter.Debug("Entity already exists in store. Skipping.");
+								}
+								
+								MoveToImported(entity, file);
 							}
 							else
 							{
-								LogWriter.Debug("Entity already exists in store. Skipping.");
-							}
-							
-							MoveToImported(entity, file);
-						}
-						else
-						{
 								LogWriter.Error("Cannot import invalid entity...\nID: " + (entity != null ? entity.ID.ToString() : "[null]") + "\nType: " + (entity != null ? entity.ShortTypeName : "[null]"));
-							
-							MoveToFailed(entity, file);
+								
+								MoveToFailed(entity, file);
+							}
 						}
 					}
 				}
 			}
-		}
 		}
 		
 		protected void Save(IEntity entity)
@@ -169,32 +169,32 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		}
 		
 		public string[] LoadStandardEntitiesFileList(string dir)
-					{
+		{
 			List<string> list = new List<string>();
 			
 			using (LogGroup logGroup = LogGroup.StartDebug("Loading standard entities file list."))
 			{
 				LogWriter.Debug("Directory: " + dir);
 				
-			foreach (string subDirectory in Directory.GetDirectories(dir))
-			{
-				string folderName = Path.GetFileName(subDirectory);
-				
-				// If the folder name contains a dot then it contains standard entities
-				if (folderName.IndexOf(".") > -1)
+				foreach (string subDirectory in Directory.GetDirectories(dir))
 				{
+					string folderName = Path.GetFileName(subDirectory);
+					
+					// If the folder name contains a dot then it contains standard entities
+					if (folderName.IndexOf(".") > -1)
+					{
 						foreach (string file in Directory.GetFiles(subDirectory, "*.xml"))
 						{
-						if (!list.Contains(file))
-							list.Add(file);
+							if (!list.Contains(file))
+								list.Add(file);
 						}
 					}
 				}
 			}
 			
 			return list.ToArray();
-			}
-			
+		}
+		
 		public string[] LoadReferencesFileList(string dir)
 		{
 			List<string> list = new List<string>();
@@ -397,7 +397,7 @@ namespace SoftwareMonkeys.SiteStarter.Data
 		}
 		
 		public bool IsValidEntity(IEntity entity)
-		{			
+		{
 			if (entity == null)
 				return false;
 			
@@ -462,7 +462,8 @@ namespace SoftwareMonkeys.SiteStarter.Data
 			else
 				version = importVersion;
 			
-			return version;			
+			return version;
 		}
 		
+	}
 }

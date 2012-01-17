@@ -140,7 +140,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// </summary>
 		public virtual void Index()
 		{
-			using (LogGroup logGroup = LogGroup.Start("Displaying an index of entities.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Displaying an index of entities."))
 			{
 				if (controller == null)
 					throw new InvalidOperationException("Controller has not be initialized. Call IndexPage.Initialize().");
@@ -158,7 +158,7 @@ namespace SoftwareMonkeys.SiteStarter.Web.Projections
 		/// </summary>
 		public void Index(IEntity[] entities)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Displaying an index of the provided entities.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Displaying an index of the provided entities."))
 			{
 				if (entities == null)
 					throw new ArgumentNullException("entities");

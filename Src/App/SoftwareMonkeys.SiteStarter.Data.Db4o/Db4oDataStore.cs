@@ -75,7 +75,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 				StateAccess.State.SetApplication(ObjectServerKey, value);}
 		}
 		
-		public int MaxOpenRetries = 10;
+		public int MaxOpenRetries = 1000;
 		
 		/// <summary>
 		/// Gets the key that represents the object server when held in the state store.
@@ -155,7 +155,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// </summary>
 		public Db4oDataStore()
 		{
-			using (LogGroup logGroup = LogGroup.Start("Constructing a Db4oDataStore object.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Constructing a Db4oDataStore object."))
 			{
 				LogWriter.Debug("Empty constructor.");
 			}
@@ -168,7 +168,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		// TODO: See if this is necessary. If not, remove it
 		public Db4oDataStore(IConfiguration db4oConfiguration)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Constructing a Db4oDataStore object.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Constructing a Db4oDataStore object."))
 			{
 				LogWriter.Debug("Setting the db4o configuration object.");
 				this.db4oConfiguration = db4oConfiguration;
@@ -183,7 +183,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		{
 			string path = String.Empty;
 			
-			using (LogGroup logGroup = LogGroup.Start("Retrieving the file name for the data store.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Retrieving the file name for the data store."))
 			{
 				string fileName = Name;
 				
@@ -218,7 +218,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// </summary>
 		public void OpenServer()
 		{
-			using (LogGroup logGroup = LogGroup.Start("Opening db4o data server.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Opening db4o data server."))
 			{				
 				LogWriter.Debug("${db4o.OpenServer:" + Name + "}");
 				
@@ -232,7 +232,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		/// </summary>
 		public void OpenContainer()
 		{
-			//using (LogGroup logGroup = LogGroup.Start("Opening db4o data container.", NLog.LogLevel.Info))
+			//using (LogGroup logGroup = LogGroup.StartDebug("Opening db4o data container."))
 			//{			
 				LogWriter.Debug("${db4o.OpenContainer:" + Name + "}");
 				
@@ -371,7 +371,7 @@ namespace SoftwareMonkeys.SiteStarter.Data.Db4o
 		
 		public override void Commit(bool forceCommit)
 		{
-			using (LogGroup logGroup = LogGroup.Start("Committing the data store (or adding to batch for later).", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Committing the data store (or adding to batch for later)."))
 			{
 				// Only commit if there's no batch running
 				if (forceCommit || !BatchState.IsRunning)

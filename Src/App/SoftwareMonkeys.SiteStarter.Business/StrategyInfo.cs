@@ -136,7 +136,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			List<StrategyInfo> list = new List<StrategyInfo>();
 			
 			// Logging disabled to boost performance
-			//using (LogGroup logGroup = LogGroup.Start("Analyzing the provided type to extract the info.", NLog.LogLevel.Debug))
+			//using (LogGroup logGroup = LogGroup.StartDebug("Analyzing the provided type to extract the info."))
 			//{
 			foreach (Attribute a in type.GetCustomAttributes(typeof(StrategyAttribute), false))
 			{
@@ -220,7 +220,7 @@ namespace SoftwareMonkeys.SiteStarter.Business
 			T strategy = default(T);
 			
 			// TODO: Comment out logging to boost performance
-			using (LogGroup logGroup = LogGroup.Start("Creating a new strategy for the type '" + entityTypeName + "' and action '" + Action + "'.", NLog.LogLevel.Debug))
+			using (LogGroup logGroup = LogGroup.StartDebug("Creating a new strategy for the type '" + entityTypeName + "' and action '" + Action + "'."))
 			{
 				LogWriter.Debug("Entity type name: " + entityTypeName);
 			
