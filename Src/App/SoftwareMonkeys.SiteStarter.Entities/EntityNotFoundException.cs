@@ -17,9 +17,22 @@ namespace SoftwareMonkeys.SiteStarter.Entities
 			set { typeName = value; }
 		}
 		
+		private Guid entityID;
+		public Guid EntityID
+		{
+			get { return entityID; }
+			set { entityID = value; }
+		}
+		
 		public EntityNotFoundException(string typeName) : base("An entity could not be found with the name '" + typeName + "'.")
 		{
 			TypeName = typeName;
+		}
+		
+		public EntityNotFoundException(string typeName, Guid entityID) : base("An entity could not be found with the name '" + typeName + "' and ID '" + entityID.ToString() + "'.")
+		{
+			TypeName = typeName;
+			EntityID = entityID;
 		}
 	}
 }
