@@ -100,6 +100,10 @@ namespace SoftwareMonkeys.SiteStarter.Web
 				    && exception.Message.IndexOf("does not exist.") > -1)
 					errorPage = "Error404.aspx";
 			}
+			else if (exception is EntityNotFoundException)
+			{
+				errorPage = "Error404.aspx";				
+			}
 			
 			return errorPage;
 		}
