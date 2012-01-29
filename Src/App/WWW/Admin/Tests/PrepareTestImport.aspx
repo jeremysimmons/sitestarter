@@ -26,17 +26,20 @@ public string DataDirectoryPath
 
 protected override void OnLoad(EventArgs e)
 {
-	using (LogGroup logGroup = LogGroup.Start("Preparing to test the import feature.", NLog.LogLevel.Debug))
+	using (LogGroup logGroup = LogGroup.StartDebug("Preparing to test the import feature."))
 	{
 		using (TimeoutExtender extender = TimeoutExtender.NewMinutes(30)) // 30 minutes
 		{
-			CreateMockData();
+			using (Batch batch = BatchState.StartBatch())
+			{
+				CreateMockData();
 			
-			ExportData();
+				ExportData();
 			
-			ExportConfig();
+				ExportConfig();
 			
-			MoveExportedToImportable();
+				MoveExportedToImportable();
+			}
 		}
 	}
 }
