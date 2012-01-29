@@ -13,12 +13,19 @@
 				<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
 			</namespaces>
 	</xmlpeek>
+
+
+	<property name="wwwDir" value="${Solution.RootPath}\WWW" />
+
+	<if test="${directory::exists(wwwDir)}">
     	
-	<property name="tmpFilePath" value="tmpfile.txt" />
+		<property name="tmpFilePath" value="tmpfile.txt" />
 
-	<get src="http://localhost/${Solution.VirtualDirectoryName}/Admin/InitializeCache.aspx" dest="${tmpFilePath}" timeout="1000000" />
+		<get src="http://localhost/${Solution.VirtualDirectoryName}/Admin/InitializeCache.aspx" dest="${tmpFilePath}" timeout="1000000" />
 
-	<delete file="${tmpFilePath}"/>
+		<delete file="${tmpFilePath}"/>
+
+	</if>
 	
   </target>
   

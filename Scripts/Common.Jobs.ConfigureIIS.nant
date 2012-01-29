@@ -14,32 +14,38 @@
 
 		</loadtasks> 
 
-		<cd dir="${Solution.RootPath}\WWW"/>
+		<property name="wwwDir" value="${Solution.RootPath}\WWW" />
 
-		<xmlpeek
-		    file="${Solution.PropertiesPath}"
-		    xpath="/x:project/x:property[@name = 'Solution.VirtualDirectoryName']/@value"
-		    property="Solution.VirtualDirectoryName">
-		        <namespaces>
-        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
-    			</namespaces>
-	    	</xmlpeek>
+		<if test="${directory::exists(wwwDir)}">
 
-		<xmlpeek
-		    file="${Solution.PropertiesPath}"
-		    xpath="/x:project/x:property[@name = 'Solution.NetRuntimeVersion']/@value"
-		    property="Solution.NetRuntimeVersion">
-		        <namespaces>
-        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
-    			</namespaces>
-	    	</xmlpeek>
+			<cd dir="${wwwDir}"/>
 
-		<mkiisdir dirpath="${Solution.RootPath}\WWW" vdirname="${Solution.VirtualDirectoryName}" appfriendlyname="${Solution.VirtualDirectoryName}" verbose="true" />
+			<xmlpeek
+			    file="${Solution.PropertiesPath}"
+			    xpath="/x:project/x:property[@name = 'Solution.VirtualDirectoryName']/@value"
+			    property="Solution.VirtualDirectoryName">
+		        	<namespaces>
+        				<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    				</namespaces>
+		    	</xmlpeek>
 
-		<exec program="c:\Windows\Microsoft.NET\Framework\${Solution.NetRuntimeVersion}\aspnet_regiis">
-			<arg value="-s"/>
-			<arg value="w3svc/1/root/${Solution.VirtualDirectoryName}"/>
-		</exec>
+			<xmlpeek
+			    file="${Solution.PropertiesPath}"
+			    xpath="/x:project/x:property[@name = 'Solution.NetRuntimeVersion']/@value"
+			    property="Solution.NetRuntimeVersion">
+		        	<namespaces>
+        				<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+    				</namespaces>
+		    	</xmlpeek>
+
+			<mkiisdir dirpath="${wwwDir}" vdirname="${Solution.VirtualDirectoryName}" appfriendlyname="${Solution.VirtualDirectoryName}" verbose="true" />
+
+			<exec program="c:\Windows\Microsoft.NET\Framework\${Solution.NetRuntimeVersion}\aspnet_regiis">
+				<arg value="-s"/>
+				<arg value="w3svc/1/root/${Solution.VirtualDirectoryName}"/>
+			</exec>
+
+		</if>
 	</target>
      
 </project>

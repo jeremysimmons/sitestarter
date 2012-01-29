@@ -224,6 +224,7 @@
 	        <include name="System.Data.dll" />
 	        <include name="System.Xml.dll" />
 	        <include name="System.Web.dll" />
+	        <exclude name="${path::combine(Project.LibrariesPath, 'SoftwareMonkeys.CodePorter.*.dll')}" />
 	      </references>
 	    </csc>
 	    
