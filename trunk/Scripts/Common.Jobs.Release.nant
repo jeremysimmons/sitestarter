@@ -4,12 +4,12 @@
 
 	<!-- Add a reference to the sharpziplib library even though it doesn't have tasks in it. -->
 	<loadtasks>
-            <fileset>
-                        <include name="../Lib/ICSharpCode.SharpZipLib.dll" />
-            </fileset>
+		<fileset>
+			<include name="../Lib/ICSharpCode.SharpZipLib.dll" />
+		</fileset>
 	</loadtasks> 
-	
-<target name="Common.Jobs.CreateReleaseZips">
+
+	<target name="Common.Jobs.CreateReleaseZips">
 		<call target="Common.Jobs.ResetAll"/>
 		<call target="Common.Jobs.ClearData" failonerror="false"/>
 		<call target="Common.Jobs.ClearData"/>
@@ -18,55 +18,55 @@
 		<call target="Common.Jobs.InitializeCache"/>
 
 
-	<xmlpeek
-		    file="${Project.PropertiesPath}"
-		    xpath="/x:project/x:property[@name = 'Project.Name']/@value"
-		    property="Project.Name">
-		        <namespaces>
-        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
-    			</namespaces>
-    	</xmlpeek>
+		<xmlpeek
+				file="${Project.PropertiesPath}"
+				xpath="/x:project/x:property[@name = 'Project.Name']/@value"
+				property="Project.Name">
+			<namespaces>
+				<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+			</namespaces>
+		</xmlpeek>
 
-	<xmlpeek
-		    file="${Solution.PropertiesPath}"
-		    xpath="/x:project/x:property[@name = 'Solution.SourceReleaseName']/@value"
-		    property="Solution.SourceReleaseName">
-		        <namespaces>
-        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
-    			</namespaces>
-    	</xmlpeek>
-    	
-    		<xmlpeek
-		    file="${Solution.PropertiesPath}"
-		    xpath="/x:project/x:property[@name = 'Solution.InstallReleaseName']/@value"
-		    property="Solution.InstallReleaseName">
-		        <namespaces>
-        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
-    			</namespaces>
-    	</xmlpeek>
-    	
-    	<xmlpeek
-		    file="${Solution.PropertiesPath}"
-		    xpath="/x:project/x:property[@name = 'Solution.VersionMode']/@value"
-		    property="Solution.VersionMode">
-		        <namespaces>
-        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
-    			</namespaces>
-    	</xmlpeek>
+		<xmlpeek
+				file="${Solution.PropertiesPath}"
+				xpath="/x:project/x:property[@name = 'Solution.SourceReleaseName']/@value"
+				property="Solution.SourceReleaseName">
+			<namespaces>
+				<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+			</namespaces>
+		</xmlpeek>
 
-	<loadfile
-	    file="${path::combine(Solution.RootPath, 'Version.Number')}"
-	    property="Solution.Version" />
+		<xmlpeek
+				file="${Solution.PropertiesPath}"
+				xpath="/x:project/x:property[@name = 'Solution.InstallReleaseName']/@value"
+				property="Solution.InstallReleaseName">
+			<namespaces>
+				<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+			</namespaces>
+		</xmlpeek>
+
+		<xmlpeek
+				file="${Solution.PropertiesPath}"
+				xpath="/x:project/x:property[@name = 'Solution.VersionMode']/@value"
+				property="Solution.VersionMode">
+			<namespaces>
+				<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+			</namespaces>
+		</xmlpeek>
+
+		<loadfile
+				file="${path::combine(Solution.RootPath, 'Version.Number')}"
+				property="Solution.Version" />
 
 		<property name="Solution.Version" value="${string::trim(Solution.Version)} ${Solution.VersionMode}" />
-    	
-    	<property name="Solution.ReleaseTimestamp" value="${datetime::get-year(datetime::now())}-${datetime::get-month(datetime::now())}-${datetime::get-day(datetime::now())}--${datetime::get-hour(datetime::now())}-${datetime::get-minute(datetime::now())}-${datetime::get-second(datetime::now())}"/>
-    	
-    	<property name="Solution.SourceReleaseName" value="${string::replace(Solution.SourceReleaseName, '${Solution.Version}', string::replace(Solution.Version, '.', '-'))}"/>
-    	<property name="Solution.InstallReleaseName" value="${string::replace(Solution.InstallReleaseName, '${Solution.Version}', string::replace(Solution.Version, '.', '-'))}"/>
+
+		<property name="Solution.ReleaseTimestamp" value="${datetime::get-year(datetime::now())}-${datetime::get-month(datetime::now())}-${datetime::get-day(datetime::now())}--${datetime::get-hour(datetime::now())}-${datetime::get-minute(datetime::now())}-${datetime::get-second(datetime::now())}"/>
+
+		<property name="Solution.SourceReleaseName" value="${string::replace(Solution.SourceReleaseName, '${Solution.Version}', string::replace(Solution.Version, '.', '-'))}"/>
+		<property name="Solution.InstallReleaseName" value="${string::replace(Solution.InstallReleaseName, '${Solution.Version}', string::replace(Solution.Version, '.', '-'))}"/>
 
 		<property name="Solution.SourceReleaseName" value="${string::replace(Solution.SourceReleaseName, '${Solution.ReleaseTimestamp}', string::replace(Solution.ReleaseTimestamp, '.', '-'))}"/>
-    	<property name="Solution.InstallReleaseName" value="${string::replace(Solution.InstallReleaseName, '${Solution.ReleaseTimestamp}', string::replace(Solution.ReleaseTimestamp, '.', '-'))}"/>
+		<property name="Solution.InstallReleaseName" value="${string::replace(Solution.InstallReleaseName, '${Solution.ReleaseTimestamp}', string::replace(Solution.ReleaseTimestamp, '.', '-'))}"/>
 
 		<call target="Common.Jobs.ClearData" failonerror="false"/>
 		<call target="Common.Jobs.ClearData"/>
@@ -76,266 +76,271 @@
 		<call target="Common.Actions.ZipSourceRelease"/>
 	</target>
 
-  <!-- Actions.ZipSourceRelease -->
-  <target name="Common.Actions.ZipSourceRelease">
-  	<property name="Solution.Alias" value="${path::get-file-name(Solution.RootPath)}"/>
+	<!-- Actions.ZipSourceRelease -->
+	<target name="Common.Actions.ZipSourceRelease">
+		<property name="Solution.Alias" value="${path::get-file-name(Solution.RootPath)}"/>
 
-  	<mkdir dir="${Solution.RootPath}\..\..\Releases\Source\"/>
-	<property name="zipFilePath" value="${Solution.RootPath}\..\..\Releases\Source\${Solution.SourceReleaseName}.zip"/>
-	<echo message="Zip file path before: ${zipFilePath}"/>
-	<property name="zipFilePath" value="${path::get-full-path(zipFilePath)}"/>
-	<echo message="Zip file path after: ${zipFilePath}"/>
-  	<zip zipfile="${zipFilePath}">
-	    <fileset basedir="${Project.RootPath}">
-	        <exclude name="**/Archive"/>
-	        <exclude name="**/*.db4o"/>
-	        <exclude name="**/*.local.config"/>
-	        <exclude name="**/obj/**"/>
-	        <exclude name="**/Logs/**"/>
-	        <exclude name="**/LogsArchive/**"/>
-	        <exclude name="**/*.pdb"/>
-	        <exclude name="**/*._cs"/>
-	        <exclude name="**/*._*"/>
-	        <exclude name="**/*.csexclude"/>
-	        <exclude name="**/*.excludecs"/>
-	        <exclude name="**/*.csproj.user"/>
-	        <exclude name="**/*.exclude"/>
-	        <exclude name="**/SoftwareMonkeys_.*/**/*.*"/>
-	        <exclude name="**/SoftwareMonkeys.*/Bin/**/*.dll"/>
-	        <exclude name="**/*.security"/>
-	        <exclude name="**/*.dll.r*"/>
-	        <exclude name="**/*.exe.r*"/>
-	        <exclude name="**/App_Data/VS/**"/>
-	        <exclude name="**/App_Data/Export/"/>
-	        <exclude name="**/App_Data/Export/**"/>
-	        <exclude name="**/App_Data/Import/"/>
-	        <exclude name="**/App_Data/Import/**"/>
-	        <exclude name="**/App_Data/ImportDefault/**"/>
-	        <exclude name="**/App_Data/LegacyDefault/**"/>
-	        <exclude name="**/App_Data/Legacy/**"/>
-	        <exclude name="**/App_Data/Imported/**"/>
-	        <exclude name="**/App_Data/Converted/**"/>
-	        <exclude name="**/fckeditor/**"/>
-	        <exclude name="**/Backups/*.zip"/>
-	        <exclude name="**/App_Data/**.xml"/>
-	        <exclude name="**/App_Data/Testing/*"/>
-	        <exclude name="**/App_Data/*.yap"/>
-	        <exclude name="**/App_Data/Personalization_Data/**"/>
-	        <exclude name="**/App_Data/Logs/**"/>
-	        <exclude name="**/App_Data/LogsArchive/**"/>
-	        <exclude name="**/App_Data/LogReports/**"/>
-	        <exclude name="**/App_Data/Version.number"/>
-	        <exclude name="**/App_Data/Suspended/**"/>
-	        <exclude name="**/Deployment/**"/>
-	        <exclude name="**/Releases/**"/>
-	        <exclude name="**/Backups/**"/>
-	        <exclude name="**.eqbak"/>
-	        <exclude name="**/Backups"/>
-	        <exclude name="**disabled_nant"/>
-	        <exclude name="**/bin/Debug/**"/>
-	        <exclude name="**/bin/Release/**"/>
-	        <exclude name="**.refresh"/>
-	        <exclude name="**/Docs/**"/>
-	        <exclude name="**/doxy/**"/>
-	        <exclude name="*.doxy"/>
-	        <exclude name="*.sh"/>
-	        <exclude name="**/Screenshots/**"/>
-	        <exclude name="**.suo"/>
-	        <exclude name="**.pidb"/>
-	        <exclude name="**.cache"/>
-	        <exclude name="**.nunit"/>
-	        <exclude name="**/TestResults/Logs"/>
-	        <exclude name="**/TestResults/xml"/>
-	        <exclude name="**/FunctionalTests/Results/**"/>
-	        <include name="**/${Solution.Alias}/**" />
-	        <include name="bin/**" />
-	        <include name="lib/**" />
-	        <include name="Scripts/**" />
-	        <include name="*.exe" />
-	        <include name="*.Project.nant" />
-	        <include name="*.sh"/>
-	        <include name="Readme.txt" />
-	    </fileset>	   
+		<mkdir dir="${Solution.RootPath}\..\..\Releases\Source\"/>
+		<property name="zipFilePath" value="${Solution.RootPath}\..\..\Releases\Source\${Solution.SourceReleaseName}.zip"/>
+		<echo message="Zip file path before: ${zipFilePath}"/>
+		<property name="zipFilePath" value="${path::get-full-path(zipFilePath)}"/>
+		<echo message="Zip file path after: ${zipFilePath}"/>
+		<zip zipfile="${zipFilePath}">
+			<fileset basedir="${Project.RootPath}">
+				<exclude name="**/Archive"/>
+				<exclude name="**/*.db4o"/>
+				<exclude name="**/*.local.config"/>
+				<exclude name="**/obj/**"/>
+				<exclude name="**/Logs/**"/>
+				<exclude name="**/LogsArchive/**"/>
+				<exclude name="**/*.pdb"/>
+				<exclude name="**/*._cs"/>
+				<exclude name="**/*._*"/>
+				<exclude name="**/*.csexclude"/>
+				<exclude name="**/*.excludecs"/>
+				<exclude name="**/*.csproj.user"/>
+				<exclude name="**/*.exclude"/>
+				<exclude name="**/SoftwareMonkeys_.*/**/*.*"/>
+				<exclude name="**/SoftwareMonkeys.*/Bin/**/*.dll"/>
+				<exclude name="**/*.security"/>
+				<exclude name="**/*.dll.r*"/>
+				<exclude name="**/*.exe.r*"/>
+				<exclude name="**/App_Data/VS/**"/>
+				<exclude name="**/App_Data/Export/"/>
+				<exclude name="**/App_Data/Export/**"/>
+				<exclude name="**/App_Data/Import/"/>
+				<exclude name="**/App_Data/Import/**"/>
+				<exclude name="**/App_Data/ImportDefault/**"/>
+				<exclude name="**/App_Data/LegacyDefault/**"/>
+				<exclude name="**/App_Data/Legacy/**"/>
+				<exclude name="**/App_Data/Imported/**"/>
+				<exclude name="**/App_Data/Converted/**"/>
+				<exclude name="**/fckeditor/**"/>
+				<exclude name="**/Backups/*.zip"/>
+				<exclude name="**/App_Data/**.xml"/>
+				<exclude name="**/App_Data/Testing/*"/>
+				<exclude name="**/App_Data/*.yap"/>
+				<exclude name="**/App_Data/Personalization_Data/**"/>
+				<exclude name="**/App_Data/Logs/**"/>
+				<exclude name="**/App_Data/LogsArchive/**"/>
+				<exclude name="**/App_Data/LogReports/**"/>
+				<exclude name="**/App_Data/Version.number"/>
+				<exclude name="**/App_Data/Suspended/**"/>
+				<exclude name="**/Deployment/**"/>
+				<exclude name="**/Releases/**"/>
+				<exclude name="**/Backups/**"/>
+				<exclude name="**.eqbak"/>
+				<exclude name="**/Backups"/>
+				<exclude name="**disabled_nant"/>
+				<exclude name="**/bin/Debug/**"/>
+				<exclude name="**/bin/Release/**"/>
+				<exclude name="**.refresh"/>
+				<exclude name="**/Docs/**"/>
+				<exclude name="**/doxy/**"/>
+				<exclude name="*.doxy"/>
+				<exclude name="*.sh"/>
+				<exclude name="**/Screenshots/**"/>
+				<exclude name="**.suo"/>
+				<exclude name="**.pidb"/>
+				<exclude name="**.cache"/>
+				<exclude name="**.nunit"/>
+				<exclude name="**/TestResults/Logs"/>
+				<exclude name="**/TestResults/xml"/>
+				<exclude name="**/FunctionalTests/Results/**"/>
+				<include name="**/${Solution.Alias}/**" />
+				<include name="bin/**" />
+				<include name="lib/**" />
+				<include name="Scripts/**" />
+				<include name="*.exe" />
+				<include name="*.Project.nant" />
+				<include name="*.sh"/>
+				<include name="Readme.txt" />
+			</fileset>	   
 
-	</zip>
-	
-	<property name="LatestReleasePath" value="${Project.RootPath}\..\${Project.Name}-SourceRelease\${Solution.Alias}"/>
-	<if test="${directory::exists(LatestReleasePath) == true}">
-		<!--delete dir="${LatestReleasePath}"/-->
-		<delete>
-		    <fileset>
-		        <include name="${LatestReleasePath}\**.*" />
-		    </fileset>
-		</delete>
-	</if>
-	<if test="${directory::exists(LatestReleasePath) == false}">
-		<mkdir dir="${LatestReleasePath}"/>
-	</if>
+		</zip>
+
+		<property name="LatestReleasePath" value="${Project.RootPath}\..\${Project.Name}-SourceRelease\${Solution.Alias}"/>
+		<if test="${directory::exists(LatestReleasePath) == true}">
+			<!--delete dir="${LatestReleasePath}"/-->
+			<delete>
+				<fileset>
+					<include name="${LatestReleasePath}\**.*" />
+				</fileset>
+			</delete>
+		</if>
+		<if test="${directory::exists(LatestReleasePath) == false}">
+			<mkdir dir="${LatestReleasePath}"/>
+		</if>
 		<unzip zipfile="${Project.RootPath}\Releases\Source\${Solution.SourceReleaseName}.zip"
-		todir="${LatestReleasePath}"/>
-  </target>
+				todir="${LatestReleasePath}"/>
+	</target>
 
 
-  <!-- Actions.ZipInstallRelease -->
-  <target name="Common.Actions.ZipInstallRelease">
-  	<property name="WwwInstallablePath" value="${Solution.RootPath}\WWW"/>
-  	<property name="ExeInstallablePath" value="${Solution.RootPath}"/>
-  	
-  	<!-- Default to exe -->
-  	<property name="InstallablePath" value="${ExeInstallablePath}"/>
-  	<property name="IncludeKey" value="**/bin/Release/*.exe"/>
-  	
-  	<if test="${directory::exists(WwwInstallablePath) == true}">
-  		<property name="InstallablePath" value="${WwwInstallablePath}"/>
-  		<property name="IncludeKey" value="**"/>
-  	</if>
-  	
-  	<echo message="${InstallablePath}"/>
+	<!-- Actions.ZipInstallRelease -->
+	<target name="Common.Actions.ZipInstallRelease">
+		<property name="WwwInstallablePath" value="${Solution.RootPath}\WWW"/>
+		<property name="ExeInstallablePath" value="${Project.RootPath}\bin\Release\"/>
 
-  	<property name="Solution.Alias" value="${path::get-file-name(Solution.RootPath)}"/>
-  	
-  	<mkdir dir="${Solution.RootPath}\..\..\Releases\Install"/>
-	<property name="zipFilePath" value="${Solution.RootPath}\..\..\Releases\Install\${Solution.InstallReleaseName}.zip"/>
-	<echo message="Zip file path before: ${zipFilePath}"/>
-	<property name="zipFilePath" value="${path::get-full-path(zipFilePath)}"/>
-	<echo message="Zip file path after: ${zipFilePath}"/>
-  	<zip zipfile="${zipFilePath}">
-	    <fileset basedir="${InstallablePath}">
-	        <exclude name="**/InitializeScreenshots.aspx"/>
-	        <exclude name="**/Archive"/>
-	        <exclude name="**/*.db4o"/>
-	        <exclude name="**/*.local.config"/>
-	        <exclude name="_svn"/>
-	        <exclude name=".svn"/>
-	        <exclude name="**/obj/**"/>
-	        <exclude name="**/Logs/**"/>
-	        <exclude name="**/LogsArchive/**"/>
-	        <exclude name="**/*.pdb"/>
-	        <exclude name="**/*.cs"/>
-	        <exclude name="**/*._cs"/>
-	        <exclude name="**/*._*"/>
-	        <exclude name="**/*.csexclude"/>
-	        <exclude name="**/*.excludecs"/>
-	        <exclude name="**/*.csproj.user"/>
-	        <exclude name="**/*.exclude"/>
-	        <exclude name="**/*.security"/>
-	        <exclude name="**/App_Data/VS/**"/>
-	        <exclude name="**/fckeditor/**"/>
-	        <exclude name="**/Backups/*.zip"/>
-	        <exclude name="**/App_Data/Testing/*"/>
-	        <exclude name="**/App_Data/*.db4o"/>
-	        <exclude name="**/App_Data/Personalization_Data"/>
-	        <exclude name="**/App_Data/Logs"/>
-	        <exclude name="**/App_Data/Export/"/>
-	        <exclude name="**/App_Data/Export/**"/>
-	        <exclude name="**/App_Data/Import/"/>
-	        <exclude name="**/App_Data/Import/**"/>
-	        <exclude name="**/App_Data/LogsArchive"/>
-	        <exclude name="**/App_Data/LogReports/**"/>
-	        <exclude name="**/App_Data/LegacyDefault/**"/>
-	        <exclude name="**/App_Data/Legacy/**"/>
-	        <exclude name="**/App_Data/Imported/**"/>
-	        <exclude name="**/App_Data/ImportDefault/**"/>
-	        <exclude name="**/App_Data/LegacyConverted/**"/>
-	        <exclude name="**/App_Data/Version.number"/>
-	        <exclude name="**/App_Data/Suspended"/>
-	        <exclude name="**/Deployment/**"/>
-	        <exclude name="*.Import.nant"/>
-	        <exclude name="**/Releases/**"/>
-	        <exclude name="**/Backups/**"/>
-	        <exclude name="**/Backups"/>
-	        <exclude name="**.eqbak"/>
-	        <exclude name="**.eqconfig"/>
-	        <exclude name="**/*.csproj"/>
-	        <exclude name="*disabled*"/>
-	        <exclude name="**/bin/Debug/**"/>
-	        <exclude name="**/bin/nunit**"/>
-	        <exclude name="**/ThoughtWorks.*.*"/>
-	        <exclude name="**/WebDriver.*.*"/>
-	        <exclude name="**/Selenium.*.*"/>
-	        <exclude name="**/SoftwareMonkeys.SeleniumToCSharp.Conversion.dll"/>
-	        <exclude name="**/Castle.Core.dll"/>
-	        <exclude name="**/Ionic.Zip.Reduced.dll"/>
-	        <exclude name="**/Newtonsoft.Json.dll"/>
-	        <exclude name="**/edtFTPnet.dll"/>
-	        <exclude name="**/FTPUpload.exe"/>
-	        <exclude name="**.Tests.dll"/>
-	        <exclude name="RestartApp.bat"/>
-	        <exclude name="**.refresh"/>
-	        <exclude name="**.nant"/>
-	        <exclude name="**/tests/**"/>
-	        <exclude name="**.jar"/>
-	        <exclude name="**/WebDriver.dll"/>
-	        <exclude name="*MockCreate*"/><!-- Exclude the mock/test create projections -->
-	        <exclude name="**/FunctionalTests/Results/**"/>
-	        <include name="**/App_Data/*.xml"/>
-	        <include name="${IncludeKey}" />
-	    </fileset>	   
-	</zip>
-	<property name="LatestReleasePath" value="${Project.RootPath}\..\${Project.Name}-InstallRelease\${Solution.Alias}"/>
-	<if test="${directory::exists(LatestReleasePath) == true}">
-		<!--delete dir="${LatestReleasePath}"/-->
-		<delete>
-		    <fileset>
-		        <include name="${LatestReleasePath}\**.*" />
-		    </fileset>
-		</delete>
-	</if>
-	<if test="${directory::exists(LatestReleasePath) == false}">
-		<mkdir dir="${LatestReleasePath}"/>
-	</if>
+		<!-- Default to exe -->
+		<property name="InstallablePath" value="${ExeInstallablePath}"/>
+		<property name="IncludeKey" value="**"/>
+
+		<if test="${directory::exists(WwwInstallablePath) == true}">
+
+			<echo message="Using WWW folder."/>
+
+			<property name="InstallablePath" value="${WwwInstallablePath}"/>
+			<property name="IncludeKey" value="**"/>
+
+		</if>
+
+		<echo message="${InstallablePath}"/>
+
+		<property name="Solution.Alias" value="${path::get-file-name(Solution.RootPath)}"/>
+
+		<mkdir dir="${Solution.RootPath}\..\..\Releases\Install"/>
+		<property name="zipFilePath" value="${Solution.RootPath}\..\..\Releases\Install\${Solution.InstallReleaseName}.zip"/>
+		<echo message="Zip file path before: ${zipFilePath}"/>
+		<property name="zipFilePath" value="${path::get-full-path(zipFilePath)}"/>
+		<echo message="Zip file path after: ${zipFilePath}"/>
+		<zip zipfile="${zipFilePath}">
+			<fileset basedir="${InstallablePath}">
+				<exclude name="**/InitializeScreenshots.aspx"/>
+				<exclude name="**/Archive"/>
+				<exclude name="**/*.db4o"/>
+				<exclude name="**/*.local.config"/>
+				<exclude name="_svn"/>
+				<exclude name=".svn"/>
+				<exclude name="**/obj/**"/>
+				<exclude name="**/Logs/**"/>
+				<exclude name="**/LogsArchive/**"/>
+				<exclude name="**/*.pdb"/>
+				<exclude name="**/*.cs"/>
+				<exclude name="**/*._cs"/>
+				<exclude name="**/*._*"/>
+				<exclude name="**/*.csexclude"/>
+				<exclude name="**/*.excludecs"/>
+				<exclude name="**/*.csproj.user"/>
+				<exclude name="**/*.exclude"/>
+				<exclude name="**/*.security"/>
+				<exclude name="**/App_Data/VS/**"/>
+				<exclude name="**/fckeditor/**"/>
+				<exclude name="**/Backups/*.zip"/>
+				<exclude name="**/App_Data/Testing/*"/>
+				<exclude name="**/App_Data/*.db4o"/>
+				<exclude name="**/App_Data/Personalization_Data"/>
+				<exclude name="**/App_Data/Logs"/>
+				<exclude name="**/App_Data/Export/"/>
+				<exclude name="**/App_Data/Export/**"/>
+				<exclude name="**/App_Data/Import/"/>
+				<exclude name="**/App_Data/Import/**"/>
+				<exclude name="**/App_Data/LogsArchive"/>
+				<exclude name="**/App_Data/LogReports/**"/>
+				<exclude name="**/App_Data/LegacyDefault/**"/>
+				<exclude name="**/App_Data/Legacy/**"/>
+				<exclude name="**/App_Data/Imported/**"/>
+				<exclude name="**/App_Data/ImportDefault/**"/>
+				<exclude name="**/App_Data/LegacyConverted/**"/>
+				<exclude name="**/App_Data/Version.number"/>
+				<exclude name="**/App_Data/Suspended"/>
+				<exclude name="**/Deployment/**"/>
+				<exclude name="*.Import.nant"/>
+				<exclude name="*.import.xml"/>
+				<exclude name="**/Releases/**"/>
+				<exclude name="**/Backups/**"/>
+				<exclude name="**/Backups"/>
+				<exclude name="**.eqbak"/>
+				<exclude name="**.eqconfig"/>
+				<exclude name="**/*.csproj"/>
+				<exclude name="*disabled*"/>
+				<exclude name="**/bin/Debug/**"/>
+				<exclude name="**/bin/nunit**"/>
+				<exclude name="**/ThoughtWorks.*.*"/>
+				<exclude name="**/WebDriver.*.*"/>
+				<exclude name="**/Selenium.*.*"/>
+				<exclude name="**/SoftwareMonkeys.SeleniumToCSharp.Conversion.dll"/>
+				<exclude name="**/Castle.Core.dll"/>
+				<exclude name="**/Ionic.Zip.Reduced.dll"/>
+				<exclude name="**/Newtonsoft.Json.dll"/>
+				<exclude name="**/edtFTPnet.dll"/>
+				<exclude name="**/FTPUpload.exe"/>
+				<exclude name="**.Tests.dll"/>
+				<exclude name="RestartApp.bat"/>
+				<exclude name="**.refresh"/>
+				<exclude name="**.nant"/>
+				<exclude name="**/tests/**"/>
+				<exclude name="**.jar"/>
+				<exclude name="**/WebDriver.dll"/>
+				<exclude name="*MockCreate*"/><!-- Exclude the mock/test create projections -->
+				<exclude name="**/FunctionalTests/Results/**"/>
+				<include name="**/App_Data/*.xml"/>
+				<include name="${IncludeKey}" />
+			</fileset>	   
+		</zip>
+		<property name="LatestReleasePath" value="${Project.RootPath}\..\${Project.Name}-InstallRelease\${Solution.Alias}"/>
+		<if test="${directory::exists(LatestReleasePath) == true}">
+			<!--delete dir="${LatestReleasePath}"/-->
+			<delete>
+				<fileset>
+					<include name="${LatestReleasePath}\**.*" />
+				</fileset>
+			</delete>
+		</if>
+		<if test="${directory::exists(LatestReleasePath) == false}">
+			<mkdir dir="${LatestReleasePath}"/>
+		</if>
 		<unzip zipfile="${Solution.RootPath}\..\..\Releases\Install\${Solution.InstallReleaseName}.zip"
-		todir="${LatestReleasePath}"/>
-  </target>
-  
-  <target name="Common.Jobs.UploadZips">
-  	
-	<xmlpeek
-		    file="${Project.RootPath}\GoogleCode.security"
-		    xpath="/x:project/x:property[@name = 'GoogleCode.Username']/@value"
-		    property="GoogleCode.Username">
-		        <namespaces>
-        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
-    			</namespaces>
-    	</xmlpeek>
-    	
-    	
-	<xmlpeek
-		    file="${Project.RootPath}\GoogleCode.security"
-		    xpath="/x:project/x:property[@name = 'GoogleCode.Password']/@value"
-		    property="GoogleCode.Password">
-		        <namespaces>
-        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
-    			</namespaces>
-    	</xmlpeek>
-    	
-	<xmlpeek
-		    file="${Project.RootPath}\GoogleCode.security"
-		    xpath="/x:project/x:property[@name = 'GoogleCode.ProjectName']/@value"
-		    property="GoogleCode.ProjectName">
-		        <namespaces>
-        			<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
-    			</namespaces>
-    	</xmlpeek>
+				todir="${LatestReleasePath}"/>
+	</target>
+
+	<target name="Common.Jobs.UploadZips">
+
+		<xmlpeek
+				file="${Project.RootPath}\GoogleCode.security"
+				xpath="/x:project/x:property[@name = 'GoogleCode.Username']/@value"
+				property="GoogleCode.Username">
+			<namespaces>
+				<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+			</namespaces>
+		</xmlpeek>
 
 
-	<gcupload 
-        	username="${GoogleCode.Username}" 
-        	password="${GoogleCode.Password}" 
-        	projectname="${GoogleCode.ProjectName}" 
-        	filename="${path::get-full-path(Project.RootPath)}\Releases\Install\${Solution.InstallReleaseName}.zip" 
-        	targetfilename="${Solution.InstallReleaseName}.zip"
-        	summary="${Solution.InstallReleaseName}"/>
-  	
-	<gcupload 
-        	username="${GoogleCode.Username}" 
-        	password="${GoogleCode.Password}" 
-        	projectname="${GoogleCode.ProjectName}" 
-        	filename="${path::get-full-path(Project.RootPath)}\Releases\Source\${Solution.SourceReleaseName}.zip" 
-        	targetfilename="${Solution.SourceReleaseName}.zip"
-        	summary="${Solution.SourceReleaseName}"/>
- 
-  </target>
+		<xmlpeek
+				file="${Project.RootPath}\GoogleCode.security"
+				xpath="/x:project/x:property[@name = 'GoogleCode.Password']/@value"
+				property="GoogleCode.Password">
+			<namespaces>
+				<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+			</namespaces>
+		</xmlpeek>
+
+		<xmlpeek
+				file="${Project.RootPath}\GoogleCode.security"
+				xpath="/x:project/x:property[@name = 'GoogleCode.ProjectName']/@value"
+				property="GoogleCode.ProjectName">
+			<namespaces>
+				<namespace prefix="x" uri="http://nant.sf.net/schemas/nant.xsd" />
+			</namespaces>
+		</xmlpeek>
+
+
+		<gcupload 
+				username="${GoogleCode.Username}" 
+				password="${GoogleCode.Password}" 
+				projectname="${GoogleCode.ProjectName}" 
+				filename="${path::get-full-path(Project.RootPath)}\Releases\Install\${Solution.InstallReleaseName}.zip" 
+				targetfilename="${Solution.InstallReleaseName}.zip"
+				summary="${Solution.InstallReleaseName}"/>
+
+		<gcupload 
+				username="${GoogleCode.Username}" 
+				password="${GoogleCode.Password}" 
+				projectname="${GoogleCode.ProjectName}" 
+				filename="${path::get-full-path(Project.RootPath)}\Releases\Source\${Solution.SourceReleaseName}.zip" 
+				targetfilename="${Solution.SourceReleaseName}.zip"
+				summary="${Solution.SourceReleaseName}"/>
+
+	</target>
 
 </project>
   	
