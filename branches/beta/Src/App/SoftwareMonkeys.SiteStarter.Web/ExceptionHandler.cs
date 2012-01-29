@@ -93,14 +93,19 @@ namespace SoftwareMonkeys.SiteStarter.Web
 		public string DecideErrorPage(Exception exception)
 		{
 			string errorPage = "Error.aspx";
-			
-			if (exception is HttpException)
+
+			if (exception is EntityNotFoundException
+			    || (exception is HttpUnhandledException && exception.InnerException is EntityNotFoundException))
+			{
+				errorPage = "Error404.aspx";
+			}
+			else if (exception is HttpException)
 			{
 				if (exception.Message.IndexOf("The file") > -1
 				    && exception.Message.IndexOf("does not exist.") > -1)
 					errorPage = "Error404.aspx";
 			}
-			
+
 			return errorPage;
 		}
 		
